@@ -9782,7 +9782,7 @@
       </trans-unit>
       <trans-unit id="f9ac2e6a82fcb91bb6bc133268e09b9bbdd8ba43" resname="admin:phrasea-service-setting:tab:uploader:: New target pull name">
         <source>admin:phrasea-service-setting:tab:uploader:: New target pull name</source>
-        <target state="needs-translation">Add New "Pulled" Uploader configuration</target>
+        <target state="needs-translation">Add a new "Pulled" Uploader configuration</target>
         <jms:reference-file line="56">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="201402344d0443bfbf463d36c35b4c78a6ab3128" resname="admin:phrasea-service-setting:tab:uploader:: New uploader target">
