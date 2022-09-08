@@ -9782,7 +9782,7 @@
       </trans-unit>
       <trans-unit id="f9ac2e6a82fcb91bb6bc133268e09b9bbdd8ba43" resname="admin:phrasea-service-setting:tab:uploader:: New target pull name">
         <source>admin:phrasea-service-setting:tab:uploader:: New target pull name</source>
-        <target state="needs-translation">Add a new "Pulled" Uploader configuration</target>
+        <target state="needs-translation">Add a new Phrasea Uploader in "Pull" mode</target>
         <jms:reference-file line="56">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="201402344d0443bfbf463d36c35b4c78a6ab3128" resname="admin:phrasea-service-setting:tab:uploader:: New uploader target">
@@ -9797,7 +9797,7 @@
       </trans-unit>
       <trans-unit id="bb58ab0314ddb434544fd24efb9ecc5a4544479c" resname="admin:phrasea-service-setting:tab:uploader:: pull mode uri">
         <source>admin:phrasea-service-setting:tab:uploader:: pull mode uri</source>
-        <target state="needs-translation">Uploader Uri (Url + target)</target>
+        <target state="needs-translation">Uploader Uri (uploader Url + target)</target>
         <jms:reference-file line="18">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="591a534afd5beace85a6e4beedf1200510649b76" resname="admin:phrasea-service-setting:tab:uploader:: push verify_ssl">
@@ -9807,22 +9807,22 @@
       </trans-unit>
       <trans-unit id="1b45a2067434925bd5f5887a0fb4e9e954b46e23" resname="admin:phrasea-service-setting:tab:uploader:: target Name">
         <source>admin:phrasea-service-setting:tab:uploader:: target Name</source>
-        <target state="new">admin:phrasea-service-setting:tab:uploader:: target Name</target>
+        <target state="needs-translation">Name</target>
         <jms:reference-file line="43">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6efb17b28a7c4c31417801ad91a6ff638888a553" resname="admin:phrasea-service-setting:tab:uploader:: uploader setting">
         <source>admin:phrasea-service-setting:tab:uploader:: uploader setting</source>
-        <target state="new">admin:phrasea-service-setting:tab:uploader:: uploader setting</target>
+        <target state="needs-translation">Uploader "Push" mode setting</target>
         <jms:reference-file line="33">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f81d6e1b4e8a501480420b44d8f69a9ebad3d60" resname="admin:phrasea-service-setting:tab:uploader:: verify ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: verify ssl</source>
-        <target state="new">admin:phrasea-service-setting:tab:uploader:: verify ssl</target>
+        <target state="needs-translation">verify ssl in "Pull" Mode</target>
         <jms:reference-file line="39">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9f6ad62045a98bbea5895a96efec48d6e162b7c" resname="admin:phraseanet-service Retrieve configuration error">
         <source>admin:phraseanet-service Retrieve configuration error</source>
-        <target state="new">admin:phraseanet-service Retrieve configuration error</target>
+        <target state="needs-translation">Phrasea configuration error</target>
         <jms:reference-file line="60">admin/phraseanet-service/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6d3478b79db541608a0ba8e3877cba7c52256add" resname="admin:searchengine:aggregates:New field, please confirm setting.">
