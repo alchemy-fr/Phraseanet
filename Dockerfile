@@ -300,3 +300,41 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
 
+#########################################################################
+# phrasaseanet adapted simplesaml service provider 
+#########################################################################
+
+FROM php:7.0-fpm-stretch as phraseanet-saml-sp
+RUN adduser --uid 1000 --disabled-password app
+RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        gnupg2 \
+        wget \
+        nginx \
+        zlib1g-dev \
+        automake \
+        git \
+        libmcrypt-dev \
+        libzmq3-dev \
+        libtool \
+        locales \
+        gettext \
+        mcrypt \
+        libldap2-dev \
+    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/ \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-install -j$(nproc) ldap \
+    && docker-php-ext-install zip mbstring pdo_mysql gettext mcrypt \
+    && pecl install \
+        redis \
+    && docker-php-ext-enable redis \
+    && pecl clear-cache \
+    && docker-php-source delete
+ADD ./docker/phraseanet/saml-sp/root /
+ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+CMD ["/bootstrap/bin/start-servers.sh"]
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 
+

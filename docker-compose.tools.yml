@@ -93,6 +93,39 @@ services:
       - GZIP_LEVEL=${DB_BACKUP_GZIP_LEVEL}
     restart: unless-stopped
 
+  phrasea-sp:
+    build:
+      context: .
+      target: phraseanet-saml-sp
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-saml-sp:$PHRASEANET_DOCKER_TAG
+    profiles: ["phrasea-sp"]
+    restart: on-failure
+    volumes:
+    - ${SAML_IDP_METADATA_LOCAL_CONFIG_DIR}:/var/www/simplesamlphp-1.10.0/metadata:rw
+    - ${SAML_SP_CONFIG_DIR}:/var/www/simplesamlphp-1.10.0/config:rw
+    - ${SAML_SP_CERT_DIR}:/var/www/simplesamlphp-1.10.0/cert:rw
+    depends_on:
+    - phraseanet
+    environment:
+    - MAX_BODY_SIZE
+    - GATEWAY_SEND_TIMEOUT
+    - GATEWAY_PROXY_TIMEOUT
+    - GATEWAY_FASTCGI_TIMEOUT
+    - SESSION_SAVE_HANDLER
+    - SESSION_SAVE_PATH
+    - SAML_PHRASEANET_HOST
+    - SAML_SP_AUTHSOURCES  
+    - SAML_IDP_METADATA_CONFIG
+    - SAML_IDP_METADATA_LOCAL_CONFIG_DIR
+
+    ports:
+      - 8080:8080
+    networks:
+      - internal
+
   #squid:
   #  image: sameersbn/squid:3.5.27-2
   #  profiles: ["squid"]

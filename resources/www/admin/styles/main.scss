@@ -1144,13 +1144,6 @@ span.simplecolorpicker.picker {
     box-sizing: border-box;
     position: relative;
   }
-  button[type=submit] {
-    &.save-uploader {
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-  }
   .upload-delete-btn {
     float: right;
     display: inline-block;
