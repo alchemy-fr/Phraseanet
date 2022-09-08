@@ -9812,12 +9812,12 @@
       </trans-unit>
       <trans-unit id="6efb17b28a7c4c31417801ad91a6ff638888a553" resname="admin:phrasea-service-setting:tab:uploader:: uploader setting">
         <source>admin:phrasea-service-setting:tab:uploader:: uploader setting</source>
-        <target state="needs-translation">Uploader "Push" mode setting</target>
+        <target state="needs-translation">Uploader "Push" mode settings</target>
         <jms:reference-file line="33">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f81d6e1b4e8a501480420b44d8f69a9ebad3d60" resname="admin:phrasea-service-setting:tab:uploader:: verify ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: verify ssl</source>
-        <target state="needs-translation">verify ssl in "Pull" Mode</target>
+        <target state="needs-translation">Verify ssl in "Pull" Mode</target>
         <jms:reference-file line="39">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9f6ad62045a98bbea5895a96efec48d6e162b7c" resname="admin:phraseanet-service Retrieve configuration error">
