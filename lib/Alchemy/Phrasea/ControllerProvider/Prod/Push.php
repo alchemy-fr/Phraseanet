@@ -70,12 +70,6 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/sharebasket/', 'controller.prod.push:sharebasketAction')
             ->bind('prod_push_send_sharebasket');
 
-        /** @uses PushController::quitshareAction() */
-        $controllers->post('/quitshare/{basket}/', 'controller.prod.push:quitshareAction')
-            ->assert('basket', '\d+')
-            ->bind('prod_push_quitshare');
-
-
         $controllers->post('/update-expiration/', 'controller.prod.push:updateExpirationAction')
             ->bind('prod_push_do_update_expiration');
 
