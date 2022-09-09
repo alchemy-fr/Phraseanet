@@ -38,20 +38,14 @@ done
  # Bus configuration for scheduler & worker
 bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry 
 
-if [ -z "$PHRASEANET_ELASTICSEARCH_HOST" ]; then
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host elasticsearch
-else
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host PHRASEANET_ELASTICSEARCH_HOST
-fi
-
-# elacticsearch settings
+# elasticsearch settings
 
 echo "Setting Elasticsearch configuration"
-"
+
 if [ -z "$PHRASEANET_ELASTICSEARCH_HOST" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host elasticsearch
 else
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host PHRASEANET_ELASTICSEARCH_HOST
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host $PHRASEANET_ELASTICSEARCH_HOST
 fi
 
 if [ -z "$PHRASEANET_ELASTICSEARCH_PORT" ]; then
@@ -95,7 +89,6 @@ if [ -z "$PHRASEANET_ELASTICSEARCH_MAXRESULTWINDOW" ]; then
 else
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.maxResultWindow $PHRASEANET_ELASTICSEARCH_MAXRESULTWINDOW
 fi
-
 
 if [ -z "$PHRASEANET_ELASTICSEARCH_POPULATEORDER" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.populate_order RECORD_ID
