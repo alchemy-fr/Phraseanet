@@ -227,11 +227,10 @@ class RecordController extends Controller
      */
     public function doDeleteRecords(Request $request)
     {
-        $flatten = (bool)($request->request->get('del_children')) ? RecordsRequest::FLATTEN_YES_PRESERVE_STORIES : RecordsRequest::FLATTEN_NO;
         $records = RecordsRequest::fromRequest(
             $this->app,
             $request,
-            $flatten,
+            RecordsRequest::FLATTEN_NO,
             [\ACL::CANDELETERECORD]
         );
 
