@@ -112,6 +112,16 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native by redis"
     fi
 
+    ## Phraseanet application Database setting
+
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Overwriting Phraseanet Database connexion informations"
+
+    bin/setup system:config set main.database.host $PHRASEANET_DB_HOST
+    bin/setup system:config set main.database.port $PHRASEANET_DB_PORT
+    bin/setup system:config set main.database.user $PHRASEANET_DB_USER
+    bin/setup system:config set main.database.password $PHRASEANET_DB_PASSWORD
+    bin/setup system:config set main.database.dbname $INSTALL_APPBOX
+
     ## Phraseanet application cache setting
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up for Phraseanet cache"
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Cache Type is $PHRASEANET_CACHE_TYPE"
