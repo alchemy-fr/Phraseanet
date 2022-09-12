@@ -84,9 +84,19 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         libldap2-dev \ 
         # End FFmpeg \
         nano \
-        libjq-dev \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
+    # --- jq and libs for php-ext-jq \
+    && mkdir /tmp/libjq \
+    && git clone https://github.com/stedolan/jq.git /tmp/libjq \
+    && cd /tmp/libjq \
+    && git submodule update --init \
+    && autoreconf -fi \
+    && ./configure --with-oniguruma=builtin --disable-maintainer-mode \
+    && make -j8 \
+    && make check \
+    && make install \
+    # --- end of jq \
     && mkdir /tmp/libheif \
     && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
     && cd /tmp/libheif \
