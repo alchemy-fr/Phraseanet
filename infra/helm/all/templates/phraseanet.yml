@@ -37,7 +37,7 @@ spec:
         emptyDir:
       - name: phraseanet-cache
         emptyDir:
-        
+
       {{ if eq .Values.image.imagepullsecrets "true" }}
       imagePullSecrets:
       - name: {{ .Values.image.secretename }}
@@ -106,8 +106,10 @@ spec:
           value: {{ .Values.app.install_appbox | quote }}
         - name: INSTALL_DATABOX
           value: {{ .Values.app.install_databox | quote }}
-        - name: PHRASEANET_SERVER_NAME
-          value: {{ .Values.app.phraseanet_server_name | quote }}
+        - name: PHRASSEANET_HOSTNAME
+          value: {{ .Values.app.phraseanet_hostname | quote }}
+        - name: PHRASEANET_SCHEME
+          value: {{ .Values.app.phraseanet_scheme | quote }}
         - name: PHRASEANET_DOWNLOAD_DIR
           value: "/var/alchemy/Phraseanet/datas/download"
         - name: PHRASEANET_LAZARET_DIR
@@ -148,20 +150,32 @@ spec:
           value: {{ .Values.app.phraseanet_emitter_email | quote }}
         - name: PHRASEANET_MAIL_OBJECT_PREFIX
           value: {{ .Values.app.phraseanet_mail_object_prefix | quote }}
+        - name: PHRASEANET_ELASTICSEARCH_HOST
+          value: {{ .Values.app.phraseanet_elasticsearch_host | quote }}
+        - name: PHRASEANET_ELASTICSEARCH_PORT
+          value: {{ .Values.app.phraseanet_elasticsearch_port | quote }}
         - name: PHRASEANET_RABBITMQ_HOST
-          value: {{ .Values.rabbitmq.host | quote }}
+          value: {{ .Values.app.phraseanet_rabbitmq_host | quote }}
         - name: PHRASEANET_RABBITMQ_PORT
-          value: {{ .Values.rabbitmq.port | quote }}
+          value: {{ .Values.app.phraseanet_rabbitmq_port | quote }}
         - name: PHRASEANET_RABBITMQ_USER
-          value: {{ .Values.rabbitmq.default_user | quote }}
+          value: {{ .Values.app.phraseanet_rabbitmq_user | quote }}
         - name: PHRASEANET_RABBITMQ_PASSWORD
-          value: {{ .Values.rabbitmq.default_pass | quote }}
+          value: {{ .Values.app.phraseanet_rabbitmq_pass | quote }}
         - name: PHRASEANET_RABBITMQ_VHOST
-          value: {{ .Values.rabbitmq.default_vhost | quote }}
+          value: {{ .Values.app.phraseanet_rabbitmq_vhost | quote }}
         - name: PHRASEANET_RABBITMQ_SSL
-          value: {{ .Values.rabbitmq.ssl | quote }}
+          value: {{ .Values.app.phraseanet_rabbitmq_ssl | quote }}
         - name: PHRASEANET_RABBITMQ_HEARTBEAT
           value: {{ .Values.rabbitmq.heartbeat | quote }}
+        - name: PHRASEANET_CACHE_TYPE
+          value: {{ .Values.app.phraseanet_cache_type | quote }}
+        - name: PHRASEANET_CACHE_HOST
+          value: {{ .Values.app.phraseanet_cache_host | quote }}
+        - name: PHRASEANET_CACHE_PORT
+          value: {{ .Values.app.phraseanet_cache_port | quote }}
+        - name: PHRASEANET_CACHE_DOMAIN
+          value: {{ .Values.app.phraseanet_cache_domain | quote }}
         - name: SESSION_CACHE_LIMITER
           value: {{ .Values.php.session_cache_limiter | quote }}
         - name: SESSION_SAVE_HANDLER

@@ -1,4 +1,4 @@
-
+{{- if .Values.mysql.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,9 +32,14 @@ spec:
         terminationMessagePolicy: FallbackToLogsOnError
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: {{ .Values.mysql.root_password }}
-        - name  : MYSQL_MAX_ALLOWED_PACKET
-          value : {{ .Values.mysql.max_allowed_packet }}
+          value: {{ tpl .Values.mysql.root_password $ }}
+        - name: MYSQL_USER
+          value: {{ tpl .Values.mysql.user $ }}
+        - name: MYSQL_PASSWORD
+          value: {{ tpl .Values.mysql.password $ }}
+        - name: MYSQL_MAX_ALLOWED_PACKET
+          value: {{ .Values.mysql.max_allowed_packet }}
         volumeMounts:
         - name: "database"
           mountPath: "/var/lib/mysql"
+{{- end }}

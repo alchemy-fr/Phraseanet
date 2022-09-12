@@ -1,4 +1,4 @@
-
+{{- if .Values.elasticsearch.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,3 +35,4 @@ spec:
         volumeMounts:
         - name: elastic-data
           mountPath: "/usr/share/elasticsearch/data"
+{{- end }}

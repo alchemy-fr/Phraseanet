@@ -1,4 +1,4 @@
-
+{{- if .Values.rabbitmq.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,4 +10,4 @@ spec:
   selector:
     app: phraseanet
     tier: rabbitmq
-
+{{- end }}
