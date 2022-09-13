@@ -52,6 +52,9 @@ class Dashboard implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/flush-cache/', 'controller.admin.dashboard:flush')
             ->bind('admin_dashboard_flush_cache');
 
+        $controllers->post('/flush-redis-session/', 'controller.admin.dashboard:flushRedisSession')
+            ->bind('admin_dashboard_flush_redis_session');
+
         $controllers->post('/send-mail-test/', 'controller.admin.dashboard:sendMail')
             ->bind('admin_dashboard_test_mail');
 

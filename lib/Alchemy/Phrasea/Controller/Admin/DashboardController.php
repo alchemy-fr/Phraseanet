@@ -12,7 +12,8 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\Authenticator;
-use Alchemy\Phrasea\Cache\Cache;
+use Alchemy\Phrasea\Cache\Factory;
+use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -46,6 +47,7 @@ class DashboardController extends Controller
         }
 
         return $this->render('admin/dashboard.html.twig', [
+            'session_flushed' => $request->query->get('flush_session') === 'ok',
             'cache_flushed' => $request->query->get('flush_cache') === 'ok',
             'admins'        => $this->getUserRepository()->findAdmins(),
             'email_status'  => $emailStatus,
@@ -59,11 +61,23 @@ class DashboardController extends Controller
      */
     public function flush()
     {
-        /** @var Cache $cache */
+        /** @var CacheManager $cache */
         $cache = $this->app['phraseanet.cache-service'];
         $flushOK = $cache->flushAll() ? 'ok' : 'ko';
 
         return $this->app->redirectPath('admin_dashboard', ['flush_cache' => $flushOK]);
+    }
+
+    public function flushRedisSession()
+    {
+        /** @var Factory $cacheFactory */
+        $cacheFactory = $this->app['phraseanet.cache-factory'];
+        $cache = $cacheFactory->create('redis', ['host' => 'redis-session', 'port' => '6379']);
+
+        $flushOK = $cache->flushAll() ? 'ok' : 'ko';
+
+        return $this->app->redirectPath('admin_dashboard', ['flush_session' => $flushOK]);
+
     }
 
     /**
