@@ -23,10 +23,20 @@ server {
     client_max_body_size $MAX_BODY_SIZE;
 
     location /api {
+        if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
+            return 401;
+        }
         rewrite ^(.*)$ /api.php/$1 last;
     }
 
     location / {
+
+        error_page 503 = @maintenance;
+        recursive_error_pages on;
+        if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
+            return 503;
+        }
+
         # First attempt to serve request as file, then
         # as directory, then fall back to index.html
         try_files $uri $uri/ @rewriteapp;
@@ -58,5 +68,10 @@ server {
         set $target phrasea-sp:8080;
         proxy_pass http://$target;
 
+    }
+
+    location @maintenance {
+        root /var/alchemy/Phraseanet/datas/nginx/;
+        try_files $uri /maintenance.html;
     }
 }

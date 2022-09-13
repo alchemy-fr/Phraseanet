@@ -4,6 +4,16 @@ set -e
 envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
+if [[ $PHRASEANET_MAINTENANCE = 0 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
+        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+fi
+if [[ $PHRASEANET_MAINTENANCE = 1 || $PHRASEANET_MAINTENANCE = 2 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
+        mkdir -p /var/alchemy/Phraseanet/datas/nginx
+        cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+fi
+
 echo "creating config subderectories overwritten by the config pvc"
 
 mkdir -p config/plugins
@@ -34,7 +44,9 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
     runuser app -c docker/phraseanet/setup/auto-install.sh
     chmod 600 config/configuration.yml
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet Installation"
-
+   if [[ $PHRASEANET_MAINTENANCE != 2 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"
+   fi
 fi
 
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
@@ -112,6 +124,24 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native by redis"
     fi
 
+    ## Phraseanet application Database setting
+
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Overwriting Phraseanet Database connexion informations"
+
+    bin/setup system:config set main.database.host $PHRASEANET_DB_HOST
+    bin/setup system:config set main.database.port $PHRASEANET_DB_PORT
+    bin/setup system:config set main.database.user $PHRASEANET_DB_USER
+    bin/setup system:config set main.database.password $PHRASEANET_DB_PASSWORD
+    bin/setup system:config set main.database.dbname $INSTALL_APPBOX
+
+    ## Phraseanet application cache setting
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up for Phraseanet cache"
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Cache Type is $PHRASEANET_CACHE_TYPE"
+    bin/setup system:config set main.cache.options.host $PHRASEANET_CACHE_HOST
+    bin/setup system:config set main.cache.options.port $PHRASEANET_CACHE_PORT
+    bin/setup system:config set main.cache.options.namespace $PHRASEANET_SERVER_NAME
+    bin/setup system:config set main.cache.type $PHRASEANET_CACHE_TYPE
+
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
     bin/setup system:config set main.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
@@ -178,5 +208,13 @@ fi
 
 #chown -R app:app datas && echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished chown on datas by entrypoint" &
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet setup entrypoint.sh"
+
+if [[ $PHRASEANET_MAINTENANCE = 2 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Persisting Maintenance Mode"
+else
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"  
+        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+fi
+
 
 bash -e docker-php-entrypoint $@
