@@ -37,25 +37,109 @@ done
 
  # Bus configuration for scheduler & worker
 bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry 
-bin/setup system:config set workers.queue.worker-queue.host rabbitmq
-bin/setup system:config set workers.queue.worker-queue.port 5672 
-bin/setup system:config set workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
-bin/setup system:config set workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
-bin/setup system:config set workers.queue.worker-queue.vhost /
 
+# elasticsearch settings
+
+echo "Setting Elasticsearch configuration"
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_HOST" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host elasticsearch
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host $PHRASEANET_ELASTICSEARCH_HOST
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_PORT" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.port 9200
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.port $PHRASEANET_ELASTICSEARCH_PORT
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_INDEX" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.index phraseanet
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.index $PHRASEANET_ELASTICSEARCH_INDEX
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_SHARD" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.shard 3
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.shard $PHRASEANET_ELASTICSEARCH_SHARD
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_REPLICAS" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.replicas 0
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.replicas $PHRASEANET_ELASTICSEARCH_REPLICAS
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_MINSCORE" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore 2
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore $PHRASEANET_ELASTICSEARCH_MINSCORE
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_HIGHLIGHT" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.highlight true
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.highlight $PHRASEANET_ELASTICSEARCH_HIGHLIGHT
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_MAXRESULTWINDOW" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.maxResultWindow 500000
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.maxResultWindow $PHRASEANET_ELASTICSEARCH_MAXRESULTWINDOW
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_POPULATEORDER" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.populate_order RECORD_ID
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.populate_order $PHRASEANET_ELASTICSEARCH_POPULATEORDER
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_ACTIVETAB" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab null
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab $PHRASEANET_ELASTICSEARCH_ACTIVETAB
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_ACTIVETAB" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab null
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab $PHRASEANET_ELASTICSEARCH_ACTIVETAB
+fi
+
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_FACET_BASE" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit 10
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit $PHRASEANET_ELASTICSEARCH_FACET_BASE
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_FACET_BASE" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit 10
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit $PHRASEANET_ELASTICSEARCH_FACET_BASE
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_FACET_COLLECTION" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._collection.limit 10
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._collection.limit $PHRASEANET_ELASTICSEARCH_FACET_COLLECTION
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_FACET_DOCTYPE" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._doctype.limit 10
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._doctype.limit $PHRASEANET_ELASTICSEARCH_FACET_DOCTYPE
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_FACET_ORIENTATION" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._thumbnail_orientation.limit 10
+else
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._thumbnail_orientation.limit $PHRASEANET_ELASTICSEARCH_FACET_ORIENTATION
+fi
 
-## Redis
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.host redis
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.port 6379
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $PHRASEANET_SERVER_NAME
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.type redis
-
+echo "Ended setting elasticsearch configuration"
 
 /var/alchemy/Phraseanet/bin/console compile:configuration
 
