@@ -22,7 +22,7 @@ class module_console_systemClearSessionCache extends Command
         $cacheFactory = $this->container['phraseanet.cache-factory'];
         $cache = $cacheFactory->create('redis', ['host' => 'redis-session', 'port' => '6379']);
 
-        $flushOK = $cache->flushAll();
+        $flushOK = $cache->removeByPattern('PHPREDIS_SESSION*');
 
         if ($flushOK) {
             $output->writeln('session cache in redis successfully flushed!');

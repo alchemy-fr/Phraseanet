@@ -63,7 +63,10 @@ class DashboardController extends Controller
     {
         /** @var CacheManager $cache */
         $cache = $this->app['phraseanet.cache-service'];
-        $flushOK = $cache->flushAll() ? 'ok' : 'ko';
+        $namespace = $this->app['conf']->get(['main', 'cache', 'options', 'namespace'], '');
+
+        $pattern = $namespace . '*';
+        $flushOK = $cache->flushAll($pattern) ? 'ok' : 'ko';
 
         return $this->app->redirectPath('admin_dashboard', ['flush_cache' => $flushOK]);
     }
@@ -74,10 +77,9 @@ class DashboardController extends Controller
         $cacheFactory = $this->app['phraseanet.cache-factory'];
         $cache = $cacheFactory->create('redis', ['host' => 'redis-session', 'port' => '6379']);
 
-        $flushOK = $cache->flushAll() ? 'ok' : 'ko';
+        $flushOK = $cache->removeByPattern('PHPREDIS_SESSION*') ? 'ok' : 'ko';
 
         return $this->app->redirectPath('admin_dashboard', ['flush_session' => $flushOK]);
-
     }
 
     /**
