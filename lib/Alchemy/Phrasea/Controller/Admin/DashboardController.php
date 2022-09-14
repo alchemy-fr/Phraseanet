@@ -75,9 +75,15 @@ class DashboardController extends Controller
     {
         /** @var Factory $cacheFactory */
         $cacheFactory = $this->app['phraseanet.cache-factory'];
-        $cache = $cacheFactory->create('redis', ['host' => 'redis-session', 'port' => '6379']);
+        $flushOK = 'ko';
 
-        $flushOK = $cache->removeByPattern('PHPREDIS_SESSION*') ? 'ok' : 'ko';
+        try {
+            $cache = $cacheFactory->create('redis', ['host' => 'redis-session', 'port' => '6379']);
+
+            $flushOK = $cache->removeByPattern('PHPREDIS_SESSION*') ? 'ok' : 'ko';
+        } catch (\Exception $e) {
+            $this->app['logger']->error('cannot connect to the server redis-session:6379');
+        }
 
         return $this->app->redirectPath('admin_dashboard', ['flush_session' => $flushOK]);
     }
