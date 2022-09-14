@@ -379,7 +379,7 @@ class WorkerRunningJobRepository extends EntityRepository
         return count($qb->getQuery()->getResult());
     }
 
-    public function findByStatusAndJob(array $status, $jobType, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
+    public function findByFilter(array $status, $jobType, $databoxId, $recordId, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
     {
         $qb = $this->createQueryBuilder('w');
 
@@ -390,6 +390,16 @@ class WorkerRunningJobRepository extends EntityRepository
         if (!empty($jobType)) {
             $qb->andWhere('w.work = :work')
                 ->setParameter('work', $jobType);
+        }
+
+        if (!empty($databoxId)) {
+            $qb->andWhere('w.databoxId = :databoxId')
+                ->setParameter('databoxId', $databoxId);
+        }
+
+        if (!empty($recordId)) {
+            $qb->andWhere('w.recordId = :recordId')
+                ->setParameter('recordId', $recordId);
         }
 
         $qb
