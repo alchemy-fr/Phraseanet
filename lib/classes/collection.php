@@ -597,6 +597,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
 
+        // clear cached collection
+        $this->getCollectionRepository()->clearCache();
+
         // clear the trivial cache of databox->get_collections()
         $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);
 
@@ -616,6 +619,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
+
+        // clear cached collection
+        $this->getCollectionRepository()->clearCache();
 
         // clear the trivial cache of databox->get_collections()
         $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);

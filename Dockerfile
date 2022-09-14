@@ -82,10 +82,21 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         libgsm1-dev \
         libfreetype6-dev \
         libldap2-dev \ 
-        # End FFmpeg
+        # End FFmpeg \
         nano \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
+    # --- jq and libs for php-ext-jq \
+    && mkdir /tmp/libjq \
+    && git clone https://github.com/stedolan/jq.git /tmp/libjq \
+    && cd /tmp/libjq \
+    && git submodule update --init \
+    && autoreconf -fi \
+    && ./configure --with-oniguruma=builtin --disable-maintainer-mode \
+    && make -j8 \
+    && make check \
+    && make install \
+    # --- end of jq \
     && mkdir /tmp/libheif \
     && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
     && cd /tmp/libheif \
@@ -105,6 +116,11 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install -j$(nproc) ldap \
     && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
+    # --- extension jq - sources _must_ be in /usr/src/php/ext/ for the docker-php-ext-install script to find it \
+    && mkdir -p /usr/src/php/ext/ \
+    && git clone --depth=1 https://github.com/kjdev/php-ext-jq.git /usr/src/php/ext/php-ext-jq \
+    && docker-php-ext-install php-ext-jq \
+    # --- end of extension jq \
     && pecl install \
         redis \
         amqp-1.9.3 \
