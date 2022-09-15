@@ -74,7 +74,9 @@ app:
   install_db_template: DublinCore
   install_appbox: ab_master
   install_databox: db_databox1
-  phraseanet_server_name: localhost
+  phraseanet_hostname: localhost
+  phraseanet_app_port: 80
+  phraseanet_scheme: http
   phraseanet_trusted_proxies:
   gateway:
     resources:

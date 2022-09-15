@@ -27,7 +27,7 @@ sleep 10
     --db-template=$INSTALL_DB_TEMPLATE \
     --appbox=$INSTALL_APPBOX \
     --databox=$INSTALL_DATABOX \
-    --server-name=$PHRASEANET_SERVER_NAME \
+    --server-name=$PHRASEANET_BASE_URL \
     --download-path=$PHRASEANET_DOWNLOAD_DIR \
     --lazaret-path=$PHRASEANET_LAZARET_DIR \
     --caption-path=$PHRASEANET_CAPTION_DIR \
