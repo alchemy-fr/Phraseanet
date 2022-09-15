@@ -74,6 +74,9 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet instance name is NOT set to $PHRASEANET_PROJECT_NAME because ENV_SET_PHRASEANET_PROJECT_NAME is set to $ENV_SET_PHRASEANET_PROJECT_NAME "
     fi
 
+    echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Static URL PHRASEANET_BASE_URL"
+    bin/setup system:config set servername $PHRASEANET_BASE_URL
+
     echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Setting available language in GUI and search"
     counter=0 
     if [[ -n $PHRASEANET_AVAILABLE_LANGUAGE ]]; then
