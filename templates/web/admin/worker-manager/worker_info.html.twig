@@ -12,7 +12,7 @@
         <button class="btn btn-primary erase-all">
             {{ 'admin::workermanager:tab:workerinfo: Erase all information' |trans }}
         </button>
-        <span class="alert alert-danger">
+        <span class="alert alert-danger" style="padding-top: 5px;">
             {{ "admin::workermanager:tab:workerinfo: Warning! Erase all information" |trans }}
         </span>
     </p>
@@ -21,7 +21,7 @@
         <button class="btn btn-primary erase-finished">
             {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
         </button>
-        <span class="alert alert-info">
+        <span class="alert alert-info" style="padding-top: 5px;">
             {{ "admin::workermanager:tab:workerinfo: Warning! Erase all finished"|trans }}
         </span>
 
@@ -30,6 +30,10 @@
     <button id="refresh-list" class="btn btn-success">
         {{ 'admin::workermanager:tab:workerinfo: Refresh list' |trans }}
     </button>
+    <span class="alert alert-info" style="margin-left: 15px;padding-top: 5px;">
+        <span class="total-count">{{ totalCount }}</span>
+        <span style="margin-left: 10px;">{{ "job::tab total entry in DB" | trans }}</span>
+    </span>
 
     <div style="margin-top: 10px;margin-bottom: 10px;">
         <select id="job-type-filter">
@@ -63,7 +67,6 @@
             <input class="interrupt-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display manually interrupt work' | trans }}
         </label>
         <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
-            <span class="total-count">{{ totalCount }}</span> <span style="margin-left: 10px;">{{ "job::tab total entry in DB" | trans }}</span>
             <span class="result-count" style="margin-left: 40px;">{{ resultCount }} / {{ resultTotal }}</span> <span style="margin-left: 10px;">{{ "job::tab results" | trans }}</span>
         </span>
 
