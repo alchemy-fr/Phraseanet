@@ -414,6 +414,34 @@ class WorkerRunningJobRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getJobCount(array $status, $jobType, $databoxId, $recordId)
+    {
+        $qb = $this->createQueryBuilder('w');
+        $qb->select('count(w)');
+
+        if (!empty($status)) {
+            $qb->where($qb->expr()->in('w.status', $status));
+        }
+
+        if (!empty($jobType)) {
+            $qb->andWhere('w.work = :work')
+                ->setParameter('work', $jobType);
+        }
+
+        if (!empty($databoxId)) {
+            $qb->andWhere('w.databoxId = :databoxId')
+                ->setParameter('databoxId', $databoxId);
+        }
+
+        if (!empty($recordId)) {
+            $qb->andWhere('w.recordId = :recordId')
+                ->setParameter('recordId', $recordId);
+        }
+
+        return  $qb->getQuery()->getSingleScalarResult();
+
+    }
+
     public function updateStatusRunningToCanceledSinceCreated($hour = 0)
     {
         $sql = '

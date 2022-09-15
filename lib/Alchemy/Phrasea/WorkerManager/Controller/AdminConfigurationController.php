@@ -125,7 +125,9 @@ class AdminConfigurationController extends Controller
         }
 
         $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId);
-        $workerRunningJobTotalCount = count($repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, 0, null));
+        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
+        // get all row count in the table WorkerRunningJob
+        $totalCount = $repoWorker->getJobCount([], null, null , null);
 
         $databoxIds = array_map(function (\databox $databox) {
                 return $databox->get_sbas_id();
@@ -149,7 +151,7 @@ class AdminConfigurationController extends Controller
             ]),
                 'resultCount'      => count($workerRunningJob),
                 'resultTotal'      => $workerRunningJobTotalCount,
-                'totalCount'       => count($repoWorker->findAll())
+                'totalCount'       => $totalCount
             ]);
         } else {
             return $this->render('admin/worker-manager/worker_info.html.twig', [
@@ -159,7 +161,7 @@ class AdminConfigurationController extends Controller
                 'databoxIds'       => $databoxIds,
                 'resultCount'      => count($workerRunningJob),
                 'resultTotal'      => $workerRunningJobTotalCount,
-                'totalCount'       => count($repoWorker->findAll())
+                'totalCount'       => $totalCount
             ]);
         }
     }
