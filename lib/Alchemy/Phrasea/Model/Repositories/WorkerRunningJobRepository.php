@@ -402,9 +402,12 @@ class WorkerRunningJobRepository extends EntityRepository
                 ->setParameter('recordId', $recordId);
         }
 
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
         $qb
             ->setFirstResult($start)
-            ->setMaxResults($limit)
             ->orderBy('w.id', 'DESC')
         ;
 

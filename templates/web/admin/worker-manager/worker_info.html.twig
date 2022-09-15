@@ -62,6 +62,11 @@
         <label class="checkbox inline">
             <input class="interrupt-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display manually interrupt work' | trans }}
         </label>
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="total-count">{{ totalCount }}</span> <span style="margin-left: 10px;">{{ "job::tab total entry in DB" | trans }}</span>
+            <span class="result-count" style="margin-left: 40px;">{{ resultCount }} / {{ resultTotal }}</span> <span style="margin-left: 10px;">{{ "job::tab results" | trans }}</span>
+        </span>
+
     </div>
 
 </div>
@@ -163,7 +168,9 @@
                     recordId : recordId
                 },
                 success: function (data) {
-                    $(".work-list").empty().html(data);
+                    $(".work-list").empty().html(data.content);
+                    $(".result-count").empty().text(data.resultCount + ' / ' + data.resultTotal);
+                    $(".total-count").empty().text(data.totalCount);
                 }
             });
         }
