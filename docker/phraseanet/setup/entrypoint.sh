@@ -4,6 +4,14 @@ set -e
 envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
+if [[ -z "$PHRASEANET_APP_PORT" || $PHRASEANET_APP_PORT = "80" || $PHRASEANET_APP_PORT = "443" ]];then
+export PHRASEANET_BASE_URL="$PHRASEANET_SCHEME://$PHRASEANET_HOSTNAME"
+echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet BASE URL IS : " $PHRASEANET_BASE_URL 
+else
+export PHRASEANET_BASE_URL="$PHRASEANET_SCHEME://$PHRASEANET_HOSTNAME:$PHRASEANET_APP_PORT"
+echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet BASE URL IS : " $PHRASEANET_BASE_URL
+fi
+
 if [[ $PHRASEANET_MAINTENANCE = 0 ]];then
         echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
         rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
@@ -65,6 +73,9 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     else
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet instance name is NOT set to $PHRASEANET_PROJECT_NAME because ENV_SET_PHRASEANET_PROJECT_NAME is set to $ENV_SET_PHRASEANET_PROJECT_NAME "
     fi
+
+    echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Static URL PHRASEANET_BASE_URL"
+    bin/setup system:config set servername $PHRASEANET_BASE_URL
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Setting available language in GUI and search"
     counter=0 
@@ -139,7 +150,7 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Cache Type is $PHRASEANET_CACHE_TYPE"
     bin/setup system:config set main.cache.options.host $PHRASEANET_CACHE_HOST
     bin/setup system:config set main.cache.options.port $PHRASEANET_CACHE_PORT
-    bin/setup system:config set main.cache.options.namespace $PHRASEANET_SERVER_NAME
+    bin/setup system:config set main.cache.options.namespace $PHRASEANET_HOSTNAME
     bin/setup system:config set main.cache.type $PHRASEANET_CACHE_TYPE
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
