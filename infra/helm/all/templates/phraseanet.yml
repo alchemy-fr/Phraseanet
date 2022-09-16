@@ -106,8 +106,12 @@ spec:
           value: {{ .Values.app.install_appbox | quote }}
         - name: INSTALL_DATABOX
           value: {{ .Values.app.install_databox | quote }}
-        - name: PHRASEANET_SERVER_NAME
-          value: {{ .Values.app.phraseanet_server_name | quote }}
+        - name: PHRASEANET_HOSTNAME
+          value: {{ .Values.app.phraseanet_hostname | quote }}
+        - name: PHRASEANET_SCHEME
+          value: {{ .Values.app.phraseanet_scheme | quote }}
+        - name: PHRASEANET_APP_PORT
+          value: {{ .Values.app.phraseanet_app_port | quote }}
         - name: PHRASEANET_DOWNLOAD_DIR
           value: "/var/alchemy/Phraseanet/datas/download"
         - name: PHRASEANET_LAZARET_DIR
