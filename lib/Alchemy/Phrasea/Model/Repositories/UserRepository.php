@@ -62,6 +62,30 @@ class UserRepository extends EntityRepository
         return $this->findOneBy(['login' => $login]);
     }
 
+    public function findUsersToPurge($day, $loginPrefix = '', $canPurgeAdmin = false)
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->andWhere("u.lastConnection < DATE_SUB(CURRENT_DATE(), :day, 'day')")
+            ->andWhere("u.login NOT LIKE :deletedlogin")
+            ->andWhere("u.templateOwner IS NULL")
+            ->setParameters([
+                'day'=> $day,
+                'deletedlogin' => '(#deleted%'
+            ]);
+
+        if (!empty($loginPrefix)) {
+            $qb->andWhere("u.login LIKE :login")
+                ->setParameter('login', $loginPrefix .'%');
+        }
+
+        if (!$canPurgeAdmin) {
+            $qb->andWhere("u.admin = 0");
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * Finds deleted users.
      *

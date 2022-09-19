@@ -60,6 +60,7 @@ use Alchemy\Phrasea\Command\User\UserApplicationsCommand;
 use Alchemy\Phrasea\Command\User\UserCreateCommand;
 use Alchemy\Phrasea\Command\User\UserListCommand;
 use Alchemy\Phrasea\Command\User\UserPasswordCommand;
+use Alchemy\Phrasea\Command\User\UsersPurgeCommand;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerExecuteCommand;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerHeartbeatCommand;
@@ -144,6 +145,7 @@ $cli->command(new UserCreateCommand('user:create'));
 $cli->command(new UserPasswordCommand('user:password'));
 
 $cli->command(new UserListCommand('user:list'));
+$cli->command(new UsersPurgeCommand());
 
 
 $cli->command(new RecordAdd('records:add'));
