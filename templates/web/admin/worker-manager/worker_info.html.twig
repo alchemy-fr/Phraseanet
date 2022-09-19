@@ -12,7 +12,7 @@
         <button class="btn btn-primary erase-all">
             {{ 'admin::workermanager:tab:workerinfo: Erase all information' |trans }}
         </button>
-        <span class="alert alert-danger">
+        <span class="alert alert-danger" style="padding-top: 5px;">
             {{ "admin::workermanager:tab:workerinfo: Warning! Erase all information" |trans }}
         </span>
     </p>
@@ -21,7 +21,7 @@
         <button class="btn btn-primary erase-finished">
             {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
         </button>
-        <span class="alert alert-info">
+        <span class="alert alert-info" style="padding-top: 5px;">
             {{ "admin::workermanager:tab:workerinfo: Warning! Erase all finished"|trans }}
         </span>
 
@@ -30,6 +30,10 @@
     <button id="refresh-list" class="btn btn-success">
         {{ 'admin::workermanager:tab:workerinfo: Refresh list' |trans }}
     </button>
+    <span class="alert alert-info" style="margin-left: 15px;padding-top: 5px;">
+        <span class="total-count">{{ totalCount }}</span>
+        <span style="margin-left: 10px;">{{ "job::tab total entry in DB" | trans }}</span>
+    </span>
 
     <div style="margin-top: 10px;margin-bottom: 10px;">
         <select id="job-type-filter">
@@ -38,6 +42,15 @@
                 <option value="{{ jobType }}">{{ jobType }}</option>
             {% endfor %}
         </select>
+
+        <select id="databox-filter" style="margin-left: 30px;">
+            <option value="">{{ 'button::choose databox' | trans }}</option>
+            {% for databoxId in databoxIds %}
+                <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="number" id="record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
     </div>
 
     <div class="controls">
@@ -53,6 +66,10 @@
         <label class="checkbox inline">
             <input class="interrupt-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display manually interrupt work' | trans }}
         </label>
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="result-count" style="margin-left: 40px;">{{ resultCount }} / {{ resultTotal }}</span> <span style="margin-left: 10px;">{{ "job::tab results" | trans }}</span>
+        </span>
+
     </div>
 
 </div>
@@ -125,6 +142,8 @@
             var error = 1;
             var interrupt = 1;
             var jobType = $("#job-type-filter").val();
+            var databoxId = $("#databox-filter").val();
+            var recordId = $("#record-filter").val();
 
             if (!$(".running-work").is(":checked"))
             {
@@ -147,10 +166,14 @@
                 type: "GET",
                 url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished+"&error="+error+"&interrupt="+interrupt,
                 data: {
-                    jobType: jobType
+                    jobType: jobType,
+                    databoxId : databoxId,
+                    recordId : recordId
                 },
                 success: function (data) {
-                    $(".work-list").empty().html(data);
+                    $(".work-list").empty().html(data.content);
+                    $(".result-count").empty().text(data.resultCount + ' / ' + data.resultTotal);
+                    $(".total-count").empty().text(data.totalCount);
                 }
             });
         }
@@ -164,6 +187,14 @@
         });
 
         $("#job-type-filter").on('change', function () {
+            refreshJobList();
+        });
+
+        $("#databox-filter").on('change', function () {
+            refreshJobList();
+        });
+
+        $("#record-filter").on('input', function () {
             refreshJobList();
         });
 

@@ -106,6 +106,8 @@ class AdminConfigurationController extends Controller
 
         $reload = ($request->query->get('reload') == 1);
         $jobType = $request->query->get('jobType');
+        $databoxId = empty($request->query->get('databoxId')) ? null : $request->query->get('databoxId');
+        $recordId = empty($request->query->get('recordId')) ? null : $request->query->get('recordId');
 
         $filterStatus = [];
 
@@ -122,7 +124,16 @@ class AdminConfigurationController extends Controller
             $filterStatus[] = WorkerRunningJob::INTERRUPT;
         }
 
-        $workerRunningJob = $repoWorker->findByStatusAndJob($filterStatus, $jobType);
+        $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId);
+        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
+        // get all row count in the table WorkerRunningJob
+        $totalCount = $repoWorker->getJobCount([], null, null , null);
+
+        $databoxIds = array_map(function (\databox $databox) {
+                return $databox->get_sbas_id();
+            },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
 
         $types = AMQPConnection::MESSAGES;
 
@@ -131,11 +142,28 @@ class AdminConfigurationController extends Controller
 
         $jobTypes = array_keys($types);
 
-        return $this->render('admin/worker-manager/worker_info.html.twig', [
-            'workerRunningJob' => $workerRunningJob,
-            'reload'           => $reload,
-            'jobTypes'         => $jobTypes
-        ]);
+        if ($reload) {
+            return $this->app->json(['content' => $this->render('admin/worker-manager/worker_info.html.twig', [
+                'workerRunningJob' => $workerRunningJob,
+                'reload'           => $reload,
+                'jobTypes'         => $jobTypes,
+                'databoxIds'       => $databoxIds,
+            ]),
+                'resultCount'      => count($workerRunningJob),
+                'resultTotal'      => $workerRunningJobTotalCount,
+                'totalCount'       => $totalCount
+            ]);
+        } else {
+            return $this->render('admin/worker-manager/worker_info.html.twig', [
+                'workerRunningJob' => $workerRunningJob,
+                'reload'           => $reload,
+                'jobTypes'         => $jobTypes,
+                'databoxIds'       => $databoxIds,
+                'resultCount'      => count($workerRunningJob),
+                'resultTotal'      => $workerRunningJobTotalCount,
+                'totalCount'       => $totalCount
+            ]);
+        }
     }
 
     /**

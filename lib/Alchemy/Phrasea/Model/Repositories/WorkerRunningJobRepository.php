@@ -379,7 +379,7 @@ class WorkerRunningJobRepository extends EntityRepository
         return count($qb->getQuery()->getResult());
     }
 
-    public function findByStatusAndJob(array $status, $jobType, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
+    public function findByFilter(array $status, $jobType, $databoxId, $recordId, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
     {
         $qb = $this->createQueryBuilder('w');
 
@@ -392,13 +392,54 @@ class WorkerRunningJobRepository extends EntityRepository
                 ->setParameter('work', $jobType);
         }
 
+        if (!empty($databoxId)) {
+            $qb->andWhere('w.databoxId = :databoxId')
+                ->setParameter('databoxId', $databoxId);
+        }
+
+        if (!empty($recordId)) {
+            $qb->andWhere('w.recordId = :recordId')
+                ->setParameter('recordId', $recordId);
+        }
+
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
         $qb
             ->setFirstResult($start)
-            ->setMaxResults($limit)
             ->orderBy('w.id', 'DESC')
         ;
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getJobCount(array $status, $jobType, $databoxId, $recordId)
+    {
+        $qb = $this->createQueryBuilder('w');
+        $qb->select('count(w)');
+
+        if (!empty($status)) {
+            $qb->where($qb->expr()->in('w.status', $status));
+        }
+
+        if (!empty($jobType)) {
+            $qb->andWhere('w.work = :work')
+                ->setParameter('work', $jobType);
+        }
+
+        if (!empty($databoxId)) {
+            $qb->andWhere('w.databoxId = :databoxId')
+                ->setParameter('databoxId', $databoxId);
+        }
+
+        if (!empty($recordId)) {
+            $qb->andWhere('w.recordId = :recordId')
+                ->setParameter('recordId', $recordId);
+        }
+
+        return  $qb->getQuery()->getSingleScalarResult();
+
     }
 
     public function updateStatusRunningToCanceledSinceCreated($hour = 0)
