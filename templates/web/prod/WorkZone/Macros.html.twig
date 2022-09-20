@@ -403,7 +403,7 @@
                             ) }}
 
                         </div>
-                        <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
+                        <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="position:relative; overflow:visible;"></div>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -470,7 +470,7 @@
                             ) }}
 
                         </div>
-                        <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
+                        <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="position:relative; overflow:visible;"></div>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -517,7 +517,7 @@
 
                         </div>
                         <div sbas="{{ story.getSbasId() }}" id="SSTT_content_{{ story.getId() }}" class="content grouping story-block"
-                             style="overflow:hidden;"></div>
+                             style="position:relative; overflow:visible;"></div>
                     {% endfor %}
                 </div>
             {% endif %}
