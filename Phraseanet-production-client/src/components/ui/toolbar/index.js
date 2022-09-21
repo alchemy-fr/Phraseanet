@@ -281,13 +281,9 @@ const toolbar = (services) => {
         $container.on('click', '.tools-accordion', function (event) {
             $('.rotate').toggleClass("down");
             this.classList.toggle("active");
-            const r = this.getBoundingClientRect();
-            const p = r.top + r.height;
 
             /* Toggle between hiding and showing the active panel */
-            const panel = this.nextElementSibling;
-            panel.style.position = "fixed";  // todo: set this once for all in html, twig or css
-            panel.style.top = p + "px";
+            const panel = this.nextElementSibling; // risky don't change html !
             if (panel.style.maxHeight){
                 panel.style.maxHeight = null;
             } else {
@@ -296,9 +292,7 @@ const toolbar = (services) => {
         });
 
         $container.on('click', function (event) {
-            if ($(event.target).is('button.tools-accordion')) {
-                return;
-            } else {
+            if (!$(event.target).is('button.tools-accordion')) {
                 _closeActionPanel();
             }
         });
