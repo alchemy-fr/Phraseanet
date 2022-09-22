@@ -4280,7 +4280,6 @@ form.phrasea_query input.query {
   display: block;
   z-index: 2;
   position: relative;
-  margin-top: 3px;
   margin-bottom: 10px;
   width: auto;
   min-width: 160px;
@@ -4320,6 +4319,7 @@ form.phrasea_query input.query {
   width: 136px;
   z-index: 1000;
   position: absolute;
+  top: 35px;
   background-color: #464646;
   padding: 0 12px;
   overflow: hidden;
@@ -7879,7 +7879,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #idFrameC .ui-accordion .ui-accordion-content.content {
-  padding: 0 5px;
+  padding: 5px;
 }
 
 #idFrameC #baskets_wrapper {
@@ -8151,9 +8151,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
   position: relative;
   margin-bottom: 15px;
   background: #1d1d1d;
-  margin-right: 1px;
+  margin: 0 -1px;
   display: inline-block;
-  float: left;
 }
 
 .chim-wrapper span.feedback_user_name {
@@ -8214,6 +8213,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   width: 108px;
   overflow: hidden;
   margin: 0;
+  float: none;
 }
 
 .basket-content {
