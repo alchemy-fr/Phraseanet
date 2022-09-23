@@ -9802,7 +9802,7 @@
       </trans-unit>
       <trans-unit id="fc0ad7943304d0693d01998d9fa13eb616f04b0f" resname="admin:phrasea-service-setting:tab:uploader:: Fetching interval in second">
         <source>admin:phrasea-service-setting:tab:uploader:: Fetching interval in second</source>
-        <target state="needs-translation">Fetching interval in seconds</target>
+        <target state="translated">Fetching interval in seconds</target>
         <jms:reference-file line="33">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9ac2e6a82fcb91bb6bc133268e09b9bbdd8ba43" resname="admin:phrasea-service-setting:tab:uploader:: New target pull name">
@@ -11154,7 +11154,7 @@
       </trans-unit>
       <trans-unit id="e51e4a8b566c4c2455812df8f509423c3ced7721" resname="https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253">
         <source>https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</source>
-        <target state="needs-translation">eg: https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</target>
+        <target state="translated">eg: https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</target>
         <jms:reference-file line="21">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
@@ -11231,12 +11231,12 @@
       </trans-unit>
       <trans-unit id="07837fb2f14fde7fb76c1d8fcbc017e871c8592b" resname="job::tab results">
         <source>job::tab results</source>
-        <target state="new">job::tab results</target>
+        <target state="needs-translation">Job(s)</target>
         <jms:reference-file line="70">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
         <source>job::tab total entry in DB</source>
-        <target state="new">job::tab total entry in DB</target>
+        <target state="needs-translation">Total Jobs entry ( only last 500 jobs is displayed)</target>
         <jms:reference-file line="35">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10bdde9a4a70628adabb3cd21a907b41b11e707d" resname="juillet" approved="yes">
