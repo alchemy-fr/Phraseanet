@@ -9827,7 +9827,7 @@
       </trans-unit>
       <trans-unit id="008a1d3c1468de8675c5b0f7df16b5b396ead936" resname="admin:phrasea-service-setting:tab:uploader:: pull setting">
         <source>admin:phrasea-service-setting:tab:uploader:: pull setting</source>
-        <target state="needs-translation">Uploader "Pull" mode setting</target>
+        <target state="translated">Uploader "Pull" mode setting</target>
         <jms:reference-file line="46">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="591a534afd5beace85a6e4beedf1200510649b76" resname="admin:phrasea-service-setting:tab:uploader:: push verify_ssl">
@@ -9847,7 +9847,7 @@
       </trans-unit>
       <trans-unit id="7f81d6e1b4e8a501480420b44d8f69a9ebad3d60" resname="admin:phrasea-service-setting:tab:uploader:: verify ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: verify ssl</source>
-        <target state="needs-translation">Verify ssl</target>
+        <target state="translated">Verify ssl</target>
         <jms:reference-file line="39">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9f6ad62045a98bbea5895a96efec48d6e162b7c" resname="admin:phraseanet-service Retrieve configuration error">
@@ -10349,7 +10349,7 @@
       </trans-unit>
       <trans-unit id="529d7e5ea2c2183d2cf554561764340de1294d71" resname="button::choose databox">
         <source>button::choose databox</source>
-        <target state="new">button::choose databox</target>
+        <target state="needs-translation">all databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
@@ -10457,7 +10457,7 @@
       </trans-unit>
       <trans-unit id="96da49381769303a6515a8785c7f19c383db376a" resname="client_id">
         <source>client_id</source>
-        <target state="needs-translation">client id</target>
+        <target state="translated">client id</target>
         <jms:reference-file line="35">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bca60e4b2d44b5623e626f9ff951ba6605e975f" resname="collection.label.unknown" approved="yes">
