@@ -8367,7 +8367,7 @@
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
         <source>admin::base:collection:text empty collection</source>
-        <target state="needs-translation">All collection's records will be permanently deleted. the time take for this operation depending of numbers of records into collection.</target>
+        <target state="needs-translation">All collection records will be permanently deleted. The time taken for this operation depends on the number of records of the collection.</target>
         <jms:reference-file line="137">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
