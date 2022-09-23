@@ -10349,7 +10349,7 @@
       </trans-unit>
       <trans-unit id="529d7e5ea2c2183d2cf554561764340de1294d71" resname="button::choose databox">
         <source>button::choose databox</source>
-        <target state="needs-translation">all databox</target>
+        <target state="needs-translation">All Databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
