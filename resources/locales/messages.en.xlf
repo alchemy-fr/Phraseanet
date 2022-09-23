@@ -8357,7 +8357,7 @@
       </trans-unit>
       <trans-unit id="a2d4204187473ea7398879317c4e4cd4462dfc49" resname="admin::base:collection:text delete collection">
         <source>admin::base:collection:text delete collection</source>
-        <target state="needs-translation">Delete the collection, the collection need to be empty before performing this action.  warning : this action cannot be undone.</target>
+        <target state="needs-translation">Delete the collection, the collection needs to be empty before performing this action. Warning : this action cannot be undone.</target>
         <jms:reference-file line="147">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
