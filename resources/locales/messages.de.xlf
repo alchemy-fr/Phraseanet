@@ -8354,22 +8354,22 @@
       </trans-unit>
       <trans-unit id="a2d4204187473ea7398879317c4e4cd4462dfc49" resname="admin::base:collection:text delete collection">
         <source>admin::base:collection:text delete collection</source>
-        <target state="new">admin::base:collection:text delete collection</target>
+        <target state="needs-translation">Löschen Sie die Kollektion. Die Kollektion muss leer sein, bevor Sie diese Aktion durchführen. Achtung: Diese Aktion kann nicht rückgängig gemacht werden.</target>
         <jms:reference-file line="147">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
         <source>admin::base:collection:text disable collection</source>
-        <target state="new">admin::base:collection:text disable collection</target>
+        <target state="needs-translation">Der Inhalt der Kollektion wird nicht mehr erreichbar sein, dies erfordert eine erneute Benutzer Verbindung. Alle Benutzerrechte bleiben erhalten, Sie können diese Kollektion später wieder veröffentlichen.</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
         <source>admin::base:collection:text empty collection</source>
-        <target state="new">admin::base:collection:text empty collection</target>
+        <target state="needs-translation">Alle Datensätze der Kollektion werden dauerhaft gelöscht. Die benötigte Zeit hängt von der Anzahl der Datensätze der Kollektion ab.</target>
         <jms:reference-file line="137">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
         <source>admin::base:collection:tooltip enable collection</source>
-        <target state="new">admin::base:collection:tooltip enable collection</target>
+        <target state="needs-translation">Die Kollektion wird den Nutzern wieder zur Verfügung stehen, aber sie erfordert eine erneute Nutzer Verbindung.</target>
         <jms:reference-file line="214">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7765634e47a714273ba54690efd1f6c2a08e6de" resname="admin::base:collorder: descendre" approved="yes">
@@ -8392,17 +8392,17 @@
       </trans-unit>
       <trans-unit id="60ca9acf32543da6bfb31de39d95cbcecf690bd4" resname="admin::base:text clear database logs">
         <source>admin::base:text clear database logs</source>
-        <target state="new">admin::base:text clear database logs</target>
+        <target state="needs-translation">Löschen Sie die Datenbank Logs, dies kann nur bei einer leeren Databox durchgeführt werden.</target>
         <jms:reference-file line="136">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
         <source>admin::base:text delete a database</source>
-        <target state="new">admin::base:text delete a database</target>
+        <target state="needs-translation">Eine Databox löschen.</target>
         <jms:reference-file line="156">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a55aca9c020ca2725e58afc5b6a7b15e5fcb8ef" resname="admin::base:text unmount database">
         <source>admin::base:text unmount database</source>
-        <target state="new">admin::base:text unmount database</target>
+        <target state="needs-translation">Databox ausbauen</target>
         <jms:reference-file line="146">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59fb64701fdcfa682495e91bb1e286a9dba77848" resname="admin::colelction::presentation des elements : rien" approved="yes">
@@ -11228,12 +11228,12 @@
       </trans-unit>
       <trans-unit id="07837fb2f14fde7fb76c1d8fcbc017e871c8592b" resname="job::tab results">
         <source>job::tab results</source>
-        <target state="new">job::tab results</target>
+        <target state="needs-translation">Job(s)</target>
         <jms:reference-file line="70">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
         <source>job::tab total entry in DB</source>
-        <target state="new">job::tab total entry in DB</target>
+        <target state="needs-translation">Jobs Gesamtanzahl (nur die letzten 500 werden angezeigt)</target>
         <jms:reference-file line="35">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10bdde9a4a70628adabb3cd21a907b41b11e707d" resname="juillet" approved="yes">
