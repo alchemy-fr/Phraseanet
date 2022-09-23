@@ -11236,7 +11236,7 @@
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
         <source>job::tab total entry in DB</source>
-        <target state="needs-translation">Total Jobs entry ( only last 500 jobs is displayed)</target>
+        <target state="needs-translation">Total Jobs entries (only last 500 jobs are displayed)</target>
         <jms:reference-file line="35">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10bdde9a4a70628adabb3cd21a907b41b11e707d" resname="juillet" approved="yes">
