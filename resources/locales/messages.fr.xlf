@@ -8364,12 +8364,12 @@
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
         <source>admin::base:collection:text empty collection</source>
-        <target state="new">admin::base:collection:text empty collection</target>
+        <target state="needs-translation">Tous les enregistrements de la collection seront supprimés de manière permanente. Attention: cette opération peut être rallongée suivant le nombre d'enregistrements.</target>
         <jms:reference-file line="137">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
         <source>admin::base:collection:tooltip enable collection</source>
-        <target state="new">admin::base:collection:tooltip enable collection</target>
+        <target state="needs-translation">La collection sera de nouveau accessible aux utilisateurs après une nouvelle indexation</target>
         <jms:reference-file line="214">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7765634e47a714273ba54690efd1f6c2a08e6de" resname="admin::base:collorder: descendre" approved="yes">
