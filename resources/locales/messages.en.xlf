@@ -8362,7 +8362,7 @@
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
         <source>admin::base:collection:text disable collection</source>
-        <target state="needs-translation">The collection content will be unreachable, all users rights are kept, you can publish again this collection</target>
+        <target state="needs-translation">The collection content will be unreachable, all users rights are kept, require a user reconnection, you can publish again this collection later</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
@@ -8372,7 +8372,7 @@
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
         <source>admin::base:collection:tooltip enable collection</source>
-        <target state="needs-translation">The collection will be available again to users after reindexation.</target>
+        <target state="needs-translation">The collection will be available again to users, require a user reconnection .</target>
         <jms:reference-file line="214">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7765634e47a714273ba54690efd1f6c2a08e6de" resname="admin::base:collorder: descendre" approved="yes">
