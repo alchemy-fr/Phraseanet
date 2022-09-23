@@ -8405,7 +8405,7 @@
       </trans-unit>
       <trans-unit id="7a55aca9c020ca2725e58afc5b6a7b15e5fcb8ef" resname="admin::base:text unmount database">
         <source>admin::base:text unmount database</source>
-        <target state="needs-translation">Unmout a databox</target>
+        <target state="needs-translation">Unmount a databox</target>
         <jms:reference-file line="146">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59fb64701fdcfa682495e91bb1e286a9dba77848" resname="admin::colelction::presentation des elements : rien" approved="yes">
