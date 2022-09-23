@@ -8372,7 +8372,7 @@
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
         <source>admin::base:collection:tooltip enable collection</source>
-        <target state="needs-translation">The collection will be available again to users, require a user reconnection .</target>
+        <target state="needs-translation">The collection will be available again to users, but it requires a user reconnection.</target>
         <jms:reference-file line="214">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7765634e47a714273ba54690efd1f6c2a08e6de" resname="admin::base:collorder: descendre" approved="yes">
