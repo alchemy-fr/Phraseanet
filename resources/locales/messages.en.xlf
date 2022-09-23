@@ -8395,7 +8395,7 @@
       </trans-unit>
       <trans-unit id="60ca9acf32543da6bfb31de39d95cbcecf690bd4" resname="admin::base:text clear database logs">
         <source>admin::base:text clear database logs</source>
-        <target state="needs-translation">Erase the database logs,  can be performed only on an empty database.</target>
+        <target state="needs-translation">Erase the database logs, it can be performed only on an empty database.</target>
         <jms:reference-file line="136">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
