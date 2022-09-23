@@ -8359,7 +8359,7 @@
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
         <source>admin::base:collection:text disable collection</source>
-        <target state="new">admin::base:collection:text disable collection</target>
+        <target state="needs-translation">Le contenu de la collection ne sera pas disponible, tous les droits d'accès des utilisateurs sont conservés, vous pouvez publier à nouveau cette collection.</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
