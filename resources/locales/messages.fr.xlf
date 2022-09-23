@@ -8402,7 +8402,7 @@
       </trans-unit>
       <trans-unit id="7a55aca9c020ca2725e58afc5b6a7b15e5fcb8ef" resname="admin::base:text unmount database">
         <source>admin::base:text unmount database</source>
-        <target state="needs-translation">Démonter la base.</target>
+        <target state="needs-translation">Démonter la base</target>
         <jms:reference-file line="146">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59fb64701fdcfa682495e91bb1e286a9dba77848" resname="admin::colelction::presentation des elements : rien" approved="yes">
@@ -10347,7 +10347,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="529d7e5ea2c2183d2cf554561764340de1294d71" resname="button::choose databox">
         <source>button::choose databox</source>
-        <target state="new">button::choose databox</target>
+        <target state="needs-translation">Toutes les Databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
