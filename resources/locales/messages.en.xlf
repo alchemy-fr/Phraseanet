@@ -9822,7 +9822,7 @@
       </trans-unit>
       <trans-unit id="bb58ab0314ddb434544fd24efb9ecc5a4544479c" resname="admin:phrasea-service-setting:tab:uploader:: pull mode uri">
         <source>admin:phrasea-service-setting:tab:uploader:: pull mode uri</source>
-        <target state="needs-translation">Uploader Url + target</target>
+        <target state="translated">Uploader Url + target</target>
         <jms:reference-file line="18">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="008a1d3c1468de8675c5b0f7df16b5b396ead936" resname="admin:phrasea-service-setting:tab:uploader:: pull setting">
@@ -11538,7 +11538,7 @@
       </trans-unit>
       <trans-unit id="ae23063401f4cdd998c70797419885a0835fe5eb" resname="notification:: Basket WIP">
         <source>notification:: Basket WIP</source>
-        <target state="needs-translation">Basket sharing in progress</target>
+        <target state="translated">Basket sharing in progress</target>
         <jms:reference-file line="47">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a44dfc1b52ebdcd83e5fbf6efa7f230c0a67288" resname="notification:: Receive notification when a basket is WIP">
@@ -13828,12 +13828,12 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="3c2c9fb51f7dd50df1629c8f4c3b1e947b74550b" resname="prod:share:: quit share">
         <source>prod:share:: quit share</source>
-        <target state="needs-translation">Quit sharing</target>
+        <target state="translated">Quit sharing</target>
         <jms:reference-file line="108">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b2299530024db353434b65e6fd2d83fa5e6ce226" resname="prod:share:: you are about to quit a share basket!">
         <source>prod:share:: you are about to quit a share basket!</source>
-        <target state="needs-translation">Quit Basket sharing?</target>
+        <target state="translated">Quit Basket sharing?</target>
         <jms:reference-file line="109">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
