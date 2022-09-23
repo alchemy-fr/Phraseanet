@@ -8359,7 +8359,7 @@
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
         <source>admin::base:collection:text disable collection</source>
-        <target state="needs-translation">Le contenu de la collection ne sera plus disponible, cela necessite une reconnexion des utilisateurs. Tous les droits d'accès des utilisateurs sont conservés, vous pouvez publier à nouveau cette collection plus tard.</target>
+        <target state="needs-translation">Le contenu de la collection ne sera plus disponible, cela nécessite une reconnexion des utilisateurs. Tous les droits d'accès des utilisateurs sont conservés, vous pouvez publier à nouveau cette collection plus tard.</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
@@ -8397,12 +8397,12 @@
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
         <source>admin::base:text delete a database</source>
-        <target state="needs-translation">Supprimer une base.</target>
+        <target state="needs-translation">Supprimer une Databox.</target>
         <jms:reference-file line="156">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a55aca9c020ca2725e58afc5b6a7b15e5fcb8ef" resname="admin::base:text unmount database">
         <source>admin::base:text unmount database</source>
-        <target state="needs-translation">Démonter la base</target>
+        <target state="needs-translation">Démonter la Databox</target>
         <jms:reference-file line="146">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59fb64701fdcfa682495e91bb1e286a9dba77848" resname="admin::colelction::presentation des elements : rien" approved="yes">
