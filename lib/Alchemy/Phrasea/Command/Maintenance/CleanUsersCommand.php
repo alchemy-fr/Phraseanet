@@ -76,7 +76,7 @@ class CleanUsersCommand extends Command
                 . "- <info>1 year</info>\n"
                 . "\<USERTYPE>specify type of user to clean : \n"
                 . "- <info>admin</info> \n"
-                . "- <info>appowner</info \n>"
+                . "- <info>appowner</info> \n"
                 . "- <info>ghost</info> \n"
                 . "\<LIST> sepcifies the user column to be listed, set one of:\n"
                 . "- <info>id</info>\n"
