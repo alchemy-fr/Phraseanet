@@ -54,6 +54,7 @@ else
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.port $PHRASEANET_ELASTICSEARCH_PORT
 fi
 
+echo "Elasticsearch index is setted to :" $PHRASEANET_ELASTICSEARCH_INDEX 
 if [ -z "$PHRASEANET_ELASTICSEARCH_INDEX" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.index phraseanet
 else
@@ -101,13 +102,6 @@ if [ -z "$PHRASEANET_ELASTICSEARCH_ACTIVETAB" ]; then
 else
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab $PHRASEANET_ELASTICSEARCH_ACTIVETAB
 fi
-
-if [ -z "$PHRASEANET_ELASTICSEARCH_ACTIVETAB" ]; then
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab null
-else
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab $PHRASEANET_ELASTICSEARCH_ACTIVETAB
-fi
-
 
 if [ -z "$PHRASEANET_ELASTICSEARCH_FACET_BASE" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit 10
