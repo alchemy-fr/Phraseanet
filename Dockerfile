@@ -103,13 +103,15 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && ./autogen.sh \
     && ./configure \
     && make \
-    && make install \
-    && mkdir /tmp/ImageMagick \
-    && curl https://imagemagick.org/archive/releases/ImageMagick-7.1.0-39.tar.gz | tar zx -C /tmp/ImageMagick --strip-components 1 \
+    && make install
+RUN echo "BUILDING AND INSTALLING IMAGEMAGICK" \
+    && git clone https://github.com/ImageMagick/ImageMagick.git /tmp/ImageMagick \
     && cd /tmp/ImageMagick \
+    && git checkout 7.1.0-39 \
     && ./configure \
     && make \
-    && make install \
+    && make install 
+RUN echo "BUILDING PHP PECL EXTENTIONS" \
     && ldconfig \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
@@ -129,7 +131,8 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         xdebug-2.6.1 \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
-    && docker-php-source delete \
+    && docker-php-source delete
+RUN echo "BUILDING AND INSTALLING FFMPEG" \
     && mkdir /tmp/ffmpeg \
     && curl -s https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2 | tar jxf - -C /tmp/ffmpeg \
     && ( \
@@ -159,8 +162,9 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         && make \
         && make install \
         && make distclean \
-    ) \
-    #&& rm -rf /tmp/ffmpeg \
+    )
+    #&& rm -rf /tmp/ffmpeg
+RUN echo "INSTALLING NEWRELIC AND BLACKFIRE EXTENTIONS" \
     && echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
     && curl -o- https://download.newrelic.com/548C16BF.gpg | apt-key add - \
     && apt-get update \ 
@@ -171,7 +175,8 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && echo "deb http://packages.blackfire.io/debian any main" |tee /etc/apt/sources.list.d/blackfire.list \
     && apt update \
     && apt install blackfire-agent \
-    && apt install blackfire-php \
+    && apt install blackfire-php
+RUN echo "FINALIZING BUILD AND CLEANING" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && mkdir /entrypoint /var/alchemy \
