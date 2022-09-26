@@ -54,6 +54,7 @@ else
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.port $PHRASEANET_ELASTICSEARCH_PORT
 fi
 
+echo "Elasticsearch index is setted to :" $PHRASEANET_ELASTICSEARCH_INDEX 
 if [ -z "$PHRASEANET_ELASTICSEARCH_INDEX" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.index phraseanet
 else
