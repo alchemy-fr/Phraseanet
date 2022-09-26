@@ -102,13 +102,6 @@ else
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab $PHRASEANET_ELASTICSEARCH_ACTIVETAB
 fi
 
-if [ -z "$PHRASEANET_ELASTICSEARCH_ACTIVETAB" ]; then
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab null
-else
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.activeTab $PHRASEANET_ELASTICSEARCH_ACTIVETAB
-fi
-
-
 if [ -z "$PHRASEANET_ELASTICSEARCH_FACET_BASE" ]; then
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit 10
 else
