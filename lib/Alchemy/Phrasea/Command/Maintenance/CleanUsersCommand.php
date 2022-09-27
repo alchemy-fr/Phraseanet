@@ -78,6 +78,9 @@ class CleanUsersCommand extends Command
                 . "- <info>admin</info> \n"
                 . "- <info>appowner</info> \n"
                 . "- <info>ghost</info> \n"
+                . "- <info>basket_owner</info> \n"
+                . "- <info>basket_participant</info> \n"
+                . "- <info>story_owner</info> \n"
                 . "\<LIST> sepcifies the user column to be listed, set one of:\n"
                 . "- <info>id</info>\n"
                 . "- <info>login</info>\n"
@@ -203,6 +206,19 @@ class CleanUsersCommand extends Command
             $sql_where_ub = "`ub`.`sbids` IS NULL";
         }
 
+        if ($input->getOption('usertype') == 'basket_owner') {
+            $clauses[] = "`Baskets`.`id` IS NOT NULL";
+        }
+
+        if ($input->getOption('usertype') == 'basket_participant') {
+            $clauses[] = "`BasketParticipants`.`id` IS NOT NULL";
+            $clauses[] = "`B`.`user_id` !=  `BasketParticipants`.`user_id`";
+        }
+
+        if ($input->getOption('usertype') == 'story_owner') {
+            $clauses[] = "`StoryWZ`.`id` IS NOT NULL";
+        }
+
         $clauses[] = "`deleted`=0";                 // dont delete twice
         $clauses[] = "ISNULL(`model_of`)";          // dont delete models
         $clauses[] = "`login`!='autoregister'";     // dont delete "autoregister"
@@ -248,12 +264,14 @@ class CleanUsersCommand extends Command
                 . "  LEFT JOIN `sbasusr` ON `sbasusr`.`usr_id` = `Users`.`id`\n"
                 . "  LEFT JOIN Baskets ON Baskets.user_id = `Users`.`id`\n"
                 . "  LEFT JOIN BasketParticipants ON BasketParticipants.user_id = `Users`.`id`\n"
+                . "  LEFT JOIN Baskets as B ON B.id = BasketParticipants.basket_id \n"
+                . "  LEFT JOIN StoryWZ ON StoryWZ.user_id = `Users`.`id`\n"
                 . "  WHERE (" . $sql_where . ")"
-                . "  GROUP BY `sbasusr`.`usr_id`\n"
+                . "  GROUP BY `Users`.`id`\n"
                 . ") AS ub\n"
                 . "LEFT JOIN `basusr` ON `basusr`.`usr_id` = `ub`.`usr_id`"
                 . " WHERE " . $sql_where_ub ."\n"
-                . " GROUP BY `basusr`.`usr_id`) AS u\n"
+                . " GROUP BY `ub`.`usr_id`) AS u\n"
                 . " WHERE ". $sql_where_u ;
 
         if($show_sql) {
