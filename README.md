@@ -172,7 +172,9 @@ By default ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` is set for deploying a 
     
 
 At first launch of the stack, the `Setup` container plays install.
-it will restart until it can do this installation: waiting for readiness of all other containers.
+It will restart until it can do this installation: waiting for readiness of all other containers.
+At each container starting , `setup` container reaplying also some ```PHRASEANET_*``` environement variable into 
+Phraseanet ```configuration.yml``` file.
 
 default configuration is 
 
@@ -414,23 +416,6 @@ You can also download a testing pre installed Virtual Machine in OVA format here
 https://www.phraseanet.com/download/
 
 
-# With Vagrant (deprecated)
-
-## Development :
-
-For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
-You can easily choose betweeen a complete build or a prebuild box, with a specific PHP version.
-
-    git clone
-    vagrant up --provision
-
-then, a prompt allow you to choose PHP version, and another one to choose a complete build or an Alchemy prebuilt boxes.
-
-Ex:
-- vagrant up --provision  //// 5.6 ///// 1  >> Build an ubuntu/xenial box with php5.6
-- vagrant up --provision  //// 7.0 ///// 1  >> Build an ubuntu/xenial with php7.0
-- vagrant up --provision  //// 7.2 ///// 2  >> Build the alchemy/phraseanet-php-7.2 box
-- vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
 
 
 
