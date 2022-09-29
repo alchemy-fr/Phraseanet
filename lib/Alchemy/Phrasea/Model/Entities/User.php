@@ -269,7 +269,7 @@ class User
     /**
      * @ORM\Column(type="integer", name="nb_inactivity_email", options={"default" = 0})
      */
-    private $nbInactivityEmail;
+    private $nbInactivityEmail = 0;
 
     /**
      * @ORM\Column(type="datetime", name="last_inactivity_email", nullable=true)
