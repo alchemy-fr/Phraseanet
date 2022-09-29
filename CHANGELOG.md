@@ -4,13 +4,22 @@
 
 ### Update instructions
 
+
  - docker docker-compose : add profile "setup" and "redis-session" to your ```COMPOSE_PROFILES```
+
+    - Change in methode for defining the `servername` key in `configuration.yml` 
+
+      -  `PHRASEANET_SERVER_NAME` env is removed and content of it have need to be splited in 2 env `PHRASEANET_SCHEME` `PHRASEANET_HOSTNAME`
+      -  The env `PHRASEANET_SCHEME + PHRASEANET_HOSTNAME + PHRASEANET_APP_PORT` define a new env named `PHRASEANET_BASE_URL`
+      -  `PHRASEANET_BASE_URL` is used for set `servername` key in `configuration.yml` 
+
     - "setup" profile launch the setup container for performing an app installation 
        or report ```PHRASEANET_*``` env var values to Phraseanet ```configuration.yml``` file
 
     - "redis-session" profile launch a  ```redis session``` container for storing the user's php session
        and permit the scaling of Phraseanet container 
       - when you migrate, it can be useful to empty the application cache by ```rm -Rf cache/*```
+
 
  - Migration instructions: After a backup of all dabases and file ```config/configuation.yml```
    Run upgrade for bump version ```bin/setup system:upgrade```
@@ -47,6 +56,13 @@
   - It is now possible to set a subdefinition not built by Phraseanet.
     
     - A file can be added using API on this subdefinition  
+
+  - Deployement.
+
+      - Move user session in new dedicated redis container.
+      - Adding an container for "saml-service" 
+      - Helm chart improvement : add missing values 
+      - Dedicate a container for Phraseanet installation and Setup  
 
 ### New Features
 
