@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-09-16T09:53:28Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2022-09-29T13:27:46Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1686,7 +1686,7 @@
       <trans-unit id="3062356beeb0f20cb9418d55769ea256059d611e" resname="Certaines donnees du reportage ont change" approved="yes">
         <source>Certaines donnees du reportage ont change</source>
         <target state="translated">Sommige gegevens van de reportage zijn veranderd</target>
-        <jms:reference-file line="86">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="87">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fadf8a55b41e9d1dd6b5007d5e846e689df6b2f6" resname="Certaines publications n'ont pu etre effectuees, verifiez vos parametres" approved="yes">
         <source>Certaines publications n'ont pu etre effectuees, verifiez vos parametres</source>
@@ -3187,7 +3187,7 @@
         <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="62">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="318">prod/WorkZone/Macros.html.twig</jms:reference-file>
-        <jms:reference-file line="54">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="55">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10634112797f7010f624d94d261c4c108ca9e40a" resname="Feedback request by %user_name% until %vote_expires%">
         <source>Feedback request by %user_name% until %vote_expires%</source>
@@ -7943,7 +7943,7 @@
         <target state="translated">Collectie</target>
         <jms:reference-file line="87">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="40">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="38">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="39">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ddc3c6161fab39cbaf5d3f59af82090b32a2c36c" resname="action : editer" approved="yes">
         <source>action : editer</source>
@@ -7951,7 +7951,7 @@
         <jms:reference-file line="10">prod/preview/caption.html.twig</jms:reference-file>
         <jms:reference-file line="71">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="26">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="24">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="25">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0b62efbefb9b0e40c14ac8218ac4257603c5b75c" resname="action : exporter" approved="yes">
         <source>action : exporter</source>
@@ -7967,14 +7967,14 @@
         <jms:reference-file line="129">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="130">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="7">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="7">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="8">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b0c9b7eb3d21f5a48ac5ecb0a0d969b8d3818e41" resname="action : outils" approved="yes">
         <source>action : outils</source>
         <target state="translated">Gereedschappen</target>
         <jms:reference-file line="126">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="78">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="70">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="71">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="71e15cbcf85fd5fe848fe7fa210fa8318a09f842" resname="action : print" approved="yes">
         <source>action : print</source>
@@ -7985,7 +7985,7 @@
         <jms:reference-file line="139">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="140">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="11">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="11">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="12">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d222a71a73f44cb6bdf237790f350f0b1fb9eb1f" resname="action : publier" approved="yes">
         <source>action : publier</source>
@@ -7993,21 +7993,21 @@
         <jms:reference-file line="1105">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="115">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="63">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="64">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17948b21adfde1bf589b2a34a2c8253e2af91913" resname="action : push" approved="yes">
         <source>action : push</source>
         <target state="translated">Push</target>
         <jms:reference-file line="106">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="55">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="47">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="48">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f22184cfa5be236b7193d80d5f8407a36b108b79" resname="action : status" approved="yes">
         <source>action : status</source>
         <target state="translated">Status</target>
         <jms:reference-file line="79">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="33">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="31">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="32">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="24ade348bc49c69cced4d173e31f7369aa466772" resname="action : supprimer" approved="yes">
         <source>action : supprimer</source>
@@ -9962,13 +9962,13 @@
         <source>basket:action:delete record form basket</source>
         <target state="new">basket:action:delete record form basket</target>
         <jms:reference-file line="18">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="17">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="18">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="378b261cf0bdda80ad072999d7bed4361180c838" resname="basket:action:delete record form database">
         <source>basket:action:delete record form database</source>
         <target state="new">basket:action:delete record form database</target>
         <jms:reference-file line="86">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="80">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item">
         <source>basket:feedback Delete item</source>
@@ -11445,10 +11445,25 @@
         <target state="translated">mei</target>
         <jms:reference-file line="718">classes/module/report.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="e1b209a684084fff65dc7751a56b68d13683ad38" resname="mail:: connect to phraseanet">
+        <source>mail:: connect to phraseanet</source>
+        <target state="new">mail:: connect to phraseanet</target>
+        <jms:reference-file line="29">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
+        <source>mail:: inactif account</source>
+        <target state="new">mail:: inactif account</target>
+        <jms:reference-file line="13">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
         <source>mail:: validation: Vote will expire on %expire%</source>
         <target state="new">mail:: validation: Vote will expire on %expire%</target>
         <jms:reference-file line="108">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9c627983e8b23c12caf1415fd0e7b49c4712c219" resname="mail:: your account is inactif and to be deleted!">
+        <source>mail:: your account is inactif and to be deleted!</source>
+        <target state="new">mail:: your account is inactif and to be deleted!</target>
+        <jms:reference-file line="21">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
         <source>mail::share Open with Lightbox</source>
@@ -13375,7 +13390,7 @@
         <source>prod::workzone:Actions</source>
         <target state="new">prod::workzone:Actions</target>
         <jms:reference-file line="3">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="2">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="3">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="95154d90f5b958765081a41fac8a3cf82a3ecbd4" resname="prod::workzone:Basket is WIP">
         <source>prod::workzone:Basket is WIP</source>
@@ -14110,7 +14125,7 @@
         <jms:reference-file line="22">prod/results/feeds.html.twig</jms:reference-file>
         <jms:reference-file line="183">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="296">prod/WorkZone/Macros.html.twig</jms:reference-file>
-        <jms:reference-file line="88">prod/WorkZone/Story.html.twig</jms:reference-file>
+        <jms:reference-file line="89">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0dea865dcd106d77e52ea8bffe6f87e2add0ac53" resname="recordtype">
         <source>recordtype</source>

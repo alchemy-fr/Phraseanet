@@ -267,6 +267,16 @@ class User
     private $grantedApi = false;
 
     /**
+     * @ORM\Column(type="integer", name="nb_inactivity_email", options={"default" = 0})
+     */
+    private $nbInactivityEmail;
+
+    /**
+     * @ORM\Column(type="datetime", name="last_inactivity_email", nullable=true)
+     */
+    private $lastInactivityEmail;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -1076,6 +1086,36 @@ class User
         $this->grantedApi = (Boolean) $grantedApi;
 
         return $this;
+    }
+
+    public function setNbInactivityEmail($nbEnactivityEmail)
+    {
+        $this->nbInactivityEmail = $nbEnactivityEmail;
+    }
+
+    public function getNbInactivityEmail()
+    {
+        return $this->nbInactivityEmail;
+    }
+
+    /**
+     * @param \DateTime|null $lastInactivityEmail
+     *
+     * @return $this
+     */
+    public function setLastInactivityEmail($lastInactivityEmail)
+    {
+        $this->lastInactivityEmail = $lastInactivityEmail;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastInactivityEmail()
+    {
+        return $this->lastInactivityEmail;
     }
 
     /**

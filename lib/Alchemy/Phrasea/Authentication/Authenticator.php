@@ -95,6 +95,10 @@ class Authenticator
     {
         $user = $session->getUser();
         $user->setLastConnection($session->getCreated());
+        // reset inactivity email when login
+        $user->setNbInactivityEmail(0);
+        $user->setLastInactivityEmail(null);
+
         $this->em->persist($user);
         $this->em->flush();
 
