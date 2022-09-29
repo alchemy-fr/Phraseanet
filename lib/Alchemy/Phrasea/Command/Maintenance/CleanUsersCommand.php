@@ -40,7 +40,6 @@ class CleanUsersCommand extends Command
             ->addOption('usertype',       null, InputOption::VALUE_REQUIRED,                             'specify type of user to clean')
             ->addOption('grace_duration',       null, InputOption::VALUE_REQUIRED,                             'grace period in days after sending email')
             ->addOption('max_relances',       null, InputOption::VALUE_REQUIRED,                             'number of email relance')
-            ->addOption('send_mail', null, InputOption::VALUE_NONE,                                 'send information email to the user')
             ->addOption('remove_basket', null, InputOption::VALUE_NONE,                                 'remove basket for user')
             ->addOption('dry-run',        null, InputOption::VALUE_NONE,                                 'dry run, list result users')
             ->addOption('show_sql',   null, InputOption::VALUE_NONE,                                 'show sql pre-selecting users')
