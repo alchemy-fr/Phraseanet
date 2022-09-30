@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
@@ -208,7 +209,7 @@ class CleanUsersCommand extends Command
                     // first, relance the user by email to have a grace period
                     if ($nbRelance < $maxRelances) {
                         if (!$dry) {
-                            $this->relanceUser($user);
+                            $this->relanceUser($user, $graceDuration);
                             $user->setNbInactivityEmail($nbRelance+1);
                             $user->setLastInactivityEmail(new \DateTime());
                             $userManipulator->updateUser($user);
@@ -259,13 +260,18 @@ class CleanUsersCommand extends Command
         return 0;
     }
 
-    private function relanceUser(User $user)
+    private function relanceUser(User $user, $graceDuration)
     {
+        /** @var TokenManipulator $tokenManipulator */
+        $tokenManipulator = $this->container['manipulator.token'];
+        $token = $tokenManipulator->create($user, TokenManipulator::TYPE_USER_RELANCE, new \DateTime("+{$graceDuration} day"));
+
         $receiver = Receiver::fromUser($user);
         $mail = MailRequestInactifAccount::create($this->container, $receiver);
 
         $servername = $this->container['conf']->get('servername');
-        $mail->setButtonUrl('http://'.$servername.'/login');
+        $mail->setButtonUrl('http://'.$servername.'/prod/?LOG='.$token->getValue());
+        $mail->setExpiration($token->getExpiration());
 
         $this->deliver($mail);
     }
