@@ -47,7 +47,7 @@ class CleanUsersCommand extends Command
             ->addOption('yes',        'y',  InputOption::VALUE_NONE,                                 'don\'t ask for confirmation')
 
             ->setHelp(
-                ""
+                "ALPHA \n\n"
                 . "\<INACTIVITY_PERIOD> <info>integer to specify the number of inactivity days, value not 0 (zero)</info>\n"
                 . "\<USERTYPE>specify type of user to clean : \n"
                 . "- <info>admin</info> \n"
