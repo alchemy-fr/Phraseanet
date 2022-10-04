@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
@@ -108,6 +109,15 @@ class AdminConfigurationController extends Controller
         $jobType = $request->query->get('jobType');
         $databoxId = empty($request->query->get('databoxId')) ? null : $request->query->get('databoxId');
         $recordId = empty($request->query->get('recordId')) ? null : $request->query->get('recordId');
+        $timeFilter = empty($request->query->get('timeFilter')) ? null : $request->query->get('timeFilter');
+
+        $dateTimeFilter = null;
+        if ($timeFilter != null) {
+            try {
+                $dateTimeFilter = (new \DateTime())->sub(new \DateInterval($timeFilter));
+            } catch (\Exception $e) {
+            }
+        }
 
         $filterStatus = [];
 
@@ -124,10 +134,18 @@ class AdminConfigurationController extends Controller
             $filterStatus[] = WorkerRunningJob::INTERRUPT;
         }
 
-        $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId);
+        $helpers = new PhraseanetExtension($this->app);
+
+        $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, $dateTimeFilter);
         $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
+        $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
+        $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
+        // format duration
+        $totalDuration  = $helpers->getDuration($totalDuration);
+
         // get all row count in the table WorkerRunningJob
         $totalCount = $repoWorker->getJobCount([], null, null , null);
+        $totalCount = number_format($totalCount, 0, '.', ' ');
 
         $databoxIds = array_map(function (\databox $databox) {
                 return $databox->get_sbas_id();
@@ -149,9 +167,10 @@ class AdminConfigurationController extends Controller
                 'jobTypes'         => $jobTypes,
                 'databoxIds'       => $databoxIds,
             ]),
-                'resultCount'      => count($workerRunningJob),
+                'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
                 'resultTotal'      => $workerRunningJobTotalCount,
-                'totalCount'       => $totalCount
+                'totalCount'       => $totalCount,
+                'totalDuration'    => $totalDuration
             ]);
         } else {
             return $this->render('admin/worker-manager/worker_info.html.twig', [
@@ -159,9 +178,10 @@ class AdminConfigurationController extends Controller
                 'reload'           => $reload,
                 'jobTypes'         => $jobTypes,
                 'databoxIds'       => $databoxIds,
-                'resultCount'      => count($workerRunningJob),
+                'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
                 'resultTotal'      => $workerRunningJobTotalCount,
-                'totalCount'       => $totalCount
+                'totalCount'       => $totalCount,
+                'totalDuration'    => $totalDuration
             ]);
         }
     }
