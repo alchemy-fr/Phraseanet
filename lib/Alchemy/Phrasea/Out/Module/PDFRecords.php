@@ -286,7 +286,12 @@ class PDFRecords extends PDF
 
                 $downloadLink = $rec->get_title();
 
-                if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+
+                if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)
+                    && (($rec->get_subdef($this->downloadSubdef)->get_name() != 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDPREVIEW))
+                        ||
+                        ($rec->get_subdef($this->downloadSubdef)->get_name() == 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDHD)))
+                ) {
                     $sd = $rec->get_subdef($this->downloadSubdef);
                     if ($sd->is_physically_present()) {
                         $url = $this->getDownloadUrl($sd);
@@ -431,7 +436,11 @@ class PDFRecords extends PDF
             $p0 = $this->pdf->PageNo();
             $y0 = $this->pdf->GetY();
 
-            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)
+                && (($rec->get_subdef($this->downloadSubdef)->get_name() != 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDPREVIEW))
+                    ||
+                    ($rec->get_subdef($this->downloadSubdef)->get_name() == 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDHD)))
+            ) {
                 $sd = $rec->get_subdef($this->downloadSubdef);
                 if ($sd->is_physically_present()) {
                     $url = $this->getDownloadUrl($sd);
@@ -522,7 +531,11 @@ class PDFRecords extends PDF
             $this->pdf->SetY($y = $y2);
             $this->pdf->SetY($y + 2);
 
-            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)
+                && ((($rec->get_subdef($this->downloadSubdef)->get_name() != 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDPREVIEW))
+                    ||
+                    ($rec->get_subdef($this->downloadSubdef)->get_name() == 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDHD))) )
+            ) {
                 $sd = $rec->get_subdef($this->downloadSubdef);
                 if ($sd->is_physically_present()) {
                     $url = $this->getDownloadUrl($sd);
@@ -810,7 +823,11 @@ class PDFRecords extends PDF
             }
             $this->pdf->SetXY($lmargin, $y += ( $finalHeight + 5));
 
-            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)
+                && ((($rec->get_subdef($this->downloadSubdef)->get_name() != 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDPREVIEW))
+                    ||
+                    ($rec->get_subdef($this->downloadSubdef)->get_name() == 'document' && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::CANDWNLDHD))))
+            ) {
                 $sd = $rec->get_subdef($this->downloadSubdef);
                 if ($sd->is_physically_present()) {
                     $url = $this->getDownloadUrl($sd);
