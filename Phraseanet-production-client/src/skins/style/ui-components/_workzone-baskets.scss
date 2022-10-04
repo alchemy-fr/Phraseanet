@@ -5,7 +5,7 @@
     .ui-accordion .ui-accordion-content {
         padding: 0 10px;
         &.content {
-            padding: 0 5px;
+            padding: 5px;
         }
     }
     #baskets_wrapper {
@@ -259,9 +259,8 @@
     position: relative;
     margin-bottom: 15px;
     background: $chimWrap;
-    margin-right: 1px;
+    margin: 0 -1px;
     display: inline-block;
-    float: left;
     span.feedback_user_name {
         position: relative;
         background: $feedback;
@@ -319,6 +318,7 @@
     width: 108px;
     overflow: hidden;
     margin: 0;
+    float: none;
 }
 .basket-content {
     margin: 0 7px;

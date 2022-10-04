@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-09-16T09:52:45Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2496,7 +2496,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -8322,7 +8322,7 @@
       </trans-unit>
       <trans-unit id="b92eaef7cc58166faeb30c1f0f358dab0f345cf0" resname="admin::base:collection: etes vous sur de vider la collection ?">
         <source>admin::base:collection: etes vous sur de vider la collection ?</source>
-        <target state="needs-translation">Please confirm that you wish to empty the collection ?</target>
+        <target state="translated">Please confirm that you wish to empty the collection ?</target>
         <jms:reference-file line="133">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3e0962ce3e9eefc683221d80482eb2a8365283a4" resname="admin::base:collection: identifiant" approved="yes">
@@ -8357,22 +8357,22 @@
       </trans-unit>
       <trans-unit id="a2d4204187473ea7398879317c4e4cd4462dfc49" resname="admin::base:collection:text delete collection">
         <source>admin::base:collection:text delete collection</source>
-        <target state="new">admin::base:collection:text delete collection</target>
+        <target state="needs-translation">Delete the collection, the collection needs to be empty before performing this action. Warning : this action cannot be undone.</target>
         <jms:reference-file line="147">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
         <source>admin::base:collection:text disable collection</source>
-        <target state="new">admin::base:collection:text disable collection</target>
+        <target state="needs-translation">The collection content will be no more reachable, this will require users reconnection. All users rights are kept, you can publish again this collection later</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
         <source>admin::base:collection:text empty collection</source>
-        <target state="new">admin::base:collection:text empty collection</target>
+        <target state="needs-translation">All collection records will be permanently deleted. The time taken for this operation depends on the number of records of the collection.</target>
         <jms:reference-file line="137">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
         <source>admin::base:collection:tooltip enable collection</source>
-        <target state="new">admin::base:collection:tooltip enable collection</target>
+        <target state="needs-translation">The collection will be available again to users, but it requires a user reconnection.</target>
         <jms:reference-file line="214">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7765634e47a714273ba54690efd1f6c2a08e6de" resname="admin::base:collorder: descendre" approved="yes">
@@ -8395,17 +8395,17 @@
       </trans-unit>
       <trans-unit id="60ca9acf32543da6bfb31de39d95cbcecf690bd4" resname="admin::base:text clear database logs">
         <source>admin::base:text clear database logs</source>
-        <target state="new">admin::base:text clear database logs</target>
+        <target state="needs-translation">Erase the database logs, it can be performed only on an empty databox.</target>
         <jms:reference-file line="136">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
         <source>admin::base:text delete a database</source>
-        <target state="new">admin::base:text delete a database</target>
+        <target state="needs-translation">Delete a databox.</target>
         <jms:reference-file line="156">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a55aca9c020ca2725e58afc5b6a7b15e5fcb8ef" resname="admin::base:text unmount database">
         <source>admin::base:text unmount database</source>
-        <target state="new">admin::base:text unmount database</target>
+        <target state="needs-translation">Unmount a Databox</target>
         <jms:reference-file line="146">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59fb64701fdcfa682495e91bb1e286a9dba77848" resname="admin::colelction::presentation des elements : rien" approved="yes">
@@ -9802,7 +9802,7 @@
       </trans-unit>
       <trans-unit id="fc0ad7943304d0693d01998d9fa13eb616f04b0f" resname="admin:phrasea-service-setting:tab:uploader:: Fetching interval in second">
         <source>admin:phrasea-service-setting:tab:uploader:: Fetching interval in second</source>
-        <target state="needs-translation">Fetching interval in seconds</target>
+        <target state="translated">Fetching interval in seconds</target>
         <jms:reference-file line="33">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9ac2e6a82fcb91bb6bc133268e09b9bbdd8ba43" resname="admin:phrasea-service-setting:tab:uploader:: New target pull name">
@@ -9822,12 +9822,12 @@
       </trans-unit>
       <trans-unit id="bb58ab0314ddb434544fd24efb9ecc5a4544479c" resname="admin:phrasea-service-setting:tab:uploader:: pull mode uri">
         <source>admin:phrasea-service-setting:tab:uploader:: pull mode uri</source>
-        <target state="needs-translation">Uploader Url + target</target>
+        <target state="translated">Uploader Url + target</target>
         <jms:reference-file line="18">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="008a1d3c1468de8675c5b0f7df16b5b396ead936" resname="admin:phrasea-service-setting:tab:uploader:: pull setting">
         <source>admin:phrasea-service-setting:tab:uploader:: pull setting</source>
-        <target state="needs-translation">Uploader "Pull" mode setting</target>
+        <target state="translated">Uploader "Pull" mode setting</target>
         <jms:reference-file line="46">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="591a534afd5beace85a6e4beedf1200510649b76" resname="admin:phrasea-service-setting:tab:uploader:: push verify_ssl">
@@ -9847,7 +9847,7 @@
       </trans-unit>
       <trans-unit id="7f81d6e1b4e8a501480420b44d8f69a9ebad3d60" resname="admin:phrasea-service-setting:tab:uploader:: verify ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: verify ssl</source>
-        <target state="needs-translation">Verify ssl</target>
+        <target state="translated">Verify ssl</target>
         <jms:reference-file line="39">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9f6ad62045a98bbea5895a96efec48d6e162b7c" resname="admin:phraseanet-service Retrieve configuration error">
@@ -10349,7 +10349,7 @@
       </trans-unit>
       <trans-unit id="529d7e5ea2c2183d2cf554561764340de1294d71" resname="button::choose databox">
         <source>button::choose databox</source>
-        <target state="new">button::choose databox</target>
+        <target state="needs-translation">All Databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
@@ -10457,7 +10457,7 @@
       </trans-unit>
       <trans-unit id="96da49381769303a6515a8785c7f19c383db376a" resname="client_id">
         <source>client_id</source>
-        <target state="needs-translation">client id</target>
+        <target state="translated">client id</target>
         <jms:reference-file line="35">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bca60e4b2d44b5623e626f9ff951ba6605e975f" resname="collection.label.unknown" approved="yes">
@@ -11154,7 +11154,7 @@
       </trans-unit>
       <trans-unit id="e51e4a8b566c4c2455812df8f509423c3ced7721" resname="https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253">
         <source>https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</source>
-        <target state="needs-translation">eg: https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</target>
+        <target state="translated">eg: https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</target>
         <jms:reference-file line="21">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
@@ -11231,12 +11231,12 @@
       </trans-unit>
       <trans-unit id="07837fb2f14fde7fb76c1d8fcbc017e871c8592b" resname="job::tab results">
         <source>job::tab results</source>
-        <target state="new">job::tab results</target>
+        <target state="needs-translation">Job(s)</target>
         <jms:reference-file line="70">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
         <source>job::tab total entry in DB</source>
-        <target state="new">job::tab total entry in DB</target>
+        <target state="needs-translation">Total Jobs entries (only last 500 jobs are displayed)</target>
         <jms:reference-file line="35">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10bdde9a4a70628adabb3cd21a907b41b11e707d" resname="juillet" approved="yes">
@@ -11538,7 +11538,7 @@
       </trans-unit>
       <trans-unit id="ae23063401f4cdd998c70797419885a0835fe5eb" resname="notification:: Basket WIP">
         <source>notification:: Basket WIP</source>
-        <target state="needs-translation">Basket sharing in progress</target>
+        <target state="translated">Basket sharing in progress</target>
         <jms:reference-file line="47">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a44dfc1b52ebdcd83e5fbf6efa7f230c0a67288" resname="notification:: Receive notification when a basket is WIP">
@@ -12158,7 +12158,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13828,12 +13828,12 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="3c2c9fb51f7dd50df1629c8f4c3b1e947b74550b" resname="prod:share:: quit share">
         <source>prod:share:: quit share</source>
-        <target state="needs-translation">Quit sharing</target>
+        <target state="translated">Quit sharing</target>
         <jms:reference-file line="108">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b2299530024db353434b65e6fd2d83fa5e6ce226" resname="prod:share:: you are about to quit a share basket!">
         <source>prod:share:: you are about to quit a share basket!</source>
-        <target state="needs-translation">Quit Basket sharing?</target>
+        <target state="translated">Quit Basket sharing?</target>
         <jms:reference-file line="109">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
@@ -15204,7 +15204,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
