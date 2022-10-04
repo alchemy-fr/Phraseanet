@@ -51,6 +51,16 @@
         </select>
 
         <input type="number" id="record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+
+        <select id="time-filter" style="margin-left: 30px;">
+            <option value="">{{ 'button::choose time filter' | trans }}</option>
+            <option value="PT1H">{{ 'job:: last 1h' |trans }}</option>
+            <option value="PT3H">{{ 'job:: last 3h' |trans }}</option>
+            <option value="PT12H">{{ 'job:: last 12h' |trans }}</option>
+            <option value="P1D">{{ 'job:: last 1d' |trans }}</option>
+            <option value="P3D">{{ 'job:: last 3d' |trans }}</option>
+            <option value="P7D">{{ 'job:: last 1w' |trans }}</option>
+        </select>
     </div>
 
     <div class="controls">
@@ -68,6 +78,10 @@
         </label>
         <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
             <span class="result-count" style="margin-left: 40px;">{{ resultCount }} / {{ resultTotal }}</span> <span style="margin-left: 10px;">{{ "job::tab results" | trans }}</span>
+        </span>
+
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="total-duration" style="margin-left: 40px;">{{ totalDuration }}</span> <span style="margin-left: 10px;">{{ "job::tab total duration" | trans }}</span>
         </span>
 
     </div>
@@ -114,12 +128,8 @@
             {% endif %}
         </td>
         <td>
-            {% set duration = workerRow.finished.diff(workerRow.created) %}
-
-            {% if duration.days %}
-                {{ duration.format("%d days  %H:%I:%S") }}
-            {% else %}
-                {{ duration.format("%H:%I:%S") }}
+            {% if workerRow.duration is not empty %}
+                {{ workerRow.duration|date_duration }}
             {% endif %}
         </td>
         <td>{{ workerRow.status }}</td>
@@ -144,6 +154,7 @@
             var jobType = $("#job-type-filter").val();
             var databoxId = $("#databox-filter").val();
             var recordId = $("#record-filter").val();
+            var timeFilter = $("#time-filter").val();
 
             if (!$(".running-work").is(":checked"))
             {
@@ -168,12 +179,14 @@
                 data: {
                     jobType: jobType,
                     databoxId : databoxId,
-                    recordId : recordId
+                    recordId : recordId,
+                    timeFilter: timeFilter
                 },
                 success: function (data) {
                     $(".work-list").empty().html(data.content);
                     $(".result-count").empty().text(data.resultCount + ' / ' + data.resultTotal);
                     $(".total-count").empty().text(data.totalCount);
+                    $(".total-duration").empty().text(data.totalDuration);
                 }
             });
         }
@@ -195,6 +208,10 @@
         });
 
         $("#record-filter").on('input', function () {
+            refreshJobList();
+        });
+
+        $("#time-filter").on('input', function () {
             refreshJobList();
         });
 

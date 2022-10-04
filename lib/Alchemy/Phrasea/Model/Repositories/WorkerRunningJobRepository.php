@@ -379,39 +379,71 @@ class WorkerRunningJobRepository extends EntityRepository
         return count($qb->getQuery()->getResult());
     }
 
-    public function findByFilter(array $status, $jobType, $databoxId, $recordId, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
+    public function findByFilter(array $status, $jobType, $databoxId, $recordId, $dateTimeFilter = null, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
     {
-        $qb = $this->createQueryBuilder('w');
+        $rsm = new ResultSetMappingBuilder($this->_em);
+        $rsm->addScalarResult('info', 'info');
+        $rsm->addScalarResult('databoxId', 'databoxId');
+        $rsm->addScalarResult('recordId', 'recordId');
+        $rsm->addScalarResult('work', 'work');
+        $rsm->addScalarResult('workOn', 'workOn');
+        $rsm->addScalarResult('published', 'published');
+        $rsm->addScalarResult('created', 'created');
+        $rsm->addScalarResult('finished', 'finished');
+        $rsm->addScalarResult('duration', 'duration');
+        $rsm->addScalarResult('status', 'status');
 
+        $sql = "SELECT info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, TIMESTAMPDIFF(SECOND, w.created, w.finished) as duration \n"
+            . "FROM WorkerRunningJob w \n"
+            . "WHERE 1";
+
+        $params = [];
+        $statusParam = false;
         if (!empty($status)) {
-            $qb->where($qb->expr()->in('w.status', $status));
+            $sql .= " AND w.status IN (:status)";
+            $statusParam = true;
         }
 
         if (!empty($jobType)) {
-            $qb->andWhere('w.work = :work')
-                ->setParameter('work', $jobType);
+            $sql .= " AND w.work = :work";
+            $params['work'] = $jobType;
         }
 
         if (!empty($databoxId)) {
-            $qb->andWhere('w.databoxId = :databoxId')
-                ->setParameter('databoxId', $databoxId);
+            $sql .= " AND w.databoxId = :databoxId";
+            $params['databoxId'] = $databoxId;
         }
 
         if (!empty($recordId)) {
-            $qb->andWhere('w.recordId = :recordId')
-                ->setParameter('recordId', $recordId);
+            $sql .= " AND w.recordId = :recordId";
+            $params['recordId'] = $recordId;
         }
+
+        if ($dateTimeFilter instanceof DateTime) {
+            // on published because the row is only created whe the job is started
+            $sql .= " AND w.published >= :dateTimeFilter";
+            $params['dateTimeFilter'] = $dateTimeFilter->format('Y-m-d H:i:s');
+        }
+
+        $sql .= " ORDER BY w.id DESC";
 
         if ($limit !== null) {
-            $qb->setMaxResults($limit);
+            $sql .= " LIMIT " . $limit;
         }
 
-        $qb
-            ->setFirstResult($start)
-            ->orderBy('w.id', 'DESC')
-        ;
+        $sql .= " OFFSET " . $start;
 
-        return $qb->getQuery()->getResult();
+        $q = $this->_em->createNativeQuery($sql, $rsm);
+
+        if (!empty($params)) {
+            $q->setParameters($params);
+        }
+
+        if ($statusParam) {
+            $q->setParameter('status', $status, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+        }
+
+        return $q->getResult();
     }
 
     public function getJobCount(array $status, $jobType, $databoxId, $recordId)
