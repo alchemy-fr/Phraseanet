@@ -12,7 +12,7 @@ upstream backend {
 }
 
 #upstream samlsp {
-#    server phrasea-sp:8080;
+#    server phraseanet-saml-sp:8080;
 #}
 
 server {
@@ -65,7 +65,7 @@ server {
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        set $target phrasea-sp:8080;
+        set $target phraseanet-saml-sp:8080;
         proxy_pass http://$target;
 
     }
