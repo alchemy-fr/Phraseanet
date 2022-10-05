@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -80,9 +81,15 @@ class DashboardController extends Controller
         try {
             $cache = $cacheFactory->create('redis', ['host' => 'redis-session', 'port' => '6379']);
 
+            // remove session in redis
             $flushOK = $cache->removeByPattern('PHPREDIS_SESSION*') ? 'ok' : 'ko';
+
+            /** @var SessionRepository $repoSessions */
+            $repoSessions = $this->app['repo.sessions'];
+            // remove session on table
+            $repoSessions->deleteAllExceptSessionId($this->app['session']->get('session_id'));
         } catch (\Exception $e) {
-            $this->app['logger']->error('cannot connect to the server redis-session:6379');
+            $this->app['logger']->error('error : ' . $e->getMessage());
         }
 
         return $this->app->redirectPath('admin_dashboard', ['flush_session' => $flushOK]);
