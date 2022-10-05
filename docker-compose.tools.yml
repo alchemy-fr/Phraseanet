@@ -93,7 +93,7 @@ services:
       - GZIP_LEVEL=${DB_BACKUP_GZIP_LEVEL}
     restart: unless-stopped
 
-  phrasea-sp:
+  phraseanet-saml-sp:
     build:
       context: .
       target: phraseanet-saml-sp
@@ -101,7 +101,7 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-saml-sp:$PHRASEANET_DOCKER_TAG
-    profiles: ["phrasea-sp"]
+    profiles: ["phraseanet-saml-sp"]
     restart: on-failure
     volumes:
     - ${SAML_IDP_METADATA_LOCAL_CONFIG_DIR}:/var/www/simplesamlphp-1.10.0/metadata:rw
@@ -120,6 +120,7 @@ services:
     - SAML_SP_AUTHSOURCES  
     - SAML_IDP_METADATA_CONFIG
     - SAML_IDP_METADATA_LOCAL_CONFIG_DIR
+    - SAML_ALLOW_DEBUG
 
     ports:
       - 8080:8080
