@@ -51,6 +51,22 @@
         </select>
 
         <input type="number" id="record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+
+        <div class="pull-right" style="display:inline-block;">
+            <span>{{ 'job::tab time filter since' | trans }}</span>
+            <span class="time-filter">
+                <a data-value="PT1H">{{ '1h' | trans }}</a>-
+                <a data-value="PT3H">{{ '3h' | trans }}</a>-
+                <a data-value="PT12H">{{ '12h' | trans }}</a>-
+                <a data-value="P1D">{{ '1d' | trans }}</a>-
+                <a data-value="P3D">{{ '3d' | trans }}</a>-
+                <a data-value="P7D">{{ '1w' | trans }}</a>-
+                <a data-value="P14D">{{ '2w' | trans }}</a>-
+                <a data-value="P1M">{{ '1m' | trans }}</a>-
+                <a data-value="" class="active">{{ 'all' | trans }}</a>
+            </span>
+        </div>
+
     </div>
 
     <div class="controls">
@@ -68,6 +84,10 @@
         </label>
         <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
             <span class="result-count" style="margin-left: 40px;">{{ resultCount }} / {{ resultTotal }}</span> <span style="margin-left: 10px;">{{ "job::tab results" | trans }}</span>
+        </span>
+
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="total-duration" style="margin-left: 40px;">{{ totalDuration }}</span> <span style="margin-left: 10px;">{{ "job::tab total duration" | trans }}</span>
         </span>
 
     </div>
@@ -114,12 +134,8 @@
             {% endif %}
         </td>
         <td>
-            {% set duration = workerRow.finished.diff(workerRow.created) %}
-
-            {% if duration.days %}
-                {{ duration.format("%d days  %H:%I:%S") }}
-            {% else %}
-                {{ duration.format("%H:%I:%S") }}
+            {% if workerRow.duration is not empty %}
+                {{ workerRow.duration|date_duration }}
             {% endif %}
         </td>
         <td>{{ workerRow.status }}</td>
@@ -144,6 +160,7 @@
             var jobType = $("#job-type-filter").val();
             var databoxId = $("#databox-filter").val();
             var recordId = $("#record-filter").val();
+            var timeFilter = $(".time-filter a.active").attr("data-value");
 
             if (!$(".running-work").is(":checked"))
             {
@@ -168,12 +185,14 @@
                 data: {
                     jobType: jobType,
                     databoxId : databoxId,
-                    recordId : recordId
+                    recordId : recordId,
+                    timeFilter: timeFilter
                 },
                 success: function (data) {
                     $(".work-list").empty().html(data.content);
                     $(".result-count").empty().text(data.resultCount + ' / ' + data.resultTotal);
                     $(".total-count").empty().text(data.totalCount);
+                    $(".total-duration").empty().text(data.totalDuration);
                 }
             });
         }
@@ -196,6 +215,12 @@
 
         $("#record-filter").on('input', function () {
             refreshJobList();
+        });
+
+        $(".time-filter a").on('click', function () {
+            $(".time-filter a").removeClass('active');
+            $(this).addClass('active');
+            refreshJobList ();
         });
 
         $(".admintable").on('click', '.change-status-interrupt', function () {
