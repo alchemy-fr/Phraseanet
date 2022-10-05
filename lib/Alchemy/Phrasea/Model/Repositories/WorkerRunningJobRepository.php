@@ -410,12 +410,12 @@ class WorkerRunningJobRepository extends EntityRepository
         }
 
         if (!empty($databoxId)) {
-            $sql .= " AND w.databoxId = :databoxId";
+            $sql .= " AND w.databox_id = :databoxId";
             $params['databoxId'] = $databoxId;
         }
 
         if (!empty($recordId)) {
-            $sql .= " AND w.recordId = :recordId";
+            $sql .= " AND w.record_id = :recordId";
             $params['recordId'] = $recordId;
         }
 
