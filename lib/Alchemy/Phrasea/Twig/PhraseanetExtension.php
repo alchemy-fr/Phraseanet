@@ -24,6 +24,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('sort_collections', array(CollectionHelper::class, 'sort')),
+            new \Twig_SimpleFilter('date_duration', array($this, 'getDuration')),
         );
     }
 
@@ -62,6 +63,12 @@ class PhraseanetExtension extends \Twig_Extension
             'assetFileVersion' => 73
         ];
 
+    }
+
+    public function getDuration(int $interval)
+    {
+        $t = round($interval);
+        return sprintf('%02d h  %02d m  %02d s', ($t/3600),($t/60 %60), $t%60);
     }
 
     /**

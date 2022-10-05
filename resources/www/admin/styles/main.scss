@@ -1010,6 +1010,23 @@ span.simplecolorpicker.picker {
     min-width: 161px;
     margin-right: 15px;
   }
+  .time-filter {
+    margin-right: 20px;
+    padding: 5px 10px;
+    background-color: #ebebeb;
+    a {
+      padding: 5px 3px;
+      text-decoration: none;
+      color: #08c;
+      &:hover {
+        color: #2125d3;
+      }
+      &.active {
+        background-color: #08c;
+        color: white;
+      }
+    }
+  }
 }
 
 /**Phraseanet service setting**/
