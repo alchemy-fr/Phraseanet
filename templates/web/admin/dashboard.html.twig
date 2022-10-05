@@ -93,6 +93,12 @@
     </div>
 {% endif %}
 
+{% if session_flushed %}
+    <div class="well well-small">
+        {{ 'all redis session flushed' | trans }}
+    </div>
+{% endif %}
+
 <div class="board_section">
     <form id="admin_adder" action="{{ path('admin_dashboard_add_admins') }}" method="post" class="form-inline">
         <fieldset>
@@ -140,12 +146,16 @@
 
     {% if app['cache'].isServer() %}
         <div class="section">
-            <form id="cache_flusher" method="post" action="{{ path('admin_dashboard_flush_cache') }}" class="form-inline">
                 <fieldset>
                 <legend>{% trans %}Reset cache{% endtrans %}</legend>
-                    <input type="submit" id="flush_button" class="btn btn-primary span4" value="Flush All Caches" />
+                    <form id="cache_flusher" method="post" action="{{ path('admin_dashboard_flush_cache') }}" class="form-inline">
+                        <input type="submit" id="flush_button" class="btn btn-primary span4" value="{{ 'Flush All Caches' | trans }}" />
+                    </form>
+
+                    <form id="" method="post" action="{{ path('admin_dashboard_flush_redis_session') }}" class="form-inline">
+                        <input type="submit" class="btn btn-primary span4" value="{{ 'Flush session' | trans }}" />
+                    </form>
                 </fieldset>
-            </form>
         </div>
     {% endif %}
 
