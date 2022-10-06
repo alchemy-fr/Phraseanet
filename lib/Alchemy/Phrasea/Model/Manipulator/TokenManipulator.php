@@ -36,6 +36,7 @@ class TokenManipulator implements ManipulatorInterface
     const TYPE_VIEW = 'view';
     const TYPE_VALIDATE = 'validate';
     const TYPE_RSS = 'rss';
+    const TYPE_USER_RELANCE = 'user-relance';
 
     /** @var Objectmanager */
     private $om;
