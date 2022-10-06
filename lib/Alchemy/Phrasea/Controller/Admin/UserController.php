@@ -39,7 +39,7 @@ class UserController extends Controller
     public function editRightsAction(Request $request)
     {
         $rights = $this->getUserEditHelper($request);
-        return $this->render('admin/editusers.html.twig', $rights->get_users_rights());
+        return $this->render('admin/editusers.html.twig', array_merge($rights->get_user_records_rights(), $rights->get_users_rights()));
     }
 
     public function resetRightsAction(Request $request)

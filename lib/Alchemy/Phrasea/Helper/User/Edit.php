@@ -205,6 +205,31 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         return $out;
     }
 
+    public function get_user_records_rights()
+    {
+        $rows = [];
+
+        // only if one user selected
+        if (count($this->users) == 1) {
+            $usr_id = current($this->users);
+
+            $sql = "SELECT rr.sbas_id, rr.record_id, rr.preview, rr.document, rr.`case` as type \n"
+                  . " FROM records_rights rr \n"
+                  . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id"
+                  . " WHERE rr.usr_id = :usr_id  ORDER BY rr.sbas_id \n"
+            ;
+
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+            $stmt->execute([':usr_id' => $usr_id]);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return ['records_acl' => $rows];
+        }
+
+        return ['records_acl' => $rows];
+    }
+
     public function get_quotas()
     {
         $this->base_id = (int) $this->request->get('base_id');

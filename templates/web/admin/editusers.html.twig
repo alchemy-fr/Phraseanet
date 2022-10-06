@@ -80,6 +80,20 @@
     width: 70%;
   }
 
+  #record_acl_tab table,
+  #record_acl_tab th {
+    border: 1px solid #a5a0a0;
+    border-collapse: collapse;
+    text-align: center;
+    padding:0px 10px;
+  }
+
+  #record_acl_tab td{
+    border-right: 1px solid #a5a0a0;
+    border-left: 1px solid #a5a0a0;
+    padding:0px 10px;
+  }
+
   #api_tab th,
   #api_tab td,
   #auth_failure_tab th,
@@ -106,6 +120,9 @@
         </li>
         <li>
           <a href="#auth_failure_tab">{{ 'admin::users: Auth failure' | trans }}</a>
+        </li>
+        <li>
+          <a href="#record_acl_tab">Record ACL</a>
         </li>
       {% endif %}
     </ul>
@@ -700,6 +717,32 @@
             </table>
           {% endif %}
         </div>
+      </div>
+
+      <div id="record_acl_tab">
+        <h1>User record acl</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>databox name</th>
+              <th>record_id</th>
+              <th>right on document</th>
+              <th>right on subdef</th>
+              <th>type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r_a in records_acl %}
+              <tr>
+                <td>{{ r_a.sbas_id | sbas_labels(app) }}</td>
+                <td>{{ r_a.record_id }}</td>
+                <td>{{ r_a.document }}</td>
+                <td>{{ r_a.preview }}</td>
+                <td>{{ r_a.type }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     {% endif %}
   </div>
