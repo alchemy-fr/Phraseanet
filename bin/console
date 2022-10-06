@@ -107,6 +107,7 @@ $cli->command(new \module_console_systemMailCheck('system:mail-check'));
 $cli->command(new \module_console_systemBackupDB('system:backup-db'));
 $cli->command(new \module_console_systemClearCache('system:clear-cache'));
 $cli->command(new \module_console_systemExport('system:export'));
+$cli->command(new \module_console_systemClearSessionCache('system:clear-session-cache'));
 
 $cli->command(new TaskRun());
 $cli->command(new TaskList());

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-10-04T15:36:56Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2022-10-06T07:54:55Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -720,7 +720,7 @@
       <trans-unit id="18a7d7025f09d8fd494b56d81e5208ec96510c99" resname="Add an admin" approved="yes">
         <source>Add an admin</source>
         <target state="translated">Ajouter un administrateur Phraseanet</target>
-        <jms:reference-file line="109">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="115">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c67e5003ccafc3da11bb6a633844ddac62f79fed" resname="Add an end point" approved="yes">
         <source>Add an end point</source>
@@ -2032,7 +2032,7 @@
       <trans-unit id="7d8c064a53d2eadc4274954c55279490c440c5d0" resname="Could not send email" approved="yes">
         <source>Could not send email</source>
         <target state="translated">Impossible d'envoyer l'e-mail</target>
-        <jms:reference-file line="44">Controller/Admin/DashboardController.php</jms:reference-file>
+        <jms:reference-file line="46">Controller/Admin/DashboardController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ebde54d7a6733f04781a2112a3d7548cb144e1f" resname="Couleur de selection" approved="yes">
         <source>Couleur de selection</source>
@@ -2776,7 +2776,7 @@
         <source>Email</source>
         <target state="translated">E-mail</target>
         <jms:reference-file line="140">admin/publications/fiche.html.twig</jms:reference-file>
-        <jms:reference-file line="129">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="135">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4492ab77c9378c5582b87621ecd89c96fef88640" resname="Email '%email%' for login '%login%' already exists in database" approved="yes">
         <source>Email '%email%' for login '%login%' already exists in database</source>
@@ -2812,7 +2812,7 @@
       <trans-unit id="b529e23b7676146d364266e97d9f242eac2e28b4" resname="Email test result : %email_status%" approved="yes">
         <source>Email test result : %email_status%</source>
         <target state="translated">Résultat du test d'e-mail : %email_status%</target>
-        <jms:reference-file line="136">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="142">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c839b2905a9c9e4e611519e461c6f3e0dde4ec78" resname="Email:deletion:request:message Hello %civility% %firstName% %lastName%.&#10;            We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.&#10;            If you are not at the origin of this request, please change your password as soon as possible %resetPassword%&#10;            Link is valid for one hour." approved="yes">
         <source>Email:deletion:request:message Hello %civility% %firstName% %lastName%. We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below. If you are not at the origin of this request, please change your password as soon as possible %resetPassword% Link is valid for one hour.</source>
@@ -3361,6 +3361,16 @@
         <target state="translated">Aplatir les calques</target>
         <jms:reference-file line="35">Media/Subdef/Unknown.php</jms:reference-file>
         <jms:reference-file line="37">Media/Subdef/Image.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5103a4a398146306aa27923e6cce52672060bbd6" resname="Flush All Caches">
+        <source>Flush All Caches</source>
+        <target state="new">Flush All Caches</target>
+        <jms:reference-file line="152">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f6d859db6f9a2d8c84dcf5c840b6b1d55439ad0a" resname="Flush session">
+        <source>Flush session</source>
+        <target state="new">Flush session</target>
+        <jms:reference-file line="156">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bd85a7d22f6cdee554e5b9e865d26dcbb4dafc9" resname="Focal length" approved="yes">
         <source>Focal length</source>
@@ -4241,7 +4251,7 @@
       <trans-unit id="fdb9efd7a759711741fc699549c92e54c664e38c" resname="Mail sent" approved="yes">
         <source>Mail sent</source>
         <target state="translated">E-mail envoyé</target>
-        <jms:reference-file line="41">Controller/Admin/DashboardController.php</jms:reference-file>
+        <jms:reference-file line="43">Controller/Admin/DashboardController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ca62571facf94a0b6b601235fa440be30c505b24" resname="Maintenance message" approved="yes">
         <source>Maintenance message</source>
@@ -5751,7 +5761,7 @@
       <trans-unit id="a99b12995cce5031b4ec97597a303d7ac6cf3e70" resname="Reset cache" approved="yes">
         <source>Reset cache</source>
         <target state="translated">Réinitialiser le cache</target>
-        <jms:reference-file line="145">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="150">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="da1cbf7d133c606ffdf7c1c5f929764ec22c3eb5" resname="Reset rights before applying template?" approved="yes">
         <source>Reset rights before applying template?</source>
@@ -6057,7 +6067,7 @@
         <jms:reference-file line="110">prod/upload/upload-flash.html.twig</jms:reference-file>
         <jms:reference-file line="187">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="222">prod/orders/order_item.html.twig</jms:reference-file>
-        <jms:reference-file line="130">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="136">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3b6564ae1423d96730d38a49a4c796ed79c6e0b1" resname="Send an email to the user to setup his password" approved="yes">
         <source>Send an email to the user to setup his password</source>
@@ -9926,6 +9936,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Tous les services de caches ont été purgés</target>
         <jms:reference-file line="92">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="a54cbfd43ad8987c0ecbc5e8fa51d7c571369ddc" resname="all redis session flushed">
+        <source>all redis session flushed</source>
+        <target state="new">all redis session flushed</target>
+        <jms:reference-file line="98">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="afaee7bf6eca9099dc9356fbc46fb4f1716b8916" resname="an error occured" approved="yes">
         <source>an error occured</source>
         <target state="translated">une erreur est survenue</target>
@@ -10217,7 +10232,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="5b00c6d25272209c2946e2cc9e725722e139b80d" resname="boutton::reinitialiser" approved="yes">
         <source>boutton::reinitialiser</source>
         <target state="translated">Ré-initialiser</target>
-        <jms:reference-file line="118">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="124">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7c93f19dc5b7cef99db6fb84975ef795e3e87102" resname="boutton::remplacer" approved="yes">
         <source>boutton::remplacer</source>
@@ -10365,7 +10380,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="707">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="83">web/admin/setup.html.twig</jms:reference-file>
         <jms:reference-file line="34">web/admin/structure.html.twig</jms:reference-file>
-        <jms:reference-file line="111">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="117">web/admin/dashboard.html.twig</jms:reference-file>
         <jms:reference-file line="274">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="41">user/import/view.html.twig</jms:reference-file>
         <jms:reference-file line="159">admin/statusbit/edit.html.twig</jms:reference-file>
@@ -14834,12 +14849,12 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="7b2320182e62f7ea49bec8361a7ad8409d31cf14" resname="setup:: Reinitialisation des droits admins" approved="yes">
         <source>setup:: Reinitialisation des droits admins</source>
         <target state="translated">Réinitialiser les droits des administrateurs</target>
-        <jms:reference-file line="117">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="123">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="878b2c8bc7fb24bee75cdd27f96004e1b90e37fa" resname="setup:: administrateurs de l'application" approved="yes">
         <source>setup:: administrateurs de l'application</source>
         <target state="translated">Administrateurs de l'application</target>
-        <jms:reference-file line="99">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="105">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee4685c501c77bb71f2b651b39fef5d4494c5d74" resname="setup:: ajouter un administrateur des commandes" approved="yes">
         <source>setup:: ajouter un administrateur des commandes</source>
@@ -14864,7 +14879,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="c1ef95ee01b145e2cc78fd7058633ac0d65f6ad0" resname="setup::Tests d'envois d'emails" approved="yes">
         <source>setup::Tests d'envois d'emails</source>
         <target state="translated">Tests d'envois d'e-mails</target>
-        <jms:reference-file line="127">web/admin/dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="133">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cf75de5e3a89d03d1888b4caccfafc65f6456fc3" resname="setup::custom-link:add-link" approved="yes">
         <source>setup::custom-link:add-link</source>

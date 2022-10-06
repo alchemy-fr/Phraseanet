@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -21,4 +22,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class SessionRepository extends EntityRepository
 {
+    public function deleteAllExceptSessionId($sessionId)
+    {
+        $criteria = new Criteria();
+        $criteria->where($criteria->expr()->neq('id', $sessionId));
+        $sessions = $this->matching($criteria);
+
+        foreach ($sessions as $session) {
+            $this->_em->remove($session);
+        }
+
+        $this->_em->flush();
+    }
 }
