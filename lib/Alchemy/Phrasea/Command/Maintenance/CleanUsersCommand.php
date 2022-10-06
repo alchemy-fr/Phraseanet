@@ -36,7 +36,7 @@ class CleanUsersCommand extends Command
         parent::__construct('clean:users');
 
         $this
-            ->setDescription('Delete "sleepy" users (not connected since a long time)')
+            ->setDescription('ALPHA - Delete "sleepy" users (not connected since a long time)')
             ->addOption('inactivity_period', null, InputOption::VALUE_REQUIRED,                             'cleanup older than \<inactivity_period> days')
             ->addOption('usertype',       null, InputOption::VALUE_REQUIRED,                             'specify type of user to clean')
             ->addOption('grace_duration',       null, InputOption::VALUE_REQUIRED,                             'grace period in days after sending email')
@@ -47,7 +47,7 @@ class CleanUsersCommand extends Command
             ->addOption('yes',        'y',  InputOption::VALUE_NONE,                                 'don\'t ask for confirmation')
 
             ->setHelp(
-                "ALPHA \n\n"
+                ""
                 . "\<INACTIVITY_PERIOD> <info>integer to specify the number of inactivity days, value not 0 (zero)</info>\n"
                 . "\<USERTYPE>specify type of user to clean : \n"
                 . "- <info>admin</info> \n"
@@ -69,26 +69,26 @@ class CleanUsersCommand extends Command
 
         $cnx = $this->container->getApplicationBox()->get_connection();
 
-        $inactivityPeriod = intval($input->getOption('inactivity_period'));
+        $inactivityPeriod = $input->getOption('inactivity_period');
 
-        if (empty($inactivityPeriod) || !is_int($inactivityPeriod)) {
-            $output->writeln("<error>invalid value form '--inactivity_period' option</error>(see possible valu with --help)");
-
-            return 1;
-        }
-
-        $graceDuration = intval($input->getOption('grace_duration'));
-
-        if (empty($graceDuration) || !is_int($graceDuration)) {
-            $output->writeln("<error>invalid value form '--grace_duration' option</error>(see possible valu with --help)");
+        if (!preg_match("/^\d+$/", $inactivityPeriod)) {
+            $output->writeln("<error>invalid value form '--inactivity_period' option</error>(see possible value with --help)");
 
             return 1;
         }
 
-        $maxRelances = intval($input->getOption('max_relances'));
+        $graceDuration = $input->getOption('grace_duration');
 
-        if (empty($maxRelances) || !is_int($maxRelances)) {
-            $output->writeln("<error>invalid value form '--max_relances' option</error>(see possible valu with --help)");
+        if (!preg_match("/^\d+$/", $graceDuration)) {
+            $output->writeln("<error>invalid value form '--grace_duration' option</error>(see possible value with --help)");
+
+            return 1;
+        }
+
+        $maxRelances = $input->getOption('max_relances');
+
+        if (!preg_match("/^\d+$/", $maxRelances)) {
+            $output->writeln("<error>invalid value form '--max_relances' option</error>(see possible value with --help)");
 
             return 1;
         }
@@ -214,7 +214,7 @@ class CleanUsersCommand extends Command
                             $user->setLastInactivityEmail(new \DateTime());
                             $userManipulator->updateUser($user);
                         }
-                        $action = sprintf("%d time relanced , will be relance", $nbRelance);
+                        $action = sprintf("max_relances=%d , found %d times relanced (will be relance if not --dry-run)", $maxRelances, $nbRelance);
                         $nbUserRelanced++;
                     } else {
                         if (!$dry) {
@@ -228,7 +228,7 @@ class CleanUsersCommand extends Command
 
                             $output->writeln(" deleted.");
                         }
-                        $action = "user to be deleted";
+                        $action = sprintf("max_relances=%d , found %d times relanced (will be deleted if not --dry-run)", $maxRelances, $nbRelance);
                         $nbUserDeleted++;
                     }
                 }
