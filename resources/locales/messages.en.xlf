@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-10-05T11:50:35Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2022-10-06T07:54:36Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -6616,6 +6616,7 @@
       <trans-unit id="2558cc2c887bbe4e2444ec6ef83b4982386e871a" resname="The URL you used is out of date, please login" approved="yes">
         <source>The URL you used is out of date, please login</source>
         <target state="translated">The URL you used is out of date. Please login.</target>
+        <jms:reference-file line="70">ControllerProvider/Prod/Root.php</jms:reference-file>
         <jms:reference-file line="133">Phrasea/ControllerProvider/Lightbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="45a947887469ff8c2aec684433450dad352130ed" resname="The Youtube servers have received too many calls from the same caller in a short amount of time." approved="yes">
@@ -11512,10 +11513,25 @@
         <target state="translated">May</target>
         <jms:reference-file line="718">classes/module/report.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="e1b209a684084fff65dc7751a56b68d13683ad38" resname="mail:: connect to phraseanet">
+        <source>mail:: connect to phraseanet</source>
+        <target state="new">mail:: connect to phraseanet</target>
+        <jms:reference-file line="29">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
+        <source>mail:: inactif account</source>
+        <target state="new">mail:: inactif account</target>
+        <jms:reference-file line="13">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
         <source>mail:: validation: Vote will expire on %expire%</source>
         <target state="translated">Feedback session expires on %expire%</target>
         <jms:reference-file line="108">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9c627983e8b23c12caf1415fd0e7b49c4712c219" resname="mail:: your account is inactif and to be deleted!">
+        <source>mail:: your account is inactif and to be deleted!</source>
+        <target state="new">mail:: your account is inactif and to be deleted!</target>
+        <jms:reference-file line="21">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
         <source>mail::share Open with Lightbox</source>
