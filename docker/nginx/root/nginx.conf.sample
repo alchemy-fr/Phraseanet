@@ -5,7 +5,7 @@ proxy_send_timeout          $GATEWAY_PROXY_TIMEOUT;
 client_header_timeout       $GATEWAY_SEND_TIMEOUT;
 client_body_timeout         $GATEWAY_SEND_TIMEOUT;
 fastcgi_read_timeout        $GATEWAY_FASTCGI_TIMEOUT;
-resolver 127.0.0.11;
+resolver $NEW_RESOLVER;
 
 upstream backend {
     server phraseanet:9000;
@@ -65,7 +65,7 @@ server {
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        set $target phraseanet-saml-sp:8080;
+        set $target $NEW_TARGET:8080;
         proxy_pass http://$target;
 
     }
