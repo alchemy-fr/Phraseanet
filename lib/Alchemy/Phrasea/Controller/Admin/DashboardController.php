@@ -72,7 +72,7 @@ class DashboardController extends Controller
         return $this->app->redirectPath('admin_dashboard', ['flush_cache' => $flushOK]);
     }
 
-    public function flushRedisSession()
+    public function flushSession()
     {
         /** @var Factory $cacheFactory */
         $cacheFactory = $this->app['phraseanet.cache-factory'];

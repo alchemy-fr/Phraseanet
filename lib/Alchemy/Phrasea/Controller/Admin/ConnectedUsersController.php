@@ -15,6 +15,7 @@ use Alchemy\Geonames\Geoname;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -124,5 +125,23 @@ class ConnectedUsersController extends Controller
         }
 
         return isset($this->moduleNames[$appId]) ? $this->moduleNames[$appId] : null;
+    }
+
+    public function disconnectSessionId(Request $request, $session_id)
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->app['orm.em'];
+
+        /** @var SessionRepository $repoSessions */
+        $repoSessions = $this->app['repo.sessions'];
+
+        $session = $repoSessions->find($session_id);
+
+        if ($session != null) {
+            $manager->remove($session);
+            $manager->flush();
+        }
+
+        return $this->app->redirectPath('admin_connected_users');
     }
 }
