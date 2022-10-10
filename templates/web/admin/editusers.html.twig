@@ -106,6 +106,10 @@
 </style>
 
 <div>
+  {% if main_user is not empty %}
+    <h4>{{ main_user.getDisplayName() ~ ' ( ' ~ main_user.getId() ~' )'}}</h4>
+  {% endif %}
+
   <div class="tabs PNB" style="bottom:40px;">
     <ul>
       <li>
@@ -566,11 +570,14 @@
         </table>
       </form>
 
-      <label class="checkbox" style="padding-left: 0px; margin-top:10px">
-        <span class="mail-locked-label {% if not apiApplication.isMailLocked() %} hidden {% endif %}">{{ 'admin::users: mail is locked' | trans }}</span>
-        <span class="mail-unlocked-label {% if apiApplication.isMailLocked() %} hidden {% endif %}">{{ 'admin::users: mail is unlocked' | trans }}</span>
-        <input type="checkbox"  id="mail_locked_activation" {% if apiApplication.isMailLocked() %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
-      </label>
+      <div>
+        <label for="lock" style="margin-right: 20px;display:inline-block;">Email locked</label>
+        <input type="radio" id="lock" name="email-locked" value="locked" style="margin-right: 10px;"
+                {% if main_user.isMailLocked() %} checked {% endif %}>
+        <input type="radio" id="unlock" name="email-locked" value="unlock" style="margin-left: 10px;"
+                {% if not main_user.isMailLocked() %} checked {% endif %}>
+        <label for="unlock" style="margin-left: 20px;display:inline-block;">Email unlocked</label>
+      </div>
 
         <div style="margin-top: 20px;">
           {% set usrProviders = app['repo.usr-auth-providers'].findByUser(main_user) %}
@@ -721,6 +728,7 @@
 
       <div id="record_acl_tab">
         <h1>User record acl</h1>
+        <p>{{ total_count }} / {{ records_acl|length }} (last 200 rights displayed)</p>
         <table>
           <thead>
             <tr>
@@ -1359,29 +1367,20 @@
         });
       });
 
-      $('#mail_locked_activation').on('click', function() {
-      let $this = $(this);
-      $.ajax({
-        type: 'POST',
-        url: '/admin/users/mail-locked/change/',
-        dataType: 'json',
-        data: {
-          user_id: {{ main_user.getId() }},
-          action: $this.is(':checked') ? 'locked' : 'unlocked'
-        },
-        success: function (data) {
-          if (data.success == true) {
-            if ($this.is(':checked')) {
-              $('.mail-locked-label').removeClass('hidden');
-              $('.mail-unlocked-label').addClass('hidden');
-            } else {
-              $('.mail-locked-label').addClass('hidden');
-              $('.mail-unlocked-label').removeClass('hidden');
-            }
+      $('input[type=radio][name="email-locked"]').change( function() {
+        let $this = $(this);
+        $.ajax({
+          type: 'POST',
+          url: '/admin/users/mail-locked/change/',
+          dataType: 'json',
+          data: {
+            user_id: {{ main_user.getId() }},
+            action: $this.val()
+          },
+          success: function (data) {
           }
-        }
+        });
       });
-    });
     {% endif %}
   });
 
