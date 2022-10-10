@@ -55,6 +55,11 @@ class ConnectedUsers implements ControllerProviderInterface, ServiceProviderInte
         $controllers->get('/', 'controller.admin.connected-users:listConnectedUsers')
             ->bind('admin_connected_users');
 
+        $controllers->post('/{session_id}/disconnect', 'controller.admin.connected-users:disconnectSessionId')
+            ->bind('admin_session_id_disconnect')
+            ->assert('session_id', '\d+')
+        ;
+
         return $controllers;
     }
 }
