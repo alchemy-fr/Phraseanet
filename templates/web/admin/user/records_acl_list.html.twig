@@ -1,0 +1,10 @@
+{% for r_a in records_acl %}
+    <tr>
+        <td>{{ r_a.sbas_id | sbas_labels(app) }}</td>
+        <td>{{ r_a.record_id }}</td>
+        <td>{{ r_a.document }}</td>
+        <td>{{ r_a.preview }}</td>
+        <td>{{ r_a.type }}</td>
+        <td>{{ r_a.pusher_name }}</td>
+    </tr>
+{% endfor %}
