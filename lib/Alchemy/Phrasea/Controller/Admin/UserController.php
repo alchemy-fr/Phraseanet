@@ -42,6 +42,18 @@ class UserController extends Controller
         return $this->render('admin/editusers.html.twig', array_merge($rights->get_user_records_rights(), $rights->get_users_rights()));
     }
 
+    public function listRecordAcl(Request $request)
+    {
+        $rights = $this->getUserEditHelper($request);
+        $results = $rights->get_user_records_rights($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
+
+        return $this->app->json([
+            'content'       => $this->render('admin/user/records_acl_list.html.twig', ['records_acl' => $results['records_acl']]),
+            'total_count'   => $results['total_count'],
+            'total_result'  => count($results['records_acl'])
+        ]);
+    }
+
     public function resetRightsAction(Request $request)
     {
         try {

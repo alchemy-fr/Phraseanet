@@ -205,39 +205,75 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         return $out;
     }
 
-    public function get_user_records_rights()
+    public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null)
     {
         $rows = [];
         $totalCount = 0;
 
-        // only if one user selected
-        if (count($this->users) == 1) {
-            $usr_id = current($this->users);
+        $databoxIds = array_map(function (\databox $databox) {
+            return $databox->get_sbas_id();
+        },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
 
-            $sql = "SELECT rr.sbas_id, rr.record_id, rr.preview, rr.document, rr.`case` as type \n"
-                  . " FROM records_rights rr \n"
-                  . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id"
-                  . " WHERE rr.usr_id = :usr_id  ORDER BY rr.id DESC limit 200 \n"
-            ;
-
-            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-            $stmt->execute([':usr_id' => $usr_id]);
-            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            $sql = "SELECT count(*) as nb \n"
-                . " FROM records_rights rr \n"
-                . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id"
-                . " WHERE rr.usr_id = :usr_id  \n"
-            ;
-
-            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-            $stmt->execute([':usr_id' => $usr_id]);
-            $totalCount = $stmt->fetchColumn();
-            $stmt->closeCursor();
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'records_acl' => $rows,
+                    'total_count' => $totalCount,
+                    'databoxIds'  => $databoxIds
+                ];
+            }
         }
 
-        return ['records_acl' => $rows, 'total_count' => $totalCount];
+        $whereClause = "WHERE rr.usr_id = :usr_id";
+        $params[':usr_id'] = $userId;
+
+        if (!empty($databoxId)) {
+            $whereClause .= " AND rr.sbas_id= :databox_id";
+            $params[':databox_id'] = $databoxId;
+        }
+
+        if (!empty($recordId)) {
+            $whereClause .= " AND rr.record_id= :record_id";
+            $params[':record_id'] = $recordId;
+        }
+
+        $sql = "SELECT rr.sbas_id, rr.record_id, rr.preview, rr.document, rr.`case` as type, \n"
+              . "IF(TRIM(p.last_name)!='' OR TRIM(p.first_name)!='', \n"
+              . "   CONCAT_WS(' ', p.last_name, p.first_name),\n"
+              . "   IF(TRIM(p.email)!='', p.email, p.login)\n"
+              . ") as pusher_name\n"
+              . " FROM records_rights rr \n"
+              . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id\n"
+              . " JOIN Users as p ON p.id = rr.pusher_usr_id\n"
+              . $whereClause
+              . " ORDER BY rr.id DESC limit 200 \n"
+        ;
+
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $sql = "SELECT count(*) as nb \n"
+            . " FROM records_rights rr \n"
+            . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id\n"
+            . $whereClause
+        ;
+
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $totalCount = $stmt->fetchColumn();
+        $stmt->closeCursor();
+
+        return [
+            'records_acl' => $rows,
+            'total_count' => $totalCount,
+            'databoxIds'  => $databoxIds
+        ];
     }
 
     public function get_quotas()

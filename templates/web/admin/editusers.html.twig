@@ -728,7 +728,18 @@
 
       <div id="record_acl_tab">
         <h1>User record acl</h1>
-        <p> {{ records_acl|length }} / {{ total_count }} (last 200 rights displayed)</p>
+        <div style="margin-bottom: 20px;">
+          <select id="acl-databox-filter">
+            <option value="">{{ 'button::choose databox' | trans }}</option>
+            {% for databoxId in databoxIds %}
+              <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+            {% endfor %}
+          </select>
+
+          <input type="number" id="acl-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        </div>
+
+        <p> <span class="result-count">{{ records_acl|length }} / {{ total_count }}</span> (last 200 rights displayed)</p>
         <table>
           <thead>
             <tr>
@@ -737,9 +748,10 @@
               <th>right on document</th>
               <th>right on subdef</th>
               <th>type</th>
+              <th>pusher name</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="record_acl_list">
             {% for r_a in records_acl %}
               <tr>
                 <td>{{ r_a.sbas_id | sbas_labels(app) }}</td>
@@ -747,6 +759,7 @@
                 <td>{{ r_a.document }}</td>
                 <td>{{ r_a.preview }}</td>
                 <td>{{ r_a.type }}</td>
+                <td>{{ r_a.pusher_name }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -1381,6 +1394,31 @@
           }
         });
       });
+
+      function listRecordAcl() {
+        $.ajax({
+          type: "GET",
+          url: "/admin/users/records-acl/",
+          data: {
+            databoxId : $("#acl-databox-filter").val(),
+            recordId : $("#acl-record-filter").val(),
+            userId: {{ main_user.getId() }}
+          },
+          success: function (data) {
+            $("#record_acl_list").empty().html(data.content);
+            $(".result-count").empty().text(data.total_result + ' / ' + data.total_count);
+          }
+        });
+      }
+
+      $("#acl-databox-filter").on('change', function() {
+        listRecordAcl();
+      });
+
+      $("#acl-record-filter").on('input', function() {
+        listRecordAcl();
+      });
+
     {% endif %}
   });
 
