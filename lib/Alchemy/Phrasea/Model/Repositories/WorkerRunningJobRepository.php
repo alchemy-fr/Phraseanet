@@ -471,7 +471,6 @@ class WorkerRunningJobRepository extends EntityRepository
         }
 
         return  $qb->getQuery()->getSingleScalarResult();
-
     }
 
     public function updateStatusRunningToCanceledSinceCreated($hour = 0)

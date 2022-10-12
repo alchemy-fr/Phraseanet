@@ -39,7 +39,13 @@ class UserController extends Controller
     public function editRightsAction(Request $request)
     {
         $rights = $this->getUserEditHelper($request);
-        return $this->render('admin/editusers.html.twig', array_merge($rights->get_user_records_rights(), $rights->get_users_rights()));
+
+        return $this->render('admin/editusers.html.twig',
+            array_merge($rights->get_user_records_rights(),
+                $rights->getFeedItems(),
+                $rights->getBasketElements(),
+                $rights->get_users_rights())
+        );
     }
 
     public function listRecordAcl(Request $request)
@@ -48,9 +54,33 @@ class UserController extends Controller
         $results = $rights->get_user_records_rights($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
 
         return $this->app->json([
-            'content'       => $this->render('admin/user/records_acl_list.html.twig', ['records_acl' => $results['records_acl']]),
+            'content'       => $this->render('admin/user/records_list.html.twig', ['records_acl' => $results['records_acl']]),
             'total_count'   => $results['total_count'],
             'total_result'  => count($results['records_acl'])
+        ]);
+    }
+
+    public function listRecordFeed(Request $request)
+    {
+        $rights = $this->getUserEditHelper($request);
+        $results = $rights->getFeedItems($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
+
+        return $this->app->json([
+            'content'       => $this->render('admin/user/records_list.html.twig', ['feed_items' => $results['feed_items']]),
+            'total_count'   => $results['feed_total_count'],
+            'total_result'  => count($results['feed_items'])
+        ]);
+    }
+
+    public function listRecordBasket(Request $request)
+    {
+        $rights = $this->getUserEditHelper($request);
+        $results = $rights->getBasketElements($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
+
+        return $this->app->json([
+            'content'       => $this->render('admin/user/records_list.html.twig', ['basket_elements' => $results['basket_elements']]),
+            'total_count'   => $results['basket_elements_count'],
+            'total_result'  => count($results['basket_elements'])
         ]);
     }
 

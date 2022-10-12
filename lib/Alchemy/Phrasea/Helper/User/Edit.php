@@ -15,8 +15,11 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Doctrine\DBAL\Connection;
@@ -203,6 +206,52 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         }
 
         return $out;
+    }
+
+    public function getFeedItems($userId = null, $databoxId = null, $recordId = null)
+    {
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'feed_items' => [],
+                ];
+            }
+        }
+
+        $user = $this->app['repo.users']->find($userId);
+
+        /** @var FeedItemRepository $repoItems */
+        $repoItems = $this->app['repo.feed-items'];
+
+        return [
+            'feed_items'        => $repoItems->getLastItems($user, $databoxId, $recordId),
+            'feed_total_count'  => $repoItems->getItemsCount($user, $databoxId, $recordId)
+        ];
+    }
+
+    public function getBasketElements($userId = null, $databoxId = null, $recordId = null)
+    {
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'basket_elements' => [],
+                ];
+            }
+        }
+
+        $user = $this->app['repo.users']->find($userId);
+
+        /** @var BasketElementRepository $basketElementRepository */
+        $basketElementRepository = $this->app['repo.basket-elements'];
+
+        return [
+            'basket_elements'        => $basketElementRepository->getElements($user, $databoxId, $recordId),
+            'basket_elements_count'  => $basketElementRepository->getElementsCount($user, $databoxId, $recordId)
+        ];
     }
 
     public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null)

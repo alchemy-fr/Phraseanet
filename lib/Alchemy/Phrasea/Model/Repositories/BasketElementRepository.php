@@ -233,4 +233,50 @@ DQL;
 
         return $builder->getQuery()->getResult();
     }
+
+    public function getElements(User $user, $databoxId = null, $recordId = null, $nbElement = 200)
+    {
+        $qb = $this->createQueryBuilder('be');
+        $qb->innerJoin('be.basket', 'b');
+
+        $qb->where($qb->expr()->eq('b.user', ':user'));
+        $qb->setParameter(':user', $user);
+
+        if ($databoxId != null) {
+            $qb->andWhere('be.sbas_id = :databoxId');
+            $qb->setParameter(':databoxId', $databoxId);
+        }
+
+        if ($recordId != null) {
+            $qb->andWhere('be.record_id = :recordId');
+            $qb->setParameter(':recordId', $recordId);
+        }
+
+        $qb->orderBy('be.id', 'DESC');
+        $qb->setMaxResults($nbElement);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getElementsCount(User $user, $databoxId = null, $recordId = null)
+    {
+        $qb = $this->createQueryBuilder('be');
+        $qb->select('count(be)');
+        $qb->innerJoin('be.basket', 'b');
+
+        $qb->where($qb->expr()->eq('b.user', ':user'));
+        $qb->setParameter(':user', $user);
+
+        if ($databoxId != null) {
+            $qb->andWhere('be.sbas_id = :databoxId');
+            $qb->setParameter(':databoxId', $databoxId);
+        }
+
+        if ($recordId != null) {
+            $qb->andWhere('be.record_id = :recordId');
+            $qb->setParameter(':recordId', $recordId);
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
 }

@@ -80,6 +80,8 @@
     width: 70%;
   }
 
+  #basket_tab table, #basket_tab th,
+  #feed_tab table, #feed_tab th,
   #record_acl_tab table,
   #record_acl_tab th {
     border: 1px solid #a5a0a0;
@@ -88,6 +90,8 @@
     padding:0px 10px;
   }
 
+  #basket_tab td,
+  #feed_tab td,
   #record_acl_tab td{
     border-right: 1px solid #a5a0a0;
     border-left: 1px solid #a5a0a0;
@@ -127,6 +131,12 @@
         </li>
         <li>
           <a href="#record_acl_tab">Record ACL</a>
+        </li>
+        <li>
+          <a href="#feed_tab">Record Feed</a>
+        </li>
+        <li>
+          <a href="#basket_tab">Basket</a>
         </li>
       {% endif %}
     </ul>
@@ -739,7 +749,7 @@
           <input type="number" id="acl-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
         </div>
 
-        <p> <span class="result-count">{{ records_acl|length }} / {{ total_count }}</span> (last 200 rights displayed)</p>
+        <p> <span class="acl-result-count">{{ records_acl|length }} / {{ total_count }}</span> (last 200 rights displayed)</p>
         <table>
           <thead>
             <tr>
@@ -765,6 +775,81 @@
           </tbody>
         </table>
       </div>
+
+      <div id="feed_tab">
+        <h1>User record feed</h1>
+
+        <div style="margin-bottom: 20px;">
+          <select id="feed-databox-filter">
+            <option value="">{{ 'button::choose databox' | trans }}</option>
+            {% for databoxId in databoxIds %}
+              <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+            {% endfor %}
+          </select>
+
+          <input type="number" id="feed-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        </div>
+
+        <p> <span class="feed-result-count">{{ feed_items|length }} / {{ feed_total_count }}</span> (last 200 records feed displayed)</p>
+        <table>
+          <thead>
+          <tr>
+            <th>databox name</th>
+            <th>record_id</th>
+            <th>title</th>
+            <th>author name</th>
+            <th>feed name</th>
+          </tr>
+          </thead>
+          <tbody id="record_feed_list">
+          {% for f_i in feed_items %}
+            <tr>
+              <td>{{ f_i.getSbasId() | sbas_labels(app) }}</td>
+              <td>{{ f_i.getRecordId() }}</td>
+              <td>{{ f_i.getEntry().title }}</td>
+              <td>{{ f_i.getEntry().authorName }}</td>
+              <td>{{ f_i.getEntry().feed.title }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div id="basket_tab">
+        <h1>User basket</h1>
+
+        <div style="margin-bottom: 20px;">
+          <select id="basket-databox-filter">
+            <option value="">{{ 'button::choose databox' | trans }}</option>
+            {% for databoxId in databoxIds %}
+              <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+            {% endfor %}
+          </select>
+
+          <input type="number" id="basket-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        </div>
+
+        <p> <span class="basket-result-count">{{ basket_elements|length }} / {{ basket_elements_count }}</span> (last 200 basket records displayed)</p>
+        <table>
+          <thead>
+          <tr>
+            <th>databox name</th>
+            <th>record_id</th>
+            <th>Basket name</th>
+          </tr>
+          </thead>
+          <tbody id="record_basket_list">
+          {% for b_e in basket_elements %}
+            <tr>
+              <td>{{ b_e.getSbasId() | sbas_labels(app) }}</td>
+              <td>{{ b_e.getRecordId() }}</td>
+              <td>{{ b_e.basket.name }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
     {% endif %}
   </div>
   <div class="form-actions" style="">
@@ -1406,7 +1491,39 @@
           },
           success: function (data) {
             $("#record_acl_list").empty().html(data.content);
-            $(".result-count").empty().text(data.total_result + ' / ' + data.total_count);
+            $(".acl-result-count").empty().text(data.total_result + ' / ' + data.total_count);
+          }
+        });
+      }
+
+      function listRecordFeed() {
+        $.ajax({
+          type: "GET",
+          url: "/admin/users/records-feed/",
+          data: {
+            databoxId : $("#feed-databox-filter").val(),
+            recordId : $("#feed-record-filter").val(),
+            userId: {{ main_user.getId() }}
+          },
+          success: function (data) {
+            $("#record_feed_list").empty().html(data.content);
+            $(".feed-result-count").empty().text(data.total_result + ' / ' + data.total_count);
+          }
+        });
+      }
+
+      function listRecordBasket() {
+        $.ajax({
+          type: "GET",
+          url: "/admin/users/records-basket/",
+          data: {
+            databoxId : $("#basket-databox-filter").val(),
+            recordId : $("#basket-record-filter").val(),
+            userId: {{ main_user.getId() }}
+          },
+          success: function (data) {
+            $("#record_basket_list").empty().html(data.content);
+            $(".basket-result-count").empty().text(data.total_result + ' / ' + data.total_count);
           }
         });
       }
@@ -1417,6 +1534,22 @@
 
       $("#acl-record-filter").on('input', function() {
         listRecordAcl();
+      });
+
+      $("#feed-databox-filter").on('change', function() {
+        listRecordFeed();
+      });
+
+      $("#feed-record-filter").on('input', function() {
+        listRecordFeed();
+      });
+
+      $("#basket-databox-filter").on('change', function() {
+        listRecordBasket();
+      });
+
+      $("#basket-record-filter").on('input', function() {
+        listRecordBasket();
       });
 
     {% endif %}

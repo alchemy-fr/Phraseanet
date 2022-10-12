@@ -1,0 +1,28 @@
+{% for r_a in records_acl %}
+    <tr>
+        <td>{{ r_a.sbas_id | sbas_labels(app) }}</td>
+        <td>{{ r_a.record_id }}</td>
+        <td>{{ r_a.document }}</td>
+        <td>{{ r_a.preview }}</td>
+        <td>{{ r_a.type }}</td>
+        <td>{{ r_a.pusher_name }}</td>
+    </tr>
+{% endfor %}
+
+{% for f_i in feed_items %}
+    <tr>
+        <td>{{ f_i.getSbasId() | sbas_labels(app) }}</td>
+        <td>{{ f_i.getRecordId() }}</td>
+        <td>{{ f_i.getEntry().title }}</td>
+        <td>{{ f_i.getEntry().authorName }}</td>
+        <td>{{ f_i.getEntry().feed.title }}</td>
+    </tr>
+{% endfor %}
+
+{% for b_e in basket_elements %}
+    <tr>
+        <td>{{ b_e.getSbasId() | sbas_labels(app) }}</td>
+        <td>{{ b_e.getRecordId() }}</td>
+        <td>{{ b_e.basket.name }}</td>
+    </tr>
+{% endfor %}

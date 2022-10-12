@@ -87,6 +87,8 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/import/example/rtf/', 'controller.admin.users:importRtfExampleAction')
             ->bind('users_import_rtf');
         $controllers->get('/records-acl/', 'controller.admin.users:listRecordAcl');
+        $controllers->get('/records-feed/', 'controller.admin.users:listRecordFeed');
+        $controllers->get('/records-basket/', 'controller.admin.users:listRecordBasket');
 
         return $controllers;
     }

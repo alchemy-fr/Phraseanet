@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -102,5 +103,53 @@ class FeedItemRepository extends EntityRepository
         } while (count($items) < $nbItems && count($result) !== 0);
 
         return $items;
+    }
+
+    public function getItemsCount(User $user, $databoxId = null, $recordId = null)
+    {
+        $qb = $this->createQueryBuilder('fi');
+        $qb->select('count(fi)');
+        $qb->innerjoin('fi.entry', 'fe');
+        $qb->innerjoin('fe.publisher', 'fp');
+
+        $qb->where($qb->expr()->eq('fp.user', ':publisher'));
+        $qb->setParameter(':publisher', $user);
+
+        if ($databoxId != null) {
+            $qb->andWhere('fi.sbasId = :databoxId');
+            $qb->setParameter(':databoxId', $databoxId);
+        }
+
+        if ($recordId != null) {
+            $qb->andWhere('fi.recordId = :recordId');
+            $qb->setParameter(':recordId', $recordId);
+        }
+
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getLastItems(User $user, $databoxId = null, $recordId = null, $nbItems = 200)
+    {
+        $qb = $this->createQueryBuilder('fi');
+        $qb->innerjoin('fi.entry', 'fe');
+        $qb->innerjoin('fe.publisher', 'fp');
+
+        $qb->where($qb->expr()->eq('fp.user', ':publisher'));
+        $qb->setParameter(':publisher', $user);
+
+        if ($databoxId != null) {
+            $qb->andWhere('fi.sbasId = :databoxId');
+            $qb->setParameter(':databoxId', $databoxId);
+        }
+
+        if ($recordId != null) {
+            $qb->andWhere('fi.recordId = :recordId');
+            $qb->setParameter(':recordId', $recordId);
+        }
+
+        $qb->orderBy('fi.id', 'DESC');
+        $qb->setMaxResults($nbItems);
+
+        return $qb->getQuery()->getResult();
     }
 }
