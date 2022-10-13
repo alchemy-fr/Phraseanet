@@ -777,42 +777,13 @@
       </div>
 
       <div id="feed_tab">
-        <h1>User record feed</h1>
-
-        <div style="margin-bottom: 20px;">
-          <select id="feed-databox-filter">
-            <option value="">{{ 'button::choose databox' | trans }}</option>
-            {% for databoxId in databoxIds %}
-              <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
-            {% endfor %}
-          </select>
-
-          <input type="number" id="feed-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
-        </div>
-
-        <p> <span class="feed-result-count">{{ feed_items|length }} / {{ feed_total_count }}</span> (last 200 records feed displayed)</p>
-        <table>
-          <thead>
-          <tr>
-            <th>databox name</th>
-            <th>record_id</th>
-            <th>title</th>
-            <th>author name</th>
-            <th>feed name</th>
-          </tr>
-          </thead>
-          <tbody id="record_feed_list">
-          {% for f_i in feed_items %}
-            <tr>
-              <td>{{ f_i.getSbasId() | sbas_labels(app) }}</td>
-              <td>{{ f_i.getRecordId() }}</td>
-              <td>{{ f_i.getEntry().title }}</td>
-              <td>{{ f_i.getEntry().authorName }}</td>
-              <td>{{ f_i.getEntry().feed.title }}</td>
-            </tr>
+        <h1>User as publisher in feed</h1>
+        <div id="feeds-list">
+          {% for f in feeds %}
+            <h6 style="max-width:300px; max-height: 30px; padding-bottom: 0px; padding-top: 0px;">{{ f.title }}</h6>
+            <div class="feed-content" style="max-height: 300px;"></div>
           {% endfor %}
-          </tbody>
-        </table>
+        </div>
       </div>
 
       <div id="basket_tab">
@@ -1550,6 +1521,29 @@
 
       $("#basket-record-filter").on('input', function() {
         listRecordBasket();
+      });
+
+      $("#feeds-list").accordion({
+        active: false,
+        heightStyle: 'content',
+        collapsible: true,
+        autoHeight:  true,
+        fillSpace:   true,
+        activate: function(){
+          var dest = $(this).find('.ui-state-active').next('.feed-content');
+
+          $.ajax({
+            type: 'GET',
+            url: '/admin/users/records-feed/',
+            dataType: 'json',
+            data: {
+              userId: {{ main_user.getId() }}
+            },
+            success: function (data) {
+              dest.empty().html(data.content);
+            }
+          });
+        }
       });
 
     {% endif %}

@@ -15,11 +15,11 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Doctrine\DBAL\Connection;
@@ -206,6 +206,26 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         }
 
         return $out;
+    }
+
+    public function getFeeds($userId = null)
+    {
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'feeds' => [],
+                ];
+            }
+        }
+
+        $user = $this->app['repo.users']->find($userId);
+
+        /** @var FeedRepository $feedsRepository */
+        $feedsRepository = $this->app['repo.feeds'];
+
+        return ['feeds' => $feedsRepository->getUserFeed($user)];
     }
 
     public function getFeedItems($userId = null, $databoxId = null, $recordId = null)

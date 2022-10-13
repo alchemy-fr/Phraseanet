@@ -42,7 +42,7 @@ class UserController extends Controller
 
         return $this->render('admin/editusers.html.twig',
             array_merge($rights->get_user_records_rights(),
-                $rights->getFeedItems(),
+                $rights->getFeeds(),
                 $rights->getBasketElements(),
                 $rights->get_users_rights())
         );
@@ -63,13 +63,11 @@ class UserController extends Controller
     public function listRecordFeed(Request $request)
     {
         $rights = $this->getUserEditHelper($request);
-        $results = $rights->getFeedItems($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
+        $results = $rights->getFeedItems($request->query->get('userId'));
 
-        return $this->app->json([
-            'content'       => $this->render('admin/user/records_list.html.twig', ['feed_items' => $results['feed_items']]),
-            'total_count'   => $results['feed_total_count'],
-            'total_result'  => count($results['feed_items'])
-        ]);
+        return $this->app->json(['content' => $this->render('admin/user/records_feed_list.html.twig', [
+            'feed_items' => $results['feed_items']
+        ])]);
     }
 
     public function listRecordBasket(Request $request)
