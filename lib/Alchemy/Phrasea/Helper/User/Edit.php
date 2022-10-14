@@ -15,9 +15,11 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -223,8 +225,21 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var FeedRepository $feedsRepository */
         $feedsRepository = $this->app['repo.feeds'];
+        $feeds = $feedsRepository->getUserFeed($user);
 
-        return ['feeds' => $feedsRepository->getUserFeed($user)];
+        /** @var FeedEntryRepository $feedEntryRepo */
+        $feedEntryRepo = $this->app['repo.feed-entries'];
+
+        $feedCount = [];
+        /** @var Feed $feed */
+        foreach ($feeds as $feed) {
+            $feedCount[$feed->getId()] = $feedEntryRepo->getByUserAndFeed($user, $feed, true);
+        }
+
+        return [
+            'feeds'         => $feedsRepository->getUserFeed($user),
+            'feeds_count'   => $feedCount
+        ];
     }
 
     public function getBasketElements($userId = null, $databoxId = null, $recordId = null)

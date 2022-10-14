@@ -13,7 +13,11 @@
     {% if feed_entries | length > 0 %}
         <ul>
             {% for f_e in feed_entries %}
-                <li>{{ f_e.title }}</li>
+                <li style="line-height: 25px;">
+                    <span class="publication-name">{{ f_e.title }}</span>
+                    <span style="margin-left:15px;">({{ f_e.getItems() | length }} records)</span>
+                    <button data-feed-entry="{{ f_e.getId() }}" class="btn btn-danger btn-mini pull-right delete-publication" style="margin-left:30px;">Delete</button>
+                </li>
             {% endfor %}
         </ul>
     {% else %}

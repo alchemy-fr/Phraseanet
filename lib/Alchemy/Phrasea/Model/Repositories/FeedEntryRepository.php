@@ -66,9 +66,10 @@ class FeedEntryRepository extends EntityRepository
         return $builder->getQuery()->getSingleScalarResult();
     }
 
-    public function getByUserAndFeed(User $user, Feed $feed)
+    public function getByUserAndFeed(User $user, Feed $feed, $isCount = false)
     {
         $qb = $this->createQueryBuilder('fe');
+
         $qb->innerJoin('fe.publisher', 'fp');
         $qb->where($qb->expr()->eq('fp.user', ':publisher'));
         $qb->setParameter(':publisher', $user);
@@ -76,6 +77,12 @@ class FeedEntryRepository extends EntityRepository
         $qb->andWhere($qb->expr()->eq('fe.feed', ':feed'));
         $qb->setParameter(':feed', $feed);
 
-        return $qb->getQuery()->getResult();
+        if ($isCount) {
+            $qb->select('count(fe)');
+            return  $qb->getQuery()->getSingleScalarResult();
+        } else {
+            $qb->orderBy('fe.id', 'DESC');
+            return $qb->getQuery()->getResult();
+        }
     }
 }

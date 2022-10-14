@@ -29,6 +29,7 @@ use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
+use Doctrine\ORM\EntityManager;
 use Goodby\CSV\Export\Protocol\ExporterInterface;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,6 +64,26 @@ class UserController extends Controller
         ]);
     }
 
+    public function deleteFeedEntry(Request $request)
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->app['orm.em'];
+        /** @var FeedEntryRepository $feedEntryRepo */
+        $feedEntryRepo = $this->app['repo.feed-entries'];
+
+        /** @var Feed|null $feed */
+        $feedEntry = $feedEntryRepo->find($request->request->get('feedEntryId'));
+
+        if ($feedEntry == null) {
+            return $this->app->json(['success'  => false, 'message' => 'publication not found']);
+        }
+
+        $manager->remove($feedEntry);
+        $manager->flush();
+
+        return $this->app->json(['success'  => true]);
+    }
+
     public function listFeedEntry(Request $request)
     {
         /** @var UserRepository $userRepo */
@@ -88,7 +109,9 @@ class UserController extends Controller
 
             return $this->app->json(['content' => $this->render('admin/user/records_list.html.twig', [
                 'feed_entries' => $feedEntryRepo->getByUserAndFeed($user, $feed)
-            ])]);
+                ]),
+                'feed_entries_count' => $feedEntryRepo->getByUserAndFeed($user, $feed, true)
+            ]);
         }
     }
 
