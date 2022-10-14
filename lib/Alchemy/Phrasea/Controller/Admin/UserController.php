@@ -69,6 +69,11 @@ class UserController extends Controller
         $userRepo = $this->app['repo.users'];
         $user = $userRepo->find($request->query->get('userId'));
 
+        // when not expand
+        if ($request->query->get('feedId') == null) {
+            return $this->app->json(['content' => '']);
+        }
+
         /** @var FeedRepository $feedsRepository */
         $feedsRepository = $this->app['repo.feeds'];
         /** @var Feed|null $feed */
