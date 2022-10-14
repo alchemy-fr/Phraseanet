@@ -9,15 +9,17 @@
     </tr>
 {% endfor %}
 
-{% for f_i in feed_items %}
-    <tr>
-        <td>{{ f_i.getSbasId() | sbas_labels(app) }}</td>
-        <td>{{ f_i.getRecordId() }}</td>
-        <td>{{ f_i.getEntry().title }}</td>
-        <td>{{ f_i.getEntry().authorName }}</td>
-        <td>{{ f_i.getEntry().feed.title }}</td>
-    </tr>
-{% endfor %}
+{% if feed_entries is defined %}
+    {% if feed_entries | length > 0 %}
+        <ul>
+            {% for f_e in feed_entries %}
+                <li>{{ f_e.title }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No publication</p>
+    {% endif %}
+{% endif %}
 
 {% for b_e in basket_elements %}
     <tr>

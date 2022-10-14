@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
-use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -226,29 +225,6 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $feedsRepository = $this->app['repo.feeds'];
 
         return ['feeds' => $feedsRepository->getUserFeed($user)];
-    }
-
-    public function getFeedItems($userId = null, $databoxId = null, $recordId = null)
-    {
-        if (empty($userId)) {
-            if (count($this->users) == 1) {
-                $userId = current($this->users);
-            } else {
-                return [
-                    'feed_items' => [],
-                ];
-            }
-        }
-
-        $user = $this->app['repo.users']->find($userId);
-
-        /** @var FeedItemRepository $repoItems */
-        $repoItems = $this->app['repo.feed-items'];
-
-        return [
-            'feed_items'        => $repoItems->getLastItems($user, $databoxId, $recordId),
-            'feed_total_count'  => $repoItems->getItemsCount($user, $databoxId, $recordId)
-        ];
     }
 
     public function getBasketElements($userId = null, $databoxId = null, $recordId = null)

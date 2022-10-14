@@ -133,7 +133,7 @@
           <a href="#record_acl_tab">Record ACL</a>
         </li>
         <li>
-          <a href="#feed_tab">Record Feed</a>
+          <a href="#feed_tab">Publication</a>
         </li>
         <li>
           <a href="#basket_tab">Basket</a>
@@ -780,7 +780,7 @@
         <h1>User as publisher in feed</h1>
         <div id="feeds-list">
           {% for f in feeds %}
-            <h6 style="max-width:300px; max-height: 30px; padding-bottom: 0px; padding-top: 0px;">{{ f.title }}</h6>
+            <h6 style="max-width:300px; max-height: 30px; padding-bottom: 0px; padding-top: 0px;" data-feed="{{ f.id }}">{{ f.title }}</h6>
             <div class="feed-content" style="max-height: 300px;"></div>
           {% endfor %}
         </div>
@@ -1467,22 +1467,6 @@
         });
       }
 
-      function listRecordFeed() {
-        $.ajax({
-          type: "GET",
-          url: "/admin/users/records-feed/",
-          data: {
-            databoxId : $("#feed-databox-filter").val(),
-            recordId : $("#feed-record-filter").val(),
-            userId: {{ main_user.getId() }}
-          },
-          success: function (data) {
-            $("#record_feed_list").empty().html(data.content);
-            $(".feed-result-count").empty().text(data.total_result + ' / ' + data.total_count);
-          }
-        });
-      }
-
       function listRecordBasket() {
         $.ajax({
           type: "GET",
@@ -1507,14 +1491,6 @@
         listRecordAcl();
       });
 
-      $("#feed-databox-filter").on('change', function() {
-        listRecordFeed();
-      });
-
-      $("#feed-record-filter").on('input', function() {
-        listRecordFeed();
-      });
-
       $("#basket-databox-filter").on('change', function() {
         listRecordBasket();
       });
@@ -1534,10 +1510,11 @@
 
           $.ajax({
             type: 'GET',
-            url: '/admin/users/records-feed/',
+            url: '/admin/users/feed-entry/',
             dataType: 'json',
             data: {
-              userId: {{ main_user.getId() }}
+              userId: {{ main_user.getId() }},
+              feedId: $(this).find('.ui-state-active').attr('data-feed')
             },
             success: function (data) {
               dest.empty().html(data.content);

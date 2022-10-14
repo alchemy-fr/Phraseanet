@@ -16,12 +16,15 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
@@ -60,14 +63,28 @@ class UserController extends Controller
         ]);
     }
 
-    public function listRecordFeed(Request $request)
+    public function listFeedEntry(Request $request)
     {
-        $rights = $this->getUserEditHelper($request);
-        $results = $rights->getFeedItems($request->query->get('userId'));
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->app['repo.users'];
+        $user = $userRepo->find($request->query->get('userId'));
 
-        return $this->app->json(['content' => $this->render('admin/user/records_feed_list.html.twig', [
-            'feed_items' => $results['feed_items']
-        ])]);
+        /** @var FeedRepository $feedsRepository */
+        $feedsRepository = $this->app['repo.feeds'];
+        /** @var Feed|null $feed */
+        $feed = $feedsRepository->find($request->query->get('feedId'));
+
+        if ($feed == null || $user == null) {
+            return $this->app->json(['content' => 'Give feed_id or user_id']);
+        } else {
+            /** @var FeedEntryRepository $feedEntryRepo */
+            $feedEntryRepo = $this->app['repo.feed-entries'];
+            $feedEntryRepo->getByUserAndFeed($user, $feed);
+
+            return $this->app->json(['content' => $this->render('admin/user/records_list.html.twig', [
+                'feed_entries' => $feedEntryRepo->getByUserAndFeed($user, $feed)
+            ])]);
+        }
     }
 
     public function listRecordBasket(Request $request)
