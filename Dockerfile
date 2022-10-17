@@ -94,8 +94,9 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && make \
     && make install \
     && mkdir /tmp/ImageMagick \
-    && curl https://imagemagick.org/archive/releases/ImageMagick-7.1.0-39.tar.gz | tar zx -C /tmp/ImageMagick --strip-components 1 \
+    && git clone https://github.com/ImageMagick/ImageMagick.git /tmp/ImageMagick \
     && cd /tmp/ImageMagick \
+    && git checkout 7.1.0-39 \
     && ./configure \
     && make \
     && make install \
