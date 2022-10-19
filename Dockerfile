@@ -100,6 +100,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && mkdir /tmp/libheif \
     && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
     && cd /tmp/libheif \
+    && git checkout v1.13.0 \
     && ./autogen.sh \
     && ./configure \
     && make \
