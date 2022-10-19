@@ -204,10 +204,10 @@ class OAuth2Controller extends Controller
          * The parameters can be passed in session, we restore them
          */
         $customParms = $this->getSession()->get($provider->getId() . '.parms', []);
-        foreach($customParms as $k=>$v) {
-            $request->request->set($k, $v);
+        if(!is_array($customParms)) {
+            $customParms = [];
         }
-        $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request);
+        $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request, $customParms);
 
         // triggers what's necessary
         try {
