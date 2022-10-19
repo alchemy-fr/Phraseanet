@@ -28,6 +28,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\WebhookWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
 use Silex\Application;
@@ -42,9 +43,14 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.logger'] = $app->share(function (Application $app) {
             $logger = new $app['monolog.logger.class']('alchemy-service logger');
-            $logger->pushHandler(new RotatingFileHandler(
+//            $logger->pushHandler(new RotatingFileHandler(
+//                $app['log.path'] . DIRECTORY_SEPARATOR . 'worker_service.log',
+//                10,
+//                Logger::INFO
+//            ));
+
+            $logger->pushHandler(new StreamHandler(
                 $app['log.path'] . DIRECTORY_SEPARATOR . 'worker_service.log',
-                10,
                 Logger::INFO
             ));
 
