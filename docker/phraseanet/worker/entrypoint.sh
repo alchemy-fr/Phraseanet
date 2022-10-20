@@ -3,12 +3,14 @@
 set -e
 
 HEARTBEAT_INTERVAL=20
-
+APP_DIR="/var/alchemy/Phraseanet"
 DOCKER_DIR="./docker/phraseanet"
 PHR_USER=app
 
 mkdir -p "${APP_DIR}/tmp/locks" \
-    && chown -R app:app "${APP_DIR}/tmp"
+    && chown -R app:app "${APP_DIR}/tmp" \
+    && chown -R app:app "${APP_DIR}/tmp/locks"
+
 
 envsubst < "${DOCKER_DIR}/php.ini.sample" > /usr/local/etc/php/php.ini
 envsubst < "${DOCKER_DIR}/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
@@ -122,7 +124,7 @@ function check() {
     # exit 1
   elif [ $nb_heartbeat -lt 1 ]; then
     echo "worker:heartbeat is not running, exiting..."
-    # exit 1
+     exit 1
   fi
 }
 
