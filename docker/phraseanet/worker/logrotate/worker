@@ -1,0 +1,8 @@
+/var/alchemy/Phraseanet/logs/worker_service.log {
+        su app app
+        create 0644 app app
+        daily
+        missingok
+        notifempty
+        rotate 10
+}
