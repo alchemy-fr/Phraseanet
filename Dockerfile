@@ -301,6 +301,9 @@ RUN apt-get update \
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
 COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
+
+RUN chmod 644 /etc/logrotate.d/worker
+
 ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
 CMD ["/bin/bash", "bin/run-worker.sh"]
 
