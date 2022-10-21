@@ -100,6 +100,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && mkdir /tmp/libheif \
     && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
     && cd /tmp/libheif \
+    && git checkout v1.13.0 \
     && ./autogen.sh \
     && ./configure \
     && make \
@@ -292,12 +293,17 @@ FROM phraseanet-fpm as phraseanet-worker
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         supervisor \
+        logrotate \
     && mkdir -p /var/log/supervisor \
     && chown -R app: /var/log/supervisor \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists 
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
+COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
+
+RUN chmod 644 /etc/logrotate.d/worker
+
 ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
 CMD ["/bin/bash", "bin/run-worker.sh"]
 
