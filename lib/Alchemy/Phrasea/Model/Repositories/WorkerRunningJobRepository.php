@@ -393,7 +393,8 @@ class WorkerRunningJobRepository extends EntityRepository
         $rsm->addScalarResult('duration', 'duration');
         $rsm->addScalarResult('status', 'status');
 
-        $sql = "SELECT info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, TIMESTAMPDIFF(SECOND, w.created, w.finished) as duration \n"
+        $sql = "SELECT info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, \n"
+            . "IF(w.finished IS NULL, TIMESTAMPDIFF(SECOND, w.created, NOW()), TIMESTAMPDIFF(SECOND, w.created, w.finished))  as duration \n"
             . "FROM WorkerRunningJob w \n"
             . "WHERE 1";
 
