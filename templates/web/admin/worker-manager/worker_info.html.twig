@@ -134,9 +134,9 @@
             {% endif %}
         </td>
         <td>
-            {% if workerRow.duration is not empty %}
+            <span {% if workerRow.finished is empty%} style="color:#ff8100;" {% endif %}>
                 {{ workerRow.duration|date_duration }}
-            {% endif %}
+            </span>
         </td>
         <td>{{ workerRow.status }}</td>
         <td>
