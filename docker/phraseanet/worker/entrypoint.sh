@@ -142,6 +142,6 @@ done' >> bin/run-worker.sh
   fi
 fi
 
-tail -F /var/alchemy/Phraseanet/logs/worker_service.log &
+tail -F "${APP_DIR}/logs/worker_service.log" &
 
 runuser -u $PHR_USER -- $@
