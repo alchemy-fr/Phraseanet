@@ -121,10 +121,10 @@ function check() {
   echo $date_time_process "-" $nb_process "running workers"
   if [ $nb_process -lt $NBR_WORKERS ]; then
     echo "One or more worker:execute is not running, exiting..."
-    # exit 1
+    exit 1
   elif [ $nb_heartbeat -lt 1 ]; then
     echo "worker:heartbeat is not running, exiting..."
-     exit 1
+    exit 1
   fi
 }
 
