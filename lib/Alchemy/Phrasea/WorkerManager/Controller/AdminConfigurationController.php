@@ -110,6 +110,7 @@ class AdminConfigurationController extends Controller
         $databoxId = empty($request->query->get('databoxId')) ? null : $request->query->get('databoxId');
         $recordId = empty($request->query->get('recordId')) ? null : $request->query->get('recordId');
         $timeFilter = empty($request->query->get('timeFilter')) ? null : $request->query->get('timeFilter');
+        $fieldTimeFilter = $request->query->get('fieldTimeFilter');
 
         $dateTimeFilter = null;
         if ($timeFilter != null) {
@@ -136,7 +137,7 @@ class AdminConfigurationController extends Controller
 
         $helpers = new PhraseanetExtension($this->app);
 
-        $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, $dateTimeFilter);
+        $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
         $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
         $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
         $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
