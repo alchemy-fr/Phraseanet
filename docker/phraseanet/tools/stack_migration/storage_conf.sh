@@ -1,5 +1,7 @@
 #bin/bash
 
+cd "/var/alchemy/Phraseanet"
+
 echo `date +"%Y-%m-%d %H:%M:%S"` - "update binaries path in accordance of docker stack"
 
 bin/setup system:config set main.binaries.php_binary "/usr/local/bin/php"
@@ -13,6 +15,8 @@ bin/setup system:config set main.binaries.ffprobe_binary "/usr/local/bin/ffprobe
 bin/setup system:config set main.binaries.mp4box_binary "/usr/bin/MP4Box"
 bin/setup system:config set main.binaries.pdftotext_binary "/usr/bin/pdftotext"
 
+echo `date +"%Y-%m-%d %H:%M:%S"` - "binaries path applied"
+
 echo `date +"%Y-%m-%d %H:%M:%S"` - "update storage path in accordance of docker stack"
 
 bin/setup system:config set main.storage.subdefs "/var/alchemy/Phraseanet/datas"
@@ -23,13 +27,6 @@ bin/setup system:config set main.storage.lazaret "/var/alchemy/Phraseanet/datas/
 bin/setup system:config set main.storage.caption "/var/alchemy/Phraseanet/tmp/caption"
 bin/setup system:config set main.storage.worker_tmp_files "/var/alchemy/Phraseanet/tmp/worker"
 
+echo `date +"%Y-%m-%d %H:%M:%S"` - "storage path path applied"
 
-
-        
-        
-        
-        
-        
-        
-        
-    
+cd -
