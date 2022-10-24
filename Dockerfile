@@ -87,6 +87,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
     && mkdir /tmp/libheif \
+    && git checkout v1.13.0 \
     && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
     && cd /tmp/libheif \
     && ./autogen.sh \
