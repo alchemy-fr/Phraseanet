@@ -1,18 +1,20 @@
 ## Description
 
-A scripts collection for migration froma a stack and another one
+Status : EXPERIMENTAL
+
+A scripts collection for migration from a stack and another one
 this script maybe require 
 
 
 ### requirement 
 
+#### configuration.yml 
+Target: a Phraseanet deployed with version 4.1.6 or higher on docker-compose or Kubernetes
+Source : a configuration.yml from a 4.1 version or higher version 
 
-A Phraseanet deployed with version 4.1.6 or higher on docker-compose or K8S
-and the migrated instance need to be in 4.1 or higher version 
+### Instruction.
 
-### Instruction usage 
-
-Script can be play in a running FPM container with app users
+Scripts can be play in a running FPM container with app users
 Before execution of they script keep a copie your existing source and destination "configuration.yml" files
 and place the configuration file need to be migrate in place of the current "configuration.yml" file
 
