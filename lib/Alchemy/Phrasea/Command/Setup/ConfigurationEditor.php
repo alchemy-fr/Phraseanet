@@ -91,7 +91,8 @@ class ConfigurationEditor extends Command
             }
 
             if ($lastParameter == $paramName) {
-                $configurationCurrent[$paramName] = Yaml::parse($value);
+                // if value is a file path, do not parse it
+                $configurationCurrent[$paramName] = is_file($value) ? $value : Yaml::parse($value);
             }
             else {
                 $configurationCurrent = & $configurationCurrent[$paramName];

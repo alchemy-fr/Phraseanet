@@ -80,7 +80,7 @@ class Manager
 
         try {
             $cache = $this->factory->create($name, $options);
-        } catch (RuntimeException $e) {
+        } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             $cache = $this->factory->create('array', []);
         }
