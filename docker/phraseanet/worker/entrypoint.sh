@@ -143,5 +143,7 @@ done' >> bin/run-worker.sh
 fi
 
 tail -F "${APP_DIR}/logs/worker_service.log" &
+tail -F "${APP_DIR}/logs/scheduler.log" &
+tail -F "${APP_DIR}/logs/task.log" &
 
 runuser -u $PHR_USER -- $@
