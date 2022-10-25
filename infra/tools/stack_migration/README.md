@@ -1,9 +1,8 @@
 ## Description
 
-Status : EXPERIMENTAL
+Status : EXPERIMENTAL, WIP
 
-A scripts collection for migration from a stack and another one
-this script maybe require 
+A scripts collection for migration from a stack (eg: docker-compose) to another one 
 
 
 ### requirement 
