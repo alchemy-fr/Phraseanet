@@ -12,12 +12,14 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\Authenticator;
-use Alchemy\Phrasea\Cache\Cache;
+use Alchemy\Phrasea\Cache\Factory;
+use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -46,6 +48,7 @@ class DashboardController extends Controller
         }
 
         return $this->render('admin/dashboard.html.twig', [
+            'session_flushed' => $request->query->get('flush_session') === 'ok',
             'cache_flushed' => $request->query->get('flush_cache') === 'ok',
             'admins'        => $this->getUserRepository()->findAdmins(),
             'email_status'  => $emailStatus,
@@ -59,11 +62,37 @@ class DashboardController extends Controller
      */
     public function flush()
     {
-        /** @var Cache $cache */
+        /** @var CacheManager $cache */
         $cache = $this->app['phraseanet.cache-service'];
-        $flushOK = $cache->flushAll() ? 'ok' : 'ko';
+        $namespace = $this->app['conf']->get(['main', 'cache', 'options', 'namespace'], '');
+
+        $pattern = $namespace . '*';
+        $flushOK = $cache->flushAll($pattern) ? 'ok' : 'ko';
 
         return $this->app->redirectPath('admin_dashboard', ['flush_cache' => $flushOK]);
+    }
+
+    public function flushSession()
+    {
+        /** @var Factory $cacheFactory */
+        $cacheFactory = $this->app['phraseanet.cache-factory'];
+        $flushOK = 'ko';
+
+        try {
+            $cache = $cacheFactory->create('redis', ['host' => 'redis-session', 'port' => '6379']);
+
+            // remove session in redis
+            $flushOK = $cache->removeByPattern('PHPREDIS_SESSION*') ? 'ok' : 'ko';
+
+            /** @var SessionRepository $repoSessions */
+            $repoSessions = $this->app['repo.sessions'];
+            // remove session on table
+            $repoSessions->deleteAllExceptSessionId($this->app['session']->get('session_id'));
+        } catch (\Exception $e) {
+            $this->app['logger']->error('error : ' . $e->getMessage());
+        }
+
+        return $this->app->redirectPath('admin_dashboard', ['flush_session' => $flushOK]);
     }
 
     /**

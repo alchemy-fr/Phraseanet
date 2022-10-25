@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Collection\CollectionService;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -126,17 +127,26 @@ class CollectionController extends Controller
         $msg = $this->app->trans('An error occurred');
 
         $collection = \collection::getByBaseId($this->app, $bas_id);
+
         try {
-            if ($collection->get_record_amount() <= 500) {
-                $collection->empty_collection(500);
-                $msg = $this->app->trans('Collection empty successful');
-            } else {
-                $this->app['manipulator.task']->createEmptyCollectionJob($collection);
-                $msg = $this->app->trans('A task has been creted, please run it to complete empty collection');
-            }
+            $recordIdsList = $collection->getCollectionRecordIdList();
+
+            //  publish payload to mainQ to split message per record
+            $payload = [
+                'message_type' => MessagePublisher::MAIN_QUEUE_TYPE,
+                'payload' => [
+                    'type'           => MessagePublisher::DELETE_RECORD_TYPE, // used to specify the final Q to publish message
+                    'databoxId'      => $collection->get_sbas_id(),
+                    'recordIdsList'  => implode(',', $recordIdsList)     // list of record_id
+                ]
+            ];
+
+            $this->getMessagePublisher()->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
 
             $success = true;
-        } catch (\Exception $e) {
+
+            $msg = 'Empty collection will be do by the worker';
+        } catch(\Exception $e) {
 
         }
 
@@ -904,5 +914,13 @@ class CollectionController extends Controller
             'collection' => $collection,
             'table'      => $out,
         ]);
+    }
+
+    /**
+     * @return MessagePublisher
+     */
+    private function getMessagePublisher()
+    {
+        return $this->app['alchemy_worker.message.publisher'];
     }
 }

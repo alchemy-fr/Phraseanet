@@ -139,7 +139,8 @@ class Basket
      */
     public function __construct()
     {
-        $this->elements = new ArrayCollection();
+        $this->elements     = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     /**
@@ -828,6 +829,23 @@ class Basket
         $date_obj = new DateTime();
 
         return $date_obj > $this->getVoteExpires();
+    }
+
+    /**
+     * returns null if the basket has no shareExpires date
+     *
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function isShareExpires()
+    {
+        if (is_null($this->getShareExpires())) {
+            return null;
+        }
+
+        $date_obj = new DateTime();
+
+        return $date_obj > $this->getShareExpires();
     }
 
     public function getVoteString(Application $app, User $user)

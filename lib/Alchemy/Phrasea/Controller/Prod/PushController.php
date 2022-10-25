@@ -342,30 +342,6 @@ class PushController extends Controller
         return $this->app->json($ret);
     }
 
-    public function quitshareAction(Request $request, Basket $basket)
-    {
-        $ret = [
-            'success' => false,
-            'message' => ""
-        ];
-
-        $user = $this->getAuthenticatedUser();
-        if( !is_null($participant = $basket->getParticipant($user))) {
-            $manager = $this->getEntityManager();
-            $manager->beginTransaction();
-
-            $basket->removeParticipant($participant);
-            $manager->remove($participant);
-            $manager->persist($basket);
-            $manager->flush();
-
-            $manager->commit();
-            $ret['success'] = true;
-        }
-
-        return $this->app->json($ret);
-    }
-
     /**
      * @param $usr_id
      * @return JsonResponse
@@ -618,6 +594,11 @@ class PushController extends Controller
      */
     public function updateExpirationAction(Request $request)
     {
+        $ret = [
+            'success' => false,
+            'message' => 'Expiration date not updated!'
+        ];
+
         // sanity check
         if (is_null($request->request->get('date'))) {
             throw new Exception('The provided date is null!');
@@ -629,40 +610,53 @@ class PushController extends Controller
             $basket = $this->getBasketRepository()->findUserBasket($request->request->get('basket_id'), $this->app->getAuthenticatedUser(), true);
             $expirationDate = new DateTime($request->request->get('date') . " 23:59:59");
 
-            if (!$basket->isVoteBasket()) {
-                throw new Exception('Unable to find the validation session');
-            }
-
-            // update validation tokens expiration
-            //
-            /** @var BasketParticipant $participant */
-            foreach($basket->getParticipants() as $participant) {
-                try {
-                    if(!is_null($token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser()))) {
-                        if($participant->getUser()->getId() === $basket->getVoteInitiator()->getId()) {
-                            // the initiator keeps a no-expiration token
-                            $token->setExpiration(null);    // shoud already be null, but who knows...
-                        }
-                        else {
-                            // the "normal" user token is fixed
-                            $token->setExpiration($expirationDate);
+            if ($basket->isVoteBasket()) {
+                // update validation tokens expiration
+                //
+                /** @var BasketParticipant $participant */
+                foreach($basket->getParticipants() as $participant) {
+                    try {
+                        if(!is_null($token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser()))) {
+                            if($participant->getUser()->getId() === $basket->getVoteInitiator()->getId()) {
+                                // the initiator keeps a no-expiration token
+                                $token->setExpiration(null);    // shoud already be null, but who knows...
+                            }
+                            else {
+                                // the "normal" user token is fixed
+                                $token->setExpiration($expirationDate);
+                            }
                         }
                     }
+                    catch (Exception $e) {
+                        // not unique token ? should not happen.
+                        // no-op
+                    }
                 }
-                catch (Exception $e) {
-                    // not unique token ? should not happen.
-                    // no-op
-                }
-            }
 
-            $basket->setVoteExpires($expirationDate);
-            $manager->persist($basket);
-            $manager->flush();
-            $manager->commit();
-            $ret = [
-                'success' => true,
-                'message' => $this->app->trans('Expiration date successfully updated!')
-            ];
+                $basket->setVoteExpires($expirationDate);
+                $manager->persist($basket);
+                $manager->flush();
+                $manager->commit();
+
+                $ret = [
+                    'success' => true,
+                    'message' => $this->app->trans('Expiration date successfully updated!')
+                ];
+            } elseif ($basket->getParticipants()->count() > 0 && !$basket->isVoteBasket()) {
+                if (empty($request->request->get('date'))) {
+                    $basket->setShareExpires(null);
+                } else {
+                    $basket->setShareExpires($expirationDate);
+                }
+                $manager->persist($basket);
+                $manager->flush();
+                $manager->commit();
+
+                $ret = [
+                    'success' => true,
+                    'message' => $this->app->trans('Expiration date successfully updated!')
+                ];
+            }
         }
         catch (Exception $e) {
             $ret = [
@@ -766,6 +760,7 @@ class PushController extends Controller
 
         $feedbackaction = $request->request->get('feedbackaction');
         $participants = [];
+        $participantsHDRight = [];
         $participantUserIds = '';
         $initiatorUserId = null;
 
@@ -780,6 +775,20 @@ class PushController extends Controller
 //                    ? $basket->getVoteInitiator()->getId()
 //                    : $this->getAuthenticatedUser()->getId();
                 $initiatorUserId = $basket->getVoteInitiator() ? $basket->getVoteInitiator()->getId() : null;
+
+                foreach ($participants as $participant) {
+                   $userAcl = $this->getAclForUser($participant->getUser());
+                   if (count($basket->getElements()) > 0) {
+                       $participantsHDRight[$participant->getUser()->getId()] = true;
+                   }
+
+                   foreach ($basket->getElements() as $bElement) {
+                       if(!$userAcl->has_hd_grant($bElement->getRecord($this->app))) {
+                           $participantsHDRight[$participant->getUser()->getId()] = false;
+                           break 1;
+                       }
+                   }
+               }
             }
             else {
                 // initiate a share from a list of records
@@ -811,7 +820,8 @@ class PushController extends Controller
                 'participantUserIds' => $participantUserIds,
                 'feedbackAction'   => $feedbackaction,
                 'owner'            => $this->getAuthenticatedUser(),
-                'initiatorUserId'  => $initiatorUserId
+                'initiatorUserId'  => $initiatorUserId,
+                'participantsHDRight' => $participantsHDRight
             ]
         );
     }

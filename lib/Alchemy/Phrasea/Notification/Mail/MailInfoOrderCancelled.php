@@ -72,7 +72,6 @@ class MailInfoOrderCancelled extends AbstractMail
      */
     public function getButtonText()
     {
-        return $this->app->trans('See my order', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -80,6 +79,5 @@ class MailInfoOrderCancelled extends AbstractMail
      */
     public function getButtonURL()
     {
-        return $this->app->url('prod');
     }
 }

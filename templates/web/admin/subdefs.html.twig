@@ -278,7 +278,7 @@
 
                         allFields.removeClass("ui-state-error");
 
-                        bValid = bValid && checkLength(name, "subdef name", 3, 16);
+                        bValid = bValid && checkLength(name, "subdef name", 3, 64);
                         bValid = bValid && isOptionChosen(subviewType);
                         bValid = bValid && isOptionChosen(mediaType);
                         bValid = bValid && checkSpecialChar(name);
@@ -416,6 +416,14 @@
                     class="btn btn-primary subviews-submit">{{ 'boutton::valider' | trans }}</button>
             {% for subdefgroup, subdeflist in subdefs %}
                 <div id="{{ subdefgroup }}">
+                    <div>
+                        <label class="checkbox inline">
+                            <input type="checkbox" name="document_meta[{{ subdefgroup }}]"
+                                   value="1"
+                                   {% if  subdeflist.toWritemetaOriginalDocument() %}checked="checked"{% endif %}/>{{ 'write metadata in original document' | trans }}
+                        </label>
+                    </div>
+
                     {% for subdefname , subdef in subdeflist %}
                         <div>
                             <input type="hidden" name="subdefs[]" value="{{ subdefgroup }}_{{ subdefname }}"/>
@@ -426,6 +434,14 @@
                             <table class="subdefTab" cellspacing="0" cellpading="0" border="0"
                                    style="display:inline-block;">
                                 <tbody>
+                                <tr>
+                                    <td style="width:100px;line-height: 0.9rem;">{{ 'To build by phraseanet' | trans }}</td>
+                                    <td style="width:300px;"><input type="checkbox"
+                                                                    name="{{ subdefgroup }}_{{ subdefname }}_tobuild"
+                                                                    {% if subdef.isTobuild() %}checked="checked"{% endif %}
+                                                                    value="1"/></td>
+                                    <td></td>
+                                </tr>
                                 <tr>
                                     <td style="width:100px;line-height: 0.9rem;">{{ 'Telechargeable' | trans }}</td>
                                     <td style="width:300px;"><input type="checkbox"

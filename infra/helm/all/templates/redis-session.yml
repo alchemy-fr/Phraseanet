@@ -1,0 +1,21 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phraseanet-redis-session
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phraseanet
+      tier: redis-session
+  template:
+    metadata:
+      labels:
+        app: phraseanet
+        tier: redis-session
+    spec:
+      containers:
+      - name: redis-session
+        image: redis:5.0.5
+        terminationMessagePolicy: FallbackToLogsOnError

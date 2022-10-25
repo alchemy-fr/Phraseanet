@@ -4,15 +4,14 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
-use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerRecordsActionsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
@@ -33,22 +32,8 @@ class AdminConfigurationController extends Controller
 {
     public function indexAction(PhraseaApplication $app, Request $request)
     {
-        /** @var WorkerRunningJobRepository $repoWorker */
-        $repoWorker = $app['repo.worker-running-job'];
-
-        $filterStatus = [
-            WorkerRunningJob::RUNNING,
-            WorkerRunningJob::FINISHED,
-            WorkerRunningJob::ERROR,
-            WorkerRunningJob::INTERRUPT
-        ];
-
-        $workerRunningJob = $repoWorker->findByStatus($filterStatus);
-
         return $this->render('admin/worker-manager/index.html.twig', [
             'isConnected'       => $this->getAMQPConnection()->getChannel() != null,
-            'workerRunningJob'  => $workerRunningJob,
-            'reload'            => false,
             '_fragment' => $request->get('_fragment') ?? 'worker-configuration',
         ]);
     }
@@ -121,9 +106,22 @@ class AdminConfigurationController extends Controller
         $repoWorker = $app['repo.worker-running-job'];
 
         $reload = ($request->query->get('reload') == 1);
+        $jobType = $request->query->get('jobType');
+        $databoxId = empty($request->query->get('databoxId')) ? null : $request->query->get('databoxId');
+        $recordId = empty($request->query->get('recordId')) ? null : $request->query->get('recordId');
+        $timeFilter = empty($request->query->get('timeFilter')) ? null : $request->query->get('timeFilter');
+        $fieldTimeFilter = $request->query->get('fieldTimeFilter');
 
-        $workerRunningJob = [];
+        $dateTimeFilter = null;
+        if ($timeFilter != null) {
+            try {
+                $dateTimeFilter = (new \DateTime())->sub(new \DateInterval($timeFilter));
+            } catch (\Exception $e) {
+            }
+        }
+
         $filterStatus = [];
+
         if ($request->query->get('running') == 1) {
             $filterStatus[] = WorkerRunningJob::RUNNING;
         }
@@ -137,14 +135,56 @@ class AdminConfigurationController extends Controller
             $filterStatus[] = WorkerRunningJob::INTERRUPT;
         }
 
-        if (count($filterStatus) > 0) {
-            $workerRunningJob = $repoWorker->findByStatus($filterStatus);
-        }
+        $helpers = new PhraseanetExtension($this->app);
 
-        return $this->render('admin/worker-manager/worker_info.html.twig', [
-            'workerRunningJob' => $workerRunningJob,
-            'reload'           => $reload
-        ]);
+        $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
+        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
+        $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
+        $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
+        // format duration
+        $totalDuration  = $helpers->getDuration($totalDuration);
+
+        // get all row count in the table WorkerRunningJob
+        $totalCount = $repoWorker->getJobCount([], null, null , null);
+        $totalCount = number_format($totalCount, 0, '.', ' ');
+
+        $databoxIds = array_map(function (\databox $databox) {
+                return $databox->get_sbas_id();
+            },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
+
+        $types = AMQPConnection::MESSAGES;
+
+        // these types are not included in workerRunningJob
+        unset($types['mainQueue'], $types['createRecord'], $types['pullAssets'], $types['validationReminder']);
+
+        $jobTypes = array_keys($types);
+
+        if ($reload) {
+            return $this->app->json(['content' => $this->render('admin/worker-manager/worker_info.html.twig', [
+                'workerRunningJob' => $workerRunningJob,
+                'reload'           => $reload,
+                'jobTypes'         => $jobTypes,
+                'databoxIds'       => $databoxIds,
+            ]),
+                'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
+                'resultTotal'      => $workerRunningJobTotalCount,
+                'totalCount'       => $totalCount,
+                'totalDuration'    => $totalDuration
+            ]);
+        } else {
+            return $this->render('admin/worker-manager/worker_info.html.twig', [
+                'workerRunningJob' => $workerRunningJob,
+                'reload'           => $reload,
+                'jobTypes'         => $jobTypes,
+                'databoxIds'       => $databoxIds,
+                'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
+                'resultTotal'      => $workerRunningJobTotalCount,
+                'totalCount'       => $totalCount,
+                'totalDuration'    => $totalDuration
+            ]);
+        }
     }
 
     /**
@@ -172,6 +212,38 @@ class AdminConfigurationController extends Controller
         $em->flush();
 
         return $this->app->json(['success' => true]);
+    }
+
+    public function changeStatusCanceledAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+
+        $result = $repoWorker->getRunningSinceCreated($request->get('hour'));
+        return $this->render('admin/worker-manager/worker_info_change_status.html.twig', [
+            'jobCount' => count($result)
+        ]);
+    }
+
+    public function doChangeStatusToCanceledAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+        $repoWorker->updateStatusRunningToCanceledSinceCreated($request->request->get('hour'));
+
+        return $this->app->json(['success' => true]);
+    }
+
+    public function getRunningAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+        $result = $repoWorker->getRunningSinceCreated($request->get('hour'));
+
+        return $this->app->json([
+            'success'   => true,
+            'count'     => count($result)
+        ]);
     }
 
     public function queueMonitorAction(PhraseaApplication $app, Request $request)
@@ -444,66 +516,6 @@ class AdminConfigurationController extends Controller
         $repoWorkerJob = $app['repo.worker-running-job'];
 
         return $repoWorkerJob->checkPopulateStatusByDataboxIds($databoxIds);
-    }
-
-    public function pullAssetsAction(PhraseaApplication $app, Request $request)
-    {
-        $config = $this->getConf()->get(['workers', 'pull_assets'], []);
-        // the "pullInterval" comes from the ttl_retry
-        $ttl_retry = $this->getConf()->get(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], null);
-        if(!is_null($ttl_retry)) {
-            $ttl_retry /= 1000;     // form is in sec
-        }
-        $config['pullInterval'] = $ttl_retry;
-
-        $form = $app->form(new WorkerPullAssetsType(), $config);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-            switch($data['act']) {
-                case 'save' :   // save the form content (settings) in 2 places
-                    $ttl_retry = $data['pullInterval'];
-                    unset($data['act'], $data['pullInterval'], $config['pullInterval']);
-                    // save most data under workers/pull_assets
-                    $app['conf']->set(['workers', 'pull_assets'], array_merge($config, $data));
-                    // save ttl in the q settings
-                    if(!is_null($ttl_retry)) {
-                        $this->getConf()->set(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], 1000 * (int)$ttl_retry);
-                    }
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    break;
-                case 'start':
-                    // reinitialize the validation reminder queues
-                    $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
-                    break;
-                case 'stop':
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    break;
-            }
-
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-pull-assets']);
-        }
-
-        // guess if the q is "running" = check if there are pending message on Q or loop-Q
-        $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
-        foreach([
-                    MessagePublisher::PULL_ASSETS_TYPE,
-                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::PULL_ASSETS_TYPE)
-                ] as $qName) {
-            if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
-                $running = true;
-            }
-        }
-        return $this->render('admin/worker-manager/worker_pull_assets.html.twig', [
-            'form' => $form->createView(),
-            'running' => $running
-        ]);
     }
 
     private function getDefaultRecordsActionsSettings()

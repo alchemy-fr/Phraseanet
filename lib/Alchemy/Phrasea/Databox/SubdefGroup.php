@@ -22,6 +22,7 @@ class SubdefGroup implements \IteratorAggregate, \Countable
     private $type;
 
     private $isDocumentOrderable;
+    private $writemetaOriginalDocument;
 
     /**
      * @var \databox_subdef[]
@@ -33,11 +34,12 @@ class SubdefGroup implements \IteratorAggregate, \Countable
      * @param Type $type
      * @param bool $isDocumentOrderable
      */
-    public function __construct($name, Type $type, $isDocumentOrderable)
+    public function __construct($name, Type $type, $isDocumentOrderable, $writemetaOriginalDocument = true)
     {
         $this->name = $name;
         $this->type = $type;
         $this->isDocumentOrderable = $isDocumentOrderable;
+        $this->writemetaOriginalDocument = $writemetaOriginalDocument;
     }
 
     /**
@@ -72,6 +74,14 @@ class SubdefGroup implements \IteratorAggregate, \Countable
     public function isDocumentOrderable()
     {
         return $this->isDocumentOrderable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function toWritemetaOriginalDocument()
+    {
+        return $this->writemetaOriginalDocument;
     }
 
     public function addSubdef(\databox_subdef $subdef)

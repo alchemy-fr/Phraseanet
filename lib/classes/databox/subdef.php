@@ -40,6 +40,7 @@ class databox_subdef
      */
     private $requiresMetadataUpdate;
     protected $downloadable;
+    protected $tobuild;
     protected $translator;
     protected static $mediaTypeToSubdefTypes = [
         SubdefType::TYPE_AUDIO    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
@@ -77,6 +78,7 @@ class databox_subdef
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
         $this->orderable = isset($sd->attributes()->orderable) ? p4field::isyes($sd->attributes()->orderable) : true;
+        $this->tobuild = isset($sd->attributes()->tobuild) ? p4field::isyes($sd->attributes()->tobuild) : true;
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
         $this->preset = $sd->attributes()->presets;
         $this->requiresMetadataUpdate = p4field::isyes((string)$sd->meta);
@@ -347,6 +349,16 @@ class databox_subdef
     public function isOrderable()
     {
         return $this->orderable;
+    }
+
+    /**
+     * boolean
+     *
+     * @return bool
+     */
+    public function isTobuild()
+    {
+        return $this->tobuild;
     }
 
     /**

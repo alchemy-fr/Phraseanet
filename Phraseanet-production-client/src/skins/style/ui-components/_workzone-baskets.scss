@@ -5,7 +5,7 @@
     .ui-accordion .ui-accordion-content {
         padding: 0 10px;
         &.content {
-            padding: 0 5px;
+            padding: 5px;
         }
     }
     #baskets_wrapper {
@@ -42,11 +42,15 @@
             left: 0;
             right: 1px;
             bottom: 0;
+            /*
             overflow-y: auto;
             overflow-x: hidden;
+             */
             &.groupDrop {
                 border: 3px solid #a00;
             }
+            display: flex;
+            flex-direction: column;
         }
         .content {
             &.grouping .alert_datas_changed,
@@ -73,6 +77,7 @@
         }
         .insidebloc {
             top: 0;
+            overflow-y: auto;
         }
         .top-scroller, .bottom-scroller {
             height: 80px;
@@ -228,7 +233,7 @@
     }
     .expiredDate {
         text-align: center;
-        margin-top: 30px;
+        margin-top: 10px;
         display: inline-block;
         width: 100%;
     }
@@ -254,9 +259,8 @@
     position: relative;
     margin-bottom: 15px;
     background: $chimWrap;
-    margin-right: 1px;
+    margin: 0 -1px;
     display: inline-block;
-    float: left;
     span.feedback_user_name {
         position: relative;
         background: $feedback;
@@ -314,6 +318,7 @@
     width: 108px;
     overflow: hidden;
     margin: 0;
+    float: none;
 }
 .basket-content {
     margin: 0 7px;
@@ -416,6 +421,8 @@
     .checkbox input[type=checkbox], .radio input[type=radio] {
         margin-top: 1px;
     }
+
+    flex: 0 0 auto;
 }
 .basket_type {
     width: 15px;

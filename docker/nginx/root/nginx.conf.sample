@@ -5,10 +5,15 @@ proxy_send_timeout          $GATEWAY_PROXY_TIMEOUT;
 client_header_timeout       $GATEWAY_SEND_TIMEOUT;
 client_body_timeout         $GATEWAY_SEND_TIMEOUT;
 fastcgi_read_timeout        $GATEWAY_FASTCGI_TIMEOUT;
+resolver $NEW_RESOLVER;
 
 upstream backend {
     server phraseanet:9000;
 }
+
+#upstream samlsp {
+#    server phraseanet-saml-sp:8080;
+#}
 
 server {
     listen       80;
@@ -18,10 +23,20 @@ server {
     client_max_body_size $MAX_BODY_SIZE;
 
     location /api {
+        if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
+            return 401;
+        }
         rewrite ^(.*)$ /api.php/$1 last;
     }
 
     location / {
+
+        error_page 503 = @maintenance;
+        recursive_error_pages on;
+        if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
+            return 503;
+        }
+
         # First attempt to serve request as file, then
         # as directory, then fall back to index.html
         try_files $uri $uri/ @rewriteapp;
@@ -45,18 +60,18 @@ server {
         include fastcgi_extended_params;
         fastcgi_pass backend;
     }
-    
-    location  /simplesaml {
-        alias /var/alchemy/simplesamlphp/www;
-        location ~ \.php(/|$) {
-            include fastcgi_params;
-            fastcgi_pass   backend;
-            fastcgi_split_path_info ^(.+?\.php)(/.+)$;
-            fastcgi_param SCRIPT_FILENAME $request_filename;
-            fastcgi_param PATH_INFO       $fastcgi_path_info if_not_empty;
-            fastcgi_param HTTPS on;
-            proxy_set_header X-Forwarded-Port $server_port;
-            fastcgi_param PATH_INFO $fastcgi_path_info;
-        }
+
+    location  /simplesaml/ {
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        set $target $NEW_TARGET:8080;
+        proxy_pass http://$target;
+
+    }
+
+    location @maintenance {
+        root /var/alchemy/Phraseanet/datas/nginx/;
+        try_files $uri /maintenance.html;
     }
 }

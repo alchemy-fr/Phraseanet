@@ -60,13 +60,19 @@ class CreateRecordWorker implements WorkerInterface
         $em = $this->repoWorkerJob->getEntityManager();
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $payload['base_url']];
+
+        // verify_ssl is getted from config , it depend on the target if we are in pull mode
+        // it is injected from the AssetsIngestWorker
+        $clientOptions = [
+            'base_uri'  => $payload['base_url'],
+            'verify'    => $payload['verify_ssl']
+        ];
 
         // add proxy in each request if defined in configuration
         $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get asset informations
-        $body = $uploaderClient->get('/assets/'.$payload['asset'], [
+        $body = $uploaderClient->get('assets/'.$payload['asset'], [
             'headers' => [
                 'Authorization' => 'AssetToken '.$payload['assetToken']
             ]
@@ -90,7 +96,7 @@ class CreateRecordWorker implements WorkerInterface
         $em->flush();
 
         //download the asset
-        $client = $proxyConfig->getClientWithOptions();
+        $client = $proxyConfig->getClientWithOptions(['verify' => $payload['verify_ssl']]);
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
 
         try {
@@ -147,22 +153,6 @@ class CreateRecordWorker implements WorkerInterface
                 $em->rollback();
             }
 
-        }
-
-        $canAck = $this->repoWorkerJob->canAckUploader($payload['commit_id']);
-
-        //  if all assets in the commit are downloaded , send ack to the uploader
-        if ($canAck) {
-            //  post ack to the uploader
-            $uploaderClient->post('/commits/' . $payload['commit_id'] . '/ack', [
-                    'headers' => [
-                        'Authorization' => 'AssetToken '.$payload['assetToken']
-                    ],
-                    'json' => [
-                        'acknowledged' => true
-                    ]
-                ]
-            );
         }
 
         $lazaretSession = new LazaretSession();
@@ -254,6 +244,18 @@ class CreateRecordWorker implements WorkerInterface
         if (is_int($payload['storyId']) && $elementCreated instanceof \record_adapter) {
             $this->addRecordInStory($user, $elementCreated, $sbasId, $payload['storyId'], $body['formData']);
         }
+
+        // ack by asset
+        // if all assets of a commit is acknowledge, the commit will automatically acknoledge
+        $uploaderClient->post('assets/' . $payload['asset'] . '/ack', [
+                'headers' => [
+                    'Authorization' => 'AssetToken ' . $payload['assetToken']
+                ],
+                'json' => [
+                    'acknowledged' => true
+                ]
+            ]
+        );
     }
 
     /**

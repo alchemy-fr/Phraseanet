@@ -4389,7 +4389,7 @@ var sharebasketModal = function sharebasketModal(services, datas) {
 
         var $dialog = _dialog2.default.create(services, {
             size: 'Full',
-            title: localeService.t('sharebasket')
+            title: localeService.t('shareTitle')
         });
 
         // add classes to the whoe dialog (including title)
@@ -4497,7 +4497,7 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
 
             var buttons = {};
 
-            buttons[localeService.t('valider')] = function () {
+            buttons[localeService.t('buttonYes')] = function () {
 
                 var callbackOK = function callbackOK() {
                     (0, _jquery2.default)('.list-container ul.list').children().each(function () {
@@ -4511,9 +4511,12 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
                 listManagerInstance.removeList(listObj.list_id, callbackOK);
             };
 
+            buttons[localeService.t('buttonNo')] = function () {
+                _dialog2.default.get(2).close();
+            };
+
             var options = {
-                title: localeService.t('Delete the list'),
-                cancelButton: true,
+                title: localeService.t('DeleteList'),
                 buttons: buttons,
                 size: 'Alert'
             };
@@ -4522,10 +4525,9 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
             if (listObj.container === '#ListManager') {
                 $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
             }
-            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
-                var self = (0, _jquery2.default)(this).children();
-                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
-            });
+
+            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list');
+
             $dialog.setContent(box);
         };
 
@@ -5528,6 +5530,13 @@ var editRecord = function editRecord(services) {
             data: datas,
             success: function success(data) {
                 (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').empty().html(data);
+
+                if (window.recordEditorConfig.hasMultipleDatabases === true) {
+                    (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 // let recordEditor = recordEditorService(services);
                 recordEditor.initialize({
                     $container: (0, _jquery2.default)('#EDITWINDOW'),
@@ -8643,7 +8652,7 @@ module.exports = {
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 88 */
@@ -10527,10 +10536,31 @@ var workzone = function workzone(services) {
 
     /*left filter basket*/
     function filterBaskets() {
-        (0, _jquery2.default)('#basket-filter INPUT').change(function () {
-            var sel = (0, _jquery2.default)(this).val();
-            (0, _jquery2.default)(sel).toggleClass('hidden', !(0, _jquery2.default)(this).is(':checked'));
+        var inputFilter = (0, _jquery2.default)('#basket-filter INPUT');
+        inputFilter.each(function () {
+            applyBasketFilter((0, _jquery2.default)(this));
         });
+
+        inputFilter.change(function () {
+            applyBasketFilter((0, _jquery2.default)(this));
+            // save in user setting
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/user/preferences/',
+                data: {
+                    prop: (0, _jquery2.default)(this).attr("data-prop"),
+                    value: (0, _jquery2.default)(this).is(':checked') ? 1 : 0
+                },
+                success: function success(data) {
+                    return;
+                }
+            });
+        });
+    }
+
+    function applyBasketFilter(inputElement) {
+        var sel = inputElement.val();
+        (0, _jquery2.default)(sel).toggleClass('hidden', !inputElement.is(':checked'));
     }
 
     function refreshBaskets(options) {
@@ -18020,7 +18050,7 @@ var quitshareBasket = function quitshareBasket(services) {
         var k = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
         _jquery2.default.ajax({
             type: 'POST',
-            url: url + 'prod/push/quitshare/' + k + '/',
+            url: url + 'prod/share/quitshare/' + k + '/',
             dataType: 'json',
             success: function success(data) {
                 if (data.success) {
@@ -18375,6 +18405,7 @@ var pushOrShare = function pushOrShare(services, container) {
                 $dialog.close();
 
                 (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
@@ -18385,7 +18416,7 @@ var pushOrShare = function pushOrShare(services, container) {
 
         // normal "send button"
         //
-        buttons[localeService.t('send')] = function () {
+        buttons[localeService.t('feedbackSend')] = function () {
 
             // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {
@@ -18409,6 +18440,7 @@ var pushOrShare = function pushOrShare(services, container) {
             }
 
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+            (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
@@ -18446,12 +18478,27 @@ var pushOrShare = function pushOrShare(services, container) {
 
         var $FeedBackForm = (0, _jquery2.default)('form[name="FeedBackForm"]', $container);
 
+        var context = '';
+        if ($el.attr('data-context') == 'Sharebasket') {
+            if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() == '0') {
+                context = "sharebasket";
+            } else {
+                context = "feedback";
+            }
+        } else {
+            context = "push";
+        }
+
         var html = '';
         // if the window is just for adding/removing user
         if ($el.data('feedback-action') === 'adduser') {
-            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html());
+            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html())({
+                context: context
+            });
         } else {
-            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html())({
+                context: context
+            });
         }
 
         $dialog.setContent(html);
@@ -18460,12 +18507,10 @@ var pushOrShare = function pushOrShare(services, container) {
         var pushTitle = (0, _jquery2.default)('#pushTitle').val();
         var sharedTitle = (0, _jquery2.default)('#sharedTitle').val();
 
-        if ($el.attr('data-context') == 'Sharebasket') {
-            if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() == '0') {
-                (0, _jquery2.default)('input[name="name"]').attr("placeholder", sharedTitle);
-            } else {
-                (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
-            }
+        if (context == 'feedback') {
+            (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
+        } else if (context == 'sharebasket') {
+            (0, _jquery2.default)('input[name="name"]').attr("placeholder", sharedTitle);
         } else {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
         }
@@ -18523,6 +18568,9 @@ var pushOrShare = function pushOrShare(services, container) {
     this.container.on('click', '.list_manager', function (event) {
         (0, _jquery2.default)('#PushBox').hide();
         (0, _jquery2.default)('#ListManager').show();
+
+        _dialog2.default.get(1).setOption('title', localeService.t('listmanagerTitle'));
+
         return false;
     });
 
@@ -18701,11 +18749,15 @@ var pushOrShare = function pushOrShare(services, container) {
                 (0, _jquery2.default)('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 (0, _jquery2.default)('.feedback_only_true', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_false', o.container).show();
+
+                _dialog2.default.get(1).setOption('title', localeService.t('shareTitle'));
             } else if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
                 (0, _jquery2.default)('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 (0, _jquery2.default)('.feedback_only_false', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_true', o.container).show();
+
+                _dialog2.default.get(1).setOption('title', localeService.t('feedbackTitle'));
             }
         },
         'sharebasket.participantsSelectionChanged': function sharebasketParticipantsSelectionChanged(o) {
@@ -18947,6 +18999,14 @@ var ListManager = function ListManager(services, options) {
     $container.on('click', '.back_link', function () {
         (0, _jquery2.default)('#PushBox').show();
         (0, _jquery2.default)('#ListManager').hide();
+        var $dialogEl = _dialog2.default.get(1).getDomElement().closest('.ui-dialog');
+
+        if ($dialogEl.hasClass('Sharebasket')) {
+            _dialog2.default.get(1).setOption('title', localeService.t('shareTitle'));
+        } else if ($dialogEl.hasClass('Feedback')) {
+            _dialog2.default.get(1).setOption('title', localeService.t('feedbackTitle'));
+        }
+
         return false;
     }).on('click', '.push-list-share-action', function (event) {
 
@@ -21840,7 +21900,7 @@ var toolbar = function toolbar(services) {
             this.classList.toggle("active");
 
             /* Toggle between hiding and showing the active panel */
-            var panel = this.nextElementSibling;
+            var panel = this.nextElementSibling; // risky don't change html !
             if (panel.style.maxHeight) {
                 panel.style.maxHeight = null;
             } else {
@@ -21849,9 +21909,7 @@ var toolbar = function toolbar(services) {
         });
 
         $container.on('click', function (event) {
-            if ((0, _jquery2.default)(event.target).is('button.tools-accordion')) {
-                return;
-            } else {
+            if (!(0, _jquery2.default)(event.target).is('button.tools-accordion')) {
                 _closeActionPanel();
             }
         });
@@ -22363,20 +22421,6 @@ var recordEditorService = function recordEditorService(services) {
             state = params.state;
 
 
-        if (hasMultipleDatabases === true) {
-            (0, _jquery2.default)('#EDITWINDOW').hide();
-            // editor can't be run
-            (0, _jquery2.default)('#dialog-edit-many-sbas', options.$container).dialog({
-                modal: true,
-                resizable: false,
-                buttons: {
-                    Ok: function Ok() {
-                        (0, _jquery2.default)(this).dialog('close');
-                    }
-                }
-            });
-            return;
-        }
         if (notActionable > 0) {
             alert(notActionableMsg);
         }
@@ -52809,7 +52853,7 @@ module.exports = VTTRegion;
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 154 */
@@ -64323,7 +64367,7 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
                     console.log(captionValue);
-                    for (var i = 0; i < captionLength - 1; i++) {
+                    for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
                         var ResValueItem = captionValue[i].replace(/\n\r/g, "\n").replace(/\r/g, "\n").split(/\n{2,}/g);
@@ -66402,7 +66446,7 @@ var orderItem = function orderItem(services) {
                 //$('#order-action button.send').prop('disabled', true);
             } else if (_underscore2.default.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.reset').hide();
-                (0, _jquery2.default)('#order-action span.action-text').html('window.orderItemData.translatedText.refusedPreviously');
+                (0, _jquery2.default)('#order-action span.action-text').html(window.orderItemData.translatedText.refusedPreviously);
                 //$('#order-action button.send').prop('disabled', false);
                 (0, _jquery2.default)('#order-action button.send, #order-action span.action-text').show();
             } else {

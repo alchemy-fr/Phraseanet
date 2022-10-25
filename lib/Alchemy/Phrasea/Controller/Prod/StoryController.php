@@ -59,26 +59,6 @@ class StoryController extends Controller
             $story->appendChild($record);
         }
 
-        $metadatas = [];
-
-        foreach ($collection->get_databox()->get_meta_structure() as $meta) {
-            if ($meta->get_thumbtitle()) {
-                $value = $request->request->get('name');
-            } else {
-                continue;
-            }
-
-            $metadatas[] = [
-                'meta_struct_id' => $meta->get_id(),
-                'meta_id'        => null,
-                'value'          => $value,
-            ];
-
-            break;
-        }
-
-        $recordAdapter = $story->set_metadatas($metadatas);
-
         $storyWZ = new StoryWZ();
         $storyWZ->setUser($this->getAuthenticatedUser());
         $storyWZ->setRecord($story);

@@ -29,8 +29,8 @@ $sharebasketThemeColor: #4caf50;
  */
 #idFrameC {
     top: 0 !important;
-    min-width: 300px;
     bottom: 0 !important;
+    min-width: 300px;
     &.closed {
         min-width: 0;
     }
@@ -182,7 +182,6 @@ $sharebasketThemeColor: #4caf50;
         display: block;
         z-index: 2;
         position: relative;
-        margin-top: 3px;
         margin-bottom: 10px;
         width: auto;
         min-width: 160px;
@@ -221,6 +220,7 @@ $sharebasketThemeColor: #4caf50;
         width: 136px;
         z-index: 1000;
         position: absolute;
+        top: 35px;
         background-color: $toolsPanelBg;
         padding: 0 12px;
         overflow: hidden;
@@ -265,6 +265,25 @@ $sharebasketThemeColor: #4caf50;
                 font-size: 12px;
                 color: $toolTitleColor;
             }
+        }
+    }
+
+    .wz-block_title {
+        HR {
+            margin: 0px;
+            border-bottom: 0px;
+            border-top: 1px $textPrimaryColor solid;
+            position: relative;
+            top: 12px;
+        }
+        SPAN {
+            background-color: $workzoneBackgroundColor;
+            color: $textPrimaryColor;
+            position: relative;
+            padding-left: 5px;
+            padding-right: 5px;
+            font-size: larger;
+            margin-left: 10px;
         }
     }
 }

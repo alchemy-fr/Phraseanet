@@ -14,13 +14,10 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ReindexRequiredEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
 use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\ScheduledFetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Fetcher;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use databox;
 use Iterator;
 use Psr\Log\LoggerInterface;
@@ -260,24 +257,36 @@ class RecordIndexer
     private function indexFromFetcher(BulkOperation $bulk, Fetcher $fetcher, array &$submitted_records)
     {
         $databox = $fetcher->getDatabox();
-        $first = true;
+
+        $sql = "SELECT prop FROM pref WHERE prop IN('thesaurus','thesaurus_index')"
+            . " ORDER BY updated_on DESC, IF(prop='thesaurus', 'a', 'z') DESC LIMIT 1";
+
+        if ($databox->get_connection()->fetchColumn($sql) == 'thesaurus') {
+            // The thesaurus was modified, enforce index
+            $this->eventDispatcher->dispatch(
+                ThesaurusEvents::REINDEX_REQUIRED,
+                new ReindexRequiredEvent($databox)
+            );
+        }
+
+//        $first = true;
 
         /** @var record_adapter $record */
         while ($record = $fetcher->fetch()) {
-            if ($first) {
-                $sql = "SELECT prop FROM pref WHERE prop IN('thesaurus','thesaurus_index')"
-                    . " ORDER BY updated_on DESC, IF(prop='thesaurus', 'a', 'z') DESC LIMIT 1";
-
-                if ($databox->get_connection()->fetchColumn($sql) == 'thesaurus') {
-                    // The thesaurus was modified, enforce index
-                    $this->eventDispatcher->dispatch(
-                        ThesaurusEvents::REINDEX_REQUIRED,
-                        new ReindexRequiredEvent($databox)
-                    );
-                }
-
-                $first = false;
-            }
+//            if ($first) {
+//                $sql = "SELECT prop FROM pref WHERE prop IN('thesaurus','thesaurus_index')"
+//                    . " ORDER BY updated_on DESC, IF(prop='thesaurus', 'a', 'z') DESC LIMIT 1";
+//
+//                if ($databox->get_connection()->fetchColumn($sql) == 'thesaurus') {
+//                    // The thesaurus was modified, enforce index
+//                    $this->eventDispatcher->dispatch(
+//                        ThesaurusEvents::REINDEX_REQUIRED,
+//                        new ReindexRequiredEvent($databox)
+//                    );
+//                }
+//
+//                $first = false;
+//            }
 
             $op_identifier = $this->getUniqueOperationId($record['id']);
 

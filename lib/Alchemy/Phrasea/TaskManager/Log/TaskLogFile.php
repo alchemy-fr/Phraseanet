@@ -63,7 +63,7 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
             $version = '-' . $version;
         }
 
-        return sprintf('%s/task_%d%s.log', $this->root, $this->task->getId(), $version);
+        return sprintf('%s/task%s.log', $this->root, $version);
     }
 
 }

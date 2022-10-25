@@ -122,7 +122,12 @@ class BasketController extends Controller
 
     public function doReminder(Request $request, Basket $basket)
     {
-        $userFrom = $basket->getVoteInitiator();
+        if ($basket->isVoteBasket()) {
+            $userFrom = $basket->getVoteInitiator();
+        } else {
+            // get the owner for share
+            $userFrom = $basket->getUser();
+        }
 
         $expireDate = $basket->getVoteExpires();
         $emitter = Emitter::fromUser($userFrom);

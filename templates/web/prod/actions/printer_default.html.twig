@@ -29,7 +29,15 @@
             {% endif %}
 
             {% if total_count > 0 %}
+                {% set subdefCount = printer.getSubdefCount %}
                 {% if printer.get_count_preview() > 0 %}
+                    <div style="margin: 20px 5px;">
+                        <label class="checkbox" for="show-record-information" style="margin-top: 5px;height: 21px;padding-top: 2px;padding-bottom: 2px;">
+                            <input type="checkbox" id="show-record-information" name="show-record-information" value="1" checked />
+                            {{ 'print:: print records informations' | trans }}
+                        </label>
+                    </div>
+
                     <h4>{{ 'phraseanet:: preview' | trans }}</h4>
                     <div style="margin: 10px 0 20px 0; padding: 0 10px;">
                         <label for="RADI_PRE_LAB" class="radio">
@@ -66,6 +74,17 @@
 
                 <h3 style="margin-left: 5px;">{{ 'print:: some options' | trans }}</h3>
                 <div style="margin: 20px 5px;">
+                    <h4 style="margin-left: 0px;">{{ 'print:: description font size' | trans }}</h4>
+                    <input type="number" value="12" name="description-font-size" min="3" max="29" style="margin-left: 0px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
+                </div>
+
+                <div style="margin: 20px 5px;">
+                    <h4 style="margin-left: 0px;">{{ 'print:: description field title color' | trans }}</h4>
+                    <input type="color" value="#000000" name="field-title-color" style="height: 30px;padding : 0px; width: 52px;" />
+                </div>
+
+
+                <div style="margin: 20px 5px;">
                     <h4 style="margin-left: 0px;">{{ 'print:: add and remember password to protect the pdf' | trans }}</h4>
                     <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
                 </div>
@@ -79,11 +98,13 @@
                         <fieldset style="padding:10px;">
                             <select id="print-select-download-subdef" name="print-select-download-subdef" style="margin-left: 0px;">
                                 {% for subdefName in printer.getAvailableSubdefName %}
-                                    <option value="{{ subdefName}}" class="download-{{ subdefName }}"
-                                            data-count=""
-                                            {% if subdefName == "preview" %} selected {% endif %} >
-                                        {{ subdefName }}
-                                    </option>
+                                    {% if subdefCount[subdefName] > 0 %}  }
+                                        <option value="{{ subdefName}}" class="download-{{ subdefName }}"
+                                                data-count=""
+                                                {% if subdefName == "preview" %} selected {% endif %} >
+                                            {{ subdefName }}
+                                        </option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                             <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 400px;text-align: center;margin-bottom: 0px;">
@@ -192,11 +213,11 @@
         // add dynamically the subdef count in the select option
         var totalCount = {{ total_count }};
         var subdefImageCount = JSON.parse('{{ printer.getSubdefImageCount|json_encode|raw }}');
-        var subdefCount = JSON.parse('{{ printer.getSubdefCount|json_encode|raw }}');
+        var subdefCount = JSON.parse('{{ subdefCount|json_encode|raw }}');
 
         for (const [key, value] of Object.entries(subdefCount)) {
             $(".download-"+ key).attr('data-count', value + " / " + totalCount);
-            if (key == 'preview') {
+            if ($("#print-select-download-subdef").val() == key) {
                 $('.download-count-info').empty().text(value + " / " + totalCount);
             }
         }

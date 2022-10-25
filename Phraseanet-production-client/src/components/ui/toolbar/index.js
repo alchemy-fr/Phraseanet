@@ -201,7 +201,7 @@ const toolbar = (services) => {
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
             _triggerModal(event, sharebasketModal(services).openModal);
         });
-        
+
 //        /**
 //         * tools > Push > UsersLists
 //         */
@@ -283,7 +283,7 @@ const toolbar = (services) => {
             this.classList.toggle("active");
 
             /* Toggle between hiding and showing the active panel */
-            var panel = this.nextElementSibling;
+            const panel = this.nextElementSibling; // risky don't change html !
             if (panel.style.maxHeight){
                 panel.style.maxHeight = null;
             } else {
@@ -292,9 +292,7 @@ const toolbar = (services) => {
         });
 
         $container.on('click', function (event) {
-            if ($(event.target).is('button.tools-accordion')) {
-                return;
-            } else {
+            if (!$(event.target).is('button.tools-accordion')) {
                 _closeActionPanel();
             }
         });

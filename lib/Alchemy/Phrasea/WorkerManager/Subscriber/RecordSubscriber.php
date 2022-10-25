@@ -58,18 +58,20 @@ class RecordSubscriber implements EventSubscriberInterface
 
             if ($subdefs !== null) {
                 foreach ($subdefs as $subdef) {
+                    // if subdefsTodo = null , so make all subdefs if phraseanet can build it
+                    if ($subdef->isTobuild() && ($event->getSubdefsTodo() === null || (!empty($event->getSubdefsTodo()) && in_array($subdef->get_name(), $event->getSubdefsTodo())))) {
+                        $payload = [
+                            'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
+                            'payload' => [
+                                'recordId'      => $event->getRecord()->getRecordId(),
+                                'databoxId'     => $event->getRecord()->getDataboxId(),
+                                'subdefName'    => $subdef->get_name(),
+                                'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
+                            ]
+                        ];
 
-                    $payload = [
-                        'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
-                        'payload' => [
-                            'recordId'      => $event->getRecord()->getRecordId(),
-                            'databoxId'     => $event->getRecord()->getDataboxId(),
-                            'subdefName'    => $subdef->get_name(),
-                            'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
-                        ]
-                    ];
-
-                    $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
+                        $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
+                    }
                 }
             }
         }
@@ -161,9 +163,17 @@ class RecordSubscriber implements EventSubscriberInterface
             $record  = $databox->get_record($recordId);
             $type    = $record->getType();
 
+            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+
+            if ($subdefGroupe !== null) {
+                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            } else {
+                $toWritemetaOriginalDocument = true;
+            }
+
             foreach ($mediaSubdefs as $subdef) {
                 // check subdefmetadatarequired  from the subview setup in admin
-                if ( $subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+                if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
                     $payload = [
                         'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                         'payload' => [
@@ -272,8 +282,16 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $subdef = $record->get_subdef($event->getSubdefName());
 
+            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            if ($subdefGroupe !== null) {
+                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            } else {
+                // default write meta on document
+                $toWritemetaOriginalDocument = true;
+            }
+
             //  only the required writemetadata from admin > subview setup is to be writing
-            if ($subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+            if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
                 $payload = [
                     'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                     'payload' => [

@@ -337,10 +337,57 @@ workers:
             port: 5672
             user: ''
             password: ''
+            ssl: false
             vhost: /
             heartbeat: 60
     webhook:
         timeout: 30
+        verify_ssl: true
+    queues:
+        assetsIngest:
+            max_retry: 3
+            ttl_retry: 10000
+        createRecord:
+            max_retry: 3
+            ttl_retry: 10000
+        editRecord:
+            max_retry: 3
+            ttl_retry: 10000
+        exportMail:
+            max_retry: 3
+            ttl_retry: 10000
+        exposeUpload:
+            max_retry: 3
+            ttl_retry: 10000
+        ftp:
+            max_retry: 3
+            ttl_retry: 180000
+        populateIndex:
+            max_retry: 3
+            ttl_retry: 10000
+        pullAssets:
+            max_retry: 3
+            ttl_retry: 10000
+        recordsActions:
+            max_retry: 3
+            ttl_retry: 10000
+        shareBasket:
+            max_retry: 3
+            ttl_retry: 10000
+        subdefCreation:
+            max_retry: 3
+            ttl_retry: 10000
+            ttl_delayed: 5000
+        validationReminder:
+            max_retry: 3
+            ttl_retry: 7200000
+        webhook:
+            max_retry: 3
+            ttl_retry: 10000
+        writeMetadatas:
+            max_retry: 3
+            ttl_retry: 10000
+            ttl_delayed: 5000
 externalservice:
     ginger:
         AutoSubtitling:

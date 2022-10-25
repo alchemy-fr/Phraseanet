@@ -137,6 +137,7 @@ class Printer extends RecordHelper
                     $this->userACL->has_right_on_base($element->getBaseId(), \ACL::CANDWNLDHD))
                     ||
                     ($subdefName != 'document' && $element->has_subdef($subdefName) &&
+                    $this->userACL->has_right_on_base($element->getBaseId(), \ACL::CANDWNLDPREVIEW) &&
                     $this->userACL->has_access_to_subdef($element, $subdefName) &&
                     $element->get_subdef($subdefName)->is_physically_present())
                 )

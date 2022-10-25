@@ -7,6 +7,7 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DateTime;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Exception;
 use PDO;
 
@@ -378,40 +379,137 @@ class WorkerRunningJobRepository extends EntityRepository
         return count($qb->getQuery()->getResult());
     }
 
-    public function findByStatus(array $status, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
+    public function findByFilter(array $status, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter = null, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
     {
-        $qb = $this->createQueryBuilder('w');
-        $qb
-            ->where($qb->expr()->in('w.status', $status))
-            ->setFirstResult($start)
-            ->setMaxResults($limit)
-            ->orderBy('w.id', 'DESC')
-        ;
+        $rsm = new ResultSetMappingBuilder($this->_em);
+        $rsm->addScalarResult('info', 'info');
+        $rsm->addScalarResult('databoxId', 'databoxId');
+        $rsm->addScalarResult('recordId', 'recordId');
+        $rsm->addScalarResult('work', 'work');
+        $rsm->addScalarResult('workOn', 'workOn');
+        $rsm->addScalarResult('published', 'published');
+        $rsm->addScalarResult('created', 'created');
+        $rsm->addScalarResult('finished', 'finished');
+        $rsm->addScalarResult('duration', 'duration');
+        $rsm->addScalarResult('status', 'status');
 
-        return $qb->getQuery()->getResult();
+        $sql = "SELECT info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, \n"
+            . "IF(w.finished IS NULL, TIMESTAMPDIFF(SECOND, w.created, NOW()), TIMESTAMPDIFF(SECOND, w.created, w.finished))  as duration \n"
+            . "FROM WorkerRunningJob w \n"
+            . "WHERE 1";
+
+        $params = [];
+        $statusParam = false;
+        if (!empty($status)) {
+            $sql .= " AND w.status IN (:status)";
+            $statusParam = true;
+        }
+
+        if (!empty($jobType)) {
+            $sql .= " AND w.work = :work";
+            $params['work'] = $jobType;
+        }
+
+        if (!empty($databoxId)) {
+            $sql .= " AND w.databox_id = :databoxId";
+            $params['databoxId'] = $databoxId;
+        }
+
+        if (!empty($recordId)) {
+            $sql .= " AND w.record_id = :recordId";
+            $params['recordId'] = $recordId;
+        }
+
+        if ($dateTimeFilter instanceof DateTime) {
+            // published or created column
+            $sql .= " AND w." . $fieldTimeFilter . " >= :dateTimeFilter";
+            $params['dateTimeFilter'] = $dateTimeFilter->format('Y-m-d H:i:s');
+        }
+
+        $sql .= " ORDER BY w.id DESC";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT " . $limit;
+        }
+
+        $sql .= " OFFSET " . $start;
+
+        $q = $this->_em->createNativeQuery($sql, $rsm);
+
+        if (!empty($params)) {
+            $q->setParameters($params);
+        }
+
+        if ($statusParam) {
+            $q->setParameter('status', $status, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+        }
+
+        return $q->getResult();
     }
 
-    /**
-     * @param $commitId
-     * @return bool
-     */
-    public function canAckUploader($commitId)
+    public function getJobCount(array $status, $jobType, $databoxId, $recordId)
     {
         $qb = $this->createQueryBuilder('w');
-        $res = $qb
-            ->where('w.commitId = :commitId')
-            ->andWhere('w.work = :work')
-            ->andWhere('w.status != :status')
-            ->setParameters([
-                'commitId' => $commitId,
-                'work'     => MessagePublisher::ASSETS_INGEST_TYPE,
-                'status'   => WorkerRunningJob::FINISHED
-            ])
-            ->getQuery()
-            ->getResult()
+        $qb->select('count(w)');
+
+        if (!empty($status)) {
+            $qb->where($qb->expr()->in('w.status', $status));
+        }
+
+        if (!empty($jobType)) {
+            $qb->andWhere('w.work = :work')
+                ->setParameter('work', $jobType);
+        }
+
+        if (!empty($databoxId)) {
+            $qb->andWhere('w.databoxId = :databoxId')
+                ->setParameter('databoxId', $databoxId);
+        }
+
+        if (!empty($recordId)) {
+            $qb->andWhere('w.recordId = :recordId')
+                ->setParameter('recordId', $recordId);
+        }
+
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function updateStatusRunningToCanceledSinceCreated($hour = 0)
+    {
+        $sql = '
+            UPDATE WorkerRunningJob w
+            SET w.status = :canceled
+            WHERE w.status = :running
+            AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
         ;
 
-        return count($res) == 0;
+        $this->_em->getConnection()->executeUpdate($sql, [
+            'second'    => $hour * 3600,
+            'running'   => 'running',
+            'canceled'  => 'canceled'
+        ]);
+    }
+
+    public function getRunningSinceCreated($hour = 0)
+    {
+        $rsm = new ResultSetMappingBuilder($this->_em);
+        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\WorkerRunningJob', 'w');
+        $selectClause = $rsm->generateSelectClause();
+
+        $sql = '
+            SELECT ' . $selectClause . '
+            FROM WorkerRunningJob w
+            WHERE w.status = :running
+            AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
+        ;
+
+        $q = $this->_em->createNativeQuery($sql, $rsm);
+        $q->setParameters([
+            'second'    => $hour * 3600,
+            'running'   => 'running'
+        ]);
+
+        return $q->getResult();
     }
 
     public function truncateWorkerTable()

@@ -43,7 +43,7 @@ const pushOrShareIndex = (services) => {
 
             var buttons = {};
 
-            buttons[localeService.t('valider')] = function () {
+            buttons[localeService.t('buttonYes')] = function () {
 
                 var callbackOK = function () {
                     $('.list-container ul.list').children().each(function() {
@@ -57,24 +57,23 @@ const pushOrShareIndex = (services) => {
                 listManagerInstance.removeList(listObj.list_id, callbackOK);
             };
 
+            buttons[localeService.t('buttonNo')] = function () {
+                dialog.get(2).close();
+            };
+
             var options = {
-                title: localeService.t('Delete the list'),
-                cancelButton: true,
+                title: localeService.t('DeleteList'),
                 buttons: buttons,
                 size: 'Alert'
             };
 
             const $dialog = dialog.create(services, options, 2);
-             if(listObj.container === '#ListManager') {
+            if(listObj.container === '#ListManager') {
                 $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
             }
-            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list')
-                .find('.ui-dialog-buttonset button')
-                .each( function() {
-                    var self = $(this).children();
-                    if(self.text() === 'Validate') self.text('Yes')
-                    else self.text('No');
-                });
+
+            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list');
+
             $dialog.setContent(box);
         };
 

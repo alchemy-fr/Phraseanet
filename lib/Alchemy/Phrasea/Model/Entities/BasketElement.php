@@ -332,7 +332,8 @@ class BasketElement
     public function getUserVote(User $user, bool $createIfMissing)
     {
         // ensure the user is a participant
-        $participantId = ($participant = $this->getBasket()->getParticipant($user))->getId();
+        $participant = $this->getBasket()->getParticipant($user);
+        $participantId = $participant->getId();
 
         foreach ($this->getVotes() as $vote) {
             if ($vote->getParticipant()->getId() == $participantId) {

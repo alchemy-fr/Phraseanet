@@ -171,14 +171,16 @@ By default ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` is set for deploying a 
     phraseanet_worker_1 
     
 
-At first launch of the stack, Phraseanet container plays install.
-it will restart until it can do this installation: waiting for readiness of all other containers
+At first launch of the stack, the `Setup` container plays install.
+It will restart until it can do this installation: waiting for readiness of all other containers.
+At each container starting , `setup` container reaplying also some ```PHRASEANET_*``` environement variable into 
+Phraseanet ```configuration.yml``` file.
 
 default configuration is 
 
 ````
 COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml
-COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog
+COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,redis-session,rabbitmq,workers,mailhog,setup
 ````
 
 
@@ -199,18 +201,36 @@ If you are not interested in the development of Phraseanet, you can ignore every
 
 It may be easier to deal with a local file to manage our env variables.
 
-You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc`:
+You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-# ~/.bashrc or ~/.zshrc
-function dc() {
-    if [ -f env.local ]; then
-        env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose $@
-    else
-        docker-compose $@
+#######################################
+# Docker-compose helper:
+#   Locate first defined environment
+#   file and inject variables found in
+#   docker-compose command.
+# Arguments:
+#   command (string)
+# Usage example:
+#   dc up -d
+#######################################
+dc()
+{
+  local envFilesSearchList=(".env.local" "env.local")
+
+  for i in "${envFilesSearchList[@]}"; do
+    if [[ -f "$i" ]]; then
+      echo -e "\nEnvironment file: \e[107m\e[42m $i \e[0m\n"
+      eval env "$(cat < $i | grep -v '#' | sed -e 's/=\([^\x27"].*[^\x27"]\)/="\1"/g' | tr '\n' ' ' )" docker-compose "$@"
+      return 1
     fi
+  done
+
+  echo -e "\n\e[107m\e[41m No Environment file \e[0m\n"
+  docker-compose "$@"
 }
 ```
+> Note that helper function only works with `"docker-compose"` (and not `"docker compose"`).
 
 ### Phraseanet Docker Images
 
@@ -396,23 +416,6 @@ You can also download a testing pre installed Virtual Machine in OVA format here
 https://www.phraseanet.com/download/
 
 
-# With Vagrant (deprecated)
-
-## Development :
-
-For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
-You can easily choose betweeen a complete build or a prebuild box, with a specific PHP version.
-
-    git clone
-    vagrant up --provision
-
-then, a prompt allow you to choose PHP version, and another one to choose a complete build or an Alchemy prebuilt boxes.
-
-Ex:
-- vagrant up --provision  //// 5.6 ///// 1  >> Build an ubuntu/xenial box with php5.6
-- vagrant up --provision  //// 7.0 ///// 1  >> Build an ubuntu/xenial with php7.0
-- vagrant up --provision  //// 7.2 ///// 2  >> Build the alchemy/phraseanet-php-7.2 box
-- vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
 
 
 

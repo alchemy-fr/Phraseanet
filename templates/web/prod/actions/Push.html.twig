@@ -290,6 +290,7 @@
                         {% endif %}
                         <textarea name="message" style="display:none;"></textarea>
                         <input type="hidden" name="duration" value=""/>
+                        <input type="checkbox" value="1" name="send_reminder" style="display:none;"/>
                         <input type="checkbox" value="1" name="recept" style="display:none;"/>
                         <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
 
@@ -325,13 +326,13 @@
                                             {# owner can decide to be a voter #}
                                             {% set msg = 'prod::share You contribute to the feedback'|trans %}
                                             <a href="#"
-                                               class="colored toggle toggle_agree feedback_only_true {{ owner.getCanAgree() ? 'status_on' : 'status_off' }}"
+                                               class="colored toggle toggle_agree feedback_only_true {{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? 'status_on' : 'status_off' }}"
                                                title="{{ msg }}">
                                                 <i class="fa fa-comment"></i>
                                             </a>
                                             <input type="hidden"
                                                    name="participants[{{ owner.getId() }}][agree]"
-                                                   value="{{ owner.getCanAgree() ? '1' : '0' }}"/>
+                                                   value="{{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? '1' : '0' }}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -371,22 +372,22 @@
                         {# dates of end-of-vote and end-of-share #}
                         {% if context == 'Sharebasket' %}
                             <div style="flex: 0 0 auto;">
-                                <span class="inputWithButton">
-                                    <span>share expires:</span>
+                                <span class="inputWithButton feedback_only_true" style="margin-right:30px;">
+                                    <span>{{ 'prod::share feedback expires' | trans }}:</span>
                                     <span class="btn-toolbar">
-                                        <input type="text" class="btn" name="shareExpires"
-                                                              style="width: 100px;"/>
-                                        <button class="colored inverse delta-toggle" data-dest="shareExpires">
+                                        <input type="text" class="btn" name="voteExpires"
+                                               style="width: 100px;"/>
+                                        <button class="colored inverse delta-toggle" data-dest="voteExpires">
                                             <i class="fa fa-ellipsis-h"></i>
                                         </button>
                                     </span>
                                 </span>
-                                <span class="inputWithButton feedback_only_true" style="margin-left:30px;">
-                                    <span>feedback expires:</span>
+                                <span class="inputWithButton">
+                                    <span>{{ 'prod::share share expires' | trans }}:</span>
                                     <span class="btn-toolbar">
-                                        <input type="text" class="btn" name="voteExpires"
-                                                                 style="width: 100px;"/>
-                                        <button class="colored inverse delta-toggle" data-dest="voteExpires">
+                                        <input type="text" class="btn" name="shareExpires"
+                                                              style="width: 100px;"/>
+                                        <button class="colored inverse delta-toggle" data-dest="shareExpires">
                                             <i class="fa fa-ellipsis-h"></i>
                                         </button>
                                     </span>
@@ -443,13 +444,13 @@
                                                                 <td>
                                                                     {% set msg = 'prod::share User can download HD'|trans %}
                                                                     <a href="#"
-                                                                       class="colored toggle toggle_HD status_off"
+                                                                       class="colored toggle toggle_HD {{ participantsHDRight[participant.getUser().getId()] ? 'status_on' : 'status_off' }}"
                                                                        title="{{ msg }}">
                                                                         <i class="fa fa-download"></i>
                                                                     </a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][HD]"
-                                                                           value="0"/>
+                                                                           value="{{ participantsHDRight[participant.getUser().getId()] ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
@@ -461,7 +462,7 @@
                                                                     </a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][modify]"
-                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
+                                                                           value="{{ participant.canModify() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
@@ -472,10 +473,10 @@
                                                                            title="{{ msg }}">
                                                                             <i class="fa fa-comment"></i>
                                                                         </a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][agree]"
+                                                                               value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
                                                                     </span>
-                                                                    <input type="hidden"
-                                                                           name="participants[{{ userId }}][agree]"
-                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
@@ -486,10 +487,11 @@
                                                                            title="{{ msg }}">
                                                                             <i class="fa fa-users"></i>
                                                                         </a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][see_others]"
+                                                                               value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
                                                                     </span>
-                                                                    <input type="hidden"
-                                                                           name="participants[{{ userId }}][see_others]"
-                                                                           value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
+
                                                                 </td>
 
                                                            </tr>
@@ -617,22 +619,26 @@
 
         let $container = $('#PushBox');
 
-        $("INPUT[name=voteExpires]", $container)
+        const $voteExpires = $("INPUT[name=voteExpires]", $container);
+            $voteExpires
             .datepicker($.datepicker.regional['default'])
             .datepicker("setDate", "{{ basket.getVoteExpires().format('Y-m-d') }}")
             .change(function () {
                 console.log("==== vote date changed ====");
                 //$('.submit-validation').removeClass('btn-not-shown');
                 //$('.cancel-date').removeClass('btn-not-shown');
+                checkDate($shareExpires, $voteExpires);
             });
 
-        const $shareExpires = $("INPUT[name=shareExpires]", $container)
+        const $shareExpires = $("INPUT[name=shareExpires]", $container);
+            $shareExpires
             .datepicker($.datepicker.regional['default'])
             .datepicker("setDate", "{{ basket.getShareExpires().format('Y-m-d') }}")
             .change(function () {
                 console.log("==== share date changed ====");
                 //$('.submit-validation').removeClass('btn-not-shown');
                 //$('.cancel-date').removeClass('btn-not-shown');
+                checkDate($shareExpires, $voteExpires);
             });
 
         // prepare delta dropdown
@@ -654,6 +660,7 @@
                         const dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
 
                         $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                        checkDate($shareExpires, $voteExpires);
                     }
                     $(this).hide();
                 }
@@ -677,6 +684,23 @@
                 return false;
             }
         );
-    })
+    });
+
+    function checkDate(shareElement, voteElement) {
+        let dShareEnd = shareElement.val();
+        let dVoteEnd = voteElement.val();
+
+        if (dShareEnd != '' && dVoteEnd != '') {
+            let dateShare = new Date(dShareEnd);
+            let dateVote = new Date(dVoteEnd);
+            if (dateVote > dateShare) {
+                // extend the shareExpires date to the voteExpires date
+                shareElement.val(dVoteEnd);
+                if (voteElement.is(':visible')) {
+                    alert('{{ "Share has been extended" | trans }}');
+                }
+            }
+        }
+    }
 
 </script>

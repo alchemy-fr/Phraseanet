@@ -197,7 +197,17 @@ class OAuth2Controller extends Controller
     {
         $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
         $provider = $this->findProvider($providerId);
-        $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request);
+
+        /*
+         * some api client (parade) did want to pass parameters into oauth2 callback url
+         * but we prevent this for openid
+         * The parameters can be passed in session, we restore them
+         */
+        $customParms = $this->getSession()->get($provider->getId() . '.parms', []);
+        if(!is_array($customParms)) {
+            $customParms = [];
+        }
+        $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request, $customParms);
 
         // triggers what's necessary
         try {

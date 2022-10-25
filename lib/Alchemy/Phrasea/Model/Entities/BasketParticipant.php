@@ -293,6 +293,11 @@ class BasketParticipant
             }
         }
 
+        // check if participant not yet vote for all elements
+        if (count($this->getBasket()->getElements()) !== count($this->getVotes())) {
+            return false;
+        }
+
         return true;
     }
 

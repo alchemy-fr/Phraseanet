@@ -2214,7 +2214,7 @@ span.ww_winTitle {
 }
 
 #ui-datepicker-div {
-  z-index: 2000;
+  z-index: 2000 !important;
   background-color: #ffffff;
   position: absolute;
 }
@@ -3377,13 +3377,20 @@ div.create-story div.ui-dialog-content {
   margin-bottom: 0;
   height: 44px;
   line-height: 44px;
-  background-color: #f2f2f2;
-  border-bottom: 1px solid #fff;
+  /*
+    background-color: $mediumBackgroundColor2;
+    border-bottom: 1px solid $mediumBorderColor; //$accordionBorderColor;
+    */
   border-radius: 0;
 }
 
 .ui-accordion .ui-accordion-header:hover {
   background-color: #dadada;
+}
+
+.ui-accordion .ui-accordion-header.hidden {
+  border: none;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header.header {
@@ -4129,8 +4136,8 @@ form.phrasea_query input.query {
 
 #idFrameC {
   top: 0 !important;
-  min-width: 300px;
   bottom: 0 !important;
+  min-width: 300px;
 }
 
 #idFrameC.closed {
@@ -4290,7 +4297,6 @@ form.phrasea_query input.query {
   display: block;
   z-index: 2;
   position: relative;
-  margin-top: 3px;
   margin-bottom: 10px;
   width: auto;
   min-width: 160px;
@@ -4330,6 +4336,7 @@ form.phrasea_query input.query {
   width: 136px;
   z-index: 1000;
   position: absolute;
+  top: 35px;
   background-color: #cdcdcd;
   padding: 0 12px;
   overflow: hidden;
@@ -4379,6 +4386,24 @@ form.phrasea_query input.query {
 #idFrameC .tools-panel button:hover span {
   font-size: 12px;
   color: #000000;
+}
+
+#idFrameC .wz-block_title HR {
+  margin: 0px;
+  border-bottom: 0px;
+  border-top: 1px #333333 solid;
+  position: relative;
+  top: 12px;
+}
+
+#idFrameC .wz-block_title SPAN {
+  background-color: #f2f2f2;
+  color: #333333;
+  position: relative;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: larger;
+  margin-left: 10px;
 }
 
 .alert_datas_changed a {
@@ -4760,7 +4785,8 @@ form.phrasea_query input.query {
 }
 
 @media screen and (max-width: 1200px) {
-  #idFrameT .tools button.btn-inverse img {
+  #idFrameT .tools button.btn-inverse img,
+  #idFrameT .tools button.btn-inverse i {
     display: none;
   }
 
@@ -7870,7 +7896,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #idFrameC .ui-accordion .ui-accordion-content.content {
-  padding: 0 5px;
+  padding: 5px;
 }
 
 #idFrameC #baskets_wrapper {
@@ -7907,8 +7933,12 @@ dans l'onglet thesaurus : arbres, menus contextuels
   left: 0;
   right: 1px;
   bottom: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /*
+            overflow-y: auto;
+            overflow-x: hidden;
+             */
+  display: flex;
+  flex-direction: column;
 }
 
 #idFrameC #baskets .bloc.groupDrop {
@@ -7940,6 +7970,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #idFrameC #baskets .insidebloc {
   top: 0;
+  overflow-y: auto;
 }
 
 #idFrameC #baskets .top-scroller,
@@ -8110,7 +8141,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .feedback-info .expiredDate {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 10px;
   display: inline-block;
   width: 100%;
 }
@@ -8137,9 +8168,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
   position: relative;
   margin-bottom: 15px;
   background: #e8e8e8;
-  margin-right: 1px;
+  margin: 0 -1px;
   display: inline-block;
-  float: left;
 }
 
 .chim-wrapper span.feedback_user_name {
@@ -8200,6 +8230,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   width: 108px;
   overflow: hidden;
   margin: 0;
+  float: none;
 }
 
 .basket-content {
@@ -8295,6 +8326,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .basket-filter {
   padding: 10px 16px;
+  flex: 0 0 auto;
 }
 
 .basket-filter .filter-item {

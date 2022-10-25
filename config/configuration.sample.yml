@@ -333,6 +333,7 @@ workers:
           port: 5672
           user: guest
           password: guest
+          ssl: false
           vhost: /
           heartbeat: 60
     queues:
@@ -343,9 +344,9 @@ workers:
             ttl_delayed: 10000      # overwrite 5000 ms default delay
         pullAssets:
             ttl_retry: 5000
-            max_retry : 5
     webhook:
         timeout: 30
+        verify_ssl: true
 
 externalservice:
     ginger:
@@ -360,3 +361,13 @@ user_account:
         email_confirmation: true
 
 Console_logger_enabled_environments: [test]
+
+phraseanet-service:
+    uploader-service:
+        push_verify_ssl: true
+        pulled_target:
+            pull-test-local:
+                pullmodeUri: 'https://api-uploader.phrasea.local/commits?target=bdb5b019-340b-4c96-892c-d07deba5a425'
+                clientSecret: 239zb7mhzmu8cgg48cgok8ww4ccokw0ck8kwow4ggw80s84koc
+                clientId: pull-local-test_3pj0iu
+                verify_ssl: true

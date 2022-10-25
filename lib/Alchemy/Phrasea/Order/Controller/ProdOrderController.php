@@ -144,9 +144,11 @@ class ProdOrderController extends BaseOrderController
     public function displayOneOrder($order_id)
     {
         $order = $this->findOr404($order_id);
+        $grantedBaseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
 
         return $this->render('prod/orders/order_item.html.twig', [
-            'order' => $order,
+            'order'             => $order,
+            'grantedBaseIds'    => $grantedBaseIds
         ]);
     }
 

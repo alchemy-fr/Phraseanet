@@ -625,6 +625,7 @@ class V1Controller extends Controller
                 'generate_cterms'  => $databox_field->get_generate_cterms(),
                 'gui_editable'     => $databox_field->get_gui_editable(),
                 'gui_visible'      => $databox_field->get_gui_visible(),
+                'printable'        => $databox_field->get_printable(),
                 'type'             => $databox_field->get_type(),
                 'indexable'        => $databox_field->is_indexable(),
                 'multivalue'       => $databox_field->is_multi(),

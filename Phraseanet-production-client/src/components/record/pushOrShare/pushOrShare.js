@@ -232,6 +232,7 @@ const pushOrShare = function (services, container) {
                 $dialog.close();
 
                 $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+                $('input[name="send_reminder"]', $FeedBackForm).prop('checked', $('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
                 $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
                 $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
                 $('input[name="notify"]', $FeedBackForm).val('0');
@@ -242,7 +243,7 @@ const pushOrShare = function (services, container) {
 
         // normal "send button"
         //
-        buttons[localeService.t('send')] = function () {
+        buttons[localeService.t('feedbackSend')] = function () {
 
             // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {
@@ -266,6 +267,7 @@ const pushOrShare = function (services, container) {
             }
 
             $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+            $('input[name="send_reminder"]', $FeedBackForm).prop('checked', $('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="notify"]', $FeedBackForm).val('1');
@@ -304,12 +306,27 @@ const pushOrShare = function (services, container) {
 
         var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
+        var context = '';
+        if ($el.attr('data-context') == 'Sharebasket') {
+            if ($("INPUT[name=isFeedback]").val() == '0') {
+                context = "sharebasket";
+            } else {
+                context = "feedback";
+            }
+        } else {
+            context = "push";
+        }
+
         var html = '';
         // if the window is just for adding/removing user
         if ($el.data('feedback-action') === 'adduser') {
-            html = _.template($('#feedback_adduser_sendform_tpl').html());
+            html = _.template($('#feedback_adduser_sendform_tpl').html())({
+                context: context
+            });
         } else {
-            html = _.template($('#feedback_sendform_tpl').html());
+            html = _.template($('#feedback_sendform_tpl').html())({
+                context: context
+            });
         }
 
         $dialog.setContent(html);
@@ -318,13 +335,11 @@ const pushOrShare = function (services, container) {
         var pushTitle =  $('#pushTitle').val();
         var sharedTitle = $('#sharedTitle').val();
 
-        if ($el.attr('data-context') == 'Sharebasket') {
-            if ($("INPUT[name=isFeedback]").val() == '0') {
-                $('input[name="name"]').attr("placeholder", sharedTitle);
-            } else {
-                $('input[name="name"]').attr("placeholder", feedbackTitle);
-            }
-        }else {
+        if (context == 'feedback') {
+            $('input[name="name"]').attr("placeholder", feedbackTitle);
+        } else if(context == 'sharebasket') {
+            $('input[name="name"]').attr("placeholder", sharedTitle);
+        } else {
             $('input[name="name"]').attr("placeholder", pushTitle);
         }
 
@@ -381,6 +396,9 @@ const pushOrShare = function (services, container) {
     this.container.on('click', '.list_manager', function (event) {
         $('#PushBox').hide();
         $('#ListManager').show();
+
+        dialog.get(1).setOption('title', localeService.t('listmanagerTitle'));
+
         return false;
     });
 
@@ -571,11 +589,15 @@ const pushOrShare = function (services, container) {
                 $('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 $('.feedback_only_true', o.container).hide();
                 $('.feedback_only_false', o.container).show();
+
+                dialog.get(1).setOption('title', localeService.t('shareTitle'));
             } else if($("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
                 $('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 $('.feedback_only_false', o.container).hide();
                 $('.feedback_only_true', o.container).show();
+
+                dialog.get(1).setOption('title', localeService.t('feedbackTitle'));
             }
         },
         'sharebasket.participantsSelectionChanged': function(o) {

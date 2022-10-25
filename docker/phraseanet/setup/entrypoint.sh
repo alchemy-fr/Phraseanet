@@ -1,12 +1,41 @@
 #!/bin/bash
 
 set -e
-
 envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
-envsubst < "docker/phraseanet/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
+if [[ -z "$PHRASEANET_APP_PORT" || $PHRASEANET_APP_PORT = "80" || $PHRASEANET_APP_PORT = "443" ]];then
+export PHRASEANET_BASE_URL="$PHRASEANET_SCHEME://$PHRASEANET_HOSTNAME"
+echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet BASE URL IS : " $PHRASEANET_BASE_URL 
+else
+export PHRASEANET_BASE_URL="$PHRASEANET_SCHEME://$PHRASEANET_HOSTNAME:$PHRASEANET_APP_PORT"
+echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet BASE URL IS : " $PHRASEANET_BASE_URL
+fi
 
+if [[ $PHRASEANET_MAINTENANCE = 0 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
+        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+fi
+if [[ $PHRASEANET_MAINTENANCE = 1 || $PHRASEANET_MAINTENANCE = 2 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
+        mkdir -p /var/alchemy/Phraseanet/datas/nginx
+        cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+fi
+
+echo "creating config subderectories overwritten by the config pvc"
+
+mkdir -p config/plugins
+mkdir -p config/wm
+mkdir -p config/status
+mkdir -p config/minilogos
+mkdir -p config/templates/web
+mkdir -p config/templates/mobile
+mkdir -p config/stamp
+mkdir -p config/custom_files
+mkdir -p config/presentation
+mkdir -p config/topics
+
+echo "Ended creating config subderectories overwritten by the config pvc"
 
 FILE=config/configuration.yml
 
@@ -20,10 +49,12 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
         www \
         datas
 
-    runuser app -c docker/phraseanet/auto-install.sh
+    runuser app -c docker/phraseanet/setup/auto-install.sh
     chmod 600 config/configuration.yml
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet Installation"
-
+   if [[ $PHRASEANET_MAINTENANCE != 2 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"
+   fi
 fi
 
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
@@ -37,8 +68,14 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     echo `date +"%Y-%m-%d %H:%M:%S"` " - $FILE exists, start setup ."
     
     if [[ $PHRASEANET_PROJECT_NAME && $ENV_SET_PHRASEANET_PROJECT_NAME == 1 ]]; then
-        bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
+        bin/setup system:config set registry.general.title "$PHRASEANET_PROJECT_NAME"
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Title is set to $PHRASEANET_PROJECT_NAME"
+    else
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet instance name is NOT set to $PHRASEANET_PROJECT_NAME because ENV_SET_PHRASEANET_PROJECT_NAME is set to $ENV_SET_PHRASEANET_PROJECT_NAME "
     fi
+
+    echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Static URL PHRASEANET_BASE_URL"
+    bin/setup system:config set servername $PHRASEANET_BASE_URL
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Setting available language in GUI and search"
     counter=0 
@@ -87,6 +124,35 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
             done
     fi
 
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting session type"
+
+    if [[ $SESSION_SAVE_HANDLER == file ]]; then
+        bin/setup system:config set main.session.type "$SESSION_SAVE_HANDLER"
+
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is $SESSION_SAVE_HANDLER"
+    else
+        bin/setup system:config set main.session.type "native"
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native by redis"
+    fi
+
+    ## Phraseanet application Database setting
+
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Overwriting Phraseanet Database connexion informations"
+
+    bin/setup system:config set main.database.host $PHRASEANET_DB_HOST
+    bin/setup system:config set main.database.port $PHRASEANET_DB_PORT
+    bin/setup system:config set main.database.user $PHRASEANET_DB_USER
+    bin/setup system:config set main.database.password $PHRASEANET_DB_PASSWORD
+    bin/setup system:config set main.database.dbname $INSTALL_APPBOX
+
+    ## Phraseanet application cache setting
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up for Phraseanet cache"
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Cache Type is $PHRASEANET_CACHE_TYPE"
+    bin/setup system:config set main.cache.options.host $PHRASEANET_CACHE_HOST
+    bin/setup system:config set main.cache.options.port $PHRASEANET_CACHE_PORT
+    bin/setup system:config set main.cache.options.namespace $PHRASEANET_HOSTNAME
+    bin/setup system:config set main.cache.type $PHRASEANET_CACHE_TYPE
+
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
     bin/setup system:config set main.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
@@ -124,12 +190,8 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
         bin/setup system:config set registry.email.smtp-user $PHRASEANET_SMTP_USER
         bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
-        bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
+        bin/setup system:config set registry.email.prefix "$PHRASEANET_MAIL_OBJECT_PREFIX"
     fi
-    
-    # TODO define mapbox setting
-    # echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting Mapbox "
-    
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet root account Password sync"
     if [[ -n ${PHRASEANET_ADMIN_ACCOUNT_ID} && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
@@ -138,40 +200,6 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     
     echo `date +"%Y-%m-%d %H:%M:%S"` " - config/configuration.yml update by Phraseanet entrypoint.sh Finished !"
 fi
-
-if [ ${XDEBUG_ENABLED} == "1" ]; then
-    echo "XDEBUG is enabled. YOU MAY KEEP THIS FEATURE DISABLED IN PRODUCTION."
-    docker-php-ext-enable xdebug
-fi
-
-
-if [[ $NEWRELIC_ENABLED = "true" ]]; then
-  echo `date +"%Y-%m-%d %H:%M:%S"` " - NewRelic daemon and PHP agent setup."
-  sed -i -e "s/REPLACE_WITH_REAL_KEY/$NEWRELIC_LICENSE_KEY/" \
-  -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname=\"$NEWRELIC_APP_NAME\"/" \
-  -e '$anewrelic.distributed_tracing_enabled=true' \
-  $(php -r "echo(PHP_CONFIG_FILE_SCAN_DIR);")/newrelic.ini
-  
-  echo "setup of Newrelic agent log forward"
-  echo "newrelic.appname = \"$NEWRELIC_APP_NAME\"" > /etc/newrelic/newrelic.cfg
-  echo "newrelic.license = \"$NEWRELIC_LICENSE_KEY\"" >> /etc/newrelic/newrelic.cfg
-  service newrelic-daemon start
-  echo "Newrelic setup of daemon and PHP agent done"
-else
-  echo `date +"%Y-%m-%d %H:%M:%S"` " - Newrelic extension deactivation."
-  rm -f /usr/local/etc/php/conf.d/newrelic.ini 
-fi
-
-if [[ $BLACKFIRE_ENABLED = "true" ]]; then
-  echo `date +"%Y-%m-%d %H:%M:%S"` " - BlackFire setup."
-  blackfire-agent --register --server-id=$BLACKFIRE_SERVER_ID --server-token=$BLACKFIRE_SERVER_TOKEN
-  service blackfire-agent start
-  echo "Blackfire setup done"
-else
-    echo `date +"%Y-%m-%d %H:%M:%S"` " - blackfire extension deactivation."
-    rm -f /usr/local/etc/php/conf.d/zz-blackfire.ini
-fi
-
 
 ./docker/phraseanet/plugins/console init
 rm -Rf cache/*
@@ -189,7 +217,15 @@ if [ -d "plugins/" ];then
 chown -R app:app plugins;
 fi
 
-chown -R app:app datas && echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished chown on datas by entrypoint" &
-echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet entrypoint.sh"
+#chown -R app:app datas && echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished chown on datas by entrypoint" &
+echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet setup entrypoint.sh"
+
+if [[ $PHRASEANET_MAINTENANCE = 2 ]];then
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Persisting Maintenance Mode"
+else
+        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"  
+        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+fi
+
 
 bash -e docker-php-entrypoint $@

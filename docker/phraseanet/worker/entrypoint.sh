@@ -3,12 +3,14 @@
 set -e
 
 HEARTBEAT_INTERVAL=20
-
+APP_DIR="/var/alchemy/Phraseanet"
 DOCKER_DIR="./docker/phraseanet"
 PHR_USER=app
 
 mkdir -p "${APP_DIR}/tmp/locks" \
-    && chown -R app:app "${APP_DIR}/tmp"
+    && chown -R app:app "${APP_DIR}/tmp" \
+    && chown -R app:app "${APP_DIR}/tmp/locks"
+
 
 envsubst < "${DOCKER_DIR}/php.ini.sample" > /usr/local/etc/php/php.ini
 envsubst < "${DOCKER_DIR}/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
@@ -139,5 +141,9 @@ done' >> bin/run-worker.sh
     echo $command >> bin/run-worker.sh
   fi
 fi
+
+tail -F "${APP_DIR}/logs/worker_service.log" &
+tail -F "${APP_DIR}/logs/scheduler.log" &
+tail -F "${APP_DIR}/logs/task.log" &
 
 runuser -u $PHR_USER -- $@
