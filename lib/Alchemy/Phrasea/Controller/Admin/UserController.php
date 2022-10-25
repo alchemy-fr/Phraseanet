@@ -16,16 +16,20 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\RegistrationRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
+use Doctrine\ORM\EntityManager;
 use Goodby\CSV\Export\Protocol\ExporterInterface;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +43,88 @@ class UserController extends Controller
     public function editRightsAction(Request $request)
     {
         $rights = $this->getUserEditHelper($request);
-        return $this->render('admin/editusers.html.twig', $rights->get_users_rights());
+
+        return $this->render('admin/editusers.html.twig',
+            array_merge($rights->get_user_records_rights(),
+                $rights->getFeeds(),
+                $rights->getBasketElements(),
+                $rights->get_users_rights())
+        );
+    }
+
+    public function listRecordAcl(Request $request)
+    {
+        $rights = $this->getUserEditHelper($request);
+        $results = $rights->get_user_records_rights($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
+
+        return $this->app->json([
+            'content'       => $this->render('admin/user/records_list.html.twig', ['records_acl' => $results['records_acl']]),
+            'total_count'   => $results['total_count'],
+            'total_result'  => count($results['records_acl'])
+        ]);
+    }
+
+    public function deleteFeedEntry(Request $request)
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->app['orm.em'];
+        /** @var FeedEntryRepository $feedEntryRepo */
+        $feedEntryRepo = $this->app['repo.feed-entries'];
+
+        /** @var Feed|null $feed */
+        $feedEntry = $feedEntryRepo->find($request->request->get('feedEntryId'));
+
+        if ($feedEntry == null) {
+            return $this->app->json(['success'  => false, 'message' => 'publication not found']);
+        }
+
+        $manager->remove($feedEntry);
+        $manager->flush();
+
+        return $this->app->json(['success'  => true]);
+    }
+
+    public function listFeedEntry(Request $request)
+    {
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->app['repo.users'];
+        $user = $userRepo->find($request->query->get('userId'));
+
+        // when not expand
+        if ($request->query->get('feedId') == null) {
+            return $this->app->json(['content' => '']);
+        }
+
+        /** @var FeedRepository $feedsRepository */
+        $feedsRepository = $this->app['repo.feeds'];
+        /** @var Feed|null $feed */
+        $feed = $feedsRepository->find($request->query->get('feedId'));
+
+        if ($feed == null || $user == null) {
+            return $this->app->json(['content' => 'Give feed_id or user_id']);
+        } else {
+            /** @var FeedEntryRepository $feedEntryRepo */
+            $feedEntryRepo = $this->app['repo.feed-entries'];
+            $feedEntryRepo->getByUserAndFeed($user, $feed);
+
+            return $this->app->json(['content' => $this->render('admin/user/records_list.html.twig', [
+                'feed_entries' => $feedEntryRepo->getByUserAndFeed($user, $feed)
+                ]),
+                'feed_entries_count' => $feedEntryRepo->getByUserAndFeed($user, $feed, true)
+            ]);
+        }
+    }
+
+    public function listRecordBasket(Request $request)
+    {
+        $rights = $this->getUserEditHelper($request);
+        $results = $rights->getBasketElements($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
+
+        return $this->app->json([
+            'content'       => $this->render('admin/user/records_list.html.twig', ['basket_elements' => $results['basket_elements']]),
+            'total_count'   => $results['basket_elements_count'],
+            'total_result'  => count($results['basket_elements'])
+        ]);
     }
 
     public function resetRightsAction(Request $request)

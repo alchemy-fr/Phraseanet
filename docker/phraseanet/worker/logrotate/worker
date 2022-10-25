@@ -6,3 +6,21 @@
         notifempty
         rotate 10
 }
+
+/var/alchemy/Phraseanet/logs/task.log {
+        su app app
+        create 0644 app app
+        daily
+        missingok
+        notifempty
+        rotate 10
+}
+
+/var/alchemy/Phraseanet/logs/scheduler.log {
+        su app app
+        create 0644 app app
+        daily
+        missingok
+        notifempty
+        rotate 10
+}

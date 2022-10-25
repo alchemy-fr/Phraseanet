@@ -86,6 +86,10 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('users_import_csv');
         $controllers->get('/import/example/rtf/', 'controller.admin.users:importRtfExampleAction')
             ->bind('users_import_rtf');
+        $controllers->get('/records-acl/', 'controller.admin.users:listRecordAcl');
+        $controllers->get('/feed-entry/', 'controller.admin.users:listFeedEntry');
+        $controllers->post('/feed-entry/delete/', 'controller.admin.users:deleteFeedEntry');
+        $controllers->get('/records-basket/', 'controller.admin.users:listRecordBasket');
 
         return $controllers;
     }
