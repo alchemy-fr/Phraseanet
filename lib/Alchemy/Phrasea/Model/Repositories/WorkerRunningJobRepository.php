@@ -379,7 +379,7 @@ class WorkerRunningJobRepository extends EntityRepository
         return count($qb->getQuery()->getResult());
     }
 
-    public function findByFilter(array $status, $jobType, $databoxId, $recordId, $dateTimeFilter = null, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
+    public function findByFilter(array $status, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter = null, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addScalarResult('info', 'info');
@@ -421,8 +421,8 @@ class WorkerRunningJobRepository extends EntityRepository
         }
 
         if ($dateTimeFilter instanceof DateTime) {
-            // on published because the row is only created whe the job is started
-            $sql .= " AND w.published >= :dateTimeFilter";
+            // published or created column
+            $sql .= " AND w." . $fieldTimeFilter . " >= :dateTimeFilter";
             $params['dateTimeFilter'] = $dateTimeFilter->format('Y-m-d H:i:s');
         }
 
