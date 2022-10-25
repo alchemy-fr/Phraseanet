@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\Feed;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -105,6 +106,16 @@ class FeedRepository extends EntityRepository
         }
 
         $qb->orderBy('f.updatedOn', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getUserFeed(User $user)
+    {
+        $qb = $this->createQueryBuilder('f');
+        $qb->innerJoin('f.publishers', 'fp');
+        $qb->where($qb->expr()->eq('fp.user', ':publisher'));
+        $qb->setParameter(':publisher', $user);
 
         return $qb->getQuery()->getResult();
     }
