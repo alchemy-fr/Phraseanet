@@ -53,7 +53,10 @@
         <input type="number" id="record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
 
         <div class="pull-right" style="display:inline-block;">
-            <span>{{ 'job::tab time filter since' | trans }}</span>
+            <select id="field-time-filter" style="margin-left: 30px;max-width:150px;">
+                <option value="created">{{ 'started since' | trans }}</option>
+                <option value="published">{{ 'created since' | trans }}</option>
+            </select>
             <span class="time-filter">
                 <a data-value="PT1H">{{ '1h' | trans }}</a>-
                 <a data-value="PT3H">{{ '3h' | trans }}</a>-
@@ -161,6 +164,7 @@
             var databoxId = $("#databox-filter").val();
             var recordId = $("#record-filter").val();
             var timeFilter = $(".time-filter a.active").attr("data-value");
+            var fieldTimeFilter = $("#field-time-filter").val();
 
             if (!$(".running-work").is(":checked"))
             {
@@ -186,7 +190,11 @@
                     jobType: jobType,
                     databoxId : databoxId,
                     recordId : recordId,
-                    timeFilter: timeFilter
+                    timeFilter: timeFilter,
+                    fieldTimeFilter: fieldTimeFilter
+                },
+                beforeSend: function () {
+                    $(".work-list").empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
                 },
                 success: function (data) {
                     $(".work-list").empty().html(data.content);
@@ -214,6 +222,10 @@
         });
 
         $("#record-filter").on('input', function () {
+            refreshJobList();
+        });
+
+        $("#field-time-filter").on('change', function () {
             refreshJobList();
         });
 
