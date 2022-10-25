@@ -81,6 +81,7 @@ services:
     - rabbitmq
     - elasticsearch
     environment:
+    - STACK_NAME
     - PHRASEANET_INSTALL
     - PHRASEANET_SETUP
     - PHRASEANET_UPGRADE
@@ -203,6 +204,7 @@ services:
     - rabbitmq
     - elasticsearch
     environment:
+    - STACK_NAME
     - PHRASEANET_INSTALL
     - PHRASEANET_SETUP
     - PHRASEANET_UPGRADE
@@ -326,6 +328,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -397,6 +400,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -453,6 +457,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -508,6 +513,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -564,6 +570,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -619,6 +626,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -674,6 +682,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -729,6 +738,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -784,6 +794,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -839,6 +850,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -894,6 +906,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -949,6 +962,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -1004,6 +1018,7 @@ services:
       - elasticsearch
       - phraseanet
     environment:
+      - STACK_NAME
       - OPCACHE_ENABLED
       - SESSION_CACHE_LIMITER
       - PHP_LOG_LEVEL
@@ -1059,6 +1074,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -1114,6 +1130,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -1169,6 +1186,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -1224,6 +1242,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -1279,6 +1298,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -1334,6 +1354,7 @@ services:
     - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
