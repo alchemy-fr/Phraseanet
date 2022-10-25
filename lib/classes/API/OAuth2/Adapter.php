@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
@@ -17,8 +16,8 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -338,20 +337,30 @@ class API_OAuth2_Adapter extends OAuth2
         return $this;
     }
 
+
+    private function getCustomOrRealParm(Request $request, array $customParms, string $parmName)
+    {
+        if(array_key_exists($parmName, $customParms)) {
+            return $customParms[$parmName];
+        }
+        return $request->get($parmName, false);
+    }
+
     /**
-     * @param  Request $request
+     * @param Request $request
+     * @param array $customParms
      * @return array
      */
-    public function getAuthorizationRequestParameters(Request $request)
+    public function getAuthorizationRequestParameters(Request $request, $customParms = [])
     {
         $data = [
-            'response_type' => $request->get('response_type', false),
-            'client_id'     => $request->get('client_id', false),
-            'redirect_uri'  => $request->get('redirect_uri', false),
+            'response_type' => $this->getCustomOrRealParm($request, $customParms, 'response_type'),
+            'client_id' => $this->getCustomOrRealParm($request, $customParms, 'client_id'),
+            'redirect_uri' => $this->getCustomOrRealParm($request, $customParms, 'redirect_uri'),
         ];
 
-        $scope = $request->get('scope', false);
-        $state = $request->get('state', false);
+        $scope = $this->getCustomOrRealParm($request, $customParms, 'scope');
+        $state = $this->getCustomOrRealParm($request, $customParms, 'state');
 
         if ($state) {
             $data["state"] = $state;
