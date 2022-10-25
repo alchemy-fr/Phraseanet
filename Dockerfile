@@ -89,13 +89,15 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && mkdir /tmp/libheif \
     && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
     && cd /tmp/libheif \
+    && git checkout v1.13.0 \
     && ./autogen.sh \
     && ./configure \
     && make \
     && make install \
     && mkdir /tmp/ImageMagick \
-    && curl https://download.imagemagick.org/ImageMagick/download/ImageMagick.tar.gz| tar zx -C /tmp/ImageMagick --strip-components 1 \
+    && git clone https://github.com/ImageMagick/ImageMagick.git /tmp/ImageMagick \
     && cd /tmp/ImageMagick \
+    && git checkout 7.1.0-39 \
     && ./configure \
     && make \
     && make install \
