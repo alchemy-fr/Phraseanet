@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\Authentication\Provider;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class Factory
 {
@@ -26,18 +26,23 @@ class Factory
         $this->session = $session;
     }
 
-    public function build($name, array $options = [])
+    public function build(string $id, string $type, bool $display, string $title, array $options = [])
     {
-        $name = implode('', array_map(function ($chunk) {
+        $type = implode('', array_map(function ($chunk) {
             return ucfirst(strtolower($chunk));
-        }, explode('-', $name)));
+        }, explode('-', $type)));
 
-        $class_name = sprintf('%s\\%s', __NAMESPACE__, $name);
+        $class_name = sprintf('%s\\%s', __NAMESPACE__, $type);
 
         if (!class_exists($class_name)) {
-            throw new InvalidArgumentException(sprintf('Invalid provider %s', $name));
+            throw new InvalidArgumentException(sprintf('Invalid provider %s', $type));
         }
 
-        return $class_name::create($this->generator, $this->session, $options);
+        /** @var AbstractProvider $o */
+        $o = $class_name::create($this->generator, $this->session, $options);   // v1 bc compat : can't change
+        $o->setId($id);
+        $o->setDisplay($display);
+        $o->setTitle($title);
+        return $o;
     }
 }

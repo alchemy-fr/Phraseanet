@@ -30,7 +30,6 @@ class FactoryTest extends \PhraseanetTestCase
     {
         return [
             ['github', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Github'],
-            ['google-plus', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\GooglePlus'],
             ['linkedin', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Linkedin'],
             ['twitter', ['consumer-key' => 'id', 'consumer-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Twitter'],
             ['viadeo', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Viadeo'],
