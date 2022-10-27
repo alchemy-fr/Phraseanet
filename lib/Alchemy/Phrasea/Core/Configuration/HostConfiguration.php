@@ -180,6 +180,11 @@ class HostConfiguration implements ConfigurationInterface
         $this->setHost($this->host);
     }
 
+    public function setNoCompile(bool $noCompile)
+    {
+        $this->configuration->setNoCompile($noCompile);
+    }
+
     private function match($host, $hostname)
     {
         return $this->removeHostPrefix($host) === $this->removeHostPrefix($hostname);

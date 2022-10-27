@@ -6,11 +6,13 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class ConfigurationEditor extends Command
 {
+    private $noCompile = false;
 
     public function __construct($name)
     {
@@ -36,12 +38,15 @@ class ConfigurationEditor extends Command
             InputArgument::OPTIONAL,
             'The value to set when operation is "set" or "add", in YAML syntax'
         );
+
+        $this->addOption('no-compile', "s", InputOption::VALUE_NONE, 'Do not compile the config after save in yml file');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $command = $input->getArgument('operation');
         $parameter = $input->getArgument('parameter');
+        $this->noCompile = $input->getOption('no-compile');
 
         $parameterNodes = explode('.', $parameter);
 
@@ -78,6 +83,7 @@ class ConfigurationEditor extends Command
         $app = $this->getContainer();
         /** @var Configuration $configurationStore */
         $configurationStore = $app['configuration.store'];
+        $configurationStore->setNoCompile($this->noCompile);
         $lastParameter = end($parameterNodes);
 
         $configurationRoot = $configurationStore->getConfig();
@@ -100,7 +106,9 @@ class ConfigurationEditor extends Command
         }
 
         $configurationStore->setConfig($configurationRoot);
-        $configurationStore->compileAndWrite();
+        if (!$this->noCompile) {
+            $configurationStore->compileAndWrite();
+        }
 
         $output->writeln('<comment>Reading updated configuration value</comment>');
 
@@ -112,6 +120,7 @@ class ConfigurationEditor extends Command
         $app = $this->getContainer();
         /** @var Configuration $configurationStore */
         $configurationStore = $app['configuration.store'];
+        $configurationStore->setNoCompile($this->noCompile);
         $lastParameter = end($parameterNodes);
 
         $configurationRoot = $configurationStore->getConfig();
@@ -144,7 +153,9 @@ class ConfigurationEditor extends Command
         }
 
         $configurationStore->setConfig($configurationRoot);
-        $configurationStore->compileAndWrite();
+        if (!$this->noCompile) {
+            $configurationStore->compileAndWrite();
+        }
 
         $output->writeln('<comment>Reading updated configuration value</comment>');
 
