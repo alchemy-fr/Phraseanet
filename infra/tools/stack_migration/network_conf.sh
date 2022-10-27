@@ -10,10 +10,10 @@ if [[ -n $PHRASEANET_TRUSTED_PROXIES ]]; then
         do
             counter=$(( counter+1 ))
             if [[ $counter -eq 1 ]] ; then
-                bin/setup system:config set trusted-proxies $i
-                bin/setup system:config add trusted-proxies $i
+                bin/setup system:config -s set trusted-proxies $i
+                bin/setup system:config -s add trusted-proxies $i
             else
-                bin/setup system:config add trusted-proxies $i   
+                bin/setup system:config -s add trusted-proxies $i   
             fi
         done
 fi
@@ -29,10 +29,10 @@ if [[ -n $PHRASEANET_DEBUG_ALLOWED_IP ]]; then
         do
             counter=$(( counter+1 ))
             if [[ $counter -eq 1 ]] ; then
-                bin/setup system:config set debugger.allowed-ips $i
-                bin/setup system:config add debugger.allowed-ips $i
+                bin/setup system:config -s set debugger.allowed-ips $i
+                bin/setup system:config -s add debugger.allowed-ips $i
             else
-                bin/setup system:config add debugger.allowed-ips $i   
+                bin/setup system:config -s add debugger.allowed-ips $i   
             fi
         done
 fi
