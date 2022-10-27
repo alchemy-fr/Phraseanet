@@ -207,7 +207,11 @@ abstract class base implements cache_cacheableInterface
     public function get_version()
     {
         if (! $this->version) {
-            $this->version = $this->versionRepository->getVersion();
+            try {
+                $this->version = $this->versionRepository->getVersion();
+            } catch(\Throwable $e) {
+                return PhraseaVersion\VersionRepository::DEFAULT_VERSION;
+            }
         }
 
         return $this->version;

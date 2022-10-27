@@ -29,7 +29,7 @@ class ConfigurationEditor extends Command
 
         $this->addArgument(
             'parameter',
-            InputArgument::REQUIRED,
+            InputArgument::OPTIONAL,
             'The name of the configuration parameter to get or set'
         );
 
@@ -50,14 +50,26 @@ class ConfigurationEditor extends Command
 
         $parameterNodes = explode('.', $parameter);
 
-        if ($command == 'get') {
-            $this->readConfigurationValue($output, $parameter, $parameterNodes);
-        }
-        elseif ($command == 'set') {
-            $this->writeConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
-        }
-        elseif ($command == 'add') {
-            $this->appendConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+        if ($command == 'compile') {
+            $this->compileConfiguration($output);
+        } else {
+            if (empty($parameter)) {
+                $output->writeln("<error>Missing 'parameter' argument</error>");
+
+                return 1;
+            }
+
+            if ($command == 'get') {
+                $this->readConfigurationValue($output, $parameter, $parameterNodes);
+            }
+            elseif ($command == 'set') {
+                $this->writeConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+            }
+            elseif ($command == 'add') {
+                $this->appendConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+            } else {
+                $output->writeln("<error>Command not found</error>");
+            }
         }
     }
 
@@ -66,6 +78,7 @@ class ConfigurationEditor extends Command
         $app = $this->getContainer();
         /** @var Configuration $config */
         $config = $app['configuration.store'];
+        $config->setNoCompile($this->noCompile);
         $values = $config->getConfig();
         $current = $values;
 
@@ -186,5 +199,11 @@ class ConfigurationEditor extends Command
         if ($indent == 0) {
             $output->write(PHP_EOL);
         }
+    }
+
+    private function compileConfiguration(OutputInterface $output)
+    {
+        $this->container['configuration.store']->compileAndWrite();
+        $output->writeln('<comment>Configuration compiled!</comment>');
     }
 }

@@ -124,12 +124,17 @@ class Configuration implements ConfigurationInterface
         $this->noCompile = !!$noCompile;
     }
 
+    public function getNoCompile()
+    {
+        return $this->noCompile;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getConfig()
     {
-        if (!$this->noCompile) {
+        if ($this->noCompile) {
             return $this->parser->parse($this->loadFile($this->config));
         }
 

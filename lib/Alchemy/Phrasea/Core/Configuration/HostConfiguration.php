@@ -155,6 +155,10 @@ class HostConfiguration implements ConfigurationInterface
             throw new RuntimeException('Configuration is not set up.');
         }
 
+        if ($this->configuration->getNoCompile()) {
+            return $this->configuration->getConfig();
+        }
+
         return $this->cache;
     }
 
