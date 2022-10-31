@@ -73,7 +73,8 @@ echo `date +"%Y-%m-%d %H:%M:%S"` " - setup of Phraseanet setting RABBITMQ applie
 cd -   
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of datastore migration - Check databases in \"sbas\" table in Application Box"
-echo "The configuration file is not compile" 
+echo "The configuration file is not compile"
+echo "to compile use : bin/setup system:config compile"
 
 
 

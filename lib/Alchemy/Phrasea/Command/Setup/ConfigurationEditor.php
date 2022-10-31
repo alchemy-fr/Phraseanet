@@ -24,7 +24,7 @@ class ConfigurationEditor extends Command
         $this->addArgument(
             'operation',
             InputArgument::REQUIRED,
-            'The operation to execute (get, set, or add)'
+            'The operation to execute (get, set, add, compile)'
         );
 
         $this->addArgument(
