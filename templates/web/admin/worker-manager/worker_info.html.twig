@@ -117,7 +117,7 @@
         <tbody class="work-list">
 {% endif %}
 
-{% for workerRow in workerRunningJob | sort | reverse %}
+{% for workerRow in workerRunningJob %}
     <tr title="{{ workerRow.info }}">
         <td>
             {% if workerRow.databoxId %}
