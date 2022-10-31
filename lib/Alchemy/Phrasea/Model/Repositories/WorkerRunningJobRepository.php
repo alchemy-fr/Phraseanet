@@ -426,7 +426,11 @@ class WorkerRunningJobRepository extends EntityRepository
             $params['dateTimeFilter'] = $dateTimeFilter->format('Y-m-d H:i:s');
         }
 
-        $sql .= " ORDER BY w.id DESC";
+        if ($fieldTimeFilter != null) {
+            $sql .= " ORDER BY w." . $fieldTimeFilter . " DESC";
+        } else {
+            $sql .= " ORDER BY w.id DESC";
+        }
 
         if ($limit !== null) {
             $sql .= " LIMIT " . $limit;
