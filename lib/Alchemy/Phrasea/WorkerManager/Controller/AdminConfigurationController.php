@@ -111,6 +111,7 @@ class AdminConfigurationController extends Controller
         $recordId = empty($request->query->get('recordId')) ? null : $request->query->get('recordId');
         $timeFilter = empty($request->query->get('timeFilter')) ? null : $request->query->get('timeFilter');
         $fieldTimeFilter = $request->query->get('fieldTimeFilter');
+        $fieldTimeFilter = $fieldTimeFilter?: 'created';
 
         $dateTimeFilter = null;
         if ($timeFilter != null) {
@@ -144,6 +145,17 @@ class AdminConfigurationController extends Controller
         // format duration
         $totalDuration  = $helpers->getDuration($totalDuration);
 
+        $tFieldTimes = array_column($workerRunningJob, $fieldTimeFilter);
+        $realEntryDuration = 0;
+        $oldestEntry = end($tFieldTimes);
+        $recentEntry = reset($tFieldTimes);
+
+        if (!empty($oldestEntry) && !empty($recentEntry)) {
+            $realEntryDuration = (new \DateTime($recentEntry))->getTimestamp() - (new \DateTime($oldestEntry))->getTimestamp();
+        }
+
+        $realEntryDuration = $helpers->getDuration($realEntryDuration);
+
         // get all row count in the table WorkerRunningJob
         $totalCount = $repoWorker->getJobCount([], null, null , null);
         $totalCount = number_format($totalCount, 0, '.', ' ');
@@ -171,7 +183,8 @@ class AdminConfigurationController extends Controller
                 'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
-                'totalDuration'    => $totalDuration
+                'totalDuration'    => $totalDuration,
+                'realEntryDuration'=> $realEntryDuration
             ]);
         } else {
             return $this->render('admin/worker-manager/worker_info.html.twig', [
@@ -182,7 +195,8 @@ class AdminConfigurationController extends Controller
                 'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
-                'totalDuration'    => $totalDuration
+                'totalDuration'    => $totalDuration,
+                'realEntryDuration'=> $realEntryDuration
             ]);
         }
     }
