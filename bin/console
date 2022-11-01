@@ -91,6 +91,10 @@ if (!$cli['phraseanet.configuration-tester']->isInstalled()) {
     throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
 }
 
+if (!$cli['phraseanet.configuration-tester']->isConnectedToDBHost()) {
+    throw new \RuntimeException('Phraseanet can not connected to the provided DB, use setup command to config!');
+}
+
 if (!$cli['phraseanet.configuration-tester']->isUpToDate()) {
     throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
 }
