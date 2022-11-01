@@ -90,14 +90,18 @@ class ORMServiceProvider implements ServiceProviderInterface
                 return array();
             }
 
-            /** @var Connection $connection */
-            $connection = $app['dbal.provider']($app['db.appbox.info']);
+            try {
+                /** @var Connection $connection */
+                $connection = $app['dbal.provider']($app['db.appbox.info']);
 
-            $sql = "SELECT"
-                . " host, port, `user`, COALESCE(pwd, '') AS password, dbname, 'utf8' AS charset, 'pdo_mysql' AS driver"
-                . " FROM sbas";
+                $sql = "SELECT"
+                    . " host, port, `user`, COALESCE(pwd, '') AS password, dbname, 'utf8' AS charset, 'pdo_mysql' AS driver"
+                    . " FROM sbas";
 
-            return $connection->fetchAll($sql);
+                return $connection->fetchAll($sql);
+            } catch (\Exception $e) {
+                return [];
+            }
         });
 
         // Return unique key for fixture database
