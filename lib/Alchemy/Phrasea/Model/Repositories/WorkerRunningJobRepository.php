@@ -382,6 +382,7 @@ class WorkerRunningJobRepository extends EntityRepository
     public function findByFilter(array $status, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter = null, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
+        $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('info', 'info');
         $rsm->addScalarResult('databoxId', 'databoxId');
         $rsm->addScalarResult('recordId', 'recordId');
@@ -393,7 +394,7 @@ class WorkerRunningJobRepository extends EntityRepository
         $rsm->addScalarResult('duration', 'duration');
         $rsm->addScalarResult('status', 'status');
 
-        $sql = "SELECT info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, \n"
+        $sql = "SELECT id, info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, \n"
             . "IF(w.finished IS NULL, TIMESTAMPDIFF(SECOND, w.created, NOW()), TIMESTAMPDIFF(SECOND, w.created, w.finished))  as duration \n"
             . "FROM WorkerRunningJob w \n"
             . "WHERE 1";
