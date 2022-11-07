@@ -1757,7 +1757,7 @@ opcache.enable=$OPCACHE_ENABLED
 
 ; The maximum number of keys (scripts) in the OPcache hash table.
 ; Only numbers between 200 and 1000000 are allowed.
-;opcache.max_accelerated_files=10000
+opcache.max_accelerated_files=2503
 
 ; The maximum percentage of "wasted" memory until a restart is scheduled.
 ;opcache.max_wasted_percentage=5
