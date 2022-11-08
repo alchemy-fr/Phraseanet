@@ -73,10 +73,10 @@ class ConnectedUsersController extends Controller
                     $info = '';
                 }
             } catch (ExceptionInterface $e) {
-                $this->logger->error(
-                    sprintf("Unable to get IP information for %s", $session->getIpAddress()),
-                    ['exception' => $e]
-                );
+//                $this->logger->error(
+//                    sprintf("Unable to get IP information for %s", $session->getIpAddress()),
+//                    ['exception' => $e]
+//                );
             }
 
             $result[] = [
