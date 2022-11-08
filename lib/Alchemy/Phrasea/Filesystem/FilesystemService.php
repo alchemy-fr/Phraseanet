@@ -46,7 +46,10 @@ class FilesystemService
             $pathout = sprintf('%s%s%05d', $repository_path, $comp, $n++);
         } while (is_dir($pathout) && iterator_count(new \DirectoryIterator($pathout)) > 100);
 
-        $this->filesystem->mkdir($pathout, 0770);
+        if (!file_exists($pathout)) {
+            $this->filesystem->mkdir($pathout, 0770);
+        }
+
 
         return $pathout . DIRECTORY_SEPARATOR;
     }
