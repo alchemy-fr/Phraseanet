@@ -198,7 +198,8 @@ class CreateRecordWorker implements WorkerInterface
 
                 $metaField = $collection->get_databox()->get_meta_structure()->get_element($tMeta[1]);
 
-                $packageFile->addAttribute(new MetaField($metaField, [$value]));
+                $value = is_array($value) ? $value : [$value];
+                $packageFile->addAttribute(new MetaField($metaField, $value));
             }
 
             if (strstr($key, 'statusbit')) {
