@@ -315,9 +315,8 @@
 
     };
 
-    {% if record is not null %}
+
     function loadMetadataTab (url) {
-        console.log(url);
         $.ajax({
             "url": url,
             "type": "GET",
@@ -331,11 +330,12 @@
             }
         });
     }
-        $(document).ready(function(){
+
+    $(document).ready(function(){
+        {% if record is not null %}
             /**load default Subdef info **/
             loadMetadataTab( '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'  }) }}');
-            $('.tool-modal-wrapper .tabBox').height($('#prod-tool-box').height() - 61 );
-            $('#exiftool').height($('#prod-tool-box').height() - 55 );
+
             /**load selected Subdef info **/
             $('#select-meta-subdef').on('change', function (e) {
                 var selectedSubdef = $(this).children('option:selected');
@@ -345,8 +345,11 @@
                    loadMetadataTab(url);
                 }
             });
-        });
-    {% endif %}
+        {% endif %}
+        $('.tool-modal-wrapper .tabBox').height($('#prod-tool-box').height() - 61 );
+        $('#exiftool').height($('#prod-tool-box').height() - 55 );
+
+    });
 
     $(".subdefTodo").change(function (e) {
         var allsubdef = $(".subdefTodo[value=0]").prop('checked');
