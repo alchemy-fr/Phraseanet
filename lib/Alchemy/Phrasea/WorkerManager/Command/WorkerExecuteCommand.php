@@ -82,8 +82,6 @@ class WorkerExecuteCommand extends Command
         $dbConnection = $this->container['orm.em']->getConnection();
 
         while (count($channel->callbacks)) {
-            $output->writeln("[*] Waiting for messages. To exit press CTRL+C");
-
             // check connection for DB before given message to consumer
             // otherwise return 1
             if($dbConnection->ping() === false){
