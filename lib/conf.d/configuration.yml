@@ -242,9 +242,9 @@ authentication:
                 icon-uri: null,
                 debug: false,
                 birth-group: 'firstlog',
-                metamodel: "_metamodele",
-                model-gpfx: "_M_",
-                model-upfx: "_U_"
+                metamodel: '_metamodel',
+                model-gpfx: '_M_',
+                model-upfx: '_U_'
 registration-fields:
     -
         name: company
