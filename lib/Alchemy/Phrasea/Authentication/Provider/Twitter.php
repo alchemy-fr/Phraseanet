@@ -25,29 +25,12 @@ class Twitter extends AbstractProvider
 {
     private $twitter;
 
-    private $id;
 
     public function __construct(UrlGenerator $generator, SessionInterface $session, tmhOAuth $twitter)
     {
         parent::__construct($generator, $session);
 
         $this->twitter = $twitter;
-    }
-
-    public function getType(): string
-    {
-        return "twitter";
-    }
-
-    public function setId($newId): self
-    {
-        $this->id = $newId;
-        return $this;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
     }
 
     /**

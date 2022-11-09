@@ -11,19 +11,54 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use appbox;
+use RandomLib\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+
 
 class Factory
 {
     private $generator;
     private $session;
+    /**
+     * @var UserManipulator
+     */
+    private $userManipulator;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+    /**
+     * @var ACLProvider
+     */
+    private $ACLProvider;
+    /**
+     * @var appbox
+     */
+    private $appbox;
+    /**
+     * @var RandomGenerator
+     */
+    private $randomGenerator;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session)
+
+    public function __construct(UrlGenerator $generator, SessionInterface $session,
+                                UserManipulator $userManipulator, UserRepository $userRepository,
+                                ACLProvider $ACLProvider, appbox $appbox, RandomGenerator $randomGenerator
+    )
     {
         $this->generator = $generator;
         $this->session = $session;
+        $this->userManipulator = $userManipulator;
+        $this->userRepository = $userRepository;
+        $this->ACLProvider = $ACLProvider;
+        $this->appbox = $appbox;
+        $this->randomGenerator = $randomGenerator;
     }
 
     public function build(string $id, string $type, bool $display, string $title, array $options = [])
@@ -43,6 +78,13 @@ class Factory
         $o->setId($id);
         $o->setDisplay($display);
         $o->setTitle($title);
+
+        $o->setUserManipulator($this->userManipulator);
+        $o->setUserRepository($this->userRepository);
+        $o->setACLProvider($this->ACLProvider);
+        $o->setAppbox($this->appbox);
+        $o->setRandomGenerator($this->randomGenerator);
+
         return $o;
     }
 }

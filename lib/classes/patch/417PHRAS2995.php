@@ -50,7 +50,7 @@ class patch_417PHRAS2995 implements patchInterface
         $id2title = [
             'facebook'    => 'Facebook',
             'github'      => 'Github',
-            'linkedin'    => 'LinkedIN',
+            'linkedin'    => 'LinkedIn',
             'phraseanet'  => 'Phraseanet',
             'twitter'     => 'Twitter',
             'viadeo'      => 'Viadeo'
@@ -59,7 +59,7 @@ class patch_417PHRAS2995 implements patchInterface
         /** @var PropertyAccess $conf */
         $conf = $app['conf'];
         $newProviders = [];
-        $phraseanetFound = false;
+        $psFound = false;
         foreach ($app['conf']->get(['authentication', 'providers'], []) as $providerId => $data) {
             if($providerId === 'google-plus') {     // rip
                 continue;
@@ -67,8 +67,8 @@ class patch_417PHRAS2995 implements patchInterface
             if(array_key_exists('type', $data)) {
                 // already good format
                 $newProviders[$providerId] = $data;
-                if($data['type'] === "phraseanet") {
-                    $phraseanetFound = true;
+                if($data['type'] === "ps-auth") {
+                    $psFound = true;
                 }
             }
             else {
@@ -82,13 +82,13 @@ class patch_417PHRAS2995 implements patchInterface
                 ];
             }
         }
-        /*
+
         // add ps
-        if(!$phraseanetFound && !array_key_exists('ps-auth-1', $newProviders)) {
+        if(!$psFound && !array_key_exists('ps-auth-1', $newProviders)) {
             $newProviders['ps-auth-1'] = [
                 'enabled' => false,
                 'display' => false,
-                'title' => 'PS Auth #1',
+                'title' => 'PS Auth',
                 'type' => 'ps-auth',
                 'options' => [
                     'client-id'     => 'client_id',
@@ -96,11 +96,14 @@ class patch_417PHRAS2995 implements patchInterface
                     'base-url'      => 'https://api-auth.phrasea.local',
                     'provider-type' => 'oauth',
                     'provider-name' => 'v2',
-                    'icon-uri'      => null
+                    'icon-uri'      => null,
+                    'birth-group' => 'firstlog',
+                    'metamodel' => "_metamodele",
+                    'model-gpfx' => "_M_",
+                    'model-upfx' => "_U_"
                 ]
             ];
         }
-        */
 
         $conf->set(['authentication', 'providers'], $newProviders);
 

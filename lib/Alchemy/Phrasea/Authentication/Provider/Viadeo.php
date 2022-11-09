@@ -31,7 +31,6 @@ class Viadeo extends AbstractProvider
     private $key;
     private $secret;
 
-    private $id;
 
     public function __construct(UrlGenerator $generator, SessionInterface $session, array $options, ClientInterface $client)
     {
@@ -41,23 +40,6 @@ class Viadeo extends AbstractProvider
         $this->key = $options['client-id'];
         $this->secret = $options['client-secret'];
     }
-
-    public function getType(): string
-    {
-        return "viadeo";
-    }
-
-    public function setId($newId): self
-    {
-        $this->id = $newId;
-        return $this;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
 
     /**
      * @param ClientInterface $client

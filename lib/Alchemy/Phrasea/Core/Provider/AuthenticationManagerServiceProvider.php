@@ -46,7 +46,15 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.providers.factory'] = $app->share(function (Application $app) {
-           return new ProviderFactory($app['url_generator'], $app['session']);
+           return new ProviderFactory(
+               $app['url_generator'],
+               $app['session'],
+               $app['manipulator.user'],
+               $app['repo.users'],
+               $app['acl'],
+               $app['phraseanet.appbox'],
+               $app['random.medium']
+           );
         });
 
         $app['authentication.providers.account-creator'] = $app->share(function (Application $app) {
@@ -89,7 +97,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                  *           options:
                  *             client-id: ''
                  *             client-secret: ''
-                 * - conf v2 : the top-level key has no meaning, id, name, type etc are in data
+                 * - conf v2 : the top-level key has no meaning, id, name, type etc. are in data
                  *         github_foo:
                  *           enabled: false
                  *           display: false

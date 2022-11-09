@@ -30,7 +30,6 @@ class Github extends AbstractProvider
     private $key;
     private $secret;
 
-    private $id;
 
     public function __construct(UrlGenerator $generator, SessionInterface $session, array $options, ClientInterface $client)
     {
@@ -60,18 +59,6 @@ class Github extends AbstractProvider
     {
         return $this->client;
     }
-
-    public function setId($newId): self
-    {
-        $this->id = $newId;
-        return $this;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
 
     /**
      * {@inheritdoc}

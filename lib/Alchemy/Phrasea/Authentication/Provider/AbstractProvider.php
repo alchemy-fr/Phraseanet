@@ -11,7 +11,12 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use appbox;
+use RandomLib\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
@@ -24,15 +29,61 @@ abstract class AbstractProvider implements ProviderInterface
      * @var bool
      */
     private $display = true;
+
     /**
      * @var string
      */
     private $title;
 
+    /**
+     * @var UserManipulator
+     */
+    private  $userManipulator;
+
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
+     * @var ACLProvider
+     */
+    private $ACLProvider;
+
+    /**
+     * @var appbox
+     */
+    private $appbox;
+
+    /**
+     * @var RandomGenerator
+     */
+    private $randomGenerator;
+
+    private $id;
+
+
     protected function __construct(UrlGenerator $generator, SessionInterface $session)
     {
         $this->generator = $generator;
         $this->session = $session;
+    }
+
+    public function getId()
+    {
+        return $this->id ?: $this->getType();
+    }
+
+    public function setId($newId)
+    {
+        $this->id = $newId;
+        return $this;
+    }
+
+    public function getType()
+    {
+        $u = explode('\\', static::class);
+        return array_pop($u);
     }
 
     public function getDisplay(): bool
@@ -63,7 +114,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function getTitle()
     {
-        return $this->title;
+        return $this->title ?: $this->getId();
     }
 
     /**
@@ -120,6 +171,86 @@ abstract class AbstractProvider implements ProviderInterface
     public function getSession()
     {
         return $this->session;
+    }
+
+    /**
+     * @return UserManipulator
+     */
+    public function getUserManipulator(): UserManipulator
+    {
+        return $this->userManipulator;
+    }
+
+    /**
+     * @param UserManipulator $userManipulator
+     */
+    public function setUserManipulator(UserManipulator $userManipulator)
+    {
+        $this->userManipulator = $userManipulator;
+    }
+
+    /**
+     * @return UserRepository
+     */
+    public function getUserRepository(): UserRepository
+    {
+        return $this->userRepository;
+    }
+
+    /**
+     * @param UserRepository $userRepository
+     */
+    public function setUserRepository(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @return ACLProvider
+     */
+    public function getACLProvider(): ACLProvider
+    {
+        return $this->ACLProvider;
+    }
+
+    /**
+     * @param ACLProvider $ACLProvider
+     */
+    public function setACLProvider(ACLProvider $ACLProvider)
+    {
+        $this->ACLProvider = $ACLProvider;
+    }
+
+    /**
+     * @return appbox
+     */
+    public function getAppbox(): appbox
+    {
+        return $this->appbox;
+    }
+
+    /**
+     * @param appbox $appbox
+     */
+    public function setAppbox(appbox $appbox)
+    {
+        $this->appbox = $appbox;
+    }
+
+    /**
+     * @return RandomGenerator
+     */
+    public function getRandomGenerator(): RandomGenerator
+    {
+        return $this->randomGenerator;
+    }
+
+    /**
+     * @param RandomGenerator $randomGenerator
+     */
+    public function setRandomGenerator(RandomGenerator $randomGenerator)
+    {
+        $this->randomGenerator = $randomGenerator;
     }
 
     protected function createState()

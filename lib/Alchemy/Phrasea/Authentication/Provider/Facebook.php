@@ -25,30 +25,12 @@ class Facebook extends AbstractProvider
     /** @var \Facebook\Facebook */
     private $facebook;
 
-    private $id;
 
     public function __construct(UrlGenerator $generator, SessionInterface $session, \Facebook\Facebook $facebook)
     {
         parent::__construct($generator, $session);
         $this->facebook = $facebook;
     }
-
-    public function getType(): string
-    {
-        return 'facebook';
-    }
-
-    public function setId($newId): self
-    {
-        $this->id = $newId;
-        return $this;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
 
     /**
      * {@inheritdoc}

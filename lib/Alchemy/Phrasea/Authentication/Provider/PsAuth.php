@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2016 Alchemy
+ * (c) 2005-2022 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,9 +15,12 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
+use Exception;
 use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
+use RandomLibtest\Mocks\Random\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -26,35 +29,61 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class PsAuth extends AbstractProvider
 {
-    private $baseurl;
-    private $key;
-    private $secret;
-    private $providerType;
-    private $providerName;
+    /**
+     * @var string|null
+     */
     private $iconUri;
 
+    /**
+     * @var Guzzle
+     */
     private $client;
 
-    private $id;
+    /**
+     * @var array
+     */
+    private $config;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, array $options, Guzzle $client)
+
+    private function debug($s = '')
     {
-        parent::__construct($generator, $session);
+        static $lastfile = "?";
+        if(array_key_exists('debug', $this->config) && $this->config['debug'] === true) {
+            $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            if ($bt[0]['file'] != $lastfile) {
+                file_put_contents('/var/alchemy/Phraseanet/logs/psauth.log', sprintf("FILE %s \n", ($lastfile = $bt[0]['file'])), FILE_APPEND);
+            }
+            $s = sprintf("LINE (%d) : %s\n", $bt[0]['line'], $s);
+            file_put_contents('/var/alchemy/Phraseanet/logs/psauth.log', $s, FILE_APPEND);
+        }
+    }
 
-        $this->baseurl      = $options['base-url'];
-        $this->key          = $options['client-id'];
-        $this->secret       = $options['client-secret'];
-        $this->providerType = $options['provider-type'];
-        $this->providerName = $options['provider-name'];
-        $this->iconUri      = array_key_exists('icon-uri', $options) ? $options['icon-uri'] : null; // if not set, will fallback on default icon
+    public function __construct(UrlGenerator $urlGenerator, SessionInterface $session, array $config, Guzzle $client)
+    {
+        parent::__construct($urlGenerator, $session);
+
+        $this->config = $config;
+        if(!array_key_exists('model-gpfx', $this->config)) {
+            $this->config['model-gpfx'] = '_G_';
+        }
+        if(!array_key_exists('model-upfx', $this->config)) {
+            $this->config['model-upfx'] = '_U_';
+        }
+        if(!array_key_exists('metamodel', $this->config)) {
+            $this->config['metamodel'] = '_metamodel';
+        }
+        if(!array_key_exists('birth-group', $this->config)) {
+            $this->config['birth-group'] = 'firstlog';
+        }
 
         $this->client  = $client;
+        $this->iconUri = array_key_exists('icon-uri', $config) ? $config['icon-uri'] : null; // if not set, will fallback on default icon
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
+    public static function create(UrlGenerator $generator, SessionInterface $session, array $options): AbstractProvider
     {
         foreach (['client-id', 'client-secret', 'base-url', 'provider-type', 'provider-name'] as $parm) {
             if (!isset($options[$parm]) || (trim($options[$parm]) == '')) {
@@ -62,12 +91,10 @@ class PsAuth extends AbstractProvider
             }
         }
 
-        return new self($generator, $session, $options, new Guzzle($options['base-url']));
-    }
+        $guzzle = new Guzzle($options['base-url']);
+        $guzzle->setSslVerification(false, false, 0);
 
-    public function getType(): string
-    {
-        return 'ps-auth';
+        return new self($generator, $session, $options, $guzzle);
     }
 
     /**
@@ -101,7 +128,7 @@ class PsAuth extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function authenticate(array $params = array())
+    public function authenticate(array $params = array()): RedirectResponse
     {
         $params = array_merge(['providerId' => $this->getId()], $params);
 
@@ -110,33 +137,22 @@ class PsAuth extends AbstractProvider
         $this->session->set($this->getId() . '.provider.state', $state);
 
         $url = sprintf("%s/%s/%s/auth?%s",
-            $this->baseurl,
-            urlencode($this->providerType),
-            urlencode($this->providerName),
+            $this->config['base-url'],
+            urlencode($this->config['provider-type']),
+            urlencode($this->config['provider-name']),
             http_build_query([
-                'client_id' => $this->key,
+                'client_id' => $this->config['client-id'],
                 'state' => $state,
                 'redirect_uri' => $this->generator->generate(
                     'login_authentication_provider_callback',
                     $params,
-                    UrlGenerator::ABSOLUTE_URL
+                    $this->getUrlGenerator()::ABSOLUTE_URL
                 ),
+                'response_type' => "code"
             ], '', '&')
         );
 
-
         return new RedirectResponse($url);
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function setId($newId): self
-    {
-        $this->id = $newId;
-        return $this;
     }
 
     /**
@@ -152,121 +168,408 @@ class PsAuth extends AbstractProvider
      */
     public function onCallback(Request $request)
     {
+        $this->debug();
         if (!$this->session->has($this->getId() . '.provider.state')) {
             throw new NotAuthenticatedException('No state value in session ; CSRF try ?');
         }
-
+        $this->debug();
         if ($request->query->get('state') !== $this->session->remove($this->getId() . '.provider.state')) {
             throw new NotAuthenticatedException('Invalid state value ; CSRF try ?');
         }
-
+        $this->debug();
         try {
-            $guzzleRequest = $this->client->post('access_token');
+            $url = sprintf("%s/%s/token",
+                urlencode($this->config['provider-type']),
+                urlencode($this->config['provider-name'])
+            );
+            $guzzleRequest = $this->client->post($url);
 
             $guzzleRequest->addPostFields([
+                'grant_type' => "authorization_code",
                 'code' => $request->query->get('code'),
                 'redirect_uri' => $this->generator->generate(
                     'login_authentication_provider_callback',
                     ['providerId' => $this->getId()],
-                    UrlGenerator::ABSOLUTE_URL
+                    $this->getUrlGenerator()::ABSOLUTE_URL
                 ),
-                'client_id' => $this->key,
-                'client_secret' => $this->secret,
+                'client_id' => $this->config['client-id'],
+                'client_secret' => $this->config['client-secret'],
             ]);
             $guzzleRequest->setHeader('Accept', 'application/json');
+            $this->debug();
             $response = $guzzleRequest->send();
+            $this->debug();
         }
         catch (GuzzleException $e) {
+            $this->debug();
             throw new NotAuthenticatedException('Guzzle error while authentication', $e->getCode(), $e);
         }
 
         if (200 !== $response->getStatusCode()) {
+            $this->debug();
             throw new NotAuthenticatedException('Error while getting access_token');
         }
 
+        $this->debug();
         $data = @json_decode($response->getBody(true), true);
+        $this->debug();
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new NotAuthenticatedException('Error while retrieving user info, unable to parse JSON.');
+            $this->debug();
+            throw new NotAuthenticatedException('Error while decoding token response, unable to parse JSON.');
         }
 
+        $this->debug(var_export($data, true));
         $this->session->remove($this->getId() . '.provider.state');
         $this->session->set($this->getId() . '.provider.access_token', $data['access_token']);
 
         try {
-            $request = $this->client->get($this->getId() . '/user');
+            $this->debug();
+            // $request = $this->client->get($this->getId() . 'userinfo');
+            $request = $this->client->get('me');
             $request->getQuery()->add('access_token', $data['access_token']);
             $request->setHeader('Accept', 'application/json');
+            $this->debug();
 
             $response = $request->send();
+            $this->debug();
         }
         catch (GuzzleException $e) {
+            $this->debug();
             throw new NotAuthenticatedException('Guzzle error while authentication', $e->getCode(), $e);
         }
 
+        $this->debug();
         $data = @json_decode($response->getBody(true), true);
+        $this->debug(var_export($data, true));
 
         if (200 !== $response->getStatusCode()) {
+            $this->debug();
             throw new NotAuthenticatedException('Error while retrieving user info, invalid status code.');
         }
 
         if (JSON_ERROR_NONE !== json_last_error()) {
+            $this->debug();
             throw new NotAuthenticatedException('Error while retrieving user info, unable to parse JSON.');
         }
 
-        $this->session->set($this->getId() . '.provider.id', $data['id']);
+        $this->debug();
+
+        $this->CreateUser([
+            'id'        => $distantUserId = $data['user_id'],
+            'login'     => $data['username'],
+            'firstname' => null,
+            'lastname'  => null,
+            'email'     => $data['email'],
+            '_groups'   => $data['groups']
+        ]);
+
+        $this->session->set($this->getId() . ".provider.id", $distantUserId);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getToken()
+    public function getToken(): Token
     {
+        $this->debug();
         if ('' === trim($this->session->get($this->getId() . '.provider.id'))) {
+            $this->debug();
             throw new NotAuthenticatedException($this->getId() . ' has not authenticated');
         }
 
+        $this->debug();
         return new Token($this, $this->session->get($this->getId() . '.provider.id'));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getIdentity()
+    public function getIdentity(): Identity
     {
+        $this->debug();
         $identity = new Identity();
 
         try {
-            $request = $this->client->get($this->getId() . '/user');
+            $request = $this->client->get('me');
             $request->getQuery()->add('access_token', $this->session->get($this->getId() . '.provider.access_token'));
             $request->setHeader('Accept', 'application/json');
 
             $response = $request->send();
         }
         catch (GuzzleException $e) {
+            $this->debug();
             throw new NotAuthenticatedException('Error while retrieving user info', $e->getCode(), $e);
         }
 
         if (200 !== $response->getStatusCode()) {
+            $this->debug();
             throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
         $data = @json_decode($response->getBody(true), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
+            $this->debug();
             throw new NotAuthenticatedException('Error while parsing json');
         }
 
-        list($firstname, $lastname) = explode(' ', $data['name'], 2);
-
+        $this->debug();
         $identity->set(Identity::PROPERTY_EMAIL, $data['email']);
-        $identity->set(Identity::PROPERTY_FIRSTNAME, $firstname);
-        $identity->set(Identity::PROPERTY_ID, $data['id']);
-        $identity->set(Identity::PROPERTY_IMAGEURL, $data['avatar_url']);
-        $identity->set(Identity::PROPERTY_LASTNAME, $lastname);
+        $identity->set(Identity::PROPERTY_ID, $data['user_id']);
+        $identity->set(Identity::PROPERTY_USERNAME, $data['username']);
 
+        $this->debug();
         return $identity;
     }
+
+    /**
+     * @param array $data
+     * @return User|null
+     * @throws Exception
+     */
+    private function CreateUser(Array $data)
+    {
+        $userManipulator = $this->getUserManipulator();
+        $userRepository = $this->getUserRepository();
+        $ACLProvider = $this->getACLProvider();
+
+        $ret = null;
+
+        $login = trim($data['login']);
+
+        $this->debug(sprintf("login=%s \n", var_export($login, true)));
+
+        if ($login == "") {
+            $this->debug("login is empty, user not created \n");
+        }
+
+        /** @var User $userUA */
+        $userUA = $userRepository->findByLogin($login);
+
+        if (!$userUA) {
+            // need to create the user
+            $this->debug(sprintf("creating user \"%s\" \n", $login));
+            $tmp_email = str_replace(['.', '@'], ['_', '_'], $login) . "@nomail.eu";
+            $userUA = $userManipulator->createUser($login, 'user_tmp_pwd', $tmp_email, false);
+
+            if ($userUA) {
+                $this->debug(sprintf("found user \"%s\" with id=%s \n", $login, $userUA->getId()));
+
+                // if the id provider does NOT return groups, the new user will get "birth" privileges
+                if (!is_array($data['_groups'])) {
+                    $data['_groups'] = [$this->config['birth-group']];
+                }
+            }
+            else {
+                $this->debug(sprintf("failed to create user \"%s\" \n", $login));
+            }
+        }
+        else {
+            // the user already exists
+            $this->debug(sprintf("found user \"%s\" with id=%s \n", $login, $userUA->getId()));
+
+            // if the id provider does return groups, then revoke privileges
+            if (is_array($data['_groups'])) {
+                $appbox = $this->getAppbox();
+                $all_base_ids = [];
+                foreach ($appbox->get_databoxes() as $databox) {
+                    foreach ($databox->get_collections() as $collection) {
+                        $all_base_ids[] = $collection->get_base_id();
+                    }
+                }
+
+                $userACL = $ACLProvider->get($userUA);
+                $userACL->revoke_access_from_bases($all_base_ids)->revoke_unused_sbas_rights();
+                $this->debug(sprintf("revoked from=%s \n", var_export($all_base_ids, true)));
+            }
+        }
+
+        // here we should have a user
+
+        if ($userUA) {
+            $this->debug(sprintf("User id=%s \n", $userUA->getId()));
+
+            // apply groups
+            if (is_array($data['_groups'])) {
+
+                $userACL = $ACLProvider->get($userUA);
+
+                // change groups to models
+                $models = [];
+                foreach ($data['_groups'] as $grp) {
+                    $models[] = ['name' => $this->config['model-gpfx'] . $grp, 'autocreate' => true];
+                }
+
+                // add a specific model for the user
+                $models[] = ['name' => $this->config['model-upfx'] . $login, 'autocreate' => false];
+
+                $this->debug(sprintf("models=%s \n", var_export($models, true)));
+
+                // if we need those (in case of creation of a model), they will be set only once
+                $metaModelUA = $metaModelBASES = $metaModelOwnerUA = null;
+
+                foreach ($models as $model) {
+
+                    $this->debug(sprintf("searching model '%s' \n", $model['name']));
+
+                    // we check if the model exits
+                    $modelUA = $userRepository->findByLogin($model['name']);
+
+                    if (!$modelUA) {
+                        if ($model['autocreate'] == true) {
+                            $this->debug(sprintf("model '%s' not found \n", $model['name']));
+
+                            // the model does not exist, so create it
+                            //
+                            // if not already known, get the metamodel
+                            if ($metaModelUA === null) {
+
+                                $this->debug(sprintf("searching metamodel '%s'... \n", $this->config['metamodel']));
+
+                                $metaModelUA = $userRepository->findByLogin($this->config['metamodel']);
+
+                                if ($metaModelUA) {
+
+                                    $this->debug(sprintf("metaModelID=%s \n", print_r($metaModelUA->getId(), true)));
+
+                                    // metamodel found, get some infos...
+                                    // ... get acl
+                                    $metaModelACL = $ACLProvider->get($metaModelUA);
+                                    // ... then list of bases
+                                    $metaModelBASES = $metaModelACL->get_granted_base();
+                                    // ... in fact we simply need an array of base_ids, and base_id is the keys of the array, so switch
+                                    $metaModelBASES = array_keys($metaModelBASES);
+
+                                    if ($metaModelUA->isTemplate()) {
+                                        $metaModelOwnerUA = $metaModelUA->getTemplateOwner();
+
+                                        $this->debug(sprintf("metamodel is a model, owner_id=%s \n", print_r($metaModelOwnerUA->getId(), true)));
+                                    }
+
+                                    $this->debug(sprintf("metamodel granted on bases '%s' \n", print_r($metaModelBASES, true)));
+                                }
+                                else {
+                                    $this->debug("metamodel not found \n");
+
+                                    $metaModelUA = false;   // don't search again
+                                }
+                            }
+
+                            // now we can create the model only if we found the metamodel
+                            if ($metaModelUA) {
+
+                                $this->debug(sprintf("creating model '%s'... \n", $model['name']));
+
+                                // create the model user...
+                                $modelUA = $userManipulator->createUser($model['name'], 'model_pwd', null, false);
+
+                                $this->debug(sprintf("model '%s' created with modelID=%s... \n", $model['name'], print_r($modelUA->getId(), true)));
+
+                                if ($metaModelOwnerUA) {
+                                    $modelUA->setTemplateOwner($metaModelOwnerUA);
+
+                                    $this->debug(sprintf("model '%s' set as model, owner_id=%s... \n", $model['name'], print_r($metaModelOwnerUA->getId(), true)));
+                                }
+
+                                // ... then copy acl of every sbas
+                                $modelACL = $ACLProvider->get($modelUA);
+                                $modelACL->apply_model($metaModelUA, $metaModelBASES);
+
+                                $this->debug(sprintf(" ... and granted on bases %s \n", print_r($metaModelBASES, true)));
+                            }
+                        }
+                    }
+                    else {
+                        // the model already exists
+                        $this->debug(sprintf("model '%s' already exists, id=%s \n", $model['name'], print_r($modelUA->getId(), true)));
+                    }
+
+                    // here we should have the model, except "user" models which are not automatically created
+
+                    if ($modelUA) {
+                        $this->debug(sprintf(" ... modelID=%s \n", print_r($modelUA->getId(), true)));
+
+                        // here we have the model so get some infos about it
+                        $modelACL = $ACLProvider->get($modelUA);
+                        $modelBASES = $modelACL->get_granted_base();
+                        // ... in fact we simply need an array of base_ids, and base_id is the keys of the array, so switch
+                        $modelBASES = array_keys($modelBASES);
+
+                        $this->debug(sprintf("model granted on bases '%s' \n", print_r($modelBASES, true)));
+
+                        // ... then copy acl of every sbas
+                        $userACL->apply_model($modelUA, $modelBASES);
+
+                        $this->debug(sprintf("user '%s' granted on bases %s \n", $login, print_r($modelBASES, true)));
+                    }
+                    else {
+                        $this->debug(sprintf("no model '%s' \n", $model['name']));
+                    }
+                }
+
+                $userACL->inject_rights();
+            }
+
+            // now update infos of the user
+            if (!is_null($data['firstname']) && ($v = trim($data['firstname'])) != '') {
+                $userUA->setFirstName($v);
+            }
+            if (!is_null($data['firstname']) && ($v = trim($data['lastname'])) != '') {
+                $userUA->setLastName($v);
+            }
+
+            $mail = "";     // mail is a special case
+            try {
+                if (($v = trim($data['email'])) != '') {
+                    $mail = $v;
+                }
+            }
+            catch (Exception $e) {
+                // no-op
+            }
+
+            if ($mail != $userUA->getEmail()) {
+                try {
+                    $this->debug("unsetting former email of user");
+                    $userManipulator->setEmail($userUA, null);
+                    if ($mail != "") {
+                        $this->debug(sprintf("setting email '%s' to user", $mail));
+                        $dupUserUA = $userRepository->findByEmail($mail);
+                        if ($dupUserUA == null) {
+                            // ok we can set the mail
+                            $userManipulator->setEmail($userUA, $mail);
+                            $this->debug(sprintf("email '%s' set to user", $mail));
+                        }
+                        else {
+                            $this->debug(sprintf("warning : another user (id=%s) already has email '%s', email not set", $dupUserUA->getId(), $mail));
+                        }
+                    }
+                }
+                catch (Exception $e) {
+                    // no-op
+                    $this->debug(var_export($e->getMessage(), true));
+                }
+            }
+            else {
+                $this->debug(sprintf("email '%s' does not change\n", $mail));
+            }
+
+            // yes we are logged !
+            /** @var RandomGenerator $randomGenerator */
+            $randomGenerator = $this->getRandomGenerator();
+            $password = $randomGenerator->generateString(16);
+            $userUA->setPassword($password);
+
+            $this->debug(sprintf("returning user id=%s", $userUA->getId()));
+
+            $ret = $userUA; // ->getId();
+        }
+
+        return $ret;
+    }
+
+
 
     /**
      * {@inheritdoc}

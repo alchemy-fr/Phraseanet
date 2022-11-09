@@ -228,18 +228,23 @@ authentication:
             options:
                 client-id: ''
                 client-secret: ''
-          ps_auth_1:
-              enabled: false
-              display: false
-              title: 'PS Auth 1'
-              type: 'ps-auth'
-              options:
-                  client-id: ''
-                  client-secret: ''
-                  base-url: 'https://api-auth.phrasea.local'
-                  provider-type: 'oauth'
-                  provider-name: 'v2'
-                  icon-uri: null
+        ps_auth_1:
+            enabled: false
+            display: false
+            title: 'PS Auth 1'
+            type: 'ps-auth'
+            options:
+                client-id: ''
+                client-secret: ''
+                base-url: 'https://api-auth.phrasea.local'
+                provider-type: 'oauth'
+                provider-name: 'v2'
+                icon-uri: null,
+                debug: false,
+                birth-group: 'firstlog',
+                metamodel: "_metamodele",
+                model-gpfx: "_M_",
+                model-upfx: "_U_"
 registration-fields:
     -
         name: company
