@@ -241,9 +241,9 @@ authentication:
                 provider-name: 'v2'
                 icon-uri: null,
                 debug: false,
-                birth-group: 'firstlog',
-                metamodel: '_metamodel',
-                model-gpfx: '_M_',
+                birth-group: 'firstlog'
+                metamodel: '_metamodel'
+                model-gpfx: '_M_'
                 model-upfx: '_U_'
 registration-fields:
     -

@@ -218,6 +218,10 @@ authentication:
                 provider-type: 'oauth'
                 provider-name: 'v2'
                 icon-uri: null
+                birth-group: 'firstlog'
+                metamodel: '_metamodel'
+                model-gpfx: '_M_'
+                model-upfx: '_U_'
 registration-fields:
     -
         name: company
