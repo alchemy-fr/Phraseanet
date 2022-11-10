@@ -669,12 +669,16 @@ class LoginController extends Controller
 
     public function authenticationCallback(Request $request, $providerId)
     {
+        $this->getSession()->set('auth_provider.id', null);
+
         $provider = $this->findProvider($providerId);
 
         // triggers what's necessary
         try {
             $provider->onCallback($request);
             $token = $provider->getToken();
+
+            $this->getSession()->set('auth_provider.id', $providerId);
         } catch (NotAuthenticatedException $e) {
             $this->getSession()->getFlashBag()->add('error', $this->app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
 
