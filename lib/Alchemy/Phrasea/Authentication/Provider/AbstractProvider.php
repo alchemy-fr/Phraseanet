@@ -60,6 +60,11 @@ abstract class AbstractProvider implements ProviderInterface
      */
     private $randomGenerator;
 
+    /**
+     * @var array
+     */
+    private $options = null;
+
     private $id;
 
 
@@ -251,6 +256,22 @@ abstract class AbstractProvider implements ProviderInterface
     public function setRandomGenerator(RandomGenerator $randomGenerator)
     {
         $this->randomGenerator = $randomGenerator;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
     }
 
     protected function createState()

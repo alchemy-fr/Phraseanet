@@ -75,9 +75,11 @@ class Factory
 
         /** @var AbstractProvider $o */
         $o = $class_name::create($this->generator, $this->session, $options);   // v1 bc compat : can't change
+
         $o->setId($id);
         $o->setDisplay($display);
         $o->setTitle($title);
+        $o->setOptions($options);
 
         $o->setUserManipulator($this->userManipulator);
         $o->setUserRepository($this->userRepository);
