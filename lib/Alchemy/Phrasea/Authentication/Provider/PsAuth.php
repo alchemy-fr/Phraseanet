@@ -72,9 +72,6 @@ class PsAuth extends AbstractProvider
         if(!array_key_exists('metamodel', $this->config)) {
             $this->config['metamodel'] = '_metamodel';
         }
-        if(!array_key_exists('birth-group', $this->config)) {
-            $this->config['birth-group'] = 'firstlog';
-        }
 
         $this->client  = $client;
         $this->iconUri = array_key_exists('icon-uri', $config) ? $config['icon-uri'] : null; // if not set, will fallback on default icon
@@ -357,7 +354,7 @@ class PsAuth extends AbstractProvider
                 $this->debug(sprintf("found user \"%s\" with id=%s \n", $login, $userUA->getId()));
 
                 // if the id provider does NOT return groups, the new user will get "birth" privileges
-                if (!is_array($data['_groups'])) {
+                if (!is_array($data['_groups']) && array_key_exists('birth-group', $this->config)) {
                     $data['_groups'] = [$this->config['birth-group']];
                 }
             }
@@ -395,10 +392,16 @@ class PsAuth extends AbstractProvider
 
                 $userACL = $ACLProvider->get($userUA);
 
-                // change groups to models
                 $models = [];
+
+                // change groups to models
                 foreach ($data['_groups'] as $grp) {
                     $models[] = ['name' => $this->config['model-gpfx'] . $grp, 'autocreate' => true];
+                }
+
+                // add "everyone-group"
+                if(array_key_exists('everyone-group', $this->config)) {
+                    $models[] = ['name' => $this->config['everyone-group'], 'autocreate' => true];
                 }
 
                 // add a specific model for the user

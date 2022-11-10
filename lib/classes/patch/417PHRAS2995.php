@@ -97,7 +97,8 @@ class patch_417PHRAS2995 implements patchInterface
                     'provider-type' => 'oauth',
                     'provider-name' => 'v2',
                     'icon-uri'      => null,
-                    'birth-group'   => 'firstlog',
+                    'birth-group'   => '_firstlog',
+                    'everyone-group' => '_everyone',
                     'metamodel'     => '_metamodel',
                     'model-gpfx'    => '_M_',
                     'model-upfx'    => '_U_'

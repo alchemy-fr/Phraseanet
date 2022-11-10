@@ -96,7 +96,6 @@ class FactoryTest extends \PhraseanetTestCase
                     'base-url' => 'https://api-auth.phrasea.local',
                     'provider-type' => 'oauth',
                     'provider-name' => 'v2',
-                    'birthgroup' => 'BIRTHGRP',
                 ],
                 'Alchemy\Phrasea\Authentication\Provider\PsAuth'
             ]
