@@ -179,6 +179,18 @@ class PsAuth extends AbstractProvider
         return null;
     }
 
+    public function logoutAndRedirect($redirect_uri)
+    {
+        $this->debug("logoutAndRedirect ?");
+        if($this->config['auto-logout']) {
+            $url = sprintf("%s/security/logout?r=%s", $this->config['base-url'], urlencode($redirect_uri));
+
+            return new RedirectResponse($url);
+        }
+
+        return null;
+    }
+
     /**
      * {@inheritdoc}
      */

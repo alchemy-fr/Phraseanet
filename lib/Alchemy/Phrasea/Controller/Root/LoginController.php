@@ -484,18 +484,33 @@ class LoginController extends Controller
     {
         $providerId = $this->getSession()->get('auth_provider.id', null);
 
-        $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
-        $this->getAuthenticator()->closeAccount();
-
+        /** @var RedirectResponse $response */
         $response = null;
 
         // does the provider provides a logout redirection ?
         if($providerId && ($provider = $this->findProvider($providerId))) {
-            $response = $provider->logout();
+            if(method_exists($provider, 'logoutAndRedirect')) {
+                $redirectToPhr = $this->app->url('logout', [
+                    'redirect' => $request->query->get("redirect")
+                ]);
+                $response = $provider->logoutAndRedirect($redirectToPhr);
+            }
+            else {
+                $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+                $this->getAuthenticator()->closeAccount();
+
+                $response = $provider->logout();
+            }
         }
 
-        if(!$response) {
+        if($response) {
+            $this->getSession()->set('auth_provider.id', null);
+        }
+        else {
             // no provider logout : use ours
+            $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+            $this->getAuthenticator()->closeAccount();
+
             $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
 
             $response = $this->app->redirectPath('homepage', [
