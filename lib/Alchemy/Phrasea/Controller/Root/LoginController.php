@@ -688,6 +688,10 @@ class LoginController extends Controller
         try {
             $provider->onCallback($request);
             $token = $provider->getToken();
+            $options = $provider->getOptions();
+            if (isset($options['base-url'])) {
+                $this->getSession()->set('auth_provider.base-url', $options['base-url']);
+            }
 
             $this->getSession()->set('auth_provider.id', $providerId);
         } catch (NotAuthenticatedException $e) {

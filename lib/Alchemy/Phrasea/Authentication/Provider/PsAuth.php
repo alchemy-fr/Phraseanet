@@ -281,6 +281,7 @@ class PsAuth extends AbstractProvider
         ]);
 
         $this->session->set($this->getId() . ".provider.id", $distantUserId);
+        $this->session->set($this->getId() . ".provider.username", $data['username']);
     }
 
     /**

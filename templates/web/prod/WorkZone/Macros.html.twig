@@ -668,12 +668,16 @@
 {% macro make_expose_bloc(app, WorkZone) %}
     <div id="expose_workzone" class="expose_workzone">
         <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
-            {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
-
+            {% set expose_list = app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
+            {% set auth_base_url = app['session'].get('auth_provider.base-url') | trim('/') %}
             <select id="expose_list" name="expose_list" class="expose_list">
                 <option value="">{{ 'prod:expose:select expose' | trans }}</option>
                 {% for key in expose_list|keys %}
-                    {% if expose_list[key].activate_expose %}
+                    {% if (
+                        (app['session'].get('auth_provider.id') is not null and expose_list[key].auth_base_uri | trim('/') == auth_base_url)
+                        or app['session'].get('auth_provider.id') is empty)
+                        and expose_list[key].activate_expose  %}
+
                         <option value="{{ key }}">{{ key }}</option>
                     {% endif %}
                 {% endfor %}
