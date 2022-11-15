@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\PhraseanetService\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\ExposeUploadEvent;
@@ -183,6 +184,16 @@ class PSExposeController extends Controller
 
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($request->get('exposeName'));
+        $providerId = $session->get('auth_provider.id');
+
+        if (!$session->has($passSessionName) && $providerId != null) {
+            try {
+                $provider = $this->getAuthenticationProviders()->get($providerId);
+                $session->set($passSessionName, $session->get($provider->getId() . '.provider.access_token'));
+                $session->set($this->getLoginSessionName($request->get('exposeName')), $session->get($provider->getId() . '.provider.username'));
+            } catch(\Exception $e) {
+            }
+        }
 
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
              return $app->json([
@@ -219,13 +230,16 @@ class PSExposeController extends Controller
         ]);
 
         $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
-        $publications = [];
-        $basePath = [];
 
+        $body = json_decode($response->getBody()->getContents(),true);
         if ($response->getStatusCode() == 200) {
-            $body = json_decode($response->getBody()->getContents(),true);
             $publications = $body['hydra:member'];
             $basePath = $body['@id'];
+        } else {
+            return $app->json([
+                'exposeName'    => $request->get('exposeName'),
+                'error'         => $body['error_description']
+            ]);
         }
 
         if ($request->get('format') == 'pub-list') {
@@ -1290,5 +1304,13 @@ class PSExposeController extends Controller
     private function getSession()
     {
         return $this->app['session'];
+    }
+
+    /**
+     * @return ProvidersCollection
+     */
+    private function getAuthenticationProviders()
+    {
+        return $this->app['authentication.providers'];
     }
 }
