@@ -101,7 +101,8 @@ class patch_417PHRAS2995 implements patchInterface
                     'everyone-group' => '_everyone',
                     'metamodel'     => '_metamodel',
                     'model-gpfx'    => '_M_',
-                    'model-upfx'    => '_U_'
+                    'model-upfx'    => '_U_',
+                    'auto-logout'   => false
                 ]
             ];
         }

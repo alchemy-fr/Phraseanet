@@ -223,6 +223,7 @@ authentication:
                 metamodel: '_metamodel'
                 model-gpfx: '_M_'
                 model-upfx: '_U_'
+                auto-logout: false
 registration-fields:
     -
         name: company

@@ -72,6 +72,9 @@ class PsAuth extends AbstractProvider
         if(!array_key_exists('metamodel', $this->config)) {
             $this->config['metamodel'] = '_metamodel';
         }
+        if(!array_key_exists('auto-logout', $this->config)) {
+            $this->config['auto-logout'] = false;
+        }
 
         $this->client  = $client;
         $this->iconUri = array_key_exists('icon-uri', $config) ? $config['icon-uri'] : null; // if not set, will fallback on default icon
@@ -157,7 +160,23 @@ class PsAuth extends AbstractProvider
      */
     public function logout()
     {
-        // Phraseanet does not support tokens revocation
+        $this->debug("logout ?");
+        if($this->config['auto-logout']) {
+
+            // too bad: getting the logout page is not enough...
+//        $url = "security/logout";
+//        $guzzleRequest = $this->client->get($url);
+//        $response = $guzzleRequest->send();
+//        $this->debug($response->getBody());
+//        return null;
+
+            // ... we really need to redirect to it, which will prevent phr to redirect to his home
+            $url = sprintf("%s/security/logout", $this->config['base-url']);
+
+            return new RedirectResponse($url);
+        }
+
+        return null;
     }
 
     /**

@@ -482,17 +482,28 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        $providerId = $this->getSession()->get('auth_provider.id', null);
+
         $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
         $this->getAuthenticator()->closeAccount();
 
-        $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+        $response = null;
 
-        $response = $this->app->redirectPath('homepage', [
-            'redirect' => $request->query->get("redirect")
-        ]);
+        // does the provider provides a logout redirection ?
+        if($providerId && ($provider = $this->findProvider($providerId))) {
+            $response = $provider->logout();
+        }
 
-        $response->headers->clearCookie('persistent');
-        $response->headers->clearCookie('last_act');
+        if(!$response) {
+            // no provider logout : use ours
+            $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+
+            $response = $this->app->redirectPath('homepage', [
+                'redirect' => $request->query->get("redirect")
+            ]);
+            $response->headers->clearCookie('persistent');
+            $response->headers->clearCookie('last_act');
+        }
 
         return $response;
     }
