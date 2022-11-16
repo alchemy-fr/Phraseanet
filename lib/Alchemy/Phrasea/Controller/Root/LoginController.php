@@ -703,11 +703,6 @@ class LoginController extends Controller
         try {
             $provider->onCallback($request);
             $token = $provider->getToken();
-            $options = $provider->getOptions();
-            if (isset($options['base-url'])) {
-                $this->getSession()->set('auth_provider.base-url', $options['base-url']);
-            }
-
             $this->getSession()->set('auth_provider.id', $providerId);
         } catch (NotAuthenticatedException $e) {
             $this->getSession()->getFlashBag()->add('error', $this->app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
