@@ -695,4 +695,14 @@ class PsAuth extends AbstractProvider
             . 'XMCV9CQH+wW8/18L/BeSV1YkHS6B9wAAAABJRU5ErkJggg==';
     }
 
+    public function getAccessToken()
+    {
+        return $this->session->get($this->getId() . '.provider.access_token');
+    }
+
+    public function getUserName()
+    {
+        return $this->session->get($this->getId() . ".provider.username");
+    }
+
 }
