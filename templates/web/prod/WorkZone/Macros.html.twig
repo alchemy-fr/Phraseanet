@@ -670,7 +670,6 @@
         <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
             {% set expose_list = app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
             {% set providerId = app['session'].get('auth_provider.id') %}
-            {% set auth_base_url = null %}
             {% if providerId is not null %}
                 {% set provider = app['authentication.providers'].get(providerId) %}
                 {% if provider.getType() == 'PsAuth'  %}
