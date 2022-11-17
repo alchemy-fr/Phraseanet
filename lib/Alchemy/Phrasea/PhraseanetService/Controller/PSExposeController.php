@@ -61,14 +61,9 @@ class PSExposeController extends Controller
         }
 
         if ($response->getStatusCode() !== 200) {
-            $body = $response->getBody()->getContents();
-
-            $body = json_decode($body,true);
             return $this->app->json([
                 'success' => false,
-                'message' => 'Status code: '. $response->getStatusCode(),
-                'error'   => $body['error'],
-                'error_description'   => $body['error_description']
+                'error_description'   => 'Error with status code: ' . $response->getStatusCode(),
             ]);
         }
 
@@ -242,14 +237,14 @@ class PSExposeController extends Controller
 
         $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
 
-        $body = @json_decode($response->getBody()->getContents(),true);
         if ($response->getStatusCode() == 200) {
+            $body = @json_decode($response->getBody()->getContents(),true);
             $publications = $body['hydra:member'];
             $basePath = $body['@id'];
         } else {
             return $app->json([
                 'success' => false,
-                'error'   => $body['error_description']
+                'error'   => "Error with status code : " . $response->getStatusCode()
             ]);
         }
 
