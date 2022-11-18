@@ -31,7 +31,7 @@ class PSExposeController extends Controller
         if ($exposeConfiguration == null) {
             return $this->app->json([
                 'success' => false,
-                'message' => 'Please, set configuration in admin!'
+                'error_description' => 'Please, set configuration in admin!'
             ]);
         }
 
@@ -56,7 +56,7 @@ class PSExposeController extends Controller
         } catch(\Exception $e) {
             return $this->app->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'error_description' => $e->getMessage()
             ]);
         }
 
