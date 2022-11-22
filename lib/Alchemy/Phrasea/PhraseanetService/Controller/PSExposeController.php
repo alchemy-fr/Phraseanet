@@ -226,6 +226,19 @@ class PSExposeController extends Controller
                     'Content-Type'  => 'application/json'
                 ]
             ]);
+
+            if ($response->getStatusCode() == 200) {
+                $body = @json_decode($response->getBody()->getContents(),true);
+
+                if (!isset($body['hydra:member']) || !isset($body['@id'])) {
+                    throw new \Exception("index undefined on response body!");
+                }
+                $publications = $body['hydra:member'];
+                $basePath = $body['@id'];
+            } else {
+                throw new \Exception("Error with status code : " . $response->getStatusCode());
+            }
+
         } catch(\Exception $e) {
             return $app->json([
                 'success' => false,
@@ -236,17 +249,6 @@ class PSExposeController extends Controller
         }
 
         $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
-
-        if ($response->getStatusCode() == 200) {
-            $body = @json_decode($response->getBody()->getContents(),true);
-            $publications = $body['hydra:member'];
-            $basePath = $body['@id'];
-        } else {
-            return $app->json([
-                'success' => false,
-                'error'   => "Error with status code : " . $response->getStatusCode()
-            ]);
-        }
 
         if ($request->get('format') == 'pub-list') {
             return $app->json([
