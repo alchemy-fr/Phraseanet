@@ -103,6 +103,20 @@ jobs:
         - store_artifacts:
             path: /tmp/circleci-test-results
 
+    build_phraseanet-setup:
+        machine:
+          image: ubuntu-2004:202201-02
+          docker_layer_caching: true
+        working_directory: ~/alchemy-fr/Phraseanet
+        steps:
+            - checkout
+            - aws-ecr/ecr-login:
+                region: AWS_DEFAULT_REGION
+            - run: docker build --target phraseanet-setup -t ${AWS_ACCOUNT_URL}/phraseanet-setup:${CIRCLE_BRANCH} .
+            - aws-ecr/push-image:
+                account-url: AWS_ACCOUNT_URL
+                repo: "phraseanet-setup"
+                tag: "${CIRCLE_BRANCH}"
 
     build_phraseanet-fpm:
         machine:
@@ -157,6 +171,8 @@ workflows:
             - build
     newfashion:
         jobs:
+            - build_phraseanet-setup:
+                context: "AWS Paris"
             - build_phraseanet-fpm:
                 context: "AWS Paris"
             - build_phraseanet-worker:
