@@ -172,7 +172,7 @@ jobs:
             - checkout
             - aws-ecr/ecr-login:
                 region: AWS_DEFAULT_REGION
-            - run: docker build --target phraseanet-db -f ./docker/db/Dockerfile -t ${AWS_ACCOUNT_URL}/phraseanet-db:${CIRCLE_BRANCH} .
+            - run: docker build -f ./docker/db/Dockerfile -t ${AWS_ACCOUNT_URL}/phraseanet-db:${CIRCLE_BRANCH} .
             - aws-ecr/push-image:
                 account-url: AWS_ACCOUNT_URL
                 repo: "phraseanet-db"
