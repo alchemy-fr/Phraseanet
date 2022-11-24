@@ -158,8 +158,8 @@ workflows:
     newfashion:
         jobs:
             - build_phraseanet-fpm:
-                context: "AWS London"
+                context: "AWS Paris"
             - build_phraseanet-worker:
-                context: "AWS London"
+                context: "AWS Paris"
             - build_phraseanet-nginx:
-                context: "AWS London"
+                context: "AWS Paris"
