@@ -167,12 +167,12 @@ jobs:
         machine:
           image: ubuntu-2004:202201-02
           docker_layer_caching: true
-        working_directory: ~/alchemy-fr/Phraseanet/docker/db
+        working_directory: ~/alchemy-fr/Phraseanet/
         steps:
             - checkout
             - aws-ecr/ecr-login:
                 region: AWS_DEFAULT_REGION
-            - run: docker build --target phraseanet-db -t ${AWS_ACCOUNT_URL}/phraseanet-db:${CIRCLE_BRANCH} .
+            - run: docker build --target phraseanet-db -f ./docker/db -t ${AWS_ACCOUNT_URL}/phraseanet-db:${CIRCLE_BRANCH} .
             - aws-ecr/push-image:
                 account-url: AWS_ACCOUNT_URL
                 repo: "phraseanet-db"
@@ -187,7 +187,7 @@ jobs:
             - checkout
             - aws-ecr/ecr-login:
                 region: AWS_DEFAULT_REGION
-            - run: docker build --target phraseanet-elasticsearch -t ${AWS_ACCOUNT_URL}/phraseanet-elasticsearch:${CIRCLE_BRANCH} .
+            - run: docker build --target phraseanet-elasticsearch -f ./docker/elasticsearch  -t ${AWS_ACCOUNT_URL}/phraseanet-elasticsearch:${CIRCLE_BRANCH} .
             - aws-ecr/push-image:
                 account-url: AWS_ACCOUNT_URL
                 repo: "phraseanet-elasticsearch"
