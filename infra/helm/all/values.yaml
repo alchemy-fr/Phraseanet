@@ -3,12 +3,24 @@ image:
   registry: alchemyfr
   tag:
       phraseanet: 4.1.3
-      database : 4.1.3
-      elasticsearch : 4.1.3
+      phraseanet_saml_sp: latest
+      database: 4.1.3
+      elasticsearch: 4.1.3
+  pullSecret:
+    enabled: false
+    name: registry-secret
+    registry:
+    username:
+    password:
+    email:
 
 mysql:
-  root_password: phraseanet
+  enabled: true
+  user: "{{ .Values.app.phraseanet_db_user }}"
+  password: "{{ .Values.app.phraseanet_db_password }}"
+  root_password: "{{ .Values.app.phraseanet_db_password }}"
   max_allowed_packet: 16M
+  max_connection: 100
   pvc_name: phraseanet-database
   resources:
     requests:
@@ -27,6 +39,7 @@ mysql:
     size: 1Gi
 
 elasticsearch:
+  enabled: true
   pvc_name: phraseanet-elasticsearch
   resources:
     requests:
@@ -45,12 +58,11 @@ elasticsearch:
     size: 1Gi
 
 rabbitmq:
-  host: rabbitmq
-  port: 5672
-  default_user: rabbit
-  default_pass: rabbit
-  default_vhost: /
-  ssl: false
+  enabled: true
+  port: "{{ .Values.app.phraseanet_rabbitmq_port }}"
+  default_user: "{{ .Values.app.phraseanet_rabbitmq_user }}"
+  default_pass: "{{ .Values.app.phraseanet_rabbitmq_pass }}"
+  default_vhost: "{{ .Values.app.phraseanet_rabbitmq_vhost }}"
   heartbeat: 60
   resources:
     requests:
@@ -60,35 +72,130 @@ rabbitmq:
       cpu: "2000m"
       memory: "4096Mi"
 
+redis:
+  enabled: true
+  port: "{{ .Values.app.phraseanet_cache_port }}"
+
 http:
   max_body_size: 2G
   max_input_vars: 12000
 
 php:
+  newrelic_enabled: false
+  newrelic_licence_key:
+  newrelic_app_name:
   opcache_enabled: 1
   log_level: warning
   session_cache_limiter: off
+  session_save_handler: redis
+  session_save_path: "tcp://redis-session:6379"
 
 ingress:
   enabled: false
   host: phraseanet
   tls: false
 
+saml:
+  enabled: true
+  annotations: {}
+  phraseanet_k8s_namespace:
+  saml_phraseanet_host:
+  saml_sp_authsources:
+  saml_configmap:
+    enabled: false
+    idp_config:
+    authsources_config:
+  saml_secrets:
+    enabled: false
+    all:               
+      #phrasea.pem: ''
+      #phrasea.crt: ''
+  pvc:
+    idp:
+      name: phraseanet-saml-idp
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    sp:
+      name: phraseanet-saml-sp
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    cert:
+      name: phraseanet-saml-cert
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+
 app:
-  hostname: localhost
+  env_set_phraseanet_project_name: 1
+  phraseanet_project_name: My Phraseanet
+  phraseanet_hostname: localhost
+  phraseanet_scheme: http
   phraseanet_install: 1
   phraseanet_setup: 1
   phraseanet_admin_account_email: admin@alchemy.fr
   phraseanet_admin_account_password: phraseanet
   phraseanet_db_host: db
+  phraseanet_db_port: 3306
   phraseanet_db_user: root
   phraseanet_db_password: phraseanet
+  phraseanet_cache_type: redis
+  phraseanet_cache_host: redis
+  phraseanet_cache_port: 6379
+  phraseanet_cache_domain: phraseanet
+  phraseanet_elasticsearch_host: elasticsearch
+  phraseanet_elasticsearch_port: 9200
+  phraseanet_rabbitmq_host: rabbitmq
+  phraseanet_rabbitmq_port: 5672
+  phraseanet_rabbitmq_ssl: false
+  phraseanet_rabbitmq_vhost: /
+  phraseanet_rabbitmq_user: rabbit
+  phraseanet_rabbitmq_pass: rabbit
+  phraseanet_available_language: fr,en,de,du
+  phraseanet_default_language: en
+  phraseanet_install: 1
+  phraseanet_setup: 1
+  phraseanet_upgrade: 1
+  phraseanet_api_enabled: 1
+  phraseanet_api_ssl: true
+  phraseanet_api_auth_token_header_only: false
+  phraseanet_emiter_email:
+  phraseanet_mail_object_prefix: Phraseanet
+  phraseanet_smtp_enabled:
+  phraseanet_smtp_auth_enabled:
+  phraseanet_smtp_secure_mode:
+  phraseanet_smtp_host:
+  phraseanet_smtp_port:
+  phraseanet_smtp_user:
+  phraseanet_smtp_password:
+  phraseanet_emitter_email:
+  phraseanet_mail_object_prefix:
+  phraseanet_ffmpeg_timeout:
+  phraseanet_ffprobe_timeout:
+  phraseanet_gs_timeout:
+  phraseanet_mp4box_timeout:
+  phraseanet_swftools_timeout:
+  phraseanet_unocon_timeout:
+  phraseanet_exiftool_timeout:
   install_db_template: DublinCore
   install_appbox: ab_master
   install_databox: db_databox1
-  phraseanet_hostname: localhost
-  phraseanet_app_port: 80
-  phraseanet_scheme: http
   phraseanet_trusted_proxies:
   gateway:
     resources:
@@ -107,6 +214,36 @@ app:
         cpu: "2000m"
         memory: "4096Mi"
   worker:
+    phraseanet_explode_worker: 1
+    phraseanet_workers_launch_method:
+    phraseanet_worker_mainqueue: 3
+    phraseanet_worker_assetsingest: 1
+    phraseanet_worker_createrecord: 2
+    phraseanet_worker_deleterecord: 2
+    phraseanet_worker_editrecord: 2
+    phraseanet_worker_exportmail: 2
+    phraseanet_worker_exposeupload: 2
+    phraseanet_worker_ftp: 1
+    phraseanet_worker_populateindex: 1
+    phraseanet_worker_pullassets: 1
+    phraseanet_worker_recordsactions: 1
+    phraseanet_worker_subdefcreation: 1
+    phraseanet_worker_subtitle: 1
+    phraseanet_worker_validationreminder: 1
+    phraseanet_worker_webhook: 1
+    phraseanet_worker_writemetadatas: 1
+    phraseanet_worker_sharebasket: 1
+    phraseanet_scheduler: 1
+    launch:
+      monoworker: true
+      records: false
+      subdefcreation: false
+      writemetadatas: false
+      exportemail: false
+      exportftp: false
+      ps: false
+      noscalable: false
+      scheduler: false
     resources:
       requests:
         cpu: "50m"
@@ -114,6 +251,47 @@ app:
       limits:
         cpu: "2000m"
         memory: "4096Mi"
+  hpa:
+    fpm:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
+    gateway:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
+    subdefcreation:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
+    records:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
+    exportemail:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
+    ps:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
+    writemetadatas:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
+    exportftp:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      averageUtilization: 60
   pvc:
     data:
       name: phraseanet-datas
@@ -175,6 +353,26 @@ app:
         accessMode: ReadWriteOnce
         subPath:
         size: 1Gi
+    ftp:
+      name: phraseanet-ftp
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    backup:
+      name: phraseanet-backup
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
   persistence:
     enabled: true
     existingClaim:
@@ -183,3 +381,10 @@ app:
     accessMode: ReadWriteOnce
     subPath:
     size: 1Gi
+  pvc_name:
+      data: phraseanet-datas
+      thumbnails: phraseanet-thumbnails
+      custom: phraseanet-custom
+      config: phraseanet-config
+      ftp: phraseanet-ftp
+      backup: phraseanet-backup

@@ -1,0 +1,74 @@
+{{- if eq .Values.saml.enabled true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phraseanet-saml-sp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phraseanet
+      tier: saml-sp
+  template:
+    metadata:
+      labels:
+        app: phraseanet
+        tier: saml-sp
+      {{- template "saml.annotations" . }}
+    spec:
+      volumes:
+      {{- if eq .Values.saml.saml_configmap.enabled true }}
+      - name: phraseanet-saml-idp-config-dir
+        configMap:
+          name: {{ .Values.app.phraseanet_hostname }}-saml-config
+          items:
+            - key: saml20-idp-remote.php
+              path: saml20-idp-remote.php
+      {{ else }}
+      - name: phraseanet-saml-idp-config-dir
+        persistentVolumeClaim:
+          claimName: {{ .Values.saml.pvc.idp.name }}
+      {{- end }}
+      - name: phraseanet-saml-sp-config-dir
+        persistentVolumeClaim:
+          claimName: {{ .Values.saml.pvc.sp.name }}
+      {{- if eq .Values.saml.saml_secrets.enabled true }}
+      - name: phraseanet-saml-sp-cert-dir
+        secret:
+          secretName: {{ .Values.app.phraseanet_hostname }}-saml-secret
+      {{ else }}
+      - name: phraseanet-saml-sp-cert-dir
+        persistentVolumeClaim:
+          claimName: {{ .Values.saml.pvc.cert.name }}
+      {{- end }}
+      containers:
+      - name: phraseanet-saml-sp
+        image: {{ .Values.image.registry }}/phraseanet-saml-sp:{{ .Values.image.tag.phraseanet_saml_sp }}
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        resources:
+{{ toYaml .Values.app.web.resources | indent 12 }}
+        volumeMounts:
+        - name: phraseanet-saml-idp-config-dir
+          mountPath: "/var/www/simplesamlphp-1.10.0/metadata"
+        - name: phraseanet-saml-sp-config-dir
+          mountPath: "/var/www/simplesamlphp-1.10.0/config"
+        - name: phraseanet-saml-sp-cert-dir
+          mountPath: "/var/www/simplesamlphp-1.10.0/cert"
+
+        env:
+        - name: MAX_BODY_SIZE
+          value: {{ .Values.http.max_body_size | quote }}
+        - name: GATEWAY_PROXY_TIMEOUT
+          value: "1200"
+        - name: GATEWAY_FASTCGI_TIMEOUT
+          value: "1200"
+        - name: SESSION_SAVE_HANDLER
+          value: {{ .Values.php.session_save_handler | quote }}
+        - name: SESSION_SAVE_PATH
+          value: {{ .Values.php.session_save_path | quote }}
+        - name: SAML_PHRASEANET_HOST
+          value: {{ .Values.saml.saml_phraseanet_host | quote }}
+        - name: SAML_SP_AUTHSOURCES
+          value: {{ .Values.saml.saml_sp_authsources | quote }}
+{{- end }}

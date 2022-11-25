@@ -1,0 +1,20 @@
+{{- if and .Values.app.hpa.exportftp.enabled  .Values.app.worker.launch.exportftp }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: worker-exportftp
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: phraseanet-worker-exportftp
+  minReplicas: {{ .Values.app.hpa.exportftp.minReplicas }}
+  maxReplicas: {{ .Values.app.hpa.exportftp.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.app.hpa.exportftp.averageUtilization }}
+{{- end }}

@@ -1,0 +1,20 @@
+{{- if eq .Values.app.hpa.gateway.enabled true }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: phraseanet-gateway
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: phraseanet-gateway
+  minReplicas: {{ .Values.app.hpa.gateway.minReplicas }}
+  maxReplicas: {{ .Values.app.hpa.gateway.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.app.hpa.gateway.averageUtilization }}
+{{- end }}
