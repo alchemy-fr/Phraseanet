@@ -201,14 +201,14 @@ workflows:
     newfashion:
         jobs:
             - build_phraseanet-setup:
-                context: "AWS Paris"
+                context: "AWS London"
             - build_phraseanet-fpm:
-                context: "AWS Paris"
+                context: "AWS London"
             - build_phraseanet-worker:
-                context: "AWS Paris"
+                context: "AWS London"
             - build_phraseanet-nginx:
-                context: "AWS Paris"
+                context: "AWS London"
             - build_phraseanet-db:
-                context: "AWS Paris"
+                context: "AWS London"
             - build_phraseanet-elasticsearch:
-                context: "AWS Paris"
+                context: "AWS London"
