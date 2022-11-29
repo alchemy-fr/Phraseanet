@@ -67046,9 +67046,13 @@ var previewRecordService = function previewRecordService(services) {
         } else {
             if (options.mode === 'RESULT') {
                 var posAsk = parseInt(options.current.pos, 10) + 1;
-                if (isNaN(posAsk) || posAsk >= parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
-                    posAsk = 0;
+
+                var absolutePos = parseInt(options.navigation.perPage, 10) * (parseInt(options.navigation.page, 10) - 1) + parseInt(posAsk, 10);
+
+                if (absolutePos >= parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
+                    posAsk = posAsk - parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10);
                 }
+
                 _openPreview(false, 'RESULT', posAsk, '', false);
             } else {
                 if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':last-child')) {
@@ -67063,7 +67067,13 @@ var previewRecordService = function previewRecordService(services) {
     function getPrevious() {
         if (options.mode === 'RESULT') {
             var posAsk = parseInt(options.current.pos, 10) - 1;
-            posAsk = posAsk < 0 ? parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10) - 1 : posAsk;
+
+            var absolutePos = parseInt(options.navigation.perPage, 10) * (parseInt(options.navigation.page, 10) - 1) + parseInt(posAsk, 10);
+
+            if (absolutePos < 0) {
+                posAsk = parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10) + posAsk;
+            }
+
             _openPreview(false, 'RESULT', posAsk, '', false);
         } else {
             if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':first-child')) {
