@@ -130,7 +130,30 @@ class PsAuth extends AbstractProvider
      */
     public function authenticate(array $params = array()): RedirectResponse
     {
-        $params = array_merge(['providerId' => $this->getId()], $params);
+        /*
+         * for oauth2 the callback url(s) MUST be fully static. One CAN register multiple possible urls, like
+         * - one for phraseanet home : already static
+         * - one for phraseanet oauth api
+         * - ... ?
+         * api client may want to include static/variable params to be used for final redirect (eg. parade),
+         * we pass those in session
+         * lib/Alchemy/Phrasea/Controller/Api/OAuth2Controller::authorizeCallbackAction(...) will restore params
+         */
+        $this->session->set($this->getId() . ".parms", array_merge(['providerId' => $this->getId()], $params));
+        $this->debug(sprintf("authenticate params saved : session[%s] = %s",
+            $this->getId() . ".parms",
+            var_export($params, true)
+        ));
+
+        $params = ['providerId' => $this->getId()]; // the only required parm (constant)
+        $this->debug(sprintf("redirect_uri params (cleaned) = %s", var_export($params, true)));
+
+        $redirect_uri = $this->generator->generate(
+            'login_authentication_provider_callback',
+            $params,
+            $this->getUrlGenerator()::ABSOLUTE_URL
+        );
+        $this->debug(sprintf("redirect_uri = %s", $redirect_uri));
 
         $state = $this->createState();
 
@@ -143,14 +166,12 @@ class PsAuth extends AbstractProvider
             http_build_query([
                 'client_id' => $this->config['client-id'],
                 'state' => $state,
-                'redirect_uri' => $this->generator->generate(
-                    'login_authentication_provider_callback',
-                    $params,
-                    $this->getUrlGenerator()::ABSOLUTE_URL
-                ),
+                'redirect_uri' => $redirect_uri,
                 'response_type' => "code"
             ], '', '&')
         );
+
+        $this->debug(sprintf("go to url = %s", $url));
 
         return new RedirectResponse($url);
     }
