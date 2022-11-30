@@ -130,6 +130,9 @@ class PsAuth extends AbstractProvider
      */
     public function authenticate(array $params = array()): RedirectResponse
     {
+        $this->debug();
+        $this->session->invalidate(0);
+
         /*
          * for oauth2 the callback url(s) MUST be fully static. One CAN register multiple possible urls, like
          * - one for phraseanet home : already static
