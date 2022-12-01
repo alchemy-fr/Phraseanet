@@ -121,7 +121,7 @@
     "symfony/symfony": "~2.7.10|~2.8.3",
     "themattharris/tmhoauth": "~0.7",
     "twig/extensions": "^1.2.0",
-    "twig/twig": "~1.14, >=1.14.2",
+    "twig/twig": "^2.12.5",
     "vierbergenlars/php-semver": "~2.1",
     "webmozart/json": "^1.1",
     "willdurand/negotiation": "^2.0.0-alpha1",
