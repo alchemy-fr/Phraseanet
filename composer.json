@@ -134,7 +134,7 @@
     "paragonie/random-lib": "^2.0",
     "czproject/git-php": "^3.17",
     "php-amqplib/php-amqplib": "^2.9",
-    "guzzlehttp/guzzle": " 6.3.3"
+    "guzzlehttp/guzzle": " 6.5.8"
   },
   "require-dev": {
     "mikey179/vfsstream": "~1.5",
