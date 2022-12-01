@@ -11142,6 +11142,10 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').addClass('hidden');
                 }
+
+                if ('error' in data) {
+                    (0, _jquery2.default)('.publication-list').empty().html(data.error);
+                }
             }
         });
     }
