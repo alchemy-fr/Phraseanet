@@ -335,6 +335,18 @@ const orderItem = services => {
             }
         });
 
+        $('.expireOn').datepicker({
+            beforeShow: (input, inst) => {
+                $(inst.dpDiv).addClass('expireOn');
+            },
+            changeYear: true,
+            changeMonth: true,
+            dateFormat: 'yy-mm-dd',
+            onClose: (input, inst) => {
+                $(inst.dpDiv).removeClass('expireOn');
+            },
+        });
+
         function createBasket($innerDialog) {
             let $form = $('form', $innerDialog);
             let dialog = $innerDialog.closest('.ui-dialog');
@@ -708,7 +720,8 @@ const orderItem = services => {
                 dataType: 'json',
                 data: {
                     'elements[]': elements_ids,
-                    force: force ? 1 : 0
+                    force: force ? 1 : 0,
+                    expireOn: $('input[name="expireOn"]:visible').val()
                 },
                 success: function (data) {
                     let success = '0';

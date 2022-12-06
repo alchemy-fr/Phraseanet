@@ -144,9 +144,10 @@ class BaseOrderController extends Controller
      * @param int $order_id
      * @param array<int> $elementIds
      * @param User $acceptor
+     * @param \DateTime|null $expireDate
      * @return BasketElement[]
      */
-    protected function doAcceptElements($order_id, $elementIds, User $acceptor)
+    protected function doAcceptElements($order_id, $elementIds, User $acceptor, \DateTime $expireDate = null)
     {
         $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
         $order = $this->findOr404($order_id);
@@ -161,15 +162,22 @@ class BaseOrderController extends Controller
         $this->assertRequestedElementsWereNotAlreadyAdded($basket, $basketElements);
 
         $orderValidator->accept($acceptor, $partialOrder);
+        $expireOn = null;
+        if ($this->app['conf']->get(['order-manager', 'download-hd', 'overridable-setting'], false)) {
+            if ($expireDate !== null) {
+                $expireOn = $expireDate->format(DATE_ATOM);
+                $expireDateTime = $expireDate;
+            }
+        } else {
+            $expirationDays = $this->app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], "15");
 
-        $expirationDays = $this->app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], "15");
-
-        try {
-            $expireDateTime = new \DateTime('+ '. $expirationDays .' day');
-            $expireOn = $expireDateTime->format('Y-m-d h:m:s');
-        } catch (\Exception $e) {
-            $expireDateTime = null;
-            $expireOn = null;
+            try {
+                $expireDateTime = new \DateTime('+ '. $expirationDays . ' day');
+                $expireOn = $expireDateTime->format(DATE_ATOM);
+            } catch (\Exception $e) {
+                $expireDateTime = null;
+                $expireOn = null;
+            }
         }
 
         $orderValidator->grantHD($basket->getUser(), $basketElements, $expireOn);

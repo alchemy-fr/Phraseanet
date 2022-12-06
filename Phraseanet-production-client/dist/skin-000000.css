@@ -2202,6 +2202,10 @@ span.ww_winTitle {
   position: absolute;
 }
 
+#ui-datepicker-div.expireOn {
+  z-index: 999999 !important;
+}
+
 .ui-selectable-helper {
   border: 1px dotted #cccccc;
   z-index: 10000;

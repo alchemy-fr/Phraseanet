@@ -164,7 +164,17 @@ class ProdOrderController extends BaseOrderController
         $elementIds = $request->request->get('elements', []);
         $acceptor = $this->getAuthenticatedUser();
 
-        $basketElements = $this->doAcceptElements($order_id, $elementIds, $acceptor);
+        if (empty($request->request->get('expireOn'))) {
+            $expireOn = null;
+        } else {
+            try {
+                $expireOn = new \DateTime($request->request->get('expireOn') . ' 23:59:59');
+            } catch (\Exception $e) {
+                $expireOn = null;
+            }
+        }
+
+        $basketElements = $this->doAcceptElements($order_id, $elementIds, $acceptor, $expireOn);
 
         $success = !empty($basketElements);
 

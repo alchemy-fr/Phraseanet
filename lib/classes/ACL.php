@@ -234,7 +234,7 @@ class ACL implements cache_cacheableInterface
 
         if (!empty($expireOn)) {
             try {
-                $expireOn = (new DateTime($expireOn))->format('Y-m-d h:m:s');
+                $expireOn = (new DateTime($expireOn))->format(DATE_ATOM);
             } catch (\Exception $e) {
                 $expireOn = null;
             }

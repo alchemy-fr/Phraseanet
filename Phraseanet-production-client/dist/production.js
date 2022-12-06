@@ -66039,6 +66039,18 @@ var orderItem = function orderItem(services) {
             }
         });
 
+        (0, _jquery2.default)('.expireOn').datepicker({
+            beforeShow: function beforeShow(input, inst) {
+                (0, _jquery2.default)(inst.dpDiv).addClass('expireOn');
+            },
+            changeYear: true,
+            changeMonth: true,
+            dateFormat: 'yy-mm-dd',
+            onClose: function onClose(input, inst) {
+                (0, _jquery2.default)(inst.dpDiv).removeClass('expireOn');
+            }
+        });
+
         function createBasket($innerDialog) {
             var $form = (0, _jquery2.default)('form', $innerDialog);
             var dialog = $innerDialog.closest('.ui-dialog');
@@ -66321,7 +66333,8 @@ var orderItem = function orderItem(services) {
                 dataType: 'json',
                 data: {
                     'elements[]': elements_ids,
-                    force: force ? 1 : 0
+                    force: force ? 1 : 0,
+                    expireOn: (0, _jquery2.default)('input[name="expireOn"]:visible').val()
                 },
                 success: function success(data) {
                     var success = '0';
