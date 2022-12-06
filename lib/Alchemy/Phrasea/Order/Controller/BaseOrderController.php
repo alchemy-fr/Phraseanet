@@ -165,8 +165,10 @@ class BaseOrderController extends Controller
         $expirationDays = $this->app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], "15");
 
         try {
-            $expireOn = (new \DateTime('+ '. $expirationDays .' day'))->format('Y-m-d h:m:s');
+            $expireDateTime = new \DateTime('+ '. $expirationDays .' day');
+            $expireOn = $expireDateTime->format('Y-m-d h:m:s');
         } catch (\Exception $e) {
+            $expireDateTime = null;
             $expireOn = null;
         }
 
@@ -181,7 +183,7 @@ class BaseOrderController extends Controller
                     $manager->persist($element);
                 }
 
-                $delivery = new OrderDelivery($order, $acceptor, count($basketElements), $partialOrder);
+                $delivery = new OrderDelivery($order, $acceptor, count($basketElements), $partialOrder, $expireDateTime);
 
                 $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($delivery));
             }
