@@ -161,7 +161,16 @@ class BaseOrderController extends Controller
         $this->assertRequestedElementsWereNotAlreadyAdded($basket, $basketElements);
 
         $orderValidator->accept($acceptor, $partialOrder);
-        $orderValidator->grantHD($basket->getUser(), $basketElements);
+
+        $expirationDays = $this->app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], "15");
+
+        try {
+            $expireOn = (new \DateTime('+ '. $expirationDays .' day'))->format('Y-m-d h:m:s');
+        } catch (\Exception $e) {
+            $expireOn = null;
+        }
+
+        $orderValidator->grantHD($basket->getUser(), $basketElements, $expireOn);
 
         try {
             $manager = $this->getEntityManager();

@@ -399,3 +399,8 @@ phraseanet-service:
                 clientSecret: 239zb7mhzmu8cgg48cgok8ww4ccokw0ck8kwow4ggw80s84koc
                 clientId: pull-local-test_3pj0iu
                 verify_ssl: true
+
+
+order-manager:
+    download-hd:
+        expiration-days: 15
