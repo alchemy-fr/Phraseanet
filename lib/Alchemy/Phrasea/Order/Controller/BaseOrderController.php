@@ -169,7 +169,7 @@ class BaseOrderController extends Controller
                 $expireDateTime = $expireDate;
             }
         } else {
-            $expirationDays = $this->app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], "15");
+            $expirationDays = $this->app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], 15);
 
             try {
                 $expireDateTime = new \DateTime('+ '. $expirationDays . ' day');

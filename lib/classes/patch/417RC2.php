@@ -1,6 +1,7 @@
 <?php
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
 class patch_417RC2 implements patchInterface
 {
@@ -65,7 +66,22 @@ class patch_417RC2 implements patchInterface
     {
         $cnx = $appbox->get_connection();
 
-        $expirationDays = $app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], "15");
+        /** @var PropertyAccess $conf */
+        $conf = $app['conf'];
+
+        // add new conf if not exist
+        // default value to 15 days ??
+        // or null for download never expired
+        if (!$conf->has(['order-manager', 'download-hd', 'expiration-days'])) {
+            $conf->set(['order-manager', 'download-hd', 'expiration-days'], 15);
+        }
+
+        if (!$conf->has(['order-manager', 'download-hd', 'overridable-setting'])) {
+            $conf->set(['order-manager', 'download-hd', 'overridable-setting'], false);
+        }
+
+        // needed to expire existing order download ???
+        $expirationDays = $app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], 15);
         $expireOn = (new \DateTime('+ '. $expirationDays .' day'))->format('Y-m-d h:m:s');
 
         $sql = 'UPDATE `records_rights` SET `expire_on` = :expire_on WHERE `case` = "order" AND `expire_on` IS NULL';
