@@ -82,7 +82,7 @@ class patch_417RC2 implements patchInterface
 
         // needed to expire existing order download ???
         $expirationDays = $app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], 15);
-        $expireOn = (new \DateTime('+ '. $expirationDays .' day'))->format('Y-m-d h:m:s');
+        $expireOn = (new \DateTime('+ '. $expirationDays .' day'))->format(DATE_ATOM);
 
         $sql = 'UPDATE `records_rights` SET `expire_on` = :expire_on WHERE `case` = "order" AND `expire_on` IS NULL';
         $stmt = $cnx->prepare($sql);
