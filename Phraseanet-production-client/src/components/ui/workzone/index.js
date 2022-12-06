@@ -1098,10 +1098,6 @@ const workzone = (services) => {
                     $('.expose_field_mapping').addClass('hidden');
                     $('.add_expose_block').addClass('hidden');
                 }
-
-                if ('error' in data) {
-                    $('.publication-list').empty().html(data.error);
-                }
             }
         });
     }

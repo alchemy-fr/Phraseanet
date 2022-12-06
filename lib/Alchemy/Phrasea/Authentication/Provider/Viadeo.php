@@ -11,18 +11,17 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
-use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Guzzle\Common\Exception\GuzzleException;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Guzzle\Common\Exception\GuzzleException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Viadeo extends AbstractProvider
 {
@@ -31,22 +30,22 @@ class Viadeo extends AbstractProvider
     private $key;
     private $secret;
 
-
-    public function __construct(UrlGenerator $generator, SessionInterface $session, array $options, ClientInterface $client)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, ClientInterface $client, $key, $secret)
     {
-        parent::__construct($generator, $session);
-
+        $this->generator = $generator;
+        $this->session = $session;
         $this->client = $client;
-        $this->key = $options['client-id'];
-        $this->secret = $options['client-secret'];
+
+        $this->key = $key;
+        $this->secret = $secret;
     }
 
     /**
      * @param ClientInterface $client
      *
-     * @return self
+     * @return Github
      */
-    public function setGuzzleClient(ClientInterface $client): self
+    public function setGuzzleClient(ClientInterface $client)
     {
         $this->client = $client;
 
@@ -56,7 +55,7 @@ class Viadeo extends AbstractProvider
     /**
      * @return ClientInterface
      */
-    public function getGuzzleClient(): ClientInterface
+    public function getGuzzleClient()
     {
         return $this->client;
     }
@@ -64,7 +63,23 @@ class Viadeo extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function authenticate(array $params = array()): RedirectResponse
+    public function getId()
+    {
+        return 'viadeo';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'Viadeo';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function authenticate(array $params = array())
     {
         $params = array_merge(['providerId' => $this->getId()], $params);
 
@@ -177,7 +192,7 @@ class Viadeo extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getToken(): Token
+    public function getToken()
     {
         if ('' === trim($this->session->get('viadeo.provider.id'))) {
             throw new NotAuthenticatedException('Viadeo has not authenticated');
@@ -189,7 +204,7 @@ class Viadeo extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getIdentity(): Identity
+    public function getIdentity()
     {
         $identity = new Identity();
 
@@ -251,7 +266,7 @@ class Viadeo extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getIconURI(): string
+    public function getIconURI()
     {
         return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAAwCAYAAAC4w'
         . 'JK5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0WE1MO'
@@ -309,14 +324,16 @@ class Viadeo extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options): self
+    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
     {
-        foreach (['client-id', 'client-secret'] as $parm) {
-            if (!isset($options[$parm])) {
-                throw new InvalidArgumentException(sprintf('Missing Viadeo "%s" parameter in conf/authentication/providers', $parm));
-            }
+        if (!isset($options['client-id'])) {
+            throw new InvalidArgumentException('Missing Viadeo client-id parameter');
         }
 
-        return new static($generator, $session, $options, new Guzzle());
+        if (!isset($options['client-secret'])) {
+            throw new InvalidArgumentException('Missing Viadeo client-secret parameter');
+        }
+
+        return new Viadeo($generator, $session, new Guzzle(), $options['client-id'], $options['client-secret']);
     }
 }

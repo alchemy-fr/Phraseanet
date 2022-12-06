@@ -11,82 +11,33 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use appbox;
-use RandomLib\Generator as RandomGenerator;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Factory
 {
     private $generator;
     private $session;
-    /**
-     * @var UserManipulator
-     */
-    private $userManipulator;
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-    /**
-     * @var ACLProvider
-     */
-    private $ACLProvider;
-    /**
-     * @var appbox
-     */
-    private $appbox;
-    /**
-     * @var RandomGenerator
-     */
-    private $randomGenerator;
 
-
-    public function __construct(UrlGenerator $generator, SessionInterface $session,
-                                UserManipulator $userManipulator, UserRepository $userRepository,
-                                ACLProvider $ACLProvider, appbox $appbox, RandomGenerator $randomGenerator
-    )
+    public function __construct(UrlGenerator $generator, SessionInterface $session)
     {
         $this->generator = $generator;
         $this->session = $session;
-        $this->userManipulator = $userManipulator;
-        $this->userRepository = $userRepository;
-        $this->ACLProvider = $ACLProvider;
-        $this->appbox = $appbox;
-        $this->randomGenerator = $randomGenerator;
     }
 
-    public function build(string $id, string $type, bool $display, string $title, array $options = [])
+    public function build($name, array $options = [])
     {
-        $type = implode('', array_map(function ($chunk) {
+        $name = implode('', array_map(function ($chunk) {
             return ucfirst(strtolower($chunk));
-        }, explode('-', $type)));
+        }, explode('-', $name)));
 
-        $class_name = sprintf('%s\\%s', __NAMESPACE__, $type);
+        $class_name = sprintf('%s\\%s', __NAMESPACE__, $name);
 
         if (!class_exists($class_name)) {
-            throw new InvalidArgumentException(sprintf('Invalid provider %s', $type));
+            throw new InvalidArgumentException(sprintf('Invalid provider %s', $name));
         }
 
-        /** @var AbstractProvider $o */
-        $o = $class_name::create($this->generator, $this->session, $options);   // v1 bc compat : can't change
-
-        $o->setId($id);
-        $o->setDisplay($display);
-        $o->setTitle($title);
-        $o->setOptions($options);
-
-        $o->setUserManipulator($this->userManipulator);
-        $o->setUserRepository($this->userRepository);
-        $o->setACLProvider($this->ACLProvider);
-        $o->setAppbox($this->appbox);
-        $o->setRandomGenerator($this->randomGenerator);
-
-        return $o;
+        return $class_name::create($this->generator, $this->session, $options);
     }
 }
