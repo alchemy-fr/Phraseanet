@@ -18,9 +18,7 @@ services:
       
   phraseanet:
     extra_hosts:
-      - api-auth.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - api-databox.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
-      - api-expose.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - api-uploader.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - databox-indexer.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - minio.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
@@ -28,9 +26,7 @@ services:
 
   worker:
     extra_hosts:
-      - api-auth.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - api-databox.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
-      - api-expose.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - api-uploader.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - databox-indexer.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
       - minio.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}

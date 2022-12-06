@@ -668,23 +668,12 @@
 {% macro make_expose_bloc(app, WorkZone) %}
     <div id="expose_workzone" class="expose_workzone">
         <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
-            {% set expose_list = app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
-            {% set providerId = app['session'].get('auth_provider.id') %}
-            {% if providerId is not null %}
-                {% set provider = app['authentication.providers'].get(providerId) %}
-                {% if provider.getType() == 'PsAuth'  %}
-                    {% set auth_base_url = provider.getOptions()['base-url'] | trim('/') %}
-                {% endif %}
-            {% endif %}
+            {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
 
             <select id="expose_list" name="expose_list" class="expose_list">
                 <option value="">{{ 'prod:expose:select expose' | trans }}</option>
                 {% for key in expose_list|keys %}
-                    {% if (
-                        (auth_base_url is defined and expose_list[key].auth_base_uri | trim('/') == auth_base_url)
-                        or providerId is empty)
-                        and expose_list[key].activate_expose  %}
-
+                    {% if expose_list[key].activate_expose %}
                         <option value="{{ key }}">{{ key }}</option>
                     {% endif %}
                 {% endfor %}

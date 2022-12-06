@@ -94,57 +94,34 @@ authentication:
     providers:
         facebook:
             enabled: false
-            display: false
-            title: Facebook
-            type: facebook
             options:
                 app-id: ''
                 secret: ''
-                default-graph-version: 'v2.10'
         twitter:
             enabled: false
-            display: false
-            title: Twitter
-            type: twitter
             options:
                 consumer-key: ''
                 consumer-secret: ''
+        google-plus:
+            enabled: false
+            options:
+                client-id: ''
+                client-secret: ''
         github:
             enabled: false
-            display: false
-            title: Github
-            type: github
             options:
                 client-id: ''
                 client-secret: ''
         viadeo:
             enabled: false
-            display: false
-            title: Viadeo
-            type: viadeo
             options:
                 client-id: ''
                 client-secret: ''
         linkedin:
             enabled: false
-            display: false
-            title: LinkedIN
-            type: linkedin
             options:
                 client-id: ''
                 client-secret: ''
-        ps_auth_1:
-            enabled: false
-            display: false
-            title: 'PS Auth 1'
-            type: 'ps-auth'
-            options:
-                client-id: ''
-                client-secret: ''
-                base-url: 'https://api-auth.phrasea.local'
-                provider-type: 'oauth'
-                provider-name: 'v2'
-                icon-uri: null
 registration-fields:
     -
         name: company
