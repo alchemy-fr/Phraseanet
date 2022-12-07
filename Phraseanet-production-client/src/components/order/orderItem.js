@@ -335,9 +335,10 @@ const orderItem = services => {
             }
         });
 
-        $('.expireOn').datepicker({
+        $('#validation-window .expireOn').datepicker({
             beforeShow: (input, inst) => {
                 $(inst.dpDiv).addClass('expireOn');
+                $(this).datepicker('setDate', null);
             },
             changeYear: true,
             changeMonth: true,
@@ -346,6 +347,43 @@ const orderItem = services => {
                 $(inst.dpDiv).removeClass('expireOn');
             },
         });
+
+        $('#expire-menu')
+            .menu({
+                select: function (event, ui) {
+                    const $input = $('input[name="expireOn"]:visible');
+                    const expire  = $(ui.item[0]).data('expireon');
+                    if (expire === '') {
+                        // expireon to null = no expiration for the right
+                        $input.val('')
+                    } else {
+                        const d = new Date();
+                        d.setDate(d.getDate() + parseInt(expire));
+                        const mm = ((d.getMonth() + 1) < 10 ? '0' : '') + (d.getMonth() + 1);
+                        const dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+
+                        $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                    }
+                    $(this).hide();
+                }
+            })
+            .mouseleave(function (event, ui) {
+                $(this).hide();
+            })
+            .hide();
+
+        // click to ... to drop
+        $("BUTTON.expireOn-menu").click(
+            function (event, ui) {
+                $("#expire-menu")
+                    .css({
+                        top:  event.clientY,
+                        left: event.clientX - 6
+                    })
+                    .show();
+                return false;
+            }
+        );
 
         function createBasket($innerDialog) {
             let $form = $('form', $innerDialog);

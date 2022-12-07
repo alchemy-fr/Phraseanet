@@ -66039,9 +66039,10 @@ var orderItem = function orderItem(services) {
             }
         });
 
-        (0, _jquery2.default)('.expireOn').datepicker({
+        (0, _jquery2.default)('#validation-window .expireOn').datepicker({
             beforeShow: function beforeShow(input, inst) {
                 (0, _jquery2.default)(inst.dpDiv).addClass('expireOn');
+                (0, _jquery2.default)(undefined).datepicker('setDate', null);
             },
             changeYear: true,
             changeMonth: true,
@@ -66049,6 +66050,36 @@ var orderItem = function orderItem(services) {
             onClose: function onClose(input, inst) {
                 (0, _jquery2.default)(inst.dpDiv).removeClass('expireOn');
             }
+        });
+
+        (0, _jquery2.default)('#expire-menu').menu({
+            select: function select(event, ui) {
+                var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
+                var expire = (0, _jquery2.default)(ui.item[0]).data('expireon');
+                if (expire === '') {
+                    // expireon to null = no expiration for the right
+                    $input.val('');
+                } else {
+                    var d = new Date();
+                    d.setDate(d.getDate() + parseInt(expire));
+                    var mm = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
+                    var dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+
+                    $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                }
+                (0, _jquery2.default)(this).hide();
+            }
+        }).mouseleave(function (event, ui) {
+            (0, _jquery2.default)(this).hide();
+        }).hide();
+
+        // click to ... to drop
+        (0, _jquery2.default)("BUTTON.expireOn-menu").click(function (event, ui) {
+            (0, _jquery2.default)("#expire-menu").css({
+                top: event.clientY,
+                left: event.clientX - 6
+            }).show();
+            return false;
         });
 
         function createBasket($innerDialog) {

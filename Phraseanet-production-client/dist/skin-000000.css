@@ -2206,6 +2206,18 @@ span.ww_winTitle {
   z-index: 999999 !important;
 }
 
+#validation-window .ui-widget-content {
+  background-color: #fff;
+}
+
+#validation-window .ui-widget-content a {
+  color: #282828;
+}
+
+#validation-window .ui-widget-content a:hover {
+  color: #fff;
+}
+
 .ui-selectable-helper {
   border: 1px dotted #cccccc;
   z-index: 10000;

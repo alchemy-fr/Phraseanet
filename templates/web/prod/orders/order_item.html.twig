@@ -28,7 +28,18 @@
     <div class="box">
         <div>
             <span>{{ 'prod::order-manager download expire on' | trans }}:</span>
-            <input type="text" class="expireOn" name="expireOn" autocomplete="off" style="width: 100px;"/>
+            <span style="font-size: 0;">
+                <input type="text" class="expireOn btn" name="expireOn" autocomplete="off" style="width: 100px; margin: 0;background-image: none; border-right: 0;border-top-right-radius: 0;border-bottom-right-radius: 0;"/>
+                <button class="expireOn-menu" style="border-radius: 0px 13px 13px 0px;height: 30px;border: 1px solid transparent;">
+                    <i class="fa fa-ellipsis-h"></i>
+                </button>
+            </span>
+            <ul id="expire-menu"
+                style="position:fixed; z-index: 999999; width:80px; height:auto; display:block; top:-1000px;">
+                <li data-expireon="+15"><a href="#">15 days</a></li>
+                <li data-expireon="+20"><a href="#">20 days</a></li>
+                <li data-expireon="+30"><a href="#">30 days</a></li>
+            </ul>
         </div>
         <div class="validation-content" style="float:left; width:100%;margin-top:10px;">
         </div>
