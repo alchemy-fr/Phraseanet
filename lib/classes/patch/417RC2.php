@@ -76,8 +76,8 @@ class patch_417RC2 implements patchInterface
             $conf->set(['order-manager', 'download-hd', 'expiration-days'], 15);
         }
 
-        if (!$conf->has(['order-manager', 'download-hd', 'overridable-setting'])) {
-            $conf->set(['order-manager', 'download-hd', 'overridable-setting'], false);
+        if (!$conf->has(['order-manager', 'download-hd', 'expiration-override'])) {
+            $conf->set(['order-manager', 'download-hd', 'expiration-override'], false);
         }
 
         // needed to expire existing order download ???

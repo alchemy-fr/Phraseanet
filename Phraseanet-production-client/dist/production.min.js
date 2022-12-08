@@ -66042,7 +66042,9 @@ var orderItem = function orderItem(services) {
         (0, _jquery2.default)('#validation-window .expireOn').datepicker({
             beforeShow: function beforeShow(input, inst) {
                 (0, _jquery2.default)(inst.dpDiv).addClass('expireOn');
-                (0, _jquery2.default)(undefined).datepicker('setDate', null);
+                var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
+                var defaultExpire = $input.data('default-expiration');
+                calculateExpireDate($input, defaultExpire);
             },
             changeYear: true,
             changeMonth: true,
@@ -66060,12 +66062,7 @@ var orderItem = function orderItem(services) {
                     // expireon to null = no expiration for the right
                     $input.val('');
                 } else {
-                    var d = new Date();
-                    d.setDate(d.getDate() + parseInt(expire));
-                    var mm = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
-                    var dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
-
-                    $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                    calculateExpireDate($input, expire);
                 }
                 (0, _jquery2.default)(this).hide();
             }
@@ -66081,6 +66078,15 @@ var orderItem = function orderItem(services) {
             }).show();
             return false;
         });
+
+        function calculateExpireDate($input, expire) {
+            var d = new Date();
+            d.setDate(d.getDate() + parseInt(expire));
+            var mm = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
+            var dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+
+            $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+        }
 
         function createBasket($innerDialog) {
             var $form = (0, _jquery2.default)('form', $innerDialog);

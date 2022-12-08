@@ -163,7 +163,7 @@ class BaseOrderController extends Controller
 
         $orderValidator->accept($acceptor, $partialOrder);
         $expireOn = null;
-        if ($this->app['conf']->get(['order-manager', 'download-hd', 'overridable-setting'], false)) {
+        if ($this->app['conf']->get(['order-manager', 'download-hd', 'expiration-override'], false)) {
             if ($expireDate !== null) {
                 $expireOn = $expireDate->format(DATE_ATOM);
                 $expireDateTime = $expireDate;

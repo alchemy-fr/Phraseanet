@@ -29,8 +29,15 @@
         <div>
             <span>{{ 'prod::order-manager download expire on' | trans }}:</span>
             <span style="font-size: 0;">
-                <input type="text" class="expireOn btn" name="expireOn" autocomplete="off" style="width: 100px; margin: 0;background-image: none; border-right: 0;border-top-right-radius: 0;border-bottom-right-radius: 0;"/>
-                <button class="expireOn-menu" style="border-radius: 0px 13px 13px 0px;height: 30px;border: 1px solid transparent;">
+                {% set canOverride = app['conf'].get(['order-manager', 'download-hd', 'expiration-override']) ? true : false %}
+                <input type="text" class="expireOn btn" name="expireOn" autocomplete="off"
+                       style="width: 100px; margin: 0;background-image: none; border-right: 0;border-top-right-radius: 0;border-bottom-right-radius: 0;"
+                       {% if not canOverride %} disabled {% endif %}
+                        data-default-expiration="{{ app['conf'].get(['order-manager', 'download-hd', 'expiration-days']) }}"
+                />
+                <button class="expireOn-menu"
+                        style="border-radius: 0px 13px 13px 0px;height: 30px;border: 1px solid transparent;"
+                        {% if not canOverride %} disabled {% endif %} >
                     <i class="fa fa-ellipsis-h"></i>
                 </button>
             </span>
