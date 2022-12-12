@@ -66204,15 +66204,18 @@ var orderItem = function orderItem(services) {
                 return elem.elementId;
             });
 
-            if (validatedArrayNoForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayNoForceIds, false);
+            if (validatedArrayNoForceIds.length > 0 && deniedArrayIds.length > 0) {
+                do_validate_documents(order_id, validatedArrayNoForceIds, deniedArrayIds);
+            } else {
+                if (validatedArrayNoForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayNoForceIds, false);
+                } else if (validatedArrayWithForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayWithForceIds, true);
+                } else if (deniedArrayIds.length > 0) {
+                    do_deny_documents(order_id, deniedArrayIds);
+                }
             }
-            if (validatedArrayWithForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayWithForceIds, true);
-            }
-            if (deniedArrayIds.length > 0) {
-                do_deny_documents(order_id, deniedArrayIds);
-            }
+
             dialogElem.dialog('close');
         }
 
@@ -66371,6 +66374,42 @@ var orderItem = function orderItem(services) {
                 data: {
                     'elements[]': elements_ids,
                     force: force ? 1 : 0,
+                    expireOn: (0, _jquery2.default)('input[name="expireOn"]:visible').val()
+                },
+                success: function success(data) {
+                    var success = '0';
+
+                    if (data.success) {
+                        success = '1';
+                    }
+
+                    var url = '../prod/order/' + order_id + '/?success=' + success + '&action=send';
+                    reloadDialog(url);
+                },
+                error: function error() {
+                    (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', false);
+                    (0, _jquery2.default)('.activity_indicator', cont).hide();
+                },
+                timeout: function timeout() {
+                    (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', false);
+                    (0, _jquery2.default)('.activity_indicator', cont).hide();
+                }
+            });
+        }
+
+        function do_validate_documents(order_id, elements_send_ids, elements_deny_ids) {
+            var cont = $dialog.getDomElement();
+
+            (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', true);
+            (0, _jquery2.default)('.activity_indicator', cont).show();
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '../prod/order/' + order_id + '/validate/',
+                dataType: 'json',
+                data: {
+                    'elementsSend[]': elements_send_ids,
+                    'elementsDeny[]': elements_deny_ids,
                     expireOn: (0, _jquery2.default)('input[name="expireOn"]:visible').val()
                 },
                 success: function success(data) {
