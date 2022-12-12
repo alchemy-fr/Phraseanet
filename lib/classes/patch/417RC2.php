@@ -2,6 +2,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Model\Repositories\OrderRepository;
+use Alchemy\Phrasea\Model\Entities\Order;
 
 class patch_417RC2 implements patchInterface
 {
@@ -89,5 +91,18 @@ class patch_417RC2 implements patchInterface
         $stmt->execute([':expire_on' => $expireOn]);
         $stmt->closeCursor();
 
+        // get all todoorder an set column to 0 if all element are processed
+        /** @var OrderRepository $orderRepository */
+        $orderRepository = $app['repo.orders'];
+        /** @var Order $order */
+        foreach ($orderRepository->findAllTodo() as $order) {
+            if ($order->getTotalTreatedItems() == $order->getTotal()) {
+                //all element processed
+                $order->setTodo(0);
+                $app['orm.em']->persist($order);
+            }
+        }
+
+        $app['orm.em']->flush();
     }
 }
