@@ -76,10 +76,6 @@ services:
     profiles: ["setup"]
     #command: [ "/bin/sh", "-c", "exit" ]
     restart: "on-failure"
-    depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     environment:
     - STACK_NAME
     - PHRASEANET_INSTALL
@@ -323,9 +319,6 @@ services:
     profiles: ["worker"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -395,9 +388,6 @@ services:
     profiles: ["workers", "mainQueue"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -452,9 +442,6 @@ services:
     profiles: ["workers", "assetsIngest"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -508,9 +495,6 @@ services:
     profiles: ["workers", "createRecord"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -565,9 +549,6 @@ services:
     profiles: ["workers", "deleteRecord"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -621,9 +602,6 @@ services:
     profiles: ["workers", "editRecord"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -677,9 +655,6 @@ services:
     profiles: ["workers", "exportMail"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -733,9 +708,6 @@ services:
     profiles: ["workers", "exposeUpload"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -789,9 +761,6 @@ services:
     profiles: ["workers", "exportFtp"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -845,9 +814,6 @@ services:
     profiles: ["workers", "populateIndex"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -901,9 +867,6 @@ services:
     profiles: ["workers", "pullAssets"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -957,9 +920,6 @@ services:
     profiles: ["workers", "recordsActions"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -1069,9 +1029,6 @@ services:
     profiles: ["workers", "subdefCreation"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -1125,9 +1082,6 @@ services:
     profiles: ["workers", "subtitle"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -1181,9 +1135,6 @@ services:
     profiles: ["workers", "validationReminder"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -1237,9 +1188,6 @@ services:
     profiles: ["workers", "webhook"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -1293,9 +1241,6 @@ services:
     profiles: ["workers", "writeMeatadatas"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
@@ -1349,9 +1294,6 @@ services:
     profiles: ["scheduler"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
     - STACK_NAME
