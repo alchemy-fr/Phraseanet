@@ -195,10 +195,6 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     profiles: ["app"]
     restart: on-failure
-    depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     environment:
     - STACK_NAME
     - PHRASEANET_INSTALL
