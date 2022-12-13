@@ -75,6 +75,9 @@ class PsAuth extends AbstractProvider
         if(!array_key_exists('auto-logout', $this->config)) {
             $this->config['auto-logout'] = false;
         }
+        if(!array_key_exists('auto-connect-idp-name', $this->config)) {
+            $this->config['auto-connect-idp-name'] = null;
+        }
 
         $this->client  = $client;
         $this->iconUri = array_key_exists('icon-uri', $config) ? $config['icon-uri'] : null; // if not set, will fallback on default icon
@@ -162,17 +165,30 @@ class PsAuth extends AbstractProvider
 
         $this->session->set($this->getId() . '.provider.state', $state);
 
-        $url = sprintf("%s/%s/%s/auth?%s",
-            $this->config['base-url'],
-            urlencode($this->config['provider-type']),
-            urlencode($this->config['provider-name']),
-            http_build_query([
-                'client_id' => $this->config['client-id'],
-                'state' => $state,
-                'redirect_uri' => $redirect_uri,
-                'response_type' => "code"
-            ], '', '&')
-        );
+        $parms = [
+            'client_id' => $this->config['client-id'],
+            'state' => $state,
+            'redirect_uri' => $redirect_uri,
+            'response_type' => "code"
+        ];
+
+        if($this->config['auto-connect-idp-name']) {
+            $url = sprintf("%s/%s/%s/auth?connect=%s&%s",
+                $this->config['base-url'],
+                urlencode($this->config['provider-type']),
+                urlencode($this->config['provider-name']),
+                urlencode($this->config['auto-connect-idp-name']),
+                http_build_query($parms, '', '&')
+            );
+        }
+        else {
+            $url = sprintf("%s/%s/%s/auth?%s",
+                $this->config['base-url'],
+                urlencode($this->config['provider-type']),
+                urlencode($this->config['provider-name']),
+                http_build_query($parms, '', '&')
+            );
+        }
 
         $this->debug(sprintf("go to url = %s", $url));
 
@@ -457,7 +473,7 @@ class PsAuth extends AbstractProvider
 
                 // add "everyone-group"
                 if(array_key_exists('everyone-group', $this->config)) {
-                    $models[] = ['name' => $this->config['everyone-group'], 'autocreate' => true];
+                    $models[] = ['name' => $this->config['model-gpfx'] . $this->config['everyone-group'], 'autocreate' => true];
                 }
 
                 // add a specific model for the user
