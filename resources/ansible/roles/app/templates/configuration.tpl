@@ -186,6 +186,14 @@ authentication:
                 provider-type: 'oauth'
                 provider-name: 'v2'
                 icon-uri: null
+                debug: false
+                birth-group: '_firstlog'
+                everyone-group: '_everyone'
+                metamodel: '_metamodel'
+                model-gpfx: '_M_'
+                model-upfx: '_U_'
+                auto-logout: false
+                auto-connect-idp-name: null
 registration-fields:
     -
         name: company
