@@ -100,9 +100,11 @@ class OrderValidator
 
     /**
      * @param User $user
+     * @param User $pusher
      * @param BasketElement[] $elements
+     * @param $expireOn
      */
-    public function grantHD(User $user, $elements, $expireOn)
+    public function grantHD(User $user, User $pusher, $elements, $expireOn)
     {
         Assertion::allIsInstanceOf($elements, BasketElement::class);
 
@@ -114,7 +116,7 @@ class OrderValidator
                 $element->getRecordId()
             );
 
-            $acl->grant_hd_on($recordReference, $user, \ACL::GRANT_ACTION_ORDER, $expireOn);
+            $acl->grant_hd_on($recordReference, $pusher, \ACL::GRANT_ACTION_ORDER, $expireOn);
         }
     }
 

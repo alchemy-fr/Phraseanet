@@ -5,10 +5,10 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Repositories\OrderRepository;
 use Alchemy\Phrasea\Model\Entities\Order;
 
-class patch_417RC2 implements patchInterface
+class patch_417RC3PHRAS3783 implements patchInterface
 {
     /** @var string */
-    private $release = '4.1.7-rc2';
+    private $release = '4.1.7-rc3';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];

@@ -739,6 +739,10 @@
       <div id="record_acl_tab">
         <h1>User record acl</h1>
         <div style="margin-bottom: 20px;">
+          <label class="checkbox" for="expired-right" style="display:inline-block;margin-right: 30px;">
+            <input type="checkbox" id="expired-right" name="expired-right" value="1">
+            expired right
+          </label>
           <select id="acl-databox-filter">
             <option value="">{{ 'button::choose databox' | trans }}</option>
             {% for databoxId in databoxIds %}
@@ -759,6 +763,7 @@
               <th>right on subdef</th>
               <th>type</th>
               <th>pusher name</th>
+              <th>expire on</th>
             </tr>
           </thead>
           <tbody id="record_acl_list">
@@ -770,6 +775,18 @@
                 <td>{{ r_a.preview }}</td>
                 <td>{{ r_a.type }}</td>
                 <td>{{ r_a.pusher_name }}</td>
+                <td>
+                  {% if r_a.expire_on %}
+                    {{ r_a.expire_on|date('Y-m-d H:i:s') }}
+                    {% if r_a.expire_on|date('Y-m-d H:i:s') > "now"|date('Y-m-d H:i:s') %}
+                       <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c;"></i>
+                    {% else %}
+                      <i class="fa fa-times" aria-hidden="true" style="color:#d1051f;"></i>
+                    {% endif %}
+                  {% else %}
+                    -  <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c"></i>
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -1466,12 +1483,19 @@
       });
 
       function listRecordAcl() {
+        let expiredRight = 0;
+        if ($("#expired-right").is(":checked"))
+        {
+          expiredRight = 1;
+        }
+
         $.ajax({
           type: "GET",
           url: "/admin/users/records-acl/",
           data: {
             databoxId : $("#acl-databox-filter").val(),
             recordId : $("#acl-record-filter").val(),
+            expiredRight: expiredRight,
             userId: {{ main_user.getId() }}
           },
           success: function (data) {
@@ -1518,6 +1542,10 @@
       });
 
       $("#acl-record-filter").on('input', function() {
+        listRecordAcl();
+      });
+
+      $("#expired-right").on('change', function () {
         listRecordAcl();
       });
 

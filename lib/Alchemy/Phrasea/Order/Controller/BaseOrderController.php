@@ -180,7 +180,7 @@ class BaseOrderController extends Controller
             }
         }
 
-        $orderValidator->grantHD($basket->getUser(), $basketElements, $expireOn);
+        $orderValidator->grantHD($basket->getUser(), $basket->getPusher(), $basketElements, $expireOn);
 
         try {
             $manager = $this->getEntityManager();

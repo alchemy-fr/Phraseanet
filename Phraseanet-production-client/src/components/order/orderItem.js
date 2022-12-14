@@ -338,9 +338,6 @@ const orderItem = services => {
         $('#validation-window .expireOn').datepicker({
             beforeShow: (input, inst) => {
                 $(inst.dpDiv).addClass('expireOn');
-                const $input = $('input[name="expireOn"]:visible');
-                const defaultExpire  = $input.data('default-expiration');
-                calculateExpireDate($input, defaultExpire);
             },
             changeYear: true,
             changeMonth: true,
@@ -475,6 +472,7 @@ const orderItem = services => {
             let submitTitle = window.orderItemData.translatedText.submit;
             let resetTitle = window.orderItemData.translatedText.reset;
             var dialog_buttons = {};
+
             dialog_buttons[submitTitle] = function () {
                 //submit documents
                 submitDocuments($(this));
@@ -508,6 +506,9 @@ const orderItem = services => {
                 })
                 .dialog('open');
             createValidationTable();
+            const $input = $('input[name="expireOn"]:visible');
+            const defaultExpire  = $input.data('default-expiration');
+            calculateExpireDate($input, defaultExpire);
         }
 
         function submitDocuments(dialogElem) {

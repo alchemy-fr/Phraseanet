@@ -66042,9 +66042,6 @@ var orderItem = function orderItem(services) {
         (0, _jquery2.default)('#validation-window .expireOn').datepicker({
             beforeShow: function beforeShow(input, inst) {
                 (0, _jquery2.default)(inst.dpDiv).addClass('expireOn');
-                var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
-                var defaultExpire = $input.data('default-expiration');
-                calculateExpireDate($input, defaultExpire);
             },
             changeYear: true,
             changeMonth: true,
@@ -66151,6 +66148,7 @@ var orderItem = function orderItem(services) {
             var submitTitle = window.orderItemData.translatedText.submit;
             var resetTitle = window.orderItemData.translatedText.reset;
             var dialog_buttons = {};
+
             dialog_buttons[submitTitle] = function () {
                 //submit documents
                 submitDocuments((0, _jquery2.default)(this));
@@ -66182,6 +66180,9 @@ var orderItem = function orderItem(services) {
                 }
             }).dialog('open');
             createValidationTable();
+            var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
+            var defaultExpire = $input.data('default-expiration');
+            calculateExpireDate($input, defaultExpire);
         }
 
         function submitDocuments(dialogElem) {
