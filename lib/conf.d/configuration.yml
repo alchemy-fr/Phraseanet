@@ -247,6 +247,7 @@ authentication:
                 model-gpfx: '_M_'
                 model-upfx: '_U_'
                 auto-logout: false
+                auto-connect-idp-name: null
 registration-fields:
     -
         name: company
