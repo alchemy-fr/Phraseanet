@@ -27,6 +27,7 @@
 <div style="display:none;position:relative;" id="validation-window" >
     <div class="box">
         <div class="order-expireon-wrap">
+            <span class="ui-helper-hidden-accessible"><input type="text"/></span>
             <span>{{ 'prod::order-manager download expire on' | trans }}:</span>
             <span style="font-size: 0;">
                 {% set canOverride = app['conf'].get(['order-manager', 'download-hd', 'expiration-override']) ? true : false %}
@@ -43,9 +44,12 @@
             </span>
             <ul id="expire-menu"
                 style="position:fixed; z-index: 999999; width:80px; height:auto; display:block; top:-1000px;">
+                <li data-expireon="+7"><a href="#">7 days</a></li>
                 <li data-expireon="+15"><a href="#">15 days</a></li>
                 <li data-expireon="+20"><a href="#">20 days</a></li>
                 <li data-expireon="+30"><a href="#">30 days</a></li>
+                <li data-expireon="+60"><a href="#">60 days</a></li>
+                <li data-expireon=""><a href="#">no limitation</a></li>
             </ul>
         </div>
         <div class="validation-content" style="float:left; width:100%;margin-top:10px;">

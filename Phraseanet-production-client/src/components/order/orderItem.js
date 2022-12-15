@@ -381,12 +381,16 @@ const orderItem = services => {
         );
 
         function calculateExpireDate($input, expire) {
-            const d = new Date();
-            d.setDate(d.getDate() + parseInt(expire));
-            const mm = ((d.getMonth() + 1) < 10 ? '0' : '') + (d.getMonth() + 1);
-            const dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+            if (expire === null || expire === undefined || expire === '') {
+                $input.val("");
+            } else {
+                const d = new Date();
+                d.setDate(d.getDate() + parseInt(expire));
+                const mm = ((d.getMonth() + 1) < 10 ? '0' : '') + (d.getMonth() + 1);
+                const dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
 
-            $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+            }
         }
 
         function createBasket($innerDialog) {
@@ -603,7 +607,6 @@ const orderItem = services => {
                 html += '</table>';
                 $('.validation-content').append(html);
             } else {
-                $("#ui-datepicker-div").hide();
                 $("#validation-window:visible .order-expireon-wrap").hide();
             }
 
@@ -925,35 +928,35 @@ const orderItem = services => {
             );
 
             let html = '';
-            if (countObj.validated > 0) {
-                html +=
-                    '<p>' +
-                    window.orderItemData.translatedText.itemsAlreadySent +
-                    ': ' +
-                    countObj.validated +
-                    '</p>';
-            }
+            // if (countObj.validated > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsAlreadySent +
+            //         ': ' +
+            //         countObj.validated +
+            //         '</p>';
+            // }
 
-            if (countObj.waitingForValidation > 0) {
-                html +=
-                    '<p>' +
-                    window.orderItemData.translatedText.itemsWaitingValidation +
-                    ': ' +
-                    countObj.waitingForValidation +
-                    '</p>';
-            }
+            // if (countObj.waitingForValidation > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsWaitingValidation +
+            //         ': ' +
+            //         countObj.waitingForValidation +
+            //         '</p>';
+            // }
 
             //for the remaining items
             let remaining =
                 countObj.selectable -
                 (countObj.validated + countObj.waitingForValidation);
             if (remaining > 0) {
-                html +=
-                    '<p>' +
-                    window.orderItemData.translatedText.nonSentItems +
-                    ': ' +
-                    remaining +
-                    '</p>';
+                // html +=
+                //     '<p>' +
+                //     window.orderItemData.translatedText.nonSentItems +
+                //     ': ' +
+                //     remaining +
+                //     '</p>';
                 $('#order-action button.deny, #order-action button.send').prop(
                     'disabled',
                     false
@@ -963,8 +966,8 @@ const orderItem = services => {
                 ).show();
             }
 
-            $('#wrapper-multiple #text-content').empty();
-            $('#wrapper-multiple #text-content').append(html);
+            // $('#wrapper-multiple #text-content').empty();
+            // $('#wrapper-multiple #text-content').append(html);
         }
 
         /* *

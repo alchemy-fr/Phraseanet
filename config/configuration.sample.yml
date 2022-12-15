@@ -405,5 +405,5 @@ phraseanet-service:
 
 order-manager:
     download-hd:
-        expiration-days: 15
+        expiration-days: null
         expiration-override: false

@@ -315,6 +315,13 @@
                     </div>
 
                     <div class="control-group">
+                        <label class="control-label" for="usr_mail"> {{ 'admin::compte-utilisateur email' | trans }}</label>
+                        <div class="controls">
+                            <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ app.getAuthenticatedUser().getEmail() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
                         <label class="control-label" for="sexe">{{ 'Civility' | trans }}</label>
                         <div class="controls">
                             <select name="sexe" id="sexe">
@@ -336,13 +343,6 @@
                         <label class="control-label" for="usr_firstname">{{ 'admin::compte-utilisateur prenom' | trans }}</label>
                         <div class="controls">
                             <input type="text" name="usr_prenom" class="required" id="usr_firstname" value="{{ app.getAuthenticatedUser().getFirstName() }}"/>
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label class="control-label" for="usr_mail"> {{ 'admin::compte-utilisateur email' | trans }}</label>
-                        <div class="controls">
-                            <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ app.getAuthenticatedUser().getEmail() }}"/>
                         </div>
                     </div>
 
@@ -388,13 +388,6 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label" for="usr_fax">{{ 'admin::compte-utilisateur fax' | trans }}</label>
-                        <div class="controls">
-                            <input type="text" id="usr_fax" name="fax" value="{{ app.getAuthenticatedUser().getFax() }}"/>
-                        </div>
-                    </div>
-
                     {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
                         <div class="well-small acceptDl-info">
                             <label for="TOU_acceptOrder" class="checkbox">
@@ -406,7 +399,7 @@
                         </div>
                     {% endif %}
 
-                    <div class="form_actions buttons_line">
+                    <div class="form_actions buttons_line" style="margin-left: 30px;">
                         <button type="button" class="order_button btn btn-primary">{{ 'boutton::commander' | trans }}</button>
                         <img class="order_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
                         <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>

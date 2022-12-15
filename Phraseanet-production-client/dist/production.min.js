@@ -66083,12 +66083,16 @@ var orderItem = function orderItem(services) {
         });
 
         function calculateExpireDate($input, expire) {
-            var d = new Date();
-            d.setDate(d.getDate() + parseInt(expire));
-            var mm = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
-            var dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+            if (expire === null || expire === undefined || expire === '') {
+                $input.val("");
+            } else {
+                var d = new Date();
+                d.setDate(d.getDate() + parseInt(expire));
+                var mm = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
+                var dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
 
-            $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+            }
         }
 
         function createBasket($innerDialog) {
@@ -66252,7 +66256,6 @@ var orderItem = function orderItem(services) {
                 html += '</table>';
                 (0, _jquery2.default)('.validation-content').append(html);
             } else {
-                (0, _jquery2.default)("#ui-datepicker-div").hide();
                 (0, _jquery2.default)("#validation-window:visible .order-expireon-wrap").hide();
             }
 
@@ -66515,24 +66518,39 @@ var orderItem = function orderItem(services) {
             }, { validated: 0, selectable: 0, waitingForValidation: 0 });
 
             var html = '';
-            if (countObj.validated > 0) {
-                html += '<p>' + window.orderItemData.translatedText.itemsAlreadySent + ': ' + countObj.validated + '</p>';
-            }
+            // if (countObj.validated > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsAlreadySent +
+            //         ': ' +
+            //         countObj.validated +
+            //         '</p>';
+            // }
 
-            if (countObj.waitingForValidation > 0) {
-                html += '<p>' + window.orderItemData.translatedText.itemsWaitingValidation + ': ' + countObj.waitingForValidation + '</p>';
-            }
+            // if (countObj.waitingForValidation > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsWaitingValidation +
+            //         ': ' +
+            //         countObj.waitingForValidation +
+            //         '</p>';
+            // }
 
             //for the remaining items
             var remaining = countObj.selectable - (countObj.validated + countObj.waitingForValidation);
             if (remaining > 0) {
-                html += '<p>' + window.orderItemData.translatedText.nonSentItems + ': ' + remaining + '</p>';
+                // html +=
+                //     '<p>' +
+                //     window.orderItemData.translatedText.nonSentItems +
+                //     ': ' +
+                //     remaining +
+                //     '</p>';
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.send').prop('disabled', false);
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.send').show();
             }
 
-            (0, _jquery2.default)('#wrapper-multiple #text-content').empty();
-            (0, _jquery2.default)('#wrapper-multiple #text-content').append(html);
+            // $('#wrapper-multiple #text-content').empty();
+            // $('#wrapper-multiple #text-content').append(html);
         }
 
         /* *
