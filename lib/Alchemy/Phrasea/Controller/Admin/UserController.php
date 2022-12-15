@@ -56,7 +56,13 @@ class UserController extends Controller
     {
         $rights = $this->getUserEditHelper($request);
         $expireRight = ($request->query->get('expiredRight') == 1) ? true : false ;
-        $results = $rights->get_user_records_rights($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'), $expireRight);
+        $results = $rights->get_user_records_rights(
+            $request->query->get('userId'),
+            $request->query->get('databoxId'),
+            $request->query->get('recordId'),
+            $request->query->get('type'),
+            $expireRight
+        );
 
         return $this->app->json([
             'content'       => $this->render('admin/user/records_list.html.twig', ['records_acl' => $results['records_acl']]),

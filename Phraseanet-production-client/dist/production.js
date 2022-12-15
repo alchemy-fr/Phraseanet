@@ -65932,15 +65932,21 @@ var orderItem = function orderItem(services) {
             //$('.order_row.selected').removeClass('to_be_validated');
         });
 
-        (0, _jquery2.default)('.force_sender', $dialog.getDomElement()).bind('click', function () {
-            if (confirm(localeService.t('forceSendDocument'))) {
-                //updateValidation('validated');
-                var element_id = [];
-                element_id.push((0, _jquery2.default)(this).closest('.order_row').find('input[name=order_element_id]').val());
-                var order_id = (0, _jquery2.default)('input[name=order_id]').val();
-                do_send_documents(order_id, element_id, true);
-            }
-        });
+        // comment on order_item.html.twig , line 171
+        // $('.force_sender', $dialog.getDomElement()).bind('click', function () {
+        //     if (confirm(localeService.t('forceSendDocument'))) {
+        //         //updateValidation('validated');
+        //         let element_id = [];
+        //         element_id.push(
+        //             $(this)
+        //                 .closest('.order_row')
+        //                 .find('input[name=order_element_id]')
+        //                 .val()
+        //         );
+        //         let order_id = $('input[name=order_id]').val();
+        //         do_send_documents(order_id, element_id, true);
+        //     }
+        // });
 
         (0, _jquery2.default)('#userInfo').hover(function () {
             var offset = (0, _jquery2.default)('#userInfo').position();
@@ -66230,8 +66236,12 @@ var orderItem = function orderItem(services) {
             });
 
             if (validatedArray.length > 0) {
+                (0, _jquery2.default)("#validation-window:visible .order-expireon-wrap").show();
+                (0, _jquery2.default)("#validation-window:visible input[name='expireOn']").blur();
+
                 var html = '';
                 html += '<h5>' + window.orderItemData.translatedText.youHaveValidated + ' ' + validatedArray.length + ' ' + window.orderItemData.translatedText.item + (validatedArray.length === 1 ? '' : 's') + '</h5>';
+
                 html += '<table class="validation-table">';
                 _underscore2.default.each(validatedArray, function (elem) {
                     html += '<tr>';
@@ -66241,6 +66251,9 @@ var orderItem = function orderItem(services) {
                 });
                 html += '</table>';
                 (0, _jquery2.default)('.validation-content').append(html);
+            } else {
+                (0, _jquery2.default)("#ui-datepicker-div").hide();
+                (0, _jquery2.default)("#validation-window:visible .order-expireon-wrap").hide();
             }
 
             if (deniedArray.length > 0) {
@@ -66354,11 +66367,9 @@ var orderItem = function orderItem(services) {
 
         function toggleValidationButton() {
             if (readyForValidation) {
-                (0, _jquery2.default)('button.validate').prop('disabled', false);
-                (0, _jquery2.default)('button.validate').css('color', '#7CD21C');
+                (0, _jquery2.default)('button.validate').show();
             } else {
-                (0, _jquery2.default)('button.validate').prop('disabled', true);
-                (0, _jquery2.default)('button.validate').css('color', '#737373');
+                (0, _jquery2.default)('button.validate').hide();
             }
         }
 

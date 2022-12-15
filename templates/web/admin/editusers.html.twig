@@ -750,6 +750,13 @@
             {% endfor %}
           </select>
 
+          <select id="acl-type-filter" style="margin-bottom: 0px;margin-left: 30px;">
+            <option value="">{{ 'button::choose type' | trans }}</option>
+            <option value="order">order</option>
+            <option value="push">push</option>
+            <option value="validate">validate</option>
+          </select>
+
           <input type="number" id="acl-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
         </div>
 
@@ -1496,6 +1503,7 @@
             databoxId : $("#acl-databox-filter").val(),
             recordId : $("#acl-record-filter").val(),
             expiredRight: expiredRight,
+            type: $("#acl-type-filter").val(),
             userId: {{ main_user.getId() }}
           },
           success: function (data) {
@@ -1546,6 +1554,10 @@
       });
 
       $("#expired-right").on('change', function () {
+        listRecordAcl();
+      });
+
+      $("#acl-type-filter").on('change', function () {
         listRecordAcl();
       });
 

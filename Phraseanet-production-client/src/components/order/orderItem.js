@@ -204,20 +204,21 @@ const orderItem = services => {
            //$('.order_row.selected').removeClass('to_be_validated');
         });
 
-        $('.force_sender', $dialog.getDomElement()).bind('click', function () {
-            if (confirm(localeService.t('forceSendDocument'))) {
-                //updateValidation('validated');
-                let element_id = [];
-                element_id.push(
-                    $(this)
-                        .closest('.order_row')
-                        .find('input[name=order_element_id]')
-                        .val()
-                );
-                let order_id = $('input[name=order_id]').val();
-                do_send_documents(order_id, element_id, true);
-            }
-        });
+        // comment on order_item.html.twig , line 171
+        // $('.force_sender', $dialog.getDomElement()).bind('click', function () {
+        //     if (confirm(localeService.t('forceSendDocument'))) {
+        //         //updateValidation('validated');
+        //         let element_id = [];
+        //         element_id.push(
+        //             $(this)
+        //                 .closest('.order_row')
+        //                 .find('input[name=order_element_id]')
+        //                 .val()
+        //         );
+        //         let order_id = $('input[name=order_id]').val();
+        //         do_send_documents(order_id, element_id, true);
+        //     }
+        // });
 
         $('#userInfo').hover(
             function () {
@@ -572,6 +573,9 @@ const orderItem = services => {
             });
 
             if (validatedArray.length > 0) {
+                $("#validation-window:visible .order-expireon-wrap").show();
+                $("#validation-window:visible input[name='expireOn']").blur();
+
                 let html = '';
                 html +=
                     '<h5>' +
@@ -582,6 +586,7 @@ const orderItem = services => {
                     window.orderItemData.translatedText.item +
                     (validatedArray.length === 1 ? '' : 's') +
                     '</h5>';
+
                 html += '<table class="validation-table">';
                 _.each(validatedArray, function (elem) {
                     html += '<tr>';
@@ -597,6 +602,9 @@ const orderItem = services => {
                 });
                 html += '</table>';
                 $('.validation-content').append(html);
+            } else {
+                $("#ui-datepicker-div").hide();
+                $("#validation-window:visible .order-expireon-wrap").hide();
             }
 
             if (deniedArray.length > 0) {
@@ -748,11 +756,9 @@ const orderItem = services => {
 
         function toggleValidationButton() {
             if (readyForValidation) {
-                $('button.validate').prop('disabled', false);
-                $('button.validate').css('color', '#7CD21C');
+                $('button.validate').show();
             } else {
-                $('button.validate').prop('disabled', true);
-                $('button.validate').css('color', '#737373');
+                $('button.validate').hide();
             }
         }
 

@@ -265,7 +265,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         ];
     }
 
-    public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null, $expiredRight = false)
+    public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null, $type = null, $expiredRight = false)
     {
         $rows = [];
         $totalCount = 0;
@@ -299,6 +299,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         if (!empty($recordId)) {
             $whereClause .= " AND rr.record_id= :record_id";
             $params[':record_id'] = $recordId;
+        }
+
+        if (!empty($type)) {
+            $whereClause .= " AND rr.case= :case";
+            $params[':case'] = $type;
         }
 
         if ($expiredRight) {

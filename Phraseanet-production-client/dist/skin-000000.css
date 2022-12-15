@@ -2392,7 +2392,7 @@ span.ww_winTitle {
 }
 
 #order_manager .order_list .selectable.selected {
-  background-color: #7f7f7f;
+  background-color: #292929;
   border: 1px solid #4990e2;
 }
 
@@ -2657,8 +2657,8 @@ button.order_launcher.btn {
 }
 
 #order-action {
-  margin-top: 1.2em;
-  margin-bottom: 1.5em;
+  margin: 0px 0px 1.2em 30px;
+  text-align: left;
 }
 
 #filter_box {
@@ -2859,6 +2859,10 @@ span.action-text i.fa-check {
 }
 
 button.btn.validate {
+  background-color: #5bb75b;
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  border-color: #51a351 #51a351 #387038;
+  color: #fff;
   margin-bottom: 10px;
   font-size: 14px;
 }
