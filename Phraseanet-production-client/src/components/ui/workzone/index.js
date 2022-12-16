@@ -1082,6 +1082,13 @@ const workzone = (services) => {
                         }
                     });
 
+                    $('.expose_basket_item .copy_expose_link').on('click', function (event) {
+                        navigator.clipboard.writeText($(this).data("link")).then(function() {
+                        }, function(err) {
+                            console.error('Could not copy link: ', err);
+                        });
+                    });
+
                     activeExpose();
                 }
 
@@ -1111,6 +1118,10 @@ const workzone = (services) => {
         $.ajax({
             type: 'GET',
             url: `/prod/expose/get-publication/${publicationId}/assets?exposeName=${exposeName}&page=${page}`,
+            data: {
+                capabilitiesDelete: assetsContainer.closest(".expose_basket_item").data("capabilities-delete") ? 1 : 0,
+                capabilitiesEdit: assetsContainer.closest(".expose_basket_item").data("capabilities-edit") ? 1 : 0
+            },
             success: function (data) {
                 if (typeof data.success === 'undefined') {
                     if (page === 1) {
@@ -1131,7 +1142,9 @@ const workzone = (services) => {
                     }
                 }
                 else {
-                    console.log(data);
+                    if (!data.success) {
+                        assetsContainer.empty().html(data.message);
+                    }
                 }
             }
         });

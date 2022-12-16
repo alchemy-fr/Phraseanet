@@ -11126,6 +11126,12 @@ var workzone = function workzone(services) {
                         }
                     });
 
+                    (0, _jquery2.default)('.expose_basket_item .copy_expose_link').on('click', function (event) {
+                        navigator.clipboard.writeText((0, _jquery2.default)(this).data("link")).then(function () {}, function (err) {
+                            console.error('Could not copy link: ', err);
+                        });
+                    });
+
                     activeExpose();
                 }
 
@@ -11156,6 +11162,10 @@ var workzone = function workzone(services) {
         _jquery2.default.ajax({
             type: 'GET',
             url: '/prod/expose/get-publication/' + publicationId + '/assets?exposeName=' + exposeName + '&page=' + page,
+            data: {
+                capabilitiesDelete: assetsContainer.closest(".expose_basket_item").data("capabilities-delete") ? 1 : 0,
+                capabilitiesEdit: assetsContainer.closest(".expose_basket_item").data("capabilities-edit") ? 1 : 0
+            },
             success: function success(data) {
                 if (typeof data.success === 'undefined') {
                     if (page === 1) {
@@ -11173,7 +11183,9 @@ var workzone = function workzone(services) {
                         assetsContainer.find('#list_assets_page').val(page);
                     }
                 } else {
-                    console.log(data);
+                    if (!data.success) {
+                        assetsContainer.empty().html(data.message);
+                    }
                 }
             }
         });

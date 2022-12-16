@@ -1,7 +1,7 @@
 {% block css %}
     <style type="text/css">
         #permission-editing td, #permission-editing th {
-            min-width: 150px;
+            min-width: 135px;
             text-align: center;
             height: 50px;
         }
@@ -57,18 +57,22 @@
                             </select>
                         </div>
                     </div>
-                    <div class="ui-widget profile-wrapper hide">
-                        <label>{{ 'prod:expose:publication:Profile' | trans }}</label>
-                        {% set nbProfile =  publication.profile|length %}
 
-                        <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
-                            {% if nbProfile %}
-                                <option value="/publication-profiles/{{ publication.profile.id }}">{{ publication.profile.name }}</option>
-                            {% endif %}
-                        </select>
-                    </div>
+                    {% if publication.capabilities.operator %}
+                        <div class="ui-widget profile-wrapper hide">
+                            <label>{{ 'prod:expose:publication:Profile' | trans }}</label>
+                            {% set nbProfile =  publication.profile|length %}
+
+                            <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
+                                {% if nbProfile %}
+                                    <option value="/publication-profiles/{{ publication.profile.id }}">{{ publication.profile.name }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    {% endif %}
+
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Enabled' | trans }} </label>
                         <label class="switch">
@@ -236,26 +240,28 @@
                 }
             });
 
-            $.ajax({
-                type: "GET",
-                url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
-                success: function (data) {
-                    profileField.empty().html('<option value="">{{ "prod:expose:publication:Select Profile" | trans }}</option>');
-                    for (let i = 0; i < data.profiles.length; i++) {
-                        let selected = '';
-                        if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
-                            selected = 'selected="selected"';
+            {% if publication.capabilities.operator %}
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
+                    success: function (data) {
+                        profileField.empty().html('<option value="">{{ "prod:expose:publication:Select Profile" | trans }}</option>');
+                        for (let i = 0; i < data.profiles.length; i++) {
+                            let selected = '';
+                            if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
+                                selected = 'selected="selected"';
+                            }
+
+                            $('#DIALOG-expose-edit select#profile-field').append('<option ' +
+                                'value=' + data.basePath + '/' + data.profiles[i].id + ' ' + selected + ' >'
+                                + data.profiles[i].name +
+                                '</option>'
+                            );
                         }
 
-                        $('#DIALOG-expose-edit select#profile-field').append('<option ' +
-                            'value=' + data.basePath + '/' + data.profiles[i].id + ' ' + selected + ' >'
-                            + data.profiles[i].name +
-                            '</option>'
-                        );
                     }
-
-                }
-            });
+                });
+            {% endif %}
 
             tinymce.remove('.description-field-edit');
 
@@ -491,6 +497,16 @@
                 );
             });
 
+            permissionList.on('change', '.user-owner', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    128,
+                    'user'
+                );
+            });
+
             permissionList.on('change', '.user-delete', function () {
                 updatePermission(
                     $(this),
@@ -523,6 +539,16 @@
                     $(this).parents('tr').attr('data-group-id'),
                     $(this).parents('tr').attr('data-mask'),
                     4,
+                    'group'
+                );
+            });
+
+            permissionList.on('change', '.group-owner', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    128,
                     'group'
                 );
             });

@@ -8409,13 +8409,9 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #idFrameC .expose_item_top {
   position: relative;
-  padding-right: 48px;
 }
 
 #idFrameC .edit_expose {
-  position: absolute;
-  right: 12px;
-  top: 5px;
   font-size: 20px;
   cursor: pointer;
 }
