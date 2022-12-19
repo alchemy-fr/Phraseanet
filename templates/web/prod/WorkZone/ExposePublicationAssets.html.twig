@@ -29,9 +29,11 @@
             <i class="fa fa-refresh" aria-hidden="true"></i>
         </button>
 
-        <button class="btn-secondary order-assets pull-right" data-publication-id="{{ publicationId }}" style="margin-left: 5px;" disabled>
-            {{ 'prod:expose:publication:Set order' | trans }}
-        </button>
+        {% if canEdit %}
+            <button class="btn-secondary order-assets pull-right" data-publication-id="{{ publicationId }}" style="margin-left: 5px; display:none;">
+                {{ 'prod:expose:publication:Set order' | trans }}
+            </button>
+        {% endif %}
     </div>
 
     <div class="expose_item_bottom">
@@ -39,7 +41,7 @@
 
             <input type="hidden" id="list_assets_page" value="1"/>
 
-            <div style="margin-bottom: 10px;">
+            <div class="assets_bottom_info" style="height: 40px;">
                 <span class="item_numbers">{{ totalItems }} assets</span>
                 <span class="pull-right" style="margin-right: 20px;">{{ 'prod:expose:publication:Info drag element and set order' | trans }}</span>
             </div>

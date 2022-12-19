@@ -227,7 +227,12 @@ class PSExposeController extends Controller
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $response = $exposeClient->get('/publications?flatten=true&order[createdAt]=desc', [
+            $uri = '/publications?flatten=true&order[createdAt]=desc';
+            if ($request->get('mine')) {
+                $uri .= '&mine=true';
+            }
+
+            $response = $exposeClient->get($uri, [
                 'headers' => [
                     'Authorization' => 'Bearer '. $accessToken,
                     'Content-Type'  => 'application/json'

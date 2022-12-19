@@ -8,7 +8,9 @@
     .top_block {
       position: relative;
       padding-left: 40px;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      width: 90%;
       &:before {
         content: "\f054";
         font-family: fontawesome;
@@ -43,14 +45,12 @@
       object-fit: contain;
   }
   .expose_item_title {
-    display: flex;
     padding: 0px 20px;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     flex-wrap: wrap;
-    height: 40px;
   }
   .expose_item_top {
     position: relative;
