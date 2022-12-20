@@ -4,14 +4,15 @@
     <div class="expose_basket_item publication-droppable basketTips ui-accordion-header ui-state-default
                     ui-corner-all header" style="position:relative;"
          data-publication-id="{{ publication.id }}" data-capabilities-edit="{{ publication.capabilities.edit }}" data-capabilities-delete="{{ publication.capabilities.delete }}">
-        <div class="top_block" data-publication-id="{{ publication.id }}">
-            <span>
-                {% if publication.cover %}
-                    <img class="top_image" width="60" src="{{ publication.cover.thumbUrl }}" />
-                {% endif %}
-            </span>
-            <span class="expose_item_title">{{ publication.title }}</span>
-
+        <div style="display:flex; align-items: center;">
+            <div class="top_block" data-publication-id="{{ publication.id }}">
+                <span>
+                    {% if publication.cover %}
+                        <img class="top_image" width="60" src="{{ publication.cover.thumbUrl }}" />
+                    {% endif %}
+                </span>
+                <span class="expose_item_title">{{ publication.title }}</span>
+            </div>
             <span style="display: inline-flex; margin-left: auto;">
                 <a target="_blank" href="{{ exposeFrontBasePath ~ path }}"  style="color:#4990e2; display: inline-flex;">
                     <i class="fa fa-external-link" aria-hidden="true" style="margin-top: 3px;margin-right: 3px;"></i> {{ 'preview' | trans }}

@@ -43,7 +43,9 @@
 
             <div class="assets_bottom_info" style="height: 40px;">
                 <span class="item_numbers">{{ totalItems }} assets</span>
-                <span class="pull-right" style="margin-right: 20px;">{{ 'prod:expose:publication:Info drag element and set order' | trans }}</span>
+                {% if canEdit %}
+                    <span class="pull-right" style="margin-right: 20px;">{{ 'prod:expose:publication:Info drag element and set order' | trans }}</span>
+                {% endif %}
             </div>
 
             <div class="assets_list">

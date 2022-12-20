@@ -8359,9 +8359,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #idFrameC .basketTips.expose_basket_item .top_block {
   position: relative;
   padding-left: 40px;
-  display: flex;
-  align-items: center;
-  width: 90%;
 }
 
 #idFrameC .basketTips.expose_basket_item .top_block:before {

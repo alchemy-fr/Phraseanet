@@ -8,9 +8,6 @@
     .top_block {
       position: relative;
       padding-left: 40px;
-      display: flex;
-      align-items: center;
-      width: 90%;
       &:before {
         content: "\f054";
         font-family: fontawesome;

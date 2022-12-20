@@ -11123,7 +11123,7 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.publication-list').empty().html(data.twig);
 
                     (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
-                        (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        (0, _jquery2.default)(this).parent().next('.expose_item_deployed').toggleClass('open');
                         (0, _jquery2.default)(this).toggleClass('open');
 
                         if ((0, _jquery2.default)(this).hasClass('open')) {

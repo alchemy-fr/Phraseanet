@@ -1079,7 +1079,7 @@ const workzone = (services) => {
                     $('.publication-list').empty().html(data.twig);
 
                     $('.expose_basket_item .top_block').on('click', function (event) {
-                        $(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        $(this).parent().next('.expose_item_deployed').toggleClass('open');
                         $(this).toggleClass('open');
 
                         if ($(this).hasClass('open')) {
