@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-12-20T15:33:39Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -413,27 +413,27 @@
       </trans-unit>
       <trans-unit id="7136e3b25b3e26722b5b03aa32a828c883121e87" resname="12h">
         <source>12h</source>
-        <target state="new">12h</target>
+        <target state="translated">12h</target>
         <jms:reference-file line="63">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="11a2757082428311f587b7664fa9840376137f80" resname="1d">
         <source>1d</source>
-        <target state="new">1d</target>
+        <target state="translated">1d</target>
         <jms:reference-file line="64">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e9c9f7bc39bb993fb7ed87ec63024c583691a6bd" resname="1h">
         <source>1h</source>
-        <target state="new">1h</target>
+        <target state="translated">1h</target>
         <jms:reference-file line="61">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc4ea83928e4079a6ca1eb64e1e4cc7952c8d2ac" resname="1m">
         <source>1m</source>
-        <target state="new">1m</target>
+        <target state="translated">1m</target>
         <jms:reference-file line="68">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="323945f29da5d029038c3e22734b3c59d0f64a26" resname="1w">
         <source>1w</source>
-        <target state="new">1w</target>
+        <target state="translated">1w</target>
         <jms:reference-file line="66">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fc99d2489a234a32c44e057d0d49959af5a26928" resname="2000 caracteres maximum" approved="yes">
@@ -458,17 +458,17 @@
       </trans-unit>
       <trans-unit id="b8568f4703616db45865d3c1a87fb64112e677e0" resname="2w">
         <source>2w</source>
-        <target state="new">2w</target>
+        <target state="translated">2w</target>
         <jms:reference-file line="67">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="34f9efccd44c54c0188dd18a9d3926473292be4c" resname="3d">
         <source>3d</source>
-        <target state="new">3d</target>
+        <target state="translated">3d</target>
         <jms:reference-file line="65">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d9c83623b7405e70a7359bcc00d8f89bd79a8a4c" resname="3h">
         <source>3h</source>
-        <target state="new">3h</target>
+        <target state="translated">3h</target>
         <jms:reference-file line="62">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c5026fb21d37b3cae42754a49a16960bb776ed5e" resname="500 caracteres maximum" approved="yes">
@@ -2537,7 +2537,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -3368,12 +3368,12 @@
       </trans-unit>
       <trans-unit id="5103a4a398146306aa27923e6cce52672060bbd6" resname="Flush All Caches">
         <source>Flush All Caches</source>
-        <target state="new">Flush All Caches</target>
+        <target state="needs-translation">Flush All Application's Caches</target>
         <jms:reference-file line="152">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f6d859db6f9a2d8c84dcf5c840b6b1d55439ad0a" resname="Flush session">
         <source>Flush session</source>
-        <target state="new">Flush session</target>
+        <target state="needs-translation">Flush all users sessions, logout all connected users</target>
         <jms:reference-file line="156">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bd85a7d22f6cdee554e5b9e865d26dcbb4dafc9" resname="Focal length" approved="yes">
@@ -8417,17 +8417,17 @@
       </trans-unit>
       <trans-unit id="a2d4204187473ea7398879317c4e4cd4462dfc49" resname="admin::base:collection:text delete collection">
         <source>admin::base:collection:text delete collection</source>
-        <target state="needs-translation">Delete the collection, the collection needs to be empty before performing this action. Warning : this action cannot be undone.</target>
+        <target state="translated">Delete the collection, the collection needs to be empty before performing this action. Warning : this action cannot be undone.</target>
         <jms:reference-file line="147">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
         <source>admin::base:collection:text disable collection</source>
-        <target state="needs-translation">The collection content will be no more reachable, this will require users reconnection. All users rights are kept, you can publish again this collection later</target>
+        <target state="translated">The collection content will be no more reachable, this will require users reconnection. All users rights are kept, you can publish again this collection later</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
         <source>admin::base:collection:text empty collection</source>
-        <target state="needs-translation">All collection records will be permanently deleted. The time taken for this operation depends on the number of records of the collection.</target>
+        <target state="translated">All collection records will be permanently deleted. The time taken for this operation depends on the number of records of the collection.</target>
         <jms:reference-file line="137">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
@@ -9938,7 +9938,7 @@
       </trans-unit>
       <trans-unit id="a54cbfd43ad8987c0ecbc5e8fa51d7c571369ddc" resname="all redis session flushed">
         <source>all redis session flushed</source>
-        <target state="new">all redis session flushed</target>
+        <target state="needs-translation">All users sessions erased</target>
         <jms:reference-file line="98">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afaee7bf6eca9099dc9356fbc46fb4f1716b8916" resname="an error occured" approved="yes">
@@ -10408,14 +10408,14 @@
       </trans-unit>
       <trans-unit id="529d7e5ea2c2183d2cf554561764340de1294d71" resname="button::choose databox">
         <source>button::choose databox</source>
-        <target state="needs-translation">All Databox</target>
+        <target state="translated">All Databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
         <jms:reference-file line="747">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="824">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f013ff9e62d4ae563de3270b3297f9da2afefcc9" resname="button::choose type">
         <source>button::choose type</source>
-        <target state="new">button::choose type</target>
+        <target state="needs-translation">Choose type</target>
         <jms:reference-file line="754">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
@@ -10597,7 +10597,7 @@
       </trans-unit>
       <trans-unit id="56655c639ca03db37149bb63a3d7a676173418b2" resname="created since">
         <source>created since</source>
-        <target state="new">created since</target>
+        <target state="needs-translation">Created since</target>
         <jms:reference-file line="58">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="670f6628c7b72287a36ecd01262005e81428451c" resname="created_on" approved="yes">
@@ -11057,7 +11057,7 @@
       </trans-unit>
       <trans-unit id="9a57ddfac6519db30370912528f1b0183c03970a" resname="feedback:: send">
         <source>feedback:: send</source>
-        <target state="needs-translation">Save and notify immediately</target>
+        <target state="translated">Save and notify immediately</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
@@ -11307,12 +11307,12 @@
       </trans-unit>
       <trans-unit id="6c6f34fed54a8f7a8769ef3729aaebaf0b983565" resname="job::tab total duration">
         <source>job::tab total duration</source>
-        <target state="new">job::tab total duration</target>
+        <target state="needs-translation">Duration</target>
         <jms:reference-file line="94">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
         <source>job::tab total entry in DB</source>
-        <target state="needs-translation">Total Jobs entries (only last 500 jobs are displayed)</target>
+        <target state="translated">Total Jobs entries (only last 500 jobs are displayed)</target>
         <jms:reference-file line="35">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10bdde9a4a70628adabb3cd21a907b41b11e707d" resname="juillet" approved="yes">
@@ -11535,7 +11535,7 @@
       </trans-unit>
       <trans-unit id="9c627983e8b23c12caf1415fd0e7b49c4712c219" resname="mail:: your account is inactif and to be deleted!">
         <source>mail:: your account is inactif and to be deleted!</source>
-        <target state="new">mail:: your account is inactif and to be deleted!</target>
+        <target state="needs-translation">Your account is now unactivated and will be deleted soon!</target>
         <jms:reference-file line="21">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -12249,7 +12249,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13145,7 +13145,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="b5f7411d5cf5384ee39d43f87b4601ee825f5e04" resname="prod::order-manager download expire on">
         <source>prod::order-manager download expire on</source>
-        <target state="new">prod::order-manager download expire on</target>
+        <target state="needs-translation">Download available until</target>
         <jms:reference-file line="31">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="yes">
@@ -13221,9 +13221,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="d7e519198d4ee03df505df5832481ee5298a7a9a" resname="prod::share un push permet d'envoyer un lot d'image a des destinataires">
         <source>prod::share un push permet d'envoyer un lot d'image a des destinataires</source>
-        <target state="needs-translation">A “Push” allows you to send a selection of records to users.
-The “Push” recipients can retrieve this selection as a basket that belongs to them.
-A ” Push” will never expire.</target>
+        <target state="needs-translation">A “Push” allows you to send a selection of records to users. The “Push” recipients can retrieve this selection as a basket that belongs to them. The download rights delivered by ” Push” will never expire.</target>
         <jms:reference-file line="159">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b607f0893dbd1c5e6e8b9c435969677f7fe2f30e" resname="prod::share: None of the selected records can be pushed.">
@@ -13265,12 +13263,12 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="5ccb348802600f55b5bdb36807d0803a55d75e93" resname="prod::share: Users can download HD">
         <source>prod::share: Users can download HD</source>
-        <target state="needs-translation">User can download HD</target>
+        <target state="translated">User can download HD</target>
         <jms:reference-file line="250">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ca04a1180ecd500a3185f2db6fa701aa62ec097" resname="prod::share: Users can modify the basket">
         <source>prod::share: Users can modify the basket</source>
-        <target state="needs-translation">User can modify the basket content</target>
+        <target state="translated">User can modify the basket content</target>
         <jms:reference-file line="242">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b603b55c4cd36e33b32b6bff0bcbde435fb0118" resname="prod::share: Users can see others choices">
@@ -13305,7 +13303,7 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="85c8ae3c46fa22b989d6f426821f7dafff24ebb8" resname="prod::share: feedback-option">
         <source>prod::share: feedback-option</source>
-        <target state="needs-translation">Add a Feedback session</target>
+        <target state="translated">Add a Feedback session</target>
         <jms:reference-file line="311">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2391ce555d081b02f6112a764a8d2adb085bb66d" resname="prod::story select collection ...">
@@ -13487,7 +13485,7 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
         <source>prod::workzone:manual feedback reminder button</source>
-        <target state="needs-translation">Send an email</target>
+        <target state="translated">Send an email</target>
         <jms:reference-file line="158">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="yes">
@@ -13562,12 +13560,12 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="75526f787066901506eb4ea14d24053e663cdb55" resname="prod:expose Editable only">
         <source>prod:expose Editable only</source>
-        <target state="new">prod:expose Editable only</target>
+        <target state="needs-translation">Editable</target>
         <jms:reference-file line="714">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0958e6208f4a5eade790de2c2aca7904ab63c8ab" resname="prod:expose Mine only">
         <source>prod:expose Mine only</source>
-        <target state="new">prod:expose Mine only</target>
+        <target state="needs-translation">Mine</target>
         <jms:reference-file line="719">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
@@ -13577,17 +13575,17 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="17973965f96bc86b5b9dd09879ce96f5d5dbc89a" resname="prod:expose preview">
         <source>prod:expose preview</source>
-        <target state="new">prod:expose preview</target>
+        <target state="needs-translation">Preview</target>
         <jms:reference-file line="18">prod/WorkZone/ExposeList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
-        <target state="new">prod:expose: disabled</target>
+        <target state="needs-translation">Publication is disabled</target>
         <jms:reference-file line="26">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eab42ad1c7433247468f47601baf4a4470d9cebe" resname="prod:expose: enabled">
         <source>prod:expose: enabled</source>
-        <target state="new">prod:expose: enabled</target>
+        <target state="needs-translation">Publication is enabled</target>
         <jms:reference-file line="21">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="yes">
@@ -13833,7 +13831,7 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="61818a681f0a1b649fb1b95cf7fe384b024fcd64" resname="prod:expose:publication:check slug">
         <source>prod:expose:publication:check slug</source>
-        <target state="new">prod:expose:publication:check slug</target>
+        <target state="needs-translation">Check slug availability</target>
         <jms:reference-file line="13">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="37">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -14865,7 +14863,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4" resname="secret">
         <source>secret</source>
-        <target state="new">secret</target>
+        <target state="translated">secret</target>
         <jms:reference-file line="28">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fe29f1a35e814c87a21282378424df4866529d1e" resname="select at least one user" approved="yes">
@@ -14996,7 +14994,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="26318224fcbc9fe2275542c45cba9f8aa0b72571" resname="started since">
         <source>started since</source>
-        <target state="new">started since</target>
+        <target state="translated">started since</target>
         <jms:reference-file line="57">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="98693e37d002821e032bfc91ffc5091c3b6d76da" resname="status:: Affichable pour tous" approved="yes">
@@ -15336,7 +15334,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
