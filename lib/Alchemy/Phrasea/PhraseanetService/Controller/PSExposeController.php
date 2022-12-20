@@ -232,6 +232,10 @@ class PSExposeController extends Controller
                 $uri .= '&mine=true';
             }
 
+            if ($request->get('editable')) {
+                $uri .= '&editable=true';
+            }
+
             $response = $exposeClient->get($uri, [
                 'headers' => [
                     'Authorization' => 'Bearer '. $accessToken,

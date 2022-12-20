@@ -702,20 +702,26 @@
         <button class="btn btn-secondary btn-sm expose_field_mapping hidden" href="#"
                 style="margin-left:10px">{{ 'prod:expose field mapping' |trans }}</button>
 
-        <div class="add_expose_block hidden" style="padding:10px;">
+        <div class="add_expose_block hidden" style="padding:10px;display:flex; align-items: center;">
             <a id="add_publication" class="add_publication" href="#">
                 <span>{{ 'prod:expose:Add publication' | trans }}</span>
                 <img src="/assets/common/images/icons/Basket-New.png"
                      title="{{ 'prod:expose:Add publication' | trans }}">
             </a>
 
-            <button class="btn-success refresh-list pull-right"
-                    style="margin-bottom: 5px; margin-left: 20px">{{ 'prod:expose:Refresh' | trans }}
-            </button>
-            <label class="checkbox pull-right" for="expose_mine_only" style="font-size: 12px;">
-                <input type="checkbox" id="expose_mine_only" name="expose_mine_only" value="1">
-                {{ 'Mine only' | trans }}
+            <label class="checkbox" for="expose_editable_only" style="font-size: 12px; margin-left: auto;">
+                <input type="checkbox" id="expose_editable_only" name="expose_editable_only" value="1">
+                {{ 'prod:expose Editable only' | trans }}
             </label>
+
+            <label class="checkbox" for="expose_mine_only" style="font-size: 12px;margin-left: auto;">
+                <input type="checkbox" id="expose_mine_only" name="expose_mine_only" value="1">
+                {{ 'prod:expose Mine only' | trans }}
+            </label>
+
+            <button class="btn-success refresh-list"
+                    style="margin-bottom: 5px; margin-left: auto;">{{ 'prod:expose:Refresh' | trans }}
+            </button>
         </div>
 
         <div class="insidebloc expose_insidebloc">

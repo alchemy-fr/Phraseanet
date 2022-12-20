@@ -114,6 +114,12 @@ const workzone = (services) => {
             updatePublicationList(exposeName);
         });
 
+        $('#expose_editable_only').on('change',function (event) {
+            let exposeName = $('#expose_list').val();
+            $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            updatePublicationList(exposeName);
+        });
+
         $('.refresh-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
             $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
@@ -1072,7 +1078,8 @@ const workzone = (services) => {
             type: 'GET',
             url: '/prod/expose/list-publication/?exposeName=' + exposeName,
             data:{
-                mine : $("#expose_mine_only").is(':checked') ? 1 : 0
+                mine : $("#expose_mine_only").is(':checked') ? 1 : 0,
+                editable: $("#expose_editable_only").is(':checked') ? 1 : 0
             },
             success: function (data) {
                 if ('twig' in data) {
