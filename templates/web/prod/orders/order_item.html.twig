@@ -26,6 +26,32 @@
 
 <div style="display:none;position:relative;" id="validation-window" >
     <div class="box">
+        <div class="order-expireon-wrap">
+            <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+            <span>{{ 'prod::order-manager download expire on' | trans }}:</span>
+            <span style="font-size: 0;">
+                {% set canOverride = app['conf'].get(['order-manager', 'download-hd', 'expiration-override']) ? true : false %}
+                <input type="text" class="expireOn btn" name="expireOn" autocomplete="off"
+                       style="width: 100px; margin: 0;background-image: none; border-right: 0;border-top-right-radius: 0;border-bottom-right-radius: 0;"
+                       {% if not canOverride %} disabled {% endif %}
+                        data-default-expiration="{{ app['conf'].get(['order-manager', 'download-hd', 'expiration-days']) }}"
+                />
+                <button class="expireOn-menu"
+                        style="border-radius: 0px 13px 13px 0px;height: 30px;border: 1px solid transparent;"
+                        {% if not canOverride %} disabled {% endif %} >
+                    <i class="fa fa-ellipsis-h"></i>
+                </button>
+            </span>
+            <ul id="expire-menu"
+                style="position:fixed; z-index: 999999; width:80px; height:auto; display:block; top:-1000px;">
+                <li data-expireon="+7"><a href="#">7 days</a></li>
+                <li data-expireon="+15"><a href="#">15 days</a></li>
+                <li data-expireon="+20"><a href="#">20 days</a></li>
+                <li data-expireon="+30"><a href="#">30 days</a></li>
+                <li data-expireon="+60"><a href="#">60 days</a></li>
+                <li data-expireon=""><a href="#">no limitation</a></li>
+            </ul>
+        </div>
         <div class="validation-content" style="float:left; width:100%;margin-top:10px;">
         </div>
     </div>
@@ -103,8 +129,8 @@
                 </td>
             </tr>
         </table>
-        <button class="btn validate outline" disabled><i class="fa fa-check-circle-o"
-                                                         aria-hidden="true"></i>{{ 'order-manager::order-item: validate' |trans }}
+        <button class="btn validate outline" style="display:none;"><i class="fa fa-check-circle-o" aria-hidden="true">
+            </i>{{ 'order-manager::order-item: validate' |trans }}
         </button>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
@@ -146,7 +172,7 @@
                                                 {% trans %}Forcer l'envoi du document{% endtrans %}
                                             {% endset %}
                                             <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                                            <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+{#                                            <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />#}
                                         {% else %}
                                             {% set title %}
                                                 {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
@@ -207,14 +233,6 @@
                     </div>
                 </div>
                 <div id="wrapper-multiple">
-                    <div id="preview-layout-multiple">
-                        <span class="title">0</span>
-                        <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
-                        <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
-                             style="width:150px;height:150px;"
-                             src="/assets/common/images/icons/substitution/image_jpg.png" ondragstart="return false;"/>
-                        <div id="text-content"></div>
-                    </div>
                     <div id="order-action" style="color:#333;">
                         <button class="btn deny outline"><i class="fa fa-times"
                                                             aria-hidden="true"></i>{{ 'Deny' | trans }}</button>
@@ -227,6 +245,15 @@
                         <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                     </div>
+                    <div id="preview-layout-multiple">
+                        <span class="title">0</span>
+                        <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
+                        <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+                             style="width:150px;height:150px;"
+                             src="/assets/common/images/icons/substitution/image_jpg.png" ondragstart="return false;"/>
+                        <div id="text-content"></div>
+                    </div>
+
                 </div>
                 <div id="wrapper-no-item">
                     <img style="width:150px;height:150px;" src="/assets/common/images/icons/substitution/image_jpg.png">

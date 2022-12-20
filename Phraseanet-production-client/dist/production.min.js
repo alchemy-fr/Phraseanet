@@ -65932,15 +65932,21 @@ var orderItem = function orderItem(services) {
             //$('.order_row.selected').removeClass('to_be_validated');
         });
 
-        (0, _jquery2.default)('.force_sender', $dialog.getDomElement()).bind('click', function () {
-            if (confirm(localeService.t('forceSendDocument'))) {
-                //updateValidation('validated');
-                var element_id = [];
-                element_id.push((0, _jquery2.default)(this).closest('.order_row').find('input[name=order_element_id]').val());
-                var order_id = (0, _jquery2.default)('input[name=order_id]').val();
-                do_send_documents(order_id, element_id, true);
-            }
-        });
+        // comment on order_item.html.twig , line 171
+        // $('.force_sender', $dialog.getDomElement()).bind('click', function () {
+        //     if (confirm(localeService.t('forceSendDocument'))) {
+        //         //updateValidation('validated');
+        //         let element_id = [];
+        //         element_id.push(
+        //             $(this)
+        //                 .closest('.order_row')
+        //                 .find('input[name=order_element_id]')
+        //                 .val()
+        //         );
+        //         let order_id = $('input[name=order_id]').val();
+        //         do_send_documents(order_id, element_id, true);
+        //     }
+        // });
 
         (0, _jquery2.default)('#userInfo').hover(function () {
             var offset = (0, _jquery2.default)('#userInfo').position();
@@ -66039,6 +66045,56 @@ var orderItem = function orderItem(services) {
             }
         });
 
+        (0, _jquery2.default)('#validation-window .expireOn').datepicker({
+            beforeShow: function beforeShow(input, inst) {
+                (0, _jquery2.default)(inst.dpDiv).addClass('expireOn');
+            },
+            changeYear: true,
+            changeMonth: true,
+            dateFormat: 'yy-mm-dd',
+            onClose: function onClose(input, inst) {
+                (0, _jquery2.default)(inst.dpDiv).removeClass('expireOn');
+            }
+        });
+
+        (0, _jquery2.default)('#expire-menu').menu({
+            select: function select(event, ui) {
+                var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
+                var expire = (0, _jquery2.default)(ui.item[0]).data('expireon');
+                if (expire === '') {
+                    // expireon to null = no expiration for the right
+                    $input.val('');
+                } else {
+                    calculateExpireDate($input, expire);
+                }
+                (0, _jquery2.default)(this).hide();
+            }
+        }).mouseleave(function (event, ui) {
+            (0, _jquery2.default)(this).hide();
+        }).hide();
+
+        // click to ... to drop
+        (0, _jquery2.default)("BUTTON.expireOn-menu").click(function (event, ui) {
+            (0, _jquery2.default)("#expire-menu").css({
+                top: event.clientY,
+                left: event.clientX - 6
+            }).show();
+            return false;
+        });
+
+        function calculateExpireDate($input, expire) {
+            if (expire === null || expire === undefined || expire === '') {
+                $input.val("");
+            } else {
+                var d = new Date();
+                d.setDate(d.getDate() + parseInt(expire));
+                var mm = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
+                var dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+
+                $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+            }
+        }
+
         function createBasket($innerDialog) {
             var $form = (0, _jquery2.default)('form', $innerDialog);
             var dialog = $innerDialog.closest('.ui-dialog');
@@ -66102,6 +66158,7 @@ var orderItem = function orderItem(services) {
             var submitTitle = window.orderItemData.translatedText.submit;
             var resetTitle = window.orderItemData.translatedText.reset;
             var dialog_buttons = {};
+
             dialog_buttons[submitTitle] = function () {
                 //submit documents
                 submitDocuments((0, _jquery2.default)(this));
@@ -66133,6 +66190,9 @@ var orderItem = function orderItem(services) {
                 }
             }).dialog('open');
             createValidationTable();
+            var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
+            var defaultExpire = $input.data('default-expiration');
+            calculateExpireDate($input, defaultExpire);
         }
 
         function submitDocuments(dialogElem) {
@@ -66155,15 +66215,18 @@ var orderItem = function orderItem(services) {
                 return elem.elementId;
             });
 
-            if (validatedArrayNoForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayNoForceIds, false);
+            if (validatedArrayNoForceIds.length > 0 && deniedArrayIds.length > 0) {
+                do_validate_documents(order_id, validatedArrayNoForceIds, deniedArrayIds);
+            } else {
+                if (validatedArrayNoForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayNoForceIds, false);
+                } else if (validatedArrayWithForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayWithForceIds, true);
+                } else if (deniedArrayIds.length > 0) {
+                    do_deny_documents(order_id, deniedArrayIds);
+                }
             }
-            if (validatedArrayWithForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayWithForceIds, true);
-            }
-            if (deniedArrayIds.length > 0) {
-                do_deny_documents(order_id, deniedArrayIds);
-            }
+
             dialogElem.dialog('close');
         }
 
@@ -66177,8 +66240,12 @@ var orderItem = function orderItem(services) {
             });
 
             if (validatedArray.length > 0) {
+                (0, _jquery2.default)("#validation-window:visible .order-expireon-wrap").show();
+                (0, _jquery2.default)("#validation-window:visible input[name='expireOn']").blur();
+
                 var html = '';
                 html += '<h5>' + window.orderItemData.translatedText.youHaveValidated + ' ' + validatedArray.length + ' ' + window.orderItemData.translatedText.item + (validatedArray.length === 1 ? '' : 's') + '</h5>';
+
                 html += '<table class="validation-table">';
                 _underscore2.default.each(validatedArray, function (elem) {
                     html += '<tr>';
@@ -66188,6 +66255,8 @@ var orderItem = function orderItem(services) {
                 });
                 html += '</table>';
                 (0, _jquery2.default)('.validation-content').append(html);
+            } else {
+                (0, _jquery2.default)("#validation-window:visible .order-expireon-wrap").hide();
             }
 
             if (deniedArray.length > 0) {
@@ -66301,11 +66370,9 @@ var orderItem = function orderItem(services) {
 
         function toggleValidationButton() {
             if (readyForValidation) {
-                (0, _jquery2.default)('button.validate').prop('disabled', false);
-                (0, _jquery2.default)('button.validate').css('color', '#7CD21C');
+                (0, _jquery2.default)('button.validate').show();
             } else {
-                (0, _jquery2.default)('button.validate').prop('disabled', true);
-                (0, _jquery2.default)('button.validate').css('color', '#737373');
+                (0, _jquery2.default)('button.validate').hide();
             }
         }
 
@@ -66321,7 +66388,44 @@ var orderItem = function orderItem(services) {
                 dataType: 'json',
                 data: {
                     'elements[]': elements_ids,
-                    force: force ? 1 : 0
+                    force: force ? 1 : 0,
+                    expireOn: (0, _jquery2.default)('input[name="expireOn"]:visible').val()
+                },
+                success: function success(data) {
+                    var success = '0';
+
+                    if (data.success) {
+                        success = '1';
+                    }
+
+                    var url = '../prod/order/' + order_id + '/?success=' + success + '&action=send';
+                    reloadDialog(url);
+                },
+                error: function error() {
+                    (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', false);
+                    (0, _jquery2.default)('.activity_indicator', cont).hide();
+                },
+                timeout: function timeout() {
+                    (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', false);
+                    (0, _jquery2.default)('.activity_indicator', cont).hide();
+                }
+            });
+        }
+
+        function do_validate_documents(order_id, elements_send_ids, elements_deny_ids) {
+            var cont = $dialog.getDomElement();
+
+            (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', true);
+            (0, _jquery2.default)('.activity_indicator', cont).show();
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '../prod/order/' + order_id + '/validate/',
+                dataType: 'json',
+                data: {
+                    'elementsSend[]': elements_send_ids,
+                    'elementsDeny[]': elements_deny_ids,
+                    expireOn: (0, _jquery2.default)('input[name="expireOn"]:visible').val()
                 },
                 success: function success(data) {
                     var success = '0';
@@ -66414,24 +66518,39 @@ var orderItem = function orderItem(services) {
             }, { validated: 0, selectable: 0, waitingForValidation: 0 });
 
             var html = '';
-            if (countObj.validated > 0) {
-                html += '<p>' + window.orderItemData.translatedText.itemsAlreadySent + ': ' + countObj.validated + '</p>';
-            }
+            // if (countObj.validated > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsAlreadySent +
+            //         ': ' +
+            //         countObj.validated +
+            //         '</p>';
+            // }
 
-            if (countObj.waitingForValidation > 0) {
-                html += '<p>' + window.orderItemData.translatedText.itemsWaitingValidation + ': ' + countObj.waitingForValidation + '</p>';
-            }
+            // if (countObj.waitingForValidation > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsWaitingValidation +
+            //         ': ' +
+            //         countObj.waitingForValidation +
+            //         '</p>';
+            // }
 
             //for the remaining items
             var remaining = countObj.selectable - (countObj.validated + countObj.waitingForValidation);
             if (remaining > 0) {
-                html += '<p>' + window.orderItemData.translatedText.nonSentItems + ': ' + remaining + '</p>';
+                // html +=
+                //     '<p>' +
+                //     window.orderItemData.translatedText.nonSentItems +
+                //     ': ' +
+                //     remaining +
+                //     '</p>';
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.send').prop('disabled', false);
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.send').show();
             }
 
-            (0, _jquery2.default)('#wrapper-multiple #text-content').empty();
-            (0, _jquery2.default)('#wrapper-multiple #text-content').append(html);
+            // $('#wrapper-multiple #text-content').empty();
+            // $('#wrapper-multiple #text-content').append(html);
         }
 
         /* *
