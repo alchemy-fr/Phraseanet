@@ -61,9 +61,16 @@ class PSExposeController extends Controller
         }
 
         if ($response->getStatusCode() !== 200) {
+            try {
+                $b = json_decode($response->getBody()->getContents(),true);
+                $message = $b['error_description'];
+            } catch (\Exception $e) {
+                $message = 'Error with status code: ' . $response->getStatusCode();
+            }
+
             return $this->app->json([
                 'success' => false,
-                'error_description'   => 'Error with status code: ' . $response->getStatusCode(),
+                'error_description'   => $message
             ]);
         }
 
@@ -220,7 +227,16 @@ class PSExposeController extends Controller
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $response = $exposeClient->get('/publications?flatten=true&order[createdAt]=desc', [
+            $uri = '/publications?flatten=true&order[createdAt]=desc';
+            if ($request->get('mine')) {
+                $uri .= '&mine=true';
+            }
+
+            if ($request->get('editable')) {
+                $uri .= '&editable=true';
+            }
+
+            $response = $exposeClient->get($uri, [
                 'headers' => [
                     'Authorization' => 'Bearer '. $accessToken,
                     'Content-Type'  => 'application/json'
@@ -476,10 +492,12 @@ class PSExposeController extends Controller
         }
 
         return $this->render("prod/WorkZone/ExposePublicationAssets.html.twig", [
-            'pubAssets'     => $pubAssets,
-            'publicationId' => $request->get('publicationId'),
-            'totalItems'    => $totalItems,
-            'page'          => $page
+            'pubAssets'             => $pubAssets,
+            'publicationId'         => $request->get('publicationId'),
+            'capabilitiesDelete'    => $request->get('capabilitiesDelete'),
+            'capabilitiesEdit'      => $request->get('capabilitiesEdit'),
+            'totalItems'            => $totalItems,
+            'page'                  => $page
         ]);
     }
 
@@ -1165,11 +1183,11 @@ class PSExposeController extends Controller
         }
 
         foreach ($permissions as &$permission) {
-            if ($permission['userType'] == 'user') {
+            if ($permission['userType'] == 'user' && !empty($listUsers)) {
                 $key = array_search($permission['userId'], array_column($listUsers, 'id'));
                 $permission = array_merge($permission, $listUsers[$key]);
                 $listUsers[$key]['selected'] = true;
-            } elseif ($permission['userType'] == 'group') {
+            } elseif ($permission['userType'] == 'group' && !empty($listGroups)) {
                 $key = array_search($permission['userId'], array_column($listGroups, 'id'));
                 $permission = array_merge($permission, $listGroups[$key]);
                 $listGroups[$key]['selected'] = true;
