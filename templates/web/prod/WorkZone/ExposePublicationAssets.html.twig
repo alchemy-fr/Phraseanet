@@ -10,8 +10,20 @@
 {% if page == 1 %}
     <div class="expose_item_top" style="margin-top: 20px;">
         {% if canEdit %}
-            <span class="green_button edit_expose" title="Edit" data-id="{{ publicationId }}">
+            <span class="green_button edit_expose" title="Edit" data-id="{{ publicationId }}" style="margin-right: 30px;">
                 <i class="fa fa-edit"></i>
+            </span>
+        {% endif %}
+
+        {% if pubAssets[0].publication.enabled %}
+            <span>
+                <i class="fa fa-circle fa-lg" style="color: #1141db;"></i>
+                {{ 'prod:expose: enabled' | trans }}
+            </span>
+        {% else %}
+            <span>
+                <i class="fa fa-circle fa-lg" style="color: #ffffff;"></i>
+                {{ 'prod:expose: disabled' | trans }}
             </span>
         {% endif %}
 
@@ -25,7 +37,7 @@
             <span style="margin-left: 30px;">{{ 'prod:expose:publication:Parent Publication' | trans }}</span>
         {% endif %}
 
-        <button class="btn-success refresh-publication pull-right" data-publication-id="{{ publicationId }}" title="{{ 'prod:expose:publication:Refresh Publication' | trans }}" style="margin-left: 40px;">
+        <button class="btn-success refresh-publication pull-right" data-publication-id="{{ publicationId }}" title="{{ 'prod:expose:publication:Refresh Publication' | trans }}" style="margin-left: 40px; margin-right: 20px;">
             <i class="fa fa-refresh" aria-hidden="true"></i>
         </button>
 
