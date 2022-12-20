@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Model\Entities\User;
 
-class MailInfoOrderDelivered extends AbstractMail
+class MailInfoOrderDelivered extends AbstractMailWithLink
 {
     /** @var Basket */
     private $basket;

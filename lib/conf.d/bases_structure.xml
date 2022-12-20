@@ -905,6 +905,14 @@
             <comment></comment>
             <collation></collation>
           </field>
+          <field>
+            <name>expire_on</name>
+            <type>datetime</type>
+            <null>yes</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>

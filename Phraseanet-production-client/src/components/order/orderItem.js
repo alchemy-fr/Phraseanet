@@ -204,20 +204,21 @@ const orderItem = services => {
            //$('.order_row.selected').removeClass('to_be_validated');
         });
 
-        $('.force_sender', $dialog.getDomElement()).bind('click', function () {
-            if (confirm(localeService.t('forceSendDocument'))) {
-                //updateValidation('validated');
-                let element_id = [];
-                element_id.push(
-                    $(this)
-                        .closest('.order_row')
-                        .find('input[name=order_element_id]')
-                        .val()
-                );
-                let order_id = $('input[name=order_id]').val();
-                do_send_documents(order_id, element_id, true);
-            }
-        });
+        // comment on order_item.html.twig , line 171
+        // $('.force_sender', $dialog.getDomElement()).bind('click', function () {
+        //     if (confirm(localeService.t('forceSendDocument'))) {
+        //         //updateValidation('validated');
+        //         let element_id = [];
+        //         element_id.push(
+        //             $(this)
+        //                 .closest('.order_row')
+        //                 .find('input[name=order_element_id]')
+        //                 .val()
+        //         );
+        //         let order_id = $('input[name=order_id]').val();
+        //         do_send_documents(order_id, element_id, true);
+        //     }
+        // });
 
         $('#userInfo').hover(
             function () {
@@ -335,6 +336,63 @@ const orderItem = services => {
             }
         });
 
+        $('#validation-window .expireOn').datepicker({
+            beforeShow: (input, inst) => {
+                $(inst.dpDiv).addClass('expireOn');
+            },
+            changeYear: true,
+            changeMonth: true,
+            dateFormat: 'yy-mm-dd',
+            onClose: (input, inst) => {
+                $(inst.dpDiv).removeClass('expireOn');
+            },
+        });
+
+        $('#expire-menu')
+            .menu({
+                select: function (event, ui) {
+                    const $input = $('input[name="expireOn"]:visible');
+                    const expire  = $(ui.item[0]).data('expireon');
+                    if (expire === '') {
+                        // expireon to null = no expiration for the right
+                        $input.val('')
+                    } else {
+                        calculateExpireDate($input, expire);
+                    }
+                    $(this).hide();
+                }
+            })
+            .mouseleave(function (event, ui) {
+                $(this).hide();
+            })
+            .hide();
+
+        // click to ... to drop
+        $("BUTTON.expireOn-menu").click(
+            function (event, ui) {
+                $("#expire-menu")
+                    .css({
+                        top:  event.clientY,
+                        left: event.clientX - 6
+                    })
+                    .show();
+                return false;
+            }
+        );
+
+        function calculateExpireDate($input, expire) {
+            if (expire === null || expire === undefined || expire === '') {
+                $input.val("");
+            } else {
+                const d = new Date();
+                d.setDate(d.getDate() + parseInt(expire));
+                const mm = ((d.getMonth() + 1) < 10 ? '0' : '') + (d.getMonth() + 1);
+                const dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+
+                $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+            }
+        }
+
         function createBasket($innerDialog) {
             let $form = $('form', $innerDialog);
             let dialog = $innerDialog.closest('.ui-dialog');
@@ -419,6 +477,7 @@ const orderItem = services => {
             let submitTitle = window.orderItemData.translatedText.submit;
             let resetTitle = window.orderItemData.translatedText.reset;
             var dialog_buttons = {};
+
             dialog_buttons[submitTitle] = function () {
                 //submit documents
                 submitDocuments($(this));
@@ -452,6 +511,9 @@ const orderItem = services => {
                 })
                 .dialog('open');
             createValidationTable();
+            const $input = $('input[name="expireOn"]:visible');
+            const defaultExpire  = $input.data('default-expiration');
+            calculateExpireDate($input, defaultExpire);
         }
 
         function submitDocuments(dialogElem) {
@@ -488,15 +550,18 @@ const orderItem = services => {
                 return elem.elementId;
             });
 
-            if (validatedArrayNoForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayNoForceIds, false);
+            if (validatedArrayNoForceIds.length > 0 && deniedArrayIds.length > 0) {
+                do_validate_documents(order_id, validatedArrayNoForceIds, deniedArrayIds);
+            } else {
+                if (validatedArrayNoForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayNoForceIds, false);
+                } else if (validatedArrayWithForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayWithForceIds, true);
+                } else if (deniedArrayIds.length > 0){
+                    do_deny_documents(order_id, deniedArrayIds);
+                }
             }
-            if (validatedArrayWithForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayWithForceIds, true);
-            }
-            if (deniedArrayIds.length > 0) {
-                do_deny_documents(order_id, deniedArrayIds);
-            }
+
             dialogElem.dialog('close');
         }
 
@@ -512,6 +577,9 @@ const orderItem = services => {
             });
 
             if (validatedArray.length > 0) {
+                $("#validation-window:visible .order-expireon-wrap").show();
+                $("#validation-window:visible input[name='expireOn']").blur();
+
                 let html = '';
                 html +=
                     '<h5>' +
@@ -522,6 +590,7 @@ const orderItem = services => {
                     window.orderItemData.translatedText.item +
                     (validatedArray.length === 1 ? '' : 's') +
                     '</h5>';
+
                 html += '<table class="validation-table">';
                 _.each(validatedArray, function (elem) {
                     html += '<tr>';
@@ -537,6 +606,8 @@ const orderItem = services => {
                 });
                 html += '</table>';
                 $('.validation-content').append(html);
+            } else {
+                $("#validation-window:visible .order-expireon-wrap").hide();
             }
 
             if (deniedArray.length > 0) {
@@ -688,11 +759,9 @@ const orderItem = services => {
 
         function toggleValidationButton() {
             if (readyForValidation) {
-                $('button.validate').prop('disabled', false);
-                $('button.validate').css('color', '#7CD21C');
+                $('button.validate').show();
             } else {
-                $('button.validate').prop('disabled', true);
-                $('button.validate').css('color', '#737373');
+                $('button.validate').hide();
             }
         }
 
@@ -708,7 +777,49 @@ const orderItem = services => {
                 dataType: 'json',
                 data: {
                     'elements[]': elements_ids,
-                    force: force ? 1 : 0
+                    force: force ? 1 : 0,
+                    expireOn: $('input[name="expireOn"]:visible').val()
+                },
+                success: function (data) {
+                    let success = '0';
+
+                    if (data.success) {
+                        success = '1';
+                    }
+
+                    var url =
+                        '../prod/order/' +
+                        order_id +
+                        '/?success=' +
+                        success +
+                        '&action=send';
+                    reloadDialog(url);
+                },
+                error: function () {
+                    $('button.deny, button.send', cont).prop('disabled', false);
+                    $('.activity_indicator', cont).hide();
+                },
+                timeout: function () {
+                    $('button.deny, button.send', cont).prop('disabled', false);
+                    $('.activity_indicator', cont).hide();
+                }
+            });
+        }
+
+        function do_validate_documents(order_id, elements_send_ids, elements_deny_ids) {
+            let cont = $dialog.getDomElement();
+
+            $('button.deny, button.send', cont).prop('disabled', true);
+            $('.activity_indicator', cont).show();
+
+            $.ajax({
+                type: 'POST',
+                url: '../prod/order/' + order_id + '/validate/',
+                dataType: 'json',
+                data: {
+                    'elementsSend[]': elements_send_ids,
+                    'elementsDeny[]': elements_deny_ids,
+                     expireOn: $('input[name="expireOn"]:visible').val()
                 },
                 success: function (data) {
                     let success = '0';
@@ -817,35 +928,35 @@ const orderItem = services => {
             );
 
             let html = '';
-            if (countObj.validated > 0) {
-                html +=
-                    '<p>' +
-                    window.orderItemData.translatedText.itemsAlreadySent +
-                    ': ' +
-                    countObj.validated +
-                    '</p>';
-            }
+            // if (countObj.validated > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsAlreadySent +
+            //         ': ' +
+            //         countObj.validated +
+            //         '</p>';
+            // }
 
-            if (countObj.waitingForValidation > 0) {
-                html +=
-                    '<p>' +
-                    window.orderItemData.translatedText.itemsWaitingValidation +
-                    ': ' +
-                    countObj.waitingForValidation +
-                    '</p>';
-            }
+            // if (countObj.waitingForValidation > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsWaitingValidation +
+            //         ': ' +
+            //         countObj.waitingForValidation +
+            //         '</p>';
+            // }
 
             //for the remaining items
             let remaining =
                 countObj.selectable -
                 (countObj.validated + countObj.waitingForValidation);
             if (remaining > 0) {
-                html +=
-                    '<p>' +
-                    window.orderItemData.translatedText.nonSentItems +
-                    ': ' +
-                    remaining +
-                    '</p>';
+                // html +=
+                //     '<p>' +
+                //     window.orderItemData.translatedText.nonSentItems +
+                //     ': ' +
+                //     remaining +
+                //     '</p>';
                 $('#order-action button.deny, #order-action button.send').prop(
                     'disabled',
                     false
@@ -855,8 +966,8 @@ const orderItem = services => {
                 ).show();
             }
 
-            $('#wrapper-multiple #text-content').empty();
-            $('#wrapper-multiple #text-content').append(html);
+            // $('#wrapper-multiple #text-content').empty();
+            // $('#wrapper-multiple #text-content').append(html);
         }
 
         /* *
