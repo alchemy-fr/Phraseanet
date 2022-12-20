@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 class PsAuth extends AbstractProvider
@@ -157,7 +158,7 @@ class PsAuth extends AbstractProvider
         $redirect_uri = $this->generator->generate(
             'login_authentication_provider_callback',
             $params,
-            $this->getUrlGenerator()::ABSOLUTE_URL
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
         $this->debug(sprintf("redirect_uri = %s", $redirect_uri));
 
@@ -258,7 +259,7 @@ class PsAuth extends AbstractProvider
                 'redirect_uri' => $this->generator->generate(
                     'login_authentication_provider_callback',
                     ['providerId' => $this->getId()],
-                    $this->getUrlGenerator()::ABSOLUTE_URL
+                    UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'client_id' => $this->config['client-id'],
                 'client_secret' => $this->config['client-secret'],
