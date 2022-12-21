@@ -15908,7 +15908,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="no">
         <source>validate</source>
-        <target state="needs-translation">Validate pending choice</target>
+        <target state="needs-translation">Validate</target>
         <jms:reference-file line="104">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="136">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="176">actions/Tools/index.html.twig</jms:reference-file>
