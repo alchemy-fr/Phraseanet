@@ -3368,7 +3368,7 @@
       </trans-unit>
       <trans-unit id="5103a4a398146306aa27923e6cce52672060bbd6" resname="Flush All Caches">
         <source>Flush All Caches</source>
-        <target state="needs-translation">Flush All Application's Caches</target>
+        <target state="needs-translation">Flush the application's Caches</target>
         <jms:reference-file line="152">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f6d859db6f9a2d8c84dcf5c840b6b1d55439ad0a" resname="Flush session">
@@ -7294,7 +7294,7 @@
       </trans-unit>
       <trans-unit id="01cb944f89ac99378a7b2fa31bec677774328456" resname="User's publications in feeds">
         <source>User's publications in feeds</source>
-        <target state="new">User's publications in feeds</target>
+        <target state="needs-translation">User's publication(s) in feeds</target>
         <jms:reference-file line="804">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="57f2b181d0a5e79a147ea1cdf41457f58dbbb3c9" resname="Users" approved="yes">
@@ -9928,7 +9928,7 @@
       </trans-unit>
       <trans-unit id="d87c448044defb778f33158d8ccf94a20531d600" resname="all">
         <source>all</source>
-        <target state="new">all</target>
+        <target state="needs-translation">All</target>
         <jms:reference-file line="69">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="edde11c24ed5e6df4e416143e77248e908567faa" resname="all caches services have been flushed" approved="yes">
@@ -9938,7 +9938,7 @@
       </trans-unit>
       <trans-unit id="a54cbfd43ad8987c0ecbc5e8fa51d7c571369ddc" resname="all redis session flushed">
         <source>all redis session flushed</source>
-        <target state="needs-translation">All users sessions erased</target>
+        <target state="needs-translation">All users sessions have been erased</target>
         <jms:reference-file line="98">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afaee7bf6eca9099dc9356fbc46fb4f1716b8916" resname="an error occured" approved="yes">
@@ -11535,7 +11535,7 @@
       </trans-unit>
       <trans-unit id="9c627983e8b23c12caf1415fd0e7b49c4712c219" resname="mail:: your account is inactif and to be deleted!">
         <source>mail:: your account is inactif and to be deleted!</source>
-        <target state="needs-translation">Your account is now unactivated and will be deleted soon!</target>
+        <target state="needs-translation">Your account is now inactive and will be deleted soon!</target>
         <jms:reference-file line="21">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
