@@ -140,6 +140,7 @@ jobs:
         working_directory: ~/alchemy-fr/Phraseanet
         steps:
             - checkout
+            - run: git --no-pager log --graph --pretty=format:" %h %s %cn %ad " -n30 > www/gitlog.txt .
             - aws-ecr/ecr-login:
                 region: AWS_DEFAULT_REGION
             - run: docker build --target phraseanet-worker -t ${AWS_ACCOUNT_URL}/phraseanet-worker:${CIRCLE_BRANCH} .
