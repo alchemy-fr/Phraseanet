@@ -11307,7 +11307,7 @@
       </trans-unit>
       <trans-unit id="6c6f34fed54a8f7a8769ef3729aaebaf0b983565" resname="job::tab total duration">
         <source>job::tab total duration</source>
-        <target state="needs-translation">Duration</target>
+        <target state="needs-translation">Duration (excluding job lasting less than 1 second)</target>
         <jms:reference-file line="94">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
@@ -11692,9 +11692,9 @@
         <target state="translated">Address</target>
         <jms:reference-file line="91">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated" approved="yes">
+      <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated" approved="no">
         <source>order-manager::order-item: already-validated</source>
-        <target state="translated">Already validated</target>
+        <target state="needs-translation">Already sent</target>
         <jms:reference-file line="294">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1633622f5312fb56598ca36a584cc877d15ce6b3" resname="order-manager::order-item: by" approved="yes">
@@ -15906,9 +15906,9 @@ It is possible to place several search areas</target>
         <target state="translated">Users rights have been reseted</target>
         <jms:reference-file line="725">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="yes">
+      <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="no">
         <source>validate</source>
-        <target state="translated">Validate</target>
+        <target state="needs-translation">Validate pending choice</target>
         <jms:reference-file line="104">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="136">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="176">actions/Tools/index.html.twig</jms:reference-file>
