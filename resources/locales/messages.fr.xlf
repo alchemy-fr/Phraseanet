@@ -3370,7 +3370,7 @@
       </trans-unit>
       <trans-unit id="f6d859db6f9a2d8c84dcf5c840b6b1d55439ad0a" resname="Flush session">
         <source>Flush session</source>
-        <target state="needs-translation">Flush des sessions, déconnecter tous les utilisateurs.</target>
+        <target state="needs-translation">Flush des sessions, déconnecter tous les utilisateurs</target>
         <jms:reference-file line="156">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bd85a7d22f6cdee554e5b9e865d26dcbb4dafc9" resname="Focal length" approved="yes">
@@ -9936,7 +9936,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="a54cbfd43ad8987c0ecbc5e8fa51d7c571369ddc" resname="all redis session flushed">
         <source>all redis session flushed</source>
-        <target state="needs-translation">Toutes les sessions on été supprimées.</target>
+        <target state="needs-translation">Toutes les sessions ont été supprimées</target>
         <jms:reference-file line="98">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afaee7bf6eca9099dc9356fbc46fb4f1716b8916" resname="an error occured" approved="yes">
@@ -10595,7 +10595,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="56655c639ca03db37149bb63a3d7a676173418b2" resname="created since">
         <source>created since</source>
-        <target state="needs-translation">Crées depuis</target>
+        <target state="needs-translation">Créé depuis</target>
         <jms:reference-file line="58">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="670f6628c7b72287a36ecd01262005e81428451c" resname="created_on" approved="yes">
@@ -11533,7 +11533,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="9c627983e8b23c12caf1415fd0e7b49c4712c219" resname="mail:: your account is inactif and to be deleted!">
         <source>mail:: your account is inactif and to be deleted!</source>
-        <target state="needs-translation">Votre compte utilisateur est inactivé et vas être supprimé</target>
+        <target state="needs-translation">Votre compte utilisateur est inactif et va être supprimé</target>
         <jms:reference-file line="21">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -13143,7 +13143,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="b5f7411d5cf5384ee39d43f87b4601ee825f5e04" resname="prod::order-manager download expire on">
         <source>prod::order-manager download expire on</source>
-        <target state="needs-translation">Téléchargements possible jusqu'au</target>
+        <target state="needs-translation">Téléchargement possible jusqu'au</target>
         <jms:reference-file line="31">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="yes">
@@ -13578,7 +13578,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
-        <target state="needs-translation">Publication désactivé</target>
+        <target state="needs-translation">Publication désactivée</target>
         <jms:reference-file line="26">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eab42ad1c7433247468f47601baf4a4470d9cebe" resname="prod:expose: enabled">
@@ -13829,7 +13829,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="61818a681f0a1b649fb1b95cf7fe384b024fcd64" resname="prod:expose:publication:check slug">
         <source>prod:expose:publication:check slug</source>
-        <target state="needs-translation">Vérifer la disponibilité</target>
+        <target state="needs-translation">Vérifier la disponibilité</target>
         <jms:reference-file line="13">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="37">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
