@@ -35,7 +35,7 @@ main:
             minScore: 2
             highlight: true
             maxResultWindow: 500000
-            populate_order: RECORD_ID
+            populate_order: MODIFICATION_DATE
             populate_direction: DESC
             populate_permalinks: false
             activeTab: '#elastic-search'
