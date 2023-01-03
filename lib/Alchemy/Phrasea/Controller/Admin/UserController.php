@@ -55,7 +55,14 @@ class UserController extends Controller
     public function listRecordAcl(Request $request)
     {
         $rights = $this->getUserEditHelper($request);
-        $results = $rights->get_user_records_rights($request->query->get('userId'), $request->query->get('databoxId'), $request->query->get('recordId'));
+        $expireRight = ($request->query->get('expiredRight') == 1) ? true : false ;
+        $results = $rights->get_user_records_rights(
+            $request->query->get('userId'),
+            $request->query->get('databoxId'),
+            $request->query->get('recordId'),
+            $request->query->get('type'),
+            $expireRight
+        );
 
         return $this->app->json([
             'content'       => $this->render('admin/user/records_list.html.twig', ['records_acl' => $results['records_acl']]),

@@ -343,11 +343,6 @@ blockquote p {
     @include gradient($colorFacebook, 0.8);
 }
 
-.google-plus-badge {
-    background-color: $colorGooglePlus;
-    @include gradient($colorGooglePlus, 0.8);
-}
-
 .viadeo-badge {
     background-color: $colorViadeo;
     @include gradient($colorViadeo, 0.8);

@@ -2,14 +2,18 @@
 
 namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
-use DataURI\Parser;
-use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
-use Guzzle\Http\Message\RequestInterface;
+use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use appbox;
+use DataURI\Parser;
+use RandomLib\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
+
 
 abstract class ProviderTestCase extends \PhraseanetTestCase
 {
@@ -78,7 +82,13 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
     {
         $provider = $this->getProvider();
 
-        $built = $this->getProviderFactory()->build($provider->getId(), $this->getTestOptions());
+        $built = $this->getProviderFactory()->build(
+            $provider->getId(),
+            $provider->getType(),
+            true,
+            $provider->getId(),
+            $this->getTestOptions()
+        );
 
         $this->assertInstanceOf(get_class($provider), $built);
     }
@@ -291,6 +301,30 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
      */
     private function getProviderFactory()
     {
-        return new ProviderFactory($this->getUrlGeneratorMock(), $this->getMockSession());
+        $userManipulator = $this->getMockBuilder(UserManipulator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $userRepository = $this->getMockBuilder(UserRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $ACLProvider = $this->getMockBuilder(ACLProvider::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $appbox = $this->getMockBuilder(appbox::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $randomGenerator = $this->getMockBuilder(RandomGenerator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        return new ProviderFactory(
+            $this->getUrlGeneratorMock(),
+            $this->getMockSession(),
+            $userManipulator,
+            $userRepository,
+            $ACLProvider,
+            $appbox,
+            $randomGenerator
+        );
     }
 }

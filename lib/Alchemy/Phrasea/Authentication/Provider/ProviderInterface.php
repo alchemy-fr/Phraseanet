@@ -11,23 +11,21 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
-use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 interface ProviderInterface
 {
     /**
-     * Returns a unique identifier for the provider.
+     * Returns the unique identifier for the provider (first-level key in conf)
      *
      * Allowed characters are a-z and - (minus).
-     * Examples : twitter => Twitter
-     *            google-plus => GooglePlus
      *
      * @return string
      */
@@ -103,9 +101,9 @@ interface ProviderInterface
     /**
      * Creates a provider
      *
-     * @param UrlGenerator     $generator
+     * @param UrlGenerator $generator
      * @param SessionInterface $session
-     * @param array            $options
+     * @param array $options
      */
     public static function create(UrlGenerator $generator, SessionInterface $session, array $options);
 }
