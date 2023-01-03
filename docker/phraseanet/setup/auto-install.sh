@@ -85,7 +85,7 @@ else
 fi
 
 if [ -z "$PHRASEANET_ELASTICSEARCH_POPULATEORDER" ]; then
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.populate_order RECORD_ID
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.populate_order MODIFICATION_DATE
 else
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.populate_order $PHRASEANET_ELASTICSEARCH_POPULATEORDER
 fi
