@@ -8429,7 +8429,7 @@
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
         <source>admin::base:collection:tooltip enable collection</source>
-        <target state="needs-translation">Die Kollektion wird den Nutzern wieder zur Verfügung stehen, aber sie erfordert eine erneute Nutzer Verbindung.</target>
+        <target state="translated">Die Kollektion wird den Nutzern wieder zur Verfügung stehen, aber sie erfordert eine erneute Nutzer Verbindung.</target>
         <jms:reference-file line="214">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7765634e47a714273ba54690efd1f6c2a08e6de" resname="admin::base:collorder: descendre" approved="yes">
@@ -8452,7 +8452,7 @@
       </trans-unit>
       <trans-unit id="60ca9acf32543da6bfb31de39d95cbcecf690bd4" resname="admin::base:text clear database logs">
         <source>admin::base:text clear database logs</source>
-        <target state="needs-translation">Löschen Sie die Datenbank Logs, dies kann nur bei einer leeren Databox durchgeführt werden.</target>
+        <target state="translated">Löschen Sie die Databox Logs, dies kann nur bei einer leeren Databox durchgeführt werden.</target>
         <jms:reference-file line="136">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
@@ -9925,7 +9925,7 @@
       </trans-unit>
       <trans-unit id="d87c448044defb778f33158d8ccf94a20531d600" resname="all">
         <source>all</source>
-        <target state="needs-translation">Alle</target>
+        <target state="translated">Alle</target>
         <jms:reference-file line="69">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="edde11c24ed5e6df4e416143e77248e908567faa" resname="all caches services have been flushed" approved="yes">
@@ -10405,14 +10405,14 @@
       </trans-unit>
       <trans-unit id="529d7e5ea2c2183d2cf554561764340de1294d71" resname="button::choose databox">
         <source>button::choose databox</source>
-        <target state="needs-translation">Alle Databox</target>
+        <target state="translated">Alle Databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
         <jms:reference-file line="747">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="824">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f013ff9e62d4ae563de3270b3297f9da2afefcc9" resname="button::choose type">
         <source>button::choose type</source>
-        <target state="needs-translation">Typ auswählen</target>
+        <target state="translated">Typ auswählen</target>
         <jms:reference-file line="754">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
@@ -10594,7 +10594,7 @@
       </trans-unit>
       <trans-unit id="56655c639ca03db37149bb63a3d7a676173418b2" resname="created since">
         <source>created since</source>
-        <target state="needs-translation">Erstellt seit</target>
+        <target state="translated">Erstellt seit</target>
         <jms:reference-file line="58">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="670f6628c7b72287a36ecd01262005e81428451c" resname="created_on" approved="yes">
