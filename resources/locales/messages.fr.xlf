@@ -4862,7 +4862,7 @@
       </trans-unit>
       <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent">
         <source>Order has been sent</source>
-        <target state="translated">L'enregistrement a été envoyé.</target>
+        <target state="translated">Choix appliqué(s).</target>
         <jms:reference-file line="185">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="258">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="11">prod/orders/order_box.html.twig</jms:reference-file>
@@ -7291,7 +7291,7 @@
       </trans-unit>
       <trans-unit id="01cb944f89ac99378a7b2fa31bec677774328456" resname="User's publications in feeds">
         <source>User's publications in feeds</source>
-        <target state="needs-translation">Publication(s) de l'utilisateur</target>
+        <target state="translated">Publication(s) de l'utilisateur</target>
         <jms:reference-file line="804">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="57f2b181d0a5e79a147ea1cdf41457f58dbbb3c9" resname="Users" approved="yes">
@@ -8452,7 +8452,7 @@
       </trans-unit>
       <trans-unit id="60ca9acf32543da6bfb31de39d95cbcecf690bd4" resname="admin::base:text clear database logs">
         <source>admin::base:text clear database logs</source>
-        <target state="needs-translation">Effacer les logs de la base, ne peut être effectué que sur une databox vide.</target>
+        <target state="translated">Effacer les logs de la Databox, ne peut être effectué que sur une databox vide.</target>
         <jms:reference-file line="136">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
@@ -10406,14 +10406,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="529d7e5ea2c2183d2cf554561764340de1294d71" resname="button::choose databox">
         <source>button::choose databox</source>
-        <target state="needs-translation">Toutes les Databox</target>
+        <target state="translated">Toutes les Databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
         <jms:reference-file line="747">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="824">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f013ff9e62d4ae563de3270b3297f9da2afefcc9" resname="button::choose type">
         <source>button::choose type</source>
-        <target state="needs-translation">Choisir le type</target>
+        <target state="translated">Choisir le type</target>
         <jms:reference-file line="754">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
@@ -11305,7 +11305,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="6c6f34fed54a8f7a8769ef3729aaebaf0b983565" resname="job::tab total duration">
         <source>job::tab total duration</source>
-        <target state="needs-translation">Durée (hors job d'une durée inférieure à 1 seconde)</target>
+        <target state="translated">Durée des Job (hors job d'une durée inférieure à 1 seconde)</target>
         <jms:reference-file line="94">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
@@ -13558,12 +13558,12 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="75526f787066901506eb4ea14d24053e663cdb55" resname="prod:expose Editable only">
         <source>prod:expose Editable only</source>
-        <target state="needs-translation">Editable</target>
+        <target state="translated">Editable</target>
         <jms:reference-file line="714">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0958e6208f4a5eade790de2c2aca7904ab63c8ab" resname="prod:expose Mine only">
         <source>prod:expose Mine only</source>
-        <target state="needs-translation">Mes publications</target>
+        <target state="translated">Mes publications</target>
         <jms:reference-file line="719">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
@@ -15909,7 +15909,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="no">
         <source>validate</source>
-        <target state="needs-translation">Valider</target>
+        <target state="translated">Valider</target>
         <jms:reference-file line="104">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="136">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="176">actions/Tools/index.html.twig</jms:reference-file>
