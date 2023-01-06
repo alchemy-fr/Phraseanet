@@ -4863,9 +4863,9 @@
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="yes">
+      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="no">
         <source>Order has been sent</source>
-        <target state="translated">The record has been sent.</target>
+        <target state="needs-translation">Choices applied.</target>
         <jms:reference-file line="185">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="258">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="11">prod/orders/order_box.html.twig</jms:reference-file>
@@ -7294,7 +7294,7 @@
       </trans-unit>
       <trans-unit id="01cb944f89ac99378a7b2fa31bec677774328456" resname="User's publications in feeds">
         <source>User's publications in feeds</source>
-        <target state="needs-translation">User's publication(s) in feeds</target>
+        <target state="translated">User's publication(s) in feeds</target>
         <jms:reference-file line="804">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="57f2b181d0a5e79a147ea1cdf41457f58dbbb3c9" resname="Users" approved="yes">
@@ -8432,7 +8432,7 @@
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
         <source>admin::base:collection:tooltip enable collection</source>
-        <target state="needs-translation">The collection will be available again to users, but it requires a user reconnection.</target>
+        <target state="translated">The collection will be available again to users, but it requires a user reconnection.</target>
         <jms:reference-file line="214">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7765634e47a714273ba54690efd1f6c2a08e6de" resname="admin::base:collorder: descendre" approved="yes">
@@ -8455,7 +8455,7 @@
       </trans-unit>
       <trans-unit id="60ca9acf32543da6bfb31de39d95cbcecf690bd4" resname="admin::base:text clear database logs">
         <source>admin::base:text clear database logs</source>
-        <target state="needs-translation">Erase the database logs, it can be performed only on an empty databox.</target>
+        <target state="translated">Erase the Databox logs, it can be performed only on an empty databox.</target>
         <jms:reference-file line="136">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
@@ -9928,7 +9928,7 @@
       </trans-unit>
       <trans-unit id="d87c448044defb778f33158d8ccf94a20531d600" resname="all">
         <source>all</source>
-        <target state="needs-translation">All</target>
+        <target state="translated">All</target>
         <jms:reference-file line="69">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="edde11c24ed5e6df4e416143e77248e908567faa" resname="all caches services have been flushed" approved="yes">
@@ -10415,7 +10415,7 @@
       </trans-unit>
       <trans-unit id="f013ff9e62d4ae563de3270b3297f9da2afefcc9" resname="button::choose type">
         <source>button::choose type</source>
-        <target state="needs-translation">Choose type</target>
+        <target state="translated">Choose type</target>
         <jms:reference-file line="754">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
@@ -11302,12 +11302,12 @@
       </trans-unit>
       <trans-unit id="07837fb2f14fde7fb76c1d8fcbc017e871c8592b" resname="job::tab results">
         <source>job::tab results</source>
-        <target state="needs-translation">Job(s)</target>
+        <target state="translated">Job(s)</target>
         <jms:reference-file line="90">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6c6f34fed54a8f7a8769ef3729aaebaf0b983565" resname="job::tab total duration">
         <source>job::tab total duration</source>
-        <target state="needs-translation">Duration (excluding job lasting less than 1 second)</target>
+        <target state="translated">Job duration (excluding job lasting less than 1 second)</target>
         <jms:reference-file line="94">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
@@ -11811,9 +11811,9 @@
         <target state="translated">Tel</target>
         <jms:reference-file line="90">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate" approved="yes">
+      <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate" approved="no">
         <source>order-manager::order-item: validate</source>
-        <target state="translated">Validate</target>
+        <target state="needs-translation">Validate choices</target>
         <jms:reference-file line="133">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e77f2b48e4de1e7776765dacd6b6c49434f57fdd" resname="order-manager::order-item: warning-message-close" approved="yes">
@@ -13560,12 +13560,12 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="75526f787066901506eb4ea14d24053e663cdb55" resname="prod:expose Editable only">
         <source>prod:expose Editable only</source>
-        <target state="needs-translation">Editable</target>
+        <target state="translated">Editable</target>
         <jms:reference-file line="714">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0958e6208f4a5eade790de2c2aca7904ab63c8ab" resname="prod:expose Mine only">
         <source>prod:expose Mine only</source>
-        <target state="needs-translation">Mine</target>
+        <target state="translated">Mine</target>
         <jms:reference-file line="719">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
@@ -13575,7 +13575,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="17973965f96bc86b5b9dd09879ce96f5d5dbc89a" resname="prod:expose preview">
         <source>prod:expose preview</source>
-        <target state="needs-translation">Preview</target>
+        <target state="translated">Preview</target>
         <jms:reference-file line="18">prod/WorkZone/ExposeList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
@@ -13831,7 +13831,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="61818a681f0a1b649fb1b95cf7fe384b024fcd64" resname="prod:expose:publication:check slug">
         <source>prod:expose:publication:check slug</source>
-        <target state="needs-translation">Check slug availability</target>
+        <target state="needs-translation">Check availability</target>
         <jms:reference-file line="13">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="37">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -15908,7 +15908,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="no">
         <source>validate</source>
-        <target state="needs-translation">Validate</target>
+        <target state="translated">Validate</target>
         <jms:reference-file line="104">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="136">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="176">actions/Tools/index.html.twig</jms:reference-file>
