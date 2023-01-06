@@ -265,7 +265,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         ];
     }
 
-    public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null)
+    public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null, $type = null, $expiredRight = false)
     {
         $rows = [];
         $totalCount = 0;
@@ -301,11 +301,20 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $params[':record_id'] = $recordId;
         }
 
+        if (!empty($type)) {
+            $whereClause .= " AND rr.case= :case";
+            $params[':case'] = $type;
+        }
+
+        if ($expiredRight) {
+            $whereClause .= " AND rr.expire_on < NOW()";
+        }
+
         $sql = "SELECT rr.sbas_id, rr.record_id, rr.preview, rr.document, rr.`case` as type, \n"
               . "IF(TRIM(p.last_name)!='' OR TRIM(p.first_name)!='', \n"
               . "   CONCAT_WS(' ', p.last_name, p.first_name),\n"
               . "   IF(TRIM(p.email)!='', p.email, p.login)\n"
-              . ") as pusher_name\n"
+              . ") as pusher_name, rr.expire_on\n"
               . " FROM records_rights rr \n"
               . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id\n"
               . " JOIN Users as p ON p.id = rr.pusher_usr_id\n"

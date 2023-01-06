@@ -221,23 +221,33 @@ class ACL implements cache_cacheableInterface
         return false;
     }
 
-    public function grant_hd_on(RecordReferenceInterface $record, User $pusher, $action)
+    public function grant_hd_on(RecordReferenceInterface $record, User $pusher, $action, $expireOn = null)
     {
         static $stmt = null;
         if(!$stmt) {
             $sql = "REPLACE INTO records_rights\n"
-                . " (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)\n"
-                . " VALUES (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+                . " (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id, expire_on)\n"
+                . " VALUES (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher, :expireOn)";
 
             $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         }
+
+        if (!empty($expireOn)) {
+            try {
+                $expireOn = (new DateTime($expireOn))->format(DATE_ATOM);
+            } catch (\Exception $e) {
+                $expireOn = null;
+            }
+        }
+
 
         $params = [
             ':usr_id'    => $this->user->getId(),
             ':sbas_id'   => $record->getDataboxId(),
             ':record_id' => $record->getRecordId(),
             ':case'      => $action,
-            ':pusher'    => $pusher->getId()
+            ':pusher'    => $pusher->getId(),
+            ':expireOn'  => $expireOn
         ];
         $stmt->execute($params);
         $stmt->closeCursor();
@@ -1064,11 +1074,10 @@ class ACL implements cache_cacheableInterface
     /**
      * Load if needed the elements which have a HD grant
      *
-     * @return Array
+     * @return ACL
      */
     protected function load_hd_grant()
     {
-
         if ($this->_rights_records_preview) {
             return $this;
         }
@@ -1082,7 +1091,7 @@ class ACL implements cache_cacheableInterface
         } catch (\Exception $e) {
 
         }
-        $sql = "SELECT sbas_id, record_id, preview, document FROM records_rights WHERE usr_id = :usr_id";
+        $sql = "SELECT sbas_id, record_id, preview, document, expire_on FROM records_rights WHERE usr_id = :usr_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
@@ -1093,10 +1102,23 @@ class ACL implements cache_cacheableInterface
         $this->_rights_records_preview = [];
         $this->_rights_records_document = [];
 
+        $dateNow = new DateTime("now");
         foreach ($rs as $row) {
             $currentid = $row["sbas_id"] . "_" . $row["record_id"];
-            if ($row['document'] == '1')
+            if (!empty($row['expire_on'])) {
+                try {
+                    $expireOn = new DateTime($row['expire_on']);
+
+                    if ($expireOn < $dateNow) {
+                        continue;
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+
+            if ($row['document'] == '1') {
                 $this->_rights_records_document[$currentid] = $currentid;
+            }
             $this->_rights_records_preview[$currentid] = $currentid;
         }
 

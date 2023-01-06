@@ -36,18 +36,22 @@ class OrderDelivery
      */
     private $partialOrder;
 
+    private $expireOn;
+
     /**
      * @param Order $deliveredOrder
      * @param User $manager
      * @param int $quantity
+     * @param \DateTime $expireOn
      * @param PartialOrder $partialOrder
      */
-    public function __construct(Order $deliveredOrder, User $manager, $quantity, PartialOrder $partialOrder)
+    public function __construct(Order $deliveredOrder, User $manager, $quantity, PartialOrder $partialOrder, \DateTime $expireOn = null)
     {
         $this->order        = $deliveredOrder;
         $this->admin        = $manager;
         $this->quantity     = $quantity;
         $this->partialOrder = $partialOrder;
+        $this->expireOn     = $expireOn;
     }
 
     /**
@@ -80,5 +84,10 @@ class OrderDelivery
     public function getPartialOrder()
     {
         return $this->partialOrder;
+    }
+
+    public function getExpireOn()
+    {
+        return $this->expireOn;
     }
 }

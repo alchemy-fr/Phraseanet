@@ -6,6 +6,18 @@
         <td>{{ r_a.preview }}</td>
         <td>{{ r_a.type }}</td>
         <td>{{ r_a.pusher_name }}</td>
+        <td>
+            {% if r_a.expire_on %}
+                {{ r_a.expire_on|date('Y-m-d H:i:s') }}
+                {% if r_a.expire_on|date('Y-m-d H:i:s') > "now"|date('Y-m-d H:i:s') %}
+                    <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c;"></i>
+                {% else %}
+                    <i class="fa fa-times" aria-hidden="true" style="color:#d1051f;"></i>
+                {% endif %}
+            {% else %}
+                -  <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c"></i>
+            {% endif %}
+        </td>
     </tr>
 {% endfor %}
 

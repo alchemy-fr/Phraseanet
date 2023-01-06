@@ -482,17 +482,43 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
-        $this->getAuthenticator()->closeAccount();
+        $providerId = $this->getSession()->get('auth_provider.id', null);
 
-        $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+        /** @var RedirectResponse $response */
+        $response = null;
 
-        $response = $this->app->redirectPath('homepage', [
-            'redirect' => $request->query->get("redirect")
-        ]);
+        // does the provider provides a logout redirection ?
+        if($providerId && ($provider = $this->findProvider($providerId))) {
+            if(method_exists($provider, 'logoutAndRedirect')) {
+                $redirectToPhr = $this->app->url('logout', [
+                    'redirect' => $request->query->get("redirect")
+                ]);
+                $response = $provider->logoutAndRedirect($redirectToPhr);
+            }
+            else {
+                $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+                $this->getAuthenticator()->closeAccount();
 
-        $response->headers->clearCookie('persistent');
-        $response->headers->clearCookie('last_act');
+                $response = $provider->logout();
+            }
+        }
+
+        if($response) {
+            $this->getSession()->set('auth_provider.id', null);
+        }
+        else {
+            // no provider logout : use ours
+            $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+            $this->getAuthenticator()->closeAccount();
+
+            $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+
+            $response = $this->app->redirectPath('homepage', [
+                'redirect' => $request->query->get("redirect")
+            ]);
+            $response->headers->clearCookie('persistent');
+            $response->headers->clearCookie('last_act');
+        }
 
         return $response;
     }
@@ -669,12 +695,15 @@ class LoginController extends Controller
 
     public function authenticationCallback(Request $request, $providerId)
     {
+        $this->getSession()->set('auth_provider.id', null);
+
         $provider = $this->findProvider($providerId);
 
         // triggers what's necessary
         try {
             $provider->onCallback($request);
             $token = $provider->getToken();
+            $this->getSession()->set('auth_provider.id', $providerId);
         } catch (NotAuthenticatedException $e) {
             $this->getSession()->getFlashBag()->add('error', $this->app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
 

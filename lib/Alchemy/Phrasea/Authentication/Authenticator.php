@@ -133,13 +133,11 @@ class Authenticator
      */
     public function closeAccount()
     {
-        if (!$this->session->has('session_id')) {
-            throw new RuntimeException('No session to close.');
-        }
-
-        if (null !== $session = $this->app['repo.sessions']->find($this->session->get('session_id'))) {
-            $this->em->remove($session);
-            $this->em->flush();
+        if ($this->session->has('session_id')) {
+            if (null !== $session = $this->app['repo.sessions']->find($this->session->get('session_id'))) {
+                $this->em->remove($session);
+                $this->em->flush();
+            }
         }
 
         $this->session->invalidate();

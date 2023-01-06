@@ -2219,6 +2219,22 @@ span.ww_winTitle {
   position: absolute;
 }
 
+#ui-datepicker-div.expireOn {
+  z-index: 999999 !important;
+}
+
+#validation-window .ui-widget-content {
+  background-color: #fff;
+}
+
+#validation-window .ui-widget-content a {
+  color: #282828;
+}
+
+#validation-window .ui-widget-content a:hover {
+  color: #fff;
+}
+
 .ui-selectable-helper {
   border: 1px dotted #cccccc;
   z-index: 10000;
@@ -2658,8 +2674,8 @@ button.order_launcher.btn {
 }
 
 #order-action {
-  margin-top: 1.2em;
-  margin-bottom: 1.5em;
+  margin: 0px 0px 1.2em 30px;
+  text-align: left;
 }
 
 #filter_box {
@@ -2860,6 +2876,10 @@ span.action-text i.fa-check {
 }
 
 button.btn.validate {
+  background-color: #5bb75b;
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  border-color: #51a351 #51a351 #387038;
+  color: #fff;
   margin-bottom: 10px;
   font-size: 14px;
 }
@@ -8359,7 +8379,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #idFrameC .basketTips.expose_basket_item .top_block {
   position: relative;
   padding-left: 40px;
-  display: inline-block;
 }
 
 #idFrameC .basketTips.expose_basket_item .top_block:before {
@@ -8397,25 +8416,19 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #idFrameC .expose_item_title {
-  display: flex;
   padding: 0px 20px;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   flex-wrap: wrap;
-  height: 40px;
 }
 
 #idFrameC .expose_item_top {
   position: relative;
-  padding-right: 48px;
 }
 
 #idFrameC .edit_expose {
-  position: absolute;
-  right: 12px;
-  top: 5px;
   font-size: 20px;
   cursor: pointer;
 }
