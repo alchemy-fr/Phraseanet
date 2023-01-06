@@ -4865,7 +4865,7 @@
       </trans-unit>
       <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="no">
         <source>Order has been sent</source>
-        <target state="needs-translation">Choices applied.</target>
+        <target state="needs-translation">Choice(s) applied.</target>
         <jms:reference-file line="185">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="258">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="11">prod/orders/order_box.html.twig</jms:reference-file>
