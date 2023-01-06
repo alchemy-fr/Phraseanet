@@ -4853,9 +4853,9 @@
         <target state="translated">bestellen</target>
         <jms:reference-file line="82">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied" approved="yes">
+      <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied" approved="no">
         <source>Order has been denied</source>
-        <target state="translated">Bestellung wurde verweigert</target>
+        <target state="needs-translation">Angewandte Auswahl(en).</target>
         <jms:reference-file line="217">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/orders/order_item.html.twig</jms:reference-file>
