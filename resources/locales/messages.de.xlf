@@ -413,27 +413,27 @@
       </trans-unit>
       <trans-unit id="7136e3b25b3e26722b5b03aa32a828c883121e87" resname="12h">
         <source>12h</source>
-        <target state="new">12h</target>
+        <target state="translated">12h</target>
         <jms:reference-file line="63">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="11a2757082428311f587b7664fa9840376137f80" resname="1d">
         <source>1d</source>
-        <target state="new">1d</target>
+        <target state="translated">1d</target>
         <jms:reference-file line="64">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e9c9f7bc39bb993fb7ed87ec63024c583691a6bd" resname="1h">
         <source>1h</source>
-        <target state="new">1h</target>
+        <target state="translated">1h</target>
         <jms:reference-file line="61">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc4ea83928e4079a6ca1eb64e1e4cc7952c8d2ac" resname="1m">
         <source>1m</source>
-        <target state="new">1m</target>
+        <target state="translated">1m</target>
         <jms:reference-file line="68">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="323945f29da5d029038c3e22734b3c59d0f64a26" resname="1w">
         <source>1w</source>
-        <target state="new">1w</target>
+        <target state="translated">1w</target>
         <jms:reference-file line="66">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fc99d2489a234a32c44e057d0d49959af5a26928" resname="2000 caracteres maximum" approved="yes">
@@ -458,17 +458,17 @@
       </trans-unit>
       <trans-unit id="b8568f4703616db45865d3c1a87fb64112e677e0" resname="2w">
         <source>2w</source>
-        <target state="new">2w</target>
+        <target state="translated">2w</target>
         <jms:reference-file line="67">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="34f9efccd44c54c0188dd18a9d3926473292be4c" resname="3d">
         <source>3d</source>
-        <target state="new">3d</target>
+        <target state="translated">3d</target>
         <jms:reference-file line="65">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d9c83623b7405e70a7359bcc00d8f89bd79a8a4c" resname="3h">
         <source>3h</source>
-        <target state="new">3h</target>
+        <target state="translated">3h</target>
         <jms:reference-file line="62">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c5026fb21d37b3cae42754a49a16960bb776ed5e" resname="500 caracteres maximum" approved="yes">
@@ -4860,9 +4860,9 @@
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="yes">
+      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="no">
         <source>Order has been sent</source>
-        <target state="translated">Bestellung wurde gesendet</target>
+        <target state="needs-translation">Angewandte Auswahl(en).</target>
         <jms:reference-file line="185">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="258">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="11">prod/orders/order_box.html.twig</jms:reference-file>
@@ -7291,7 +7291,7 @@
       </trans-unit>
       <trans-unit id="01cb944f89ac99378a7b2fa31bec677774328456" resname="User's publications in feeds">
         <source>User's publications in feeds</source>
-        <target state="needs-translation">Veröffentlichung(en) des Nutzers in Feeds</target>
+        <target state="translated">Veröffentlichung(en) des Nutzers in Feeds</target>
         <jms:reference-file line="804">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="57f2b181d0a5e79a147ea1cdf41457f58dbbb3c9" resname="Users" approved="yes">
@@ -9833,12 +9833,12 @@
       </trans-unit>
       <trans-unit id="2bf41c830a070f014cbf0fb802da03fd0ef04bfb" resname="admin:phrasea-service-setting:tab:uploader:: Client ID">
         <source>admin:phrasea-service-setting:tab:uploader:: Client ID</source>
-        <target state="needs-translation">Client ID</target>
+        <target state="translated">Client ID</target>
         <jms:reference-file line="32">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="419b42cdc675658a88e8c8a420144b6d1b7f6916" resname="admin:phrasea-service-setting:tab:uploader:: Client secret">
         <source>admin:phrasea-service-setting:tab:uploader:: Client secret</source>
-        <target state="needs-translation">Client secret</target>
+        <target state="translated">Client secret</target>
         <jms:reference-file line="25">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cbeff0c69c9bcf516c31a7de786b67a21a17ce5c" resname="admin:phrasea-service-setting:tab:uploader:: Delete">
@@ -9848,7 +9848,7 @@
       </trans-unit>
       <trans-unit id="fc0ad7943304d0693d01998d9fa13eb616f04b0f" resname="admin:phrasea-service-setting:tab:uploader:: Fetching interval in second">
         <source>admin:phrasea-service-setting:tab:uploader:: Fetching interval in second</source>
-        <target state="needs-translation">Wiederherstellungsintervall in Sekunden</target>
+        <target state="translated">Wiederherstellungsintervall in Sekunden</target>
         <jms:reference-file line="33">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9ac2e6a82fcb91bb6bc133268e09b9bbdd8ba43" resname="admin:phrasea-service-setting:tab:uploader:: New target pull name">
@@ -9868,12 +9868,12 @@
       </trans-unit>
       <trans-unit id="bb58ab0314ddb434544fd24efb9ecc5a4544479c" resname="admin:phrasea-service-setting:tab:uploader:: pull mode uri">
         <source>admin:phrasea-service-setting:tab:uploader:: pull mode uri</source>
-        <target state="needs-translation">Uploader Url + Ziel</target>
+        <target state="translated">Uploader Url + Ziel</target>
         <jms:reference-file line="18">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="008a1d3c1468de8675c5b0f7df16b5b396ead936" resname="admin:phrasea-service-setting:tab:uploader:: pull setting">
         <source>admin:phrasea-service-setting:tab:uploader:: pull setting</source>
-        <target state="needs-translation">Uploader "Pull" Modus Einstellungen</target>
+        <target state="translated">Uploader "Pull" Modus Einstellungen</target>
         <jms:reference-file line="46">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="591a534afd5beace85a6e4beedf1200510649b76" resname="admin:phrasea-service-setting:tab:uploader:: push verify_ssl">
@@ -9893,7 +9893,7 @@
       </trans-unit>
       <trans-unit id="7f81d6e1b4e8a501480420b44d8f69a9ebad3d60" resname="admin:phrasea-service-setting:tab:uploader:: verify ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: verify ssl</source>
-        <target state="needs-translation">ssl prüfen</target>
+        <target state="translated">ssl prüfen</target>
         <jms:reference-file line="39">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9f6ad62045a98bbea5895a96efec48d6e162b7c" resname="admin:phraseanet-service Retrieve configuration error">
@@ -10520,7 +10520,7 @@
       </trans-unit>
       <trans-unit id="96da49381769303a6515a8785c7f19c383db376a" resname="client_id">
         <source>client_id</source>
-        <target state="needs-translation">client id</target>
+        <target state="translated">client id</target>
         <jms:reference-file line="35">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bca60e4b2d44b5623e626f9ff951ba6605e975f" resname="collection.label.unknown" approved="yes">
@@ -11054,7 +11054,7 @@
       </trans-unit>
       <trans-unit id="9a57ddfac6519db30370912528f1b0183c03970a" resname="feedback:: send">
         <source>feedback:: send</source>
-        <target state="needs-translation">Speichern und sofort benachrichtigen</target>
+        <target state="translated">Speichern und sofort benachrichtigen</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
@@ -11222,7 +11222,7 @@
       </trans-unit>
       <trans-unit id="e51e4a8b566c4c2455812df8f509423c3ced7721" resname="https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253">
         <source>https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</source>
-        <target state="needs-translation">z.B: https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</target>
+        <target state="translated">z.B: https://api-uploader.phrasea.local/commits?target=b6b9ea65-aecb-401b-9bff-1d29ba69a253</target>
         <jms:reference-file line="21">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
@@ -11299,17 +11299,17 @@
       </trans-unit>
       <trans-unit id="07837fb2f14fde7fb76c1d8fcbc017e871c8592b" resname="job::tab results">
         <source>job::tab results</source>
-        <target state="needs-translation">Job(s)</target>
+        <target state="translated">Job(s)</target>
         <jms:reference-file line="90">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6c6f34fed54a8f7a8769ef3729aaebaf0b983565" resname="job::tab total duration">
         <source>job::tab total duration</source>
-        <target state="needs-translation">Dauer (außer Job mit einer Dauer von weniger als 1 Sekunde)</target>
+        <target state="translated">Dauer der Jobs (außer Job mit einer Dauer von weniger als 1 Sekunde)</target>
         <jms:reference-file line="94">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eeb67800cf71d58c34ad9787bb17efda681177fb" resname="job::tab total entry in DB">
         <source>job::tab total entry in DB</source>
-        <target state="needs-translation">Jobs Gesamtanzahl (nur die letzten 500 werden angezeigt)</target>
+        <target state="translated">Jobs Gesamtanzahl (nur die letzten 500 werden angezeigt)</target>
         <jms:reference-file line="35">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10bdde9a4a70628adabb3cd21a907b41b11e707d" resname="juillet" approved="yes">
@@ -11626,7 +11626,7 @@
       </trans-unit>
       <trans-unit id="ae23063401f4cdd998c70797419885a0835fe5eb" resname="notification:: Basket WIP">
         <source>notification:: Basket WIP</source>
-        <target state="needs-translation">Sammelkorbteilung im Gange</target>
+        <target state="translated">Sammelkorbteilung im Gange</target>
         <jms:reference-file line="47">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a44dfc1b52ebdcd83e5fbf6efa7f230c0a67288" resname="notification:: Receive notification when a basket is WIP">
@@ -11808,9 +11808,9 @@
         <target state="translated">Telefon</target>
         <jms:reference-file line="90">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate" approved="yes">
+      <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate" approved="no">
         <source>order-manager::order-item: validate</source>
-        <target state="translated">Bestätigen</target>
+        <target state="needs-translation">Die Auswahl bestätigen</target>
         <jms:reference-file line="133">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e77f2b48e4de1e7776765dacd6b6c49434f57fdd" resname="order-manager::order-item: warning-message-close" approved="yes">
@@ -13258,12 +13258,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="5ccb348802600f55b5bdb36807d0803a55d75e93" resname="prod::share: Users can download HD">
         <source>prod::share: Users can download HD</source>
-        <target state="needs-translation">Der Benutzer darf die HD herunterladen</target>
+        <target state="translated">Der Benutzer darf die HD herunterladen</target>
         <jms:reference-file line="250">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ca04a1180ecd500a3185f2db6fa701aa62ec097" resname="prod::share: Users can modify the basket">
         <source>prod::share: Users can modify the basket</source>
-        <target state="needs-translation">Der Benutzer darf den Inhalt des Sammelkorbs ändern</target>
+        <target state="translated">Der Benutzer darf den Inhalt des Sammelkorbs ändern</target>
         <jms:reference-file line="242">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b603b55c4cd36e33b32b6bff0bcbde435fb0118" resname="prod::share: Users can see others choices">
@@ -13298,7 +13298,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="85c8ae3c46fa22b989d6f426821f7dafff24ebb8" resname="prod::share: feedback-option">
         <source>prod::share: feedback-option</source>
-        <target state="needs-translation">Eine Feedbacksitzung hinzufügen</target>
+        <target state="translated">Eine Feedbacksitzung hinzufügen</target>
         <jms:reference-file line="311">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2391ce555d081b02f6112a764a8d2adb085bb66d" resname="prod::story select collection ...">
@@ -13480,7 +13480,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
         <source>prod::workzone:manual feedback reminder button</source>
-        <target state="needs-translation">Ein Email senden</target>
+        <target state="translated">Eine E-Mail senden</target>
         <jms:reference-file line="158">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="yes">
@@ -13555,12 +13555,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="75526f787066901506eb4ea14d24053e663cdb55" resname="prod:expose Editable only">
         <source>prod:expose Editable only</source>
-        <target state="needs-translation">Bearbeitbar</target>
+        <target state="translated">Bearbeitbar</target>
         <jms:reference-file line="714">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0958e6208f4a5eade790de2c2aca7904ab63c8ab" resname="prod:expose Mine only">
         <source>prod:expose Mine only</source>
-        <target state="needs-translation">Meine</target>
+        <target state="translated">Meine</target>
         <jms:reference-file line="719">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
@@ -13945,7 +13945,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="3c2c9fb51f7dd50df1629c8f4c3b1e947b74550b" resname="prod:share:: quit share">
         <source>prod:share:: quit share</source>
-        <target state="needs-translation">Das Teilen verlassen</target>
+        <target state="translated">Das Teilen verlassen</target>
         <jms:reference-file line="108">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b2299530024db353434b65e6fd2d83fa5e6ce226" resname="prod:share:: you are about to quit a share basket!">
@@ -14986,7 +14986,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="26318224fcbc9fe2275542c45cba9f8aa0b72571" resname="started since">
         <source>started since</source>
-        <target state="new">started since</target>
+        <target state="translated">gestartet seit</target>
         <jms:reference-file line="57">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="98693e37d002821e032bfc91ffc5091c3b6d76da" resname="status:: Affichable pour tous" approved="yes">
@@ -16128,7 +16128,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="b3f449a50943886b461d9c6db8c59262a66d25f7" resname="write metadata in original document">
         <source>write metadata in original document</source>
-        <target state="needs-translation">Die Metadaten in das Originaldokument schreiben</target>
+        <target state="translated">Die Metadaten in das Originaldokument schreiben</target>
         <jms:reference-file line="423">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
