@@ -157,8 +157,8 @@ spec:
           value: {{ .Values.app.phraseanet_api_ssl | quote }}
         - name: PHRASEANET_API_AUTH_TOKEN_ONLY
           value: {{ .Values.app.phraseanet_api_auth_token_header_only | quote }}  
-        - name: PHRASEANET_EMITER_EMAIL
-          value: {{ .Values.app.phraseanet_emiter_email | quote }}
+        - name: PHRASEANET_EMITTER_EMAIL
+          value: {{ .Values.app.phraseanet_emitter_email | quote }}
         - name: PHRASEANET_MAIL_OBJECT_PREFIX
           value: {{ .Values.app.phraseanet_mail_object_prefix | quote }}
         - name: PHRASEANET_SMTP_ENABLED
