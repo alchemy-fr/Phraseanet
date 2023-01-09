@@ -289,7 +289,7 @@ class WebhookWorker implements WorkerInterface
             $app['manipulator.webhook-delivery']->deliveryFailure($delivery);
 
             $logType = 'error';
-            $logEntry = sprintf('Deliver failure event "%d:%s" for app "%s": %s',
+            $logEntry = sprintf('Webhook delivery failed "%d:%s" for app "%s": %s',
                 $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
                 $delivery->getThirdPartyApplication()->getName(),
                 $reason->getMessage()
