@@ -338,7 +338,7 @@ class WebhookWorker implements WorkerInterface
                         $delivery->getThirdPartyApplication()->getWebhookUrl()
                     );
 
-                    $app['alchemy_worker.message.publisher']->pushLog($message, 'error');
+                    $app['alchemy_worker.message.publisher']->pushLog($message, 'info');
                 }
             }
         };

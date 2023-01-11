@@ -96,7 +96,7 @@ if (!$cli['phraseanet.configuration-tester']->isConnectedToDBHost()) {
 }
 
 if (!$cli['phraseanet.configuration-tester']->isUpToDate()) {
-    throw new \RuntimeException('Phraseanet is not up-to-date, use bin/setup system:upgrade command to update it');
+    throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
 }
 
 $cli->command(new \module_console_aboutAuthors('about:authors'));
