@@ -23,7 +23,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class WebhookEventDeliveryRepository extends EntityRepository
 {
-
     /**
      * @return WebhookEventDelivery[]
      */
@@ -36,6 +35,26 @@ class WebhookEventDeliveryRepository extends EntityRepository
             ->andWhere($qb->expr()->lt('e.deliveryTries', ':nb_tries'));
 
         $qb->setParameter(':nb_tries', WebhookEventDelivery::MAX_DELIVERY_TRIES);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param $apiApplication
+     * @return WebhookEventDelivery[]
+     */
+    public function findUndeliveredEventsFromLastAppUpdate(ApiApplication $apiApplication)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb
+            ->join('e.application', 'a')
+            ->where('e.application = :app')
+            ->andWhere($qb->expr()->eq('e.delivered', $qb->expr()->literal(false)))
+            ->andWhere('e.deliveryTries = 3')
+            ->andWhere('e.created > a.updated')
+            ->setParameter(':app', $apiApplication)
+        ;
 
         return $qb->getQuery()->getResult();
     }
