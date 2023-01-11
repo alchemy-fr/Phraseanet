@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Deliverer;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder;
-use Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled;
 use Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Order\OrderDelivery;
@@ -80,9 +79,8 @@ class MailNotifier implements ValidationNotifier
             'LOG' => $token->getValue(),
         ]);
 
-        $mail = MailInfoOrderDelivered::create($this->application, $recipient, $sender, null);
+        $mail = MailInfoOrderDelivered::create($this->application, $recipient, $sender, null, $url, $delivery->getExpireOn());
 
-        $mail->setButtonUrl($url);
         $mail->setBasket($basket);
         $mail->setDeliverer($delivery->getAdmin());
 

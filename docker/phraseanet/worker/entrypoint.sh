@@ -118,7 +118,9 @@ function check() {
   nb_process=`ps faux | grep "worker:execute" | grep php | wc -l`
   nb_heartbeat=`ps faux | grep "worker:heartbeat" | grep php | wc -l`
   date_time_process=`date +"%Y-%m-%d %H:%M:%S"`
-  echo $date_time_process "-" $nb_process "running workers"
+  if [ -z $STACK_NAME ]; then
+    echo $date_time_process "-" $nb_process "running workers"
+  fi
   if [ $nb_process -lt $NBR_WORKERS ]; then
     echo "One or more worker:execute is not running, exiting..."
     exit 1
@@ -142,8 +144,11 @@ done' >> bin/run-worker.sh
   fi
 fi
 
-tail -F "${APP_DIR}/logs/worker_service.log" &
-tail -F "${APP_DIR}/logs/scheduler.log" &
-tail -F "${APP_DIR}/logs/task.log" &
+if [ ! -z "$PHRASEANET_SCHEDULER" ] ; then
+  tail -F "${APP_DIR}/logs/scheduler.log" &
+  tail -F "${APP_DIR}/logs/task.log" &
+else
+  tail -F "${APP_DIR}/logs/worker_service.log" &
+fi
 
 runuser -u $PHR_USER -- $@

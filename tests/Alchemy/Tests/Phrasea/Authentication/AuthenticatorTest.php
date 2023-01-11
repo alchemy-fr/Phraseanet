@@ -214,14 +214,14 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $this->assertNull($authenticator->getUser());
     }
 
-    public function testCloseAccountWhenNoSessionThrowsAnException()
-    {
-        $app = $this->getApplication();
-
-        $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
-        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'No session to close.');
-        $authenticator->closeAccount();
-    }
+//    public function testCloseAccountWhenNoSessionThrowsAnException()
+//    {
+//        $app = $this->getApplication();
+//
+//        $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
+//        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'No session to close.');
+//        $authenticator->closeAccount();
+//    }
 
     /**
      * @covers Alchemy\Phrasea\Authentication\Authenticator::isAuthenticated

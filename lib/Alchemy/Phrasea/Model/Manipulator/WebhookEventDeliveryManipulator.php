@@ -11,19 +11,18 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
+use Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityRepository;
 
 class WebhookEventDeliveryManipulator implements ManipulatorInterface
 {
     private $om;
     private $repository;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo)
+    public function __construct(ObjectManager $om, WebhookEventDeliveryRepository $repo)
     {
         $this->om = $om;
         $this->repository = $repo;
@@ -64,5 +63,23 @@ class WebhookEventDeliveryManipulator implements ManipulatorInterface
         $delivery->setDelivered(false);
         $delivery->setDeliverTries($delivery->getDeliveryTries() + 1);
         $this->update($delivery);
+    }
+
+    public function isWebhookDeactivate(ApiApplication $apiApplication)
+    {
+        $r = $this->repository->findUndeliveredEventsFromLastAppUpdate($apiApplication);
+
+        // if failed to deliver webhook to the url in 5 different events
+        // calculation based after app update ( any change on api application )
+        // so deactivate the webhook
+        if (count($r) >= 5) {
+            $apiApplication->setWebhookActive(false);
+            $this->om->persist($apiApplication);
+            $this->om->flush();
+
+            return true;
+        }
+
+        return false;
     }
 }

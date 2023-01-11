@@ -6,11 +6,13 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class ConfigurationEditor extends Command
 {
+    private $noCompile = false;
 
     public function __construct($name)
     {
@@ -22,12 +24,12 @@ class ConfigurationEditor extends Command
         $this->addArgument(
             'operation',
             InputArgument::REQUIRED,
-            'The operation to execute (get, set, or add)'
+            'The operation to execute (get, set, add, compile)'
         );
 
         $this->addArgument(
             'parameter',
-            InputArgument::REQUIRED,
+            InputArgument::OPTIONAL,
             'The name of the configuration parameter to get or set'
         );
 
@@ -36,23 +38,38 @@ class ConfigurationEditor extends Command
             InputArgument::OPTIONAL,
             'The value to set when operation is "set" or "add", in YAML syntax'
         );
+
+        $this->addOption('no-compile', "s", InputOption::VALUE_NONE, 'Do not compile the config after save in yml file');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $command = $input->getArgument('operation');
         $parameter = $input->getArgument('parameter');
+        $this->noCompile = $input->getOption('no-compile');
 
         $parameterNodes = explode('.', $parameter);
 
-        if ($command == 'get') {
-            $this->readConfigurationValue($output, $parameter, $parameterNodes);
-        }
-        elseif ($command == 'set') {
-            $this->writeConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
-        }
-        elseif ($command == 'add') {
-            $this->appendConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+        if ($command == 'compile') {
+            $this->compileConfiguration($output);
+        } else {
+            if (empty($parameter)) {
+                $output->writeln("<error>Missing 'parameter' argument</error>");
+
+                return 1;
+            }
+
+            if ($command == 'get') {
+                $this->readConfigurationValue($output, $parameter, $parameterNodes);
+            }
+            elseif ($command == 'set') {
+                $this->writeConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+            }
+            elseif ($command == 'add') {
+                $this->appendConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+            } else {
+                $output->writeln("<error>Command not found</error>");
+            }
         }
     }
 
@@ -61,6 +78,7 @@ class ConfigurationEditor extends Command
         $app = $this->getContainer();
         /** @var Configuration $config */
         $config = $app['configuration.store'];
+        $config->setNoCompile($this->noCompile);
         $values = $config->getConfig();
         $current = $values;
 
@@ -78,6 +96,7 @@ class ConfigurationEditor extends Command
         $app = $this->getContainer();
         /** @var Configuration $configurationStore */
         $configurationStore = $app['configuration.store'];
+        $configurationStore->setNoCompile($this->noCompile);
         $lastParameter = end($parameterNodes);
 
         $configurationRoot = $configurationStore->getConfig();
@@ -100,7 +119,9 @@ class ConfigurationEditor extends Command
         }
 
         $configurationStore->setConfig($configurationRoot);
-        $configurationStore->compileAndWrite();
+        if (!$this->noCompile) {
+            $configurationStore->compileAndWrite();
+        }
 
         $output->writeln('<comment>Reading updated configuration value</comment>');
 
@@ -112,6 +133,7 @@ class ConfigurationEditor extends Command
         $app = $this->getContainer();
         /** @var Configuration $configurationStore */
         $configurationStore = $app['configuration.store'];
+        $configurationStore->setNoCompile($this->noCompile);
         $lastParameter = end($parameterNodes);
 
         $configurationRoot = $configurationStore->getConfig();
@@ -144,7 +166,9 @@ class ConfigurationEditor extends Command
         }
 
         $configurationStore->setConfig($configurationRoot);
-        $configurationStore->compileAndWrite();
+        if (!$this->noCompile) {
+            $configurationStore->compileAndWrite();
+        }
 
         $output->writeln('<comment>Reading updated configuration value</comment>');
 
@@ -175,5 +199,11 @@ class ConfigurationEditor extends Command
         if ($indent == 0) {
             $output->write(PHP_EOL);
         }
+    }
+
+    private function compileConfiguration(OutputInterface $output)
+    {
+        $this->container['configuration.store']->compileAndWrite();
+        $output->writeln('<comment>Configuration compiled!</comment>');
     }
 }

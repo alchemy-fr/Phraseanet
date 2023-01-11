@@ -26,6 +26,8 @@ class Configuration implements ConfigurationInterface
     private $compiled;
     private $autoReload;
 
+    private $noCompile = false;
+
     /**
      * @param Yaml     $yaml       The Yaml Parser
      * @param Compiler $compiler   The PHP Compiler
@@ -117,11 +119,25 @@ class Configuration implements ConfigurationInterface
         return $newConfig;
     }
 
+    public function setNoCompile(bool $noCompile)
+    {
+        $this->noCompile = !!$noCompile;
+    }
+
+    public function getNoCompile()
+    {
+        return $this->noCompile;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getConfig()
     {
+        if ($this->noCompile) {
+            return $this->parser->parse($this->loadFile($this->config));
+        }
+
         if (null !== $this->cache) {
             return $this->cache;
         }
@@ -145,7 +161,9 @@ class Configuration implements ConfigurationInterface
     {
         $this->cache = $config;
         $this->dumpFile($this->config, $this->parser->dump($config, 7), 0660);
-        $this->writeCacheConfig($this->compiler->compile($config));
+        if (!$this->noCompile) {
+            $this->writeCacheConfig($this->compiler->compile($config));
+        }
 
         return $this;
     }

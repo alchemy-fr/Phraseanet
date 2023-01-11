@@ -8652,7 +8652,7 @@ module.exports = {
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 88 */
@@ -10167,6 +10167,18 @@ var workzone = function workzone(services) {
             openFieldMapping();
         });
 
+        (0, _jquery2.default)('#expose_mine_only').on('change', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            updatePublicationList(exposeName);
+        });
+
+        (0, _jquery2.default)('#expose_editable_only').on('change', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            updatePublicationList(exposeName);
+        });
+
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
@@ -10962,7 +10974,7 @@ var workzone = function workzone(services) {
                     type: 'POST',
                     url: '/prod/expose/publication/delete-asset/' + publicationId + '/' + assetId + '/?exposeName=' + exposeName,
                     beforeSend: function beforeSend() {
-                        assetsContainer.addClass('loading');
+                        assetsContainer.find('.assets_bottom_info').addClass('loading');
                     },
                     success: function success(data) {
                         if (data.success === true) {
@@ -11034,7 +11046,7 @@ var workzone = function workzone(services) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
 
-            assetsContainer.addClass('loading');
+            assetsContainer.find('.assets_bottom_info').addClass('loading');
             getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
         });
 
@@ -11058,7 +11070,7 @@ var workzone = function workzone(services) {
                 dataType: 'json',
                 success: function success(data) {
                     if (data.success === true) {
-                        assetsContainer.addClass('loading');
+                        assetsContainer.find('.assets_bottom_info').addClass('loading');
                         getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
                     } else {
                         console.log(data);
@@ -11105,15 +11117,20 @@ var workzone = function workzone(services) {
     }
 
     function updatePublicationList(exposeName) {
+
         _jquery2.default.ajax({
             type: 'GET',
             url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            data: {
+                mine: (0, _jquery2.default)("#expose_mine_only").is(':checked') ? 1 : 0,
+                editable: (0, _jquery2.default)("#expose_editable_only").is(':checked') ? 1 : 0
+            },
             success: function success(data) {
                 if ('twig' in data) {
                     (0, _jquery2.default)('.publication-list').empty().html(data.twig);
 
                     (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
-                        (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        (0, _jquery2.default)(this).parent().next('.expose_item_deployed').toggleClass('open');
                         (0, _jquery2.default)(this).toggleClass('open');
 
                         if ((0, _jquery2.default)(this).hasClass('open')) {
@@ -11121,9 +11138,20 @@ var workzone = function workzone(services) {
                             var _exposeName = (0, _jquery2.default)('#expose_list').val();
                             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
 
-                            assetsContainer.addClass('loading');
+                            if (assetsContainer.find('.assets_bottom_info').length) {
+                                assetsContainer.find('.assets_bottom_info').addClass('loading');
+                            } else {
+                                assetsContainer.addClass('loading');
+                            }
+
                             getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
                         }
+                    });
+
+                    (0, _jquery2.default)('.expose_basket_item .copy_expose_link').on('click', function (event) {
+                        navigator.clipboard.writeText((0, _jquery2.default)(this).data("link")).then(function () {}, function (err) {
+                            console.error('Could not copy link: ', err);
+                        });
                     });
 
                     activeExpose();
@@ -11142,6 +11170,10 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').addClass('hidden');
                 }
+
+                if ('error' in data) {
+                    (0, _jquery2.default)('.publication-list').empty().html(data.error);
+                }
             }
         });
     }
@@ -11152,6 +11184,12 @@ var workzone = function workzone(services) {
         _jquery2.default.ajax({
             type: 'GET',
             url: '/prod/expose/get-publication/' + publicationId + '/assets?exposeName=' + exposeName + '&page=' + page,
+            data: {
+                capabilitiesDelete: assetsContainer.closest(".expose_basket_item").data("capabilities-delete") ? 1 : 0,
+                capabilitiesEdit: assetsContainer.closest(".expose_basket_item").data("capabilities-edit") ? 1 : 0,
+                enabled: assetsContainer.closest(".expose_basket_item").data("enabled") ? 1 : 0,
+                childrenCount: assetsContainer.closest(".expose_basket_item").data("childrencount")
+            },
             success: function success(data) {
                 if (typeof data.success === 'undefined') {
                     if (page === 1) {
@@ -11160,7 +11198,7 @@ var workzone = function workzone(services) {
 
                         assetsContainer.find('.assets_list').sortable({
                             change: function change() {
-                                (0, _jquery2.default)(this).closest('.expose_item_deployed').find('.order-assets').prop('disabled', false);
+                                (0, _jquery2.default)(this).closest('.expose_item_deployed').find('.order-assets').show();
                             }
                         }).disableSelection();
                     } else {
@@ -11169,7 +11207,9 @@ var workzone = function workzone(services) {
                         assetsContainer.find('#list_assets_page').val(page);
                     }
                 } else {
-                    console.log(data);
+                    if (!data.success) {
+                        assetsContainer.empty().html(data.message);
+                    }
                 }
             }
         });
@@ -11551,7 +11591,7 @@ var workzone = function workzone(services) {
             var assetsContainer = destKey.find('.expose_item_deployed');
 
             if (publicationId !== undefined) {
-                assetsContainer.addClass('loading');
+                assetsContainer.find('.assets_bottom_info').addClass('loading');
 
                 _jquery2.default.ajax({
                     type: 'POST',
@@ -52853,7 +52893,7 @@ module.exports = VTTRegion;
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 154 */
@@ -65928,15 +65968,21 @@ var orderItem = function orderItem(services) {
             //$('.order_row.selected').removeClass('to_be_validated');
         });
 
-        (0, _jquery2.default)('.force_sender', $dialog.getDomElement()).bind('click', function () {
-            if (confirm(localeService.t('forceSendDocument'))) {
-                //updateValidation('validated');
-                var element_id = [];
-                element_id.push((0, _jquery2.default)(this).closest('.order_row').find('input[name=order_element_id]').val());
-                var order_id = (0, _jquery2.default)('input[name=order_id]').val();
-                do_send_documents(order_id, element_id, true);
-            }
-        });
+        // comment on order_item.html.twig , line 171
+        // $('.force_sender', $dialog.getDomElement()).bind('click', function () {
+        //     if (confirm(localeService.t('forceSendDocument'))) {
+        //         //updateValidation('validated');
+        //         let element_id = [];
+        //         element_id.push(
+        //             $(this)
+        //                 .closest('.order_row')
+        //                 .find('input[name=order_element_id]')
+        //                 .val()
+        //         );
+        //         let order_id = $('input[name=order_id]').val();
+        //         do_send_documents(order_id, element_id, true);
+        //     }
+        // });
 
         (0, _jquery2.default)('#userInfo').hover(function () {
             var offset = (0, _jquery2.default)('#userInfo').position();
@@ -66035,6 +66081,56 @@ var orderItem = function orderItem(services) {
             }
         });
 
+        (0, _jquery2.default)('#validation-window .expireOn').datepicker({
+            beforeShow: function beforeShow(input, inst) {
+                (0, _jquery2.default)(inst.dpDiv).addClass('expireOn');
+            },
+            changeYear: true,
+            changeMonth: true,
+            dateFormat: 'yy-mm-dd',
+            onClose: function onClose(input, inst) {
+                (0, _jquery2.default)(inst.dpDiv).removeClass('expireOn');
+            }
+        });
+
+        (0, _jquery2.default)('#expire-menu').menu({
+            select: function select(event, ui) {
+                var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
+                var expire = (0, _jquery2.default)(ui.item[0]).data('expireon');
+                if (expire === '') {
+                    // expireon to null = no expiration for the right
+                    $input.val('');
+                } else {
+                    calculateExpireDate($input, expire);
+                }
+                (0, _jquery2.default)(this).hide();
+            }
+        }).mouseleave(function (event, ui) {
+            (0, _jquery2.default)(this).hide();
+        }).hide();
+
+        // click to ... to drop
+        (0, _jquery2.default)("BUTTON.expireOn-menu").click(function (event, ui) {
+            (0, _jquery2.default)("#expire-menu").css({
+                top: event.clientY,
+                left: event.clientX - 6
+            }).show();
+            return false;
+        });
+
+        function calculateExpireDate($input, expire) {
+            if (expire === null || expire === undefined || expire === '') {
+                $input.val("");
+            } else {
+                var d = new Date();
+                d.setDate(d.getDate() + parseInt(expire));
+                var mm = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
+                var dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+
+                $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+            }
+        }
+
         function createBasket($innerDialog) {
             var $form = (0, _jquery2.default)('form', $innerDialog);
             var dialog = $innerDialog.closest('.ui-dialog');
@@ -66098,6 +66194,7 @@ var orderItem = function orderItem(services) {
             var submitTitle = window.orderItemData.translatedText.submit;
             var resetTitle = window.orderItemData.translatedText.reset;
             var dialog_buttons = {};
+
             dialog_buttons[submitTitle] = function () {
                 //submit documents
                 submitDocuments((0, _jquery2.default)(this));
@@ -66129,6 +66226,9 @@ var orderItem = function orderItem(services) {
                 }
             }).dialog('open');
             createValidationTable();
+            var $input = (0, _jquery2.default)('input[name="expireOn"]:visible');
+            var defaultExpire = $input.data('default-expiration');
+            calculateExpireDate($input, defaultExpire);
         }
 
         function submitDocuments(dialogElem) {
@@ -66151,15 +66251,18 @@ var orderItem = function orderItem(services) {
                 return elem.elementId;
             });
 
-            if (validatedArrayNoForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayNoForceIds, false);
+            if (validatedArrayNoForceIds.length > 0 && deniedArrayIds.length > 0) {
+                do_validate_documents(order_id, validatedArrayNoForceIds, deniedArrayIds);
+            } else {
+                if (validatedArrayNoForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayNoForceIds, false);
+                } else if (validatedArrayWithForceIds.length > 0) {
+                    do_send_documents(order_id, validatedArrayWithForceIds, true);
+                } else if (deniedArrayIds.length > 0) {
+                    do_deny_documents(order_id, deniedArrayIds);
+                }
             }
-            if (validatedArrayWithForceIds.length > 0) {
-                do_send_documents(order_id, validatedArrayWithForceIds, true);
-            }
-            if (deniedArrayIds.length > 0) {
-                do_deny_documents(order_id, deniedArrayIds);
-            }
+
             dialogElem.dialog('close');
         }
 
@@ -66173,8 +66276,12 @@ var orderItem = function orderItem(services) {
             });
 
             if (validatedArray.length > 0) {
+                (0, _jquery2.default)("#validation-window:visible .order-expireon-wrap").show();
+                (0, _jquery2.default)("#validation-window:visible input[name='expireOn']").blur();
+
                 var html = '';
                 html += '<h5>' + window.orderItemData.translatedText.youHaveValidated + ' ' + validatedArray.length + ' ' + window.orderItemData.translatedText.item + (validatedArray.length === 1 ? '' : 's') + '</h5>';
+
                 html += '<table class="validation-table">';
                 _underscore2.default.each(validatedArray, function (elem) {
                     html += '<tr>';
@@ -66184,6 +66291,8 @@ var orderItem = function orderItem(services) {
                 });
                 html += '</table>';
                 (0, _jquery2.default)('.validation-content').append(html);
+            } else {
+                (0, _jquery2.default)("#validation-window:visible .order-expireon-wrap").hide();
             }
 
             if (deniedArray.length > 0) {
@@ -66297,11 +66406,9 @@ var orderItem = function orderItem(services) {
 
         function toggleValidationButton() {
             if (readyForValidation) {
-                (0, _jquery2.default)('button.validate').prop('disabled', false);
-                (0, _jquery2.default)('button.validate').css('color', '#7CD21C');
+                (0, _jquery2.default)('button.validate').show();
             } else {
-                (0, _jquery2.default)('button.validate').prop('disabled', true);
-                (0, _jquery2.default)('button.validate').css('color', '#737373');
+                (0, _jquery2.default)('button.validate').hide();
             }
         }
 
@@ -66317,7 +66424,44 @@ var orderItem = function orderItem(services) {
                 dataType: 'json',
                 data: {
                     'elements[]': elements_ids,
-                    force: force ? 1 : 0
+                    force: force ? 1 : 0,
+                    expireOn: (0, _jquery2.default)('input[name="expireOn"]:visible').val()
+                },
+                success: function success(data) {
+                    var success = '0';
+
+                    if (data.success) {
+                        success = '1';
+                    }
+
+                    var url = '../prod/order/' + order_id + '/?success=' + success + '&action=send';
+                    reloadDialog(url);
+                },
+                error: function error() {
+                    (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', false);
+                    (0, _jquery2.default)('.activity_indicator', cont).hide();
+                },
+                timeout: function timeout() {
+                    (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', false);
+                    (0, _jquery2.default)('.activity_indicator', cont).hide();
+                }
+            });
+        }
+
+        function do_validate_documents(order_id, elements_send_ids, elements_deny_ids) {
+            var cont = $dialog.getDomElement();
+
+            (0, _jquery2.default)('button.deny, button.send', cont).prop('disabled', true);
+            (0, _jquery2.default)('.activity_indicator', cont).show();
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '../prod/order/' + order_id + '/validate/',
+                dataType: 'json',
+                data: {
+                    'elementsSend[]': elements_send_ids,
+                    'elementsDeny[]': elements_deny_ids,
+                    expireOn: (0, _jquery2.default)('input[name="expireOn"]:visible').val()
                 },
                 success: function success(data) {
                     var success = '0';
@@ -66410,24 +66554,39 @@ var orderItem = function orderItem(services) {
             }, { validated: 0, selectable: 0, waitingForValidation: 0 });
 
             var html = '';
-            if (countObj.validated > 0) {
-                html += '<p>' + window.orderItemData.translatedText.itemsAlreadySent + ': ' + countObj.validated + '</p>';
-            }
+            // if (countObj.validated > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsAlreadySent +
+            //         ': ' +
+            //         countObj.validated +
+            //         '</p>';
+            // }
 
-            if (countObj.waitingForValidation > 0) {
-                html += '<p>' + window.orderItemData.translatedText.itemsWaitingValidation + ': ' + countObj.waitingForValidation + '</p>';
-            }
+            // if (countObj.waitingForValidation > 0) {
+            //     html +=
+            //         '<p>' +
+            //         window.orderItemData.translatedText.itemsWaitingValidation +
+            //         ': ' +
+            //         countObj.waitingForValidation +
+            //         '</p>';
+            // }
 
             //for the remaining items
             var remaining = countObj.selectable - (countObj.validated + countObj.waitingForValidation);
             if (remaining > 0) {
-                html += '<p>' + window.orderItemData.translatedText.nonSentItems + ': ' + remaining + '</p>';
+                // html +=
+                //     '<p>' +
+                //     window.orderItemData.translatedText.nonSentItems +
+                //     ': ' +
+                //     remaining +
+                //     '</p>';
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.send').prop('disabled', false);
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.send').show();
             }
 
-            (0, _jquery2.default)('#wrapper-multiple #text-content').empty();
-            (0, _jquery2.default)('#wrapper-multiple #text-content').append(html);
+            // $('#wrapper-multiple #text-content').empty();
+            // $('#wrapper-multiple #text-content').append(html);
         }
 
         /* *
@@ -67042,9 +67201,13 @@ var previewRecordService = function previewRecordService(services) {
         } else {
             if (options.mode === 'RESULT') {
                 var posAsk = parseInt(options.current.pos, 10) + 1;
-                if (isNaN(posAsk) || posAsk >= parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
-                    posAsk = 0;
+
+                var absolutePos = parseInt(options.navigation.perPage, 10) * (parseInt(options.navigation.page, 10) - 1) + parseInt(posAsk, 10);
+
+                if (absolutePos >= parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
+                    posAsk = posAsk - parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10);
                 }
+
                 _openPreview(false, 'RESULT', posAsk, '', false);
             } else {
                 if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':last-child')) {
@@ -67059,7 +67222,13 @@ var previewRecordService = function previewRecordService(services) {
     function getPrevious() {
         if (options.mode === 'RESULT') {
             var posAsk = parseInt(options.current.pos, 10) - 1;
-            posAsk = posAsk < 0 ? parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10) - 1 : posAsk;
+
+            var absolutePos = parseInt(options.navigation.perPage, 10) * (parseInt(options.navigation.page, 10) - 1) + parseInt(posAsk, 10);
+
+            if (absolutePos < 0) {
+                posAsk = parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10) + posAsk;
+            }
+
             _openPreview(false, 'RESULT', posAsk, '', false);
         } else {
             if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':first-child')) {

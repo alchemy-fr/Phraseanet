@@ -17,6 +17,9 @@ Scripts can be play in a running FPM container with app users
 Before execution of they script keep a copie your existing source and destination "configuration.yml" files
 and place the configuration file need to be migrate in place of the current "configuration.yml" file
 
+After execution of all script you need to `rm config/configuration-compiled.yml`
+and compile-configuration `bin/setup system:config compile`
+
 ### Datastore_conf
 
  Update configuration.yml in accordance of containers env value for :

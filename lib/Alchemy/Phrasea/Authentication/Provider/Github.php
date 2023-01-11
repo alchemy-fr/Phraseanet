@@ -11,16 +11,17 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Authentication\Provider\Token\Token;
-use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Authentication\Provider\Token\Token;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
-use Guzzle\Common\Exception\GuzzleException;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class Github extends AbstractProvider
 {
@@ -29,14 +30,14 @@ class Github extends AbstractProvider
     private $key;
     private $secret;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, ClientInterface $client, $key, $secret)
-    {
-        $this->generator = $generator;
-        $this->session = $session;
-        $this->client = $client;
 
-        $this->key = $key;
-        $this->secret = $secret;
+    public function __construct(UrlGenerator $generator, SessionInterface $session, array $options, ClientInterface $client)
+    {
+        parent::__construct($generator, $session);
+
+        $this->client = $client;
+        $this->key = $options['client-id'];
+        $this->secret = $options['client-secret'];
     }
 
     /**
@@ -44,7 +45,7 @@ class Github extends AbstractProvider
      *
      * @return Github
      */
-    public function setGuzzleClient(ClientInterface $client)
+    public function setGuzzleClient(ClientInterface $client): self
     {
         $this->client = $client;
 
@@ -62,23 +63,7 @@ class Github extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getId()
-    {
-        return 'github';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'Github';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function authenticate(array $params = array())
+    public function authenticate(array $params = array()): RedirectResponse
     {
         $params = array_merge(['providerId' => $this->getId()], $params);
 
@@ -177,7 +162,7 @@ class Github extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getToken()
+    public function getToken(): Token
     {
         if ('' === trim($this->session->get('github.provider.id'))) {
             throw new NotAuthenticatedException('Github has not authenticated');
@@ -189,7 +174,7 @@ class Github extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getIdentity()
+    public function getIdentity(): Identity
     {
         $identity = new Identity();
 
@@ -227,7 +212,7 @@ class Github extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getIconURI()
+    public function getIconURI(): string
     {
         return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAAwCAYAAAC4w'
         . 'JK5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0WE1MO'
@@ -289,16 +274,19 @@ class Github extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
+    public static function create(UrlGenerator $generator, SessionInterface $session, array $options): self
     {
-        if (!isset($options['client-id'])) {
-            throw new InvalidArgumentException('Missing GitHub client-id parameter');
+        foreach (['client-id', 'client-secret'] as $parm) {
+            if (!isset($options[$parm])) {
+                throw new InvalidArgumentException(sprintf('Missing Github "%s" parameter in conf/authentication/providers', $parm));
+            }
         }
 
-        if (!isset($options['client-secret'])) {
-            throw new InvalidArgumentException('Missing GitHub client-secret parameter');
-        }
-
-        return new Github($generator, $session, new Guzzle('https://github.com/login/oauth'), $options['client-id'], $options['client-secret']);
+        return new static(
+            $generator,
+            $session,
+            $options,
+            new Guzzle('https://github.com/login/oauth')
+        );
     }
 }

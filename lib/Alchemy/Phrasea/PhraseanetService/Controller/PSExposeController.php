@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\PhraseanetService\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\ExposeUploadEvent;
@@ -30,7 +31,7 @@ class PSExposeController extends Controller
         if ($exposeConfiguration == null) {
             return $this->app->json([
                 'success' => false,
-                'message' => 'Please, set configuration in admin!'
+                'error_description' => 'Please, set configuration in admin!'
             ]);
         }
 
@@ -55,19 +56,21 @@ class PSExposeController extends Controller
         } catch(\Exception $e) {
             return $this->app->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'error_description' => $e->getMessage()
             ]);
         }
 
         if ($response->getStatusCode() !== 200) {
-            $body = $response->getBody()->getContents();
+            try {
+                $b = json_decode($response->getBody()->getContents(),true);
+                $message = $b['error_description'];
+            } catch (\Exception $e) {
+                $message = 'Error with status code: ' . $response->getStatusCode();
+            }
 
-            $body = json_decode($body,true);
             return $this->app->json([
                 'success' => false,
-                'message' => 'Status code: '. $response->getStatusCode(),
-                'error'   => $body['error'],
-                'error_description'   => $body['error_description']
+                'error_description'   => $message
             ]);
         }
 
@@ -183,6 +186,18 @@ class PSExposeController extends Controller
 
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($request->get('exposeName'));
+        $providerId = $session->get('auth_provider.id');
+
+        if (!$session->has($passSessionName) && $providerId != null) {
+            try {
+                $provider = $this->getAuthenticationProviders()->get($providerId);
+                if ($provider->getType() == 'PsAuth') {
+                    $session->set($passSessionName, $provider->getAccessToken());
+                    $session->set($this->getLoginSessionName($request->get('exposeName')), $provider->getUserName());
+                }
+            } catch(\Exception $e) {
+            }
+        }
 
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
              return $app->json([
@@ -211,22 +226,45 @@ class PSExposeController extends Controller
 
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
-        $response = $exposeClient->get('/publications?flatten=true&order[createdAt]=desc', [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken,
-                'Content-Type'  => 'application/json'
-            ]
-        ]);
+        try {
+            $uri = '/publications?flatten=true&order[createdAt]=desc';
+            if ($request->get('mine')) {
+                $uri .= '&mine=true';
+            }
+
+            if ($request->get('editable')) {
+                $uri .= '&editable=true';
+            }
+
+            $response = $exposeClient->get($uri, [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ]
+            ]);
+
+            if ($response->getStatusCode() == 200) {
+                $body = @json_decode($response->getBody()->getContents(),true);
+
+                if (!isset($body['hydra:member']) || !isset($body['@id'])) {
+                    throw new \Exception("index undefined on response body!");
+                }
+                $publications = $body['hydra:member'];
+                $basePath = $body['@id'];
+            } else {
+                throw new \Exception("Error with status code : " . $response->getStatusCode());
+            }
+
+        } catch(\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'publications' => [],
+                'basePath'     => [],
+                'error'   => $e->getMessage()
+            ]);
+        }
 
         $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
-        $publications = [];
-        $basePath = [];
-
-        if ($response->getStatusCode() == 200) {
-            $body = json_decode($response->getBody()->getContents(),true);
-            $publications = $body['hydra:member'];
-            $basePath = $body['@id'];
-        }
 
         if ($request->get('format') == 'pub-list') {
             return $app->json([
@@ -279,12 +317,19 @@ class PSExposeController extends Controller
 
         $publication = [];
 
-        $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') , [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken,
-                'Content-Type'  => 'application/json'
-            ]
-        ]);
+        try {
+            $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') , [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ]
+            ]);
+        } catch(\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
 
         if ($resPublication->getStatusCode() != 200) {
             return $app->json([
@@ -336,11 +381,18 @@ class PSExposeController extends Controller
 
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
-        $resAvailability = $exposeClient->get('/publications/slug-availability/' . $request->get('slug') , [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken,
-            ]
-        ]);
+        try {
+            $resAvailability = $exposeClient->get('/publications/slug-availability/' . $request->get('slug') , [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
 
         if ($resAvailability->getStatusCode() != 200) {
             return $app->json([
@@ -410,12 +462,19 @@ class PSExposeController extends Controller
 
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
-        $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken,
-                'Content-Type'  => 'application/json'
-            ]
-        ]);
+        try {
+            $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ]
+            ]);
+        } catch(\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
 
         if ($resPublication->getStatusCode() != 200) {
             return $app->json([
@@ -433,10 +492,14 @@ class PSExposeController extends Controller
         }
 
         return $this->render("prod/WorkZone/ExposePublicationAssets.html.twig", [
-            'pubAssets'     => $pubAssets,
-            'publicationId' => $request->get('publicationId'),
-            'totalItems'    => $totalItems,
-            'page'          => $page
+            'pubAssets'             => $pubAssets,
+            'publicationId'         => $request->get('publicationId'),
+            'capabilitiesDelete'    => $request->get('capabilitiesDelete'),
+            'capabilitiesEdit'      => $request->get('capabilitiesEdit'),
+            'enabled'               => $request->get('enabled'),
+            'childrenCount'         => $request->get('childrenCount'),
+            'totalItems'            => $totalItems,
+            'page'                  => $page
         ]);
     }
 
@@ -469,12 +532,20 @@ class PSExposeController extends Controller
         $profiles = [];
         $basePath = '';
 
-        $resProfile = $exposeClient->get('/publication-profiles' , [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken,
-                'Content-Type'  => 'application/json'
-            ]
-        ]);
+        try {
+            $resProfile = $exposeClient->get('/publication-profiles' , [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+
 
         if ($resProfile->getStatusCode() != 200) {
             return $app->json([
@@ -802,12 +873,16 @@ class PSExposeController extends Controller
         }
 
         $exposeMappingName = $this->getExposeMappingName('field');
-        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+        try {
+            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
-        $fieldMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+            $fieldMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
 
-        $actualFieldsList = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
-        $fields = ($profile != null) ? $this->getFields($actualFieldsList) : [];
+            $actualFieldsList = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
+            $fields = ($profile != null) ? $this->getFields($actualFieldsList) : [];
+        } catch (\Exception $e) {
+
+        }
 
         // send geoloc and send vtt checked by default if not setting
         return $this->render('prod/WorkZone/ExposeFieldList.html.twig', [
@@ -830,9 +905,12 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $exposeMappingName = $this->getExposeMappingName('subdef');
-        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+        try {
+            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+        } catch(\Exception $e) {
+        }
 
+        $exposeMappingName = $this->getExposeMappingName('subdef');
         $actualSubdefMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
 
         $databoxes = empty($profile)? [] : $this->getApplicationBox()->get_databoxes();
@@ -890,22 +968,34 @@ class PSExposeController extends Controller
             ]);
         }
 
-        // get the actual value and merge it with the new one before save
-        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+        $clientAnnotationProfile = [];
+
+        try {
+            // get the actual value and merge it with the new one before save
+            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+        } catch (\Exception $e) {
+        }
 
         $annotationValues = array_merge($clientAnnotationProfile, $fieldMapping);
         $accessToken = $this->getAndSaveToken($exposeName);
 
-        // save field mapping in the selected profile
-        $resProfile = $exposeClient->put($profile , [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken,
-                'Content-Type'  => 'application/json'
-            ],
-            'json'  => [
-                'clientAnnotations' => json_encode($annotationValues)
-            ]
-        ]);
+        try {
+            // save field mapping in the selected profile
+            $resProfile = $exposeClient->put($profile , [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ],
+                'json'  => [
+                    'clientAnnotations' => json_encode($annotationValues)
+                ]
+            ]);
+        } catch(\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
 
         if ($resProfile->getStatusCode() !== 200) {
             return $app->json([
@@ -938,23 +1028,30 @@ class PSExposeController extends Controller
             $this->getExposeMappingName('subdef') => $subdefs
         ];
 
-        // get the actual value and merge it with the new one before save
-        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+        try {
+            // get the actual value and merge it with the new one before save
+            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
-        $annotationValues = array_merge($clientAnnotationProfile, $subdefs);
+            $annotationValues = array_merge($clientAnnotationProfile, $subdefs);
 
-        $accessToken = $this->getAndSaveToken($exposeName);
+            $accessToken = $this->getAndSaveToken($exposeName);
 
-        // save subdef mapping in the selected profile
-        $resProfile = $exposeClient->put($profile , [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken,
-                'Content-Type'  => 'application/json'
-            ],
-            'json'  => [
-                'clientAnnotations' => json_encode($annotationValues)
-            ]
-        ]);
+            // save subdef mapping in the selected profile
+            $resProfile = $exposeClient->put($profile , [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ],
+                'json'  => [
+                    'clientAnnotations' => json_encode($annotationValues)
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
 
         if ($resProfile->getStatusCode() !== 200) {
             return $app->json([
@@ -1088,11 +1185,11 @@ class PSExposeController extends Controller
         }
 
         foreach ($permissions as &$permission) {
-            if ($permission['userType'] == 'user') {
+            if ($permission['userType'] == 'user' && !empty($listUsers)) {
                 $key = array_search($permission['userId'], array_column($listUsers, 'id'));
                 $permission = array_merge($permission, $listUsers[$key]);
                 $listUsers[$key]['selected'] = true;
-            } elseif ($permission['userType'] == 'group') {
+            } elseif ($permission['userType'] == 'group' && !empty($listGroups)) {
                 $key = array_search($permission['userId'], array_column($listGroups, 'id'));
                 $permission = array_merge($permission, $listGroups[$key]);
                 $listGroups[$key]['selected'] = true;
@@ -1290,5 +1387,13 @@ class PSExposeController extends Controller
     private function getSession()
     {
         return $this->app['session'];
+    }
+
+    /**
+     * @return ProvidersCollection
+     */
+    private function getAuthenticationProviders()
+    {
+        return $this->app['authentication.providers'];
     }
 }

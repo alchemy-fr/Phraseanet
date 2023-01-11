@@ -130,7 +130,7 @@ RUN echo "BUILDING PHP PECL EXTENTIONS" \
         zmq-beta \
         imagick-beta \
         xdebug-2.6.1 \
-    && docker-php-ext-enable redis amqp zmq imagick \
+    && docker-php-ext-enable redis amqp zmq imagick opcache \
     && pecl clear-cache \
     && docker-php-source delete
 RUN echo "BUILDING AND INSTALLING FFMPEG" \
