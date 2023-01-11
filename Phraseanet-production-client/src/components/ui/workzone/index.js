@@ -1142,7 +1142,9 @@ const workzone = (services) => {
             url: `/prod/expose/get-publication/${publicationId}/assets?exposeName=${exposeName}&page=${page}`,
             data: {
                 capabilitiesDelete: assetsContainer.closest(".expose_basket_item").data("capabilities-delete") ? 1 : 0,
-                capabilitiesEdit: assetsContainer.closest(".expose_basket_item").data("capabilities-edit") ? 1 : 0
+                capabilitiesEdit: assetsContainer.closest(".expose_basket_item").data("capabilities-edit") ? 1 : 0,
+                enabled: assetsContainer.closest(".expose_basket_item").data("enabled") ? 1 : 0,
+                childrenCount : assetsContainer.closest(".expose_basket_item").data("childrencount")
             },
             success: function (data) {
                 if (typeof data.success === 'undefined') {

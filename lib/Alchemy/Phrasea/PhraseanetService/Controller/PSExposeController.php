@@ -496,6 +496,8 @@ class PSExposeController extends Controller
             'publicationId'         => $request->get('publicationId'),
             'capabilitiesDelete'    => $request->get('capabilitiesDelete'),
             'capabilitiesEdit'      => $request->get('capabilitiesEdit'),
+            'enabled'               => $request->get('enabled'),
+            'childrenCount'         => $request->get('childrenCount'),
             'totalItems'            => $totalItems,
             'page'                  => $page
         ]);

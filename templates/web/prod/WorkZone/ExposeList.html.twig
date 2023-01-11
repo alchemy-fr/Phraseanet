@@ -3,7 +3,12 @@
 
     <div class="expose_basket_item publication-droppable basketTips ui-accordion-header ui-state-default
                     ui-corner-all header" style="position:relative;"
-         data-publication-id="{{ publication.id }}" data-capabilities-edit="{{ publication.capabilities.edit }}" data-capabilities-delete="{{ publication.capabilities.delete }}">
+         data-publication-id="{{ publication.id }}"
+         data-capabilities-edit="{{ publication.capabilities.edit }}"
+         data-capabilities-delete="{{ publication.capabilities.delete }}"
+         data-enabled="{{ publication.enabled }}"
+         data-childrencount="{{ publication.childrenCount }}"
+    >
         <div style="display:flex; align-items: center;">
             <div class="top_block" data-publication-id="{{ publication.id }}">
                 <span>
