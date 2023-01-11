@@ -330,6 +330,16 @@ class WebhookWorker implements WorkerInterface
                 );
 
                 $app['webhook.delivery_payload_repository']->save($deliveryPayload);
+
+                // deactivate webhook for the app if it's always failed for different event
+                if ($app['manipulator.webhook-delivery']->isWebhookDeactivate($delivery->getThirdPartyApplication())) {
+                    $message = sprintf('Webhook for app "%s" is deactivated, cannot deliver data in the url "%s" from different events (more than 5 times)',
+                        $delivery->getThirdPartyApplication()->getName(),
+                        $delivery->getThirdPartyApplication()->getWebhookUrl()
+                    );
+
+                    $app['alchemy_worker.message.publisher']->pushLog($message, 'info');
+                }
             }
         };
 
