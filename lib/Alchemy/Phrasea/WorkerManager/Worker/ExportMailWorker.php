@@ -146,6 +146,10 @@ class ExportMailWorker implements WorkerInterface
             unset($remaingEmails[$key]);
         }
 
+        if (count($deliverEmails) > 0) {
+            $this->app['alchemy_worker.message.publisher']->pushLog("Email successfully sended to : " . implode(', ', $deliverEmails));
+        }
+
         //some mails failed
         if (count($remaingEmails) > 0) {
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;

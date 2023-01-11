@@ -289,7 +289,7 @@ class WebhookWorker implements WorkerInterface
             $app['manipulator.webhook-delivery']->deliveryFailure($delivery);
 
             $logType = 'error';
-            $logEntry = sprintf('Deliver failure event "%d:%s" for app "%s": %s',
+            $logEntry = sprintf('Webhook delivery failed "%d:%s" for app "%s": %s',
                 $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
                 $delivery->getThirdPartyApplication()->getName(),
                 $reason->getMessage()
@@ -330,6 +330,16 @@ class WebhookWorker implements WorkerInterface
                 );
 
                 $app['webhook.delivery_payload_repository']->save($deliveryPayload);
+
+                // deactivate webhook for the app if it's always failed for different event
+                if ($app['manipulator.webhook-delivery']->isWebhookDeactivate($delivery->getThirdPartyApplication())) {
+                    $message = sprintf('Webhook for app "%s" is deactivated, cannot deliver data in the url "%s" from different events (more than 5 times)',
+                        $delivery->getThirdPartyApplication()->getName(),
+                        $delivery->getThirdPartyApplication()->getWebhookUrl()
+                    );
+
+                    $app['alchemy_worker.message.publisher']->pushLog($message, 'info');
+                }
             }
         };
 
