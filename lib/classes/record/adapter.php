@@ -566,6 +566,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function move_to_collection(collection $collection, appbox $appbox = null)
     {
         if ($this->getCollection()->get_base_id() === $collection->get_base_id()) {
+            $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this, $collection, $collection));
+
             return $this;
         }
 
