@@ -194,7 +194,7 @@ class WebhookInvoker implements LoggerAwareInterface
                     $this->eventDeliveryManipulator->deliveryFailure($delivery);
 
                     $logType = 'error';
-                    $logEntry = sprintf('Deliver failure event "%d:%s" for app "%s"',
+                    $logEntry = sprintf('Webhook delivery failed "%d:%s" for app "%s"',
                         $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
                         $delivery->getThirdPartyApplication()->getName()
                     );

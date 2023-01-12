@@ -1,21 +1,12 @@
-{% if totalItems == 0 %}
-    {% set canDelete =  capabilitiesDelete %}
-    {% set canEdit =  capabilitiesEdit %}
- {% else %}  {# can change on remote during loading assets #}
-     {% set canDelete =  pubAssets[0].publication.capabilities.delete %}
-     {% set canEdit =  pubAssets[0].publication.capabilities.edit %}
-{% endif %}
-
-
 {% if page == 1 %}
     <div class="expose_item_top" style="margin-top: 20px; margin-bottom: 20px;">
-        {% if canEdit %}
+        {% if capabilitiesEdit %}
             <span class="green_button edit_expose" title="Edit" data-id="{{ publicationId }}" style="margin-right: 30px;">
                 <i class="fa fa-edit"></i>
             </span>
         {% endif %}
 
-        {% if pubAssets[0].publication.enabled %}
+        {% if enabled %}
             <span>
                 <i class="fa fa-circle fa-lg" style="color: #1141db;"></i>
                 {{ 'prod:expose: enabled' | trans }}
@@ -27,8 +18,8 @@
             </span>
         {% endif %}
 
-        {% if pubAssets[0].publication.children|length == 0 %}
-            {% if canDelete %}
+        {% if childrenCount == 0 %}
+            {% if capabilitiesDelete %}
                 <button type="button" class="delete-publication btn-danger pull-right" data-publication-id="{{ publicationId }}" title="{{ 'prod:expose:publication:Delete' | trans }}" style="margin-left: 40px;">
                     <i class="fa fa-trash"></i>
                 </button>
@@ -41,7 +32,7 @@
             <i class="fa fa-refresh" aria-hidden="true"></i>
         </button>
 
-        {% if canEdit %}
+        {% if capabilitiesEdit %}
             <button class="btn-secondary order-assets pull-right" data-publication-id="{{ publicationId }}" style="margin-left: 5px; display:none;">
                 {{ 'prod:expose:publication:Set order' | trans }}
             </button>
@@ -55,7 +46,7 @@
 
             <div class="assets_bottom_info" style="height: 40px;">
                 <span class="item_numbers">{{ totalItems }} assets</span>
-                {% if canEdit %}
+                {% if capabilitiesEdit %}
                     <span class="pull-right" style="margin-right: 20px;">{{ 'prod:expose:publication:Info drag element and set order' | trans }}</span>
                 {% endif %}
             </div>
@@ -74,7 +65,7 @@
                         src="{{ pubAsset.asset.thumbUrl|trim }}" data-original="{{ pubAsset.asset.thumbUrl|trim }}" ondragstart="return false;">
             </div>
 
-            {% if canEdit %}
+            {% if capabilitiesEdit %}
                 <div class="set-cover" style="position: absolute;bottom: 0;cursor: pointer;" title="Set as Cover"
                      data-publication-id="{{ pubAsset.publication.id }}" data-asset-id="{{ pubAsset.asset.id }}">
 
@@ -82,7 +73,7 @@
                 </div>
             {% endif %}
 
-            {% if canDelete %}
+            {% if capabilitiesDelete %}
                 <div class="bottom">
                     <a class="WorkZoneElementRemover removeAsset" data-asset-id="{{ pubAsset.asset.id }}" data-publication-id="{{ pubAsset.publication.id }}">
                         <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
