@@ -8,6 +8,8 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanBasesCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanApiLogsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanWorkerRunningJobCommand;
 use Alchemy\Phrasea\Command\Maintenance\SessionsCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
@@ -38,6 +40,10 @@ $cli->command(new CleanUsersCommand());
 $cli->command(new CleanBasesCommand());
 
 $cli->command(new CleanRightsCommand());
+
+$cli->command(new CleanApiLogsCommand());
+
+$cli->command(new CleanWorkerRunningJobCommand());
 
 $cli->command(new SessionsCommand());
 
