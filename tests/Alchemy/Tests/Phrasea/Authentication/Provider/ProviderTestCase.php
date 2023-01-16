@@ -7,8 +7,10 @@ use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use appbox;
 use DataURI\Parser;
+use Doctrine\ORM\EntityManager;
 use RandomLib\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -316,6 +318,12 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
         $randomGenerator = $this->getMockBuilder(RandomGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $usrAuthProviderRepository = $this->getMockBuilder(UsrAuthProviderRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $entityManager = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         return new ProviderFactory(
             $this->getUrlGeneratorMock(),
@@ -324,7 +332,9 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
             $userRepository,
             $ACLProvider,
             $appbox,
-            $randomGenerator
+            $randomGenerator,
+            $usrAuthProviderRepository,
+            $entityManager
         );
     }
 }
