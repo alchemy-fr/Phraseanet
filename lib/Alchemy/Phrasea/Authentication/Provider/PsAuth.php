@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Exception;
 use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Client as Guzzle;
@@ -324,7 +325,7 @@ class PsAuth extends AbstractProvider
 
         $this->debug();
 
-        $this->CreateUser([
+        $userUA = $this->CreateUser([
             'id'        => $distantUserId = $data['user_id'],
             'login'     => $data['username'],
             'firstname' => null,
@@ -333,8 +334,33 @@ class PsAuth extends AbstractProvider
             '_groups'   => $data['groups']
         ]);
 
+        $userAuthProviderRepository = $this->getUsrAuthProviderRepository();
+        $userAuthProvider = $userAuthProviderRepository
+            ->findWithProviderAndId($this->getId(), $distantUserId);
+
+        if (!$userAuthProvider) {
+            $manager = $this->getEntityManager();
+
+            $usrAuthProvider = new UsrAuthProvider();
+            $usrAuthProvider->setDistantId($distantUserId);
+            $usrAuthProvider->setProvider($this->getId());
+            $usrAuthProvider->setUser($userUA);
+
+            try {
+                $manager->persist($usrAuthProvider);
+                $manager->flush();
+            }
+            catch (\Exception $e) {
+                // no-op
+                $this->debug();
+            }
+        }
+
         $this->session->set($this->getId() . ".provider.id", $distantUserId);
         $this->session->set($this->getId() . ".provider.username", $data['username']);
+
+        $this->debug(sprintf("session->set('%s', '%s')", $this->getId() . ".provider.id", $distantUserId));
+        $this->debug(sprintf("session->set('%s', '%s')", $this->getId() . ".provider.username", $data['username']));
     }
 
     /**
@@ -343,13 +369,19 @@ class PsAuth extends AbstractProvider
     public function getToken(): Token
     {
         $this->debug();
-        if ('' === trim($this->session->get($this->getId() . '.provider.id'))) {
+        $distantUserId = $this->session->get($this->getId() . '.provider.id');
+        $this->debug(sprintf("session->get('%s') ==> '%s')", $this->getId() . ".provider.id", $distantUserId));
+
+        if ('' === trim($distantUserId)) {
             $this->debug();
             throw new NotAuthenticatedException($this->getId() . ' has not authenticated');
         }
 
         $this->debug();
-        return new Token($this, $this->session->get($this->getId() . '.provider.id'));
+        $token = new Token($this, $distantUserId);
+        $this->debug();
+
+        return $token;
     }
 
     /**
@@ -423,6 +455,7 @@ class PsAuth extends AbstractProvider
             $tmp_email = str_replace(['.', '@'], ['_', '_'], $login) . "@nomail.eu";
             $userUA = $userManipulator->createUser($login, 'user_tmp_pwd', $tmp_email, false);
 
+
             if ($userUA) {
                 $this->debug(sprintf("found user \"%s\" with id=%s \n", $login, $userUA->getId()));
 
@@ -460,7 +493,7 @@ class PsAuth extends AbstractProvider
         if ($userUA) {
             $this->debug(sprintf("User id=%s \n", $userUA->getId()));
 
-            // apply groups
+           // apply groups
             if (is_array($data['_groups'])) {
 
                 $userACL = $ACLProvider->get($userUA);
