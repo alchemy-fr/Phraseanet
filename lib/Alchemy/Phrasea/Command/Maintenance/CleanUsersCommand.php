@@ -205,9 +205,14 @@ class CleanUsersCommand extends Command
                 $nowDate->sub(new \DateInterval($interval));
                 $action = "in grace period";
 
+                $validMail = true;
+                if (!\Swift_Validate::email($user->getEmail())) {
+                    $validMail = false;
+                }
+
                 if (empty($lastInactivityEmail) || $lastInactivityEmail < $nowDate) {
                     // first, relance the user by email to have a grace period
-                    if ($nbRelance < $maxRelances) {
+                    if (($nbRelance < $maxRelances) && $validMail) {
                         if (!$dry) {
                             $this->relanceUser($user, $graceDuration);
                             $user->setNbInactivityEmail($nbRelance+1);
@@ -228,7 +233,13 @@ class CleanUsersCommand extends Command
 
                             $output->writeln(" deleted.");
                         }
-                        $action = sprintf("max_relances=%d , found %d times relanced (will be deleted if not --dry-run)", $maxRelances, $nbRelance);
+
+                        if ($validMail) {
+                            $action = sprintf("max_relances=%d , found %d times relanced (will be deleted if not --dry-run)", $maxRelances, $nbRelance);
+                        } else {
+                            $action = "no valid address email for the user (will be deleted if not --dry-run)";
+                        }
+
                         $nbUserDeleted++;
                     }
                 }
