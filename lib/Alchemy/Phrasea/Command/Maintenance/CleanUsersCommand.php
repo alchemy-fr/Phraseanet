@@ -273,18 +273,23 @@ class CleanUsersCommand extends Command
 
     private function relanceUser(User $user, $graceDuration)
     {
-        /** @var TokenManipulator $tokenManipulator */
-        $tokenManipulator = $this->container['manipulator.token'];
-        $token = $tokenManipulator->create($user, TokenManipulator::TYPE_USER_RELANCE, new \DateTime("+{$graceDuration} day"));
+        try {
+            /** @var TokenManipulator $tokenManipulator */
+            $tokenManipulator = $this->container['manipulator.token'];
+            $token = $tokenManipulator->create($user, TokenManipulator::TYPE_USER_RELANCE, new \DateTime("+{$graceDuration} day"));
 
-        $receiver = Receiver::fromUser($user);
-        $mail = MailRequestInactifAccount::create($this->container, $receiver);
+            $receiver = Receiver::fromUser($user);
+            $mail = MailRequestInactifAccount::create($this->container, $receiver);
 
-        $servername = $this->container['conf']->get('servername');
-        $mail->setButtonUrl('http://'.$servername.'/prod/?LOG='.$token->getValue());
-        $mail->setExpiration($token->getExpiration());
+            $mail->setLogin($user->getLogin());
+            $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
+            $mail->setDeleteDate((new \DateTime("+{$graceDuration} day"))->format('Y-m-d'));
 
-        $this->deliver($mail);
+            // return 0 on failure
+            $this->deliver($mail);
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
     /**
