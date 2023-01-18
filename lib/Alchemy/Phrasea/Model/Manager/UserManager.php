@@ -222,6 +222,16 @@ class UserManager
         $this->cleanAuthProvider($user);
         $this->cleanUserSessions($user);
         $this->cleanOauthApplication($user);
+        $this->cleanLazarets($user);
+    }
+
+    private function cleanLazarets(User $user)
+    {
+        $lazaretSessions = $this->objectManager->getRepository('Phraseanet:LazaretSession')->findBy(['user' => $user]);
+
+        foreach ($lazaretSessions as $lazaretSession) {
+            $this->objectManager->remove($lazaretSession);
+        }
     }
 
     /**

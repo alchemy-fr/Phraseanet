@@ -15,7 +15,9 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use appbox;
+use Doctrine\ORM\EntityManager;
 use RandomLib\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -59,6 +61,17 @@ abstract class AbstractProvider implements ProviderInterface
      * @var RandomGenerator
      */
     private $randomGenerator;
+
+
+    /**
+     * @var UsrAuthProviderRepository
+     */
+    private $usrAuthProviderRepository;
+
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
     /**
      * @var array
@@ -259,6 +272,22 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * @return UsrAuthProviderRepository
+     */
+    public function getUsrAuthProviderRepository(): UsrAuthProviderRepository
+    {
+        return $this->usrAuthProviderRepository;
+    }
+
+    /**
+     * @param UsrAuthProviderRepository $usrAuthProviderRepository
+     */
+    public function setUsrAuthProviderRepository(UsrAuthProviderRepository $usrAuthProviderRepository)
+    {
+        $this->usrAuthProviderRepository = $usrAuthProviderRepository;
+    }
+
+    /**
      * @return array
      */
     public function getOptions(): array
@@ -272,6 +301,22 @@ abstract class AbstractProvider implements ProviderInterface
     public function setOptions(array $options)
     {
         $this->options = $options;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager(): EntityManager
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @param EntityManager $entityManager
+     */
+    public function setEntityManager(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
     }
 
     protected function createState()
