@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-12-20T15:33:39Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2023-01-18T08:21:50Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2537,7 +2537,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -4194,7 +4194,7 @@
       <trans-unit id="9ecde8751aca5fdbd5f84834b14a216f5a911c17" resname="Load More" approved="yes">
         <source>Load More</source>
         <target state="translated">Load More</target>
-        <jms:reference-file line="105">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="96">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d199e1a9275786d54f74e5d79f41702274fe5160" resname="Loading database documentary structure ..." approved="yes">
         <source>Loading database documentary structure ...</source>
@@ -4856,14 +4856,14 @@
         <target state="translated">Order</target>
         <jms:reference-file line="82">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied" approved="no">
+      <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied">
         <source>Order has been denied</source>
         <target state="needs-translation">Choice(s) applied.</target>
         <jms:reference-file line="217">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="no">
+      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent">
         <source>Order has been sent</source>
         <target state="needs-translation">Choice(s) applied.</target>
         <jms:reference-file line="185">Order/Controller/ProdOrderController.php</jms:reference-file>
@@ -11518,25 +11518,35 @@
         <target state="translated">May</target>
         <jms:reference-file line="718">classes/module/report.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e1b209a684084fff65dc7751a56b68d13683ad38" resname="mail:: connect to phraseanet">
-        <source>mail:: connect to phraseanet</source>
-        <target state="new">mail:: connect to phraseanet</target>
-        <jms:reference-file line="29">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
         <source>mail:: inactif account</source>
         <target state="new">mail:: inactif account</target>
-        <jms:reference-file line="13">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+        <jms:reference-file line="34">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="de4036d68dc1676d5aede10a8e57f4b1d1b8683c" resname="mail:: inactif account delete account info , account will be deleted on %deleteDate%">
+        <source>mail:: inactif account delete account info , account will be deleted on %deleteDate%</source>
+        <target state="new">mail:: inactif account delete account info , account will be deleted on %deleteDate%</target>
+        <jms:reference-file line="67">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f78804fc06032da4c81effba3016f261f2504377" resname="mail:: inactif account hello">
+        <source>mail:: inactif account hello</source>
+        <target state="new">mail:: inactif account hello</target>
+        <jms:reference-file line="55">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5040a0142dca3bd1d27fc7730f15bc515d22c560" resname="mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%">
+        <source>mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%</source>
+        <target state="new">mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%</target>
+        <jms:reference-file line="57">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bfbfe9a399e2b459d721aa5d91633bd46473cd70" resname="mail:: inactif account keep account info , connect before %deleteDate%">
+        <source>mail:: inactif account keep account info , connect before %deleteDate%</source>
+        <target state="new">mail:: inactif account keep account info , connect before %deleteDate%</target>
+        <jms:reference-file line="63">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
         <source>mail:: validation: Vote will expire on %expire%</source>
         <target state="translated">Feedback session expires on %expire%</target>
         <jms:reference-file line="108">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="9c627983e8b23c12caf1415fd0e7b49c4712c219" resname="mail:: your account is inactif and to be deleted!">
-        <source>mail:: your account is inactif and to be deleted!</source>
-        <target state="needs-translation">Your account is now inactive and will be deleted soon!</target>
-        <jms:reference-file line="21">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
         <source>mail::share Open with Lightbox</source>
@@ -11692,7 +11702,7 @@
         <target state="translated">Address</target>
         <jms:reference-file line="91">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated" approved="no">
+      <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated">
         <source>order-manager::order-item: already-validated</source>
         <target state="needs-translation">Already sent</target>
         <jms:reference-file line="294">prod/orders/order_item.html.twig</jms:reference-file>
@@ -11811,7 +11821,7 @@
         <target state="translated">Tel</target>
         <jms:reference-file line="90">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate" approved="no">
+      <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate">
         <source>order-manager::order-item: validate</source>
         <target state="needs-translation">Validate choices</target>
         <jms:reference-file line="133">prod/orders/order_item.html.twig</jms:reference-file>
@@ -12249,7 +12259,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13576,17 +13586,17 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="17973965f96bc86b5b9dd09879ce96f5d5dbc89a" resname="prod:expose preview">
         <source>prod:expose preview</source>
         <target state="translated">Preview</target>
-        <jms:reference-file line="18">prod/WorkZone/ExposeList.html.twig</jms:reference-file>
+        <jms:reference-file line="23">prod/WorkZone/ExposeList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
         <target state="needs-translation">Publication is disabled</target>
-        <jms:reference-file line="26">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="17">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eab42ad1c7433247468f47601baf4a4470d9cebe" resname="prod:expose: enabled">
         <source>prod:expose: enabled</source>
         <target state="needs-translation">Publication is enabled</target>
-        <jms:reference-file line="21">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="12">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="yes">
         <source>prod:expose:Add publication</source>
@@ -13651,7 +13661,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="8e6332dde288968d262020d7f1d0679a0a8bcb8d" resname="prod:expose:publication:Delete" approved="yes">
         <source>prod:expose:publication:Delete</source>
         <target state="translated">Delete Publication</target>
-        <jms:reference-file line="32">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="23">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="98b7130de090d47c8acbc3005dd740df4b7d6d24" resname="prod:expose:publication:Description">
         <source>prod:expose:publication:Description</source>
@@ -13697,7 +13707,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="e2562f49e9bd07c1ac7db0bab221a9dbf209d523" resname="prod:expose:publication:Info drag element and set order">
         <source>prod:expose:publication:Info drag element and set order</source>
         <target state="translated">Drag and drop to order items</target>
-        <jms:reference-file line="59">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="50">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="879311e23dbb4491b0144ce49a6d66e83bd660e7" resname="prod:expose:publication:Layout" approved="yes">
         <source>prod:expose:publication:Layout</source>
@@ -13732,7 +13742,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="a2a8888f67982de346cedbe03b5884757de77925" resname="prod:expose:publication:Parent Publication" approved="yes">
         <source>prod:expose:publication:Parent Publication</source>
         <target state="translated">Parent Publication</target>
-        <jms:reference-file line="37">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="28">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
         <jms:reference-file line="22">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="46">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -13765,7 +13775,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="2a1795f494a3d378d7e089f44aaba611d2840f96" resname="prod:expose:publication:Refresh Publication" approved="yes">
         <source>prod:expose:publication:Refresh Publication</source>
         <target state="translated">Refresh Assets</target>
-        <jms:reference-file line="40">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="31">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f0ee6ea23eac8f7db8e39a77d3027629342b0e10" resname="prod:expose:publication:Select Layout" approved="yes">
         <source>prod:expose:publication:Select Layout</source>
@@ -13798,7 +13808,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="9d9ba3cf749d5ab678b4474e81826e427804e9d9" resname="prod:expose:publication:Set order">
         <source>prod:expose:publication:Set order</source>
         <target state="translated">Save order</target>
-        <jms:reference-file line="46">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="37">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="77e197ee00b2da0b378e08f9717e9029907dde6d" resname="prod:expose:publication:Slug" approved="yes">
         <source>prod:expose:publication:Slug</source>
@@ -14337,7 +14347,7 @@ It is possible to place several search areas</target>
       <trans-unit id="e32952b1a087c6ba28e13097e0ebb5395c2f2105" resname="reponses::document sans titre" approved="yes">
         <source>reponses::document sans titre</source>
         <target state="translated">Untitled</target>
-        <jms:reference-file line="1013">classes/record/adapter.php</jms:reference-file>
+        <jms:reference-file line="1015">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)" approved="yes">
         <source>report:: (connexions)</source>
@@ -15334,7 +15344,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -15906,7 +15916,7 @@ It is possible to place several search areas</target>
         <target state="translated">Users rights have been reseted</target>
         <jms:reference-file line="725">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="no">
+      <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate">
         <source>validate</source>
         <target state="translated">Validate</target>
         <jms:reference-file line="104">actions/Tools/index.html.twig</jms:reference-file>

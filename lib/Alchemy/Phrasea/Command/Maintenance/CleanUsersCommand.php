@@ -205,9 +205,14 @@ class CleanUsersCommand extends Command
                 $nowDate->sub(new \DateInterval($interval));
                 $action = "in grace period";
 
+                $validMail = true;
+                if (!\Swift_Validate::email($user->getEmail())) {
+                    $validMail = false;
+                }
+
                 if (empty($lastInactivityEmail) || $lastInactivityEmail < $nowDate) {
                     // first, relance the user by email to have a grace period
-                    if ($nbRelance < $maxRelances) {
+                    if (($nbRelance < $maxRelances) && $validMail) {
                         if (!$dry) {
                             $this->relanceUser($user, $graceDuration);
                             $user->setNbInactivityEmail($nbRelance+1);
@@ -228,7 +233,13 @@ class CleanUsersCommand extends Command
 
                             $output->writeln(" deleted.");
                         }
-                        $action = sprintf("max_relances=%d , found %d times relanced (will be deleted if not --dry-run)", $maxRelances, $nbRelance);
+
+                        if ($validMail) {
+                            $action = sprintf("max_relances=%d , found %d times relanced (will be deleted if not --dry-run)", $maxRelances, $nbRelance);
+                        } else {
+                            $action = "no valid address email for the user (will be deleted if not --dry-run)";
+                        }
+
                         $nbUserDeleted++;
                     }
                 }
@@ -262,18 +273,23 @@ class CleanUsersCommand extends Command
 
     private function relanceUser(User $user, $graceDuration)
     {
-        /** @var TokenManipulator $tokenManipulator */
-        $tokenManipulator = $this->container['manipulator.token'];
-        $token = $tokenManipulator->create($user, TokenManipulator::TYPE_USER_RELANCE, new \DateTime("+{$graceDuration} day"));
+        try {
+            /** @var TokenManipulator $tokenManipulator */
+            $tokenManipulator = $this->container['manipulator.token'];
+            $token = $tokenManipulator->create($user, TokenManipulator::TYPE_USER_RELANCE, new \DateTime("+{$graceDuration} day"));
 
-        $receiver = Receiver::fromUser($user);
-        $mail = MailRequestInactifAccount::create($this->container, $receiver);
+            $receiver = Receiver::fromUser($user);
+            $mail = MailRequestInactifAccount::create($this->container, $receiver);
 
-        $servername = $this->container['conf']->get('servername');
-        $mail->setButtonUrl('http://'.$servername.'/prod/?LOG='.$token->getValue());
-        $mail->setExpiration($token->getExpiration());
+            $mail->setLogin($user->getLogin());
+            $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
+            $mail->setDeleteDate((new \DateTime("+{$graceDuration} day"))->format('Y-m-d'));
 
-        $this->deliver($mail);
+            // return 0 on failure
+            $this->deliver($mail);
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
     /**
