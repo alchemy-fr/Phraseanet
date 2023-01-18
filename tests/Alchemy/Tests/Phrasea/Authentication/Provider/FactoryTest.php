@@ -6,7 +6,9 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Provider\Factory;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use appbox;
+use Doctrine\ORM\EntityManager;
 use RandomLib\Generator as RandomGenerator;
 
 /**
@@ -41,9 +43,17 @@ class FactoryTest extends \PhraseanetTestCase
         $randomGenerator = $this->getMockBuilder(RandomGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $usrAuthProviderRepository = $this->getMockBuilder(UsrAuthProviderRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $entityManager = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-
-        $factory = new Factory($generator, $session, $userManipulator, $userRepository, $ACLProvider, $appbox, $randomGenerator);
+        $factory = new Factory($generator, $session, $userManipulator, $userRepository, $ACLProvider, $appbox, $randomGenerator,
+            $usrAuthProviderRepository,
+            $entityManager
+        );
 
         $this->assertInstanceOf($expected, $factory->build($id, $type, true, $id, $options));
     }

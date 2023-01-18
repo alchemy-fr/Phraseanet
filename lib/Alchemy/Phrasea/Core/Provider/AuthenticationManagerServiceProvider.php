@@ -53,7 +53,9 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                $app['repo.users'],
                $app['acl'],
                $app['phraseanet.appbox'],
-               $app['random.medium']
+               $app['random.medium'],
+               $app['repo.usr-auth-providers'],
+               $app['orm.em']
            );
         });
 
