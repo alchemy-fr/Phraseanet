@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-01-18T08:21:39Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -8414,17 +8414,17 @@
       </trans-unit>
       <trans-unit id="a2d4204187473ea7398879317c4e4cd4462dfc49" resname="admin::base:collection:text delete collection">
         <source>admin::base:collection:text delete collection</source>
-        <target state="needs-translation">Löschen Sie die Kollektion. Die Kollektion muss leer sein, bevor Sie diese Aktion durchführen. Achtung: Diese Aktion kann nicht rückgängig gemacht werden.</target>
+        <target state="translated">Löschen Sie die Kollektion. Die Kollektion muss leer sein, bevor Sie diese Aktion durchführen. Achtung: Diese Aktion kann nicht rückgängig gemacht werden.</target>
         <jms:reference-file line="147">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7820a26d484cb0593c602611a191f15040ba0053" resname="admin::base:collection:text disable collection">
         <source>admin::base:collection:text disable collection</source>
-        <target state="needs-translation">Der Inhalt der Kollektion wird nicht mehr erreichbar sein, dies erfordert eine erneute Benutzer Verbindung. Alle Benutzerrechte bleiben erhalten, Sie können diese Kollektion später wieder veröffentlichen.</target>
+        <target state="translated">Der Inhalt der Kollektion wird nicht mehr erreichbar sein, dies erfordert eine erneute Benutzer Verbindung. Alle Benutzerrechte bleiben erhalten, Sie können diese Kollektion später wieder veröffentlichen.</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="602071c592610a7ed7d0cf2bf3a6b401a372b375" resname="admin::base:collection:text empty collection">
         <source>admin::base:collection:text empty collection</source>
-        <target state="needs-translation">Alle Datensätze der Kollektion werden dauerhaft gelöscht. Die benötigte Zeit hängt von der Anzahl der Datensätze der Kollektion ab.</target>
+        <target state="translated">Alle Datensätze der Kollektion werden dauerhaft gelöscht. Die benötigte Zeit hängt von der Anzahl der Datensätze der Kollektion ab.</target>
         <jms:reference-file line="137">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a2dad2f040ad5a91dcd2336b89eac600785f995" resname="admin::base:collection:tooltip enable collection">
@@ -11527,17 +11527,17 @@
       </trans-unit>
       <trans-unit id="f78804fc06032da4c81effba3016f261f2504377" resname="mail:: inactif account hello">
         <source>mail:: inactif account hello</source>
-        <target state="new">mail:: inactif account hello</target>
+        <target state="needs-translation">Hallo,</target>
         <jms:reference-file line="55">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5040a0142dca3bd1d27fc7730f15bc515d22c560" resname="mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%">
         <source>mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%</source>
-        <target state="new">mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%</target>
+        <target state="needs-translation">Ihr Konto mit dem Login %login% in der Anwendung %application% wird seit dem %lastConnection% nicht mehr verwendet.</target>
         <jms:reference-file line="57">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfbfe9a399e2b459d721aa5d91633bd46473cd70" resname="mail:: inactif account keep account info , connect before %deleteDate%">
         <source>mail:: inactif account keep account info , connect before %deleteDate%</source>
-        <target state="new">mail:: inactif account keep account info , connect before %deleteDate%</target>
+        <target state="needs-translation">Wenn Sie dieses Konto aktiv behalten möchten, müssen Sie vor dem %deleteDate% Anmeldung durchführen.</target>
         <jms:reference-file line="63">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
@@ -11820,7 +11820,7 @@
       </trans-unit>
       <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate">
         <source>order-manager::order-item: validate</source>
-        <target state="needs-translation">Die Auswahl bestätigen</target>
+        <target state="translated">Die Auswahl bestätigen</target>
         <jms:reference-file line="133">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e77f2b48e4de1e7776765dacd6b6c49434f57fdd" resname="order-manager::order-item: warning-message-close" approved="yes">
@@ -12256,7 +12256,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13590,7 +13590,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="eab42ad1c7433247468f47601baf4a4470d9cebe" resname="prod:expose: enabled">
         <source>prod:expose: enabled</source>
-        <target state="needs-translation">Veröffentlichung ist aktiviert</target>
+        <target state="translated">Veröffentlichung ist aktiviert</target>
         <jms:reference-file line="12">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="yes">
@@ -13836,7 +13836,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="61818a681f0a1b649fb1b95cf7fe384b024fcd64" resname="prod:expose:publication:check slug">
         <source>prod:expose:publication:check slug</source>
-        <target state="needs-translation">Verfügbarkeit prüfen</target>
+        <target state="translated">Verfügbarkeit prüfen</target>
         <jms:reference-file line="13">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="37">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -14865,7 +14865,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4" resname="secret">
         <source>secret</source>
-        <target state="new">secret</target>
+        <target state="translated">secret</target>
         <jms:reference-file line="28">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fe29f1a35e814c87a21282378424df4866529d1e" resname="select at least one user" approved="yes">
@@ -15336,7 +15336,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
