@@ -8,7 +8,9 @@ class MailRequestInactifAccount extends AbstractMail
 {
 
     private $login;
+    /** @var string */
     private $lastConnection;
+    /** @var string */
     private $deleteDate;
 
     public function setLogin($login)
@@ -56,7 +58,7 @@ class MailRequestInactifAccount extends AbstractMail
             . "\n" .
             $this->app->trans("mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%", [
                 '%login%' => $this->login,
-                '%application%' => $this->getPhraseanetTitle(),
+                '%application%' => '<a href="'.$this->getPhraseanetURL().'" target="_blank">'.$this->getPhraseanetTitle().'</a>',
                 '%lastConnection%'  =>  $this->lastConnection,
             ], 'messages', $this->getLocale())
             . "\n" .

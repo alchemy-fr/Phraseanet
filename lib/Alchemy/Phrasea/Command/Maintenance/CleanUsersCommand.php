@@ -16,11 +16,11 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
-use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailRequestInactifAccount;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessAccountInactifDelete;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -205,14 +205,14 @@ class CleanUsersCommand extends Command
                 $nowDate->sub(new \DateInterval($interval));
                 $action = "in grace period";
 
-                $validMail = true;
+                $isValidMail = true;
                 if (!\Swift_Validate::email($user->getEmail())) {
-                    $validMail = false;
+                    $isValidMail = false;
                 }
 
                 if (empty($lastInactivityEmail) || $lastInactivityEmail < $nowDate) {
                     // first, relance the user by email to have a grace period
-                    if (($nbRelance < $maxRelances) && $validMail) {
+                    if (($nbRelance < $maxRelances) && $isValidMail) {
                         if (!$dry) {
                             $this->relanceUser($user, $graceDuration);
                             $user->setNbInactivityEmail($nbRelance+1);
@@ -227,14 +227,15 @@ class CleanUsersCommand extends Command
                                 $baskets = $basketRepository->findBy(['user' => $user]);
                                 $this->getBasketManipulator()->removeBaskets($baskets);
                             }
-                            // delete user
-                            $userManipulator->delete($user);
+                            // delete user and notify by mail
+                            $this->doDelete($user, $userManipulator, $isValidMail);
+
                             $output->write(sprintf("%s : %s / %s (%s)", $row['usr_id'], $row['login'], $row['email'], $row['last_connection']));
 
                             $output->writeln(" deleted.");
                         }
 
-                        if ($validMail) {
+                        if ($isValidMail) {
                             $action = sprintf("max_relances=%d , found %d times relanced (will be deleted if not --dry-run)", $maxRelances, $nbRelance);
                         } else {
                             $action = "no valid address email for the user (will be deleted if not --dry-run)";
@@ -274,10 +275,6 @@ class CleanUsersCommand extends Command
     private function relanceUser(User $user, $graceDuration)
     {
         try {
-            /** @var TokenManipulator $tokenManipulator */
-            $tokenManipulator = $this->container['manipulator.token'];
-            $token = $tokenManipulator->create($user, TokenManipulator::TYPE_USER_RELANCE, new \DateTime("+{$graceDuration} day"));
-
             $receiver = Receiver::fromUser($user);
             $mail = MailRequestInactifAccount::create($this->container, $receiver);
 
@@ -289,6 +286,25 @@ class CleanUsersCommand extends Command
             $this->deliver($mail);
         } catch (\Exception $e) {
             echo $e->getMessage();
+        }
+    }
+
+    private function doDelete(User $user, UserManipulator $userManipulator, $validMail)
+    {
+        try {
+            if ($validMail) {
+                $receiver = Receiver::fromUser($user);
+                $mail = MailSuccessAccountInactifDelete::create($this->container, $receiver);
+                $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
+            }
+
+            $userManipulator->delete($user);
+
+            if ($validMail) {
+                // return 0 on failure
+                $this->deliver($mail);
+            }
+        } catch (\Exception $e) {
         }
     }
 

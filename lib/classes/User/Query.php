@@ -63,6 +63,7 @@ class User_Query
     protected $only_user_templates = false;
     protected $templates_only = false;
     protected $mail_locked_only = false;
+    protected $grace_period_only = false;
     protected $email_not_null = false;
     protected $base_ids = [];
     protected $sbas_ids = [];
@@ -260,6 +261,20 @@ class User_Query
     public function mail_locked_only($boolean)
     {
         $this->mail_locked_only = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict only on grace period
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function grace_period_only($boolean)
+    {
+        $this->grace_period_only = !!$boolean;
 
         return $this;
     }
@@ -1001,6 +1016,10 @@ class User_Query
 
         if ($this->mail_locked_only) {
             $sql .= ' AND mail_locked = 1';
+        }
+
+        if ($this->grace_period_only) {
+            $sql .= ' AND Users.nb_inactivity_email > 0 ';
         }
 
         if ($this->emailDomains) {
