@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -107,7 +108,7 @@ class LightboxController extends Controller
         if ($this->app['browser']->isMobile()) {
             return $this->renderResponse('lightbox/basket_element.html.twig', [
                 'basket_element' => $basketElement,
-                'module_name'    => $basketElement->getRecord($this->app)->get_title(),
+                'module_name'    => $basketElement->getRecord($this->app)->get_title(['encode'=> record_adapter::ENCODE_NONE]),
                 'nextId'         => $nextId,
                 'prevId'         => $prevId
             ]);
@@ -116,7 +117,7 @@ class LightboxController extends Controller
 
         $ret = [];
         $ret['number'] = $basketElement->getRecord($this->app)->getNumber();
-        $ret['title'] = $basketElement->getRecord($this->app)->get_title();
+        $ret['title'] = $basketElement->getRecord($this->app)->get_title(['encode'=> record_adapter::ENCODE_NONE]);
 
         $ret['preview'] = $this->render(
             'common/preview.html.twig',
@@ -157,13 +158,13 @@ class LightboxController extends Controller
         if ($browser->isMobile()) {
             return $this->renderResponse('lightbox/feed_element.html.twig', [
                 'feed_element' => $item,
-                'module_name'  => $record->get_title()
+                'module_name'  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE])
             ]);
         }
 
         $ret = [];
         $ret['number'] = $record->getNumber();
-        $ret['title'] = $record->get_title();
+        $ret['title'] = $record->get_title(['encode'=> record_adapter::ENCODE_NONE]);
         $ret['preview'] = $this->render('common/preview.html.twig', [
             'record' => $record,
             'not_wrapped' => true,
