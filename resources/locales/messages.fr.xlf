@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-01-20T15:37:45Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -3365,12 +3365,12 @@
       </trans-unit>
       <trans-unit id="5103a4a398146306aa27923e6cce52672060bbd6" resname="Flush All Caches">
         <source>Flush All Caches</source>
-        <target state="needs-translation">Vider les Caches de l'application</target>
+        <target state="translated">Vider les Caches de l'application</target>
         <jms:reference-file line="152">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f6d859db6f9a2d8c84dcf5c840b6b1d55439ad0a" resname="Flush session">
         <source>Flush session</source>
-        <target state="needs-translation">Flush des sessions, déconnecter tous les utilisateurs</target>
+        <target state="translated">Flush des sessions, déconnecter tous les utilisateurs</target>
         <jms:reference-file line="156">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bd85a7d22f6cdee554e5b9e865d26dcbb4dafc9" resname="Focal length" approved="yes">
@@ -4855,7 +4855,7 @@
       </trans-unit>
       <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied">
         <source>Order has been denied</source>
-        <target state="needs-translation">Choix appliqué(s).</target>
+        <target state="translated">Choix appliqué(s).</target>
         <jms:reference-file line="217">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/orders/order_item.html.twig</jms:reference-file>
@@ -9102,7 +9102,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="30ab8fbf04e70f76c8af2da82ec244c92137b3e8" resname="admin::userlist: user in grace period only">
         <source>admin::userlist: user in grace period only</source>
-        <target state="needs-translation">Lister les utilisateurs en période de Grace</target>
+        <target state="needs-translation">Utilisateurs en instance de suppression</target>
         <jms:reference-file line="53">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="066e4bf19c914aa7b3dce70cb3ba25be17f9970d" resname="admin::userlist: user mail locked only">
@@ -11553,7 +11553,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="7ea61df220e487d0db115bce9776f79abc43fe23" resname="mail:: inactif account info with login">
         <source>mail:: inactif account info with login</source>
-        <target state="new">mail:: inactif account info with login</target>
+        <target state="needs-translation">Votre compte ayant comme login</target>
         <jms:reference-file line="59">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfbfe9a399e2b459d721aa5d91633bd46473cd70" resname="mail:: inactif account keep account info , connect before %deleteDate%">
@@ -11563,17 +11563,17 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="7021425d1e6b12b10641fd50e7cf787ff393ce5e" resname="mail:: inactif account on application %application% is inactif since %lastConnection%">
         <source>mail:: inactif account on application %application% is inactif since %lastConnection%</source>
-        <target state="new">mail:: inactif account on application %application% is inactif since %lastConnection%</target>
+        <target state="needs-translation">sur l'application %application% est inactif depuis le %lastConnection%.</target>
         <jms:reference-file line="61">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
         <source>mail:: test email sended</source>
-        <target state="new">mail:: test email sended</target>
+        <target state="needs-translation">Mail de test</target>
         <jms:reference-file line="21">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
         <source>mail:: test sended from %application%</source>
-        <target state="new">mail:: test sended from %application%</target>
+        <target state="needs-translation">Email de test émis depuis %application%.</target>
         <jms:reference-file line="29">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
@@ -11588,12 +11588,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="4f98b161b1dd8e4882edcf02529422784042cace" resname="mail::account deletion confirmation no activities since %lastConnection%">
         <source>mail::account deletion confirmation no activities since %lastConnection%</source>
-        <target state="needs-translation">Nous n'avons pas enregistré d'activité sur votre compte depuis le %lastConnection% .</target>
+        <target state="needs-translation">Nous n'avons pas enregistré d'activité sur votre compte depuis le %lastConnection%.</target>
         <jms:reference-file line="49">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ffdd023c8bd8b6465b789382a92f144ee78372cb" resname="mail::account deletion last relance at  %lastInactivityEmail%">
-        <source>mail::account deletion last relance at  %lastInactivityEmail%</source>
-        <target state="new">mail::account deletion last relance at  %lastInactivityEmail%</target>
+        <source>mail::account deletion last relance at %lastInactivityEmail%</source>
+        <target state="needs-translation">Une relance vous a été envoyé le %lastInactivityEmail%.</target>
         <jms:reference-file line="53">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -12302,7 +12302,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15390,7 +15390,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
