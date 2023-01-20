@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-01-19T14:26:36Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2023-01-20T15:05:18Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2537,7 +2537,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -4038,7 +4038,7 @@
       <trans-unit id="1486ba721fa0e62d17c809eb55964a1c514f6d3f" resname="Le contenu de cet email est confidentiel, ne le divulguez pas." approved="yes">
         <source>Le contenu de cet email est confidentiel, ne le divulguez pas.</source>
         <target state="translated">The content of this e-mail is confidential. Please do not disclose it.</target>
-        <jms:reference-file line="125">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="127">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d90d64a516aa1d05e3aa4c5beb4f9e80bf77bb1" resname="Le nom de base de donnee est incorrect" approved="yes">
         <source>Le nom de base de donnee est incorrect</source>
@@ -4353,7 +4353,7 @@
       <trans-unit id="cbcbdf92e7a47c81ec1719f03f00d8e6c5b5f5ef" resname="Message automatique de Phraseanet" approved="yes">
         <source>Message automatique de Phraseanet</source>
         <target state="translated">Automatic message from Phraseanet</target>
-        <jms:reference-file line="134">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="139">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f17a172513ae816fbe5f183f85cd0c465de0860" resname="Mettre a jour" approved="yes">
         <source>Mettre a jour</source>
@@ -5147,7 +5147,7 @@
       <trans-unit id="b7a45fd93ff9471252ff1535c56c82f2f2d93865" resname="Pour gérer l'envoi d'email automatique, connectez-vous à %link%" approved="yes">
         <source>Pour gérer l'envoi d'email automatique, connectez-vous à %link%</source>
         <target state="translated">To manage automatic e-mail notifications, please connect to %link%.</target>
-        <jms:reference-file line="140">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="145">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb6a1b19177957adc64d41ef7744e5f3f2f1d220" resname="Preference saved !" approved="yes">
         <source>Preference saved !</source>
@@ -11531,12 +11531,12 @@
       <trans-unit id="38fd0a873af9038d35706776f1f1744e7d59992a" resname="mail:: account deletion confirmation  hello">
         <source>mail:: account deletion confirmation hello</source>
         <target state="needs-translation">Hello,</target>
-        <jms:reference-file line="35">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
+        <jms:reference-file line="47">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="12957d5f6be1441309fef99facd9cc5160b525f0" resname="mail:: account deletion confirmation object">
         <source>mail:: account deletion confirmation object</source>
         <target state="needs-translation">Confirmation of your account deletion.</target>
-        <jms:reference-file line="22">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
+        <jms:reference-file line="30">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
         <source>mail:: inactif account</source>
@@ -11546,22 +11546,27 @@
       <trans-unit id="de4036d68dc1676d5aede10a8e57f4b1d1b8683c" resname="mail:: inactif account delete account info , account will be deleted on %deleteDate%">
         <source>mail:: inactif account delete account info , account will be deleted on %deleteDate%</source>
         <target state="needs-translation">If you do not wish to keep this account, please ignore this email and your account will be automatically deleted on %deleteDate% .</target>
-        <jms:reference-file line="69">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+        <jms:reference-file line="70">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f78804fc06032da4c81effba3016f261f2504377" resname="mail:: inactif account hello">
         <source>mail:: inactif account hello</source>
         <target state="needs-translation">Hello,</target>
         <jms:reference-file line="57">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5040a0142dca3bd1d27fc7730f15bc515d22c560" resname="mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%">
-        <source>mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%</source>
-        <target state="needs-translation">Your account with the login %login% on application %application% has no longer been used since %lastConnection% .</target>
+      <trans-unit id="7ea61df220e487d0db115bce9776f79abc43fe23" resname="mail:: inactif account info with login">
+        <source>mail:: inactif account info with login</source>
+        <target state="new">mail:: inactif account info with login</target>
         <jms:reference-file line="59">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfbfe9a399e2b459d721aa5d91633bd46473cd70" resname="mail:: inactif account keep account info , connect before %deleteDate%">
         <source>mail:: inactif account keep account info , connect before %deleteDate%</source>
         <target state="needs-translation">If you wish to keep this account active, you must login by %deleteDate% .</target>
-        <jms:reference-file line="65">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+        <jms:reference-file line="66">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7021425d1e6b12b10641fd50e7cf787ff393ce5e" resname="mail:: inactif account on application %application% is inactif since %lastConnection%">
+        <source>mail:: inactif account on application %application% is inactif since %lastConnection%</source>
+        <target state="new">mail:: inactif account on application %application% is inactif since %lastConnection%</target>
+        <jms:reference-file line="61">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
         <source>mail:: validation: Vote will expire on %expire%</source>
@@ -11571,12 +11576,17 @@
       <trans-unit id="c6f5d0580d5f9b53e49f83dbf0f22bd62be047ac" resname="mail::account deletion confirmation account deleted">
         <source>mail::account deletion confirmation account deleted</source>
         <target state="needs-translation">All data associated with your account has now been deleted from the system.</target>
-        <jms:reference-file line="41">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
+        <jms:reference-file line="57">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4f98b161b1dd8e4882edcf02529422784042cace" resname="mail::account deletion confirmation no activities since %lastConnection%">
         <source>mail::account deletion confirmation no activities since %lastConnection%</source>
         <target state="needs-translation">No activity has been recorded on your account since %lastConnection% .</target>
-        <jms:reference-file line="37">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
+        <jms:reference-file line="49">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ffdd023c8bd8b6465b789382a92f144ee78372cb" resname="mail::account deletion last relance at  %lastInactivityEmail%">
+        <source>mail::account deletion last relance at  %lastInactivityEmail%</source>
+        <target state="new">mail::account deletion last relance at  %lastInactivityEmail%</target>
+        <jms:reference-file line="53">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
         <source>mail::share Open with Lightbox</source>
@@ -12284,7 +12294,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15369,7 +15379,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
