@@ -329,7 +329,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
         $response = $client->getResponse();
         $this->assertFalse($response->isRedirect());
-        $this->assertFlashMessage($crawler, 'error', 1);
+        $this->assertFlashMessage($crawler, 'info', 1);
     }
 
     public function testRenewPasswordMail()
@@ -530,7 +530,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $response = $client->getResponse();
         $this->assertFalse($response->isRedirect());
 
-        $this->assertFlashMessage($crawler, 'error', 1);
+        $this->assertFlashMessage($crawler, 'info', 1);
     }
 
     public function testForgotPasswordSubmission()
