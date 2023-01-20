@@ -56,8 +56,9 @@ class MailRequestInactifAccount extends AbstractMail
         return
             $this->app->trans("mail:: inactif account hello", [], 'messages', $this->getLocale())
             . "\n" .
-            $this->app->trans("mail:: inactif account info with login %login% on application %application% is inactif since %lastConnection%", [
-                '%login%' => $this->login,
+            $this->app->trans("mail:: inactif account info with login")
+            . "\n\n <strong>" . $this->login . "</strong> \n\n"
+            . $this->app->trans("mail:: inactif account on application %application% is inactif since %lastConnection%", [
                 '%application%' => '<a href="'.$this->getPhraseanetURL().'" target="_blank">'.$this->getPhraseanetTitle().'</a>',
                 '%lastConnection%'  =>  $this->lastConnection,
             ], 'messages', $this->getLocale())

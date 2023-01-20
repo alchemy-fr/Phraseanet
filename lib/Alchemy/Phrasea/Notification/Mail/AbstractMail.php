@@ -37,6 +37,8 @@ abstract class AbstractMail implements MailInterface
     protected $expiration;
     /** @var string */
     protected $url;
+    /** @var bool  */
+    protected $hasFooterText = true;
 
     public function __construct(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null)
     {
@@ -64,7 +66,8 @@ abstract class AbstractMail implements MailInterface
             'buttonUrl'         => $this->getButtonURL(),
             'buttonText'        => $this->getButtonText(),
             'mailSkin'          => $this->getMailSkin(),
-            'emailLocale'       => $this->getLocale()
+            'emailLocale'       => $this->getLocale(),
+            'hasFooterText'     => $this->getDisplayFooterText()
         ]);
     }
 
@@ -92,6 +95,16 @@ abstract class AbstractMail implements MailInterface
     public function setLocale($locale)
     {
         $this->locale = $locale;
+    }
+
+    public function getDisplayFooterText()
+    {
+        return $this->hasFooterText;
+    }
+
+    public function setDisplayFooterText(bool $hasFooterText)
+    {
+        $this->hasFooterText = !!$hasFooterText;
     }
 
     /**
