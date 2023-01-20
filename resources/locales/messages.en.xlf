@@ -11445,7 +11445,7 @@
       </trans-unit>
       <trans-unit id="a780a1cdb659e9acb943e4e8d6dbc9bc3be2dbb0" resname="login:: request password mail sent">
         <source>login:: request password mail sent</source>
-        <target state="new">login:: request password mail sent</target>
+        <target state="needs-translation">You request has been taken into account, you will receive an email shortly.</target>
         <jms:reference-file line="426">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8af68da04218b6188405e5f7422866b5412ec7a8" resname="login::erreur: Erreur d'authentification" approved="yes">
@@ -11525,7 +11525,7 @@
       </trans-unit>
       <trans-unit id="691853dc231faa9a4867bdc28ac44df0d0031755" resname="mail:: Password renewal for login">
         <source>mail:: Password renewal for login</source>
-        <target state="new">mail:: Password renewal for login</target>
+        <target state="needs-translation">You have requested to renew your password for the account</target>
         <jms:reference-file line="48">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="38fd0a873af9038d35706776f1f1744e7d59992a" resname="mail:: account deletion confirmation  hello">
@@ -11535,7 +11535,7 @@
       </trans-unit>
       <trans-unit id="12957d5f6be1441309fef99facd9cc5160b525f0" resname="mail:: account deletion confirmation object">
         <source>mail:: account deletion confirmation object</source>
-        <target state="needs-translation">Account deletion confirmation.</target>
+        <target state="needs-translation">Confirmation of your account deletion.</target>
         <jms:reference-file line="22">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
@@ -11575,7 +11575,7 @@
       </trans-unit>
       <trans-unit id="4f98b161b1dd8e4882edcf02529422784042cace" resname="mail::account deletion confirmation no activities since %lastConnection%">
         <source>mail::account deletion confirmation no activities since %lastConnection%</source>
-        <target state="needs-translation">mail::account deletion confirmation no activities since %lastConnection% .</target>
+        <target state="needs-translation">No activity has been recorded on your account since %lastConnection% .</target>
         <jms:reference-file line="37">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
