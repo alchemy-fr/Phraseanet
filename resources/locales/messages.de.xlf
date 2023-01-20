@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-01-19T14:26:25Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -11442,7 +11442,7 @@
       </trans-unit>
       <trans-unit id="a780a1cdb659e9acb943e4e8d6dbc9bc3be2dbb0" resname="login:: request password mail sent">
         <source>login:: request password mail sent</source>
-        <target state="new">login:: request password mail sent</target>
+        <target state="needs-translation">Ihre Anfrage wurde berücksichtigt, Sie werden in Kürze eine E-Mail erhalten.</target>
         <jms:reference-file line="426">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8af68da04218b6188405e5f7422866b5412ec7a8" resname="login::erreur: Erreur d'authentification" approved="yes">
@@ -11522,27 +11522,27 @@
       </trans-unit>
       <trans-unit id="691853dc231faa9a4867bdc28ac44df0d0031755" resname="mail:: Password renewal for login">
         <source>mail:: Password renewal for login</source>
-        <target state="new">mail:: Password renewal for login</target>
+        <target state="needs-translation">Sie haben eine Erneuerung Ihres Passworts für das Konto beantragt</target>
         <jms:reference-file line="48">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="38fd0a873af9038d35706776f1f1744e7d59992a" resname="mail:: account deletion confirmation  hello">
-        <source>mail:: account deletion confirmation  hello</source>
-        <target state="new">mail:: account deletion confirmation  hello</target>
+        <source>mail:: account deletion confirmation hello</source>
+        <target state="needs-translation">Hallo,</target>
         <jms:reference-file line="35">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="12957d5f6be1441309fef99facd9cc5160b525f0" resname="mail:: account deletion confirmation object">
         <source>mail:: account deletion confirmation object</source>
-        <target state="new">mail:: account deletion confirmation object</target>
+        <target state="needs-translation">Bestätigung der Löschung Ihres Kontos.</target>
         <jms:reference-file line="22">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
         <source>mail:: inactif account</source>
-        <target state="new">mail:: inactif account</target>
+        <target state="needs-translation">Nachricht über Ihr Konto.</target>
         <jms:reference-file line="36">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="de4036d68dc1676d5aede10a8e57f4b1d1b8683c" resname="mail:: inactif account delete account info , account will be deleted on %deleteDate%">
         <source>mail:: inactif account delete account info , account will be deleted on %deleteDate%</source>
-        <target state="new">mail:: inactif account delete account info , account will be deleted on %deleteDate%</target>
+        <target state="needs-translation">Wenn Sie dieses Konto nicht behalten möchten, ignorieren Sie bitte diese E-Mail, und Ihr Konto wird automatisch gelöscht am %deleteDate% .</target>
         <jms:reference-file line="69">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f78804fc06032da4c81effba3016f261f2504377" resname="mail:: inactif account hello">
@@ -11567,12 +11567,12 @@
       </trans-unit>
       <trans-unit id="c6f5d0580d5f9b53e49f83dbf0f22bd62be047ac" resname="mail::account deletion confirmation account deleted">
         <source>mail::account deletion confirmation account deleted</source>
-        <target state="new">mail::account deletion confirmation account deleted</target>
+        <target state="needs-translation">Alle mit Ihrem Konto verbundenen Daten wurden nun aus dem System gelöscht.</target>
         <jms:reference-file line="41">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4f98b161b1dd8e4882edcf02529422784042cace" resname="mail::account deletion confirmation no activities since %lastConnection%">
         <source>mail::account deletion confirmation no activities since %lastConnection%</source>
-        <target state="new">mail::account deletion confirmation no activities since %lastConnection%</target>
+        <target state="needs-translation">Wir haben keine Aktivität auf Ihrem Konto verzeichnet seit dem %lastConnection% .</target>
         <jms:reference-file line="37">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -11729,9 +11729,9 @@
         <target state="translated">Adresse</target>
         <jms:reference-file line="91">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated" approved="yes">
+      <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated" approved="no">
         <source>order-manager::order-item: already-validated</source>
-        <target state="translated">gesendet</target>
+        <target state="needs-translation">Schon gesendet</target>
         <jms:reference-file line="294">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1633622f5312fb56598ca36a584cc877d15ce6b3" resname="order-manager::order-item: by" approved="yes">
@@ -12281,7 +12281,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15361,7 +15361,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
