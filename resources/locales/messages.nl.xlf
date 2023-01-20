@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-01-20T15:05:47Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2023-01-20T15:38:02Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -11570,6 +11570,16 @@
         <source>mail:: inactif account on application %application% is inactif since %lastConnection%</source>
         <target state="new">mail:: inactif account on application %application% is inactif since %lastConnection%</target>
         <jms:reference-file line="61">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
+        <source>mail:: test email sended</source>
+        <target state="new">mail:: test email sended</target>
+        <jms:reference-file line="21">Notification/Mail/MailCheck.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
+        <source>mail:: test sended from %application%</source>
+        <target state="new">mail:: test sended from %application%</target>
+        <jms:reference-file line="29">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
         <source>mail:: validation: Vote will expire on %expire%</source>

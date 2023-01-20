@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Alchemy\Phrasea\Notification\Mail\MailTest;
+use Alchemy\Phrasea\Notification\Mail\MailCheck;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -117,7 +117,7 @@ class DashboardController extends Controller
             return $this->app->redirectPath('admin_dashboard', ['email' => 'not-sent']);
         }
 
-        $mail = MailTest::create($this->app, $receiver);
+        $mail = MailCheck::create($this->app, $receiver);
 
         $this->deliver($mail);
 
