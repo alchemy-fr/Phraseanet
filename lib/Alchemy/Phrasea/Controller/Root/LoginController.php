@@ -423,6 +423,7 @@ class LoginController extends Controller
     {
         $form = $this->app->form(new PhraseaForgotPasswordForm());
         $service = $this->getRecoveryService();
+        $flashMessage = $this->app->trans('login:: request password mail sent');
 
         try {
             if ('POST' === $request->getMethod()) {
@@ -440,13 +441,13 @@ class LoginController extends Controller
                         throw new FormProcessingException($message, 0, $ex);
                     }
 
-                    $this->app->addFlash('info', $this->app->trans('phraseanet:: Un email vient de vous etre envoye'));
+                    $this->app->addFlash('info', $flashMessage);
 
                     return $this->app->redirectPath('login_forgot_password');
                 }
             }
         } catch (FormProcessingException $e) {
-            $this->app->addFlash('error', $e->getMessage());
+            $this->app->addFlash('info', $flashMessage);
         }
 
         return $this->render('login/forgot-password.html.twig', array_merge(

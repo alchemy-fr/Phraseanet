@@ -45,8 +45,8 @@ class MailRequestPasswordUpdate extends AbstractMailWithLink
             throw new LogicException('You must set a login before calling getMessage');
         }
 
-        return $this->app->trans('Password renewal for login "%login%" has been requested', ['%login%' => $this->login], 'messages', $this->getLocale())
-        . "\n"
+        return $this->app->trans('mail:: Password renewal for login', [], 'messages', $this->getLocale())
+        . "\n\n <strong>" . $this->login . "</strong> \n\n"
         .  $this->app->trans('login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien', [], 'messages', $this->getLocale());
     }
 

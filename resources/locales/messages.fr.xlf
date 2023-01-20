@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-01-19T11:59:54Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2023-01-19T14:26:49Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -1086,7 +1086,7 @@
       <trans-unit id="a45ff91e0c1ebb94d62f5daaad1e708278ba484e" resname="An unexpected error occurred during authentication process, please contact an admin" approved="yes">
         <source>An unexpected error occurred during authentication process, please contact an admin</source>
         <target state="translated">Une erreur est survenue lors de l'authentification. Veuillez contacter un Administrateur</target>
-        <jms:reference-file line="815">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="816">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2063ba5ce348f48f77284c961f2291da1fdd79a5" resname="An upload on %bridge_adapter% failed, the resaon is : %reason%" approved="yes">
         <source>An upload on %bridge_adapter% failed, the resaon is : %reason%</source>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -4948,11 +4948,6 @@
         <target state="translated">Le mot de passe est vide à la ligne %line%</target>
         <jms:reference-file line="796">Controller/Admin/UserController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1dde2526f4dbbd53204d28438a85c8b30284c584" resname="Password renewal for login &quot;%login%&quot; has been requested" approved="yes">
-        <source>Password renewal for login "%login%" has been requested</source>
-        <target state="translated">Une demande de renouvellement de mot de passe a été demandée pour l'identifiant "%login%"</target>
-        <jms:reference-file line="48">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="d8be7287e7454f5c5ed0f570424a959724db8d9b" resname="Past year" approved="yes">
         <source>Past year</source>
         <target state="translated">L'année dernière</target>
@@ -5017,7 +5012,7 @@
       <trans-unit id="17d47194ec888edc3eb2a8f200f0400f787924ff" resname="Phraseanet guest-access is disabled" approved="yes">
         <source>Phraseanet guest-access is disabled</source>
         <target state="translated">L'accès invité de Phraseanet est désactivé.</target>
-        <jms:reference-file line="578">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="579">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f76e81b1e826c0255a8e7e2b0e9c8f6c33bba34c" resname="Phraseanet may require many binaries." approved="yes">
         <source>Phraseanet may require many binaries.</source>
@@ -5074,7 +5069,7 @@
       <trans-unit id="2bec3eec3fa44ad54758d6446a424345830aac30" resname="Please fill the captcha" approved="yes">
         <source>Please fill the captcha</source>
         <target state="translated">Veuillez remplir le champ CAPTCHA</target>
-        <jms:reference-file line="834">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="835">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="66dbd3018d4d017b79095548149d667f198fef8b" resname="Please fix the database before starting" approved="yes">
         <source>Please fix the database before starting</source>
@@ -7024,7 +7019,7 @@
       <trans-unit id="a5d2dca08b69ce907e38ed1bf35fc219df18edb3" resname="Unable to authenticate with %provider_name%" approved="yes">
         <source>Unable to authenticate with %provider_name%</source>
         <target state="translated">Impossible de s'authentifier avec %provider_name%</target>
-        <jms:reference-file line="708">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="709">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="217">Controller/Api/OAuth2Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7adcfb8dcac6fb17a9283fcb6b53f1e31ca2f3a0" resname="Unable to connect to MySQL server" approved="yes">
@@ -7067,7 +7062,7 @@
       <trans-unit id="c8cfcd74a9813267d93550c9cf1d2930f23815f0" resname="Unable to retrieve provider identity" approved="yes">
         <source>Unable to retrieve provider identity</source>
         <target state="translated">Impossible de récupérer l'identité auprès du fournisseur.</target>
-        <jms:reference-file line="731">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="732">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="234">Controller/Api/OAuth2Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6af8293be2ccc7fc664c96b11293a226fd300026" resname="Unable to send the documents" approved="yes">
@@ -7527,7 +7522,7 @@
       <trans-unit id="0d3d97ffc6b526aad5b5c5e4f99df4298a48ce0b" resname="Vous etes maintenant deconnecte. A bientot." approved="yes">
         <source>Vous etes maintenant deconnecte. A bientot.</source>
         <target state="translated">Vous êtes maintenant déconnecté. A bientôt.</target>
-        <jms:reference-file line="514">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="515">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b31652d33be49a2d9d3187a0c31719a1c834f18" resname="Vous n'avez pas assez de droits sur certains elements selectionnes" approved="yes">
         <source>Vous n'avez pas assez de droits sur certains elements selectionnes</source>
@@ -7940,7 +7935,7 @@
       <trans-unit id="ff2e2369a8f0959a7f665f926ec4d84b3c5a46f5" resname="Your identity is not recognized." approved="yes">
         <source>Your identity is not recognized.</source>
         <target state="translated">Votre identité n'est pas reconnue.</target>
-        <jms:reference-file line="772">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="773">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aaf57216976f942ee7fe118918b2b8893bde955f" resname="Your install might need to build some sub-definitions" approved="yes">
         <source>Your install might need to build some sub-definitions</source>
@@ -11446,21 +11441,26 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Connexion</target>
         <jms:reference-file line="12">actions/Bridge/disconnected.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="a780a1cdb659e9acb943e4e8d6dbc9bc3be2dbb0" resname="login:: request password mail sent">
+        <source>login:: request password mail sent</source>
+        <target state="new">login:: request password mail sent</target>
+        <jms:reference-file line="426">Controller/Root/LoginController.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="8af68da04218b6188405e5f7422866b5412ec7a8" resname="login::erreur: Erreur d'authentification" approved="yes">
         <source>login::erreur: Erreur d'authentification</source>
         <target state="translated">Erreur d'authentification</target>
-        <jms:reference-file line="845">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="846">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="103">Controller/Api/OAuth2Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e7678ea875773920bf91f79b62b97f31986f211b" resname="login::erreur: No available connection - Please contact sys-admin" approved="yes">
         <source>login::erreur: No available connection - Please contact sys-admin</source>
         <target state="translated">Connexion impossible, contactez un administrateur système</target>
-        <jms:reference-file line="537">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="538">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dcc7f0cac10852ef9bcc7f10019e2679174e3df7" resname="login::erreur: Vous n'avez pas confirme votre email" approved="yes">
         <source>login::erreur: Vous n'avez pas confirme votre email</source>
         <target state="translated">Accès impossible, vous n'avez pas confirmé votre adresse e-mail.</target>
-        <jms:reference-file line="838">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="839">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5cdbff50d2a3ae92720c5af32d4cd560d1351a91" resname="login::notification: Changements enregistres" approved="yes">
         <source>login::notification: Changements enregistres</source>
@@ -11520,6 +11520,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>mai</source>
         <target state="translated">mai</target>
         <jms:reference-file line="718">classes/module/report.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="691853dc231faa9a4867bdc28ac44df0d0031755" resname="mail:: Password renewal for login">
+        <source>mail:: Password renewal for login</source>
+        <target state="new">mail:: Password renewal for login</target>
+        <jms:reference-file line="48">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="38fd0a873af9038d35706776f1f1744e7d59992a" resname="mail:: account deletion confirmation  hello">
         <source>mail:: account deletion confirmation hello</source>
@@ -12101,11 +12106,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Préférences</target>
         <jms:reference-file line="387">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2751058550fb9a63ba3ffa07152ec68f594dec2a" resname="phraseanet:: Un email vient de vous etre envoye" approved="yes">
-        <source>phraseanet:: Un email vient de vous etre envoye</source>
-        <target state="translated">Un e-mail vient de vous être envoyé</target>
-        <jms:reference-file line="443">Controller/Root/LoginController.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="eb699a47b1a213ea730879af2fd492110b3c1f4e" resname="phraseanet:: a propos" approved="yes">
         <source>phraseanet:: a propos</source>
         <target state="translated">A propos</target>
@@ -12282,7 +12282,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15370,7 +15370,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
