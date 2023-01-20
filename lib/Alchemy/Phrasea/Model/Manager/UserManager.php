@@ -51,6 +51,7 @@ class UserManager
     {
         $this->cleanProperties($user);
         $this->cleanRights($user);
+        $this->cleanNotifications($user);
 
         $this->objectManager->persist($user);
 
@@ -83,6 +84,14 @@ class UserManager
     public function getObjectManager()
     {
         return $this->objectManager;
+    }
+
+    private function cleanNotifications(User $user)
+    {
+        $sql = 'DELETE FROM notifications WHERE usr_id = :usr_id';
+        $stmt = $this->appboxConnection->prepare($sql);
+        $stmt->execute([':usr_id' => $user->getId()]);
+        $stmt->closeCursor();
     }
 
     /**
@@ -235,7 +244,7 @@ class UserManager
     }
 
     /**
-     * Removes all user's rights.
+     * Removes all user's rights, records right.
      *
      * @param User $user
      */
@@ -244,6 +253,7 @@ class UserManager
         foreach ([
             'DELETE FROM `basusr` WHERE usr_id = :usr_id',
             'DELETE FROM `sbasusr` WHERE usr_id = :usr_id',
+            'DELETE FROM `records_rights` WHERE usr_id = :usr_id',
         ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
             $stmt->execute([':usr_id' => $user->getId()]);
