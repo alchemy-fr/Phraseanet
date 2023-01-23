@@ -11543,7 +11543,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="de4036d68dc1676d5aede10a8e57f4b1d1b8683c" resname="mail:: inactif account delete account info , account will be deleted on %deleteDate%">
         <source>mail:: inactif account delete account info , account will be deleted on %deleteDate%</source>
-        <target state="needs-translation">Si vous ne souhaitez pas conserver votre compte, veuillez ne pas tenir compte de ce mail et il sera automatiquement supprimé le %deleteDate% .</target>
+        <target state="needs-translation">Si vous ne souhaitez pas conserver votre compte, veuillez ne pas tenir compte de ce mail et il sera automatiquement supprimé le %deleteDate%.</target>
         <jms:reference-file line="70">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f78804fc06032da4c81effba3016f261f2504377" resname="mail:: inactif account hello">
@@ -11553,12 +11553,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="7ea61df220e487d0db115bce9776f79abc43fe23" resname="mail:: inactif account info with login">
         <source>mail:: inactif account info with login</source>
-        <target state="needs-translation">Votre compte ayant comme login</target>
+        <target state="needs-translation">Votre compte ayant comme login:</target>
         <jms:reference-file line="59">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfbfe9a399e2b459d721aa5d91633bd46473cd70" resname="mail:: inactif account keep account info , connect before %deleteDate%">
         <source>mail:: inactif account keep account info , connect before %deleteDate%</source>
-        <target state="needs-translation">Si vous souhaitez conserver ce compte actif, vous devez effectuer une connexion avant le %deleteDate% .</target>
+        <target state="needs-translation">Si vous souhaitez conserver ce compte actif, vous devez effectuer une connexion avant le %deleteDate%.</target>
         <jms:reference-file line="66">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7021425d1e6b12b10641fd50e7cf787ff393ce5e" resname="mail:: inactif account on application %application% is inactif since %lastConnection%">
@@ -11568,7 +11568,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
         <source>mail:: test email sended</source>
-        <target state="needs-translation">Mail de test</target>
+        <target state="needs-translation">Envois d'un Email de test</target>
         <jms:reference-file line="21">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
