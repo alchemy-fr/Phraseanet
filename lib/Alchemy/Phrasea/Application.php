@@ -201,7 +201,6 @@ class Application extends SilexApplication
         $this->setupGeonames();
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new RepositoriesServiceProvider());
-        $this->register(new ManipulatorServiceProvider());
         $this->register(new TechnicalDataServiceProvider());
         $this->register(new MediaSubdefServiceProvider());
         $this->register(new CaptionServiceProvider());
@@ -217,8 +216,6 @@ class Application extends SilexApplication
             $this->register(new SearchEngineServiceProvider());
             $this->register(new BorderManagerServiceProvider());
         }
-
-        $this->setupRecaptacha();
 
         $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
@@ -259,6 +256,7 @@ class Application extends SilexApplication
         $this->register(new LocaleServiceProvider());
 
         $this->setupEventDispatcher();
+        $this->setupRecaptacha();
 
         $this->register(new DataboxServiceProvider());
         $this->register(new QueueServiceProvider());
