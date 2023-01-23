@@ -23,7 +23,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PhraseaRegisterForm extends AbstractType
