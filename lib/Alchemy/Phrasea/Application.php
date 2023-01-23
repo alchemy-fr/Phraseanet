@@ -187,7 +187,6 @@ class Application extends SilexApplication
         $this->register(new ApiApplicationMiddlewareProvider());
         $this->register(new ACLServiceProvider());
         $this->register(new APIServiceProvider());
-        $this->register(new AuthenticationManagerServiceProvider());
         $this->register(new AuthorizationServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConvertersServiceProvider());
@@ -212,13 +211,14 @@ class Application extends SilexApplication
         $this->register(new RandomGeneratorServiceProvider());
         $this->register(new SubdefServiceProvider());
         $this->register(new ZippyServiceProvider());
-        $this->setupRecaptacha();
 
         if ($this['configuration.store']->isSetup()) {
+            $this->register(new AuthenticationManagerServiceProvider());
             $this->register(new SearchEngineServiceProvider());
             $this->register(new BorderManagerServiceProvider());
         }
 
+        $this->setupRecaptacha();
 
         $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
