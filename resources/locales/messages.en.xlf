@@ -11545,7 +11545,7 @@
       </trans-unit>
       <trans-unit id="de4036d68dc1676d5aede10a8e57f4b1d1b8683c" resname="mail:: inactif account delete account info , account will be deleted on %deleteDate%">
         <source>mail:: inactif account delete account info , account will be deleted on %deleteDate%</source>
-        <target state="needs-translation">If you do not wish to keep this account, please ignore this email and your account will be automatically deleted on %deleteDate% .</target>
+        <target state="needs-translation">If you do not wish to keep this account, please ignore this email and your account will be automatically deleted on %deleteDate%.</target>
         <jms:reference-file line="70">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f78804fc06032da4c81effba3016f261f2504377" resname="mail:: inactif account hello">
@@ -11565,7 +11565,7 @@
       </trans-unit>
       <trans-unit id="7021425d1e6b12b10641fd50e7cf787ff393ce5e" resname="mail:: inactif account on application %application% is inactif since %lastConnection%">
         <source>mail:: inactif account on application %application% is inactif since %lastConnection%</source>
-        <target state="needs-translation">on application %application% has no longer been used since %lastConnection%</target>
+        <target state="needs-translation">on application %application% has no longer been used since %lastConnection%.</target>
         <jms:reference-file line="61">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
@@ -11575,7 +11575,7 @@
       </trans-unit>
       <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
         <source>mail:: test sended from %application%</source>
-        <target state="needs-translation">Email send from %application%</target>
+        <target state="needs-translation">Email send from %application%.</target>
         <jms:reference-file line="29">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
@@ -11595,7 +11595,7 @@
       </trans-unit>
       <trans-unit id="ffdd023c8bd8b6465b789382a92f144ee78372cb" resname="mail::account deletion last relance at  %lastInactivityEmail%">
         <source>mail::account deletion last relance at %lastInactivityEmail%</source>
-        <target state="needs-translation">mail::account deletion last relance at %lastInactivityEmail%.</target>
+        <target state="needs-translation">A reminder was sent to you on %lastInactivityEmail%.</target>
         <jms:reference-file line="53">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -13225,7 +13225,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="1cc196dd03104d49bbc1c15e3c05cca44ca9bec2" resname="prod::push: automatically send user reminder">
         <source>prod::push: automatically send user reminder</source>
-        <target state="needs-translation">Schedule an automatic reminder to users who didn't send their feedback</target>
+        <target state="translated">Schedule an automatic reminder to users who didn't send their feedback</target>
         <jms:reference-file line="179">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="238">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
