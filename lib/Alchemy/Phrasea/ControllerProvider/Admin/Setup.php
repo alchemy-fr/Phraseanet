@@ -47,6 +47,9 @@ class Setup implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('setup_display_globals')
             ->method('GET|POST');
 
+        $controllers->post('/send-logo', 'controller.admin.setup:sendPersonaliseLogo')
+            ->bind('setup_send_personalize_logo');
+
         return $controllers;
     }
 }

@@ -34,7 +34,17 @@ class Sha256 extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findBySha256($file->getSha256()));
+        $excludedCollIds = [];
+        if (!empty($this->compareIgnoreCollections)) {
+            foreach ($this->compareIgnoreCollections as $collection) {
+                // use only collection in the same databox and retrieve the coll_id
+                if ($collection->get_sbas_id() === $file->getCollection()->get_sbas_id()) {
+                    $excludedCollIds[] = $collection->get_coll_id();
+                }
+            }
+        }
+
+        $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findBySha256WithExcludedCollIds($file->getSha256(), $excludedCollIds));
 
         return new Response($boolean, $this);
     }

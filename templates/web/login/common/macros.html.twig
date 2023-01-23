@@ -11,7 +11,7 @@
     <table class="input-table">
         <tr>
             <td class="icon">
-                <i class="{{ icon_name|default('icon-angle-right') }} icon-white"></i>
+                <i class="{{ icon_name|default('fa fa-angle-right') }} icon-white"></i>
             </td>
             <td class="input">
                 {{  form_widget(field, { 'attr': attributes })}}
@@ -39,7 +39,7 @@
 {% macro checkboxInput(field, label = '') %}
     <label for="{{ field.vars.id }}" class="checkbox">
         {{ form_widget(field) }}
-        {{ label | default(field.vars.label) }}
+        {{ label | raw | default(field.vars.label | trans)}}
     </label>
     <div class="error-view"></div>
     {{  form_errors(field) }}
@@ -55,11 +55,13 @@
 {% macro providerList() %}
     <ul class="unstyled inline provider-list">
         {% for provider in app['authentication.providers'] %}
-        <li>
-            <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
-                <img src="{{ provider.getIconURI() }}" />
-            </a>
-        </li>
+            {% if provider.display() %}
+                <li>
+                    <a title="{{ provider.getTitle() }}" href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
+                        <img alt="{{ provider.getTitle() }}" src="{{ provider.getIconURI() }}" />
+                    </a>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
 {% endmacro %}
@@ -70,7 +72,8 @@
         <div class="popover-content">
             <table>
                 <tr>
-                    <td style="width:35px;"><i class="icon-warning-sign icon-white"></i></td>
+                    <td style="width:35px;"><i class="fa fa-exclamation-triangle icon-white" aria-hidden="true"></i>
+                    </td>
                         {% if errors|keys|length >= 1 %}
                             {% for error in errors %}
                                 <td>
@@ -122,16 +125,16 @@
     <div class="authentication-user-pres-phraseanet well">
         <ul class="unstyled">
             <li class="one-line">
-                <i class="icon-user"></i>{{ user.getDisplayName() }}
+                <i class="fa fa-user" aria-hidden="true"></i>{{ user.getDisplayName() }}
             </li>
             {% if user.getEmail() %}
             <li class="one-line">
-                <i class="icon-envelope"></i>{{ user.getEmail() }}
+                <i class="fa fa-envelope" aria-hidden="true"></i>{{ user.getEmail() }}
             </li>
             {% endif %}
             {% if user.getCompany() %}
             <li class="one-line">
-                <i class="icon-briefcase"></i>{{ user.getCompany() }}
+                <i class="fa fa-briefcase" aria-hidden="true"></i>{{ user.getCompany() }}
             </li>
             {% endif %}
         </ul>
@@ -140,19 +143,19 @@
 
 {% macro alert(type, message) %}
     <div class="alert alert-{{ type }}">
-        {% set sign = "icon-exclamation-sign" %}
+        {% set sign = "fa fa-exclamation-circle" %}
 
         {% if type == "error" %}
-             {% set sign = "icon-warning-sign" %}
+            {% set sign = "fa fa-exclamation-triangle" %}
         {% elseif type == "success" %}
-             {% set sign = "icon-ok-sign" %}
+            {% set sign = "fa fa-check-circle" %}
         {% elseif type == "info" %}
-             {% set sign = "icon-info-sign" %}
+            {% set sign = "fa fa-info-circle" %}
         {% endif %}
 
         <table>
             <tr>
-                <td class="alert-block-logo"><i class="icon-2x icon-white {{ sign }}"></i></td>
+                <td class="alert-block-logo"><i class="fa-2x icon-white {{ sign }}"></i></td>
                 <td class="alert-block-content">{{ message }}</td>
                 <td class="alert-block-close"><a href="#"><b>&times;</b></a></td>
             </tr>

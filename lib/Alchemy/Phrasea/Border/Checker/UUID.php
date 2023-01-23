@@ -33,7 +33,25 @@ class UUID extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findByUuid($file->getUUID()));
+        $excludedCollIds = [];
+        if (!empty($this->compareIgnoreCollections)) {
+            foreach ($this->compareIgnoreCollections as $collection) {
+                // use only collection in the same databox and retrieve the coll_id
+                if ($collection->get_sbas_id() === $file->getCollection()->get_sbas_id()) {
+                    $excludedCollIds[] = $collection->get_coll_id();
+                }
+            }
+        }
+
+        $uuid = $file->getUUID(false, false);
+
+        if($uuid === null) {
+            // no uuid in file so no need to search for a match
+            $boolean = true;
+        }
+        else {
+            $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findByUuidWithExcludedCollIds($uuid, $excludedCollIds));
+        }
 
         return new Response($boolean, $this);
     }

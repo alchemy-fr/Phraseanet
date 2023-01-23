@@ -7,12 +7,13 @@
         <div id="scid_{{element.getId()}}" class="basket_element ui-corner-all {% if basket_element and basket_element.getId() == element.getId() %}selected{% endif %}">
           {% set record = element.getRecord(app).setNumber(loop.index) %}
           <div class="display_id">{{record.getNumber()}}</div>
-          {% if basket.getValidation() %}
+          {% if basket.isVoteBasket() %}
             <div class="agreement">
+                {% set userVote = element.getUserVote(app.getAuthenticatedUser(), true) %}
               <img src="/assets/lightbox/images/agree.png"
-                class="agree_button {%if element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false or element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
+                class="agree_button {%if userVote.getAgreement() == false or userVote.getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
               <img src="/assets/lightbox/images/disagree.png"
-                class="disagree_button {%if element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true or element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
+                class="disagree_button {%if userVote.getAgreement() == true or userVote.getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
             </div>
           {% endif %}
           {{thumbnail.format(element.getRecord(app).get_thumbnail,114,85, '', true, false)}}

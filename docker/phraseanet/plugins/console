@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+namespace Alchemy\Docker\Plugins\Command;
+
+require __DIR__.'/../../../vendor/autoload.php';
+require __DIR__.'/SubCommand.php';
+require __DIR__.'/InstallCommand.php';
+require __DIR__.'/InitCommand.php';
+
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+
+$application->add(new InstallCommand());
+$application->add(new InitCommand());
+
+$application->run();

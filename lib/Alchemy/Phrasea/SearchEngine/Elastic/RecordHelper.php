@@ -11,13 +11,10 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 use appbox;
 use DateTime;
-use igorw;
+use Exception;
+
 
 class RecordHelper
 {
@@ -90,30 +87,80 @@ class RecordHelper
     }
 
     /**
-     * @param string $date
-     * @return bool
-     */
-    public static function validateDate($date)
-    {
-        $d = DateTime::createFromFormat(FieldMapping::DATE_FORMAT_CAPTION_PHP, $date);
-
-        return $d && $d->format(FieldMapping::DATE_FORMAT_CAPTION_PHP) == $date;
-    }
-
-    /**
      * @param string $value
      * @return null|string
      */
     public static function sanitizeDate($value)
     {
-        // introduced in https://github.com/alchemy-fr/Phraseanet/commit/775ce804e0257d3a06e4e068bd17330a79eb8370#diff-bee690ed259e0cf73a31dee5295d2edcR286
-        // not sure if it's really needed
+        $v_fix = null;
         try {
-            $date = new \DateTime($value);
+            $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
+            switch (count($a)) {
+                case 1:     // yyyy
+                    $date = new DateTime($a[0] . '-01-01');    // will throw if date is not valid
+                    $v_fix = $date->format('Y');
+                    break;
+                case 2:     // yyyy;mm
+                    $date = new DateTime( $a[0] . '-' . $a[1] . '-01');
+                    $v_fix = $date->format('Y-m');
+                    break;
+                case 3:     // yyyy;mm;dd
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
+                    $v_fix = $date->format('Y-m-d');
+                    break;
+                case 4:
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00');
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+                case 5:
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00');
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+                case 6:
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+            }
+        } catch (Exception $e) {
+            // no-op, v_fix = null
+        }
 
-            return $date->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
-        } catch (\Exception $e) {
-            return null;
+        return $v_fix;
+    }
+
+    public function sanitizeValue($value, $type)
+    {
+        switch ($type) {
+            case FieldMapping::TYPE_DATE:
+                return self::sanitizeDate($value);
+
+            case FieldMapping::TYPE_FLOAT:
+            case FieldMapping::TYPE_DOUBLE:
+                return (float) $value;
+
+            case FieldMapping::TYPE_INTEGER:
+            case FieldMapping::TYPE_LONG:
+            case FieldMapping::TYPE_SHORT:
+            case FieldMapping::TYPE_BYTE:
+                return (int) $value;
+
+            case FieldMapping::TYPE_BOOLEAN:
+                return (bool) $value;
+
+            case FieldMapping::TYPE_STRING:
+                $value = str_replace("\0", '', $value); // no null char for lucene !
+                if( strlen($value) > 32766) {      // for lucene limit, before a better solution
+                    for($l=32766; $l > 0; $l--) {
+                        if(ord(substr($value, $l-1, 1)) < 128) {
+                            break;
+                        }
+                    }
+                    $value = substr($value, 0, $l);
+                }
+                return $value;
+
+            default:
+                return $value;
         }
     }
 }

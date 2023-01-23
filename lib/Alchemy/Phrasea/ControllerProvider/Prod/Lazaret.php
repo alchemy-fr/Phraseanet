@@ -82,6 +82,11 @@ class Lazaret implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('file_id', '\d+')
             ->bind('lazaret_thumbnail');
 
+        $controllers->get('/{databox_id}/{record_id}/status', 'controller.prod.lazaret:getDestinationStatus')
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+            ->bind('lazaret_destination_status');
+
         return $controllers;
     }
 }

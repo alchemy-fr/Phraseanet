@@ -40,6 +40,7 @@ h1 {
   font-size: 26px;
   font-weight: bold;
   padding: 30px 0 20px;
+  word-break: break-all;
 }
 
 .content-container {
@@ -65,6 +66,9 @@ h1 {
 
 dl {
   margin-bottom: 20px;
+  &.dl-horizontal {
+    word-break: break-all;
+  }
 }
 
 dt,
@@ -101,6 +105,52 @@ dd {
     white-space: nowrap;
   }
   dd {
-    margin-left: 180px;
+    display: inline-block;
+    float: left;
+  }
+}
+
+/*Help menu*/
+.contextMenu.helpcontextmenu {
+  display: none;
+  &.shown {
+    display: block;
+    position: absolute;
+    z-index: 101;
+  }
+}
+.help-trigger {
+  display:inline-block;
+  cursor:pointer;
+  padding: 0 4px;
+  border:none;
+  margin-left: -12px;
+  margin-right: 94px;
+  .fa-caret-down:before {
+    content: "\25BC";
+    font-size: 11px;
+  }
+}
+.context-menu-theme-vista {
+  background-image: none;
+  background-color: #414141;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+
+  .context-menu-item {
+    transition: 500ms;
+     &:hover {
+       background-image: none;
+       background-color: #75abff;
+       border: none;
+     }
+    .context-menu-item-inner {
+      padding: 4px 12px;
+      margin-left: 0;
+      font-family: Helvetica;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      }
   }
 }

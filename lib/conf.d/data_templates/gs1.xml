@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<record>
+    <path>{{datapathnoweb}}{{basename}}/documents</path>
+    <subdefs>
+        <subdefgroup name="image">
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>1280</size>
+                <method>resample</method>
+                <dpi>300</dpi>
+                <strip>no</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <meta>yes</meta>
+                <devices>screen</devices>
+                <mediatype>image</mediatype>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>384</size>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>50</quality>
+                <meta>no</meta>
+                <devices>screen</devices>
+                <mediatype>image</mediatype>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview_mobile" downloadable="false">
+                <size>640</size>
+                <resolution>72</resolution>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <meta>no</meta>
+                <devices>handheld</devices>
+                <label lang="fr">Prévisualisation Mobile</label>
+                <label lang="en">Mobile Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
+                <size>192</size>
+                <resolution>72</resolution>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>50</quality>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <meta>no</meta>
+                <devices>handheld</devices>
+                <label lang="fr">Vignette mobile</label>
+                <label lang="en">Mobile Thumbnail</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="video">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>384</size>
+                <devices>screen</devices>
+                <mediatype>image</mediatype>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnailgif" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>240</size>
+                <mediatype>gif</mediatype>
+                <delay>150</delay>
+                <devices>screen</devices>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Animation GIF</label>
+                <label lang="en">GIF Animation</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>748</size>
+                <mediatype>video</mediatype>
+                <writeDatas>yes</writeDatas>
+                <acodec>libfdk_aac</acodec>
+                <vcodec>libx264</vcodec>
+                <devices>screen</devices>
+                <bitrate>1000</bitrate>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <fps>25</fps>
+                <GOPsize>25</GOPsize>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="poster" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>1</meta>
+                <size>1280</size>
+                <mediatype>image</mediatype>
+                <writeDatas>yes</writeDatas>
+                <devices>screen</devices>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <icodec>jpeg</icodec>
+                <label lang="fr">Poster video</label>
+                <label lang="en">Poster video</label>
+            </subdef>
+            <subdef class="preview" name="preview_webm" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>748</size>
+                <mediatype>video</mediatype>
+                <devices>screen</devices>
+                <bitrate>1000</bitrate>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <acodec>libvorbis</acodec>
+                <fps>25</fps>
+                <GOPsize>25</GOPsize>
+                <vcodec>libvpx</vcodec>
+                <label lang="fr">Prévisualisation WebM</label>
+                <label lang="en">WebM Preview</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="audio">
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>240</size>
+                <devices>screen</devices>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>audio</mediatype>
+                <writeDatas>yes</writeDatas>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <devices>screen</devices>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="preview_mobile" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>audio</mediatype>
+                <devices>handheld</devices>
+                <label lang="fr">Prévisualisation Mobile</label>
+                <label lang="en">Mobile Preview</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="document">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <size>384</size>
+                <flatten>yes</flatten>
+                <writeDatas>no</writeDatas>
+                <devices>screen</devices>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>pdf</mediatype>
+                <writeDatas>no</writeDatas>
+                <devices>screen</devices>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+        </subdefgroup>
+    </subdefs>
+
+    <description>
+        <GDTI src="" index="1" />
+        <BrandName src="" index="1" />
+        <ProductName src="XMP-dc:Title" index="1" />
+        <ValidFromDate src="" index="1" type="date" />
+        <GTIN14 src="" index="1" />
+        <AngleIndicator src="" index="1" />
+        <ArticleVariant src="" index="1" />
+        <ClippingPathName src="" index="1" />
+        <ColorMode src="" index="1" readonly="1" />
+        <Copyright src="" index="1" />
+        <CreateDate src="" index="1" readonly="1" type="date" />
+        <Description src="XMP-dc:Description" index="1" />
+        <ExpirationDate src="XMP-plus:LicenseEndDate" index="1" type="date" />
+        <FacingIndicator src="" index="1" />
+        <FileType src="" index="1" />
+        <Filename src="Phraseanet:tf-basename" index="1" readonly="1" thumbtitle="1"/>
+        <ImageQADate src="" index="1" readonly="1" type="date" />
+        <ClippingPathPresent src="" index="1" />
+        <LegalOwner src="XMP-plus:CopyrightOwnerName" index="1" />
+        <LegalOwnerContactInfo src="" index="1" />
+        <MaxAvailHeight src="Phraseanet:tf-height" index="1" readonly="1" type="number" />
+        <MaxAvailWidth src="Phraseanet:tf-width" index="1" readonly="1" type="number" />
+        <NumberOfTheImage src="" index="1" />
+        <PackagingType src="" index="1" />
+        <ProductNetContent src="" index="1" />
+        <ProductSupplier src="" index="1" />
+        <ProductURL src="" index="1" readonly="1" />
+        <RightOfUse src="XMP-xmpRights:UsageTerms" index="1" multi="1" separator=";" />
+        <SpecialRights src="" index="1" multi="1" separator=";" />
+        <VersionNumber src="" index="1" />
+        <InOutPackaging src="" index="1" />
+        <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" />
+        <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" />
+    </description>
+
+    <statbits>
+      <bit n="4" labelOn="Caption_filled" searchable="0" printable="0" labelOff="Unspecified_caption">
+        <label switch="off" code="en">Caption not filled</label>
+        <label switch="off" code="fr">Media non renseigne</label>
+        <label switch="on" code="en">Caption filled</label>
+        <label switch="on" code="fr">Média renseigné</label>
+      </bit>
+      <bit n="5" labelOn="Clipping_Path_Present" searchable="1" printable="0" labelOff="No_Clipping_Path">
+        <label switch="off" code="en">No Clipping Path</label>
+        <label switch="off" code="fr">Sans masque de détourage</label>
+        <label switch="on" code="en">Clipping Path Present</label>
+        <label switch="on" code="fr">Avec masque de détourage</label>
+      </bit>
+    </statbits>
+  </record>

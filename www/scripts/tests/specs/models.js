@@ -44,6 +44,22 @@ define([
                     this.field.get('tbranch').should.equal("");
                 });
 
+                it("should default generate_cterms property to '1'", function () {
+                    this.field.get('generate_cterms').should.equal("1");
+                });
+
+                it("should default gui_editable property to '1'", function () {
+                    this.field.get('gui_editable').should.equal("1");
+                });
+
+                it("should default gui_visible property to '1'", function () {
+                    this.field.get('gui_visible').should.equal("1");
+                });
+
+                it("should default printable property to '1'", function () {
+                    this.field.get('printable').should.equal("1");
+                });
+
                 it("should default separator property to 'empty'", function () {
                     this.field.get('separator').should.equal("");
                 });

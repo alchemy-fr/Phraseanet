@@ -1,83 +1,104 @@
-<div style="margin:0 7px;overflow:hidden;">
-{% set story_length = Story.get_children().get_elements()|length %}
-    <div class="tools">
+{# @var Story \Alchemy\Phrasea\Model\Entities\StoryWZ #}
+<div>
+    <button class="tools-accordion">{{ 'prod::workzone:Actions' | trans }}</button>
+    <div class="tools-panel">
 
-      <label>Actions</label>
+        <button class="ui-corner-all TOOL_disktt_btn story_window" data-selection-source="story">
+            <img src="/assets/common/images/icons/disktt_history.png"/>
+            <span>{{ 'action : exporter' | trans }}</span>
+        </button>
+        <button class="ui-corner-all TOOL_print_btn story_window" data-selection-source="story">
+            <img src="/assets/common/images/icons/print_history.png"/>
+            <span>{{ 'action : print' | trans }}</span>
+        </button>
 
-      <button class="ui-corner-all TOOL_disktt_btn story_window" title="{{ 'action : exporter' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/disktt_history.png"/>
-      </button>
-      <button class="ui-corner-all TOOL_print_btn story_window" title="{{ 'action : print' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/print_history.png"/>
-      </button>
+        <div class="divider"></div>
+        <button class="ui-corner-all TOOL_delete_selection_btn story_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/delete-selection.png"/>
+            <span>{{ 'basket:action:delete record form basket' | trans }}</span>
+        </button>
+        <div class="divider"></div>
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
-      <button class="ui-corner-all TOOL_ppen_btn story_window" title="{{ 'action : editer' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/ppen_history.png"/>
-      </button>
-      {% endif %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+            <button class="ui-corner-all TOOL_ppen_btn story_window" data-selection-source="story">
+                <img src="/assets/common/images/icons/ppen_history.png"/>
+                <span>{{ 'action : editer' | trans }}</span>
+            </button>
+        {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
-      <button class="ui-corner-all TOOL_chgstatus_btn story_window" title="{{ 'action : status' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/chgstatus_history.png"/>
-      </button>
-      {% endif %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
+            <button class="ui-corner-all TOOL_chgstatus_btn story_window" data-selection-source="story">
+                <img src="/assets/common/images/icons/chgstatus_history.png"/>
+                <span>{{ 'action : status' | trans }}</span>
+            </button>
+        {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
-      <button class="ui-corner-all TOOL_chgcoll_btn story_window" title="{{ 'action : collection' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/chgcoll_history.png"/>
-      </button>
-      {% endif %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
+            <button class="ui-corner-all TOOL_chgcoll_btn story_window" data-selection-source="story">
+                <img src="/assets/common/images/icons/chgcoll_history.png"/>
+                <span>{{ 'action : collection' | trans }}</span>
+            </button>
+        {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-      <button class="ui-corner-all TOOL_pushdoc_btn story_window" title="{{ 'action : push' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/push16.png"/>
-      </button>
-      {% endif %}
+        <div class="divider"></div>
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-      <button class="ui-corner-all TOOL_feedback_btn story_window" title="{{ 'Feedback' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/feedback16.png"/>
-      </button>
-      {% endif %}
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
-          {#<button class="ui-corner-all TOOL_bridge_btn story_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}" data-selection-source="story">#}
-          {#<img src="/assets/common/images/icons/door.png"/>#}
-          {#</button>#}
-      <button class="ui-corner-all TOOL_publish_btn story_window" title="{{ 'action : publier' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/rss16.png"/>
-      </button>
-      {% endif %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+            <button class="ui-corner-all TOOL_pushdoc_btn story_window" data-selection-source="story">
+                <i class="fa fa-gift push_rec" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 15px;width:16px; height:16px"></i>
+                <span>{{ 'action : push' | trans }}</span>
+            </button>
+        {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
-      <button class="ui-corner-all TOOL_imgtools_btn story_window" title="{{ 'action : outils' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/imgtools_history.png"/>
-      </button>
-      {% endif %}
-      <button class="ui-corner-all TOOL_trash_btn story_window" title="{{ 'action : supprimer' | trans }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/delete.png"/>
-        <input type="hidden" name="story_key" value="{{ Story.get_serialize_key() }}"/>
-      </button>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+            <button class="ui-corner-all TOOL_feedback_btn story_window" data-selection-source="story">
+                <i class="fa fa-bullhorn vote_sent" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 13px;width:16px; height:16px"></i>
+                <span>{{ 'Feedback' | trans }}</span>
+            </button>
+        {% endif %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+            {#<button class="ui-corner-all TOOL_bridge_btn story_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}" data-selection-source="story">#}
+            {#<img src="/assets/common/images/icons/door.png"/>#}
+            {#</button>#}
+            <button class="ui-corner-all TOOL_publish_btn story_window" data-selection-source="story">
+                <img src="/assets/common/images/icons/rss16.png"/>
+                <span>{{ 'action : publier' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
+            <button class="ui-corner-all TOOL_imgtools_btn story_window" data-selection-source="story">
+                <img src="/assets/common/images/icons/imgtools_history.png"/>
+                <span>{{ 'action : outils' | trans }}</span>
+            </button>
+        {% endif %}
+
+        <div class="divider"></div>
+
+        <button class="ui-corner-all TOOL_trash_btn story_window" data-selection-source="story">
+            <img src="/assets/common/images/icons/delete.png"/>
+            <input type="hidden" name="story_key" value="{{ Story.get_serialize_key() }}"/>
+            <span>{{ 'basket:action:delete record form database' | trans }}</span>
+        </button>
 
     </div>
+</div>
+    {% set story_length = Story.get_children().get_elements()|length %}
     <div class="alert_datas_changed ui-corner-all">
-      {{ 'Certaines donnees du reportage ont change' | trans }}
-      <a class="basket_refresher" href="#">
-        {{ 'rafraichir' | trans }}
-      </a>
+        {{ 'Certaines donnees du reportage ont change' | trans }}
+        <a class="basket_refresher" href="#">
+            {{ 'rafraichir' | trans }}
+        </a>
     </div>
     {% if story_length == 0 %}
-      <div style="height:120px;"></div>
+        <div style="height:120px;"></div>
     {% endif %}
 
     {% set basket_scope = 'groupings' %}
     {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
 
     {% for record in Story.get_children().get_elements() %}
-        <span class="wrapCHIM_{{ record.get_serialize_key() }}">
+        <div class="chim-wrapper wrapCHIM_{{ record.get_serialize_key() }}">
         {{ Macros.element('groupings', Story, record, record, record.getNumber()) }}
-        </span>
+        </div>
     {% endfor %}
-  </div>
-
 

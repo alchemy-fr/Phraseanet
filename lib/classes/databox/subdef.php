@@ -7,16 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Alchemy\Phrasea\Media\Subdef\Image;
+
 use Alchemy\Phrasea\Media\Subdef\Audio;
-use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
-use Alchemy\Phrasea\Media\Subdef\Unknown;
+use Alchemy\Phrasea\Media\Subdef\Image;
+use Alchemy\Phrasea\Media\Subdef\Pdf;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
+use Alchemy\Phrasea\Media\Subdef\Unknown;
+use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+
 class databox_subdef
 {
     /**
@@ -37,13 +40,14 @@ class databox_subdef
      */
     private $requiresMetadataUpdate;
     protected $downloadable;
+    protected $tobuild;
     protected $translator;
     protected static $mediaTypeToSubdefTypes = [
         SubdefType::TYPE_AUDIO    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
-        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
+        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER, SubdefSpecs::TYPE_PDF],
         SubdefType::TYPE_FLASH    => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_IMAGE    => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_VIDEO    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+        SubdefType::TYPE_IMAGE    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_PDF],
+        SubdefType::TYPE_VIDEO    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION, SubdefSpecs::TYPE_AUDIO],
         SubdefType::TYPE_UNKNOWN  => [SubdefSpecs::TYPE_IMAGE],
     ];
     const CLASS_THUMBNAIL = 'thumbnail';
@@ -74,6 +78,7 @@ class databox_subdef
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
         $this->orderable = isset($sd->attributes()->orderable) ? p4field::isyes($sd->attributes()->orderable) : true;
+        $this->tobuild = isset($sd->attributes()->tobuild) ? p4field::isyes($sd->attributes()->tobuild) : true;
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
         $this->preset = $sd->attributes()->presets;
         $this->requiresMetadataUpdate = p4field::isyes((string)$sd->meta);
@@ -99,6 +104,9 @@ class databox_subdef
                 break;
             case SubdefSpecs::TYPE_FLEXPAPER:
                 $this->subdef_type = $this->buildFlexPaperSubdef($sd);
+                break;
+            case SubdefSpecs::TYPE_PDF:
+                $this->subdef_type = $this->buildPdfSubdef($sd);
                 break;
             case SubdefSpecs::TYPE_UNKNOWN:
                 $this->subdef_type = $this->buildImageSubdef($sd);
@@ -132,6 +140,12 @@ class databox_subdef
         if ($sd->flatten) {
             $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
         }
+        if ($sd->watermark) {
+            $image->setOptionValue(Image::OPTION_WATERMARK, p4field::isyes($sd->watermark));
+        }
+        if ($sd->watermarktext) {
+            $image->setOptionValue(Image::OPTION_WATERMARKTEXT, $sd->watermarktext);
+        }
         return $image;
     }
     /**
@@ -152,6 +166,10 @@ class databox_subdef
         if ($sd->audiosamplerate) {
             $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
         }
+        if ($sd->audiochannel) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOCHANNEL, (string) $sd->audiochannel);
+        }
+
         return $audio;
     }
     /**
@@ -215,6 +233,16 @@ class databox_subdef
     protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
     {
         return new FlexPaper($this->translator);
+    }
+    /**
+     * Build Pdf Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Pdf
+     */
+    protected function buildPdfSubdef(SimpleXMLElement $sd)
+    {
+        return new Pdf($this->translator);
     }
     /**
      *
@@ -302,6 +330,18 @@ class databox_subdef
     {
         return $this->downloadable;
     }
+    
+    /**
+     * @Deprecated (alias done cause of webgallery usage of old function)
+     *
+     * boolean
+     *
+     * @return bool
+     */
+    public function is_downloadable()
+    {
+        return $this->isDownloadable();
+    }
 
     /**
      * @return bool
@@ -309,6 +349,16 @@ class databox_subdef
     public function isOrderable()
     {
         return $this->orderable;
+    }
+
+    /**
+     * boolean
+     *
+     * @return bool
+     */
+    public function isTobuild()
+    {
+        return $this->tobuild;
     }
 
     /**
@@ -347,6 +397,9 @@ class databox_subdef
                             break;
                         case SubdefSpecs::TYPE_VIDEO:
                             $mediatype_obj = new Video($this->translator);
+                            break;
+                        case SubdefSpecs::TYPE_PDF:
+                            $mediatype_obj = new Pdf($this->translator);
                             break;
                         case SubdefSpecs::TYPE_UNKNOWN:
                             $mediatype_obj = new Unknown($this->translator);

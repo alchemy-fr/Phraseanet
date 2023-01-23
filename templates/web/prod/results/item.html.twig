@@ -1,14 +1,15 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 
+
 {% set record  = item.record(app) %}
 
 <div style="width:{{ images_size+30 }}px;"
-     sbas="{{ record.databoxId }}"
-     id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
-     class="IMGT diapo type-{{ record.type }} open-preview-action"
-     data-kind="FEED"
-     data-position="{{ record.getNumber }}"
-     data-id="{{ entry.id }}"
+ sbas="{{ record.databoxId }}"
+ id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
+ class="IMGT diapo type-{{ record.type }} open-preview-action"
+ data-kind="FEED"
+ data-position="{{ record.getNumber }}"
+ data-id="{{ entry.id }}"
 >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
@@ -33,18 +34,18 @@
         <div class="thumb captionTips " tooltipsrc="{{ tooltipsrc }}"
              style="height:{{ images_size }}px; z-index:90;">
             <div class="doc_infos">
-                {% if doctype_display %}
-                    {{ record_doctype_icon(record) }}
-                {% endif %}
                 <span class="duration">
                     {{ record.get_formated_duration }}
                 </span>
+                {% if doctype_display %}
+                    {{ record_doctype_icon(record) }}
+                {% endif %}
             </div>
             <div class="{% if rollover_gif %}rollovable{% endif %}">
                 {% set extraclass = rollover_gif ? 'rollover-gif-out' : '' %}
                 {{ thumbnail.format(record.get_thumbnail(), images_size, images_size, extraclass, true, false) }}
                 {% if rollover_gif %}
-                    {{ thumbnail.format(rollover_gif, images_size, images_size, 'rollover-gif-hover', true, false) }}
+                    {{ thumbnail.format(rollover_gif, images_size, images_size, 'rollover-gif-hover hide', true, false) }}
                 {% endif %}
             </div>
         </div>

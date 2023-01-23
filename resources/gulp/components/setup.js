@@ -15,7 +15,7 @@ gulp.task('build-setup-css', function(){
 
 gulp.task('build-setup-js', function(){
     var setupGroup = [
-        config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
+        config.paths.nodes + 'jquery.cookie/jquery.cookie.js',
         config.paths.src + 'vendors/jquery-validation/js/jquery.validate.js',
         config.paths.src + 'vendors/jquery-validate.password/js/jquery.validate.password.js',
         config.paths.src + 'vendors/jquery-test-paths/jquery.test-paths.js'

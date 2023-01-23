@@ -1,17 +1,32 @@
 <form method="POST" action="{{ path('prod_stories_do_create') }}">
+    <input type="hidden" id="multiple_databox" value="{{ isMultipleDataboxes }}" />
 
     <label>{{ 'Collection' | trans }}</label>
     <select name="base_id">
+        <option value="">{{ 'prod::story select collection ...' | trans }}</option>
         {% for collection in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADDRECORD')]) %}
-            <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}</option>
+            <option
+                    {% if not ismultipleDataboxes and databoxId != collection.get_databox().get_sbas_id() and databoxId != 0 %}
+                        class="not-selected-db"
+                    {% endif %}
+
+                    {% if not isMultipleCollections and collectionId ==  collection.get_base_id() %}
+                        selected
+                    {% endif %}
+
+                    value="{{ collection.get_base_id() }}">
+
+                {{ collection.get_databox().get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}
+            </option>
         {% endfor %}
     </select>
 
-    <label>{{ 'Story name' | trans }}</label>
-    <input name="name" value="" type="text"/>
-
-    <label for="new_story_add_sel" class="checkbox">
-        <input type="checkbox" name="lst" value="" id="new_story_add_sel"/>
+    {% if isMultipleDataboxes %}
+        <div style="margin-top: 20px;margin-bottom: 5px;">{{ 'prod:story:selected elements are from different databox and cannot be added to the story' | trans }}</div>
+    {% endif %}
+    <label for="new_story_add_sel" class="checkbox hidden new_story_add_sel" style="margin-top: 10px;">
+        <input {% if isMultipleDataboxes %} disabled {% endif %} type="checkbox" name="lst" value="" id="new_story_add_sel"/>
         {{ 'Ajouter ma selection courrante' | trans }}
     </label>
+
 </form>

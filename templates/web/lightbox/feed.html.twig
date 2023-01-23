@@ -1,15 +1,15 @@
 {% extends "lightbox/index_layout.html.twig" %}
 
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" media="screen"/>
   {% endblock %}
 
 {% block content %}
@@ -81,7 +81,7 @@
                         <div class="lightbox_container PNB">
               {% set business = app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), constant('\\ACL::CANMODIFRECORD')) %}
               {% if first_item %}
-                {{macro.caption(first_item.getRecord(app), business, false, true)}}
+                {{ macro_caption.caption(first_item.getRecord(app), business, false, true) }}
               {% endif %}
             </div>
                     </div>
@@ -92,11 +92,12 @@
             <div class="PNB" style="height:30px;bottom:auto;">
                 <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
                     <tr>
-                        <td style="width:20px;">
+                        <td style="width:50px;">
+                            <a href="/lightbox"><img title="{{ 'lightbox::recaptitulatif' | trans }}" class="back-home" src="/assets/lightbox/images/home-solid.svg"/></a>
                         </td>
                         <td style="width:40px;">
                             <button class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
-                                <img src="/assets/lightbox/images/save.png"/>
+                                <img width="15" src="/assets/lightbox/images/file-download-solid-blue.svg" >
                             </button>
                         </td>
                         <td>

@@ -1,0 +1,63 @@
+<h4>{{ 'preview::tab:feedback list' | trans }}</h4>
+<br>
+{% for basket_element in feedbackElementDatas %}
+    {% set basket = basket_element.getBasket() %}
+    {% if basket.isVoteBasket() %}
+        {% if (validationSession.isParticipant(app.getAuthenticatedUser())
+            and (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationSession.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() ))
+            or granted_on_collection(basket_element.getRecord(app).getBaseId(), [constant('\\ACL::CANMODIFRECORD'), constant('\\ACL::CANPUSH')])
+        %}
+        {% set basketName = basket.getName() %}
+        <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
+            <dt data-kind="BASK"
+                data-position="0"
+                data-id="{{ basket.getId() }}"
+                data-reload="true"
+                class="to-open-preview-action" title="{{ basket.getDescription() }}"
+                style="cursor:pointer;"
+            >
+                {{ basketName }}
+
+                {% if basket.getVoteExpires() < date() %}
+                    ( {{ 'preview::tab:feedback closed' | trans }} )
+                {% else %}
+                    ( {{ 'preview::tab:feedback open' | trans }} )
+                {% endif %}
+            </dt>
+            <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
+                {% set initiator %}
+                    <a style="color:#27bbe2;" href="mailto:{{ basket.getVoteInitiator().getEmail() }}?subject={{ 'preview::tab:feedback mail subject' | trans | url_encode}}{{ ' ' ~ basketName | url_encode }}">
+                        {{ basket.getVoteInitiator().getDisplayName() }}
+                    </a>
+                {% endset %}
+
+                {% set createdDate = app['date-formatter'].getDateTranslated(basket.getVoteCreated()) %}
+
+                {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
+            </dd>
+
+            {% for choice in basket_element.getVotes() %}
+                {% if granted_on_collection(basket_element.getRecord(app).getBaseId(), [constant('\\ACL::CANMODIFRECORD'), constant('\\ACL::CANPUSH')])
+                    or (
+                    (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() and choice.getParticipant().getCanAgree())
+                    or
+                    (not validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() and choice.getParticipant().getCanAgree() and choice.getParticipant().getUser() == app.getAuthenticatedUser())
+                    )
+                %}
+                    <dd style="margin-bottom: 5px;position:relative;">
+                        <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
+                        <span style="position: absolute;width:calc(100% - 60px);border-bottom:1px solid #484848;height: 43%;right:30px;left:30px;top:0;"></span>
+                        {% if choice.getAgreement() == true %}
+                            <img style="cursor:help;float:right;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                        {% elseif choice.getAgreement() is null %}
+                            <img style="cursor:help;float:right;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
+                        {% else %}
+                            <img style="cursor:help;float:right;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                        {% endif %}
+                    </dd>
+                {% endif %}
+            {% endfor %}
+        </dl>
+    {% endif %}
+    {% endif %}
+{% endfor %}

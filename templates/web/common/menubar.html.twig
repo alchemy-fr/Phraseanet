@@ -1,199 +1,325 @@
 <div id="mainMenu" class="">
     {% set configuration = app['conf'].get(['registry', 'custom-links']) %}
-    <div class="PNB menu-bar" style="right:auto;overflow:hidden;">
-      <ol>
-        <li>
-            <span class="title">
-              <img src="/assets/common/images/logo.png" alt="" id="mainLogo">
-            </span>
-        </li>
-        {% if module is defined and module != "lightbox" and app.getAuthenticator().isAuthenticated() %}
-          <li>
-              <a target="_blank" href="{{ path('prod') }}">
-                <span class="{% if module is defined and module == "prod" %}selected{% endif %}">
-                  {{ 'admin::monitor: production' | trans }}
-                </span>
-              </a>
-          </li>
-
-          {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus') %}
-          <li>
-            <a target="_blank" href="{{ path('thesaurus') }}">
-              <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
-              {{ 'admin::monitor: module thesaurus' | trans }}
-              </span>
-            </a>
-          </li>
-          {% endif %}
-
-
-          {# MODULE #}
-          {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('admin') %}
-          <li>
-            <a target="_blank" href="{{ path('admin') }}">
-              <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
-                {{ 'admin::monitor: module admin' | trans }}
-              </span>
-            </a>
-          </li>
-          {% endif %}
-
-          {# MODULE #}
-          {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('report') %}
-          <li>
-            <a target="_blank" href="{{ path('report_dashboard') }}">
-              <span class="{% if module is defined and module == "report" %}selected{% endif %}">
-                {{ 'admin::monitor: module report' | trans }}
-              </span>
-            </a>
-          </li>
-          {% endif %}
-
-          {# MODULE #}
-          <li>
-            <a id="validation_link" target="_blank" href="{{ path('lightbox') }}">
-              <span>
-              {{ 'admin::monitor: module validation' | trans }}
-              </span>
-            </a>
-          </li>
-
-          {# MODULE #}
-          {% if module is defined and module == "prod" %}
-              {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('upload') %}
+    <div class="PNB menu-bar" style="overflow:hidden;">
+        <ol>
             <li>
-                {% set link = path('upload_html5_form') %}
+            <span class="title">
+                {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'logoChoice']) == 'personalize' and
+                    app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+                    {% set extension = app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'fileType']) %}
+                    {% set personalise_path = '/custom/minilogos/personalize_logo.' ~ extension %}
 
-                {% if not app['browser'].supportFileAPI() %}
-                    {% set link = path('upload_flash_form') %}
+                    <img src="{{ personalise_path }}" alt="" id="mainLogo">
+
+                {% else %}
+
+                    <img src="/assets/common/images/logo.png" alt="" id="mainLogo">
+
                 {% endif %}
+            </span>
+            </li>
+            {% if module is defined and module != "lightbox" and app.getAuthenticator().isAuthenticated() %}
+                <li class="show-menu" id="toggle-menu-main">
+                    <img src="/assets/common/images/icons/menu-burger.png"/>
 
-                <a  href="{{ link }}" class="uploader-open-action" title="{{ 'Upload' | trans }}">
-                <span>
-                    {{ 'admin::monitor: module upload' | trans }}
-                </span>
+                    <div id="nav_menu_container" class="desktopmenu">
+                        <div class="arrow-up"></div>
+                        <ol class="nav_menu">
+                            <li class="menu-bar-item">
+                                <a target="_blank" href="{{ path('prod') }}">
+                                    <img src="/assets/common/images/icons/menu-prod.png" class="mobilemenu"/>
+                                    <span class="{% if module is defined and module == "prod" %}selected{% endif %}">
+                                  {{ 'admin::monitor: production' | trans }}
+                                </span>
+                                </a>
+                            </li>
+
+                            {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus') %}
+                                <li class="menu-bar-item">
+                                    <a target="_blank" href="{{ path('thesaurus') }}">
+                                        <img src="/assets/common/images/icons/menu-thesaurus.png" class="mobilemenu"/>
+                                        <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
+                                          {{ 'admin::monitor: module thesaurus' | trans }}
+                                          </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+
+                            {# MODULE #}
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('admin') %}
+                                <li class="menu-bar-item">
+                                    <a target="_blank" href="{{ path('admin') }}">
+                                        <img src="/assets/common/images/icons/menu-admin.png" class="mobilemenu"/>
+                                        <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
+                                            {{ 'admin::monitor: module admin' | trans }}
+                                          </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {# MODULE #}
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('report') %}
+                                <li class="menu-bar-item">
+                                    <a target="_blank" href="{{ path('report_dashboard') }}">
+                                        <img src="/assets/common/images/icons/menu-report.png" class="mobilemenu"/>
+                                        <span class="{% if module is defined and module == "report" %}selected{% endif %}">
+                                            {{ 'admin::monitor: module report' | trans }}
+                                          </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {# MODULE #}
+                            <li class="menu-bar-item">
+                                <a id="validation_link" target="_blank" href="{{ path('lightbox') }}">
+                                    <img src="/assets/common/images/icons/menu-lightbox.png" class="mobilemenu"/>
+                                    <span>
+                                      {{ 'admin::monitor: module validation' | trans }}
+                                      </span>
+                                </a>
+                            </li>
+
+                            {# MODULE #}
+                            {% if module is defined and module == "prod" %}
+                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('upload') %}
+                                    <li class="menu-bar-item">
+                                        {% set link = path('upload_html5_form') %}
+
+                                        {% if not app['browser'].supportFileAPI() %}
+                                            {% set link = path('upload_flash_form') %}
+                                        {% endif %}
+
+                                        <a href="{{ link }}" class="uploader-open-action"
+                                           title="{{ 'Upload' | trans }}">
+                                            <img src="/assets/common/images/icons/menu-upload.png" class="mobilemenu"/>
+                                            <span>
+                                                {{ 'admin::monitor: module upload' | trans }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+
+                            {# MODULE #}
+                            {% if module == "prod" %}
+                                <li class="menu-bar-item">
+                                    <a href="#" class="state-navigation" data-state="publication">
+                                        <img src="/assets/common/images/icons/menu-publication.png" class="mobilemenu"/>
+                                        <span>
+                                            {{ 'Publications' | trans }}
+                                          </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::ORDER_MASTER')) %}
+                                <li class="menu-bar-item">
+                                    <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
+                                      <span>
+                                        {{ 'Commandes' | trans }}
+                                      </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                        </ol>
+                    </div>
+                </li>
+            {% endif %}
+            <li class="show-menu" id="toggle-menu-link">
+                <img src="/assets/common/images/icons/menu-web-site.png"/>
+                <div id="nav_customlink_container" class="mobile-link">
+                    <div class="arrow-up"></div>
+                    <div class="nav-wrapper-box">
+                        <ol class="nav_menu"></ol>
+                    </div>
+                </div>
+            </li>
+            <li class="show-menu" id="toggle-menu-account" style="float: right;margin-right: 16px;">
+                <img src="/assets/common/images/icons/menu-user.png"/>
+                <div class="PNB right mobilemenu" id="nav_account_container">
+                    <div class="arrow-up"></div>
+                    <div class="nav-wrapper-box">
+                        <ol class="nav_menu">
+                            {% if app.getAuthenticator().isAuthenticated() %}
+                                <li class="menu-bar-item">
+                                    {% if app.getAuthenticatedUser().isGuest %}
+                                        <img src="/assets/common/images/icons/menu-name-user.png"/>
+                                        <span>{{ 'Guest' | trans }}</span>
+                                    {% else %}
+                                        <a target="_blank" href="{{ path('account') }}"
+                                           title="{{ 'login:: Mon compte' | trans }}">
+                                            <img src="/assets/common/images/icons/menu-name-user.png"/>
+                                            <span>{{ app.getAuthenticatedUser().getDisplayName() }}</span>
+                                        </a>
+                                    {% endif %}
+                                </li>
+                                <li class="menu-bar-item">
+                                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}"
+                                       target="_self">
+                                        <img src="/assets/common/images/icons/menu-logout.png"/>
+                                        <span>{{ 'phraseanet:: deconnection' | trans }}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="menu-bar-item">
+                                <a target="_blank" href="https://docs.phraseanet.com/4.0/">
+                                    <img src="/assets/common/images/icons/menu-help.png"/>
+                                    <span>
+              {{ 'phraseanet:: aide' | trans }}
+                                        <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
+                                              id="help-trigger"></span>
+            </span>
+                                </a>
+                            </li>
+                            {% if module is defined and module == "prod" %}
+                                <li class="menu-bar-item">
+                                    <a href="#">
+                                        <img src="/assets/common/images/icons/menu-help.png"/>
+                                        <span style="" class="shortcuts-trigger">
+                        {{ 'phraseanet:: raccourcis clavier' | trans }}
+                    </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="menu-bar-item">
+                                <a href="#">
+                                    <img src="/assets/common/images/icons/menu-help.png"/>
+                                    <span class="context-menu-item-inner infoDialog"
+                                         infos="<div class='phraseanet_about'><div class='phraseanet_about_top'><span class='phraseanet_logo'></span><div class='phraseanet_version'> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }}) &nbsp; <a href='../../gitlog.txt' target='_blank'>gitlog</a></div></div><div class='phraseanet_about_bottom'><div class='phraseanet_gpl'><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='/assets/common/images/GPLv3_Logo.png' width='380' /><span>License GNU GPL v3</span></a></div><p class='phraseanet_copyright'><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></p></div></div>">{{ 'phraseanet:: a propos' | trans }}</span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </li>
+
+        </ol>
+
+    </div>
+
+    <div class="PNB right desktopmenu" style="left:auto;overflow:hidden;">
+        <ol>
+            {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
+            <li class="notification_trigger">
+                <a href="#" style="font-weight:bold;text-decoration:none;">
+                    <span>
+                      <button class="counter btn btn-danger"></button>&nbsp;{{ 'Notifications' | trans }}
+                    </span>
                 </a>
             </li>
             {% endif %}
-          {% endif %}
-
-          {# MODULE #}
-          {% if module == "prod" %}
-          <li>
-            <a href="#" class="state-navigation" data-state="publication" >
-              <span>
-                {{ 'Publications' | trans }}
-              </span>
-            </a>
-          </li>
-          {% endif %}
-
-          {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::ORDER_MASTER')) %}
-          <li>
-            <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
-              <span>
-                {{ 'Commandes' | trans }}
-              </span>
-            </a>
-          </li>
-          {% endif %}
-
-        {% endif %}
-      </ol>
-
-    </div>
-    <div class="PNB right" style="left:auto;overflow:hidden;">
-      <ol>
-
-    {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
-        <li id="notification_trigger">
-          <a href="#" style="font-weight:bold;text-decoration:none;">
-            <span>
-              <button class="counter btn btn-danger" style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                  {% if app['events-manager'].get_unread_notifications_number > 0 %}
-                    {{app['events-manager'].get_unread_notifications_number}}
-                  {% endif %}
-              </button>
-              {{ 'Notifications' | trans }}
-            </span>
-          </a>
-        </li>
-    {% endif %}
-        <li class="user">
-          {% if app.getAuthenticator().isAuthenticated() %}
-            {% if app.getAuthenticatedUser().isGuest %}
-              <span>
+            <li class="user">
+                {% if app.getAuthenticator().isAuthenticated() %}
+                    {% if app.getAuthenticatedUser().isGuest %}
+                        <span>
                 {{ 'Guest' | trans }}
               </span>
-            {% else %}
-              <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
+                    {% else %}
+                        <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
                 <span>
-                  {{app.getAuthenticatedUser().getLogin()}}
+                  {{ app.getAuthenticatedUser().getDisplayName() }}
                 </span>
-              </a>
-            {% endif %}
-          {% endif %}
-        </li>
-        <li>
-          <a target="_blank" href="https://docs.phraseanet.com/4.0/">
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </li>
+            <li>
+                <a target="_blank" href="{{ 'https://docs.phraseanet.com/4.1/' ~ app['locale'] }}">
             <span>
               {{ 'phraseanet:: aide' | trans }}
-                <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
-                      id="help-trigger"> <i class="icon-caret-down"></i></span>
             </span>
-          </a>
-          <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu helpcontextmenu">
-              <tbody>
-                  <tr>
-                      <td>
-                          <div class="context-menu context-menu-theme-vista">
-                          {% if module is defined and module == "prod" %}
-                              <div title="" class="context-menu-item menu3-custom-item">
-                                  <div style="" class="context-menu-item-inner shortcuts-trigger">
-                                          {{ 'phraseanet:: raccourcis clavier' | trans }}
-                                  </div>
-                              </div>
-                          {% endif %}
-                              <div title="" class="context-menu-item menu3-custom-item">
-                                  <div style="" class="context-menu-item-inner infoDialog"
-                                       infos="<div><span style='font-size:18px;'>PHRASEANET</span> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a><p style='margin-top: 10px' ><a href='../../gitlog.txt' target='_blank'>gitlog</a></p></div>">{{ 'phraseanet:: a propos' | trans }}</div>
-                              </div>
-                          </div>
-                      </td>
-                  </tr>
-              </tbody>
-          </table>
-        </li>
-        <li>
-        {% if app.getAuthenticator().isAuthenticated() %}
-          <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}" target="_self">
+                </a>
+                <span id="help-trigger" class="help-trigger"> <i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                <table cellspacing="0" cellpadding="0" class="contextMenu helpcontextmenu context-menu-theme-vistamenu-bar">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="context-menu context-menu-theme-vista">
+                                {% if module is defined and module == "prod" %}
+                                    <div title="" class="context-menu-item menu3-custom-item">
+                                        <div style="" class="context-menu-item-inner shortcuts-trigger">
+                                            {{ 'phraseanet:: raccourcis clavier' | trans }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div title="" class="context-menu-item menu3-custom-item">
+                                    <div style="" class="context-menu-item-inner infoDialog"
+                                         infos="<div class='phraseanet_about'><div class='phraseanet_about_top'><span class='phraseanet_logo'></span><div class='phraseanet_version'> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }}) &nbsp; <a href='../../gitlog.txt' target='_blank'>gitlog</a></div></div><div class='phraseanet_about_bottom'><div class='phraseanet_gpl'><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='/assets/common/images/GPLv3_Logo.png' width='380' /><span>License GNU GPL v3</span></a></div><p class='phraseanet_copyright'><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></p></div></div>">{{ 'phraseanet:: a propos' | trans }}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                {% if app.getAuthenticator().isAuthenticated() %}
+                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}" target="_self">
             <span>
               {{ 'phraseanet:: deconnection' | trans }}
             </span>
-          </a>
-        {% endif %}
+                    </a>
+                {% endif %}
+            </li>
+        </ol>
+    </div>
+
+    <div class="mobilemenu" style="float: right;margin-right: 50px;">
+        {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
+        <li class="notification_trigger">
+            <a href="#" style="font-weight:bold;text-decoration:none;">
+                <span>
+                    <button class="counter btn btn-danger"></button>&nbsp;{{ 'Notifications' | trans }}
+                </span>
+            </a>
         </li>
-      </ol>
+        {% endif %}
     </div>
 </div>
 
- {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
-    <div style="display:none;z-index:30000;" id="notification_box">
-        {% set notifications = app['events-manager'].get_notifications %}
-        {% include 'prod/notifications.html.twig' %}
-    </div>
+{% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
+    {% include 'prod/notifications_dropdown.html.twig' %}
+    {% include 'prod/notifications_dialog.html.twig' %}
 {% endif %}
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('body').on('click', '#help-trigger', function (event) {
+            $('#mainMenu .helpcontextmenu').toggleClass('shown');
+
+        });
+
+        $(document).on('click', function (e) {
+            if($('#mainMenu .helpcontextmenu').hasClass('shown')) {
+                var $this = $(e.target);
+                if ($this.closest('#mainMenu .helpcontextmenu.shown, .help-trigger').length == 0 && $this[0].id != "toggle") {
+                    $('#mainMenu .helpcontextmenu').removeClass('shown');
+                }
+            }
+        });
+
         // var key = 'help';
         var configurationSettingLinks = {{ configuration|json_encode|raw }};
         //seperate array based on location of link
         var seperatedLinksByLocation = _.groupBy(configurationSettingLinks, "linkLocation");
 
+
         for (key in seperatedLinksByLocation) {
             if (key === 'navigation-bar') {
                 var sortedCustomLinks = _.sortBy(seperatedLinksByLocation[key], 'linkOrder');
+                /*show navigation-bar if there is some result*/
+                console.log(sortedCustomLinks);
+
+                $(window).resize(function () {
+                    if (($(window).width() <= 1064) && (sortedCustomLinks != undefined)) {
+                        $('#toggle-menu-link img').show();
+                    } else {
+                        $('#toggle-menu-link img').hide();
+                    }
+                });
+
 
                 _.each(sortedCustomLinks, function (linksData) {
                     if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
@@ -201,10 +327,10 @@
                         styleAttr += linksData.linkColor ? "color: " + linksData.linkColor + ";" : "";
                         styleAttr += linksData.linkBold == true ? "font-weight: bold;" : "";
 
-                        var spanElement = $('<span />').attr('style', styleAttr).html(linksData.linkName);
-                        var links = '<li><a target="_blank" href="' + linksData.linkUrl + '">' +
+                        var spanElement = $('<span />').attr('style', styleAttr).attr('class', 'bullet-type').html(linksData.linkName);
+                        var links = '<li class="menu-bar-item"><a target="_blank" href="' + linksData.linkUrl + '">' +
                             spanElement.prop("outerHTML") + '</a></li>';
-                        $('#mainMenu .menu-bar ol').append(links);
+                        $('#mainMenu #nav_customlink_container .nav_menu').append(links);
                     }
                 });
             } else if (key === 'help-menu') {
@@ -222,11 +348,81 @@
                             '<a target="_blank" href="' + linksData.linkUrl + '">' +
                             spanElement.prop("outerHTML") + '</a></div></div>';
                         $('.helpcontextmenu .context-menu-theme-vista').append(links);
+
+                        var spanElementMobile = $('<span />').attr('style', styleAttr).attr('class', 'bullet-type').html(linksData.linkName);
+                        var linksMobile = '<li class="menu-bar-item"><a target="_blank" href="' + linksData.linkUrl + '">' +
+                            spanElementMobile.prop("outerHTML") + '</a></li>';
+                        $('#mainMenu #nav_account_container .nav_menu').append(linksMobile);
                     }
                 });
             }
         }
 
+        $('#toggle-menu-main > img').on('click', function (event) {
+            $('#nav_menu_container').toggle();
+            if ($('#nav_customlink_container').is(":visible")) {
+                $('#nav_customlink_container').hide();
+            }
+            if ($('#nav_account_container').is(":visible")) {
+                $('#nav_account_container').hide();
+            }
+        });
 
+        $('#toggle-menu-link  > img').on('click', function (event) {
+            $('#nav_customlink_container').toggle();
+            if ($('#nav_menu_container').is(":visible")) {
+                $('#nav_menu_container').hide();
+            }
+            if ($('#nav_account_container').is(":visible")) {
+                $('#nav_account_container').hide();
+            }
+        });
+
+        $('#toggle-menu-account > img').on('click', function (event) {
+            $('#nav_account_container').toggle();
+            if ($('#nav_menu_container').is(":visible")) {
+                $('#nav_menu_container').hide();
+            }
+            if ($('#nav_customlink_container').is(":visible")) {
+                $('#nav_customlink_container').hide();
+            }
+        });
+
+
+        var windowSize = $(window).width();
+        $(window).resize(function (event) {
+            windowSize = $(window).width();
+            if (windowSize > 1064) {
+                if ($('#nav_menu_container').is(":hidden")) {
+                    $('#nav_menu_container').show();
+                }
+                if ($('#nav_customlink_container').is(":hidden")) {
+                    $('#nav_customlink_container').show();
+                    $('#nav_customlink_container').addClass('inline');
+                }
+                if ($('#nav_account_container').is(":visible")) {
+                    $('#nav_account_container').hide();
+                }
+            } else if (windowSize <= 1064) {
+                if ($('#nav_customlink_container').is(":visible")) {
+                    $('#nav_customlink_container').hide();
+                }
+                if ($('#nav_menu_container').is(":visible")) {
+                    $('#nav_menu_container').hide();
+                }
+                $('#nav_customlink_container').removeClass('inline');
+
+            }
+        });
     });
+
+    // no need to launch pollNotifications if not connected on load page
+    {% if app.getAuthenticator().isAuthenticated() %}
+        /**manage session and redirect to login page**/
+        var usr_id = '{{ app.getAuthenticator().user.getId }}';
+        var module = '{{ module }}';
+
+        // start pooling recursively
+        window.setTimeout( function() { commonModule.pollNotifications(usr_id, module === 'prod', true); }, 2000);
+    {% endif %}
 </script>

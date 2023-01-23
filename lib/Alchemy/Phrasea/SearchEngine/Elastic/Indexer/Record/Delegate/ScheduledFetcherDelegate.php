@@ -18,7 +18,7 @@ class ScheduledFetcherDelegate implements FetcherDelegateInterface
 {
     public function buildWhereClause()
     {
-        return 'WHERE (r.jeton & :to_index) > 0 AND (jeton & :indexing) = 0';
+        return '(r.jeton & :to_index) > 0 AND (jeton & :indexing) = 0';
     }
 
     public function getParameters()

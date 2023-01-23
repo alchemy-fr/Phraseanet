@@ -1,17 +1,19 @@
-{% for validationDatas in basket_element.getValidationDatas() %}
-  {% set is_mine = validationDatas.getParticipant().getUser().getId() == app.getAuthenticatedUser().getId() %}
-  {% if validationDatas.getNote() != '' or (validationDatas.getAgreement() is not null and is_mine)  %}
-  <li>
-    <h3 style="text-align:left;">
-      {% if is_mine == false and validationDatas.getAgreement() is not null %}
-      <img style="vertical-align:middle;"
-           src="/assets/lightbox/images/{% if validationDatas.getAgreement() == true %}agree.png{% else %}disagree.png{% endif %}" />
-      {% endif %}
-      {{ validationDatas.getParticipant().getUser().getDisplayName() }}
-    </h3>
-    {% if validationDatas.getNote() != '' %}
-    <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ validationDatas.getNote()|nl2br }}</p>
-    {% endif %}
+{% for vote in basket_element.getVotes() %}
+    {% if basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or vote.getParticipant().getUser() == app.getAuthenticatedUser() %}
+
+      <li>
+    <div class="validate-icon">
+        {% if vote.getAgreement() == true %}<span class="icomoon icon-agree">&#xe95f;</span>{% endif %}
+           {% if vote.getAgreement() == false  and vote.getAgreement() is not null %}<span class="icomoon icon-disagree">&#xe971;  {{ vote.getAgreement() }}</span>{% endif %}
+    </div>
+    <div class="validate-info">
+      <h3>
+        {{ vote.getParticipant().getUser().getDisplayName() }}
+      </h3>
+         {% if vote.getNote() != '' %}
+        <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ vote.getNote()|nl2br }} </p>
+        {% endif %}
+    </div>
   </li>
-  {% endif %}
+    {% endif %}
 {% endfor %}

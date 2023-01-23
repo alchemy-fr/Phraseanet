@@ -126,8 +126,9 @@ class UserManipulator implements ManipulatorInterface
      * Deletes a user.
      *
      * @param User|User[] $users
+     * @param array $grantedBaseIdList  List of the old granted base_id per userId  [user_id => [base_id, ...]  ]
      */
-    public function delete($users)
+    public function delete($users, array $grantedBaseIdList = array())
     {
         /** @var User $user */
         foreach ($this->makeTraversable($users) as $user) {
@@ -146,9 +147,10 @@ class UserManipulator implements ManipulatorInterface
                 new DeletedEvent(
                     null,
                     array(
-                        'user_id'=>$old_id,
-                        'login'=>$old_login,
-                        'email'=>$old_email
+                        'user_id'           => $old_id,
+                        'login'             => $old_login,
+                        'email'             => $old_email,
+                        'grantedBaseIds'    => isset($grantedBaseIdList[$old_id]) ? $grantedBaseIdList[$old_id] : []
                     )
                 )
             );
@@ -368,7 +370,7 @@ class UserManipulator implements ManipulatorInterface
             throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
         }
 
-        if (null !== $this->repository->findByEmail($email)) {
+        if (($email !== null) && (null !== $this->repository->findByEmail($email))) {
             throw new RuntimeException(sprintf('User with email %s already exists.', $email));
         }
 
@@ -389,5 +391,10 @@ class UserManipulator implements ManipulatorInterface
         }
 
         return $var;
+    }
+
+    public function updateUser(User $user)
+    {
+        $this->manager->update($user);
     }
 }

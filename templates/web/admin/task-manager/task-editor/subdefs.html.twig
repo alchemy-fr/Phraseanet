@@ -4,9 +4,12 @@
     <div class="control-group">
         <label class="control-label"> {{ 'Databox' | trans }}</label>
         <div class="controls">
+            <label class="checkbox inline">
+                <input class="subdef_task_sbas" type="checkbox" name="sbas[]" value="0"> {{ 'All' | trans }}
+            </label>
             {% for databox in app.getApplicationBox().get_databoxes() %}
             <label class="checkbox inline">
-                <input type="checkbox" name="sbas[]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
+                <input class="subdef_task_sbas" type="checkbox" name="sbas[]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
                 ({{ databox.get_sbas_id() }})
             </label>
             {% endfor %}
@@ -68,6 +71,10 @@
 {% block javascript %}
 <script type="text/javascript">
 
+    $(".subdef_task_sbas").change(function (e) {
+        checkSbas();
+    });
+
     function minmax(v, _min, _max)
     {
         if(isNaN(v) || v < _min)
@@ -79,6 +86,16 @@
             v = _max;
         }
         return v;
+    }
+    function checkSbas()
+    {
+        var alldb = $(".subdef_task_sbas[value=0]").prop('checked');
+        if(alldb) {
+            $(".subdef_task_sbas[value!=0]").prop('checked', true).attr('disabled', true);
+        }
+        else {
+            $(".subdef_task_sbas[value!=0]").attr('disabled', false);
+        }
     }
     function taskFillGraphic(xml)
     {
@@ -98,12 +115,14 @@
             gform.flush.value = minmax(parseInt(xml.find("flush").text()), 1, 100);
             gform.maxrecs.value = minmax(parseInt(xml.find("maxrecs").text()), 10, 100);
             gform.maxmegs.value = minmax(parseInt(xml.find("maxmegs").text()), 64, 512);
+
             var $databoxes = $(gform).find("input[name='sbas[]']");
             for(i=0; i < $databoxes.length; i++) {
                 var sbid = $($databoxes[i]).attr('value');
 
                 $($databoxes[i]).prop('checked', (xml.find("sbas").filter(function(){return $(this).text()==sbid}).length > 0));
             }
+            checkSbas();
         }
     }
  </script>

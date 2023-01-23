@@ -1,0 +1,1112 @@
+$pushThemeColor: #2196f3;
+$feedbackThemeColor: #E0215D;
+$sharebasketThemeColor: #4caf50;
+$orangeThemeColor: #ff9400;
+$listManagerThemeColor: #ff9400;
+$textColor: #282828;
+$toggledOff: #666;       // a toggle button IS off
+
+/** PUSH BOX */
+
+.ui-dialog {
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0;
+}
+
+.whole_dialog_container {      // the whole dialog content (including the title)
+
+    /******************************
+     * override default ui styles
+     ******************************/
+
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0;
+    color: $textColor;
+
+    button, input, label, select, textarea {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        &:focus {
+            text-decoration: none;
+        }
+    }
+
+    .ui-dialog-title {
+        font-size: 21px;
+        font-weight: bold;
+        // color: #ffffff;      // skins ok
+    }
+
+    .ui-widget-content {
+        color: $textColor;
+        background-color: white;
+    }
+
+    .ui-dialog-titlebar-close {
+        border: none;
+        margin-right: 4px;
+    }
+
+    .btn, .btn-inverse {
+        font-weight: normal;
+        background-image: none;         // remove grey (candy) gradient
+    }
+
+    /*********************
+     * global styles
+     ********************/
+
+    .PushBox {
+        background-color: #4F4F4F;
+    }
+
+    .inverse {
+        background-color: white;
+    }
+
+    .colored.inverse {
+        color: white;
+    }
+
+    BUTTON, A.btn {
+        background-color: white;
+        &:hover {
+            color: white;
+            background-color: $textColor;
+        }
+        border-radius: 13.5px;
+        border: solid 1px transparent;  // transparent is changed by context / theme
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
+    }
+
+    BUTTON, A {
+        color: $textColor;
+        &:hover {
+            color: white;
+            background-color: $textColor;
+        }
+        &.inverse {
+            color: white;
+        }
+        &.inverse:hover {
+            color: $textColor;
+            background-color: white;
+        }
+
+        // prevent toggle buttons to change on :hover
+        &.toggle {
+            background-color: transparent !important;   // important because we don't want A:hover to change background
+            &.status_off {
+                color: $toggledOff;
+            }
+        }
+    }
+
+    input[type=text],
+    input[type=text]::-webkit-input-placeholder,    /* Chrome/Opera/Safari */
+    input[type=text]::-moz-placeholder,             /* Firefox 19+ */
+    input[type=text]:-ms-input-placeholder,         /* IE 10+ */
+    input[type=text]:-moz-placeholder {             /* Firefox 18- */
+        &.colored {
+            color: #ffffff;
+        }
+    }
+
+    // glue immediate button to text input
+    .inputWithButton {
+        SPAN {
+            vertical-align: middle
+        }
+        INPUT[type=text] {
+            margin: 0;
+            border-right: 0;
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+        INPUT[type=text] + BUTTON {
+            height: 30px;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+        }
+    }
+
+    // a <i class="fa fa-xxx"> as a big round icon (please add "colored inverse" classes to see the disc!)
+    .main-icon {
+        font-size: 25px;
+        display: inline-block;
+        border-radius: 30px;
+        padding: 6px 8px;
+    }
+
+    /***********************
+     * specific styles
+     **********************/
+
+    // add user button
+    .PushBox .push-add-user {
+        margin-left: 30px;
+    }
+
+    // refresh list button       ( /!\ A.btn )
+    A.list_refresh {
+        width: 20px;
+        height: 20px;
+        padding: 0;
+    }
+
+    // list item
+    .list_link {
+        height: 40px;
+        line-height: 40px;
+        display: block;
+        padding-left: 33px;
+    }
+
+    #PushBox .general_togglers {
+        text-align: right;
+        ul {
+            margin:0;
+            list-style:none;
+            li {
+                display: inline-block;
+                margin-right: 10px;
+                i {
+                    font-size: 20px;
+                }
+                button {
+                    padding: 7px 15px;
+                }
+            }
+        }
+    }
+
+
+    // list manager button       ( /!\ A.btn )
+    #PushBox .list_manager {
+        position: fixed;
+        bottom: 31px;
+        left: 32px;
+        width: 158px;
+    }
+
+    #PushBox .list_manager:hover {
+        // since the manager has orange theme, recall this with the button
+        background-color: $listManagerThemeColor;
+    }
+
+
+    // "send" button
+    BUTTON.FeedbackSend {
+        width: 180px;
+        height: 30px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 0;
+        margin-left: 20px;
+        margin-bottom: -7px;
+        float: right;
+    }
+
+    // "info" icon
+    #info-box-trigger {
+        float: right;
+        margin-top: 6px;
+        cursor: pointer;
+    }
+    // info box
+    #info-box {
+        z-index: 1;
+        width: 400px;
+        position: absolute;
+        top: 15px;
+        right: 40px;
+        border-radius: 8px;
+        background-color: #ededed;
+        padding: 6px;
+        font-size: 10px;
+        line-height: 1.4;
+        color: #000000;
+        p {
+            margin: 0;
+        }
+    }
+
+
+}
+
+.dialog_container {
+    border: 0 none !important;
+    border-radius: 6px !important;
+    background-color: #ffffff !important;
+
+    .ui-dialog-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: #4a4a4a;
+    }
+    .ui-dialog-titlebar-close {
+        border: none;
+        margin-right: 5px;
+    }
+    .ui-icon.ui-icon-closethick {
+        background-image: url("/assets/common/images/icons/cross-white.png");
+        background-position: center;
+        background-size: cover;
+    }
+    .ui-dialog-buttonpane {
+        margin-top: 0;
+        padding-top: 0;
+        border: 0 none;
+    }
+    .ui-dialog-buttonpane .ui-button {
+        border-radius: 15px;
+        background-color: #ffffff;
+        border: solid 1px $pushThemeColor;
+        font-size: 14px;
+        color: $pushThemeColor;
+        height: 30px;
+        min-width: 135px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    .ui-dialog-buttonpane .ui-button:hover {
+        background-color: $pushThemeColor;
+        color: #FFFFFF;
+    }
+    .ui-dialog-buttonpane .ui-button:nth-child(2) {
+        background-color: $pushThemeColor;
+        color: #FFFFFF;
+    }
+    .ui-button-icon-only {
+        text-indent: -9999px;
+        background: transparent;
+    }
+    .ui-dialog-buttonpane .ui-dialog-buttonset {
+        float: none;
+        text-align: center;
+    }
+    .ui-widget-content {
+        color: #4a4a4a;
+        label, p {
+            font-size: 14px;
+            color: #4a4a4a;
+        }
+        input {
+            font-size: 14px;
+            background-color: #e7e7e7;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        input[type=text]::-webkit-input-placeholder, textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+            font-size: 14px;
+            color: #484848;
+        }
+        input[type=text]::-moz-placeholder, textarea::-moz-placeholder { /* Firefox 19+ */
+            font-size: 14px;
+            color: #484848;
+        }
+        input[type=text]:-ms-input-placeholder, textarea:-ms-input-placeholder { /* IE 10+ */
+            font-size: 14px;
+            color: #484848;
+        }
+        input[type=text]:-ms-input-placeholder, textarea:-ms-input-placeholder { /* Firefox 18- */
+            font-size: 14px;
+            color: #484848;
+        }
+        textarea {
+            font-size: 14px;;
+            background-color: #e7e7e7;
+            border-radius: 0;
+            border: none;
+            resize: none;
+            box-shadow: none;
+            padding: 4px 6px;
+            min-height: 150px;
+        }
+    }
+    .ui-autocomplete.ui-widget-content {
+        max-height: 250px;
+    }
+}
+
+.PushBox .user_content {
+    border-radius: 5px;
+    .header {
+        font-size: 13px;
+        .options {
+            text-align: right;
+        }
+    }
+}
+
+
+/*****************************
+ * theme dependant fixes
+ *****************************/
+
+.Push {
+    .colored {
+        color: $pushThemeColor;
+        &.inverse {
+            background-color: $pushThemeColor;
+        }
+    }
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $pushThemeColor;  // will not apply on toggles due to !important
+        }
+        &.inverse:hover {
+            color: $pushThemeColor;
+            background-color: revert;
+        }
+        &.status_on {
+            color: $pushThemeColor;
+        }
+    }
+    BUTTON, A.btn {
+        border-color: $pushThemeColor;
+    }
+}
+
+.Feedback {
+    .colored {
+        color: $feedbackThemeColor;
+        &.inverse {
+            background-color: $feedbackThemeColor;
+        }
+    }
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $feedbackThemeColor;  // will not apply on toggles due to !important
+        }
+        &.inverse:hover {
+            color: $feedbackThemeColor;
+            background-color: revert;
+        }
+        &.status_on {
+            color: $feedbackThemeColor;
+        }
+    }
+    BUTTON, A.btn {
+        border-color: $feedbackThemeColor;
+    }
+}
+
+.Sharebasket {
+    .colored {
+        color: $sharebasketThemeColor;
+        &.inverse {
+            background-color: $sharebasketThemeColor;
+        }
+    }
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $sharebasketThemeColor;  // will not apply on toggles due to !important
+        }
+        &.inverse:hover {
+            color: $sharebasketThemeColor;
+            background-color: revert;
+        }
+        &.status_on {
+            color: $sharebasketThemeColor;
+        }
+    }
+    BUTTON, A.btn {
+        border-color: $sharebasketThemeColor;
+    }
+}
+
+.ListManager {
+    .colored {
+        color: $listManagerThemeColor;
+        &.inverse {
+            background-color: $listManagerThemeColor;
+        }
+    }
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $listManagerThemeColor;  // will not apply on toggles due to !important
+        }
+        &.inverse:hover {
+            color: $listManagerThemeColor;
+            background-color: revert;
+        }
+        &.status_on {
+            color: $listManagerThemeColor;
+        }
+    }
+    BUTTON, A.btn {
+        border-color: $listManagerThemeColor;
+    }
+}
+
+
+/****************
+ * badge(s)
+ ****************/
+.PushBox .user_content .owner_badge {
+    display: inline-block;
+    margin: 10px;
+    outline: 3px solid transparent;
+    border-radius: 10px;
+
+    .owner_icon_wrapper {
+        width:100px;
+        display: inline-block;
+        background-color: #f7f7f7;
+        vertical-align: top;
+        text-align: center;
+        font-size:200%;
+        border-radius: 7px;
+        margin-top:5px;
+        margin-bottom:5px;
+    }
+    .icon {
+        background-color: #673AB7;
+        color: white;
+        width: 56px;        // 7+42+7 (same size as badge)
+        border-radius: 7px;
+    }
+}
+
+.PushBox .user_content .badges {
+    overflow: auto;
+    height: auto;
+    .badge {
+        width: 220px;
+        height: 79px;
+        margin: 10px;
+        display: inline-block;
+        outline: 3px solid transparent;
+        color: $textColor;
+        background-color: #f7f7f7;
+        text-shadow: none;
+        padding: 0px;
+        border-radius: 10px;
+        position: relative;
+
+        &.selected {
+            outline: 3px solid #000000;
+        }
+
+        &.name {
+            white-space: pre-line;
+            display: block;
+            margin-top: 5px;
+        }
+
+        &.subtite {
+            display: block;
+        }
+
+        .icon {
+            width: 42px;
+            padding: 0 7px;
+            border-radius: 7px 0px 0px 7px;
+            I {
+                color: white;
+                font-size: 500%;
+                margin-top: 10px;
+            }
+        }
+
+        .infos {
+            padding-top: 3px;
+            padding-left: 5px;
+            TABLE {
+                height: 75px;
+            }
+            TR {
+                height: 15px;
+                .toggles {
+                    height: 25px;
+                    text-align: left;
+                }
+            }
+        }
+
+        .deleter {
+            position: absolute;
+            right: 0;
+            I {
+                color: #4f4f4f;
+                font-size: 20px;
+                padding: 4px;
+            }
+        }
+
+        TABLE {
+            width: 100%;
+        }
+        TD {
+            vertical-align: top;
+        }
+
+        TR.toggles TD {
+            text-align: center;
+            .toggle {
+                font-size:200%;
+            }
+        }
+    }
+}
+
+
+
+.lists_manager_list:hover .list_link {
+    background-color: #b8b8b8;
+}
+
+.list:hover .list-trash-btn {
+    display: block !important;
+}
+
+.PushBox .content {
+    border-radius: 5px;
+    background-color: #AAA;
+    .list-container {
+        position: absolute;
+        top: 80px;
+        bottom: 70px;
+        right: 0px;
+        left: 0px;
+        padding: 10px;
+        ul {
+            overflow-y: auto;
+            margin: 0;
+            height: 100%;
+        }
+    }
+    .main-title {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 2px;
+        margin-top: 10px;
+    }
+}
+
+.PushBox .LeftColumn h1 {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.PushBox .LeftColumn ul {
+    margin: 10px 0;
+    padding-bottom: 40px;
+}
+
+.PushBox .LeftColumn ul li img {
+    margin-top: -2px;
+    vertical-align: middle;
+}
+
+.PushBox table {
+    width: 100%;
+    border: none;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+.PushBox .header table {
+    overflow: visible;
+}
+
+
+
+
+.PushBox .all-lists .lists {
+    overflow: auto;
+}
+
+.PushBox .LeftColumn .content ul.lists li:nth-child(odd) {
+    background-color: none;
+}
+
+.PushBox .lists ul li:nth-child(odd) {
+    background-color: none;
+}
+
+.PushBox .LeftColumn .content ul.lists li.selected {
+    background-color: #aaa;
+    .list-trash-btn {
+        display: block !important;
+    }
+}
+
+.PushBox .lists .list.selected {
+    background-color: #aaa;
+}
+
+.PushBox .lists .list {
+    position: relative;
+    padding: 3px 0;
+}
+
+.PushBox .LeftColumn .content ul.lists li {
+//    font-family: Roboto;
+    font-size: 13px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0px;
+    color: #000000;
+    .list-trash-btn {
+        float: right;
+        background: none;
+        border: none;
+        padding: 7px 4px 12px;
+        position: absolute;
+        right: 8px;
+        top: 0;
+        img {
+            margin: 0;
+        }
+        .image-normal {
+            display: inline;
+        }
+        .image-hover {
+            display: none;
+        }
+    }
+}
+
+.PushBox .LeftColumn .content ul.lists li:hover {
+    background-color: #b8b8b8;
+}
+
+
+.PushBox .welcome {
+    text-align: center;
+    font-size: 16px;
+    line-height: 18px;
+    margin: 20px 0;
+    h1 {
+        font-weight: bold;
+        margin: 60px 0 20px;
+        font-size: 31px;
+    }
+    p {
+        font-size: 20px;
+    }
+}
+
+#list-editor-search-results table {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#list-editor-search-results table td {
+    padding: 8px 0;
+    text-align: center;
+    line-height: 1.4;
+    overflow: hidden;
+    color: #333;
+}
+
+#list-editor-search-results table tr {
+    line-height: 24px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+#list-editor-search-results table tr.odd {
+    background-color: #b8b8b8;
+}
+
+#list-editor-search-results table tr.selected {
+    background-color: #ffb44d;
+}
+
+#list-editor-search-results table tr.selected td {
+    color: #fff;
+}
+
+#list-editor-search-results table tr th:first-child,
+#list-editor-search-results table tr td:first-child {
+  padding-left: 10px !important;
+}
+
+#list-editor-search-results table th.sortable span {
+    margin: 0 5px;
+}
+
+#list-editor-search-results table th.sortable {
+    color: #fff;
+    background-color: #676767;
+    padding: 10px 0;
+    line-height: 15px;
+    cursor: pointer;
+}
+
+#list-editor-search-results table th.sortable span.ord_notifier {
+    display: none;
+}
+
+#list-editor-search-results table th.sortable.sorted span.ord_notifier {
+    display: inline;
+}
+
+.list_editor_results_footer {
+    padding: 5px;
+    color: #000;
+    font-size: 12px;
+    border-top: 1px solid #888;
+    background: #c8c8c8;
+    a {
+        color: #000;
+        margin-right: 10px;
+        span {
+            border: solid black;
+            border-width: 0 1px 1px 0;
+            display: inline-block;
+            padding: 4px;
+            margin: 0 5px;
+        }
+        &:hover {
+            color: #fff;
+            span {
+                border-color: #fff;
+            }
+        }
+    }
+    a.prev span {
+        transform: rotate(135deg);
+        -webkit-transform: rotate(135deg);
+    }
+    a.next span {
+        transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+    }
+    .textinfo {
+        margin-right: 20px;
+    }
+}
+
+/**
+ * content of modal dlg to select users to share a list with
+ */
+#ListShare {
+    .info-box-share-holder {
+        position: fixed;
+        margin: -35px 0 0 115px;
+
+        #info-box-trigger {
+            cursor: pointer;
+        }
+        #info-box-trigger:hover + #info-box {
+            display: block !important;
+        }
+        #info-box {
+            width: 250px;
+            border-radius: 8px;
+            background-color: #ededed;
+            padding: 8px 12px;
+            p {
+                margin: 0;
+                font-size: 12px;
+                line-height: 1.4;
+                color: #000000;
+            }
+        }
+    }
+    table {
+        width: 100%;
+        margin: 12px 0;
+    }
+}
+
+
+#ListManager {
+    .content {
+        .lists span.action {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            width: 100%;
+        }
+        UL.lists li:nth-child(even) {
+            background-color: #c8c8c8;
+        }
+
+        UL.lists li.selected:nth-child(even) {
+            background-color: #aaa;
+        }
+
+    }
+
+    .editor {
+        //.list_editor_search {
+        //    top: 63px;
+        //}
+        .saveList {
+            //width: 120px;
+            //padding: 4px 0;
+            //font-weight: normal;
+            //line-height: 19px;
+            //border-radius: 5px;
+            //background-color: #f7f7f7;
+            //.image-normal {
+            //    display: inline;
+            //}
+            //.image-hover {
+            //    display: none;
+            //}
+            //img {
+            //    margin-right: 20px;
+            //}
+            //&:hover {
+            //    color: #fff !important;
+            //    background-color: $orangeThemeColor !important;
+            //    .image-normal {
+            //        display: none;
+            //    }
+            //    .image-hover {
+            //        display: inline;
+            //    }
+            //}
+        }
+        /* !!!!!!!!!!!!!!!!!! the footer is hidden by list
+        .footer .saveList {
+            width: 150px;
+            padding: 4px 0px 4px 0;
+//            background-color: #f7f7f7;
+            img {
+                margin-right: 15px;
+            }
+        }
+        !!!!!!!!!!!!!!!!!!!!!!!!!!         */
+        #find-user input[type=text] {
+//            background-color: $orangeThemeColor;
+        }
+        .counter {
+            font-size: 12px;
+        }
+        .list_editor_selector td select {
+            margin: 0;
+            border: 0 none;
+            border-radius: 0;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            font-size: 12px;
+            color: #000;
+        }
+        .list_editor_selector td select::-webkit-scrollbar {
+            width: 4px;
+        }
+        .list_editor_selector td select::-webkit-scrollbar-thumb {
+            background-color: #d8d8d8;
+        }
+        .list_editor_selector td select::-webkit-scrollbar-track {
+            background-color: #ffffff;
+        }
+        .list_editor_selector th label {
+            font-size: 12px;
+            text-align: left;
+            padding: 4px 0 4px 6px;
+            width: calc(95% - 6px);
+            background: #676767;
+            margin-bottom: -2px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .list_editor_selector_filter_holder {
+            width: 95%;
+            overflow: hidden;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .listmanager-add-user {
+            width: 120px;
+            margin-left: 30px;
+            margin-top: 2px;
+            border: 0 none;
+        }
+        .list_refresh:hover {
+            background: $listManagerThemeColor;
+        }
+    }
+}
+
+
+#PushBox .list_loader {
+    font-size: 13px;
+    color: #000000;
+    width: 100%;
+    img {
+        float: right;
+    }
+}
+
+.PushBox .content {
+    .list_saver {
+        margin: 0;
+        display: inline-block;
+        .btn-toolbar {
+            margin: 0;
+        }
+        input {
+            width: 260px;
+        }
+    }
+}
+
+
+#find-user {
+    line-height: 15px;
+    input[type=text] {
+        width: 180px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
+        border: none;
+    }
+    .search {
+        padding-right: 25px;
+        padding-left: 6px;
+        background-image: url(/assets/common/images/icons/white-search.png);
+        background-repeat: no-repeat;
+        background-size: 16px;
+        background-position: right 8px center;
+    }
+}
+
+
+#recommanded-users {
+    margin-top: 25px;
+    line-height: 15px;
+}
+
+#recommanded-users a:last-child {
+    color: #0088cc;
+    text-decoration: none;
+}
+
+#quickAddUser {
+    margin: 0;
+}
+
+#quickAddUser table {
+    width: 100%;
+    table-layout: auto;
+}
+
+#quickAddUser table tr td {
+    padding: 11px;
+}
+
+#quickAddUser table td:last-child {
+    text-align: left;
+}
+
+#quickAddUser table tr:first-child td {
+    padding-top: 0;
+}
+
+  #quickAddUser table tr:last-child td {
+    padding: 0;
+}
+
+#quickAddUser input {
+    display: inline-block;
+    margin: 0 5px 0 0;
+    padding: 4px;
+    width: 95%;
+    height: 24px;
+    box-shadow: none;
+}
+
+#quickAddUser input[name=email] {
+    width: 97.5%;
+}
+
+#quickAddUser button {
+    border-radius: 15px;
+    font-size: 14px;
+    height: 30px;
+    min-width: 135px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
+
+.ui-autocomplete li.list-item {
+    width: 222px;
+    padding: 0 4px;
+}
+.ui-autocomplete {
+    padding-right: 0;
+}
+.ui-menu .ui-menu-item a {
+    box-shadow: inset 0 -1px $orangeThemeColor;
+    border-radius: unset;
+}
+.ui-menu .ui-menu-item:last-child a {
+    box-shadow: none;
+}
+.ui-menu .ui-menu-item a.ui-state-focus,
+.ui-menu .ui-menu-item a.ui-state-active {
+    margin: 0 !important;
+}
+.ui-menu .ui-menu-item.list-item a .icon {
+    .image-normal {
+        display: block;
+    }
+    .image-hover {
+        display: none;
+    }
+}
+.ui-menu .ui-menu-item.list-item:hover {
+    background: #646464;
+    a {
+        background: #646464;
+    }
+    .icon {
+        .image-normal {
+            display: none;
+        }
+        .image-hover {
+            display: block;
+        }
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .PushBox .user_content .badges {
+//        top: 110px !important;
+    }
+    .PushBox .user_content .header > div:first-child {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    .PushBox .user_content .header > div:last-child {
+        float: left;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    #ListManager .editor .list_editor_selector td select {
+        height: 120px;
+    }
+    #ListManager .readwrite .content {
+        top: 290px !important;
+    }
+}

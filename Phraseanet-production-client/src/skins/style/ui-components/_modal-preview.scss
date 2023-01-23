@@ -1,0 +1,294 @@
+#PREVIEWBOX,
+#EDITWINDOW {
+    z-index: 1200;
+    background-color: $modalBackground;
+    display: none;
+    border: $modalBorder; //1px solid $darkerBorderColor;
+    border-radius: $defaultBorderRadius;
+}
+
+#PREVIEWBOX img {
+    cursor: pointer;
+}
+
+#PREVIEWBOX a.bounce {
+    BORDER-BOTTOM: #ffe000 1px dashed;
+    cursor: pointer;
+}
+
+#PREVIEWBOX #PREVIEWTITLE_COLLLOGO {
+    img {
+        height: 16px;
+    }
+}
+
+.PREVIEW_PIC,
+.PREVIEW_HD {
+    position: absolute;
+}
+
+#PREVIEWCURRENT li.selected {
+    background-color: $bgInverseHoverColor;
+}
+
+#PREVIEWBOX li {
+    list-style-type: none;
+}
+
+#PREVIEWIMGDESC .descBoxes {
+    top: 30px;
+    overflow: auto;
+}
+
+#PREVIEWIMGDESC.PNB10 {
+    bottom: 0;
+}
+
+#PREVIEWIMGDESCINNER span.fieldName {
+    font-weight: bold;
+}
+
+#PREVIEWIMGDESC em {
+    background-color: red;
+}
+
+#PREVIEWOTHERS {
+    background-color: $mediumBackgroundColor;
+    overflow-x: hidden;
+    overflow-y: auto;
+    left: 0;
+}
+
+#PREVIEWOTHERSINNER ul {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    float: left;
+    list-style-type: none;
+    width: 100%;
+}
+
+#PREVIEWOTHERSINNER li {
+    position: relative;
+    float: left;
+    width: 150px;
+    margin: 4px 10px;
+    line-height: 14px;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 9px;
+}
+
+#PREVIEWOTHERSINNER li.otherRegToolTip {
+    height: 25px;
+    overflow: hidden;
+}
+
+#PREVIEWOTHERSINNER li.title {
+    font-weight: bold;
+    font-size: $mediumFontSize;
+    margin: 10px 10px 5px;
+}
+
+#PREVIEWOTHERSINNER li.otherRegToolTip,
+#PREVIEWOTHERSINNER li.otherBaskToolTip {
+    background-color: $mediumBackgroundColor;
+    border-radius: $defaultBorderRadius;
+    cursor: pointer;
+    position: relative;
+    padding-bottom: 8px;
+    margin-bottom: 0;
+    border-bottom: 0;
+    margin-top: 8px;
+    &:after {
+        width: 60%;
+        height: 1px;
+        background: #fff;
+        position: absolute;
+        content: '';
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        opacity: 0.4;
+    }
+    &:last-child {
+        &:after {
+            content: none;
+        }
+    }
+}
+.history-block {
+    position: relative;
+    padding-bottom: 1px;
+    margin-bottom: 14px;
+    &:after {
+        width: 75%;
+        height: 1px;
+        background: #fff;
+        position: absolute;
+        content: '';
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        opacity: 0.4;
+    }
+}
+
+.feedback-data-list {
+    &:after {
+        width: 75%;
+        height: 1px;
+        background: #fff;
+        position: absolute;
+        content: '';
+        left: 12.5%;
+        bottom: 0;
+        opacity: 0.4;
+    }
+}
+
+#PREVIEWOTHERSINNER li.otherRegToolTip span.title {
+    line-height: 25px;
+    margin-left: 3px;
+}
+
+#PREVIEWOTHERSINNER li .others_img {
+    position: relative;
+    float: left;
+    width: 25px;
+    height: 25px;
+}
+
+#PREVIEWTITLEWRAPPER {
+    background-color: $mediumBackgroundColor;
+    bottom: 0;
+}
+
+#SPANTITLE {
+    font-size: 14px;
+    line-height: 25px;
+    font-weight: bold;
+}
+
+#PREVIEWCURRENTGLOB,
+.preview_col_film {
+    height: 96px;
+    width: 100%;
+}
+
+#PREVIEWCURRENT {
+    background-color: $mediumBackgroundColor;
+}
+
+#PREVIEWCURRENTCONT.group_case {
+    left: 106px;
+}
+
+#PREVIEWCURRENTCONT {
+    right: 130px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: #262626;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar {
+    height: 5px;
+    border-radius: 0;
+}
+
+#PREVIEWCURRENTCONT::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    width: 3px;
+    background-color: #595959;
+}
+
+#PREVIEWCURRENTCONT ul {
+    position: relative;
+    height: 80px;
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+
+#PREVIEWCURRENT,
+#PREVIEWCURRENTGLOB {
+    overflow: hidden;
+}
+
+#PREVMAINREG {
+    float: left;
+    position: relative;
+    width: 96px;
+    height: 96px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.prevTrainCurrent {
+    text-align: center;
+    position: relative;
+    float: left;
+    height: 80px;
+    width: 80px;
+}
+
+#PREVIEWHD {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    z-index: 6000;
+}
+
+#PREVIEWTOOL {
+    position: absolute;
+    width: 84px;
+    right: 0;
+    left: 0;
+    margin: 10px auto 0 auto;
+    bottom: 4px;
+    img {
+        width: 20px;
+        padding: 4px;
+        float: left;
+    }
+    span {
+        float: left;
+    }
+}
+
+.prevTrainCurrent .doc_infos,
+.diapo .doc_infos {
+    position: absolute;
+    z-index: 97;
+    bottom: 3px;
+    right: 2px;
+}
+
+.prevTrainCurrent .doc_infos img,
+.diapo .doc_infos img {
+    vertical-align: middle;
+    width: 22px;
+}
+
+.prevTrainCurrent .duration {
+    background-color: darken($darkerBackgroundColor, 10);
+    color: $darkerTextColor;
+}
+
+#PREVIEWIMGCONT {
+    .documentTips {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+#PREVIEWRIGHT {
+    top: 7px;
+    left: 60%;
+    overflow: hidden;
+    bottom: 10px;
+}

@@ -25,6 +25,7 @@ use Alchemy\Phrasea\Setup\Probe\PhpProbe;
 use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
 use Alchemy\Phrasea\Setup\Probe\SubdefsPathsProbe;
 use Alchemy\Phrasea\Setup\Probe\SystemProbe;
+use Doctrine\DBAL\Connection;
 use vierbergenlars\SemVer\version;
 
 class ConfigurationTester
@@ -128,6 +129,22 @@ class ConfigurationTester
     public function isMigrable()
     {
         return (Boolean) $this->getMigrations();
+    }
+
+    public function isConnectedToDBHost()
+    {
+        $connectionConfig = $this->app['conf']->get(['main', 'database']);
+        /** @var Connection $connection */
+        $connection = $this->app['db.provider']($connectionConfig);
+
+        try {
+            $connection->connect();
+
+            return true;
+        } catch (\Exception $e) {
+
+            return false;
+        }
     }
 
     public function getMigrations()

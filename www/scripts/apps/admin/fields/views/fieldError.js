@@ -14,6 +14,7 @@ define([
     "i18n"
 ], function ($, _, Backbone, i18n) {
     var FieldErrorView = Backbone.View.extend({
+        template: _.template($("#field_error_template").html()),
         initialize: function () {
             AdminFieldApp.errorManager.on("add-error", this.render, this);
             AdminFieldApp.errorManager.on("remove-error", this.render, this);
@@ -33,11 +34,7 @@ define([
                 });
             });
 
-            var template = _.template($("#field_error_template").html(), {
-                messages: messages
-            });
-
-            $(".block-alert").html(template);
+            $(".block-alert").html(this.template({messages: messages}));
 
             return this;
         }

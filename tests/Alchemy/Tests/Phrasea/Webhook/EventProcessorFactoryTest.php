@@ -36,6 +36,10 @@ class EventProcessorFactoryTest extends \PhraseanetTestCase
     {
         return [
             [WebhookEvent::FEED_ENTRY_TYPE, 'Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor'],
+            [WebhookEvent::RECORD_TYPE, 'Alchemy\Phrasea\Webhook\Processor\RecordEventProcessor'],
+            [WebhookEvent::RECORD_SUBDEF_TYPE, 'Alchemy\Phrasea\Webhook\Processor\SubdefEventProcessor'],
+            [WebhookEvent::ORDER_TYPE, 'Alchemy\Phrasea\Webhook\Processor\OrderNotificationProcessor'],
+            [WebhookEvent::USER_TYPE, 'Alchemy\Phrasea\Webhook\Processor\UserProcessor']
         ];
     }
 }

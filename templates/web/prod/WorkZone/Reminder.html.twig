@@ -1,0 +1,38 @@
+<form id="doReminderForm" action="{{ path('prod_baskets_do_reminder', { 'basket' : basket.getId() }) }}" method="post"  style="margin-top: 20px;">
+
+    <div class="control-group">
+        <div id="reminder-error" class="alert alert-error hidden"></div>
+    </div>
+
+    <div class="control-group">
+        <label for="all-participant" class="checkbox">
+            <input id="all-participant" type="checkbox" class="participant" value="0"/>
+            {{ 'prod::workzone:manual feedback reminder select all participant' | trans }}
+        </label>
+    </div>
+    <div class="control-group">
+        <label for="send-new-token" class="checkbox">
+            <input id="send-new-token" type="checkbox" name="send_new_token" value="1"/>
+            {{ 'prod::workzone:manual feedback reminder send new token' | trans }}
+        </label>
+    </div>
+    <hr>
+    {% for participant in basket.getParticipants() if participant.getCanAgree() %}
+        <div class="control-group">
+            <label for="{{ 'participant_' ~participant.getUser().getId() }}" class="participant checkbox">
+                <input id="{{ 'participant_' ~participant.getUser().getId() }}" type="checkbox" name="{{ 'participant_' ~participant.getUser().getId() }}" class="participant" value="1"/>
+                {{ participant.getUser().getDisplayName() ~ ' ( ' ~ participant.getUser().getEmail() ~ ' )' }}
+
+                {% if participant.getIsConfirmed %}
+                    <span style="color:#078853">{{ 'prod::workzone:manual feedback report send' | trans }}</span>
+                {% endif %}
+            </label>
+        </div>
+    {% endfor %}
+
+    <div class="control-group">
+        <textarea id="reminder-message" placeholder="{% trans %}Message{% endtrans %}" name="reminder_message"
+                  class="input-block-level" rows="7" style="margin-top: 40px;"></textarea>
+    </div>
+
+</form>

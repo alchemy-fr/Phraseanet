@@ -1,266 +1,706 @@
-{%  if push.get_count_actionable() == 0 %}
-<div class="PNB">
-    <div style="text-align:center;margin-top:150px;">
-    {%  if 'Push' == context %}
-        {%  trans %}None of the selected records can be pushed.{% endtrans %}
-    {%  else %}
-        {%  trans %}None of the selected records can be sent for feedback.{% endtrans %}
-    {%  endif %}
+{# @var push \Alchemy\Phrasea\Helper\Record\Push #}
+{# @var basket \Alchemy\Phrasea\Model\Entities\Basket #}
+{# @var participant \Alchemy\Phrasea\Model\Entities\BasketParticipant #}
+
+{% if push._count_actionable == 0 %}
+    <div class="PNB">
+        <div style="text-align:center;margin-top:150px;">
+            {% if context == 'Push' %}
+                {% trans %}prod::share: None of the selected records can be pushed.{% endtrans %}
+            {% elseif context == 'Sharebasket' %}
+                {% trans %}prod::share: None of the selected records can be shared.{% endtrans %}
+            {% else %}
+                {# should not happen, only 2 posssible contexts #}
+            {% endif %}
+        </div>
+        <div style="text-align:center;margin-top:15px;">
+            <button class="btn btn-inverse close-dialog-action">{{ "boutton::fermer" | trans }}</button>
+        </div>
     </div>
-    <div style="text-align:center;margin-top:15px;">
-        <button class="btn btn-inverse close-dialog-action">{{ "boutton::fermer" | trans }}</button>
-    </div>
-</div>
-{%  else  %}
-<div class="PNB PushBox" id="PushBox" >
-    <div class="PNB" style="width:205px;">
-        <div class="PNB10 LeftColumn">
-            <div class="PNB" style="height:130px; text-align:center;">
-                {% if context == 'Push' %}
-                    <img style="margin:30px 0;" src="/assets/common/images/icons/push64.png"/>
-                {% else %}
-                    <img style="margin:30px 0;" src="/assets/common/images/icons/Feedback60.png"/>
-                {% endif %}
-            </div>
-            <div class="PNB content" style="top:150px; overflow-y:auto;">
-                <div style="padding:10px">
-                    <h1>{{ 'Grant rights' | trans }}</h1>
-                    <ul class="general_togglers">
-                    {% if context == 'Feedback' %}
-                        <li>
-                            <button type="button" class="general_toggler btn btn-inverse" feature="agree">
-                                {{ 'Contributor' | trans }}
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="general_toggler btn btn-inverse" feature="see_others">
-                                {{ 'See others' | trans }}
-                            </button>
-                        </li>
+{% else %}
+    {% set basket = push._original_basket %}
+    <div class="PNB PushBox" id="PushBox">
+
+        {# left column : icon, general togglers, users lists #}
+
+        <div class="PNB" style="width:220px;">
+            <div class="PNB10 LeftColumn">
+                <div class="PNB" style="text-align:center;">
+                    {% if context == "Push" %}
+                        <i class="main-icon fa fa-gift colored inverse"></i>
+                    {% elseif context == "Sharebasket" %}
+                        <i class="main-icon fa fa-share colored inverse feedback_only_false"></i>
+                        <i class="main-icon fa fa-bullhorn colored inverse feedback_only_true"></i>
+                    {% else %}
+                        {# should not happen, only 2 posssible contexts #}
                     {% endif %}
-                        <li>
-                            <button type="button" class="general_toggler btn btn-inverse" feature="HD">
-                                {{ 'HD Download' | trans }}
-                            </button>
-                        </li>
-                    </ul>
                 </div>
-                <div style="padding:10px;">
-                    <h1>{{ 'Lists' | trans }}</h1>
-                    <span style="width:100%; display:block; text-align:center;">
-                        <a href="#" class="btn btn-inverse list_manager">
-                            <b>{{ 'List Manager' | trans }}</b>
+                <div class="PNB content" style="top:45px; overflow-y:auto;">
+
+                    {# users lists #}
+
+                    <div style="padding: 10px 10px 0;">
+                        <span class="main-title">
+                            <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
+                        </span>
+                        <a href="{{ path('prod_lists_all') }}" title="Refresh list"
+                           class="list_refresh push-refresh-list-action btn pull-right colored"
+                           style="margin-top: -2px;">
+                            <i class="fa fa-refresh"></i>
                         </a>
-                    </span>
-                    <form class="list_saver">
-                        <div class="btn-toolbar">
-                            <input type="text" name="name" placeholder="{{ 'Save this list' | trans }}" />
-                            <button class="btn"><img src="/assets/prod/images/Push/save_list_as.png" /></button>
-                        </div>
-                    </form>
-                    <ul class="list">
-                        {% for list in lists %}
-                            <li class="list" style="padding:2px;">
-                                <a class="list_loader" href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}">
-                                    {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                                        <img src="/assets/prod/images/Push/list-icon.png" />
-                                    {% else %}
-                                        <img src="/assets/common/images/icons/SHARE16.png" />
-                                    {% endif %}
-                                    {{ list.getName() }}
-                                    ({{ list.getEntries().count() }})
-                                </a>
-                            </li>
-                        {% endfor %}
+                    </div>
+                    <ul class="lists">
+                        {# async loaded #}
                     </ul>
+                    <span style="width:100%; display:block; text-align:center;">
+                    <a href="#" class="btn list_manager" data-context="{{ context }}">
+                        <i class="fa fa-list"></i>&nbsp;
+                        <b>{{ 'List Manager' | trans }}</b>
+                    </a>
+                </span>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="PNB" style="left:205px;">
-        <div class="PNB" style="height:150px;bottom:auto;line-height:26px">
-            <div class="PNB10">
-                <table>
-                    <tr style="vertical-align:top;">
-                        <td>
-                            <div id="find-user">
-                                <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
-                                <br/>
-                                {{ 'Select a user in the list' | trans }} <br/>
-                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
-                                    {{ 'or' | trans }}
-                                    <a href="#" class="push-add-user btn btn-mini">{{ 'Add user' | trans }}</a>
-                                {% endif %}
-                            </div>
-                            <p id="recommanded-users">
-                                {% set recommendation = '' %}
-                                {% set total = RecommendedUsers|length %}
 
-                                {% for user in RecommendedUsers %}
-                                    {% if total <= 4 or loop.index <= 4 %}
-                                        {% if recommendation != '' and not loop.last %}
-                                            {% set recommendation = recommendation ~ ', ' %}
-                                        {% elseif recommendation != '' and loop.last %}
-                                            {% set recommendation = recommendation %}
+        {# main zone : search/add users, select badges buttons, form (dates, badges) #}
+
+        <div class="PNB" style="left:220px;">
+            <div class="PNB10" style="height:46px;bottom:auto;line-height:26px;padding:0 20px 0 18px;">
+                <div style="float: left;">
+                    <div id="find-user">
+                        <input class="search inverse" name="users-search" placeholder="{{ 'Users' | trans }}"
+                               type="text"
+                               style="width:210px;"/>
+                    </div>
+                    <p id="recommanded-users">
+                        {# !!!!!!!!!!!!!!!! "recommendations" should come from [vocabularyType=user] fields, but this seems not implemented in 4.1 #}
+                        {#
+                        {% set recommendation = '' %}
+                        {% set total = RecommendedUsers|length %}
+
+                        {% for user in RecommendedUsers %}
+                            {% if total <= 4 or loop.index <= 4 %}
+                                {% if recommendation != '' and not loop.last %}
+                                    {% set recommendation = recommendation ~ ', ' %}
+                                {% elseif recommendation != '' and loop.last %}
+                                    {% set recommendation = recommendation %}
+                                {% endif %}
+                                {% set recommendation = recommendation
+                                    ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : user.getId() }) ~ '">'
+                                    ~ '<input type="hidden" name="usr_id" value="' ~ user.getId() ~ '" />'
+                                    ~ user.getDisplayName() | e
+                                    ~ '</a>' %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if total > 4 %}
+                            {% set n = total - 4 %}
+                            {% set and_many_more %}
+                                {% trans with {'%n%' : n} %}and %n% more peoples{% endtrans %}
+                            {% endset %}
+                            {% set recommendation = recommendation
+                                ~ '<a href="#" class="recommended_users_list">'
+                                ~ and_many_more ~ '</a>' %}
+                        {% endif %}
+
+                        {% if recommendation != '' %}
+                            {% set recommendation = '<br/>' ~ recommendation %}
+                            {% if context == 'Push' %}
+                                {% trans with {'%recommendation%' : recommendation} %}Please consider send this push to the following users : %recommendation%{% endtrans %}
+                            {% elseif context == 'Sharebasket' %}
+                                {% trans with {'%recommendation%' : recommendation} %}Please consider share this basket with the following users : %recommendation%{% endtrans %}
+                            {% else %}
+                                {% trans with {'%recommendation%' : recommendation} %}Please consider send this validation to the following users : %recommendation%{% endtrans %}
+                            {% endif %}
+                        {% endif %}
+                        #}
+                        {# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+                    </p>
+
+                    <div style="display:none;" id="push_user_recommendations" title="{{ 'Users suggestion' | trans }}">
+                        <table class="users" style="width:100%;">
+                            {% for user in RecommendedUsers %}
+                                <tr>
+                                    <td>
+                                        <img src="/assets/common/images/icons/user.png"/>
+                                    </td>
+                                    <td>
+                                        {{ user.getDisplayName() }}
+                                        <input type="hidden" name="usr_id" value="{{ user.getId() }}"/>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="adder">{{ 'Add' | trans }}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+                {# --- add-user button will open a modal to create a new user on the fly --- #}
+                {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
+                    <div style="float: left;">
+                        <button type="button" class="colored push-add-user" data-context="{{ context }}">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            {{ 'Add user' | trans }}
+                        </button>
+                    </div>
+                {% endif %}
+
+                {# !!!!!!!!!!!!!!!!! the basket name only appears on push ? not on share, feedback... !!!!!!!!!!!!!!! #}
+                <span class="colored" style="font-size: 21px;margin-left: 30px;font-weight: 700;">
+                    {% if basket %}{{ basket.getName() }}{% endif %}
+                </span>
+
+                <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
+                <div id="info-box" style="display: none">
+                    <p>
+                        {% if context == 'Push' %}
+                            {{ 'prod::share un push permet d\'envoyer un lot d\'image a des destinataires' | trans }}
+                        {% elseif context == 'Sharebasket' %}
+                            {{ 'prod::share basket share allows participants to see/comment/act on a common basket' | trans }}
+                        {% else %}
+                            {# should not happen, only 2 posssible contexts #}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="PNB10" style="top:55px;">
+                <div class="content user_content"
+                     {# todo : move all those style to css #}
+                     style="display: flex; flex-direction: column; position: relative;
+                     padding:5px;
+                     top: 0; left: 0; width: calc(100% - 10px); height: calc(100% - 10px)">
+                    <div class="header">
+                        <table style="table-layout:auto;">
+                            <tr>
+                                <td>
+                                    <span class="text">
+                                    {% set nb_push_items = push.get_count_actionable() %}
+                                        {% set nb_not_available = push.get_count_not_actionable() %}
+                                        {% if context == 'Push' %}
+                                            {% if nb_not_available == 0 %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items} %}prod::share: You are about to push %nb_push_items% records.{% endtrans %}
+                                            {% else %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}prod::share: You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
+                                            {% endif %}
+                                        {% elseif context == 'Sharebasket' %}
+                                            {% if nb_not_available == 0 %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items} %}prod::share: You are about to share a basket with %nb_push_items% records.{% endtrans %}
+                                            {% else %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
+                                            {% endif %}
+                                        {% else %}
+                                            {# should not happen, only 2 posssible contexts #}
+                                            {#
+                                            {% if nb_not_available == 0 %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to ask for feedback for %nb_push_items% records.{% endtrans %}
+                                            {% else %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to ask for feedback for %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
+                                            {% endif %}
+                                            #}
                                         {% endif %}
-                                        {% set recommendation = recommendation
-                                        ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : user.getId() }) ~ '">'
-                                        ~ '<input type="hidden" name="usr_id" value="' ~ user.getId() ~ '" />'
-                                        ~ user.getDisplayName()
-                                        ~ '</a>' %}
+                                </span>
+                                </td>
+                                <td class="options">
+                                    <button class="select-all colored selected_none selected_partial">
+                                        {{ 'Select all' | trans }}
+                                    </button>
+                                    <button class="unselect-all colored selected_all">
+                                        {{ 'Deselect all' | trans }}
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    {# general togglers act on selection #}
+
+                    <div class="selected_partial selected_all general_togglers" style="margin-top:20px;">
+                        {#
+                        <span class="main-title">
+                            <i class="fa fa-hand-stop-o"></i>&nbsp;{{ 'Grant rights' | trans }}
+                        </span>
+                        #}
+                        <ul>
+                            {% if context == 'Sharebasket' %}
+                                <li class="feedback_only_true">
+                                    {% set msg = "prod::share: Users contribute to the feedback" | trans %}
+                                    <button type="button" class="general_toggler colored" feature="agree"
+                                            title="{{ msg }}">
+                                        <i class="fa fa-comment"></i>{# &nbsp;{{ 'Contributor' | trans }} #}
+                                    </button>
+                                </li>
+                                <li class="feedback_only_true">
+                                    {% set msg = "prod::share: Users can see others choices" | trans %}
+                                    <button type="button" class="general_toggler colored " feature="see_others"
+                                            title="{{ msg }}">
+                                        <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
+                                    </button>
+                                </li>
+                                <li>
+                                    {% set msg = "prod::share: Users can modify the basket" | trans %}
+                                    <button type="button" class="general_toggler colored" feature="modify"
+                                            title="{{ msg }}">
+                                        <i class="fa fa-pencil"></i>{# &nbsp;{{ 'Modify' | trans }} #}
+                                    </button>
+                                </li>
+                            {% endif %}
+                            <li>
+                                {% set msg = "prod::share: Users can download HD" | trans %}
+                                <button type="button" class="general_toggler colored" feature="HD"
+                                        title="{{ msg }}">
+                                    <i class="fa fa-download"></i>{# &nbsp;{{ 'HD Download' | trans }} #}
+                                </button>
+                            </li>
+
+                            <li>
+                                {% set msg = "prod::share: Remove users from list" | trans %}
+                                <button type="button" class="delete-selection selected_partial selected_all"
+                                        title="{{ msg }}">
+                                    <i class="fa fa-trash"></i>{# &nbsp;{{ 'prod:push: delete selection' | trans }} #}
+                                </button>
+                            </li>
+
+                        </ul>
+                    </div>
+
+
+
+                    <form name="FeedBackForm" method="post"
+                          style="display: flex; flex-direction: column; flex-grow: 1; overflow: auto;
+                                    padding: 0; margin: 0;"
+                            {# !!!!!!!!!!!!!!!!!!! todo : name routes from context : no more "if" ? !!!!!!!!!!!!!!!!!!!!!! #}
+                            {% if context == 'Push' %}
+                                action="{{ path('prod_push_send') }}"
+                            {% else %} {# context == 'Sharebasket' #}
+                                action="{{ path('prod_push_send_sharebasket') }}"
+                            {% endif %}
+                    >
+                        <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}"/>
+                        <input name="ssel" type="hidden"
+                               value="{% if basket %}{{ basket.getId() }}{% endif %}"/>
+                        <input name="name" type="hidden"
+                               value="{% if basket %}{{ basket.getName() }}{% endif %}"/>
+                        <input name="feedbackAction" type="hidden" value="{{ feedbackAction }}"/>
+                        <input name="notify" type="hidden" value="1"/>
+                        {% if feedbackAction == 'adduser' %}
+                            <input id="participantsUserIds" type="hidden" value="{{ participantUserIds }}"/>
+                            <input id="newParticipantsUser" type="hidden" value=""/>
+                        {% endif %}
+                        <textarea name="message" style="display:none;"></textarea>
+                        <input type="hidden" name="duration" value=""/>
+                        <input type="checkbox" value="1" name="send_reminder" style="display:none;"/>
+                        <input type="checkbox" value="1" name="recept" style="display:none;"/>
+                        <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
+
+                        {# the creator of a feedback (=vote) must be participant #}
+                        {# it MUST be declared as "badge_x" class to prevent same user add #}
+                        <div class="owner_badge badge_{{ owner.getId() }}">
+                            <input name="ownerId" value="{{ owner.getId() }}" type="hidden"/>
+                            <input name="initiatorId" value="{{ initiatorUserId }}" type="hidden"/>
+                            <input type="hidden" name="participants[{{ owner.getId() }}][usr_id]" value="{{ owner.getId() }}"/>
+
+                            {% if context != 'Push' %}
+                                <div>
+                                    <div class="toggles">
+                                        <div class="owner_icon_wrapper colored inverse icon" style="margin-right:15px;">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                        <div style="display:inline-block; margin-top:10px; width:156px;">
+                                            {{ 'prod::share: feedback-option' | trans }}:
+                                        </div>
+                                        <div class="owner_icon_wrapper" style="margin-right:20px;">
+                                            {% set msg = 'prod::share You require feedback'|trans %}
+                                            <a href="#"
+                                               id="toggleFeedback"
+                                               class="colored toggle toggle_feedback {{ initiatorUserId ? 'status_on' : 'status_off' }}"
+                                               title="{{ msg }}">
+                                                <i class="fa fa-bullhorn"></i>
+                                            </a>
+                                            <input type="hidden"
+                                                   name="isFeedback"
+                                                   value="{{ initiatorUserId ? '1' : '0' }}"/>
+                                        </div>
+                                        <div class="owner_icon_wrapper">
+                                            {# owner can decide to be a voter #}
+                                            {% set msg = 'prod::share You contribute to the feedback'|trans %}
+                                            <a href="#"
+                                               class="colored toggle toggle_agree feedback_only_true {{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? 'status_on' : 'status_off' }}"
+                                               title="{{ msg }}">
+                                                <i class="fa fa-comment"></i>
+                                            </a>
+                                            <input type="hidden"
+                                                   name="participants[{{ owner.getId() }}][agree]"
+                                                   value="{{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? '1' : '0' }}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {# owner always see votes #}
+                            {#
+                            {% set msg = 'You can see others choices'|trans %}
+                            <span class="colored status_on feedback_only_true" title="{{ msg }}">
+                                            <i class="fa fa-users"></i>
+                                        </span>
+                            #}
+                            <input type="hidden"
+                                   name="participants[{{ owner.getId() }}][see_others]"
+                                   value="1"/>
+
+                            {# owner can always modify basket (even if the right is useless) #}
+                            {#
+                            {% set msg = 'You can modify the basket'|trans %}
+                            <span class="colored status_on" title="{{ msg }}">
+                                <i class="fa fa-pencil"></i>
+                            </span>
+                            #}
+                            <input type="hidden"
+                                   name="participants[{{ owner.getId() }}][modify]"
+                                   value="1"/>
+
+                            {# do not give the HD to the owner (useless) to not create tokens #}
+                            <input type="hidden"
+                                   name="participants[{{ owner.getId() }}][HD]"
+                                   value="0"/>
+                        <div>
+
+                            </div>
+                        </div>
+
+                        {# dates of end-of-vote and end-of-share #}
+                        {% if context == 'Sharebasket' %}
+                            <div style="flex: 0 0 auto;">
+                                <span class="inputWithButton feedback_only_true" style="margin-right:30px;">
+                                    <span>{{ 'prod::share feedback expires' | trans }}:</span>
+                                    <span class="btn-toolbar">
+                                        <input type="text" class="btn" name="voteExpires"
+                                               style="width: 100px;"/>
+                                        <button class="colored inverse delta-toggle" data-dest="voteExpires">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                    </span>
+                                </span>
+                                <span class="inputWithButton">
+                                    <span>{{ 'prod::share share expires' | trans }}:</span>
+                                    <span class="btn-toolbar">
+                                        <input type="text" class="btn" name="shareExpires"
+                                                              style="width: 100px;"/>
+                                        <button class="colored inverse delta-toggle" data-dest="shareExpires">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                    </span>
+                                </span>
+                                {# the menu is common to both input #}
+                                <ul id="delta-menu"
+                                    style="position:fixed; z-index: 999; width:80px; height:auto; display:block; top:-1000px;">
+                                    <li data-delta="+1"><a href="#">1 day</a></li>
+                                    <li data-delta="+2"><a href="#">2 days</a></li>
+                                    <li data-delta="+5"><a href="#">5 days</a></li>
+                                    <li data-delta="+10"><a href="#">10 days</a></li>
+                                    <li data-delta="+30"><a href="#">30 days</a></li>
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <div class="badges">
+                            {% if context == 'Push' %}
+                                {# a push has no participants saved (only added now) #}
+                            {% elseif context == 'Sharebasket' %}
+                                {% for participant in participants | sort | reverse %}
+                                    {# @var participant \Alchemy\Phrasea\Model\Entities\BasketParticipant #}
+                                    {% set userId = participant.getUser().getId() %}
+                                    {% if userId != owner.getId()  %}
+                                        <div class="badge {{ 'badge_' ~ userId }}">
+                                        {% if initiatorUserId != userId %}
+                                            <a href="#" class="deleter">
+                                                <i class="fa fa-times-circle"></i>
+                                            </a>
+                                        {% endif %}
+                                        <input name="id" value="{{ userId }}" type="hidden"/>
+                                        <table>
+                                            <tr>
+                                                <td class="icon colored inverse" {% if initiatorUserId == userId %} style="background-color: #673AB7!important;" {% endif %}>
+                                                    <i class="fa fa-user"></i>
+                                                </td>
+                                                <td class="infos">
+                                                    <div>
+                                                        <input type="hidden" name="participants[{{ userId }}][usr_id]"
+                                                               value="{{ userId }}"/>
+                                                        <table>
+                                                            <tr>
+                                                                <td colspan="3">
+                                                                    <span class="name">{{ participant.getUser().getDisplayName() }}</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="3">
+                                                                    {% set subtitle =  [participant.getUser().getJob(), participant.getUser().getCompany()] | join(', ') %}
+                                                                    <span class="subtite">{% if subtitle != ', ' %} {{ subtitle }} {% endif %}</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="toggles">
+                                                                <td>
+                                                                    {% set msg = 'prod::share User can download HD'|trans %}
+                                                                    <a href="#"
+                                                                       class="colored toggle toggle_HD {{ participantsHDRight[participant.getUser().getId()] ? 'status_on' : 'status_off' }}"
+                                                                       title="{{ msg }}">
+                                                                        <i class="fa fa-download"></i>
+                                                                    </a>
+                                                                    <input type="hidden"
+                                                                           name="participants[{{ userId }}][HD]"
+                                                                           value="{{ participantsHDRight[participant.getUser().getId()] ? '1' : '0' }}"/>
+                                                                </td>
+
+                                                                <td>
+                                                                    {% set msg = 'prod::share: User can modify the basket'|trans %}
+                                                                    <a href="#"
+                                                                       class="colored toggle toggle_modify {{ participant.canModify() ? 'status_on' : 'status_off' }}"
+                                                                       title="{{ msg }}">
+                                                                        <i class="fa fa-pencil"></i>
+                                                                    </a>
+                                                                    <input type="hidden"
+                                                                           name="participants[{{ userId }}][modify]"
+                                                                           value="{{ participant.canModify() ? '1' : '0' }}"/>
+                                                                </td>
+
+                                                                <td>
+                                                                    {% set msg = 'prod::share User contribute to the feedback'|trans %}
+                                                                    <span class="feedback_only_true">
+                                                                        <a href="#"
+                                                                           class="colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}"
+                                                                           title="{{ msg }}">
+                                                                            <i class="fa fa-comment"></i>
+                                                                        </a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][agree]"
+                                                                               value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
+                                                                    </span>
+                                                                </td>
+
+                                                                <td>
+                                                                    {% set msg = 'prod::share: User can see others choices'|trans %}
+                                                                    <span class="feedback_only_true">
+                                                                        <a href="#"
+                                                                           class="colored toggle toggle_see_others {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }}"
+                                                                           title="{{ msg }}">
+                                                                            <i class="fa fa-users"></i>
+                                                                        </a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][see_others]"
+                                                                               value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
+                                                                    </span>
+
+                                                                </td>
+
+                                                           </tr>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                     {% endif %}
                                 {% endfor %}
+                            {% else %}
+                                {# should not happen, only 2 posssible contexts #}
+                            {% endif %}
 
-                                {% if total > 4 %}
-                                    {% set n = total - 4%}
-                                    {% set and_many_more %}
-                                        {% trans with {'%n%' : n} %}and %n% more peoples{% endtrans %}
-                                    {% endset %}
-                                    {% set recommendation = recommendation
-                                            ~ '<a href="#" class="recommended_users_list">'
-                                            ~ and_many_more ~ '</a>' %}
-                                {% endif %}
+                        </div>
+                    </form>
 
-                                {% if recommendation != '' %}
-                                    {% set recommendation = '<br/>' ~ recommendation %}
-                                    {% if context == 'Push' %}
-                                        {% trans with {'%recommendation%' : recommendation} %}Please consider send this push to the following users : %recommendation%{% endtrans %}
-                                    {% else %}
-                                        {% trans with {'%recommendation%' : recommendation} %}Please consider send this validation to the following users : %recommendation%{% endtrans %}
-                                    {% endif %}
-                                {% endif %}
-                            </p>
+                    <div class="footer">
+                        <form class="list_saver">
+                            <span class="inputWithButton">
+                                <span class="btn-toolbar">
+                                    <input type="text" name="list_name" placeholder="{{ 'Save this list' | trans }}"/>
+                                    <button class="colored inverse saveList" data-dest="shareExpires">
+                                        <i class="fa fa-hdd-o"></i>
+                                    </button>
+                                </span>
+                            </span>
+                        </form>
 
-                            <div style="display:none;" id="push_user_recommendations" title="{{ 'Users suggestion' | trans }}" >
-                                <table class="users" style="width:100%;">
-                                    {% for user in RecommendedUsers %}
-                                        <tr>
-                                            <td>
-                                                <img src="/assets/common/images/icons/user.png"/>
-                                            </td>
-                                            <td>
-                                                {{ user.getDisplayName() }}
-                                                <input type="hidden" name="usr_id" value="{{ user.getId() }}" />
-                                            </td>
-                                            <td>
-                                                <a href="#" class="adder">{{ 'Add' | trans }}</a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
-                        </td>
-                        <td style="width:10px;"></td>
-                        <td>
-                            <p>
-                                {% if context == 'Push' %}
-                                    {{ 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' | trans }}
-                                {% else %}
-                                    {{ 'Push::une validation est une demande d\'appreciation a d\'autres personnes' | trans }}
-                                {% endif %}
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="PNB" style="top:150px;">
-            <div class="PNB10 content user_content grey-bg">
-                <div class="PNB10 header">
-                    <table style="table-layout:auto;">
-                        <tr>
-                            <td>
-                                {% if 'Push' == context %}
-                                    {% set nb_push_items = push.get_count_actionable() %}
-                                    {% if push.get_count_not_actionable() == 0 %}
-                                        {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to push %nb_push_items% records.{% endtrans %}
-                                    {% else %}
-                                        {% set nb_not_available = push.get_count_not_actionable() %}
-                                        {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
-                                    {% endif %}
-                                {% else %}
-                                    {% set nb_push_items = push.get_count_actionable() %}
-                                    {% if push.get_count_not_actionable() == 0 %}
-                                        {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to ask for feedback for %nb_push_items% records.{% endtrans %}
-                                    {% else %}
-                                        {% set nb_not_available = push.get_count_not_actionable() %}
-                                        {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to ask for feedback for %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                            <td class="options">
-                                <button class="select-all btn btn-inverse">{{ 'Select all' | trans }}</button>
-                                <button class="unselect-all btn btn-inverse">{{ 'Deselect all' | trans }}</button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <form name="FeedBackForm" method="post"
-                    {% if context == 'Push' %}
-                        action="{{ path('prod_push_send') }}"
-                    {% else %}
-                        action="{{ path('prod_push_validate') }}"
-                    {% endif %}
-                >
-                    <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />
-                    <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
-                    <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
-                    <textarea name="message" style="display:none;"></textarea>
-                    <input type="hidden" name="duration" value=""/>
-                    <input type="checkbox" value="1" name="recept" style="display:none;"/>
-                    <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
-                    <div class="PNB badges"></div>
-                </form>
-                <div class="PNB10 footer">
-                    <button class="FeedbackSend btn btn-inverse">{{ "Send" | trans }}</button>
+                        {% if context == 'Sharebasket' and basket %}
+                            {# only Sharebasket manage users and may have a "feedbackaction" #}
+                            <button class="colored inverse FeedbackSend" data-context="{{ context }}"
+                                    data-feedback-action={{ feedbackAction }}>{{ "Save" | trans }}</button>
+                        {% else %}
+                            <button class="colored inverse FeedbackSend" data-context="{{ context }}">{{ "Send" | trans }}</button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="ListManager" class="PNB PushBox" style="display:none;">
-    <div class="PNB theme-bg" style="left:10px;height:50px;bottom:auto;">
-        <h1>
-            <button class="back_link btn btn-inverse" style="margin-right: 5px;">
-                &lt;
-                {% if context == 'Push' %}
-                    {{ 'Back to Push' | trans }}
-                {% else %}
-                    {{ 'Back to Feedback' | trans }}
-                {% endif %}
-            </button>
-            <span class="title">
-                {{ 'List Manager' | trans }}
-            </span>
-        </h1>
-    </div>
-    <div class="PNB" style="top:50px;">
-        <div class="PNB" style="width:320px;right:auto;">
-            <div class="PNB10 content all-lists LeftColumn">
+    {# do not set the "ListManager" context (=theme) globally because we want the "back" button with under-layer color #}
+    <div id="ListManager" class="PNB PushBox" style="display:none;">
+        <div class="PNB" style="width:220px;">
+            <div style="padding:10px">
+                <a class="back_link btn colored">
+                    <i class="fa fa-arrow-left"></i>&nbsp;{{ 'Back' | trans }}
+                </a>
+            </div>
+            <div class="PNB10 all-lists LeftColumn ListManager" style="top:55px;">      {# theme here #}
                 {% include 'prod/actions/Feedback/lists-all.html.twig' %}
             </div>
         </div>
-        <div class="editor PNB" style="left:320px;">
-            <div class="welcome">
-                <h1>{{ 'Welcome to the ListManager !' | trans }}</h1>
-                {% if lists|length == 0 %}
-                    <p class="welcome">
-                        {{ 'Start by creating one by using the "add" button on the left !' | trans }}
-                    </p>
-                {% else %}
-                    <p class="welcome">
-                        {{ 'Select a list on the left and edit it !' | trans }}
-                    </p>
-                {% endif %}
+        <div class="PNB" style="left:220px;">
+            <div class="editor PNB ListManager">                                  {# theme here #}
+                <div class="PNB" style="top: 45px;">
+                    <div class="PNB10 content user_content grey-bg">
+                        <div class="welcome">
+                            <h1>{{ 'Welcome to the ListManager !' | trans }}</h1>
+                            {% if lists|length == 0 %}
+                                <p class="welcome">
+                                    {{ 'Start by creating one by using the "add" button on the left !' | trans }}
+                                </p>
+                            {% else %}
+                                <p class="welcome">
+                                    {{ 'Select a list on the left and edit it !' | trans }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="FeedbackSendForm">
-    <form method="post"></form>
-</div>
+    <div id="FeedbackSendForm">
+        <form method="post"></form>
+    </div>
 
-{% include "prod/templates/push.html.twig" %}
-{%  endif %}
+    {% include "prod/templates/push.html.twig" %}
+{% endif %}
+
+
+<script type="text/javascript">
+    $(function () {
+        $.datepicker.regional['default'] = {
+            /*
+                        closeText: "Close",
+                        prevText: "{{ 'workzone:datepicker:prevText' | trans }}",
+            nextText: "{{ 'workzone:datepicker:nextText' | trans }}",
+            currentText: "Today",
+            monthNames: [
+                "{{ 'workzone:datepicker:january' | trans }}",
+                "{{ 'workzone:datepicker:february' | trans }}",
+                "{{ 'workzone:datepicker:march' | trans }}",
+                "{{ 'workzone:datepicker:april' | trans }}",
+                "{{ 'workzone:datepicker:may' | trans }}",
+                "{{ 'workzone:datepicker:june' | trans }}",
+                "{{ 'workzone:datepicker:july' | trans }}",
+                "{{ 'workzone:datepicker:august' | trans }}",
+                "{{ 'workzone:datepicker:september' | trans }}",
+                "{{ 'workzone:datepicker:october' | trans }}",
+                "{{ 'workzone:datepicker:november' | trans }}",
+                "{{ 'workzone:datepicker:december' | trans }}"
+            ],
+            dayNames: [
+                "{{ 'workzone:datepicker:sunday' | trans }}",
+                "{{ 'workzone:datepicker:monday' | trans }}",
+                "{{ 'workzone:datepicker:tuesday' | trans }}",
+                "{{ 'workzone:datepicker:wednesday' | trans }}",
+                "{{ 'workzone:datepicker:thursday' | trans }}",
+                "{{ 'workzone:datepicker:friday' | trans }}",
+                "{{ 'workzone:datepicker:saturday' | trans }}"
+            ],
+            dayNamesMin: [ "D","L","M","M","J","V","S" ],
+            dateFormat: "d MM yy",
+            altField: ".alternate",
+            altFormat: "yy-mm-dd",
+*/
+            dateFormat: "yy-mm-dd",
+            minDate:    null
+        };
+
+        let $container = $('#PushBox');
+
+        const $voteExpires = $("INPUT[name=voteExpires]", $container);
+            $voteExpires
+            .datepicker($.datepicker.regional['default'])
+            .datepicker("setDate", "{{ basket.getVoteExpires().format('Y-m-d') }}")
+            .change(function () {
+                console.log("==== vote date changed ====");
+                //$('.submit-validation').removeClass('btn-not-shown');
+                //$('.cancel-date').removeClass('btn-not-shown');
+                checkDate($shareExpires, $voteExpires);
+            });
+
+        const $shareExpires = $("INPUT[name=shareExpires]", $container);
+            $shareExpires
+            .datepicker($.datepicker.regional['default'])
+            .datepicker("setDate", "{{ basket.getShareExpires().format('Y-m-d') }}")
+            .change(function () {
+                console.log("==== share date changed ====");
+                //$('.submit-validation').removeClass('btn-not-shown');
+                //$('.cancel-date').removeClass('btn-not-shown');
+                checkDate($shareExpires, $voteExpires);
+            });
+
+        // prepare delta dropdown
+        $("#delta-menu", $container)
+            .menu({
+                select: function (event, ui) {
+                    console.log("==== delta changed ====", ui);
+                    const dest   = $(this).data('dest');
+                    const $input = $("INPUT[name=" + dest + "]", $container)
+                    const delta  = $(ui.item[0]).data('delta');
+                    if (delta === '') {
+                        // no end for shareExpires = empty will become null in db
+                        $input.val('')
+                    }
+                    else {
+                        const d = new Date();
+                        d.setDate(d.getDate() + parseInt(delta));
+                        const mm = ((d.getMonth() + 1) < 10 ? '0' : '') + (d.getMonth() + 1);
+                        const dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
+
+                        $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                        checkDate($shareExpires, $voteExpires);
+                    }
+                    $(this).hide();
+                }
+            })
+            .mouseleave(function (event, ui) {
+                $(this).hide();
+            })
+            .hide();
+
+        // click to ... to drop
+        $("BUTTON.delta-toggle", $container).click(
+            function (event, ui) {
+                console.log("==== dodrop ====", ui);
+                $("#delta-menu", $container)
+                    .data('dest', $(event.currentTarget).data('dest'))  // copy the dest to the menu (easier to handle "select")
+                    .css({
+                        top:  event.clientY - 6,
+                        left: event.clientX - 6
+                    })
+                    .show();
+                return false;
+            }
+        );
+    });
+
+    function checkDate(shareElement, voteElement) {
+        let dShareEnd = shareElement.val();
+        let dVoteEnd = voteElement.val();
+
+        if (dShareEnd != '' && dVoteEnd != '') {
+            let dateShare = new Date(dShareEnd);
+            let dateVote = new Date(dVoteEnd);
+            if (dateVote > dateShare) {
+                // extend the shareExpires date to the voteExpires date
+                shareElement.val(dVoteEnd);
+                if (voteElement.is(':visible')) {
+                    alert('{{ "Share has been extended" | trans }}');
+                }
+            }
+        }
+    }
+
+</script>

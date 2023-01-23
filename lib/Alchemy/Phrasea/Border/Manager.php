@@ -12,18 +12,21 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
-use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
-use Alchemy\Phrasea\Metadata\Tag\TfBasename;
-use Alchemy\Phrasea\Metadata\Tag\TfFilename;
-use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
 use Alchemy\Phrasea\Border\Attribute\MetaField as MetafieldAttr;
 use Alchemy\Phrasea\Border\Attribute\Status as StatusAttr;
 use Alchemy\Phrasea\Border\Attribute\Story as StoryAttr;
+use Alchemy\Phrasea\Border\Checker\CheckerInterface;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
+use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
+use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
+use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
@@ -31,6 +34,8 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Driver\Value\Multi;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Phraseanet Border Manager
@@ -105,25 +110,34 @@ class Manager
     {
         $visa = $this->getVisa($file);
 
-        // Generate UUID
+        // READ the uuid (possibly generates one) but DO NOT write (because we need the stripped file for sha compare ?)
+
         $file->getUUID(true, false);
 
         if (($visa->isValid() || $forceBehavior === self::FORCE_RECORD) && $forceBehavior !== self::FORCE_LAZARET) {
 
             $this->addMediaAttributes($file);
 
+            // Write UUID
+
+            $file->getUUID(false, true);
+
             $element = $this->createRecord($file, $nosubdef);
 
             $code = self::RECORD_CREATED;
         } else {
+
+            // Write UUID
+
+            $file->getUUID(false, true);
 
             $element = $this->createLazaret($file, $visa, $session, $forceBehavior === self::FORCE_LAZARET);
 
             $code = self::LAZARET_CREATED;
         }
 
-        // Write UUID
-        $file->getUUID(false, true);
+//        // Write UUID
+//        $file->getUUID(false, true);
 
         if (is_callable($callable)) {
             $callable($element, $visa, $code);
@@ -266,6 +280,7 @@ class Manager
     protected function createRecord(File $file, $nosubdef=false)
     {
         $element = \record_adapter::createFromFile($file, $this->app);
+
         $date = new \DateTime();
 
         $file->addAttribute(
@@ -330,10 +345,24 @@ class Manager
             }
         }
 
-        $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
+        /** @var EventDispatcherInterface $dispatcher */
+        $dispatcher = $this->app['dispatcher'];
+        $dispatcher->addListener(
+            RecordEvents::METADATA_CHANGED,
+            function (Event $event)  {
+                // we do not want replaceMetadata() to send a writemeta
+//                $event->stopPropagation();
+            },
+            10
+        );
+
+
+        /** @var PhraseanetMetadataSetter $phraseanetMetadataSetter */
+        $phraseanetMetadataSetter = $this->app['phraseanet.metadata-setter'];
+        $phraseanetMetadataSetter->replaceMetadata($newMetadata, $element);
 
         if(!$nosubdef) {
-            $element->rebuild_subdefs();
+            $dispatcher->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
         }
 
         return $element;

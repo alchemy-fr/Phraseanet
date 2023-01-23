@@ -57,9 +57,13 @@
     {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
     {% set record_type = thumbnail.get_type() %}
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+        {% set thumbnail_height = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+        {% set thumbnail_width = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+        <input type="hidden" class="hidden" id="videoHeight" name="videoHeight" value="{{  thumbnail_height }}"/>
+        <input type="hidden" class="hidden" id="videoWidth" name="videoWidth" value="{{  thumbnail_width }}"/>
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
-                frameborder="0" allowfullscreen></iframe>
+                frameborder="0" allowfullscreen class="video-iframe"></iframe>
     {% elseif record_type == 'FLEXPAPER' %}
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
@@ -68,8 +72,11 @@
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'PDF' %}
+        <iframe src="{{ url('alchemy_embed_view', {url: url|trim }) }}" width="100%" scrolling="no" marginheight="0" frameborder="0" allowfullscreen="" height="0" class="pdf-iframe"></iframe>
     {% else %}
-          <img style="max-height: 100%;max-width:100%" class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
-               src="{{thumbnail.get_url()|trim}}" ondragstart="return false;" />
-        {% endif %}
+        <img style="max-height: 100%;max-width:100%" class="record record_image imgTips zoomable thumb"
+             oncontextMenu="return(false);"
+             src="{{ thumbnail.get_url()|trim }}" ondragstart="return false;"/>
+    {% endif %}
 {% endmacro %}

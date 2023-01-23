@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use DataURI\Exception\Exception as DataUriException;
 use DataURI\Parser;
+use GuzzleHttp\Client as Guzzle;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,6 +77,30 @@ class UploadController extends Controller
         ]);
     }
 
+    public function getHead(Request $request)
+    {
+        $response = [
+            'content-type' => null,
+            'content-length' => null,
+            'basename' => null
+        ];
+        try {
+            $url = $request->get('url');
+            $basename = pathinfo($url, PATHINFO_BASENAME);
+
+            $guzzle = new Guzzle(['base_uri' => $url]);
+            $res = $guzzle->head('');
+            $response['content-type'] = $res->getHeaderLine('content-type');
+            $response['content-length'] = doubleval($res->getHeaderLine('content-length'));
+            $response['basename'] = $basename;
+        }
+        catch (\Exception $e) {
+            // no-op : head will return no info but will not crash
+        }
+
+        return $this->app->json($response);
+    }
+
     /**
      * Upload processus
      *
@@ -98,7 +123,7 @@ class UploadController extends Controller
             'message' => '',
             'element' => '',
             'reasons' => [],
-            'id' => '',
+            'id'      => '',
         ];
 
         if (null === $request->files->get('files')) {
@@ -119,19 +144,62 @@ class UploadController extends Controller
             throw new AccessDeniedHttpException('User is not allowed to add record on this collection');
         }
 
+        /** @var UploadedFile $file */
         $file = current($request->files->get('files'));
 
         if (!$file->isValid()) {
             throw new BadRequestHttpException('Uploaded file is invalid');
         }
 
-        try {
+        if ($file->getClientOriginalName() === "blob" && $file->getClientMimeType() === "application/json") {
+
+            // a "upload by url" was done, we receive a tiny json that contains url.
+            $json = json_decode(file_get_contents($file->getRealPath()), true);
+            $url = $json['url'];
+            $pi = pathinfo($url);   // filename, extension
+
+            $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, $pi['extension']);
+
+            try {
+                $guzzle = new Guzzle(['base_uri' => $url]);
+                $res = $guzzle->get("", ['save_to' => $tempfile]);
+            }
+            catch (\Exception $e) {
+                throw new BadRequestHttpException(sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
+            }
+
+            if($res->getStatusCode() !== 200) {
+                throw new BadRequestHttpException(sprintf('Error %s downloading "%s"', $res->getStatusCode(), $url));
+            }
+
+            $uploadedFilename = $renamedFilename = $tempfile;
+
+            $originalName = $pi['filename'] . '.' . $pi['extension'];
+
+        } else {
             // Add file extension, so mediavorus can guess file type for octet-stream file
             $uploadedFilename = $file->getRealPath();
-            $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $renamedFilename = null;
+
+            if(!empty($this->app['conf']->get(['main', 'storage', 'worker_tmp_files']))) {
+                $tmpStorage = \p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'worker_tmp_files'])).'upload/';
+
+                if(!is_dir($tmpStorage)){
+                    $this->getFilesystem()->mkdir($tmpStorage);
+                }
+
+                $renamedFilename = $tmpStorage. pathinfo($file->getRealPath(), PATHINFO_FILENAME) .'.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+            } else {
+                $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            }
 
             $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
 
+            $originalName = $file->getClientOriginalName();
+        }
+
+        try {
             $media = $this->app->getMediaFromUri($renamedFilename);
             $collection = \collection::getByBaseId($this->app, $base_id);
 
@@ -140,7 +208,7 @@ class UploadController extends Controller
 
             $this->getEntityManager()->persist($lazaretSession);
 
-            $packageFile = new File($this->app, $media, $collection, $file->getClientOriginalName());
+            $packageFile = new File($this->app, $media, $collection, $originalName);
 
             $postStatus = $request->request->get('status');
 
@@ -171,7 +239,9 @@ class UploadController extends Controller
 
             $code = $this->getBorderManager()->process( $lazaretSession, $packageFile, $callback, $forceBehavior);
 
-            $this->getFilesystem()->rename($renamedFilename, $uploadedFilename);
+            if($renamedFilename !== $uploadedFilename) {
+                $this->getFilesystem()->rename($renamedFilename, $uploadedFilename);
+            }
 
             if (!!$forceBehavior) {
                 $reasons = [];
@@ -191,9 +261,10 @@ class UploadController extends Controller
 
                         $fileName = $this->getTemporaryFilesystem()->createTemporaryFile('base_64_thumb', null, "png");
                         file_put_contents($fileName, $dataUri->getData());
+
                         $media = $this->app->getMediaFromUri($fileName);
 
-                        $this->getSubDefinitionSubstituer()->substitute($elementCreated, 'thumbnail', $media);
+                        $this->getSubDefinitionSubstituer()->substituteSubdef($elementCreated, 'thumbnail', $media);
                         $this->getDataboxLogger($elementCreated->getDatabox())
                             ->log($elementCreated, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
@@ -297,15 +368,17 @@ class UploadController extends Controller
             $postMaxSize = PHP_INT_MAX;
         }
 
+        $r = 0;
         switch (strtolower(substr($postMaxSize, -1))) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'g':
-                $postMaxSize *= 1024;
+                $r += 10;
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'm':
-                $postMaxSize *= 1024;
+                $r += 10;
             case 'k':
-                $postMaxSize *= 1024;
+                $r += 10;
+                $postMaxSize = ((int)($postMaxSize))<<$r;
         }
 
         return min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);

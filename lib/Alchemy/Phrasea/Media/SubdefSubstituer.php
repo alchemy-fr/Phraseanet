@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Media;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Record\MediaSubstitutedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
@@ -73,10 +74,13 @@ class SubdefSubstituer
 
         $this->createMediaSubdef($record, 'document', $media);
 
+        $record->setMimeType($media->getFile()->getMimeType(), false); // param to be false because subdefs will be rebuild later depends on $shouldSubdefsBeRebuilt
+        $record->setType($media->getType(), false);
+
         $record->write_metas();
 
         if ($shouldSubdefsBeRebuilt) {
-            $record->rebuild_subdefs();
+            $this->dispatcher->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record));
         }
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
@@ -98,15 +102,13 @@ class SubdefSubstituer
         $databox_subdef = $record->getDatabox()->get_subdef_structure()->get_subdef($type, $name);
 
         if ($this->isOldSubdefPresent($record, $name)) {
-            $path_file_dest = $record->get_subdef($name)->getRealPath();
             $record->get_subdef($name)->remove_file();
             $record->clearSubdefCache($name);
-        } else {
-            $path_file_dest = $this->fs->generateSubdefSubstitutionPathname($record, $databox_subdef);
         }
 
         if($adapt) {
             try {
+                $path_file_dest = $this->fs->generateSubdefSubstitutionPathname($record, $databox_subdef);
                 $this->alchemyst->turnInto(
                     $media->getFile()->getRealPath(),
                     $path_file_dest,
@@ -116,6 +118,7 @@ class SubdefSubstituer
                 return;
             }
         } else {
+            $path_file_dest = $this->fs->generateSubdefSubstitutionPathname($record, $databox_subdef, pathinfo($media->getFile()->getRealPath(), PATHINFO_EXTENSION));
             $this->fs->copy($media->getFile()->getRealPath(), $path_file_dest);
         }
 

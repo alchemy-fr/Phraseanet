@@ -73,9 +73,26 @@ class CLI extends Application
 
         $this->bindRoutes();
 
-        $this['logger'] = $this->extend('logger', function () {
-            return new Console\Logger\ConsoleLogger(new Console\Output\ConsoleOutput(Console\Output\ConsoleOutput::VERBOSITY_DEBUG));
-        });
+        $logger = false;
+
+        if ($this['configuration.store']->isSetup()){
+
+            $config = $this['configuration.store']->getConfig();
+
+            if ((isset($config['console_logger_enabled_environments']) && in_array($environment, $config['console_logger_enabled_environments']))){
+                $logger = true;
+            }
+        }
+
+        if ($environment == self::ENV_DEV){
+            $logger = true;
+        }
+
+        if ($logger){
+            $this['logger'] = $this->extend('logger', function () {
+                return new Console\Logger\ConsoleLogger(new Console\Output\ConsoleOutput(Console\Output\ConsoleOutput::VERBOSITY_DEBUG));
+            });
+        }
 
         error_reporting(-1);
         ErrorHandler::register();

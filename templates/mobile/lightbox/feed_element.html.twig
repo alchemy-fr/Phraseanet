@@ -3,8 +3,8 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
@@ -16,12 +16,14 @@
         }
 
         #content {
-            position:absolute;
-            top:50px;
+            position: fixed;
+            top:90px;
             bottom: 0;
             right: 0;
             left: 0;
             text-align: center;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 {% endblock %}
@@ -34,7 +36,10 @@
     <h1>{{feed_element.getOrd()}} - {{record.get_title()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>
-  <div data-role="content">
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
+    <div id="content" data-role="content">
     {{ thumbnail.format100percent(record.get_preview()) }}
   </div>
   <div data-role="footer">

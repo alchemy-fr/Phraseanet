@@ -93,7 +93,7 @@ class record_preview extends record_adapter
                     throw new \LogicException('Search Engine should be provided');
                 }
                 if (!$options) {
-                    $options = new SearchEngineOptions();
+                    $options = new SearchEngineOptions($app['repo.collection-references']);
                 }
                 $options->setFirstResult($pos);
                 $options->setMaxResults(1);
@@ -103,6 +103,7 @@ class record_preview extends record_adapter
                 if ($results->getResults()->isEmpty()) {
                     throw new Exception('Record introuvable');
                 }
+                $this->total = $results->getTotal();
                 foreach ($results->getResults() as $record) {
                     $number = $pos;
                     $this->original_item = $record;
@@ -118,6 +119,7 @@ class record_preview extends record_adapter
 
                 $this->container = new record_adapter($app, $sbas_id, $record_id);
                 $this->original_item = $this->container;
+                $this->name = $this->container->get_title();
                 if ($pos == 0) {
                     $number = 0;
                 } else {
@@ -195,7 +197,7 @@ class record_preview extends record_adapter
 
         switch ($this->env) {
             case 'RESULT':
-                $options = $this->options ?: new SearchEngineOptions();
+                $options = $this->options ?: new SearchEngineOptions($this->app['repo.collection-references']);
                 $options->setFirstResult(($this->pos - 3) < 0 ? 0 : ($this->pos - 3));
                 $options->setMaxResults(56);
 
@@ -266,22 +268,27 @@ class record_preview extends record_adapter
         switch ($this->env) {
 
             case "RESULT":
-                $this->title .= $this->app->trans('resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->getNumber() + 1) . '</span> : ']);
-                $this->title .= parent::get_title($options);
+                $this->title = '<span style="color:#27bbe2;">';
+                $this->title .= $this->app->trans('Resultat %number% / %total%', ['%number%' => '<span id="current_result_n">' . $this->formatNumber($this->getNumber() + 1) . '</span>', '%total%' => $this->formatNumber($this->total)]);
+                $this->title .= ' : </span> ' . parent::get_title($options);
                 break;
             case "BASK":
-                $this->title .= $this->name . ' - ' . parent::get_title($options)
-                    . ' (' . $this->getNumber() . '/' . $this->total . ') ';
+                $this->title = '<span style="color:#27bbe2;">';
+                $this->title .= $this->name . ' (' . $this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total) . ') : </span>' . parent::get_title($options);
+
                 break;
             case "REG":
-                $title = parent::get_title($options);
-                if ($this->getNumber() == 0) {
-                    $this->title .= $title;
-                } else {
+                $this->title = '<span style="color:#27bbe2;">';
+                $this->title .= $this->name;
+
+                if ($this->getNumber() != 0) {
                     $this->title .= sprintf(
-                        '%s %s', $title, $this->getNumber() . '/' . $this->total
+                        ' (%s) : </span> %s',$this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total), parent::get_title($options)
                     );
+                } else {
+                    $this->title .= '</span>';
                 }
+
                 break;
             default:
                 $this->title .= parent::get_title($options);
@@ -328,7 +335,7 @@ class record_preview extends record_adapter
         $sql .= 'ORDER BY d.date, usrid DESC';
 
         foreach ($this->getDataboxConnection()->executeQuery($sql, $params)->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $hour = $this->app['date-formatter']->getPrettyString(new DateTime($row['date']));
+            $hour = $row['date'];
 
             if ( ! isset($tab[$hour]))
                 $tab[$hour] = [];
@@ -543,6 +550,14 @@ class record_preview extends record_adapter
             }
         }
         return $this->statistics;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return isset($this->total) ? $this->total : 0;
     }
 
     /**
@@ -771,5 +786,10 @@ class record_preview extends record_adapter
         $this->download_popularity = $ret;
 
         return $this->download_popularity;
+    }
+
+    private function formatNumber($number)
+    {
+        return number_format($number, 0, null, ' ');
     }
 }

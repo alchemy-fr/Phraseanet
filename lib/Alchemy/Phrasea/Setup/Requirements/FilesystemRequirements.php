@@ -26,8 +26,6 @@ class FilesystemRequirements extends RequirementCollection implements Requiremen
             $baseDir . '/config/stamp',
             $baseDir . '/config/status',
             $baseDir . '/config/minilogos',
-            $baseDir . '/config/templates',
-            $baseDir . '/config/topics',
             $baseDir . '/config/wm',
             $baseDir . '/logs',
             $baseDir . '/tmp',

@@ -1,0 +1,60 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phraseanet-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phraseanet
+      tier: gateway
+  template:
+    metadata:
+      labels:
+        app: phraseanet
+        tier: gateway
+    spec:
+      volumes:
+      - name: phraseanet-datas
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.data.name }}
+      - name: phraseanet-thumbnails
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.thumbnails.name }}
+      - name: phraseanet-custom
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.custom.name }}
+      - name: phraseanet-wwwplugins
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.wwwplugins.name }}
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
+      containers:
+      - name: gateway
+        image: {{ .Values.image.registry }}/phraseanet-nginx:{{ .Values.image.tag.phraseanet }}
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        resources:
+{{ toYaml .Values.app.gateway.resources | indent 12 }}
+        volumeMounts:
+        - name: "phraseanet-datas"
+          mountPath: "/var/alchemy/Phraseanet/datas"
+        - name: "phraseanet-thumbnails"
+          mountPath: "/var/alchemy/Phraseanet/www/thumbnails"
+        - name: "phraseanet-custom"
+          mountPath: "/var/alchemy/Phraseanet/www/custom"
+        - name: phraseanet-wwwplugins
+          mountPath: "/var/alchemy/Phraseanet/www/plugins"
+        env:
+        - name: "MAX_BODY_SIZE"
+          value: {{ .Values.http.max_body_size }}
+        - name: "GATEWAY_SEND_TIMEOUT"
+          value : "600"
+        - name: GATEWAY_PROXY_TIMEOUT
+          value: "1200"
+        - name: GATEWAY_FASTCGI_TIMEOUT
+          value: "1200"
+          

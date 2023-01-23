@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Command\Developer;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Utilities\StringHelper;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -112,11 +114,15 @@ class IniReset extends Command
         // get data paths
         $dataPath = $this->container['conf']->get(['main', 'storage', 'subdefs'], $this->container['root.path'].'/datas');
 
-        $schema = $this->container['orm.em']->getConnection()->getSchemaManager();
+        /** @var Connection $connection */
+        $connection = $this->container['orm.em']->getConnection();
+        $schema = $connection->getSchemaManager();
+
         $output->writeln('Creating database "'.$dbs['ab'].'"...<info>OK</info>');
-        $schema->dropAndCreateDatabase($dbs['ab']);
+        $schema->dropAndCreateDatabase(StringHelper::SqlQuote($dbs['ab'], StringHelper::SQL_IDENTIFIER));
+
         $output->writeln('Creating database "'.$dbName.'"...<info>OK</info>');
-        $schema->dropAndCreateDatabase($dbName);
+        $schema->dropAndCreateDatabase(StringHelper::SqlQuote($dbName, StringHelper::SQL_IDENTIFIER));
 
         // inject v3.1 fixtures
         if ($input->getOption('run-patches')) {
@@ -212,7 +218,7 @@ class IniReset extends Command
             } else {
                 $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app->getApplicationBox()->get_version(), $version->getNumber()), true);
             }
-            
+
             $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';
             $process = new Process($cmd);
             $process->setTimeout(600);

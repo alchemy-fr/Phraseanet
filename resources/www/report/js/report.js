@@ -3,128 +3,186 @@
  *
  */
 
-var xhr_object;
-var p4 = {};
-// jquery tab object
-var $tabs;
-//the number of the selected tab
-var selected_tab;
-//class of the selected init to -1 by default = no class
-var class_selected_tab = -1;
-//save the value of the previous limit
-var save_limit;
-var bodySize = {
-    x: 0,
-    y: 0
-};
-
-//#############START DOCUMENT READY ######################################//
+//############# START DOCUMENT READY ######################################//
 $(document).ready(function () {
-    //resize window
-    $(window).bind('resize', function () {
-        resize();
-    });
+
     //do tabs and resize window on show
-    $('#mainTabs:visible').tabs({
-        activate: function () {
-            resize();
-        }
-    });
-    resize();
-    //datepicker
+    $('#mainTabs:visible').tabs();
+
     reportDatePicker();
-    dashboardDatePicker();
     bindEvents();
 
-    $("a.select-all").bind("click", function (e) {
-        $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).prop("checked", true);
-    });
-
-    $("a.deselect-all").bind("click", function (e) {
-        $("ul.multiselect .coll-checkbox", $(this).closest('.form2')).prop("checked", false);
-    });
-
-    // toggle is deprecated:
-    var hasMultiSelectionGroup = false;
-    $(".multiselect-group").on('click', function () {
-
-        if( hasMultiSelectionGroup === true) {
-            var $this = $(this);
-            var groupId = $this.data('group-id');
-            $(".checkbox-" + groupId, $this.closest('.form2')).prop("checked", false);
-            hasMultiSelectionGroup = false;
-        } else {
-            var $this = $(this);
-            var groupId = $this.data('group-id');
-            $(".checkbox-" + groupId, $this.closest('.form2')).prop("checked", true);
-            hasMultiSelectionGroup = true;
+    /**
+     * custom select boxes
+     */
+    $(".select_one").each(function(){
+        var $this = $(this),
+        numberOfOptions = $(this).children('option').length;
+        $this.addClass('select-hidden');
+        $this.wrap('<div class="custom_select"></div>');
+        $this.after('<div class="select-styled"></div>');
+        var $styledSelect = $this.next('div.select-styled');
+        $styledSelect.text($this.children('option').eq(0).text());
+        var $list = $('<ul />', {
+            'class': 'select-options'
+        }).insertAfter($styledSelect);
+        for (var i = 0; i < numberOfOptions; i++) {
+            $('<li />', {
+                text: $this.children('option').eq(i).text(),
+                rel: $this.children('option').eq(i).val(),
+                'data-action': $this.children('option').eq(i).data('action')
+            }).appendTo($list);
         }
+        var $listItems = $list.children('li');
+  
+        $styledSelect.click(function(e) {
+            e.stopPropagation();
+            $('div.select-styled.active').not(this).each(function(){
+                $(this).removeClass('active').next('ul.select-options').hide();
+            });
+            $(this).toggleClass('active').next('ul.select-options').toggle();
+        });
+      
+        $listItems.click(function(e) {
+            e.stopPropagation();
+            var value = $(this).attr('rel');
+            $styledSelect.text($(this).text()).removeClass('active');
+            $this.val(value);
+            $this.data('action', $(this).attr('data-action'));
+            $list.hide();
+        });
+
+        $(document).click(function() {
+            $styledSelect.removeClass('active');
+            $list.hide();
+        });
+     });        
+     
+     $(".form2 .select-options li").click(function(e) {
+        e.stopPropagation();
+        var $this = $(this),
+            value = $this.attr('rel'),
+            form = $this.closest('form');
+        $(".collist", form).hide();
+        $(".collist-" + value, form).show();
+    });
+
+    $('.collist').each(function() {
+        var $this = $(this),
+            form = $this.closest('form'),
+            i = $this.closest('form').find('.sbas_select').val()
+        ;
+        $this.hide();        
+        $(".collist-" + i, form).show();
+    });
+
+    $('.form2').each(function() {
+        if ($(this).html().trim() === '')
+            $(this).hide();
     });
 });
-//#############END DOCUMENT READY ######################################//
+//############# END DOCUMENT READY ######################################//
 
 /**
  *
  * Tous les binds sur le report
  */
 function bindEvents() {
-    $('#dminDash, #dmaxDash').datepicker({
-        changeMonth: true,
-        changeYear: true,
-//        dateFormat: 'dd-mm-yy',
-        dateFormat: 'yy-mm-dd',
-        numberOfMonths: 1,
-        maxDate: "-0d"
+    /**
+     * "Download" buttons
+    **/
+    $('.formsubmiter').bind('click', function () {
+        var collectionsArr = [],
+            fieldsArr = [],
+            form = $($(this).attr('data-form_selector')),
+            action = form.find("select.sbas_select")
+        ;
+        
+        if(action.length != 1) {    // should never happen with select !
+            return false;   // prevent button to submit form
+        }
+        
+        $(".form2 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+                $.each($(el).find('input'), function(i, inputEl) {
+                    collectionsArr.push($(inputEl).prop('checked'))
+                });
+                $(el).find('input').prop('checked', false);
+            }
+        });
+        $(".form3 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {                
+                $.each($(el).find('input'), function(i, inputEl) {
+                    fieldsArr.push($(inputEl).prop('checked'))
+                });
+                $(el).find('input').prop('checked', false);
+            }
+        });
+        action = action.find(':selected').data('action');
+        form.attr("action", action);
+        form.submit();
+        
+        $(".form2 .collist", form).each(function(i, el) {            
+            if ($(el).is(':visible') === false) {
+                
+                $.each($(el).find('input'), function(j, inputEl) {                    
+                    $(inputEl).prop('checked', collectionsArr[j]);
+                });
+            }
+        });
+
+        $(".form3 .collist", form).each(function(i, el) {            
+            if ($(el).is(':visible') === false) {
+                
+                $.each($(el).find('input'), function(j, inputEl) {                    
+                    $(inputEl).prop('checked', fieldsArr[j]);
+                });
+            }
+        });
+        collectionsArr = [];
+        fieldsArr = [];
+        
+        return false;   // prevent button to submit form    
     });
 
-    $(".submit-dashboard").click(function() {
-        loadDash();
-    });
-    //load all the report
-    $('form input.formsubmiter').bind('click', function () {
-        submiterAction($(this));
-    });
-
-    $('form select.formsubmiter').bind('change', function () {
-        submiterAction($("option:selected", $(this)));
-    });
-
-    //reload the content by pressing enter key, it concerns the number of result by report
-    $('form .entersubmiter').bind('keypress', function (event) {
-        if (event.keyCode == '13') {
-            $("#DOC-input").prop("checked", "checked").trigger('click');
+    /**
+     * disable submit button if no date (dmin or dmax) *
+     */
+    $('.dmin, .dmax').bind('change', function() {
+        var $this = $(this);
+        var container = $this.closest('.inside-container');
+        
+        if ($this.val().length == 0) {
+            $('.formsubmiter', container).attr('disabled', true).addClass('disabled');
+            $this.siblings('.add-on').addClass('disabled_image');
+        }
+        else {
+            $('.formsubmiter', container).attr('disabled', false).removeClass('disabled');
+            $this.siblings('.add-on').removeClass('disabled_image');
         }
     });
-    //action on table links
-    $('td a:visible').bind('click', function () {
-        tableLinkAction($(this));
+
+    /**
+     * "select all" buttons
+     */
+    $('.select-all').bind('click', function () {
+        var form = $(this).closest("form");
+        var selector = $(this).attr("data-target_selector");
+        $(selector, form).prop('checked', true);
+        
+        return false;   // prevent button to submit form
     });
-    //action on a none radio  input
-    $('.inside-container form input:not(:radio)').bind('click', function () {
-        removeChecked($(this));
+
+    /**
+     * "unselect all" buttons
+     */
+    $('.unselect-all').bind('click', function () {
+        var form = $(this).closest("form");
+        var selector = $(this).attr("data-target_selector");
+        $(selector, form).prop('checked', false);
+
+        return false;   // prevent button to submit form
     });
-    //action a radio input
-    $('.inside-container form input:radio').bind('change', function () {
-        showOption($(this));
-    });
-    //hide report menu
-    $("button.hided").button({
-        icons: {
-            primary: 'ui-icon-triangle-1-n'
-        },
-        text: false
-    }).unbind("click").bind("click", function () {
-            hideMenu();
-        });
-    // show report menu
-    $("button.showed").button({
-        icons: {
-            primary: 'ui-icon-triangle-1-s'
-        },
-        text: false
-    }).unbind("click").bind("click", function () {
-            showMenu();
-        });
 }
 
 function reportDatePicker() {
@@ -132,7 +190,6 @@ function reportDatePicker() {
         defaultDate: -10,
         changeMonth: true,
         changeYear: true,
-//        dateFormat: 'dd-mm-yy',
         dateFormat: 'yy-mm-dd',
         numberOfMonths: 3,
         maxDate: "-0d",
@@ -144,971 +201,35 @@ function reportDatePicker() {
     });
 }
 
-function dashboardDatePicker() {
-    $(function () {
-        $('.dminDash, .dmaxDash').datepicker({
-            defaultDate: -3,
-            changeMonth: true,
-            changeYear: true,
-//            dateFormat: 'dd-mm-yy',
-            dateFormat: 'yy-mm-dd',
-            numberOfMonths: 3,
-            maxDate: "-0d"
-        });
-    });
-}
-//hide and resize content
-function hideMenu() {
-    $('.hided').hide();
-    $(".showed").show();
-    $(".form").slideToggle("slow", function () {
-        bodySize.y = $(document).height();
-        $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').position().top - 30));
-    });
-}
+// poll only from menu bar
 
-function showMenu() {
-    bodySize.y = $('#mainContainer').height();
-    $('.showed').hide();
-    $(".hided").show();
-    $(".form").slideToggle("slow", function () {
-        bodySize.y = $(document).height();
-        $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').position().top - 30));
-
-    });
-}
-
-function submiterAction(domSubmiter) {
-    var form = domSubmiter.closest('form');
-    var container = domSubmiter.closest('.inside-container');
-
-    var data = form.serializeArray();
-
-    data.push({name: "action", value: domSubmiter.data('action')});
-
-    //check if a base is selected, pop an alert message if not
-    if (!isOneBaseSelected(form)) {
-        alertBase();
-    }
-    else {
-        var request = form.data("request");
-
-        if (request && typeof(request.abort) == 'function') {
-            request.abort();
-        }
-
-        request = $.ajax({
-            type: "POST",
-            url: "/report/init",
-            data: data,
-            beforeSend: function () {
-                container.find('.content').empty();
-                container.find('.answers').addClass('onload');
-            },
-            success: function (data) {
-                container.find('.answers').removeClass('onload');
-                //load data
-                container.find('.content').empty().append(data);
-                //init to 0;
-                initSelectedTab();
-                //init tab with the loaded content
-                initTabs(container);
-                //open selected tab
-                openSelectedTab();
-                //start position
-                right = getScrollerStartPosition(selected_tab);
-                //scroller
-                $(".horizontal-scroller:visible").nicoslider({
-                    start: right
-                });
-            }
-        });
-
-        form.data('request', request);
-    }
-}
-
-function initTabs(wrapper) {
-    $tabs = wrapper.find('div.tabs').tabs({
-        create: function (event, ui) {
-            //define the div where the table is loaded
-            load = $(ui.panel).find('.load');
-            //define the form that contain all parameters to build the table in the loaded div
-            form = $(ui.panel).find("form");
-            //serialize all the form values
-            f_val = form.serialize(true);
-            //build the table
-            update_tab(load, form, f_val);
-        },
-        activate: function (event, ui) {
-            //define the div where the table is loaded
-            load = $(ui.newPanel).find('.load');
-            //define the form that contain all parameters to build the table in the loaded div
-            form = $(ui.newPanel).find("form");
-            //serialize all the form values
-            f_val = form.serialize(true);
-            //build the table
-            update_tab(load, form, f_val);
-        }
-    });
-}
-
-function openFirstTab() {
-    $('.tabb:visible li').eq(0).find("a").trigger("click");
-}
-
-function openSelectedTab() {
-    if (class_selected_tab == -1) {
-        openFirstTab();
-    }
-    else if (typeof class_selected_tab == "undefined") {
-        openFirstTab();
-    }
-    else {
-        theclass = class_selected_tab.split(" ");
-        if ($('.' + theclass[0] + ':visible').length > 0) {
-            $('.' + theclass[0] + ':visible').find("a").trigger("click");
-        }
-        else {
-            openFirstTab();
-        }
-    }
-}
-
-function initSelectedTab() {
-    if (typeof(selected_tab) == 'undefined') {
-        selected_tab = 0;
-    }
-}
-
-function alertBase() {
-    $('body').append("<div id='dialog'><div>");
-    $('#dialog').dialog({
-        title: language.choix_collection,
-        height: 0,
-        width: 380,
-        draggable: false,
-        modal: true,
-        resizable: false,
-        hide: 'explode',
-        close: function (ev, ui) {
-            $(this).dialog('destroy').remove();
-        }
-    });
-}
-
-function isOneBaseSelected(form) {
-    if (!form.find("ul.multiselect input:checked").length) {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
-
-function showOption(domInput) {
-    var opt = domInput.closest('div').find('.options');
-    domInput.closest('form').find('.options').hide();
-    if (domInput.get(0).checked) {
-        opt.show();
-    }
-}
-
-function removeChecked(domInput) {
-    domInput.closest("form").find('input:radio:visible:checked').prop("checked", false);
-}
-function tableLinkAction(domLink) {
-    var cl = domLink.attr("id");
-    var arr = cl.split('_');
-    var w = $('#mainTabs:visible').width();
-    if (isDocumentLink(domLink)) {
-        $.ajax({
-            type: "POST",
-            url: "/report/informations/document",
-            dataType: "json",
-            data: ({
-                tbl: "what",
-                rid: arr[1],
-                sbasid: arr[2],
-                collection: "",
-                from: "DASH",
-                dmin: date.dmin,
-                dmax: date.dmax
-            }),
-            success: function (data) {
-                modalBox(data);
-            }
-        });
-    }
-    else {
-        $.ajax({
-            type: "POST",
-            url: "/report/informations/user",
-            dataType: "json",
-            data: ({
-                tbl: "infouser",
-                user: arr[1],
-                sbasid: 1,
-                collection: "",
-                from: "",
-                dmin: date.dmin,
-                dmax: date.dmax
-            }),
-            success: function (data) {
-                modalBox(data);
-            }
-        });
-    }
-}
-
-function isDocumentLink(domLink) {
-    return domLink.hasClass("hasSbas");
-}
-
-function modalBox(data) {
-    $('body').append("<div id='dialog'>" + data.rs + "</div>");
-    $('#dialog').dialog({
-        title: data.title,
-        width: 860,
-        modal: true,
-        close: function (ev, ui) {
-            $(this).dialog('destroy').remove();
-        }
-    });
-}
-
-function getScrollerStartPosition(selected_tab) {
-    right = 0;
-    if (parseInt(selected_tab) === 0) {
-        right = 0;
-    }
-    else {
-        $('.tabb:visible li').each(function (index) {
-            if (index == selected_tab) {
-                return false;
-            }
-            right += $(this).width();
-        });
-    }
-    return right;
-}
-
-function drawCharts() {
-    if ($('#mytabledaytotal').length > 0) {
-        $('#mytabledaytotal').gvChart({
-            chartType: 'LineChart',
-            gvSettings: {
-                titleTextStyle: {
-                    color: '#FF8D1C',
-                    fontSize: '20'
-                },
-                vAxis: {
-                    title: dashboard.title_connexion,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    }
-                },
-                hAxis: {
-                    title: dashboard.title_jour,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    },
-                    tooltipTextStyle: {
-                        fontSize: 4
-                    },
-                    showTextEvery: 4
-                },
-                lineWidth: 1,
-                pointSize: 2,
-                backgroundColor: '#696969',
-                width: 800,
-                height: 350
-            }
-        });
-    }
-
-    if ($('#mytablehour').length > 0) {
-        $('#mytablehour').gvChart({
-            chartType: 'LineChart',
-            gvSettings: {
-                colors: ['white', '#FFFFFF'],
-                titleTextStyle: {
-                    color: '#FF8D1C',
-                    fontSize: '20'
-                },
-                vAxis: {
-                    title: dashboard.title_connexion,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    }
-                },
-                hAxis: {
-                    title: dashboard.title_heure,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    },
-                    tooltipTextStyle: {
-                        fontSize: 4
-                    },
-                    slantedTex: true,
-                    slantedTextAngle: 90,
-                    maxAlternation: 1,
-                    showTextEvery: 1
-                },
-                lineWidth: 1,
-                pointSize: 3,
-                backgroundColor: '#696969',
-                width: 800,
-                height: 350
-            }
-        });
-    }
-
-    if ($('#mytableadded').length > 0) {
-        $('#mytableadded').gvChart({
-            chartType: 'ColumnChart',
-            gvSettings: {
-                colors: ['white', '#FFFFFF'],
-                titleTextStyle: {
-                    color: '#FF8D1C',
-                    fontSize: '20'
-                },
-                vAxis: {
-                    title: dashboard.title_doc_add,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    }
-                },
-                hAxis: {
-                    title: dashboard.title_jour,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    },
-                    tooltipTextStyle: {
-                        fontSize: 4
-                    },
-                    showTextEvery: 4
-                },
-
-                legend: 'none',
-                lineWidth: 1,
-                pointSize: 3,
-                backgroundColor: '#696969',
-                width: 800,
-                height: 350
-            }
-        });
-    }
-
-    if ($('#mytableedited').length > 0) {
-        $('#mytableedited').gvChart({
-            chartType: 'ColumnChart',
-            gvSettings: {
-                colors: ['white', '#FFFFFF'],
-                titleTextStyle: {
-                    color: '#FF8D1C',
-                    fontSize: '20'
-                },
-                vAxis: {
-                    title: dashboard.title_doc_edit,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    }
-                },
-                hAxis: {
-                    title: dashboard.title_jour,
-                    textStyle: {
-                        fontSize: '10',
-                        color: '#AAAAAA'
-                    },
-                    tooltipTextStyle: {
-                        fontSize: 4
-                    },
-                    showTextEvery: 4
-                },
-
-                legend: 'none',
-                lineWidth: 1,
-                pointSize: 3,
-                backgroundColor: '#696969',
-                width: 800,
-                height: 350
-            }
-        });
-    }
-}
-
-//unserialize value
-function unserialize(str) {
-    var n_str = str.split("&");
-    var serialised = new Array();
-    $.each(n_str, function () {
-        var properties = this.split("=");
-        serialised[properties[0]] = properties[1];
-    });
-    return serialised;
-}
-//pop a dialog box with who download what content
-function who() {
-    $("td a.bound").unbind("click").bind('click', function () {
-        //get form
-        var form = $(this).closest(".ui-tabs-panel").find(".report_form");
-        //get col
-        var col = $(this).closest("td").attr("class");
-        //get link value
-        var val_a = $(this).html();
-        //split link classes
-        var arr = $(this).attr("class").split(" ");
-        //get usrid
-        var usrid = arr[0];
-        //get the current tbl
-        var tbl = form.find("input[name=tbl]").val();
-        //replace the new tbl
-        form.find("input[name=tbl]").val("infouser");
-        //put the old in the from input
-        form.find("input[name=from]").val(tbl);
-
-        if (col == 'user') {
-            form.find("input[name=user]").val(usrid);
-        }
-        else if (tbl == 'CNXB') {
-            form.find("input[name=tbl]").val("infonav");
-            form.find("input[name=user]").val(val_a);
-            form.find("input[name=on]").val(col);
-        }
-        else {
-            form.find("input[name=user]").val(val_a);
-            form.find("input[name=on]").val(col);
-        }
-        //load content
-        $.ajax({
-            type: "POST",
-            url: form.find("input[name=action]").val(),
-            dataType: "json",
-            data: form.serializeArray(),
-            success: function (data) {
-                //replace tbl with the from tbl
-                form.find("input[name=tbl]").val(tbl);
-                //pop the dialog window
-                dialog_record(form, data.rs, data.title, tbl);
-            }
-        });
-    });
-}
-//group by the element of each column
-function group() {
-    $("a.groupby").unbind("click").bind("click", function () {
-        var form = $(this).closest(".ui-tabs-panel").find(".report_form");
-        var col = $(this).attr('class');
-        var tbl = form.find("input[name=tbl]").val();
-        form.find("input[name=groupby]").val(col);
-        $.ajax({
-            type: "POST",
-            url: form.find("input[name=action]").val(),
-            dataType: "json",
-            data: form.serializeArray(),
-            success: function (data) {
-                form.find("input[name=tbl]").val(tbl);
-                form.find("input[name=groupby]").val("");
-                dialog_record(form, data.rs, data.title, tbl);
-            }
-        });
-    });
-}
-//pop & load the record box informations
-function what() {
-    $(".record_id a").unbind("click").bind('click', function () {
-        var form = $(this).closest(".ui-tabs-panel").find(".report_form");
-        var rid = $(this).html();
-        var arr = $(this).attr("class").split(" ");
-        var usrid = arr[0];
-        var tbl = form.find("input[name=tbl]").val();
-        form.find("input[name=from]").val(tbl);
-        form.find("input[name=tbl]").val("what");
-        form.find("input[name=rid]").val(rid);
-        form.find("input[name=user]").val(usrid);
-        $.ajax({
-            type: "POST",
-            url: "/report/informations/document",
-            dataType: "json",
-            data: form.serializeArray(),
-            success: function (data) {
-                dialog_record(form, data.rs, data.title, tbl);
-            }
-        });
-    });
-}
-//construct the dialog_record box
-function dialog_record(form, p_message, p_title, tbl) {
-    //get size attribute
-    var h = $(document).height();
-    var w = $('#mainTabs:visible').width();
-    p_title = p_title || "";
-
-    $('body').append("<div id='dialog'>" + p_message + "</div>");
-    var data_form = form.serializeArray();
-    var dial = $('#dialog');
-    dial.data('dataForm', form);
-    dial.dialog({
-        title: p_title,
-        height: h,
-        width: w,
-        modal: true,
-        resizable: false,
-        close: function (ev, ui) {
-            form.find("input[name=tbl]").val(tbl);
-            form.find("input[name=on]").val("");
-            $(this).dialog('destroy').remove();
-        }
-    });
-    csv();
-}
-//construct the dialog box filters.
-function alert_dialog_filter(submit, form, p_message, p_title) {
-    var buttons = {};
-
-    p_title = p_title || "";
-    $('body').append("<div id='dialog'>" + p_message + "</div>");
-    buttons[language.valider] = function () {
-        var value = $("select[name='filtre'] option:selected").val();
-        form.find("input[name=filter_value]").val(value);
-        var f_val = form.serialize(true);
-        update_tab(submit, form, f_val);
-        form.find("input[name=filter_column]").val("");
-        form.find("input[name=filter_value]").val("");
-        $(this).dialog('destroy').remove();
-    };
-    $('#dialog').dialog({
-        title: p_title,
-        width: 400,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        buttons: buttons,
-        close: function (ev, ui) {
-            $(this).dialog('destroy').remove();
-        }
-    });
-}
-//construct the configuration dialog box
-function alert_dialog_conf(submit, form, p_message, p_title) {
-    var w = $('#mainTabs:visible').width();
-    var buttons = {};
-
-    buttons[language.valider] = function () {
-        var idChecked = new Array();
-
-        $("#dialog input:checked").each(function (id) {
-            idChecked[id] = $(this).val();
-        });
-        var list_column = ",";
-        $.each(idChecked, function (key, val) {
-            list_column += val + ",";
-        });
-        form.find("input[name=list_column]").val(list_column);
-        f_val = form.serialize(true);
-        if (idChecked.length == 0) {
-            alert("Vous devez cocher au minimum une case");
-            return false;
-        }
-        else {
-            update_tab(submit, form, f_val);
-            $(this).dialog('destroy').remove();
-        }
-    };
-
-    p_title = p_title || "";
-    $('body').append("<div id='dialog'>" + p_message + "</div>");
-    $('#dialog').dialog({
-        title: p_title,
-        width: w,
-        modal: true,
-        buttons: buttons,
-        close: function (ev, ui) {
-            $(this).dialog('destroy').remove();
-        }
-    });
-}
-//load the content of the filter box
-function dofilter(submit, form, f_val) {
-    $("a.filter").unbind("click").bind("click", function () {
-        var col = $(this).attr('class');
-        form.find("input[name=filter_column]").val(col);
-        form.find("input[name=liste]").val("on");
-        $.ajax({
-            type: "POST",
-            url: form.find("input[name=action]").val(),
-            dataType: "json",
-            data: form.serializeArray(),
-            success: function (data) {
-                form.find("input[name=liste]").val("off");
-                alert_dialog_filter(submit, form, data.diag, data.title);
-            }
-        });
-    });
-}
-//pop & load the content of the dialog_conf window
-function conf(submit, form, f_val) {
-    $("a.config").unbind("click").bind("click", function () {
-        form.find("input[name=conf]").val("on");
-        $.ajax({
-            type: "POST",
-            url: form.find("input[name=action]").val(),
-            dataType: "json",
-            data: form.serializeArray(),
-            success: function (data) {
-                form.find("input[name=conf]").val("off");
-                alert_dialog_conf(submit, form, data.liste, data.title);
-            }
-        });
-    });
-}
-//load the next page of data array
-function next(submit, form, f_val, data) {
-    form.find(".next").unbind('click').bind('click', function () {
-        form.find("input[name=page]").attr("value", data.next);
-        form.find("input[name=liste_filter]").attr("value", data.filter);
-        f_val = form.serialize(true);
-        update_tab(submit, form, f_val);
-        return false;
-    });
-}
-//load the previous page of data array
-function prev(submit, form, f_val, data) {
-    form.find(".prev").unbind('click').bind('click', function () {
-        form.find("input[name=page]").attr("value", data.prev);
-        form.find("input[name=liste_filter]").attr("value", data.filter);
-        f_val = form.serialize(true);
-        update_tab(submit, form, f_val);
-    });
-    return false;
-}
-//print the table when click on the print link
-function print() {
-    $("a.jqprint").unbind("click").bind("click", function () {
-        var $table = $(this).closest(".report-table");
-        var $graph = $(this).closest(".graph");
-
-        if ($graph.length > 0) {
-            $graph.jqprint();
-        } else {
-            $table.jqprint();
-        }
-    });
-}
-
-function csv() {
-    var button = $("#export_csv");
-
-    button.unbind("click").bind("click", function (e) {
-        e.preventDefault();
-        var $this = $(this);
-
-        if ($this.closest("#dialog").length > 0) {
-            var $form = $("#dialog").data("dataForm");
-        } else {
-            var $form = $this.closest(".ui-tabs-panel").find(".report_form");
-        }
-
-        //clone form and submit
-        var clone = $form.clone().appendTo($this);
-
-        clone.attr("action", $form.find("input[name=action]").val())
-            .attr("method",'POST')
-            .removeAttr("onsubmit")
-            .find("input[name=printcsv]").val("on");
-
-        $(clone).submit().remove();
-    });
-}
-
-
-//order the array by DESC or ASC when clicking a column
-function orderArray() {
-    $('.orderby').unbind("click").bind('click', function () {
-        var $this = $(this);
-        var champ = $(this).parent().attr('class');
-        var submit_click = $this.closest(".report-table").parent();
-        var form_click = submit_click.parent().find("form");
-        var order = 'asc';
-        if (form_click.find("input[name=order]").val() == "") {
-            order = "asc";
-        }
-
-        if (form_click.find("input[name=order]").val() == "asc") {
-            order = "desc";
-            $this.find('.asc').hide();
-        }
-        else {
-            order = "asc";
-            $this.find('.desc').hide();
-        }
-        form_click.find("input[name=order]").val(order);
-        form_click.find("input[name=champ]").val(champ);
-        var f_val = form_click.serialize(true);
-        update_tab(submit_click, form_click, f_val);
-
-        return false;
-    });
-}
-//show hide prev & next or both according to the result
-function navigation(form, prev, next, display_nav) {
-    if (prev == 0) {
-        form.find("input[name=prev]").hide();
-    }
-    else {
-        form.find("input[name=prev]").show();
-    }
-
-    if (next == false) {
-        form.find("input[name=next]").hide();
-    }
-    else {
-        form.find("input[name=next]").show();
-    }
-
-    if (display_nav == false || ((prev == 0) && (next == false))) {
-        form.hide();
-    }
-}
-//color filter'slink if a filter is active
-function colorFilter(col) {
-    if ($.isArray(col)) {
-        $.each(col, function () {
-            $("a." + this).filter("a.filter").css("color", "#0000FF");
-        });
-    }
-}
-//show hide desc or asc arrow according to the order of the table
-function arrow(form) {
-    var cl = form.find("input[name=champ]").val();
-
-    if (cl != "") {
-        var th = $("th." + cl + ":visible");
-        th.css("color", "white");
-        if (form.find("input[name=order]").val() == "asc") {
-            th.find('.asc').hide();
-        }
-        else if (form.find("input[name=order]").val() == "desc") {
-            th.find('.desc').hide();
-        }
-    }
-}
-//load default page and number of result if the user seizes crazy things in this inputs
-function page(form, lim, array_val) {
-    var current_lim = form.find("input[name=limit]").val();
-
-    if (current_lim < 1 || Math.floor(current_lim).toString() != current_lim.toString()) {
-        current_lim = 30;
-        form.find("input[name=limit]").attr("value", current_lim);
-    }
-
-    if (current_lim != lim) {
-        form.find("input[name=page]").attr("value", "1");
-    }
-    else {
-        if (array_val["page"] < 1 || Math.floor(array_val["page"]).toString() != array_val["page"].toString()) {
-            array_val["page"] = 1;
-        }
-        form.find("input[name=page]").attr("value", array_val["page"]);
-    }
-}
-//do a submit button to load new users conf
-function go(submit, form, f_val, data) {
-    $(".submiter").bind("click", function () {
-        form.find("input[name=liste_filter]").attr("value", data.filter);
-        form.find("input[name=action]").attr("value", $(this).data('action'));
-        f_val = form.serialize(true);
-        update_tab(submit, form, f_val);
-    });
-}
-
-function loadDash() {
-    var $form = $("#dashboard-form");
-    $.ajax({
-        url     : $form.attr('action'),
-        type    : $form.attr('method'),
-        dataType: 'json',
-        data    : $form.serializeArray(),
-        beforeSend: function() {
-            resize();
-            $("#dashboard").empty().addClass("loading");
-        },
-        success : function( data ) {
-            $("#dashboard").empty().append(data.html);
-            drawCharts();
-            $('td a:visible').bind('click', function () {
-                tableLinkAction($(this));
-            });
-        },
-        error   : function( xhr, err ) {
-        },
-        timeout: function(){
-        }
-    }).done(function() {
-        $("#dashboard").removeClass("loading");
-    });
-    return false;
-}
-
-//submit is the div where we want to load the updated tab
-//form is the current form
-//f_val is the serialized form
-function update_tab(submit, form, f_val) {
-    //unserialize the form values
-    var array_val = unserialize(f_val);
-    //attribute the current page & check values
-    page(form, save_limit, array_val);
-    //attribute the current filter
-    form.find("input[name=liste_filter]").attr("value", array_val["liste_filter"]);
-
-    var datas = form.serializeArray();
-
-    $.ajax({
-        type: "POST",
-        url: form.find("input[name=action]").val(),
-        dataType: "json",
-        data: datas,
-        beforeSend: function () {
-            submit.empty();
-            submit.closest('.answers').addClass('onload');
-            form.hide();
-        },
-        success: function (data) {
-            //remove loader
-            submit.closest('.answers').removeClass('onload');
-            //show form
-            form.show();
-
-            //attribute the new page
-            form.find("input[name=page]").attr("value", data.page);
-            //attribute the new filter
-            form.find("input[name=liste_filter]").attr("value", data.filter);
-            //save current limit
-            save_limit = data.limit;
-            //load the result
-            submit.empty().append(data.rs);
-            //get selected li index
-            if ($tabs.data("ui-tabs")) {
-                var selected_tab = $tabs.tabs('option', 'active');
-            }
-            if (typeof(selected_tab) === 'undefined') {
-                selected_tab = 0;
-            }
-            class_selected_tab = $('.tabb:visible li').eq(selected_tab).attr('class');
-            //hide show the next and previous button according to the results
-            navigation(form, data.prev, data.next, data.display_nav);
-            //color the filter link if active
-            colorFilter(data.col);
-            //load the next array
-            next(submit, form, f_val, data);
-            //load the previous one
-            prev(submit, form, f_val, data);
-            //submit new array
-            go(submit, form, f_val, data);
-            //load the who array
-            who();
-            //load the what array
-            what();
-            //load the group by array
-            group();
-            //load the array with new filters
-            dofilter(submit, form, f_val);
-            //load the configuration array
-            conf(submit, form, f_val);
-            //print the array
-            print();
-            //export csv
-            csv();
-            //load the new array with new order
-            orderArray();
-            //hide show desc or asc arrow
-            arrow(form);
-
-            drawPlatformAndNavigatorChart(datas);
-        }
-    });
-}
-
-
-function drawPlatformAndNavigatorChart(data) {
-    $.each(data, function (k, v) {
-        if (v.name == "tbl" && v.value == "CNXB") {
-            $(".navi").each(function () {
-                $(this).gvChart({
-                    chartType: 'PieChart',
-                    hideTable: true,
-                    gvSettings: {
-                        width: 890,
-                        height: 300,
-                        backgroundColor: "#F6F2F1",
-                        is3D: true,
-                        legend: 'bottom'
-                    }
-                });
-            });
-        }
-        else if (v.name == "tbl" && v.value == "SITEACTIVITY") {
-            $(".tblsite").gvChart({
-                chartType: 'LineChart',
-                gvSettings: {
-                    vAxis: {
-                        title: language.connexion
-                    },
-                    hAxis: {
-                        title: language.heure
-                    },
-                    width: 890,
-                    height: 300,
-                    backgroundColor: "#F6F2F1"
-                }
-            });
-        }
-    });
-}
-
-//resize report div
-function resize() {
-    bodySize.y = $('#mainContainer').innerHeight();
-    bodySize.x = $('#mainContainer').innerWidth();
-
-    $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').offset().top));
-};
-
-function pollNotifications() {
-    $.ajax({
-        type: "POST",
-        url: "/session/notifications/",
-        dataType: 'json',
-        data: {
-            module: 10,
-            usr: usrId
-        },
-        error: function () {
-            window.setTimeout("pollNotifications();", 10000);
-        },
-        timeout: function () {
-            window.setTimeout("pollNotifications();", 10000);
-        },
-        success: function (data) {
-            if (data) {
-                commonModule.manageSession(data);
-            }
-            var t = 120000;
-            if (data.apps && parseInt(data.apps) > 1) {
-                t = Math.round((Math.sqrt(parseInt(data.apps) - 1) * 1.3 * 120000));
-            }
-            window.setTimeout("pollNotifications();", t);
-            return;
-        }
-    });
-};
-
-window.setTimeout("pollNotifications();", 10000);
+// function pollNotifications() {
+//     $.ajax({
+//         type: "POST",
+//         url: "/session/notifications/",
+//         dataType: 'json',
+//         data: {
+//             module: 10,
+//             usr: usrId
+//         },
+//         error: function () {
+//             window.setTimeout("pollNotifications();", 10000);
+//         },
+//         timeout: function () {
+//             window.setTimeout("pollNotifications();", 10000);
+//         },
+//         success: function (data) {
+//             if (data) {
+//                 commonModule.manageSession(data);
+//             }
+//             var t = 120000;
+//             if (data.apps && parseInt(data.apps) > 1) {
+//                 t = Math.round((Math.sqrt(parseInt(data.apps) - 1) * 1.3 * 120000));
+//             }
+//             window.setTimeout("pollNotifications();", t);
+//             return;
+//         }
+//     });
+// };
+//
+// window.setTimeout("pollNotifications();", 10000);

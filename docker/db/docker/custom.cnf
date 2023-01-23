@@ -1,0 +1,13 @@
+[mysqld]
+
+max_allowed_packet=$MYSQL_MAX_ALLOWED_PACKET
+
+max_connections=$MYSQL_MAX_CONNECTION
+
+long_query_time=$MYSQL_LONG_QUERY_TIME
+slow_query_log=$MYSQL_SLOW_QUERY_LOG
+
+query_cache_limit=$MYSQL_QUERY_CACHE_LIMIT
+query_cache_size=$MYSQL_QUERY_CACHE_SIZE
+
+key_buffer_size=$MYSQL_KEY_BUFFER_SIZE

@@ -4,48 +4,49 @@
 <div style="margin:0 7px;overflow:hidden;">
     {% for basket_element in basket.getElements() %}
     {% set record = basket_element.getRecord(app) %}
-        <div class="chim-wrapper wrapCHIM_{{basket_element.getId()}} valid">
-            <div style="margin:20px;">
-                <table style="width: 100%; min-width: 330px;">
-                    <tr valign="top">
-                        <td style="width:165px;">
-                            <div id="CHIM_{{basket_element.getId()}}_{{record.get_serialize_key()}}"
-                                class="CHIM diapo">
-                                <div class="display_id">
-                                    {{basket_element.getOrd()}}
+    <div class="chim-wrapper-block  chim-wrapper wrapCHIM_{{basket_element.getId()}} valid">
+        <div class="chim-block">
+            <div class="chim-inner">
+                <div class="chim-left">
+                    <div id="CHIM_{{basket_element.getId()}}_{{record.get_serialize_key()}}"  class="CHIM diapo">
+                        <div class="display_id">
+                            {{basket_element.getOrd()}}
+                        </div>
+                        {{thumbnail.format(record.get_thumbnail(),165, 125, '', true, false)}}
+                    </div>
                 </div>
-                {{thumbnail.format(record.get_thumbnail(),165, 125, '', true, false)}}
-                            </div>
-                        </td>
-                        <td style="width:10px;">
-                        </td>
-                        <td>
-                            {% for validationDatas in basket_element.getValidationDatas()%}
-                                <div class="basket_report_user_wrapper ui-corner-all">
-                                    <div class="basket_report_user">
-                                        {% if validationDatas.getAgreement() == true %}
-                                            {% set imguser = '<img src="/assets/lightbox/images/agree.png" />' %}
-                                            {% set styleuser = '' %}
-                                        {% elseif validationDatas.getAgreement() is null %}
-                                            {% set imguser = '' %}
-                                            {% set styleuser = 'margin-left:18px;' %}
-                                        {% else %}
-                                            {% set imguser = '<img src="/assets/lightbox/images/disagree.png" />' %}
-                                            {% set styleuser = '' %}
-                                        {% endif %}
-                                        <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser().getDisplayName()}}</b>
-                                        {% if validationDatas.getNote() != '' %}
-                                             : {{validationDatas.getNote()|nl2br}}
-                                        {% endif %}
-                                    </div>
+                <div class="chim-right">
+                    {% for vote in basket_element.getVotes()%}
+                        {% if basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or vote.getParticipant().getUser() == app.getAuthenticatedUser() %}
+
+                            <div class="basket_report_user_wrapper ui-corner-all">
+                                    {% if vote.getAgreement() == true %}
+                                        {% set imguser = '<span class="icomoon icon-agree">&#xe95f;</span>' %}
+                                        {% set styleuser = '' %}
+                                    {% elseif vote.getAgreement() is null %}
+                                        {% set imguser = '&nbsp;' %}
+                                        {% set styleuser = 'margin-left:18px;' %}
+                                    {% else %}
+                                        {% set imguser = '<span class="icomoon icon-disagree">&#xe971;</span>' %}
+                                        {% set styleuser = '' %}
+                                    {% endif %}
+
+                                 <div class="validate-icon">
+                                        {{imguser|raw}}
                                 </div>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table>
+                                <div class="validate-info">
+                                    <h3> {{vote.getParticipant().getUser().getDisplayName()}}</h3>
+                                    {% if vote.getNote() != '' %}
+                                       <p> {{vote.getNote()|nl2br}}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
-        <div><hr/></div>
+    </div>
     {% endfor %}
 </div>
 

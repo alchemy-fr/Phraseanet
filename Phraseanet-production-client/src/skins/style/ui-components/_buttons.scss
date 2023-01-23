@@ -1,0 +1,27 @@
+@import '../../../../node_modules/bootstrap-sass/lib/_mixins.scss';
+.btn,
+input[type="file"] {
+    //font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    //font-size: 12px;
+    //font-weight: bold;
+    // soften button edges:
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    @include buttonBackground($btnBackground, $btnBackgroundHighlight, $btnColor, $btnTextShadow);
+}
+// @TODO .btn-primary
+
+.ui-dialog .btn,
+.ui-widget-content .btn {
+    // font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: $mediumFontSize;
+    font-weight: bold;
+    color: $btnColor;
+}
+
+.btn.btn-inverse {
+    @include buttonBackground($btnInverseBackground, $btnInverseBackgroundHighlight, $btnInverseColor, $btnInverseTextShadow);
+}
+
+.input-append button.btn {
+    border-left: 1px solid $btnGrpSeparatorColor;
+}

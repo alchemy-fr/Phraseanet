@@ -34,11 +34,14 @@ abstract class AbstractDelivery
     {
         $mediaSubdefinition = $record->get_subdef($subdef);
 
+        $filename = $request->get("filename") ?: $mediaSubdefinition->get_file();
+
         $pathOut = $this->tamperProofSubDefinition($mediaSubdefinition, $watermark, $stamp);
 
         $disposition = $request->query->get('download') ? DeliverDataInterface::DISPOSITION_ATTACHMENT : DeliverDataInterface::DISPOSITION_INLINE;
 
-        $response = $this->deliverFile($pathOut, $mediaSubdefinition->get_file(), $disposition, $mediaSubdefinition->get_mime());
+        // nb: $filename will be sanitized, no need to do it here
+        $response = $this->deliverFile($pathOut,  $filename, $disposition, $mediaSubdefinition->get_mime());
 
         if (in_array($subdef, array('document', 'preview'))) {
             $response->setPrivate();
@@ -88,7 +91,9 @@ abstract class AbstractDelivery
         if ($watermark === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
             $pathOut = \recordutils_image::watermark($this->app, $mediaSubdefinition);
         } elseif ($stamp === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
-            $pathOut = \recordutils_image::stamp($this->app, $mediaSubdefinition);
+            if( !is_null($newPath = \recordutils_image::stamp($this->app, $mediaSubdefinition)) ) {
+                $pathOut = $newPath;
+            }
         }
 
         return $pathOut;

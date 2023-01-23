@@ -1,0 +1,98 @@
+// @import 'variables';
+$mainMenuHeight: 40px !default;
+$mainMenuLineHeight: 36px !default;
+$mainMenuBackgroundColor: #fceb3f !default;
+$mainMenuLinkColor: #000000 !default;
+$mainMenuLinkHoverColor: #fffbcd !default;
+$mainMenuLinkActiveColor: #FFFFFF !default;
+$mainMenuLinkBackgroundHoverColor: transparent !default;
+$mainMenuLinkHoverColor: #000000 !default;
+$mainMenuMarginBottom: 0 !default;
+$mainMenuBottomBorder: none !default;
+
+#mainMenu {
+    height: $mainMenuHeight;
+    line-height: $mainMenuLineHeight;
+    vertical-align: middle;
+    background-color: $mainMenuBackgroundColor;
+    border-bottom: $mainMenuBottomBorder;
+    margin-bottom: $mainMenuMarginBottom;
+    z-index: 100;
+    box-sizing: border-box;
+    ol {
+        display: block;
+        margin: 0;
+        padding: 0;
+        list-style: none outside none;
+    }
+    #mainLogo {
+        margin: 0 5px;
+
+    }
+    li {
+        display: inline-block;
+        float: left;
+        line-height: $mainMenuLineHeight;
+        padding: 0;
+        position: relative;
+        vertical-align: top;
+        height: $mainMenuHeight; //
+        a {
+            text-decoration: none;
+            display: inline-block;
+            color: $mainMenuLinkColor;
+            > span {
+                font-size: $xmediumFontSize;
+                font-weight: normal;
+                border-top: 3px solid transparent;
+                display: block;
+                padding: 0 5px;
+                height: $mainMenuHeight - 3;
+                &.selected {
+                    border-top: 3px solid $mainMenuLinkActiveColor;
+                }
+            }
+            &:hover {
+                background-color: $mainMenuLinkBackgroundHoverColor;
+                color: $mainMenuLinkHoverColor;
+            }
+        }
+    }
+    /*li , li span {//
+      height: $mainMenuLineHeight;
+      line-height: $mainMenuLineHeight;
+    }
+      */
+    .title {
+        font-size: 18px;
+        color: #F7F7F7;
+        margin: 0 5px;
+        height: $mainMenuHeight;
+        display: block;
+        vertical-align: middle;
+    }
+    #notification_box a {
+        margin-left: 0;
+    }
+    .account a {
+        text-decoration: underline;
+    }
+    .right {
+        li {
+            // border-left: 1px solid $mainMenuRightListBorderLeft;
+            a {
+                > span {
+                    padding: 0 15px;
+                }
+            }
+
+            &.user {
+                a {
+                    background: url('#{$iconsPath}icon_user.png') 15px 7px no-repeat;
+                    padding-left: 41px;
+                }
+            }
+        }
+    }
+}
+

@@ -12,7 +12,7 @@ use RandomLib\Factory;
 class PasswordTokenValidatorTest extends \PhraseanetTestCase
 {
     /**
-     * @dataProvider provideValidationData
+     * @dataProvider provideVoteData
      */
     public function testValidate($value, $isValid)
     {
@@ -38,7 +38,7 @@ class PasswordTokenValidatorTest extends \PhraseanetTestCase
         $validator->validate($value, $constraint);
     }
 
-    public function provideValidationData()
+    public function provideVoteData()
     {
         $factory = new Factory();
         $generator = $factory->getLowStrengthGenerator();

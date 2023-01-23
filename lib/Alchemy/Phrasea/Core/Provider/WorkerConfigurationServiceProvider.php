@@ -32,11 +32,13 @@ class WorkerConfigurationServiceProvider implements ServiceProviderInterface
         $app['alchemy_queues.queues'] = $app->share(function (Application $app) {
             $defaultConfiguration = [
                 'worker-queue' => [
-                    'registry' => 'alchemy_worker.queue_registry',
-                    'host' => 'localhost',
-                    'port' => 5672,
-                    'user' => 'guest',
-                    'vhost' => '/'
+                    'registry'  => 'alchemy_worker.queue_registry',
+                    'host'      => 'localhost',
+                    'port'      => 5672,
+                    'user'      => 'guest',
+                    'password'  => 'guest',
+                    'vhost'     => '/',
+                    'heartbeat' => 60,
                 ]
             ];
 
@@ -46,18 +48,21 @@ class WorkerConfigurationServiceProvider implements ServiceProviderInterface
 
                 $queueConfigurations = $configuration->get(['workers', 'queue'], $defaultConfiguration);
 
-                $queueConfiguration = reset($queueConfigurations);
-                $queueKey = key($queueConfigurations);
+                $config = [];
 
-                if (! isset($queueConfiguration['name'])) {
-                    if (! is_string($queueKey)) {
-                        throw new \RuntimeException('Invalid queue configuration: configuration has no key or name.');
+                foreach($queueConfigurations as $name => $queueConfiguration) {
+                    $queueKey = $name;
+
+                    if (! isset($queueConfiguration['name'])) {
+                        if (! is_string($queueKey)) {
+                            throw new \RuntimeException('Invalid queue configuration: configuration has no key or name.');
+                        }
+
+                        $queueConfiguration['name'] = $queueKey;
                     }
 
-                    $queueConfiguration['name'] = $queueKey;
+                    $config[$queueConfiguration['name']] = $queueConfiguration ;
                 }
-
-                $config = [ $queueConfiguration['name'] => $queueConfiguration ];
 
                 return $config;
             }

@@ -48,8 +48,18 @@ class TranslationDumper extends Command
             ->setScanDirs([
                 $this->container['root.path'].'/lib',
                 $this->container['root.path'].'/templates',
-                $this->container['root.path'].'/bin',
+//                $this->container['root.path'].'/bin',
                 $this->container['root.path'].'/www',
+//                $this->container['root.path'].'/Phraseanet-production-client/src',
+                $this->container['root.path'].'/Phraseanet-production-client/templates',
+            ])
+            ->setExcludedDirs([
+                $this->container['root.path'].'/lib/conf.d',
+                $this->container['root.path'].'/www/assets',
+                $this->container['root.path'].'/www/custom',
+                $this->container['root.path'].'/www/include',
+                $this->container['root.path'].'/www/plugins',
+                $this->container['root.path'].'/www/thumbnails',
             ])
         ;
         if ($input->hasParameterOption('--keep') || $input->hasParameterOption('--keep=true')) {

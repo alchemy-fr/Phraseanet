@@ -50,6 +50,21 @@ class patch_380alpha3a extends patchAbstract
     {
         $conn = $databox->get_connection();
 
+        $sql = "CREATE TABLE IF NOT EXISTS `log_colls` (\n"
+            . " `id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n"
+            . " `log_id` int(11) unsigned NOT NULL,\n"
+            . " `coll_id` int(11) unsigned NOT NULL,\n"
+            . " PRIMARY KEY (`id`),\n"
+            . " UNIQUE KEY `couple` (`log_id`,`coll_id`),\n"
+            . " KEY `log_id` (`log_id`),\n"
+            . " KEY `coll_id` (`coll_id`)\n"
+            . ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+        unset($stmt);
+
         $removeProc = "DROP PROCEDURE IF EXISTS explode_log_table";
 
         $stmt = $conn->prepare($removeProc);

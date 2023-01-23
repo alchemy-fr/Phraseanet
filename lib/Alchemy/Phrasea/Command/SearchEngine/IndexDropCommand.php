@@ -23,12 +23,12 @@ class IndexDropCommand extends Command
     {
         $this
             ->setName('searchengine:index:drop')
-            ->setDescription('Deletes the search index')
+            ->setDescription('Deletes the search index <fg=yellow;>(Deprecated use searchengine:index instead)</>')
             ->addOption(
                'force',
                null,
                InputOption::VALUE_NONE,
-               "Don't ask for for the dropping of the index, but force the operation to run."
+               "Don't ask for the dropping of the index, but force the operation to run."
             )
         ;
     }

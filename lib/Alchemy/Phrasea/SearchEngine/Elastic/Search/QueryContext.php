@@ -2,13 +2,13 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
-use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Flag;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 /**
  * @todo Check for private fields and only search on them if allowed
@@ -23,13 +23,28 @@ class QueryContext
     private $queryLocale;
     /** @var array */
     private $fields;
+    /** @var  SearchEngineOptions */
+    private $options;
 
-    public function __construct(Structure $structure, array $locales, $queryLocale, array $fields = null)
+    /**
+     * @param SearchEngineOptions|null $options
+     * @param Structure $structure
+     * @param array $locales
+     * @param $queryLocale
+     * @param array $fields
+     */
+    public function __construct($options, Structure $structure, array $locales, $queryLocale, array $fields = null)
     {
         $this->structure = $structure;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
+        $this->options = $options;
+    }
+
+    public function getDataboxes()
+    {
+        return $this->structure->getDataboxes();
     }
 
     public function narrowToFields(array $fields)
@@ -43,7 +58,7 @@ class QueryContext
             }
         }
 
-        return new static($this->structure, $this->locales, $this->queryLocale, $fields);
+        return new static($this->options, $this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
     /**
@@ -107,12 +122,37 @@ class QueryContext
      */
     public function localizeField(Field $field)
     {
+        $ret = null;
         $index_field = $field->getIndexField();
 
-        if ($field->getType() === FieldMapping::TYPE_STRING) {
-            return $this->localizeFieldName($index_field);
-        } else {
-            return [$index_field];
+        switch($field->getType()) {
+            case FieldMapping::TYPE_STRING:
+                $ret = $this->localizeFieldName($index_field);
+                break;
+
+            case FieldMapping::TYPE_DATE:
+            case FieldMapping::TYPE_DOUBLE:
+                $ret = [
+                    $index_field . '.light',
+                    $index_field
+                ];
+                break;
+
+            default:
+                $ret = [$index_field];
+                break;
+        }
+
+        return $ret;
+    }
+
+    public function truncationField(Field $field)
+    {
+        if($this->options && $this->options->useTruncation()) {
+            return [sprintf('%s.truncated', $field->getIndexField())];
+        }
+        else {
+            return [];
         }
     }
 

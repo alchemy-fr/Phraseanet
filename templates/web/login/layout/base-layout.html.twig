@@ -27,7 +27,7 @@
             {% endblock favicon %}
 
             {% block header_stylesheet %}
-                <link type="text/css" rel="stylesheet" href="/assets/authentication/css/authentication{% if not app.debug %}.min{% endif %}.css">
+                <link type="text/css" rel="stylesheet" href="/assets/authentication/css/authentication{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
                 <!--[if lte IE 8]>
                 <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome-ie7.min.css">
                 <![endif]-->
@@ -42,8 +42,9 @@
                 {# include backbone templates #}
                 {% include "login/common/templates.html.twig" %}
             <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-            <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-            <script type="text/javascript" src="/assets/production/authenticate{% if not app.debug %}.min{% endif %}.js"></script>
+            <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+            <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
+            <script type="text/javascript" src="/assets/production/authenticate{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
             {% endblock header_javascript %}
         {% endblock header %}
     </head>
@@ -98,6 +99,7 @@
         {% endblock %}
         {% block analytics %}
             {% include 'common/analytics.html.twig' %}
+            {% include 'common/matomo_analytics.html.twig' %}
         {% endblock analytics %}
 
         {% block scripts %}{% endblock scripts %}

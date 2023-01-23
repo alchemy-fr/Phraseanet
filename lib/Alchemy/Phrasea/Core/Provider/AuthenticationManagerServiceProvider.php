@@ -8,25 +8,26 @@
  * file that was distributed with this source code.
  */
 namespace Alchemy\Phrasea\Core\Provider;
-use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Authentication\AccountCreator;
+use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Authentication\Manager;
-use Alchemy\Phrasea\Authentication\ProvidersCollection;
-use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
-use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
 use Alchemy\Phrasea\Authentication\PersistentCookie\Manager as CookieManager;
 use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
+use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
 use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
+use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Authentication\RecoveryService;
 use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
+use Alchemy\Phrasea\Core\Event\Subscriber\PersistentCookieSubscriber;
 use Silex\Application;
 use ReCaptcha\ReCaptcha;
 use Silex\ServiceProviderInterface;
-use Alchemy\Phrasea\Core\Event\Subscriber\PersistentCookieSubscriber;
 class AuthenticationManagerServiceProvider implements ServiceProviderInterface
+
 {
     public function register(Application $app)
     {
@@ -47,7 +48,17 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.providers.factory'] = $app->share(function (Application $app) {
-            return new ProviderFactory($app['url_generator'], $app['session']);
+           return new ProviderFactory(
+               $app['url_generator'],
+               $app['session'],
+               $app['manipulator.user'],
+               $app['repo.users'],
+               $app['acl'],
+               $app['phraseanet.appbox'],
+               $app['random.medium'],
+               $app['repo.usr-auth-providers'],
+               $app['orm.em']
+           );
         });
 
         $app['authentication.providers.account-creator'] = $app->share(function (Application $app) {
@@ -76,11 +87,34 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             $providers = new ProvidersCollection();
 
             $authConf = $app['conf']->get('authentication');
-            foreach ($authConf['providers'] as $providerId => $data) {
-                if (isset($data['enabled']) && false === $data['enabled']) {
+            foreach ($authConf['providers'] as $providerId => $conf) {
+                if (isset($conf['enabled']) && false === $conf['enabled']) {
                     continue;
                 }
-                $providers->register($app['authentication.providers.factory']->build($providerId, $data['options']));
+                /** @var ProviderFactory $factory */
+                $factory = $app['authentication.providers.factory'];
+                /*
+                 * avoid bc brk
+                 * - conf v1 : the top-level id declares the (unique) type/instance
+                 *         github:
+                 *           enabled: false
+                 *           options:
+                 *             client-id: ''
+                 *             client-secret: ''
+                 * - conf v2 : the top-level key has no meaning, id, name, type etc. are in data
+                 *         github_foo:
+                 *           enabled: false
+                 *           display: false
+                 *           title: Github
+                 *           type: github
+                 *           options:
+                 *             client-id: ''
+                 *             client-secret: ''
+                 */
+                $type    = array_key_exists('type', $conf) ? $conf['type'] : $providerId;
+                $display = array_key_exists('display', $conf) ? $conf['display'] : true;
+                $title   = array_key_exists('title', $conf) ? $conf['title'] : $providerId;
+                $providers->register($factory->build($providerId, $type, $display, $title, $conf['options']));
             }
 
             return $providers;

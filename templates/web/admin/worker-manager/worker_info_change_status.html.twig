@@ -1,0 +1,13 @@
+<div>
+    {{ 'admin::workermanager:tab:workerinfo: manually mark as canceled job running' | trans }}
+
+    <div style="margin-top: 20px;">
+        <input name="hour" type="number" min="0" step="1" style="width: 50px;"> {{ 'hour' | trans }}
+
+        <span style="margin-left: 60px;"><button class="refresh-job-count" style="margin-top: 10px;margin-bottom: 20px;">{{ 'admin::workermanager:tab:workerinfo: refresh job count'| trans }}</button></span>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <span id="job-count" style="font-size:large;">{{ jobCount }}</span> {{ 'admin::workermanager:tab:workerinfo: running job find'| trans }}
+    </div>
+</div>

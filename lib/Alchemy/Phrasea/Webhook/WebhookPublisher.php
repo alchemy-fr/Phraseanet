@@ -19,7 +19,7 @@ use Alchemy\Queue\MessageQueueRegistry;
  * Class WebhookPublisher publishes webhook event notifications in message queues
  * @package Alchemy\Phrasea\Webhook
  */
-class WebhookPublisher 
+class WebhookPublisher implements WebhookPublisherInterface
 {
     /**
      * @var MessageQueueRegistry

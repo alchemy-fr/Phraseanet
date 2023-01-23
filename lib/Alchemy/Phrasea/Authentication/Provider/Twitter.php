@@ -11,31 +11,34 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Authentication\Provider\Token\Token;
-use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Authentication\Provider\Token\Token;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use tmhOAuth;
 
 class Twitter extends AbstractProvider
 {
     private $twitter;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, \tmhOAuth $twitter)
+
+    public function __construct(UrlGenerator $generator, SessionInterface $session, tmhOAuth $twitter)
     {
-        $this->generator = $generator;
+        parent::__construct($generator, $session);
+
         $this->twitter = $twitter;
-        $this->session = $session;
     }
 
     /**
-     * @param \tmhOAuth $twitter
+     * @param tmhOAuth $twitter
      *
-     * @return Twitter
+     * @return self
      */
-    public function setTwitterClient(\tmhOAuth $twitter)
+    public function setTwitterClient(tmhOAuth $twitter): self
     {
         $this->twitter = $twitter;
 
@@ -43,9 +46,9 @@ class Twitter extends AbstractProvider
     }
 
     /**
-     * @return \tmhOAuth
+     * @return tmhOAuth
      */
-    public function getTwitterClient()
+    public function getTwitterClient(): tmhOAuth
     {
         return $this->twitter;
     }
@@ -53,30 +56,16 @@ class Twitter extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public function authenticate(array $params = array()): RedirectResponse
     {
-        return 'twitter';
-    }
+        $params = array_merge(['providerId' => $this->getId()], $params);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'Twitter';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function authenticate()
-    {
         $code = $this->twitter->request(
             'POST',
             $this->twitter->url('oauth/request_token', ''),
             ['oauth_callback' => $this->generator->generate(
                 'login_authentication_provider_callback',
-                ['providerId' => $this->getId()],
+                $params,
                 UrlGenerator::ABSOLUTE_URL
             )]
         );
@@ -151,7 +140,7 @@ class Twitter extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getToken()
+    public function getToken(): Token
     {
         if (0 >= $this->session->get('twitter.provider.id')) {
             throw new NotAuthenticatedException('Provider has not authenticated');
@@ -163,7 +152,7 @@ class Twitter extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getIdentity()
+    public function getIdentity(): Identity
     {
         $access_token = $this->session->get('twitter.provider.access_token');
 
@@ -196,7 +185,7 @@ class Twitter extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function getIconURI()
+    public function getIconURI(): string
     {
         return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAAwCAYAAAC4w'
         . 'JK5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0WE1MO'
@@ -246,14 +235,22 @@ class Twitter extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
+    public static function create(UrlGenerator $generator, SessionInterface $session, array $options): self
     {
-        $twitter = new \tmhOAuth([
-            'consumer_key'    => $options['consumer-key'],
-            'consumer_secret' => $options['consumer-secret'],
-            'timezone'        => date_default_timezone_get(),
-        ]);
+        foreach (['consumer-key', 'consumer-secret'] as $parm) {
+            if (!isset($options[$parm])) {
+                throw new InvalidArgumentException(sprintf('Missing Twitter "%s" parameter in conf/authentification/providers', $parm));
+            }
+        }
 
-        return new Twitter($generator, $session, $twitter);
+        return new static(
+            $generator,
+            $session,
+            new tmhOAuth([
+                'consumer_key'    => $options['consumer-key'],
+                'consumer_secret' => $options['consumer-secret'],
+                'timezone'        => date_default_timezone_get()
+            ])
+        );
     }
 }

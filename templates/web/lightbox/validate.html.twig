@@ -1,20 +1,21 @@
 {% extends "lightbox/index_layout.html.twig" %}
 
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" media="screen"/>
 {% endblock %}
 
 {% block content %}
     {% set basket_element = basket.getElements().first() %}
     <div class="PNB10">
+        <input type="hidden" id="export-send-mail-notif" value="{{ 'prod::export: send mail notification' | trans }} ">
         <div class="PNB" id="top_container">
             <div id="record_wrapper" class="PNB single" style="right:250px;">
                 <div id="record_main" class="PNB record_display_box" style="bottom:auto;right:auto;">
@@ -84,23 +85,23 @@
             </div>
             <div id="right_column" class="PNB">
                 <div class="right_column_title title15 unselectable">
-                {% if basket.getValidation() %}
+                {% if basket.isVoteBasket() %}
                     <img class="collapsed" src="/assets/lightbox/images/collapsed.png"/>
                     <img class="expanded" src="/assets/lightbox/images/expanded.png"/>
                 {% endif %}
                     {{ 'notice' | trans }}
                 </div>
-                <div class="right_column_wrapper caption right_column_wrapper_caption PNB" style="{% if basket.getValidation() %}display:none;{% endif %}">
+                <div class="right_column_wrapper caption right_column_wrapper_caption PNB" style="{% if basket.isVoteBasket() %}display:none;{% endif %}">
                     <div id="record_infos" class="PNB">
                         <div class="lightbox_container PNB">
               {% if basket_element %}
                 {% set business =  app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(basket_element.getRecord(app).get_base_id(), constant('\\ACL::CANMODIFRECORD')) %}
-                {{macro.caption(basket_element.getRecord(app), business, false, true)}}
+                {{ macro_caption.caption(basket_element.getRecord(app), business, false, true) }}
               {% endif %}
             </div>
                     </div>
                 </div>
-                {% if basket.getValidation() %}
+                {% if basket.isVoteBasket() %}
                 <div class="right_column_wrapper unselectable right_column_wrapper_user PNB">
                     <div id="basket_infos" class="PNB ui-corner-all">
                             {% include 'lightbox/agreement_box.html.twig' %}
@@ -116,22 +117,54 @@
                 {% endif %}
             </div>
         </div>
+
+        <div id="FeedbackRelease" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            &times;</button>
+                        <h4 class="modal-title">{{ 'lightbox:feedback:sendreport:warnwindows:title' | trans }}</h4>
+                    </div>
+                    <div class="modal-body">
+                            <p>{{'lightbox:feedback:sendreport:warnwindows:message ' | trans}}</p>
+
+                            <p>{{ 'lightbox:feedback:sendreport:warnwindows:record_approved'| trans }} : <span class="record_accepted"></span>
+
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_rejected'| trans }} : <span class="record_refused"></span>
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_unexpressed'| trans }} : <span class="record_null"></span>
+                            </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'lightbox:feedback:sendreport:warnwindows:cancel'| trans }}</button>
+                        <button type="button" class="btn btn-primary" id="validate-release">{{ 'lightbox:feedback:sendreport:warnwindows:validate'| trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="PNB" id="bottom_container">
             <div class="PNB" style="height:30px;bottom:auto;">
                 <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
                     <tr>
                         <td style="width:20px;">
                         </td>
-                        {% if basket.getValidation() %}
-                            <td style="width:50px;">
-                                <img title="{{ 'lightbox::recaptitulatif' | trans }}" class="report" src="/assets/lightbox/images/retour.png"/>
-                            </td>
-                        {% endif %}
+
+                        <td style="width:50px;">
+                            <a href="/lightbox"><img title="{{ 'lightbox::recaptitulatif' | trans }}" class="back-home" src="/assets/lightbox/images/home-solid.svg"/></a>
+                        </td>
                         <td style="width:220px;">
                             <select id="navigation" style='margin:0'>
                                 <optgroup label="{{ 'Validations' | trans }}">
                                 {% for item in baskets_collection %}
-                                  {% if item.getValidation() %}
+                                  {% if item.isVoteBasket() %}
                                       <option {% if item.getId() == basket.getId() %} selected="selected" {% endif %}
                                           value="{{item.getId()}}">{{item.getName()}}</option>
                                   {% endif %}
@@ -139,7 +172,7 @@
                                 </optgroup>
                                 <optgroup label="{{ 'Paniers' | trans }}">
                                 {% for item in baskets_collection %}
-                                  {% if item.getValidation() is null %}
+                                  {% if not item.isVoteBasket() %}
                                     <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
                                         value="{{item.getId()}}">{{item.getName()}}</option>
                                   {% endif %}
@@ -149,7 +182,7 @@
                         </td>
                         <td style="width:50px;">
                             <button style='width:30px;margin:0;' class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
-                               <img src="/assets/lightbox/images/save.png"/>
+                                <img width="15" src="/assets/lightbox/images/file-download-solid-blue.svg" >
                             </button>
                         </td>
                         <td>
@@ -171,8 +204,8 @@
             </div>
         </div>
     </div>
-    {% if basket.getValidation() %}
-    <div id="report" style="display:none;">
+    {% if basket.isVoteBasket() %}
+    <div id="report" style="display:none;" class="report_summary">
     </div>
     {% endif %}
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>

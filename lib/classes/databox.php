@@ -63,14 +63,15 @@ class databox extends base implements ThumbnailedElement
     /**
      * @param Application $app
      * @param Connection  $databoxConnection
-     * @param SplFileInfo $data_template
+     * @param SplFileInfo $template
      * @return databox
      * @throws \Doctrine\DBAL\DBALException
      */
-    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $data_template)
+    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $template)
     {
-        if ( ! file_exists($data_template->getRealPath())) {
-            throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
+        $rp = $template->getRealPath();
+        if (!$rp || !file_exists($rp)) {
+            throw new \InvalidArgumentException(sprintf('Databox template "%s" not found.', $template->getFilename()));
         }
 
         $host = $databoxConnection->getHost();
@@ -113,7 +114,7 @@ class databox extends base implements ThumbnailedElement
 
         $databox->insert_datas();
         $databox->setNewStructure(
-            $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
+            $template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
 
         $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
@@ -371,9 +372,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::STRUCTURE_CHANGED,
             new StructureChangedEvent(
                 $this,
-                array(
+                [
                     'dom_before'=>$old_structure
-                )
+                ]
             )
         );
 
@@ -441,13 +442,12 @@ class databox extends base implements ThumbnailedElement
 
             $type = isset($field['type']) ? $field['type'] : 'string';
             $type = in_array($type
-                    , [
+                , [
                     databox_field::TYPE_DATE
                     , databox_field::TYPE_NUMBER
                     , databox_field::TYPE_STRING
-                    , databox_field::TYPE_TEXT
-                    ]
-                ) ? $type : databox_field::TYPE_STRING;
+                ]
+            ) ? $type : databox_field::TYPE_STRING;
 
             $multi = isset($field['multi']) ? (Boolean) (string) $field['multi'] : false;
 
@@ -462,6 +462,10 @@ class databox extends base implements ThumbnailedElement
                 ->set_aggregable((isset($field['aggregable']) ? (string) $field['aggregable'] : 0))
                 ->set_type($type)
                 ->set_tbranch(isset($field['tbranch']) ? (string) $field['tbranch'] : '')
+                ->set_generate_cterms((isset($field['generate_cterms']) && (string) $field['generate_cterms'] == 1))
+                ->set_gui_editable((!isset($field['gui_editable']) || (isset($field['gui_editable']) && (string) $field['gui_editable'] == 1)))
+                ->set_gui_visible((!isset($field['gui_visible']) || (isset($field['gui_visible']) && (string) $field['gui_visible'] == 1)))
+                ->set_printable((!isset($field['printable']) || (isset($field['printable']) && (string) $field['printable'] == 1)))
                 ->set_thumbtitle(isset($field['thumbtitle']) ? (string) $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
                 ->set_report(isset($field['report']) ? (string) $field['report'] : '1')
                 ->save();
@@ -573,18 +577,35 @@ class databox extends base implements ThumbnailedElement
         parent::delete_data_from_cache($option);
     }
 
+    /*
+     * trivial cache to speed-up get_collections() which does sql
+     */
+    private $_collection_unique_ids = null;
+    private $_collections = null;
+
+    public function clearCache($what)
+    {
+        switch($what) {
+            case self::CACHE_COLLECTIONS:
+                $this->_collection_unique_ids = $this->_collections = null;
+                break;
+        }
+    }
+
     /**
      * @return int[]
      */
     public function get_collection_unique_ids()
     {
-        $collectionsIds = [];
+        if($this->_collection_unique_ids === null) {
+            $this->_collection_unique_ids = [];
 
-        foreach ($this->get_collections() as $collection) {
-            $collectionsIds[] = $collection->get_base_id();
+            foreach ($this->get_collections() as $collection) {
+                $this->_collection_unique_ids[] = $collection->get_base_id();
+            }
         }
 
-        return $collectionsIds;
+        return $this->_collection_unique_ids;
     }
 
     /**
@@ -592,13 +613,31 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_collections()
     {
-        /** @var CollectionRepositoryRegistry $repositoryRegistry */
-        $repositoryRegistry = $this->app['repo.collections-registry'];
-        $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
+        if($this->_collections === null) {
+            /** @var CollectionRepositoryRegistry $repositoryRegistry */
+            $repositoryRegistry = $this->app['repo.collections-registry'];
+            $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
 
-        return array_filter($repository->findAll(), function (collection $collection) {
-            return $collection->is_active();
-        });
+           $this->_collections = array_filter($repository->findAll(), function (collection $collection) {
+               return $collection->is_active();
+           });
+        }
+
+        return $this->_collections;
+    }
+
+
+    /**
+     * @return collection|null
+     */
+    public function getTrashCollection()
+    {
+        foreach($this->get_collections() as $collection) {
+            if($collection->get_name() === '_TRASH_') {
+                return $collection;
+            }
+        }
+        return null;
     }
 
     /**
@@ -756,14 +795,14 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array(
+        $ret = [
             'records'             => 0,
             'records_indexed'     => 0,    // jetons = 0;0
             'records_to_index'    => 0,    // jetons = 0;1
             'records_not_indexed' => 0,    // jetons = 1;0
             'records_indexing'    => 0,    // jetons = 1;1
-            'subdefs_todo'        => array()   // by type "image", "video", ...
-        );
+            'subdefs_todo'        => []   // by type "image", "video", ...
+        ];
         foreach ($rs as $row) {
             $ret['records'] += ($n = (int)($row['n']));
             $status = $row['status'];
@@ -857,9 +896,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::UNMOUNTED,
             new UnmountedEvent(
                 null,
-                array(
+                [
                     'dbname'=>$old_dbname
-                )
+                ]
             )
         );
 
@@ -922,9 +961,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::DELETED,
             new DeletedEvent(
                 null,
-                array(
+                [
                     'dbname'=>$old_dbname
-                )
+                ]
             )
         );
 
@@ -1128,7 +1167,7 @@ class databox extends base implements ThumbnailedElement
                     \ACL::BAS_MODIF_TH      => true,
                     \ACL::BAS_CHUPUB        => true
                 ]
-        );
+            );
 
         $sql = "SELECT * FROM coll";
         $stmt = $this->get_connection()->prepare($sql);
@@ -1188,7 +1227,7 @@ class databox extends base implements ThumbnailedElement
 
     public function clear_logs()
     {
-        foreach (['log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
+        foreach (['log', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
             $this->get_connection()->delete($table, []);
         }
 
@@ -1201,21 +1240,40 @@ class databox extends base implements ThumbnailedElement
             $domct = $this->get_dom_cterms();
 
             if ($domct !== false) {
+                $changed = false;
                 $nodesToDel = [];
+                // loop on first level : "fields"
                 for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
-                    if(!($n->getAttribute('delbranch'))){
-                        $nodesToDel[] = $n;
+                    if($n->nodeType == XML_ELEMENT_NODE && !($n->getAttribute('delbranch'))){
+                        $nodesToDel2 = [];
+                        // loop on 2nd level : "terms"
+                        for($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
+                            // do not remove "rejected" candidates
+                            if(substr($n2->getAttribute('id'), 0, 1) != 'R') {
+                                $nodesToDel2[] = $n2;
+                            }
+                        }
+                        foreach($nodesToDel2 as $n2) {
+                            $n->removeChild($n2);
+                            $changed = true;
+                        }
+                        // if a field has no more candidates, we can remove it
+                        if(!($n->firstChild)) {
+                            $nodesToDel[] = $n;
+                        }
                     }
                 }
                 foreach($nodesToDel as $n) {
                     $n->parentNode->removeChild($n);
+                    $changed = true;
                 }
-                if(!empty($nodesToDel)) {
+                if($changed) {
                     $this->saveCterms($domct);
                 }
             }
-        } catch (\Exception $e) {
-
+        }
+        catch (\Exception $e) {
+            // no-op
         }
     }
 
@@ -1350,9 +1408,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::TOU_CHANGED,
             new TouChangedEvent(
                 $this,
-                array(
+                [
                     'tou_before'=>$old_tou,
-                )
+                ]
             )
         );
 
@@ -1411,6 +1469,38 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
+     * matches a email against the auto-register whitelist
+     *
+     * @param string $email
+     * @return null|string  the user-model to apply if the email matches
+     */
+    public function getAutoregisterModel($email)
+    {
+        if(!$this->isRegistrationEnabled()) {
+            return null;
+        }
+
+        $ret = User::USER_AUTOREGISTER; // default if there is no whitelist defined at all
+
+        // try to match against the whitelist
+        if( ($xml = $this->get_sxml_structure()) !== false) {
+            $wl = $xml->xpath('/record/registration/auto_register/email_whitelist');
+            if($wl !== false && count($wl) === 1) {
+                $ret = null;    // there IS a whitelist, the email must match
+
+                foreach ($wl[0]->xpath('email') as $element) {
+                    if (preg_match($element['pattern'], $email) === 1) {
+                        return (string)$element['user_model'];
+                    }
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+
+    /**
      * Return an array that can be used to restore databox.
      *
      * @return array
@@ -1425,6 +1515,16 @@ class databox extends base implements ThumbnailedElement
             'label_de' => $this->labels['de'],
             'label_nl' => $this->labels['nl'],
         ];
+    }
+
+    /**
+     * Return the default subdef path
+     *
+     * @return string
+     */
+    public function getSubdefStorage(){
+
+        return p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'subdefs'])).$this->get_dbname()."/subdefs/";
     }
 
     protected function retrieve_structure()
@@ -1468,6 +1568,7 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
+        $TOU = [];
         foreach ($rs as $row) {
             $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
         }

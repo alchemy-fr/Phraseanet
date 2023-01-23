@@ -1,0 +1,314 @@
+$proposalFacetColor: #FFF !default;
+/******* FORMULAIRE DE RECHERCHE **********************************************/
+form.phrasea_query input.query {
+    padding-left: 6px;
+    padding-right: 30px;
+    font-size: 16px;
+    margin: 0;
+    width: 59%;
+    background-position: right 7px center;
+    background-image: url('#{$iconsPath}research-dark.png');
+}
+
+.searchFormWrapper {
+    margin: 20px 0 0 5px;
+    line-height: 30px;
+}
+
+#facet_filter_in_search {
+    .facetFilter_AND {
+        font-weight: normal;
+        position: relative;
+        width: 127px;
+        height: 25px;
+        line-height: 25px;
+        vertical-align: middle;
+        border-radius: 4px;
+        //right: 28px;
+        background-color: $proposalColor_AND;
+        color: $proposalFacetColor;
+        padding-left: 13px;
+        padding-right: 13px;
+        display: inline-block;
+        margin: 2px 0px;
+        margin-right: 10px;
+        //margin-top: 11px;
+        overflow: hidden;
+        .buttons-span {
+            background-color: $proposalColor_AND;
+            max-width: 86px;
+            left: 67px;
+            :hover{
+                display: block;
+            }
+        }
+        .facetFilter-inverse {
+            background: url('#{$iconsPath}inverse-negative.png') 10px 2px no-repeat;
+        }
+        &:hover {
+            .facetFilter-label {
+                color: transparent;
+            }
+        }
+    }
+
+    .facetFilter_EXCEPT {
+        font-weight: normal;
+        position: relative;
+        width: 127px;
+        height: 25px;
+        line-height: 25px;
+        vertical-align: middle;
+        border-radius: 4px;
+        //right: 28px;
+        background-color: $proposalColor_EXCEPT;
+        color: $proposalFacetColor;
+        padding-left: 13px;
+        padding-right: 13px;
+        //margin-top: 11px;
+        display: inline-block;
+        margin: 2px 0px;
+        float: right;
+        margin-right: 10px;
+        overflow: hidden;
+        .buttons-span {
+            background-color: $proposalColor_EXCEPT;
+            max-width: 86px;
+            left: 67px;
+        }
+        .facetFilter-inverse {
+            background: url('#{$iconsPath}inverse-positive.png') 10px 2px no-repeat;
+        }
+        &:hover {
+            .facetFilter-label {
+                color: transparent;
+            }
+        }
+    }
+
+    .facetFilter-label {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        line-height: 25px;
+        display: inline-block;
+        min-width: 54px;
+        .color-dot {
+            height: 16px;
+            width: 16px;
+        }
+    }
+
+    .facetFilter-gradient {
+        position: absolute;
+        width: 20px;
+        right: 0;
+    }
+
+    .buttons-span {
+        position: absolute;
+        top: 2px;
+        bottom: 2px;
+        left: 0;
+        right: 0;
+        margin: 0;
+        display: none;
+    }
+
+    .facetFilter-closer {
+        position: absolute;
+        right: 4px;
+        cursor: pointer;
+        background: url('#{$iconsPath}bgd_facetFilter.png') 12px 4px no-repeat;
+        height: 21px;
+        width: 37px;
+        border-left: 1px solid #FFF;
+    }
+
+    .facetFilter-inverse {
+        position: absolute;
+        right: 42px;
+        cursor: pointer;
+        height: 21px;
+        width: 37px;
+        border-left: 1px solid #FFF;
+    }
+}
+
+#searchForm {
+    width: 100%;
+    float: left;
+    margin-bottom: 0px;
+    .input-append {
+        float: left;
+        width: 50%;
+        .btn {
+            border: none;
+        }
+        a.btn {
+            height: 22px;
+            width: 20px;
+        }
+        button.btn {
+            height: 30px;
+            width: 110px;
+        }
+    }
+    .control-group {
+        float: right;
+        margin-left: 0;
+    }
+    .danger .danger_indicator,
+    .danger.danger_indicator {
+        border-color: #2475b5;
+        background-color: #2196f3;
+        color: #ffffff;
+    }
+    .advance_search_action .danger.danger_indicator {
+        background-image: url('#{$iconsPath}research-white.png');
+    }
+
+}
+
+#adv_search {
+    table {
+        &.colllist {
+            width: 290px;
+        }
+        &.filterlist {
+            width: 600px;
+        }
+    }
+}
+
+.search-header-block {
+    background: $storyBg;
+    padding: 4px 4px 4px 10px;
+    border-radius: 5px;
+    label {
+        &.inline {
+            padding-top: 0;
+            line-height: 19px;
+            padding-right: 5px;
+        }
+    }
+    .custom_checkbox_label .custom_radio {
+        top: calc(50% - 7px);
+    }
+    .custom_select_dark {
+        transition: 0.3s all;
+    }
+}
+
+/******* SEARCH ***************************************************************/
+
+#adv_search .sbasglob,
+.adv_options .sbasglob,
+#sbasfiltercont {
+    color: #ffffff;
+    margin: 0 0 0 10px;
+}
+
+#searchForm input.input-small.datepicker::-webkit-input-placeholder {
+    font-size: 12px;
+}
+
+#searchForm input.input-small.datepicker::-moz-placeholder {
+    font-size: 12px;
+}
+
+/* firefox 19+ */
+#searchForm input.input-small.datepicker:-ms-input-placeholder {
+    font-size: 12px;
+}
+
+/* ie */
+#searchForm input.input-small.datepicker:-moz-placeholder {
+    font-size: 12px;
+}
+
+#adv_search .sbasglob hr,
+.adv_options .sbasglob hr,
+.adv_options #sbasfiltercont hr {
+    margin: 15px 0;
+    border: 0;
+    border-top: 1px solid #7b7b7b;
+}
+
+#adv_search .sbasglob .sbas_list,
+.adv_options .sbasglob .sbas_list {
+    padding: 5px 0;
+    border-radius: $defaultBorderRadius;
+}
+
+#adv_search .sbasglob .sbas_list.selected,
+.adv_options .sbasglob .sbas_list.selected {
+    border: 2px solid $lightBorderSelectedColor;
+    background-color: $lightBackgroundSelectedColor;
+}
+
+.sbasglob .btn-toolbar,
+#sbasfiltercont .btn-toolbar {
+    margin: 10px 10px 20px;
+    text-align: center;
+}
+
+/*.sbas_list label {
+    color: $lightTextColor;
+}*/
+
+.clksbas {
+    margin-bottom: 15px;
+    .checkbox {
+        padding: 0;
+    }
+    input[type="checkbox"] {
+        margin: 0;
+        position: absolute;
+    }
+    label {
+        font-weight: bold;
+    }
+}
+
+.deployer_toggle {
+    margin-right: 15px;
+}
+
+.basChild_list {
+    position: relative;
+    padding: 0;
+    margin: 0 0 0 63px;
+    list-style: none;
+    width: calc(100% - 70px);
+    overflow: hidden;
+    column-count: 3;
+}
+
+.clkbas {
+    white-space: normal;
+    margin: 0 0 10px;
+    .checkbox {
+        padding-top: 0;
+        padding-left: 0;
+    }
+    input[type="checkbox"] {
+        margin: 0;
+        float: none;
+        margin-right: 10px;
+    }
+    span {
+        cursor: pointer;
+        font-weight: bold;
+    }
+}
+
+#searchForm .clkbas label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.clkbas img {
+    vertical-align: middle;
+    max-height: 22px;
+}

@@ -60,6 +60,7 @@ class Thesaurus implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->match('newterm.php', 'controller.thesaurus:newTerm');
         $controllers->match('properties.php', 'controller.thesaurus:properties');
         $controllers->match('thesaurus.php', 'controller.thesaurus:thesaurus')->bind('thesaurus_thesaurus');
+        $controllers->match('populate', 'controller.thesaurus:populate')->bind('thesaurus_populate');
 
         $controllers->match('xmlhttp/accept.x.php', 'controller.thesaurus:acceptXml');
         $controllers->match('xmlhttp/acceptcandidates.x.php', 'controller.thesaurus:acceptCandidatesXml');

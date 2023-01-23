@@ -25,7 +25,7 @@ class Notifier implements NotifierInterface
     private $logger;
 
     /** @var integer  */
-    private $timeout = 2;
+    private $timeout = 10;
 
     public function __construct(\ZMQSocket $socket, LoggerInterface $logger)
     {

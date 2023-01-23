@@ -1,0 +1,176 @@
+{% macro widget_prototype(form) %}
+    <h3 class="expose-title">{{ 'admin:phrasea-service-setting:tab:expose:: New  expose interconnection name' | trans }}</h3>
+    <div class="control-group well well-small action-block expose-block">
+        <div class="expose-delete-btn">
+            <p> <button type="button" class="btn btn-danger delete-expose pull-right"><i class="fa fa-trash-o icon-white" aria-hidden="true"></i>{{ 'admin:phrasea-service-setting:tab:expose:: Delete' | trans }}
+                </button>
+            </p>
+        </div>
+
+        <div class="expose-config-block">
+            <div class="control-group alert alert-info">
+                {{ form_widget(form.activate_expose) }}
+                {{ form_label(form.activate_expose) }}
+            </div>
+
+            <div class="control-group alert alert-info">
+                {{ form_row(form.connection_kind) }}
+            </div>
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.expose_name) }}
+        </div>
+
+        <div class="control-group" style="margin-bottom: 20px;">
+            {{ form_widget(form.verify_ssl) }}
+            {{ form_label(form.verify_ssl) }}
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.expose_front_uri) }}
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.expose_base_uri) }}
+        </div>
+
+        <div class="control-group expose-field">
+            {{ form_row(form.expose_client_secret) }}
+        </div>
+
+        <div class="control-group expose-field">
+            {{ form_row(form.expose_client_id) }}
+        </div>
+
+        <div class="control-group auth-field">
+            {{ form_row(form.auth_base_uri) }}
+        </div>
+
+        <div class="control-group auth-field">
+            {{ form_row(form.auth_client_secret) }}
+        </div>
+
+        <div class="control-group auth-field">
+            {{ form_row(form.auth_client_id) }}
+        </div>
+
+        <div class="control-group auth-connection-field">
+            <div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</span><input
+                        type="button" class="btn btn-primary"
+                        value="{{ 'admin:phrasea-service-setting:tab:expose:: Add mapping' | trans }}"></div>
+        </div>
+
+        <div class="control-group auth-connection-field">
+            <div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</span><input
+                        type="button" class="btn btn-primary"
+                        value="{{ 'admin:phrasea-service-setting:tab:expose:: Add user' | trans }}"></div>
+        </div>
+
+        <div class="expose-save-btn">
+            <p><input type="button" class="btn btn-primary btn-grey test-connection"
+                      value="{{ 'admin:phrasea-service-setting:tab:expose:: connection test' | trans }}">
+            </p>
+        </div>
+
+    </div>
+{% endmacro %}
+
+<h2>{{ 'admin:phrasea-service-setting:tab:expose:: Expose setting' | trans }}</h2>
+
+{{ form_start(form, {'action': path('ps_admin_expose')}) }}
+<div class="expose-header">
+    <div class="control-group">
+        {{ form_widget(form.activated) }}
+        {{ form_label(form.activated) }}
+    </div>
+
+    <div class="control-group text-center">
+        <div><input id="add-new-expose" type="button" class="btn btn-primary " data-list="#expose-list"
+                    value="{{ 'admin:phrasea-service-setting:tab:expose:: New expose interconnection name' | trans }}">
+        </div>
+        <div>
+            <input type="submit" class="btn btn-primary btn-green save-expose"
+                   value="{{ 'admin:phrasea-service-setting:tab:expose:: Save' | trans }}">
+        </div>
+
+    </div>
+</div>
+
+<div id="expose-list"  data-prototype="{{ _self.widget_prototype(form.exposes.vars.prototype)|e('html_attr') }}" style="height:800px;overflow-y:auto;">
+    {% for expose_connection in form.exposes %}
+        {{ _self.widget_prototype(expose_connection) }}
+    {% endfor %}
+</div>
+
+{{ form_end(form) }}
+
+<script type="text/javascript">
+    function exposeActivation() {
+        if ($('input.activate-expose').prop('checked')) {
+            $('#add-new-expose').removeAttr('disabled');
+        } else {
+            $('#add-new-expose').attr('disabled', 'disabled');
+        }
+    }
+    $(document).ready(function () {
+        exposeActivation();
+
+        $('input.activate-expose').on('change', function () {
+            exposeActivation();
+        });
+
+        $('#add-new-expose').on('click', function () {
+            collectionHolder = $('#expose-list');
+            prototype = collectionHolder.attr('data-prototype');
+            var newExpose = prototype.replace(/__name__/g, collectionHolder.children('.control-group').length);
+            collectionHolder.append(newExpose);
+            $("#expose-list" ).accordion('refresh');
+            $( "h3:last" ).trigger( "click" );
+        });
+
+        $('#expose-list').on('click', '.delete-expose', function () {
+            $(this).closest('.expose-block').prev('h3').remove();
+            $("#expose-list" ).accordion('refresh');
+            $(this).closest('.expose-block').remove();
+        });
+
+        $( function() {
+            $( ".expose-block" ).each(function( index ) {
+                $(this).prev('.expose-title').html( $(this).find('.expose-name').val() );
+
+                displayField($(this).find('.auth-connection'));
+            });
+            $("#expose-list" ).accordion(
+                { event: "click",
+                    active: false,
+                    collapsible: true
+                }
+            );
+
+            $('#expose-list').on('change', '.auth-connection', function(){
+                displayField($(this));
+            });
+        } );
+
+
+        function displayField(connectionKind) {
+            let authFields = connectionKind.parents('.expose-config-block').siblings('.auth-field');
+            let exposeFields = connectionKind.parents('.expose-config-block').siblings('.expose-field');
+
+            switch (connectionKind.val()) {
+                case 'password':
+                    exposeFields.addClass('hidden');
+                    authFields.removeClass('hidden');
+                    break;
+                case 'client_credentials':
+                    authFields.addClass('hidden');
+                    exposeFields.removeClass('hidden');
+                    break;
+            }
+        }
+    });
+
+</script>

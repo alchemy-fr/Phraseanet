@@ -33,6 +33,11 @@ class ComposerInstaller
         $this->composer = $pluginsDirectory . DIRECTORY_SEPARATOR . 'composer.phar';
     }
 
+    public function __destruct()
+    {
+        @unlink($this->composer);
+    }
+
     public function install($directory)
     {
         $process = $this->createProcessBuilder()

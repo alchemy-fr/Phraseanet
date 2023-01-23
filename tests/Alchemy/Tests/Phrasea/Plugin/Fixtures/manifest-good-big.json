@@ -18,7 +18,7 @@
     "license"     : "MIT",
     "version"     : "0.1",
     "minimum-phraseanet-version": "3.8",
-    "maximum-phraseanet-version": "4.1",
+    "maximum-phraseanet-version": "4.2",
     "services" : [
         {
             "class": "Vendor\\PluginService"

@@ -41,16 +41,18 @@
         <div style='position:absolute; top:0px; left:0px; height:20px'>
             <img class="require_alert" src="/assets/common/images/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
         </div>
-        <div style='position:absolute; bottom:0px; left:0px; height:20px' class="bottom actions">
+        <div style='position:absolute; bottom:7px; left:8px; height:20px' class="bottom actions">
 
-            <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
-                <i class="icon-circle icon-stack-base"></i>
-                <i class="icon-search icon-light"></i>
+            <span class="fa-stack previewTips"
+                  tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
+                <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+                <i class="fa fa-search fa-stack-1x fa-reverse" aria-hidden="true"></i>
             </span>
 
-            <span class="icon-stack infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
-                <i class="icon-circle icon-stack-base"></i>
-                <i class="icon-info icon-light"></i>
+            <span class="fa-stack infoTips"
+                  tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
+                <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+                <i class="fa fa-info fa-stack-1x fa-reverse" aria-hidden="true"></i>
             </span>
         </div>
         <div class="reg_opts" style="display:none;position:absolute;bottom:0;right:0;">
@@ -71,9 +73,9 @@
                 </tbody>
             </table>
         </div>
-        <div class="editDiaButtons" style="position:absolute; bottom:0px; right:0px; width:30px; height:12px; display:none">
-            <img id="idEditDiaButtonsP_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/plus11.png"/>
-            <img id="idEditDiaButtonsM_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/minus11.png"/>
+        <div class="editDiaButtons" style="position:absolute; bottom:8px; right:3px; width:30px; display:none">
+            <span  id="idEditDiaButtonsP_{{i}}" style="cursor:pointer"><i class="fa fa-plus editIcon">&nbsp;</i></span>
+            <span  id="idEditDiaButtonsM_{{i}}" style="cursor:pointer"><i class="fa fa-minus editIcon">&nbsp;</i></span>
         </div>
     </div>
 {% endmacro %}
@@ -88,14 +90,15 @@
     {% endif %}
     {% for field in fields %}
         {% set i = field.get_id() %}
-        {% if field.is_readonly() is empty %}
+        {% if field.is_readonly() is empty and field.get_gui_editable()== 1 %}
             <div class="edit_field edit-field-action" id="EditFieldBox_{{i}}"
                  data-id="{{i}}"
                  data-name="{{field.get_name()}}">
-                <i id="editSGtri_{{i}}" style="visibility:hidden;" class="icon-caret-right"></i>
-                <span class="icon-stack fieldTips" tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}">
-                  <i class="icon-circle icon-stack-base"></i>
-                  <i class="icon-info icon-light"></i>
+                {#<i id="editSGtri_{{ i }}" style="visibility:hidden;" class="fa fa-caret-right" aria-hidden="true"></i>#}
+                <span class="fa-stack fieldTips"
+                      tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}">
+                  <i class="fa fa-circle fa-stack-2x fa-inverse-bg" aria-hidden="true"></i>
+                  <i class="fa fa-info fa-stack-1x fa-inverse" aria-hidden="true"></i>
                 </span>
                 {% if field.get_dces_element %}
                     <img src="/assets/common/images/icons/dublincore.png" tooltipsrc="{{ path('prod_tooltip_dces', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" alt="{{ 'Ce champ est decrit comme un element DublinCore' | trans }}" class="DCESTips" />
@@ -123,6 +126,7 @@
 
 {% set actionable = recordsRequest|length %}
 {% set not_actionable = recordsRequest.received|length - actionable %}
+{% set editing_top_box_height = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_top_box')  %}
 
 <div id="EDIT_ALL">
 
@@ -132,16 +136,21 @@
             <input style="font-size:2px; width:5px;" type="text" id="editFakefocus" />
         </form>
     </div>
-    <div id="EDIT_TOP" style="height:{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_top_box')
-    }}%;">
+    <div id="EDIT_TOP" style="height:{{editing_top_box_height}}%; min-height: {{ editing_top_box_height }}">
         <div id="EDIT_MENU">
+            <i class="fa fa-image fa-stack-1x zoom-menu-icon zoom-menu-left" aria-hidden="true"></i>
             <div id="EDIT_ZOOMSLIDER" >
             </div>
+            <i class="fa fa-image fa-stack-1x zoom-menu-icon zoom-menu-right" aria-hidden="true"></i>
         </div>
         {% if recordsRequest.isSingleStory() %}
             <div class="GRP_IMAGE_REP">
                 <div id="EDIT_GRPDIAPO">
                     {{_self.format_diapo(recordsRequest.singleStory(), false)}}
+                    <div class="story-select-all-block">
+                        <input class="styled-checkbox" id="select-all-diapo" type="checkbox" value="" checked="" >
+                        <label for="select-all-diapo">{{ 'prod::edit:story select all' | trans }}</label>
+                    </div>
                 </div>
             </div>
             <div id="EDIT_FILM2" style="left:170px;">
@@ -176,12 +185,17 @@
                                    data-direction="forward"/>
                         </td>
                         </tr>
+                        <tr>
+                            <td id="idFieldSuggestedValues" colspan="3" style="visibility:hidden;"></td>
+                        </tr>
                     </table>
                 </div>
                 <div id="EDIT_EDIT" class="PNB">
                     <div id="ZTextMonoValued">
                         <textarea id="idEditZTextArea" ></textarea>
                         <div id="idEditDateZone"></div>
+                        <input id="idEditZDateArea" type="text" pattern="^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$" style="height: 16px; width: 210px">
+                        <input id="idEditTimeArea" type="time" style="width: 28px;height: 16px;background-color: #1280e0;padding-left: 0px;">
                     </div>
                     <div id="ZTextMultiValued">
                         <form class="add-multivalued-field-action"
@@ -190,8 +204,10 @@
                             <div style="position:absolute; top:0px; left:0px; right:70px; height:17px;">
                                 <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" value="" />
                             </div>
-                            <div style="position:absolute; top:6px; width:60px; right:0px; height:11px;">
-                                <img id="EditButAddMultiValued add-multivalued-field-action" style="cursor:pointer" src="/assets/common/images/icons/plus16.png" />
+                            <div style="position:absolute; top:4px; width:60px; right:6px; height:24px;">
+                                <button type="submit" class="submit-multivalued">
+                                    <i id="EditButAddMultiValued"  class="icon-round-add_box-24px icomoon" style="font-size: 24px;color: grey;">&nbsp;</i>
+                                </button>
                             </div>
                         </form>
                         <div id="ZTextMultiValued_values"></div>
@@ -398,20 +414,46 @@
             {{ 'prod::edit: Impossible d\'editer simultanement des documents provenant de bases differentes' | trans }}
         {% elseif actionable == 0 %}
             {% trans %}prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants{% endtrans %}
+        {% elseif multipleStories %}
+            {{ 'prod::edit cannot edit multiple stories' | trans }}
         {% endif %}
     </p>
 </div>
 
+<div id="dialog-edit_lat_lon" title=" {{ 'prod::edit:confirm: Edition latitude longitude' | trans }}" style="display: none">
+    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{{ 'prod::edit: Confirmation Edition latitude longitude' | trans }}</p>
+</div>
+<input type="hidden" id="dialog-edit-yes" value="{{ 'prod::edit:confirm: Yes' | trans }}" />
+<input type="hidden" id="dialog-edit-no" value="{{ 'prod::edit:confirm: No' | trans }}" />
+
 <script type="text/javascript">
+    {% if multipleDataboxes == 1 or multipleStories == 1 %}
+        $(function() {
+            $('#EDITWINDOW').hide();
+            // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
+            $( "#dialog-edit-many-sbas:ui-dialog" ).dialog( "destroy" );
+            $( "#dialog-edit-many-sbas" ).dialog({
+                modal: true,
+                resizable:false,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        });
+    {% endif %}
+
     {%  set notActionableMsg = '' %}
     {% if not_actionable > 1 %}
-    {%  set notActionableMsg = 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) %}
+        {%  set notActionableMsg = 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) %}
     {% elseif not_actionable == 1 %}
-    {%  set notActionableMsg = 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js')%}
+        {%  set notActionableMsg = 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js')%}
     {% endif %}
+
     var recordEditorConfig = {
         hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
-        databoxId: {{ databox.get_sbas_id }},
+        databoxId: {% if multipleDataboxes %}0{% else %}{{ databox.get_sbas_id }}{% endif %},
         mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
         notActionable: {{ not_actionable }},
         notActionableMsg: '{{notActionableMsg}}',
@@ -432,6 +474,12 @@
             {
                 id: {{ record.get_record_id }},
                 type: "{{ record.get_type() }}",
+                {% set position = record.getPositionFromTechnicalInfos %}
+                technicalInfo: {
+                    isCoordComplete: {{ position.isCoordComplete }},
+                    latitude: {{ position.latitude }},
+                    longitude: {{ position.longitude }}
+                },
                 {% if record.get_type() == 'video' %}
                 {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
                 {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
@@ -463,4 +511,5 @@
             {% endfor %}
         ]
     };
+
 </script>

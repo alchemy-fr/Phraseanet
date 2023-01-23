@@ -15,6 +15,25 @@ use Symfony\Component\Process\ExecutableFinder;
  */
 class AutoloaderGeneratorTest extends \PhraseanetTestCase
 {
+    private $bkp = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->bkp = self::$DI['app']['conf']->get('plugins');
+    }
+
+    public function tearDown()
+    {
+        if(is_null($this->bkp)) {
+            self::$DI['app']['conf']->remove('plugins');
+        }
+        else {
+            self::$DI['app']['conf']->set('plugins', $this->bkp);
+        }
+        parent::tearDown();
+    }
+
     public function testGeneratedFileAfterInstall()
     {
         $pluginDir = __DIR__ . '/../Fixtures/PluginDirInstalled/test-plugin';

@@ -32,34 +32,39 @@
 - name: Run application setup
   become: yes
   become_user: vagrant
-  shell: 'bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=fr --appbox={{ mariadb.appbox_db }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
+  shell: 'php bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=en-simple --appbox={{ mariadb.appbox_db }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
   args:
     chdir: /vagrant/
 
 - name: Create extra databox
   become: yes
   become_user: vagrant
-  shell: 'bin/console databox:create {{ mariadb.alt_databox_db }} admin@{{ hostname }}.vb'
+  shell: 'php bin/console databox:create {{ mariadb.alt_databox_db }} admin@{{ hostname }}.vb'
   args:
     chdir: /vagrant/
 
 - name: Enable debugger for host IP addresses
-  shell: bin/setup system:config add debugger.allowed-ips "{{ item }}"
+  shell: php bin/setup system:config add debugger.allowed-ips "{{ item }}"
   with_items: '{{ host_addresses }}'
   args:
     chdir: /vagrant/
 
 - name: Disable API SSL requirement
-  shell: bin/setup system:config set main.api_require_ssl false
+  shell: php bin/setup system:config set registry.api-clients.api-require-ssl false
   args:
     chdir: /vagrant/
 
 - name: Enable API routes
-  shell: bin/setup system:config set registry.api-clients.api-enable true
+  shell: php bin/setup system:config set registry.api-clients.api-enable true
   args:
     chdir: /vagrant/
 
 - name: Create ElasticSearch indexes
-  shell: bin/console s:i:c
+  shell: php bin/console searchengine:index -c
   args:
     chdir: /vagrant/
+
+- name: Make exiftool executable
+  file:
+    path: /vagrant/vendor/exiftool/exiftool/exiftool
+    mode: 0755

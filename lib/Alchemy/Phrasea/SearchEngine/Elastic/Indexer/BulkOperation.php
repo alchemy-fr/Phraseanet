@@ -155,16 +155,16 @@ class BulkOperation
         // nb: results (items) are returned IN THE SAME ORDER as commands were pushed in the stack
         // so the items[X] match the operationIdentifiers[X]
         foreach ($response['items'] as $key => $item) {
-            foreach($item as $command=>$result) {   // command may be "index" or "delete"
-                if($response['errors'] && $result['status'] >= 400) { // 4xx or 5xx error
-                    $err = array_key_exists('error', $result) ? $result['error'] : ($command . " error " . $result['status']);
+            foreach ($item as $command=>$result) {   // command may be "index" or "delete"
+                if ($response['errors'] && $result['status'] >= 400) { // 4xx or 5xx
+                    $err = array_key_exists('error', $result) ? var_export($result['error'], true) : ($command . " error " . $result['status']);
                     throw new Exception(sprintf('%d: %s', $key, $err));
                 }
             }
 
             $operationIdentifier = $this->operationIdentifiers[$key];
 
-            if(is_string($operationIdentifier) || is_int($operationIdentifier)) {   // dont include null keys
+            if (is_string($operationIdentifier) || is_int($operationIdentifier)) {   // dont include null keys
                 $callbackData[$operationIdentifier] = $response['items'][$key];
             }
         }

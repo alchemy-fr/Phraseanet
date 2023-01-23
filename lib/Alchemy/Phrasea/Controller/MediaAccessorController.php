@@ -76,6 +76,10 @@ class MediaAccessorController extends Controller
             $subRequest->query->set('download', $request->query->get('download'));
         }
 
+        if ($request->query->has('filename')) {
+            $subRequest->query->set('filename', $request->query->get('filename'));
+        }
+
         $response = $this->app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
         // Remove Caption link header as it contains permalink token.
         $response->headers->remove('link');

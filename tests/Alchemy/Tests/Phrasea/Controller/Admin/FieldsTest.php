@@ -229,6 +229,10 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
             'dces-element' => null,
             'vocabulary-type' => 'User',
             'vocabulary-restricted' => true,
+            'gui_editable' => true,
+            'gui_visible' => true,
+            'printable' => true,
+            'generate_cterms' => true,
         ]);
 
         $response = $this->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], $body);

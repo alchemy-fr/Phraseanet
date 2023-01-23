@@ -407,7 +407,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
                 $separator = '';
             }
 
-            $multi_imploded = implode(' ' . $separator . ' ', ['un', 'jeu', 'de', 'test']);
+            $multi_imploded = implode(' ' . $separator . ' ', ['test', 'de', 'jeu', 'un']);
 
             if ($meta_el->is_multi()) {
                 $initial_values = [];
@@ -514,6 +514,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_container_baskets()
     {
         $app = $this->getApplication();
+        /** @var \Alchemy\Phrasea\Model\Entities\Basket $basket */
         $basket = $app['orm.em']->find('Phraseanet:Basket', 1);
         $found = $sselcont_id = false;
 

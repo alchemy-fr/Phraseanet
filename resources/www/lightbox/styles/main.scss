@@ -96,10 +96,10 @@ img {
   }
   .lightbox_container {
     top: 30px;
-    overflow: hidden;
+    overflow: scroll;
   }
   .display_id {
-    top: 5px;
+    top: 0;
     margin: 0 0 0 5px;
   }
 }
@@ -134,8 +134,8 @@ img {
     background-color: #212121;
   }
   .display_id {
-    top: 4px;
-    left: 8px;
+    top: 5px;
+    left: 5px;
   }
   .agreement {
     position: absolute;
@@ -161,10 +161,10 @@ img {
   }
 }
 
-#report .display_id {
+/*#report .display_id {
   top: -5px;
   left: -5px;
-}
+}*/
 
 #report .CHIM.diapo {
   position: relative;
@@ -173,7 +173,9 @@ img {
 
 .display_id {
   background-color: #FFFFFF;
-  padding: 3px 6px;
+  padding: 3.5px 6px;
+  min-width: 15px;
+  text-align: center;
   font-weight: bold;
   z-index: 99;
   color: #212121;
@@ -214,6 +216,28 @@ img {
   overflow: hidden;
   background-color: #1F1E1B;
   color: #BFBFBF;
+  .PNB.choices {
+    position: relative;
+  }
+  .comment_button {
+    text-align: center;
+    background: #353430;
+    margin: 0;
+    width: 118px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px;
+    font-size: 14px;
+    line-height: 14px;
+    border: 0;
+    bottom: -30px;
+    .fa-comment.icon-white {
+      font-size: 15px;
+      line-height: 18px;
+      margin-right: 10px;
+    }
+  }
 }
 
 #basket_options {
@@ -230,6 +254,11 @@ img {
 #basket_infos .user_infos {
   height: 120px;
   top: auto;
+  bottom: 43px;
+}
+.lightbox-icon {
+  width: 10px;
+  padding-bottom: 1px;
 }
 
 #basket_infos {
@@ -289,12 +318,14 @@ img {
 }
 
 #right_column .right_column_wrapper.caption {
-  bottom: 85px;
+  bottom: 0px;
+  top: 30px;
 }
 
 #record_infos {
   overflow-x: hidden;
   overflow-y: auto;
+  margin-bottom: 80px;
 }
 
 #record_compare {
@@ -302,7 +333,10 @@ img {
   top: auto;
   left: auto;
 }
-
+.download-feed{
+  color: #fff;
+  font-size: 22px;
+}
 #record_compare .header, #record_compare .lightbox_container {
   left: 5px;
 }
@@ -545,10 +579,14 @@ table th i {
 }
 
 .basket_downloader {
-  background-color: #1F1E1B;
+  background-color: #ffffff;
   margin: 0 10px;
-  padding: 2px;
+  padding: 4px 0;
   border: 0;
+  transition: 0.3s all;
+  &:hover {
+    background-color: #e6e6e6;
+  }
 }
 
 hr {
@@ -561,6 +599,13 @@ hr {
 .report {
   margin: 0 10px;
   vertical-align: bottom;
+}.back-home {
+    margin: 0 10px;
+    vertical-align: bottom;
+   width: 20px;
+   background: #1F1E1B;
+   padding: 5px;
+   border-radius: 3px;
 }
 
 /*
@@ -589,3 +634,104 @@ hr {
   height: 100%;
 }
 
+
+/** Lightbox summary modal**/
+.report_summary {
+  &.ui-widget-content {
+    background-color: #fff;
+  }
+  .chim-inner {
+    display: inline-block;
+    width: 100%;
+    padding: 8px;
+  }
+
+  .chim-left {
+    width: 165px;
+    float: left;
+  }
+
+  .chim-right {
+    width: calc(100% - 180px);
+    float: right;
+  }
+  .validate-icon {
+    width: 40px;
+    float: left;
+    height: 40px;
+    position: relative;
+    .icomoon {
+
+      position: absolute;
+      left: 8px;
+      top: 10px;
+      color: #fff;
+      border-radius: 50px;
+      display: inline-block!important;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .icon-disagree {
+      background: #cd2f2f;
+    }
+    .icon-agree {
+      background: #8bc34a;
+    }
+  }
+  .validate-info {
+    padding-left: 40px;
+    h3 {
+    font-size: 14px;
+    }
+  }
+
+  .thumb_wrapper {
+    background: #e2e2e2;
+  }
+  .basket_report_user_wrapper {
+    background-color: #e2e2e2;
+    color: #000;
+  }
+  .display_id {
+    color: #fff;
+    background: #5cb85c;
+    border-radius: 0;
+  }
+}
+.btn-info {
+  background: #8bc34a;
+  &:hover, &:focus {
+    background: darken(#8bc34a, 10%);
+  }
+
+}
+a.btn-info {
+  color: #ffffff;
+}
+
+/** End Lightbox summary modal**/
+
+.humane{
+  position: fixed;
+  z-index: 100000;
+  font-family: Ubuntu, Arial, sans-serif;
+  text-align: center;
+  font-size: 15px;
+  top: 100px;
+  right: 70px;
+  width: 400px;
+  background: #2d2d72;
+  color: rgb(255, 255, 255);
+  box-shadow: rgb(0, 0, 0) 0px 4px 4px -4px;
+  transform: translateY(-40px);
+  transition: all 0.3s ease-out 0s;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+  padding: 0!important;
+}

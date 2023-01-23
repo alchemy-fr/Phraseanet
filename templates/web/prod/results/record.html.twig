@@ -1,5 +1,5 @@
 {% import 'prod/results/macro.html.twig' as result_macro %}
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 <div style="width:{{ settings.images_size + 30}}px;"
      sbas="{{ record.databoxId }}"
@@ -8,11 +8,12 @@
      data-kind="{{ record.story ? 'REG' : 'RESULT' }}"
      data-position="{{ record.position|default(0) }}"
      data-id="{{ record.id }}"
+     data-record_id="{{ record.recordId }}"
      >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
             <div class="title" style="max-height:100%" title="{{ record.getTitle(app.locale) }}">
-                {{ record.getTitle(app.locale)|highlight }}
+                {{ record.getTitle(app.locale)|e|highlight }}
             </div>
             <div class="status">
                 {% for flag in record_flags(record) %}
@@ -24,18 +25,18 @@
         {% set can_see_business = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
 
         <div class="thumb captionTips"
-             {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro.caption(record, can_see_business, false) | e }}"{% endif %}
+             {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro_caption.caption(record, can_see_business, false) | e }}"{% endif %}
              {% if settings.rollover_thumbnail == 'preview' %}tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}"{% endif %}
              style="height:{{ settings.images_size }}px; z-index:90;">
             <div class="doc_infos">
+                <span class="duration">
+                    {% if record.type == 'video' and attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) is defined %}
+                        {{ attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION'))|formatDuration }}
+                    {% endif %}
+                </span>
                 {% if settings.doctype_display == '1' %}
                     {{ record_doctype_icon(record) }}
                 {% endif %}
-                <span class="duration">
-                    {% if record.type == 'video' and attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) is defined %}
-                        {{ attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) }}
-                    {% endif %}
-                </span>
             </div>
             {% set rollover = record.subdefs.thumbnailgif is defined %}
             {% set extraclass = '' %}
@@ -47,15 +48,15 @@
                 {{ result_macro.thumbnail(record, settings.images_size, settings.images_size, extraclass) }}
 
                 {% if rollover %}
-                    {% set extraclass = 'rollover-gif-hover' %}
+                    {% set extraclass = 'rollover-gif-hover hide' %}
                     {{ result_macro.thumbnailgif(record, settings.images_size, settings.images_size, extraclass) }}
                 {% endif %}
             </div>
         </div>
-        <div style="height: 25px; position:relative; text-align:left;">
+        <div class="bottom_actions_holder" style="height: 27px; position:relative; text-align:left;">
             <table class="bottom actions" style="width:100%; table-layout:fixed;">
                 <tr>
-                    <td style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
+                    <td class="text-stack-wrapper" style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
                         {% set collectionLogo = collection_logo(record.baseId) %}
                         {% if collectionLogo is empty %}
                         {{ record.collectionName }}
@@ -73,59 +74,71 @@
                     {% endif %}
 
                     {# drop down options #}
-                    <td style="text-align:right;width:{{l_width}}px;" valign="bottom">
+                    <td class="icon-stack-wrapper" style="text-align:right;width:{{l_width}}px;" valign="bottom">
 
                         {% if settings.rollover_thumbnail == 'caption' %}
-                            {% if record_subdef_url(record, 'preview') is not null and has_access_subdef(record, 'preview') %}
-                                <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                                  <i class="icon-circle icon-stack-base"></i>
-                                  <i class="icon-search icon-light"></i>
+                            {% if has_access_subdef(record, 'preview') %}
+                                <span class="fa-stack fa-lg previewTips"
+                                      tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
+                                  <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
+                                  <i class="icomoon icon-search white fa-stack-1x " aria-hidden="true"></i>
                                 </span>
                             {% endif %}
                         {% endif %}
                         {% if settings.rollover_thumbnail == 'preview' %}
-                            <span class="icon-stack captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-list icon-light"></i>
+                            <span class="fa-stack fa-lg captionRolloverTips" title="{{ macro.caption(record, can_see_business, false) | e }}"
+                                  tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
+                              <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
+                              <i class="icomoon icon-round-list-24px white fa-stack-1x " aria-hidden="true"></i>
                             </span>
                         {% endif %}
 
                         {% if settings.technical_display == '1' %}
-                            <span class="icon-stack infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-info icon-light"></i>
+                            <span class="fa-stack infoTips"
+                                  tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
+                              <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
+                              <i class="icomoon icon-i-information white fa-stack-1x " aria-hidden="true"></i>
                             </span>
                         {% endif %}
 
                         {%  if settings.show_context_menu %}
-                        <span class="icon-stack contextMenuTrigger"  id="contextTrigger_{{record.id}}"
-                              tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-ellipsis-horizontal icon-light"></i>
+                            <span class="fa-stack contextMenuTrigger" id="contextTrigger_{{ record.id }}"
+                                  tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
+                              <i class="icomoon icon-circle  fa-stack-2x fa-inverse-bg" aria-hidden="true"></i>
+                              <i class="icomoon icon-round-more_horiz-24px white fa-stack-1x fa-inverse" aria-hidden="true"></i>
                         </span>
                         <table cellspacing="0" cellpadding="0" style="display:none;" id="answerContext_{{record.id}}" class="contextMenu answercontextmenu">
                             <tbody>
                             <tr>
                                 <td>
-                                    <div class="context-menu context-menu-theme-vista">
+                                    <div class="context-menu context-menu-theme-flat">
                                         {% if granted_on_collection(record.baseId, [constant('\\ACL::CANPUTINALBUM')]) and not record.story %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner record-add-to-basket-action" data-db-id="{{record.databoxId}}" data-record-id="{{record.recordId}}">
-                                                    {{ 'action : ajouter au panier' | trans }}
+                                                    <a title="{{ 'action : ajouter au panier' | trans }}" href="#">
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/basket-1.png" alt="{{ 'action : ajouter au panier' | trans }}">
+                                                        <span>{{ 'action : ajouter au panier' | trans }}</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         {% if granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDPREVIEW')]) or granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDHD')]) %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner record-export-action" data-kind="record" data-id="{{record.id}}">
-                                                    {{ 'action : exporter' | trans }}
+                                                    <a title="{{ 'action : exporter' | trans }}" href="#">
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/export-shadow.png" alt="{{ 'action : exporter' | trans }}">
+                                                        <span>{{ 'action : exporter' | trans }}</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
                                             <div class="context-menu-item-inner record-print-action"
                                                  data-kind="record" data-id="{{record.id}}">
-                                                {{ 'action : print' | trans }}
+                                                <a title="{{ 'action : print' | trans }}" href="#">
+                                                    <img style="cursor:pointer;" src="/assets/common/images/icons/print-shadow.png" alt="{{ 'action : print' | trans }}">
+                                                    <span>{{ 'action : print' | trans }}</span>
+                                                </a>
                                             </div>
                                         </div>
                                         {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all'
@@ -134,11 +147,49 @@
                                             {% if record.story is empty %}
                                                 <div title="" class="context-menu-item">
                                                     <div class="context-menu-item-inner share-record-action" data-db="{{record.baseId}}" data-record-id="{{record.recordId}}">
-                                                        {{ 'reponses:: partager' | trans }}
+                                                        <a title="{{ 'reponses:: partager' | trans }}" href="#">
+                                                            <img style="cursor:pointer;" src="/assets/common/images/icons/Share.png" alt="{{ 'reponses:: partager' | trans }}">
+                                                            <span>{{ 'reponses:: partager' | trans }}</span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             {% endif %}
                                         {% endif %}
+
+                                        {# video tools for type = video #}
+                                        {% if record.type == 'video' %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner video-tools-record-action" data-db="{{record.baseId}}" data-record-id="{{record.recordId}}" data-idlst="{{record.id}}" >
+                                                    <a title="{{ 'action:: video tools' | trans }}" href="#" class="TOOL_videoeditor_btn" >
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/icon-video-editor.png" alt="{{ 'action:: video tools' | trans }}">
+                                                        <span>{{ 'action:: video tools' | trans }}</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                        {# add plugins entries #}
+                                        {% for plugin in plugins.actionbar|default([]) %}
+                                            {% set menu = plugin.ActionBar['_context_']|default([]) %}
+                                            {% for k, action in menu %}
+                                                {% if plugin.isContextMenuOptionAvailable(k, record) %}
+                                                    <div title="" class="context-menu-item"
+                                                         onclick="{{ plugin.getContextMenuJS(k) }}('{{ k }}', '{{record.baseId}}', '{{record.recordId}}', '{{ record.id }}');">
+                                                        <div class="context-menu-item-inner">
+                                                            {% set icon  = (action.icon ?? false) ? plugin_asset(plugin.PluginName, action.icon) : null %}
+                                                            {% set label = (action.label ?? false) ? (action.label|trans({}, plugin.PluginLocale)) : 'undefined label' %}
+                                                            <a title="{{ label }}" href="#">
+                                                                {% if icon %}
+                                                                <img style="cursor:pointer;" src="{{ icon }}" alt="{{ label }}">
+                                                                {% endif %}
+                                                                <span>{{ label }}</span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endfor %}
+
                                     </div>
                                 </td>
                             </tr>

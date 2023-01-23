@@ -5,12 +5,13 @@
         <subdefgroup name="image">
             <subdef class="preview" name="preview" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>1024</size>
+                <size>1280</size>
                 <method>resample</method>
-                <dpi>72</dpi>
-                <strip>no</strip>
+                <dpi>300</dpi>
+                <strip>yes</strip>
                 <quality>75</quality>
                 <meta>yes</meta>
+                <flatten>yes</flatten>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <label lang="fr">Prévisualisation</label>
@@ -18,22 +19,25 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>yes</strip>
-                <quality>75</quality>
+                <quality>50</quality>
                 <meta>no</meta>
+                <flatten>yes</flatten>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <label lang="fr">Vignette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview_mobile" downloadable="false">
-                <size>480</size>
+                <size>640</size>
                 <resolution>72</resolution>
+                <method>resample</method>
                 <strip>yes</strip>
                 <quality>75</quality>
+                <flatten>yes</flatten>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <meta>no</meta>
@@ -42,10 +46,12 @@
                 <label lang="en">Mobile Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
+                <size>192</size>
                 <resolution>72</resolution>
+                <method>resample</method>
                 <strip>yes</strip>
-                <quality>75</quality>
+                <flatten>yes</flatten>
+                <quality>50</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <meta>no</meta>
@@ -57,7 +63,7 @@
         <subdefgroup name="video">
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
@@ -66,7 +72,7 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnailgif" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>250</size>
                 <mediatype>gif</mediatype>
                 <delay>150</delay>
                 <devices>screen</devices>
@@ -79,7 +85,7 @@
                 <size>748</size>
                 <mediatype>video</mediatype>
                 <writeDatas>yes</writeDatas>
-                <acodec>libfaac</acodec>
+                <acodec>libfdk_aac</acodec>
                 <vcodec>libx264</vcodec>
                 <devices>screen</devices>
                 <bitrate>1000</bitrate>
@@ -89,6 +95,21 @@
                 <GOPsize>25</GOPsize>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="poster" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>1</meta>
+                <size>1280</size>
+                <mediatype>image</mediatype>
+                <writeDatas>yes</writeDatas>
+                <devices>screen</devices>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <icodec>jpeg</icodec>
+                <label lang="fr">Poster video</label>
+                <label lang="en">Poster video</label>
             </subdef>
             <subdef class="preview" name="preview_webm" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -102,15 +123,37 @@
                 <fps>25</fps>
                 <GOPsize>25</GOPsize>
                 <vcodec>libvpx</vcodec>
-                <label lang="fr">Prévisualisation WebM</label>
-                <label lang="en">WebM Preview</label>
+            </subdef>
+            <subdef class="preview" name="audiovideowav" downloadable="true" orderable="true" presets="Wave Mono 8 kHz">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>no</meta>
+                <mediatype>audio</mediatype>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>8000</audiosamplerate>
+                <acodec>pcm_s16le</acodec>
+                <audiochannel>mono</audiochannel>
+                <devices>all</devices>
+                <label lang="fr">Audio WAVE 8 kHz</label>
+                <label lang="en">Audio WAVE 8 kHz</label>
+            </subdef>
+            <subdef class="preview" name="audiovideomp3" downloadable="true" orderable="true" presets="Normal MP3 128 kbit/s">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>no</meta>
+                <mediatype>audio</mediatype>
+                <audiobitrate>180</audiobitrate>
+                <audiosamplerate>44100</audiosamplerate>
+                <acodec>libmp3lame</acodec>
+                <audiochannel/>
+                <devices>all</devices>
+                <label lang="fr">Audio MP3 128 kbit/s</label>
+                <label lang="en">Audio MP3 128 kbit/s</label>
             </subdef>
         </subdefgroup>
         <subdefgroup name="audio">
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
-                <size>240</size>
+                <size>384</size>
                 <devices>screen</devices>
                 <writeDatas>no</writeDatas>
                 <label lang="fr">Vignette</label>
@@ -140,7 +183,8 @@
                 <mediatype>image</mediatype>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <size>240</size>
+                <size>380</size>
+                <flatten>yes</flatten>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Vignette</label>
@@ -148,32 +192,8 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
-                <devices>screen</devices>
-                <label lang="fr">Prévisualisation</label>
-                <label lang="en">Preview</label>
-            </subdef>
-        </subdefgroup>
-        <subdefgroup name="flash">
-            <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>240</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Vignette</label>
-                <label lang="en">Thumbnail</label>
-            </subdef>
-            <subdef class="preview" name="preview" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>800</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
@@ -182,26 +202,30 @@
     </subdefs>
 
     <description>
-        <Title src="XMP-dc:Title" thumbtitle="1" report="1" />
-        <Creator src="XMP-dc:Creator" report="1" />
-        <Subject src="XMP-dc:Subject" multi="1"/>
-        <Description src="XMP-dc:Description" report="0" />
-        <Publisher src="XMP-dc:Publisher" type="date" report="0" />
-        <Contributor src="XMP-dc:Contributor" report="0"/>
+        <Title src="XMP-dc:Title" type="string" thumbtitle="1" report="1" />
+        <Creator src="XMP-dc:Creator" type="string" report="1" />
+        <Subject src="XMP-dc:Subject" type="string" multi="1"/>
+        <Description src="XMP-dc:Description" type="string" report="0" />
+        <Publisher src="XMP-dc:Publisher" type="string" report="0" />
+        <Contributor src="XMP-dc:Contributor" type="string" report="0"/>
         <Date src="XMP-dc:Date" type="date" report="0" />
-        <Type src="XMP-dc:Type" report="1" />
-        <Format src="XMP-dc:Format" report="0" />
-        <Identifier src="XMP-dc:Identifier" report="1" />
-        <Source src="XMP-dc:Source" report="0" />
-        <Language src="XMP-dc:Language" report="0" />
-        <Relation src="XMP-dc:Relation" report="0" />
-        <Coverage src="XMP-dc:Coverage" report="1" />
-        <Rights src="XMP-dc:Rights" report="0" />
-        <Comments src="" business="1" report="0" />
-        <Filename src="Phraseanet:tf-basename" readonly="1" type="text" report="1"/>
-        <CameraDevice src="IFD0:Model" readonly="1" report="0" />
-        <Latitude src="GPS:GPSLatitude" readonly="1" report="0" />
-        <Longitude src="GPS:GPSLongitude" readonly="1" report="0"/>
+        <Type src="XMP-dc:Type" type="string" report="1" />
+        <Format src="XMP-dc:Format" type="string" report="0" />
+        <Identifier src="XMP-dc:Identifier" type="string" report="1" />
+        <Source src="XMP-dc:Source" type="string" report="0" />
+        <Language src="XMP-dc:Language" type="string" report="0" />
+        <Relation src="XMP-dc:Relation" type="string" report="0" />
+        <Coverage src="XMP-dc:Coverage" type="string" report="1" />
+        <Rights src="XMP-dc:Rights" type="string" report="0" />
+        <Comments src="" business="1" type="string" report="0" />
+        <Filename src="Phraseanet:tf-basename" readonly="1" type="string" report="1"/>
+        <Latitude src="Composite:GPSLatitude" type="number" readonly="1" report="0" />
+        <Longitude src="Composite:GPSLongitude"  type="number" readonly="1" report="0"/>
+        <StartOfMessage src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="number" gui_editable="1" gui_visible="1" printable="1"/>
+        <VideoTextTrackChapters src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="0" gui_visible="0" printable="0"/>
+        <VideoTextTrackFr src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0" printable="0" />
+        <VideoTextTrackEn src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0" printable="0" />
+        <VideoTextTrackDe src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0" printable="0" />
         <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
         <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
     </description>

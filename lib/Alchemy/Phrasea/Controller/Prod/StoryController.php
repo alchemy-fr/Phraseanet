@@ -12,13 +12,12 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class StoryController extends Controller
@@ -26,9 +25,19 @@ class StoryController extends Controller
     use DispatcherAware;
     use EntityManagerAware;
 
-    public function displayCreateFormAction()
+    public function displayCreateFormAction(Request $request)
     {
-        return $this->render('prod/Story/Create.html.twig', []);
+        $records = RecordsRequest::fromRequest($this->app, $request, true);
+
+        $databoxes = $records->databoxes();
+        $collections = $records->collections();
+
+        return $this->render('prod/Story/Create.html.twig', [
+            'isMultipleDataboxes'   => count($databoxes) > 1 ? 1 : 0,
+            'isMultipleCollections' => count($collections) > 1 ? 1 : 0,
+            'databoxId'             => count($databoxes) == 1 ? current($databoxes)->get_sbas_id() : 0,
+            'collectionId'          => count($collections) == 1 ? current($collections)->get_base_id() : 0
+        ]);
     }
 
     public function postCreateFormAction(Request $request)
@@ -49,26 +58,6 @@ class StoryController extends Controller
 
             $story->appendChild($record);
         }
-
-        $metadatas = [];
-
-        foreach ($collection->get_databox()->get_meta_structure() as $meta) {
-            if ($meta->get_thumbtitle()) {
-                $value = $request->request->get('name');
-            } else {
-                continue;
-            }
-
-            $metadatas[] = [
-                'meta_struct_id' => $meta->get_id(),
-                'meta_id'        => null,
-                'value'          => $value,
-            ];
-
-            break;
-        }
-
-        $story->set_metadatas($metadatas)->rebuild_subdefs();
 
         $storyWZ = new StoryWZ();
         $storyWZ->setUser($this->getAuthenticatedUser());
@@ -98,16 +87,31 @@ class StoryController extends Controller
         ]);
     }
 
-    public function showAction($sbas_id, $record_id)
+    public function showAction(Request $request, $sbas_id, $record_id)
     {
+        $ouputFormat = $request->getRequestFormat();
         $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        return $this->renderResponse('prod/WorkZone/Story.html.twig', ['Story' => $story]);
+        $ret = [
+            'html' => $this->render('prod/WorkZone/Story.html.twig', ['Story' => $story]),
+            'data' => [
+                'classes' => [],
+                'removeClasses' => []
+            ]
+        ];
+
+        if($ouputFormat === "json") {
+            // return advanced format containig share, feedback... infos and html
+            return $this->app->json($ret);
+        }
+        // default return html
+        return $ret['html'];
     }
 
     public function addElementsAction(Request $request, $sbas_id, $record_id)
     {
         $Story = new \record_adapter($this->app, $sbas_id, $record_id);
+        $previousDescription = $Story->getRecordDescriptionAsArray();
 
         if (!$this->getAclForUser()->has_right_on_base($Story->getBaseId(), \ACL::CANMODIFRECORD)) {
             throw new AccessDeniedHttpException('You can not add document to this Story');
@@ -126,7 +130,7 @@ class StoryController extends Controller
             $n++;
         }
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story, $previousDescription));
 
         $data = [
             'success' => true,
@@ -183,6 +187,7 @@ class StoryController extends Controller
     {
         try {
             $story = new \record_adapter($this->app, $sbas_id, $record_id);
+            $previousDescription = $story->getRecordDescriptionAsArray();
 
             if (!$story->isStory()) {
                 throw new \Exception('This is not a story');
@@ -206,7 +211,7 @@ class StoryController extends Controller
 
             $stmt->closeCursor();
 
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
             $ret = ['success' => true, 'message' => $this->app->trans('Story updated')];
         } catch (ControllerException $e) {
             $ret = ['success' => false, 'message' => $e->getMessage()];

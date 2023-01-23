@@ -1,0 +1,14 @@
+#PREVIEWIMGDESC  #leafletTabContainer {
+    top: 30px;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+}
+
+#PREVIEWIMGDESC  #leafletTabContainer .leaflet-container {
+    overflow: hidden;
+    position: initial !important;
+}

@@ -2,21 +2,21 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
+use Alchemy\Phrasea\Authentication\Provider\Token\Token;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Core\Event\AuthenticationEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Authentication\Context;
-use Alchemy\Phrasea\Authentication\Provider\Token\Token;
-use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use RandomLib\Factory;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * @group functional
@@ -329,7 +329,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
         $response = $client->getResponse();
         $this->assertFalse($response->isRedirect());
-        $this->assertFlashMessage($crawler, 'error', 1);
+        $this->assertFlashMessage($crawler, 'info', 1);
     }
 
     public function testRenewPasswordMail()
@@ -530,7 +530,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $response = $client->getResponse();
         $this->assertFalse($response->isRedirect());
 
-        $this->assertFlashMessage($crawler, 'error', 1);
+        $this->assertFlashMessage($crawler, 'info', 1);
     }
 
     public function testForgotPasswordSubmission()
@@ -2017,6 +2017,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $this->logout($app);
+
+        $bkp = $app['phraseanet.configuration']['session'];
+
         $app['phraseanet.configuration']['session'] = [
             'idle' => 10,
             'lifetime' => 60475,
@@ -2027,12 +2030,17 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
         $this->assertEquals('hidden', $crawler->filter('input[name="remember-me"]')->attr('type'));
+
+        $app['phraseanet.configuration']['session'] = $bkp;
     }
 
     public function testLoginPageWithNoIdleSessionTime()
     {
         $app = $this->getApplication();
         $this->logout($app);
+
+        $bkp = $app['phraseanet.configuration']['session'];
+
         $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
             'lifetime' => 60475,
@@ -2043,6 +2051,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
         $this->assertEquals('checkbox', $crawler->filter('input[name="remember-me"]')->attr('type'));
+
+        $app['phraseanet.configuration']['session'] = $bkp;
     }
 
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
@@ -2062,15 +2072,17 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $app['repo.usr-auth-providers'] = $repo;
 
-        $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository')
+        $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /*
         $repo->expects($participants ? $this->once() : $this->never())
             ->method('findNotConfirmedAndNotRemindedParticipantsByExpireDate')
             ->will($this->returnValue([]));
+        */
 
-        $app['repo.validation-participants'] = $repo;
+        $app['repo.basket-participants'] = $repo;
     }
 
     private function mockSuggestionFinder()

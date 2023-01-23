@@ -1,0 +1,122 @@
+<div class="ui-widget">
+    <input id="input-group-list" placeholder="{{ 'prod:expose:publication:permission:Group Name'| trans }}" list="group-list">
+    <datalist id="group-list" tabindex="-1" aria-hidden="true"
+            class="">
+        {% for group in listGroups %}
+            <option value="{{ group.name }}" {% if group.selected %} disabled {% endif %}>{{ group.id }}</option>
+        {% endfor %}
+    </datalist>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>
+            {{ 'prod:expose:publication:permission:list:Group'| trans }}
+        </th>
+        <th>
+            {{ 'prod:expose:publication:permission:list:View'| trans }}
+        </th>
+        <th>
+            {{ 'prod:expose:publication:permission:list:Edit'| trans }}
+        </th>
+        <th>
+            {{ 'Owner'| trans }}
+        </th>
+        <th>
+            {{ 'prod:expose:publication:permission:list:Delete'| trans }}
+        </th>
+        <th>
+        </th>
+    </tr>
+    </thead>
+    <tbody id="group-permission-list">
+    {% for permission in permissions %}
+        {% if permission.userType == 'group' %}
+            <tr data-group-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
+                <td>
+                    {{ permission.name }}
+                </td>
+                <td>
+                    <input class="group-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %} />
+                </td>
+                <td>
+                    <input class="group-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
+                    <input class="group-owner" type="checkbox" {% if (permission.mask b-and 128) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
+                    <input class="group-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
+                    <button class="btn-danger btn-mini delete-group-permission" >{{ 'prod:expose:publication:permission:list:Remove Group'| trans }}</button>
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+
+<br/>
+<br/>
+
+<div class="ui-widget">
+    <input id="input-user-list" placeholder="{{ 'prod:expose:publication:permission:User Name'| trans }}" list="user-list">
+    <datalist id="user-list" tabindex="-1" aria-hidden="true"
+              class="">
+        {% for user in listUsers %}
+            <option value="{{ user.username }}" {% if user.selected %} disabled {% endif %}>{{ user.id }}</option>
+        {% endfor %}
+    </datalist>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>
+            {{ 'prod:expose:publication:permission:list:User'| trans }}
+        </th>
+        <th>
+            {{ 'prod:expose:publication:permission:list:View'| trans }}
+        </th>
+        <th>
+            {{ 'prod:expose:publication:permission:list:Edit'| trans }}
+        </th>
+        <th>
+            {{ 'Owner'| trans }}
+        </th>
+        <th>
+            {{ 'prod:expose:publication:permission:list:Delete'| trans }}
+        </th>
+        <th>
+        </th>
+    </tr>
+    </thead>
+    <tbody id="user-permission-list">
+    {% for permission in permissions %}
+        {% if permission.userType == 'user' %}
+            <tr data-user-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
+                <td>
+                    {{ permission.username }}
+                </td>
+                <td>
+                    <input class="user-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
+                    <input class="user-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
+                    <input class="user-owner" type="checkbox" {% if (permission.mask b-and 128) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
+                    <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
+                    <button class="btn-danger btn-mini delete-user-permission" >{{ 'prod:expose:publication:permission:list:Remove User'| trans }}</button>
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>

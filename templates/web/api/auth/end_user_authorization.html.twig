@@ -9,8 +9,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <!-- styles -->
-        <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css">
-        <link type="text/css" rel="stylesheet" href="/assets/oauth/css/oauth{% if not app.debug %}.min{% endif %}.css" media="screen"/>
+        <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
+        <link type="text/css" rel="stylesheet" href="/assets/oauth/css/oauth{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" media="screen"/>
 
         <!-- All JavaScript at the bottom, except this Modernizr build.
         Modernizr enables HTML5 elements & feature detects for optimal performance. -->
@@ -50,13 +50,33 @@
                             <input id="myPass" name="password" class="span6" type="password" placeholder="{{ 'admin::compte-utilisateur mot de passe' | trans }}" />
                             <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{{ 'Se connecter' | trans }}" />
                         </form>
+                        <div class="well-large">
+                            <div class="row-fluid">
+                                <div class="text-center">
+                                    {{ "Or login with" | trans }}
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="text-center">
+                                    <ul class="unstyled inline provider-list">
+                                        {% for provider in app['authentication.providers'] %}
+                                            <li>
+                                                <a href="{{ path('oauth2_provider_authorize', { 'providerId' : provider.getId() }|merge(app.request.query.all)) }}">
+                                                    <img src="{{ provider.getIconURI() }}" />
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <p>
                             <a href="#">{{ 'Problemes de connexion ?' | trans }}</a>
                         </p>
                     </div>
                 {% else %}
                     {% if user is not none %}
-                        {% set username = '<b>' ~ app.getAuthenticatedUser().getDisplayName() ~ '</b>' %}
+                        {% set username = '<b>' ~ app.getAuthenticatedUser().getDisplayName() | e ~ '</b>' %}
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
                                 {% trans with {'%username%' : username} %}Hello %username%{% endtrans %}

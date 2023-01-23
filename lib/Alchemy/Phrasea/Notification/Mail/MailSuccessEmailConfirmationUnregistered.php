@@ -18,7 +18,7 @@ class MailSuccessEmailConfirmationUnregistered extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return $this->app->trans('Email successfully confirmed');
+        return $this->app->trans('Email successfully confirmed', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -26,9 +26,9 @@ class MailSuccessEmailConfirmationUnregistered extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return $this->app->trans('login::register: merci d\'avoir confirme votre adresse email')
+        return $this->app->trans('login::register: merci d\'avoir confirme votre adresse email', [], 'messages', $this->getLocale())
             . "\n"
-            . $this->app->trans("You have to wait for an administrator approval for your access request");
+            . $this->app->trans("You have to wait for an administrator approval for your access request", [], 'messages', $this->getLocale());
     }
 
     /**
@@ -36,7 +36,7 @@ class MailSuccessEmailConfirmationUnregistered extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Watch my access requests status');
+        return $this->app->trans('Watch my access requests status', [], 'messages', $this->getLocale());
     }
 
     /**

@@ -28,7 +28,7 @@ class MailTestTest extends \PhraseanetTestCase
 
         self::$DI['cli']['notification.deliverer']->expects($this->once())
             ->method('deliver')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailTest'), $this->equalTo(null))
+            ->with($this->isInstanceOf('Alchemy\Phrasea\Notification\Mail\MailCheck'), $this->equalTo(null))
             ->will($this->returnCallback(function ($email) use (&$capturedEmail) {
                 $capturedEmail = $email;
             }));

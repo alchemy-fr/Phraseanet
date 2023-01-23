@@ -6,7 +6,9 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * TokenRepository
@@ -20,7 +22,7 @@ class TokenRepository extends EntityRepository
      * @param Basket $basket
      * @param User   $user
      * @return Token|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function findValidationToken(Basket $basket, User $user)
     {
@@ -44,7 +46,7 @@ class TokenRepository extends EntityRepository
     /**
      * @param string $value
      * @return Token|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function findValidToken($value)
     {
@@ -62,14 +64,25 @@ class TokenRepository extends EntityRepository
     /**
      * @return Token[]
      */
-    public function findExpiredTokens()
+    public function findExpiredTokens($nbDaysAfterExpiration = 0)
     {
         $dql = 'SELECT t FROM Phraseanet:Token t
                 WHERE t.expiration < :date';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters([':date' => new \DateTime()]);
+        $date = new DateTime();
+
+        if ($nbDaysAfterExpiration != 0) {
+            $date->modify("-" . $nbDaysAfterExpiration . " day");
+        }
+
+        $query->setParameters([':date' => $date]);
 
         return $query->getResult();
+    }
+
+    public function getEntityManager()
+    {
+        return parent::getEntityManager();
     }
 }

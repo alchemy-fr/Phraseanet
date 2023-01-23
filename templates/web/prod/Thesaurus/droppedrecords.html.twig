@@ -1,0 +1,109 @@
+<div id="TXCLASSIFICATION">
+    {% if error %}
+
+        {{ error }}
+
+    {% else %}
+
+        {% if rejected_cnt > 0 %}
+
+            {{ "thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)" | trans({'%rejected_cnt%': rejected_cnt}) }}
+
+        {% endif %}
+
+            {% set simple_possible = false %}
+            {% set advanced_needed = true %}
+            {% set selected_sy = null %}
+            {% set bf0 = by_fields|first %}
+            {% if by_fields|length == 1 %}
+                {# if there is only 1 field, we can propose a "simple" ux with the selected "value" (dropped-on) #}
+                {# bf0 is the only field #}
+                {% set simple_possible = true %}
+            {% endif %}
+
+            <div class="tabs">
+                <ul>
+                    {% if simple_possible %}
+                    <li data-tab_id="SIMPLE"><a href="#TXCLASSIFICATION_SIMPLE">{{ 'thesaurus::edit simple mode' | trans}}</a></li>
+                    {% endif %}
+
+                    {% if advanced_needed %}
+                    <li data-tab_id="ADVANCED"><a href="#TXCLASSIFICATION_ADVANCED">{{ 'thesaurus::edit advanced mode' | trans }}</a></li>
+                    {% endif %}
+                </ul>
+
+                {% if simple_possible %}
+                <div id="TXCLASSIFICATION_SIMPLE" style="padding: 20px 10px 20px 10px">
+                    <form id="DroppedOnTH_form_simple">
+                        <input type="hidden" class="field _0"  value="{{ bf0.field.get_name() }}">
+                        <input type="hidden" class="action _0" value="{{ bf0.field.is_multi() ? "add" : "set" }}" data-n="0">
+                        <input type="hidden" class="value _0"  value="{{ bf0.selected_value.value }}">
+                    </form>
+                    {% if bf0.field.is_multi() %}
+                        {{ 'thesaurus::edit add %selected_value% to the field  %field_name%'| trans({'%selected_value%': '<b>' ~ bf0.selected_value.value ~ '</b>', '%field_name%': '<b>'~ bf0.field.get_name() ~ '</b>'}) | raw }}
+                    {% else %}
+                        {{ 'thesaurus::edit set  %field_name%  to  %selected_value%' | trans({'%field_name%': '<b>' ~ bf0.field.get_name() ~ '</b>', '%selected_value%': '<b>' ~ bf0.selected_value.value ~ '</b>'}) | raw }}
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if advanced_needed %}
+                <div id="TXCLASSIFICATION_ADVANCED" style="padding: 10px;">
+                    <form id="DroppedOnTH_form_advanced">
+                    {% set n = 0 %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ 'thesaurus::edit Field' | trans }}</th>
+                                <th>{{ 'thesaurus::edit Action' | trans }}</th>
+                                <th class="okbutton">{{ 'thesaurus::edit Value' | trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    {% for bf in by_fields %}
+                            <tr>
+                                <td>
+                                    <input type="hidden" class="field _{{ n }}" value="{{ bf.field.get_name() }}">
+                                    {{ bf.field.get_name() }}&nbsp;:
+                                </td>
+
+                                <td>
+                                    <select class="action _{{ n }}" data-n="{{ n }}">
+                                        <option value="" {{ simple_possible ? "" : "selected"}}>...</option>
+                                        {% if bf.field.is_multi() %}
+                                        <option value="add" {{ simple_possible ? "selected" : ""}}>{{ 'thesaurus::edit add' | trans }}</option>
+                                        <option value="replace">{{ 'thesaurus::edit replace all with' | trans }}</option>
+                                        <option value="delete">{{ 'thesaurus::edit remove' | trans }}</option>
+                                        {% else %}
+                                        <option value="set" {{ simple_possible ? "selected" : ""}}>{{ 'thesaurus::edit set to' | trans }}</option>
+                                        <option value="clear">{{ 'thesaurus::edit clear' | trans }}</option>
+                                        {% endif%}
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <div class="value_container _{{ n }}" style="display: none">
+                                        {% if bf.values|length == 1 %}
+                                            <input type="hidden" class="value _{{ n }}" value="{{ (bf.values|first).value }}">
+                                            {{ (bf.values|first).value }}
+                                        {% else %}
+                                            <select class="value _{{ n }}" >
+                                                {% for v in bf.values %}
+                                                    <option {{ v.selected ? "selected" : "" }}>{{ v.value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% set n = n+1 %}
+                    {% endfor %}
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+    {% endif %}
+</div>
+

@@ -10,7 +10,9 @@
         {% block icon %}{% endblock %}
 
         {#<link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/{{ jquery_theme|default('ui-lightness') }}{% if not app.debug %}.min{% endif %}.css">#}
-        <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css">
+        <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
+        <link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-datetimepicker/jquery-datetimepicker{% if not app.debug %}.min{% endif %}.css">
+
         {% block stylesheet %}{% endblock %}
         <!--[if lte IE 8]>
             <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome-ie7.min.css">
@@ -19,16 +21,21 @@
 
         <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/vendors/jquery-datetimepicker/jquery-datetimepicker{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
         <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        
+
         <script type="text/javascript">
             google.charts.load('42', {packages: ['corechart']});
         </script>
         <script type="text/javascript"
                 src="/assets/vendors/underscore/underscore{% if not app.debug %}.min{% endif %}.js"></script>
         {% block rss %}{% endblock %}
-        {% block javascript %}{% endblock %}
+        {% block javascript %}
+            <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui.js"></script>
+        {% endblock %}
     </head>
     <body class="PNB">
         <div id="mainContainer" class="PNB">
@@ -40,5 +47,6 @@
         {% block extra_content %}{% endblock %}
         {% block bodyJavascript %}{% endblock %}
         {% include 'common/analytics.html.twig' %}
+        {% include 'common/matomo_analytics.html.twig' %}
     </body>
 </html>

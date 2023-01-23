@@ -167,7 +167,7 @@ interface SearchEngineInterface
      *
      * @return SearchEngineResult
      */
-    public function query($query, SearchEngineOptions $options = null);
+    public function query($query, SearchEngineOptions $options);
 
     /**
      * Return an array of suggestions corresponding to the last word of the

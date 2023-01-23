@@ -11,27 +11,29 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field AS ESField;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as ESField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
-use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Closure;
-use Doctrine\Common\Collections\ArrayCollection;
-use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Alchemy\Phrasea\Application;
 use databox_field;
+use Doctrine\Common\Collections\ArrayCollection;
 use Elasticsearch\Client;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -58,15 +60,18 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private $context_factory;
 
+    private $translator;
+
     /**
      * @param Application $app
-     * @param Structure $structure
+     * @param GlobalStructure $structure
      * @param Client $client
      * @param QueryContextFactory $context_factory
-     * @param callable $facetsResponseFactory
+     * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
+     * @param TranslatorInterface $translator
      */
-    public function __construct(Application $app, Structure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options, TranslatorInterface $translator)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -74,9 +79,17 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->context_factory = $context_factory;
         $this->facetsResponseFactory = $facetsResponseFactory;
         $this->options = $options;
+        $this->translator = $translator;
 
         $this->indexName = $options->getIndexName();
+    }
 
+    /**
+     * @return Structure
+     */
+    public function getStructure()
+    {
+        return $this->structure;
     }
 
     public function getIndexName()
@@ -128,7 +141,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableDateFields()
     {
         // TODO Use limited structure
-        return array_keys($this->structure->getDateFields());
+        return array_keys($this->getStructure()->getDateFields());
     }
 
     /**
@@ -139,6 +152,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return [
             SearchEngineOptions::SORT_RELEVANCE => $this->app->trans('pertinence'),
             SearchEngineOptions::SORT_CREATED_ON => $this->app->trans('date dajout'),
+            SearchEngineOptions::SORT_UPDATED_ON => $this->app->trans('date de modification'),
         ];
     }
 
@@ -201,6 +215,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->notImplemented();
     }
 
+    private function notImplemented()
+    {
+        throw new LogicException('Not implemented');
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -241,11 +260,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->notImplemented();
     }
 
-    private function notImplemented()
-    {
-        throw new LogicException('Not implemented');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -273,35 +287,34 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($string, SearchEngineOptions $options = null)
+    public function query($queryText, SearchEngineOptions $options)
     {
-        $options = $options ?: new SearchEngineOptions();
         $context = $this->context_factory->createContext($options);
 
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
-        $recordQuery = $query_compiler->compile($string, $context);
+        $queryAST      = $query_compiler->parse($queryText)->dump();
+        $queryCompiled = $query_compiler->compile($queryText, $context);
 
-        $params = $this->createRecordQueryParams($recordQuery, $options, null);
+        $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
 
         // ask ES to return field _version (incremental version number of document)
-        $params['body']['version'] = true;
+        $queryESLib['body']['version'] = true;
 
-        $params['body']['from'] = $options->getFirstResult();
-        $params['body']['size'] = $options->getMaxResults();
+        $queryESLib['body']['from'] = $options->getFirstResult();
+        $queryESLib['body']['size'] = $options->getMaxResults();
         if($this->options->getHighlight()) {
-            $params['body']['highlight'] = $this->buildHighlightRules($context);
+            $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
         }
 
         $aggs = $this->getAggregationQueryParams($options);
         if ($aggs) {
-            $params['body']['aggs'] = $aggs;
+            $queryESLib['body']['aggs'] = $aggs;
         }
 
-        $res = $this->client->search($params);
+        $res = $this->client->search($queryESLib);
 
         $results = new ArrayCollection();
-
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
             $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n++);
@@ -310,19 +323,16 @@ class ElasticSearchEngine implements SearchEngineInterface
         /** @var FacetsResponse $facets */
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        $query['ast'] = $query_compiler->parse($string)->dump();
-        $query['query_main'] = $recordQuery;
-        $query['query'] = $params['body'];
-        $query['query_string'] = json_encode($params['body'], JSON_PRETTY_PRINT);
-
         return new SearchEngineResult(
             $options,
-            $results,   // ArrayCollection of results
-            $string,    // the query as typed by the user
-            json_encode($query),
+            $results,      // ArrayCollection of results
+            $queryText,    // the query as typed by the user
+            $queryAST,
+            $queryCompiled,
+            $queryESLib,
             $res['took'],   // duration
             $options->getFirstResult(),
-            $res['hits']['total'],  // available
+            count($res['hits']['hits']),  // available
             $res['hits']['total'],  // total
             null,   // error
             null,   // warning
@@ -333,128 +343,75 @@ class ElasticSearchEngine implements SearchEngineInterface
         );
     }
 
-    private function buildHighlightRules(QueryContext $context)
+    public function queryraw($queryText, SearchEngineOptions $options)
     {
-        $highlighted_fields = [];
-        foreach ($context->getHighlightedFields() as $field) {
-            switch ($field->getType()) {
-                case FieldMapping::TYPE_STRING:
-                    $index_field = $field->getIndexField();
-                    $raw_index_field = $field->getIndexField(true);
-                    $highlighted_fields[$index_field] = [
-                        // Requires calling Mapping::enableTermVectors() on this field mapping
-                        'matched_fields' => [$index_field, $raw_index_field],
-                        'type' => 'fvh'
-                    ];
-                    break;
-                case FieldMapping::TYPE_FLOAT:
-                case FieldMapping::TYPE_DOUBLE:
-                case FieldMapping::TYPE_INTEGER:
-                case FieldMapping::TYPE_LONG:
-                case FieldMapping::TYPE_SHORT:
-                case FieldMapping::TYPE_BYTE:
-                    continue;
-                case FieldMapping::TYPE_DATE:
-                default:
-                    continue;
-            }
+        $stopwatch = new Stopwatch("es");
+
+        $context = $this->context_factory->createContext($options);
+
+        /** @var QueryCompiler $query_compiler */
+        $query_compiler = $this->app['query_compiler'];
+        $queryAST      = $query_compiler->parse($queryText)->dump();
+
+        $stopwatch->lap("query parse");
+
+        $queryCompiled = $query_compiler->compile($queryText, $context);
+
+        $stopwatch->lap("query compile");
+
+        $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
+
+        $stopwatch->lap("createRecordQueryParams");
+
+        // ask ES to return field _version (incremental version number of document)
+        $queryESLib['body']['version'] = true;
+
+        $queryESLib['body']['from'] = $options->getFirstResult();
+        $queryESLib['body']['size'] = $options->getMaxResults();
+        if($this->options->getHighlight()) {
+            $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
         }
+
+        $stopwatch->lap("buildHighlightRules");
+
+        $aggs = $this->getAggregationQueryParams($options);
+        if ($aggs) {
+            $queryESLib['body']['aggs'] = $aggs;
+        }
+
+        $stopwatch->lap("getAggregationQueryParams");
+
+        $res = $this->client->search($queryESLib);
+
+        $stopwatch->lap("es client search");
+
+        // return $res;
+
+        $results = [];
+        foreach ($res['hits']['hits'] as $hit) {
+            // remove "path" from subdefs
+            foreach($hit['_source']['subdefs'] as $name=>$subdef) {
+                unset($hit['_source']['subdefs'][$name]['path']);
+            }
+            $results[] = $hit;
+        }
+
+        $stopwatch->lap("copy hits to results");
+
+        /** @var FacetsResponse $facets */
+        $facets = $this->facetsResponseFactory->__invoke($res)->toArray();
+
+        $stopwatch->lap("build facets");
+
+        $stopwatch->stop();
 
         return [
-            'pre_tags' =>  ['[[em]]'],
-            'post_tags' =>  ['[[/em]]'],
-            'order' => 'score',
-            'fields' => $highlighted_fields
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function autocomplete($query, SearchEngineOptions $options)
-    {
-        $params = $this->createCompletionParams($query, $options);
-
-        $res = $this->client->suggest($params);
-
-        $ret = [
-            'text' => [],
-            'byField' => []
-        ];
-        foreach(array_keys($params['body']) as $fname) {
-            $t = [];
-            foreach($res[$fname] as $suggest) {    // don't know why there is a sub-array level
-                foreach($suggest['options'] as $option) {
-                    $text = $option['text'];
-                    if(!in_array($text, $ret['text'])) {
-                        $ret['text'][] = $text;
-                    }
-                    $t[] = [
-                        'label' => $text,
-                        'query' => $fname.':'.$text
-                    ];
-                }
-            }
-            if(!empty($t)) {
-                $ret['byField'][$fname] = $t;
-            }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resetCache()
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clearCache()
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clearAllCache(\DateTime $date = null)
-    {
-    }
-
-    private function createCompletionParams($query, SearchEngineOptions $options)
-    {
-        $body = [];
-        $context = [
-            'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
-                SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
-        ];
-
-        $base_ids = $options->getBasesIds();
-        if (count($base_ids) > 0) {
-            $context['base_id'] = $base_ids;
-        }
-
-        $search_context = $this->context_factory->createContext($options);
-        $fields = $search_context->getUnrestrictedFields();
-        foreach($fields as $field) {
-            if($field->getType() == FieldMapping::TYPE_STRING) {
-                $k = '' . $field->getName();
-                $body[$k] = [
-                    'text' => $query,
-                    'completion' => [
-                        'field' => "caption." . $field->getName() . ".suggest",
-                        'context' => &$context
-                    ]
-                ];
-            }
-        }
-
-        return [
-            'index' => $this->indexName,
-            'body'  => $body
+            '__stopwatch__' => $stopwatch,
+            'results' => $results,
+            'took' => $res['took'],   // duration
+            'count' => count($res['hits']['hits']),  // available
+            'total' => $res['hits']['total'],  // total
+            'facets' => $facets
         ];
     }
 
@@ -486,66 +443,81 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $params;
     }
 
-    private function getAggregationQueryParams(SearchEngineOptions $options)
+    private function createSortQueryParams(SearchEngineOptions $options)
     {
-        $aggs = [];
-        // technical aggregates (enable + optional limit)
-        foreach (ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-            $size = $this->options->getAggregableFieldLimit($k);
-            if ($size !== databox_field::FACET_DISABLED) {
-                if ($size === databox_field::FACET_NO_LIMIT) {
-                    $size = ESField::FACET_NO_LIMIT;
+        $sort = [];
+
+        if ($options->getSortBy() === null || $options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
+            $sort['_score'] = $options->getSortOrder();
+        }
+        elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
+            $sort['created_on'] = $options->getSortOrder();
+        }
+        elseif ($options->getSortBy() === SearchEngineOptions::SORT_UPDATED_ON) {
+            $sort['updated_on'] = $options->getSortOrder();
+        }
+        elseif ($options->getSortBy() === 'recordid') {
+            $sort['record_id'] = $options->getSortOrder();
+        }
+        else {
+            $f = array_filter(
+                $options->getFields(),
+                function (databox_field $f) use($options) {
+                    return $f->get_name() === $options->getSortBy();
                 }
-                $agg = [
-                    'terms' => [
-                        'field' => $f['field'],
-                        'size'  => $size
-                    ]
-                ];
-                $aggs[$k] = $agg;
+            );
+            if(count($f) == 1) {
+                // the field is found
+                $f = array_pop($f);
+                /** databox_field $f */
+                $k = sprintf('%scaption.%s', $f->isBusiness() ? "private_":"", $options->getSortBy());
+                switch ($f->get_type()) {
+                    case databox_field::TYPE_DATE:
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "date"
+                        ];
+                        break;
+                    case databox_field::TYPE_NUMBER:
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "double"
+                        ];
+                        break;
+                    case databox_field::TYPE_STRING:
+                    default:
+                        $k .= '.sort';
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "keyword"
+                        ];
+                        break;
+                }
             }
-        }
-        // fields aggregates
-        $structure = $this->context_factory->getLimitedStructure($options);
-        foreach ($structure->getFacetFields() as $name => $field) {
-            // 2015-05-26 (mdarse) Removed databox filtering.
-            // It was already done by the ACL filter in the query scope, so no
-            // document that shouldn't be displayed can go this far.
-            $agg = [
-                'terms' => [
-                    'field' => $field->getIndexField(true),
-                    'size'  => $field->getFacetValuesLimit()
-                ]
+
+            /* script tryout
+                $sort["_script"] = [
+                'type' => "string",
+                'script' => [
+                    // 'lang' => "painless",
+                    'inline' => sprintf(
+                        "doc['caption.%s'] ? doc['caption.%s.raw'].value : (doc['private_caption.%s'] ? doc['private_caption.%s.raw'].value : '')",
+                        $options->getSortBy(), $options->getSortBy(), $options->getSortBy(), $options->getSortBy()
+                    )
+                ],
+                'order' => "asc"
             ];
-            $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
-        }
-        return $aggs;
-    }
-
-    private function createACLFilters(SearchEngineOptions $options)
-    {
-        // No ACLs if no user
-        if (false === $this->app->getAuthenticator()->isAuthenticated()) {
-            return [];
+            */
         }
 
-        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
-
-        $grantedCollections = array_keys($acl->get_granted_base([\ACL::ACTIF]));
-
-        if (count($grantedCollections) === 0) {
-            return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
+        if (!array_key_exists('record_id', $sort)) {
+            $sort['record_id'] = $options->getSortOrder();
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
-        $flagNamesMap = $this->getFlagsKey($appbox);
-        // Get flags rules
-        $flagRules = $this->getFlagsRules($appbox, $acl, $grantedCollections);
-        // Get intersection between collection ACLs and collection chosen by end user
-        $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
-
-        return $this->buildACLsFilters($aclRules, $options);
+        return $sort;
     }
 
     private function createQueryFilters(SearchEngineOptions $options)
@@ -558,10 +530,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['lte'] = $options->getMaxDate()->format('Y-m-d');
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['gte'] = $options->getMinDate()->format('Y-m-d');
             }
 
             foreach ($options->getDateFields() as $dateField) {
@@ -603,27 +575,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $filters;
     }
 
-    private function createSortQueryParams(SearchEngineOptions $options)
-    {
-        $sort = [];
-
-        if ($options->getSortBy() === null || $options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
-            $sort['_score'] = $options->getSortOrder();
-        } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
-            $sort['created_on'] = $options->getSortOrder();
-        } elseif ($options->getSortBy() === 'recordid') {
-            $sort['record_id'] = $options->getSortOrder();
-        } else {
-            $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
-        }
-
-        if (! array_key_exists('record_id', $sort)) {
-            $sort['record_id'] = $options->getSortOrder();
-        }
-
-        return $sort;
-    }
-
     private function getFlagsKey(\appbox $appbox)
     {
         $flags = [];
@@ -636,6 +587,32 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $flags;
+    }
+
+    private function createACLFilters(SearchEngineOptions $options)
+    {
+        // No ACLs if no user
+        if (false === $this->app->getAuthenticator()->isAuthenticated()) {
+            return [];
+        }
+
+        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
+
+        $grantedCollections = array_keys($acl->get_granted_base([\ACL::ACTIF]));
+
+        if (count($grantedCollections) === 0) {
+            return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
+        }
+
+        $appbox = $this->app['phraseanet.appbox'];
+
+        $flagNamesMap = $this->getFlagsKey($appbox);
+        // Get flags rules
+        $flagRules = $this->getFlagsRules($appbox, $acl, $grantedCollections);
+        // Get intersection between collection ACLs and collection chosen by end user
+        $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
+
+        return $this->buildACLsFilters($aclRules, $options);
     }
 
     private function getFlagsRules(\appbox $appbox, \ACL $acl, array $collections)
@@ -768,5 +745,187 @@ class ElasticSearchEngine implements SearchEngineInterface
         else {
             return [];
         }
+    }
+
+    private function buildHighlightRules(QueryContext $context)
+    {
+        $highlighted_fields = [];
+        foreach ($context->getHighlightedFields() as $field) {
+            switch ($field->getType()) {
+                case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_DOUBLE:
+                case FieldMapping::TYPE_DATE:
+                    $index_field = $field->getIndexField();
+                    $raw_index_field = $field->getIndexField(true);
+                    $highlighted_fields[$index_field . ".light"] = [
+                        // Requires calling Mapping::enableTermVectors() on this field mapping
+//                        'matched_fields' => [$index_field, $raw_index_field],
+                        'type' => 'fvh',
+                    ];
+                    break;
+                case FieldMapping::TYPE_FLOAT:
+                case FieldMapping::TYPE_INTEGER:
+                case FieldMapping::TYPE_LONG:
+                case FieldMapping::TYPE_SHORT:
+                case FieldMapping::TYPE_BYTE:
+                default:
+                    continue;
+            }
+        }
+
+        return [
+            'pre_tags'  => ['[[em]]'],
+            'post_tags' => ['[[/em]]'],
+            'order'     => 'score',
+            'fields'    => $highlighted_fields
+        ];
+    }
+
+    private function getAggregationQueryParams(SearchEngineOptions $options)
+    {
+        $aggs = [];
+        // technical aggregates (enable + optional limit)
+        foreach (ElasticsearchOptions::getAggregableTechnicalFields($this->translator) as $k => $f) {
+            $size = $this->options->getAggregableFieldLimit($k);
+            if ($size !== databox_field::FACET_DISABLED) {
+                if ($size === databox_field::FACET_NO_LIMIT) {
+                    $size = ESField::FACET_NO_LIMIT;
+                }
+                $agg = [
+                    'terms' => [
+                        'field' => $f['esfield'],
+                        'size'  => $size
+                    ]
+                ];
+                $aggs[$k] = $agg;
+                if($options->getIncludeUnsetFieldFacet() === true) {
+                    $aggs[$k . '#empty'] = [
+                        'missing' => [
+                            'field' => $f['esfield'],
+                        ]
+                    ];
+                }
+            }
+        }
+        // fields aggregates
+        $structure = $this->context_factory->getLimitedStructure($options);
+        foreach($structure->getAllFields() as $name => $field) {
+            $size = $this->options->getAggregableFieldLimit($name);
+            if ($size !== databox_field::FACET_DISABLED) {
+                if ($size === databox_field::FACET_NO_LIMIT) {
+                    $size = ESField::FACET_NO_LIMIT;
+                }
+                $agg = [
+                    'terms' => [
+                        'field' => $field->getIndexField(true),
+                        'size'  => $size
+                    ]
+                ];
+                $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
+
+                if($options->getIncludeUnsetFieldFacet() === true) {
+                    $aggs[$name . '#empty'] = AggregationHelper::wrapPrivateFieldAggregation(
+                        $field,
+                        [
+                            'missing' => [
+                                'field' => $field->getIndexField(true),
+                            ]
+                        ]
+                    );
+                }
+            }
+        }
+
+        return $aggs;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function autocomplete($query, SearchEngineOptions $options)
+    {
+        $params = $this->createCompletionParams($query, $options);
+
+        $res = $this->client->suggest($params);
+
+        $ret = [
+            'text'    => [],
+            'byField' => []
+        ];
+        foreach (array_keys($params['body']) as $fname) {
+            $t = [];
+            foreach ($res[$fname] as $suggest) {    // don't know why there is a sub-array level
+                foreach ($suggest['options'] as $option) {
+                    $text = $option['text'];
+                    if (!in_array($text, $ret['text'])) {
+                        $ret['text'][] = $text;
+                    }
+                    $t[] = [
+                        'label' => $text,
+                        'query' => $fname . ':' . $text
+                    ];
+                }
+            }
+            if (!empty($t)) {
+                $ret['byField'][$fname] = $t;
+            }
+        }
+
+        return $ret;
+    }
+
+    private function createCompletionParams($query, SearchEngineOptions $options)
+    {
+        $body = [];
+        $context = [
+            'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
+        ];
+
+        $base_ids = $options->getBasesIds();
+        if (count($base_ids) > 0) {
+            $context['base_id'] = $base_ids;
+        }
+
+        $search_context = $this->context_factory->createContext($options);
+        $fields = $search_context->getUnrestrictedFields();
+        foreach ($fields as $field) {
+            if ($field->getType() == FieldMapping::TYPE_STRING) {
+                $k = '' . $field->getName();
+                $body[$k] = [
+                    'text'       => $query,
+                    'completion' => [
+                        'field'   => "caption." . $field->getName() . ".suggest",
+                        'context' => &$context
+                    ]
+                ];
+            }
+        }
+
+        return [
+            'index' => $this->indexName,
+            'body'  => $body
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resetCache()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearCache()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearAllCache(\DateTime $date = null)
+    {
     }
 }

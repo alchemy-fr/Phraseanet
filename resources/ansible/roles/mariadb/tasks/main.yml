@@ -34,11 +34,10 @@
   with_items:
     - "{{ mariadb.appbox_db }}"
     - "{{ mariadb.databox_db }}"
-    - "{{ mariadb.alt_databox_db }}"
 
 - name: mariadb | Import dump
   mysql_db: name={{ mariadb.appbox_db }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
   when: mariadb.dump
 
 - name: mariadb | Create users
-  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv=*.*:ALL state=present login_user=root login_password={{ mariadb.root_password }}
+  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv=*.*:ALL,GRANT state=present login_user=root login_password={{ mariadb.root_password }}

@@ -95,6 +95,8 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
     {
         $app = $this->loadApp();
 
+        $bkp = $app['conf']->get('authentication');
+
         $app['conf']->set(['registry', 'webservices', 'trials-before-display'], 42);
 
         //$app['orm.em'] = $this->createEntityManagerMock();
@@ -102,14 +104,21 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $manager = $app['auth.native.failure-manager'];
         $this->assertEquals(42, $manager->getTrials());
+
+        $app['conf']->set('authentication', $bkp);
     }
 
     public function testFailureAccountCreator()
     {
         $app = $this->getApplication();
+
+        $bkp = $app['conf']->get('authentication');
+
         $app->register(new ConfigurationServiceProvider());
         $app['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
         $app['authentication.providers.account-creator'];
+
+        $app['conf']->set('authentication', $bkp);
     }
 
     public function testAuthNativeWithCaptchaEnabled()
@@ -122,6 +131,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
         $app['conf']->set(['registry', 'webservices'], ['captchas-enabled' => true]);
+        $bkp = $app['conf']->get('authentication');
 
         $app['orm.em'] = $this->createEntityManagerMock();
         $app['repo.users'] = $this->createUserRepositoryMock();
@@ -131,6 +141,8 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['recaptcha'] = $this->createReCaptchaMock();
 
         $this->assertInstanceOf(FailureHandledNativeAuthentication::class, $app['auth.native']);
+
+        $app['conf']->set('authentication', $bkp);
     }
 
     public function testAuthNativeWithCaptchaDisabled()
@@ -142,12 +154,15 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
         $app['conf']->set(['registry', 'webservices'], ['captchas-enabled' => false]);
+        $bkp = $app['conf']->get('authentication');
 
         $app['orm.em'] = $this->createEntityManagerMock();
         $app['repo.users'] = $this->createUserRepositoryMock();
         $app['recaptcha'] = $this->createReCaptchaMock();
 
         $this->assertInstanceOf(NativeAuthentication::class, $app['auth.native']);
+
+        $app['conf']->set('authentication', $bkp);
     }
 
     public function testAccountCreator()
@@ -155,6 +170,8 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app = $this->getApplication();
         $template1 = $user = $app['manipulator.user']->createTemplate('template1', self::$DI['user']);
         $template2 = $user = $app['manipulator.user']->createTemplate('template2', self::$DI['user']);
+
+        $bkp = $app['conf']->get('authentication');
 
         $app['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->getId(), $template2->getId()]]);
 
@@ -164,6 +181,8 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $this->removeUser($app, $template1);
         $this->removeUser($app, $template2);
+
+        $app['conf']->set('authentication', $bkp);
     }
 
     private function createUserRepositoryMock()

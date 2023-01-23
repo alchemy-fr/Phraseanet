@@ -1,27 +1,28 @@
 <script type="text/template" id="list_user_tpl">
-<li class="list-item user" class="">
+<li class="list-item user">
     <a>
         <table>
             <tr>
                 <td class="icon">
-                    <img src="/assets/common/images/icons/user.png"/>
+                    <img src="/assets/common/images/icons/user-white.png" class="image-normal"/>
+                    <img src="/assets/common/images/icons/user-orange.png" class="image-hover"/>
                 </td>
                 <td class="infos">
                     <div style="margin:5px 10px 5px;">
                         <table>
                             <tr>
                                 <td>
-                                    <span class="name"><%= item.display_name %></span>
+                                    <span class="name"><%= htmlEncode(item.display_name) %></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="email"><i><%= item.email %></i></span>
+                                    <span class="email"><i><%= htmlEncode(item.email) %></i></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="subtite"><%= item.subtitle || '' %></span>
+                                    <span class="subtite"><%= htmlEncode(item.subtitle) || '' %></span>
                                 </td>
                             </tr>
                         </table>
@@ -34,7 +35,7 @@
 </script>
 
 <script type="text/template" id="list_list_tpl">
-<li class="list-item list" class="width:280px;height:45px;">
+<li class="list-item list">
     <a>
         <table>
             <tr>
@@ -46,7 +47,7 @@
                         <table>
                             <tr>
                                 <td>
-                                    <span class="name"><%= item.name %></span>
+                                    <span class="name"><%= htmlEncode(item.name) %></span>
                                 </td>
                             </tr>
                             <tr>
@@ -63,54 +64,88 @@
 </li>
 </script>
 
-<script type="text/template" id="feedback_badge_tpl">
-<div class="badge badge_<%= user.usr_id %>">
-    <a href="#" class="deleter">
-        <img src="/assets/prod/images/Push/close_badge.png"/>
-    </a>
-    <input name="id" value="<%= user.usr_id %>" type="hidden" />
-    <table>
-        <tr>
-            <td class="icon">
-                <img src="/assets/common/images/icons/user.png"/>
-            </td>
-            <td class="infos">
-                <div>
-                    <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
-                    <table>
-                        <tr>
-                            <td colspan="3">
-                                <span class="name"><%= user.display_name %></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <span class="subtite"><%= user.subtitle || '' %></span>
-                            </td>
-                        </tr>
-                        <tr class="toggles">
-                            <td class="toggle status_on toggle_agree">
-                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/contributeur_off_badge.png" />
-                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/contributeur_badge.png" />
-                                <input type="hidden" name="participants[<%= user.usr_id %>][agree]" value="1" />
-                            </td>
-                            <td class="toggle status_off toggle_see_others">
-                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/see_other_off_badge.png" />
-                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/see_other_badge.png" />
-                                <input type="hidden" name="participants[<%= user.usr_id %>][see_others]" value="0" />
-                            </td>
-                            <td class="toggle status_off toggle_HD">
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/download_off_badge.png" />
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/download_badge.png" />
-                                <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
-    </table>
-</div>
+<script type="text/template" id="_badge_tpl">
+    <div class="badge badge_<%= user.usr_id %>">
+        <a href="#" class="deleter">
+            <i class="fa fa-times-circle"></i>
+        </a>
+        <input name="id" value="<%= user.usr_id %>" type="hidden" />
+        <input class="user-email" value="<%= user.email %>" type="hidden" />
+        <table>
+            <tr>
+                <td class="icon colored inverse">
+                    <i class="fa fa-user"></i>
+                </td>
+                <td class="infos">
+                    <div>
+                        <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
+                        <table>
+                            <tr>
+                                <td colspan="3">
+                                    <span class="name"><%= htmlEncode(user.display_name) %></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
+                                </td>
+                            </tr>
+                            <% if(context != 'ListManager') { %>
+                            <tr class="toggles">
+                                <td>
+                                    <% msg = "{% trans %}prod::share: User can download HD{% endtrans %}" %>
+                                    <a href="#" class="colored toggle toggle_HD status_off" title="<%= msg %>">
+                                        <i class="fa fa-download"></i>
+                                    </a>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][HD]"
+                                           value="0"/>
+                                </td>
+                                <td>
+                                    <% if(context == 'Sharebasket') { %>
+                                    <% msg = "{% trans %}prod::share: User can modify the basket{% endtrans %}" %>
+                                    <a href="#" class="colored toggle toggle_modify status_off" title="<%= msg %>">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][modify]"
+                                           value="0"/>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(context == 'Sharebasket') { %>
+                                    <% msg = "{% trans %}prod::share: User contribute to the feedback{% endtrans %}" %>
+                                    <span class="feedback_only_true">
+                                        <a href="#" class="colored toggle toggle_agree status_on" title="<%= msg %>">
+                                            <i class="fa fa-comment"></i>
+                                        </a>
+                                    </span>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][agree]"
+                                           value="1"/>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(context == 'Sharebasket') { %>
+                                    <% msg = "{% trans %}prod::share: User can see others choices{% endtrans %}" %>
+                                    <span class="feedback_only_true">
+                                        <a href="#" class="colored toggle toggle_see_others status_off" title="<%= msg %>">
+                                            <i class="fa fa-users"></i>
+                                        </a>
+                                    </span>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][see_others]"
+                                           value="0"/>
+                                    <% } %>
+                                </td>
+                                <% } %>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </script>
 
 <script type="text/template" id="list_editor_dialog_add_tpl">
@@ -121,13 +156,57 @@
 </script>
 
 <script type="text/template" id="list_editor_dialog_delete_tpl">
-<p>
+<span>
     {% trans %}Are you sure you want to delete this list ?{% endtrans %}
-</p>
+</span>
+</script>
+
+<script type="text/template" id="feedback_adduser_sendform_tpl">
+    <form style="margin-bottom: 0;">
+        <div class="control-group email-to-notify">
+            <label style="font-size: 16px;">{% trans %}feedback::users to notify{% endtrans %}</label>
+            <span id="email-to-notify"></span>
+        </div>
+        <div class="control-group">
+            <textarea id="PushSendFormMessage" placeholder="{% trans %}Message{% endtrans %}" name="message"
+                  class="input-block-level" rows="7"></textarea>
+        </div>
+
+        <% if(context == 'feedback') { %>
+            <div class="control-group" style="margin-bottom: 0;">
+                <label for="PushSendReminder" class="checkbox">
+                    <input id="PushSendReminder" type="checkbox" name="send_reminder" value="0"/>
+                    {% trans %}prod::push: automatically send user reminder{% endtrans %}
+                </label>
+            </div>
+        <% } %>
+
+        <div class="control-group" style="margin-bottom: 0;">
+            <label for="PushSendFormRecept" class="checkbox">
+                <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>
+                {% trans %}Accuse de reception{% endtrans %}
+            </label>
+        </div>
+        {% if app['conf'].get(['registry', 'actions', 'enable-push-authentication']) %}
+            {% set force = app['conf'].get(['registry', 'actions', 'force-push-authentication']) %}
+            <div class="control-group">
+                <label for="PushForceAuthentication" class="checkbox" {% if force %}style="color:#8a8a8a"{% endif %}>
+                    <input {% if force %}disabled="disabled"{% endif %} id="PushForceAuthentication" type="checkbox" checked="checked" name="force_authentication" value="1"/>
+                    {% trans %}Force authentication{% endtrans %}
+                </label>
+            </div>
+            <div class="control-group info">
+            <span class="help-inline" style="font-style: italic">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                {% trans %}Force authentication : info{% endtrans %}
+            </span>
+            </div>
+        {% endif %}
+    </form>
 </script>
 
 <script type="text/template" id="feedback_sendform_tpl">
-<form>
+<form style="margin-bottom: 0;">
     <div class="Feedback control-group" style="display:none;">
         <label for="PushSendFormDuration">{% trans %}Time for feedback (days){% endtrans %}</label>
         <select id="PushSendFormDuration" name="duration" class="input-block-level">
@@ -141,14 +220,27 @@
         </select>
     </div>
     <div class="control-group">
-        <label for="PushSendFormName">{% trans %}Name{% endtrans %}</label>
-        <input id="PushSendFormName" type="text" name="name" class="input-block-level"/>
+        <input id="PushSendFormName" placeholder="{% trans %}Name{% endtrans %}" type="text" name="name"
+               class="input-block-level"/>
+        <input id="feedbackTitle" type="hidden" value="{% trans %}prod::feedback:feedback_set_title{% endtrans %}" />
+        <input id="sharedTitle" type="hidden" value="{% trans %}prod::feedback:shared_set_title{% endtrans %}" />
+        <input id="pushTitle" type="hidden" value="{% trans %}prod::push:push_set_title{% endtrans %}" />
     </div>
     <div class="control-group">
-        <label for="PushSendFormMessage">{% trans %}Message{% endtrans %}</label>
-        <textarea id="PushSendFormMessage" name="message" class="input-block-level" rows="6"></textarea>
+        <textarea id="PushSendFormMessage" placeholder="{% trans %}Message{% endtrans %}" name="message"
+                  class="input-block-level" rows="7"></textarea>
     </div>
-    <div class="control-group">
+
+    <% if(context == 'feedback') { %>
+        <div class="control-group" style="margin-bottom: 0;">
+            <label for="PushSendReminder" class="checkbox">
+                <input id="PushSendReminder" type="checkbox" name="send_reminder" value="0" />
+                {% trans %}prod::push: automatically send user reminder{% endtrans %}
+            </label>
+        </div>
+    <% } %>
+
+    <div class="control-group" style="margin-bottom: 0;">
         <label for="PushSendFormRecept" class="checkbox">
             <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>
             {% trans %}Accuse de reception{% endtrans %}
@@ -164,56 +256,74 @@
         </div>
         <div class="control-group info">
             <span class="help-inline" style="font-style: italic">
-                <i class="icon-info-sign"></i>
-                {% trans %}
-                    The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
-                    to see its contents.
-                    This avoids anonymous users to access to the content of the push if they were able to get the display
-                    url through a forwarded mail for example.
-                {% endtrans %}
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                {% trans %}Force authentication : info{% endtrans %}
             </span>
         </div>
     {% endif %}
 </form>
 </script>
 
-<script type="text/template" id="push_badge_tpl">
-<div class="badge badge_<%= user.usr_id %>">
+<script type="text/template" id="list_manager_badge_tpl">
+<div class="badge badge_<%= user.usr_id %> listmanager_badge">
     <a href="#" class="deleter">
-        <img src="/assets/prod/images/Push/close_badge.png"/>
+        <i class="fa fa-times-circle"></i>
     </a>
-    <input name="id" value="<%= user.usr_id %>" type="hidden" />
+    <input name="id" value="<%= user.usr_id %>" type="hidden">
     <table>
-        <tr>
-            <td class="icon">
-                <img src="/assets/common/images/icons/user.png"/>
-            </td>
-            <td class="infos">
-                <div>
-                    <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
-                    <table>
-                        <tr>
-                            <td colspan="3">
-                                <span class="name"><%= user.display_name %></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <span class="subtite"><%= user.subtitle || '' %></span>
-                            </td>
-                        </tr>
-                        <tr class="toggles">
-                            <td class="toggle status_off toggle_HD">
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/download_off_badge.png" />
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/download_badge.png" />
-                                <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
+      <tr>
+        <td class="listmanager_badge_img">
+         XX
+        </td>
+        <td class="infos">
+            <div>
+                <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
+                <table>
+                    <tr>
+                        <td colspan="3">
+                            <span class="name"><%= htmlEncode(user.display_name) %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
+                        </td>
+                    </tr>
+                    <tr class="toggles">
+                        <td class="toggle status_off toggle_HD">
+                            <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
+                                src="/assets/common/images/icons/download-grey.png"/>
+                            <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on"
+                                src="/assets/common/images/icons/dark-blue-download.png"/>
+                            <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+      </tr>
     </table>
 </div>
 </script>
 
+<script>
+    function htmlEncode(str) {
+        if (str != null) {
+            return str.replace(/[&"'<>]/g, function (c) {
+                switch (c) {
+                    case "&":
+                        return "&amp;";
+                    case "'":
+                        return "&#39;";
+                    case '"':
+                        return "&quot;";
+                    case "<":
+                        return "&lt;";
+                    case ">":
+                        return "&gt;";
+                }
+            });
+        }
+        return ;
+    }
+</script>

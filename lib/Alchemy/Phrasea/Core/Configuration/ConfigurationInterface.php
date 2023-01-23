@@ -14,6 +14,13 @@ namespace Alchemy\Phrasea\Core\Configuration;
 interface ConfigurationInterface extends \ArrayAccess
 {
     /**
+     * Do not compile, just save the config
+     *
+     * @param bool $noCompile
+     */
+    public function setNoCompile(bool $noCompile);
+
+    /**
      * Initialize configuration file in setup.
      *
      * Creates the configuration, compiles it.

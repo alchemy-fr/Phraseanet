@@ -13,12 +13,16 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 
 class LazaretManipulator
@@ -159,6 +163,7 @@ class LazaretManipulator
 
         try {
             //Post record creation
+
             /** @var \record_adapter $record */
             $record = null;
             $callBack = function ($element) use (&$record) {
@@ -215,16 +220,27 @@ class LazaretManipulator
                     }
                 }
 
+                /* todo: better to to do only one set_metadatas ? */
                 $data = $metadataBag->toMetadataArray($record->getDatabox()->get_meta_structure());
+
                 $record->set_metadatas($data);
 
                 $fields = $metaFields->toMetadataArray($record->getDatabox()->get_meta_structure());
+
                 $record->set_metadatas($fields);
+
+
+                // order to write meta in file
+
+                $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                    new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
             }
 
             //Delete lazaret file
             $this->entityManager->remove($lazaretFile);
             $this->entityManager->flush();
+
+            $ret['result']['record_id'] = $record->getRecordId();
 
             $ret['success'] = true;
         } catch (\Exception $e) {

@@ -84,5 +84,7 @@ define('GV_homeTitle', 'SuperPhraseanet');
 define('GV_metaKeywords', '');
 define('GV_metaDescription', '');
 define('GV_googleAnalytics', '');
+define('GV_matomoAnalyticsUrl', '');
+define('GV_matomoAnalyticsId', '');
 define('GV_allow_search_engine', true);
 define('GV_display_gcf', true);

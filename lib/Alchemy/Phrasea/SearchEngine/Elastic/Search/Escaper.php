@@ -4,6 +4,11 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 class Escaper
 {
+    public function quoteWord($value)
+    {
+        return '"' . $this->escapeRaw($value) . '"';
+    }
+
     public function escapeWord($value)
     {
         // Strip double quotes from values to prevent broken queries

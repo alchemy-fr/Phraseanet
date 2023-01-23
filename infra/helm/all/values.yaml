@@ -1,0 +1,185 @@
+
+image:
+  registry: alchemyfr
+  tag:
+      phraseanet: 4.1.3
+      database : 4.1.3
+      elasticsearch : 4.1.3
+
+mysql:
+  root_password: phraseanet
+  max_allowed_packet: 16M
+  pvc_name: phraseanet-database
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
+
+elasticsearch:
+  pvc_name: phraseanet-elasticsearch
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
+
+rabbitmq:
+  host: rabbitmq
+  port: 5672
+  default_user: rabbit
+  default_pass: rabbit
+  default_vhost: /
+  ssl: false
+  heartbeat: 60
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+
+http:
+  max_body_size: 2G
+  max_input_vars: 12000
+
+php:
+  opcache_enabled: 1
+  log_level: warning
+  session_cache_limiter: off
+
+ingress:
+  enabled: false
+  host: phraseanet
+  tls: false
+
+app:
+  hostname: localhost
+  phraseanet_install: 1
+  phraseanet_setup: 1
+  phraseanet_admin_account_email: admin@alchemy.fr
+  phraseanet_admin_account_password: phraseanet
+  phraseanet_db_host: db
+  phraseanet_db_user: root
+  phraseanet_db_password: phraseanet
+  install_db_template: DublinCore
+  install_appbox: ab_master
+  install_databox: db_databox1
+  phraseanet_hostname: localhost
+  phraseanet_app_port: 80
+  phraseanet_scheme: http
+  phraseanet_trusted_proxies:
+  gateway:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "32Mi"
+      limits:
+        cpu: "2000m"
+        memory: "4096Mi"
+  web:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "256Mi"
+      limits:
+        cpu: "2000m"
+        memory: "4096Mi"
+  worker:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "256Mi"
+      limits:
+        cpu: "2000m"
+        memory: "4096Mi"
+  pvc:
+    data:
+      name: phraseanet-datas
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    thumbnails:
+      name: phraseanet-thumbnails
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    custom:
+      name: phraseanet-custom
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    config:
+      name: phraseanet-config
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    wwwplugins:
+      name: phraseanet-wwwplugins
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    tmp:
+      name: phraseanet-tmp
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi

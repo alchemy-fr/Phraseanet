@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PropertyController extends Controller
 {
+    use DataboxLoggerAware;
+
     /**
      *  Display Status property
      *
@@ -197,6 +200,9 @@ class PropertyController extends Controller
             }
 
             $record->setStatus(strrev($newStatus));
+
+            $this->getDataboxLogger($record->getDatabox())
+                ->log($record, \Session_Logger::EVENT_STATUS, '', '');
 
             return [
                 'current_status' => $currentStatus,

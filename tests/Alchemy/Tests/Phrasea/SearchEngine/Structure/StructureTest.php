@@ -3,10 +3,9 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure as Structure;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 
 /**
  * @group unit
@@ -20,7 +19,6 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($structure->getAllFields());
         $this->assertEmpty($structure->getUnrestrictedFields());
         $this->assertEmpty($structure->getPrivateFields());
-        $this->assertEmpty($structure->getFacetFields());
         $this->assertEmpty($structure->getThesaurusEnabledFields());
         $this->assertEmpty($structure->getDateFields());
     }
@@ -36,6 +34,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
         $field->getDependantCollections()->willReturn(['1']);
+        $field->get_databox_id()->willReturn('1');
 
         $structure->add($field->reveal());
         $this->assertCount(1, $structure->getAllFields());
@@ -60,6 +59,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isPrivate()->willReturn(false);
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
+        $field->get_databox_id()->willReturn('1');
 
         $other = new Field('foo', FieldMapping::TYPE_STRING);
 
@@ -93,19 +93,6 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $this->assertNotContains($unrestricted_field, $private_fields);
     }
 
-    public function testGetFacetFields()
-    {
-        $facet = new Field('foo', FieldMapping::TYPE_STRING, ['facet' => Field::FACET_NO_LIMIT]);
-        $not_facet = new Field('bar', FieldMapping::TYPE_STRING, ['facet' => Field::FACET_DISABLED]);
-        $structure = new Structure();
-        $structure->add($facet);
-        $this->assertContains($facet, $structure->getFacetFields());
-        $structure->add($not_facet);
-        $facet_fields = $structure->getFacetFields();
-        $this->assertContains($facet, $facet_fields);
-        $this->assertNotContains($not_facet, $facet_fields);
-    }
-
     public function testGetDateFields()
     {
         $string = new Field('foo', FieldMapping::TYPE_STRING);
@@ -125,7 +112,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
             'thesaurus_roots' => null
         ]);
         $enabled = new Field('bar', FieldMapping::TYPE_STRING, [
-            'thesaurus_roots' => [new Concept('/foo')]
+            'thesaurus_roots' => [new Concept(1, '/foo')]
         ]);
         $structure = new Structure();
         $structure->add($not_enabled);
@@ -180,15 +167,18 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $structure = new Structure();
         $structure->add($foo = (new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2]
+            'used_by_collections' => [1, 2],
+            'used_by_databoxes' => [1]
         ])));
         $structure->add(new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]));
         $structure->add(new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]));
         $structure->add(new Field('baz', FieldMapping::TYPE_STRING, ['private' => false]));
         $this->assertEquals([1, 2], $foo->getDependantCollections());

@@ -18,12 +18,19 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
   <li>
     <a target="right" href="{{ path('setup_display_globals') }}" class="ajax">
-      <img src="/assets/admin/images/Setup.png" />
+      <img width="16" src="/assets/admin/images/tools-solid.svg" />
       <span>{% trans %}Setup{% endtrans %}</span>
     </a>
   </li>
+    <li>
+      <a target="right" href="{{ path('ps_admin') }}" class="ajax">
+        <img width="16" src="/assets/admin/images/toolbox-solid.svg" />
+        <span>{{ 'admin:: Phraseanet service setting (beta)' | trans }}</span>
+      </a>
+    </li>
   <li>
     <a target="right" href="{{ path('admin_searchengine_form') }}">
+      <img width="16" src="/assets/admin/images/searchengin.svg" />
       <span>{{ 'SearchEngine settings' | trans }}</span>
     </a>
   </li>
@@ -76,10 +83,19 @@
     </a>
   </li>
 
+  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::TASKMANAGER')) %}
+    <li class="{% if feature == 'workermanager' %}selected{% endif %}">
+      <a target="right" href="{{ path('worker_admin') }}" class="ajax">
+        <img width="16" src="/assets/admin/images/cogs-solid.svg" />
+        <span>{{ 'Worker Manager' | trans }}</span>
+      </a>
+    </li>
+  {% endif %}
+
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
       <a id="TREE_DATABASES" target="right" href="{{ path('admin_databases') }}" class="ajax">
-        <img src="/assets/admin/images/DatabasesAvailable.png" />
+        <img width="16" src="/assets/admin/images/database-solid-blue.svg" />
         <span>{{ 'admin::utilisateurs: bases de donnees' | trans }}</span>
       </a>
     </div>
@@ -104,7 +120,7 @@
       <li class="{% if this_is_open %}open{% endif %}">
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
             <a target="right" href="{{ path('admin_database', { 'databox_id' : sbas_id }) }}" class="ajax">
-                <img src="/assets/admin/images/Database.png"/>
+                <img width="16" src="/assets/admin/images/database-solid.svg"/>
                 <span>{{ databox.get_label(app['locale']) }}</span>
             </a>
         </div>

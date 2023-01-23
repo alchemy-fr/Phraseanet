@@ -42,9 +42,23 @@ class Account implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        $firewall = $this->getFirewall($app);
+
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireNotGuest();
+        });
+
         // Displays current logged in user account
         $controllers->get('/', 'account.controller:displayAccount')
             ->bind('account');
+
+        // allow to delete phraseanet account
+        $controllers->get('/delete/process', 'account.controller:processDeleteAccount')
+            ->bind('account_process_delete');
+
+        $controllers->get('/delete/confirm', 'account.controller:confirmDeleteAccount')
+            ->bind('account_confirm_delete');
+
 
         // Updates current logged in user account
         $controllers->post('/', 'account.controller:updateAccount')

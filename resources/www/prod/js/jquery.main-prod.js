@@ -1209,7 +1209,7 @@ $(document).ready(function () {
             $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
             $('.WZbasketTab').css('background-position', '15px 25px');
             $('#idFrameC').addClass('closed');
-            previousTab = $('#idFrameC .icon-menu').find('li.ui-tabs-active');
+            previousTab = $('#idFrameC .prod-icon-menu').find('li.ui-tabs-active');
         }else{
             $(this).find('i').removeClass('icon-double-angle-right').addClass('icon-double-angle-left')
             $('#idFrameC').width(360);
@@ -1219,8 +1219,8 @@ $(document).ready(function () {
             $('.ui-resizable-handle, #basket_menu_trigger').show();
             $('.WZbasketTab').css('background-position', '9px 25px');
             $('#idFrameC').removeClass('closed');
-            $('#idFrameC .icon-menu li').last().find('a').trigger('click');
-            $('#idFrameC .icon-menu li').first().find('a').trigger('click');
+            $('#idFrameC .prod-icon-menu li').last().find('a').trigger('click');
+            $('#idFrameC .prod-icon-menu li').first().find('a').trigger('click');
             $(previousTab).find('a').trigger('click');
         }
 
@@ -1504,9 +1504,11 @@ $(document).ready(function () {
             $(this).removeClass('focused');
         });
 
-    $('.basketTips').tooltip({
-        delay: 200
-    });
+    // todo: check if used
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // $('.basketTips').tooltip({
+    //     delay: 200
+    // });
 
     $('#idFrameC .tabs').tabs({
         activate: function (event, ui) {

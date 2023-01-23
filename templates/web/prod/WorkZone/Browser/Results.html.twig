@@ -9,22 +9,7 @@
         {% elseif Total == 1 %}
           {{ '1 result' | trans }}
         {% else %}
-          {% trans with {'%Total%' : Total} %}%Total% results{% endtrans %}
-        {% endif %}
-      </td>
-      <td class="paginator">
-        {% if Page - 1  > 0 %}
-        <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result">
-          <img src="/assets/prod/images/Basket/Browser/left.png" />
-        </a>
-        {% endif %}
-        <span>
-          Page {{ Page }} / {{ MaxPage }}
-        </span>
-        {% if Page + 1  <= MaxPage %}
-        <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result">
-          <img src="/assets/prod/images/Basket/Browser/right.png" />
-        </a>
+            {{ "%Total% results" | trans({'%Total%' : Total}) }}
         {% endif %}
       </td>
     </tr>
@@ -33,80 +18,74 @@
 <div class="PNB datas">
   <div class="PNB" style="right:10px">
   {% for Basket in Baskets %}
-    <div class="result {% if loop.index is odd %}odd{% endif %}">
-      <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">×</a>
-      <div class="PNB10" style="right:15px;">
-        <table>
-          <tr>
-            <td class="thumbnail">
+    <div class="result {{ Basket.getArchived ? '' : 'unarchived' }}">
+      <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close icon-baseline-close-24px" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">&nbsp;</a>
+      <div class="PNB10 rightBrowserInner">
+        <div class="item-table">
+
+            <div class="thumbnail">
               {% set BasketElement = Basket.getElements().first() %}
               {% if BasketElement %}
-                {{thumbnail.format(BasketElement.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
+                {{thumbnail.format(BasketElement.getRecord(app).get_thumbnail(), 150, 106, '', true, false)}}
               {% endif %}
-              <div class="counter">
-                 {{ Basket.getElements().count() }}
-              </div>
-            </td>
-            <td class="content">
+            </div>
+            <div class="content">
               <h1 class="title">
                 <img class="loader" src="/assets/prod/images/Basket/Browser/loader.gif" />
-                {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app.getAuthenticatedUser()) %}
+                {% if not Basket.isVoteBasket() or Basket.isVoteInitiator(app.getAuthenticatedUser()) %}
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
-                  <span>
-                    <img src="/assets/prod/images/Basket/Browser/archive.png"/>
-                  </span>
+                  &nbsp;
                 </a>
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
-                  <span>
-                    <img src="/assets/prod/images/Basket/Browser/archived.png"/>
-                  </span>
+                 &nbsp;
                 </a>
                 {% endif %}
-                <a class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
-                  {{ Basket.getName() }}
-                </a>
+                <a title="{{ Basket.getName()}}" class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
+                    <span> {{ Basket.getName()|length > 80 ? Basket.getName()|slice(0, 77) ~ '...' : Basket.getName()  }}</span>
+                <br><span class="basketCount">
+                        {{ Basket.getElements().count() }} {{ ' records' }}
+                  </span></a>
               </h1>
+
 
               {% if Basket.getPusher() %}
               <p>
-                {% set user_name = '<a href="/user/' ~ Basket.getPusher().get_id() ~ '/" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher(app).getId() }) ~ '" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
+                {% set user_name = '<a href="/user/' ~ Basket.getPusher().getId() ~ '/"  class="UserTips">' ~ Basket.getPusher(app).getDisplayName() | e ~ '</a>' %}
                 {% trans with {'%user_name%' : user_name} %}Received from %user_name%{% endtrans %}
               </p>
               {% endif %}
 
 
-              {% if Basket.getValidation() %}
+              {% if Basket.isVoteBasket() %}
               <p>
                 {% set list_participants = '' %}
-                {% for Participant in Basket.getValidation().getParticipants() %}
+                {% for Participant in Basket.getParticipants() %}
 
                   {% if list_participants != '' %}
                     {% set list_participants = list_participants ~ ', ' %}
                   {% endif %}
 
-                  {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Participant.getUser().getId() }) ~ '"  href="/user/' ~ Participant.getUser().getId() ~ '/">' %}
-                  {% set list_participants = list_participants ~ Participant.getUser().getDisplayName() %}
+                  {% set list_participants = list_participants ~ '<a class="UserTips"  href="/user/' ~ Participant.getUser().getId() ~ '/">' %}
+                  {% set list_participants = list_participants ~ Participant.getUser().getDisplayName() | e %}
                   {% set list_participants = list_participants ~ '</a>' %}
                 {% endfor %}
                 {% trans with {'%list_participants%' : list_participants} %}Sent for validation to %list_participants%{% endtrans %}
               </p>
               {% endif %}
 
-            </td>
+            </div>
             <td>
 
             </td>
-          </tr>
-        </table>
+        </div>
       </div>
     </div>
     {% endfor %}
     </div>
   </div>
   <div class="PNB footer">
-    <table>
-      <tr>
-        <td>
+    <div class="paginator-wrapper">
+        <span class="paginator-result">
           {% if Total == 0 %}
             {{ 'No results' | trans }}
           {% elseif Total == 1 %}
@@ -114,22 +93,18 @@
           {% else %}
             {% trans with {'%Total%' : Total} %}%Total% results{% endtrans %}
           {% endif %}
-        </td>
-        <td class="paginator">
+        </span>
+        <span class="paginator">
           {% if Page - 1  > 0 %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result">
-            <img src="/assets/prod/images/Basket/Browser/left.png" />
-          </a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result_page prev_res icon-round-chevron_left-24px">&nbsp;</a>
           {% endif %}
           <span>
             Page {{ Page }} / {{ MaxPage }}
           </span>
           {% if Page + 1  <= MaxPage %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result">
-            <img src="/assets/prod/images/Basket/Browser/right.png" />
-          </a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result_page next_res icon-round-chevron_right-24px">&nbsp;</a>
           {% endif %}
-        </td>
-      </tr>
-    </table>
+        </span>
+    </div>
   </div>
+

@@ -1,0 +1,115 @@
+
+.publish-dialog {
+  .ui-dialog-content {
+    max-height: 575px !important;
+  }
+}
+#modal_feed {
+  width: 100%;
+  .publish_top_list {
+    background: $dialogTopBg;
+    height: 285px;
+    overflow-y: auto;
+  }
+  .record_item {
+    .thumb_wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .diapo {
+      height: 100%;
+      width: 100%;
+      border: 0;
+      margin: 0;
+    }
+    background: $recordBg ;
+    float: left;
+    width: 10.4%;
+    margin-right: 0.8%;
+    height: 120px;
+    margin-bottom: 15px;
+    &:nth-child(9n+9) {
+      margin-right: 0;
+    }
+    .record_image {
+      width: auto!important;
+      height: auto!important;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      float: none;
+      top: 0!important;
+    }
+  }
+  .record_list {
+    padding: 15px 15px 0 15px;
+  }
+  .record_list .ui-state-highlight {
+    width: 112px;
+    height: 118px;
+    position: relative;
+    float: left;
+    background: none;
+    background-color: $darkBackgroundColor;
+    border-color: $mediumBackgroundColor;
+  }
+  form {
+    .feeds {
+      color: $darkerTextColor;
+      overflow: auto;
+      .list {
+        margin: 0;
+        height: 230px;
+      }
+      .feed {
+        padding: 5px 0;
+        background-color: $darkerBackgroundColor;
+        border: 1px solid $darkerBorderColor;
+        color: $darkerTextColor;
+        font-size: 15px;
+        cursor: pointer;
+        margin-bottom: 14px;
+        font-weight: bold;
+        &.odd {
+          background-color: lighten($darkerBackgroundColor, 5);
+          color: $mediumTextColor;
+        }
+        &.hover {
+          background-color: $lightBackgroundColor;
+          color: $lightTextColor;
+        }
+        &.selected {
+          background-color: $highlightBackgroundColor;
+          color: $highlightTextColor;
+        }
+        span {
+          margin: 0 10px;
+        }
+      }
+    }
+    input.error,
+    textarea.error {
+      border: 1px solid red;
+    }
+  }
+}
+.publish_bottom_form {
+  .span12 {
+    padding: 20px 20px 0 20px;
+  }
+  label {
+    font-size: 16px;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+}
+
+.feed_warning {
+    margin-bottom: 12px;
+    display: none;
+    &.alert {
+        display: inline-block ;
+    }
+}

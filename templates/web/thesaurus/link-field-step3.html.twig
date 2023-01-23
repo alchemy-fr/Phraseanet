@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ 'thesaurus:: Lier la branche de thesaurus' | trans }}</title>
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
     </head>
     <body  class="dialog">
     <center>
@@ -41,8 +41,9 @@
                     <br/>
                 {% endif %}
             </div>
-            <br/>
-            <input type="button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+            <div class="thesaurus_confirm_bottom_block">
+                <input type="button" value="{{ 'boutton::fermer' | trans }}"  class="cancel_btn" onclick="$('.close-dialog').trigger('click');">
+            </div>
         </form>
     </center>
 </body>

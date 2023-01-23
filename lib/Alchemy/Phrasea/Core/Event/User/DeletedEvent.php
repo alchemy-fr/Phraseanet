@@ -36,4 +36,12 @@ class DeletedEvent extends UserEvent
     {
         return $this->args['email'];
     }
+
+    /**
+     * @return array
+     */
+    public function getGrantedBaseIds()
+    {
+        return $this->args['grantedBaseIds'];
+    }
 }

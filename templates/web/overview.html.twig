@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/permaview/css/permaview{% if not app.debug %}.min{% endif %}.css">
+    <link type="text/css" rel="stylesheet" href="/assets/permaview/css/permaview{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
     <style type="text/css"></style>
 {% endblock %}
 
@@ -29,14 +29,14 @@
             {% include 'common/caption.html.twig' %}
         </div>
     </div>
-    <script type="text/javascript" src="/assets/production/permaview{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/permaview{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 
     <script type="text/javascript">
         window.permApp = PermaviewApplication.bootstrap({
             lang: "{{ app.locale }}",
             baseUrl: '{{ app['request'].getUriForPath('/') }}',
             basePath: '{{ app.request.basePath|e('js') }}',
-            recordUrl: '{{ url('alchemy_embed_view', {url: recordUrl|trim, autoplay: autoplay|default('false') }) }}',
+            recordUrl: '{{ url('alchemy_embed_view', {url: recordUrl|trim, autoplay: autoplay|default('false'), t: currentTime|trim }) | e('js')}}',
             debug: {% if app.debug == true %}true{% else %}false{% endif %}
         });
     </script>

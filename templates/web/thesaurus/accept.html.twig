@@ -8,7 +8,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ 'thesaurus:: accepter...' | trans }}</title>
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
         <style type="text/css">
             .path_separator
             {
@@ -19,28 +19,27 @@
                 font-weight:900;
             }
         </style>
-        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
         <script type="text/javascript">
-            function loaded()
-            {
-                window.name="ACCEPT";
-                self.focus();
-            }
+            //$('.close-dialog').trigger('click');
             function ok()
             {
                 as = "";
-                if((n=document.forms[0].as.length) > 0)
+                if($(".as_1").length > 0)
                 {
-                    for(i=0; i<n && as==""; i++)
-                    {
-                        if(document.forms[0].as[i].checked)
-                            as = document.forms[0].as[i].value;
-                    }
+                        if($(".as_1")[0].checked) {
+                            as = $(".as_1").val();
+                        }
+                        if($(".as_2").length > 0 && $(".as_2")[0].checked) {
+                            as = $(".as_2").val();
+                        }
                 }
                 else
                 {
-                    as = document.forms[0].as.value;
+                    if($(".as_3").length > 0) {
+                        as = $(".as_3").val();
+                    }
                 }
                 if(as == "TS")
                 {
@@ -59,14 +58,13 @@
                         switch(refresh.item(i).getAttribute("type"))
                         {
                             case "CT":
-                                {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                             break;
                         case "TH":
-                                {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
                             break;
                         }
                     }
-                    self.close();
                 }
                 else if(as == "SY")
                 {
@@ -85,19 +83,23 @@
                         switch(refresh.item(i).getAttribute("type"))
                         {
                             case "CT":
-                                {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                 break;
                             case "TH":
-                                {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
                                 break;
                             }
                         }
-                        self.close();
                     }
+                $('.close-dialog').trigger('click');
+                }
+
+                function closeModal() {
+                    $('.close-dialog').trigger('click');
                 }
         </script>
     </head>
-    <body id="desktop" onload="loaded();" class="dialog">
+    <body id="desktop" class="dialog">
 
         {% if not cterm_found %}
             <center>
@@ -109,11 +111,9 @@
                 <br/>
                 {{ 'thesaurus:: refresh' | trans }}
                 <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+                <div class="thesaurus_confirm_bottom_block">
+                    <input  type="button" class="cancel_btn" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="closeModal();">
+                </div>
         {% else %}
             {% if not term_found %}
                 <center>
@@ -125,11 +125,9 @@
                     <br/>
                     {{ 'thesaurus:: refresh' | trans }}
                     <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+                    <div class="thesaurus_confirm_bottom_block">
+                        <input type="button" class="cancel_btn" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="closeModal();">
+                    </div>
             {% else %}
                 {% if acceptable %}
                     <center>
@@ -144,9 +142,9 @@
                         {{ 'thesaurus:: Accepter le terme comme' | trans }}
                         <br/><br/><h4>{{ fullpath_src | raw }}</h4><br/><br/>
                         <br/>
-                        <input type='radio' name='as' value='TS' checked>{{ 'thesaurus:: comme terme specifique' | trans }}
+                        <input type='radio' name='as' class="as_1" value='TS' checked>{{ 'thesaurus:: comme terme specifique' | trans }}
                         <br/><br/>
-                        <input type='radio' name='as' value='SY'>
+                        <input type='radio' name='as' class="as_2" value='SY'>
                         {% set fullpath_tgt_raw = fullpath_tgt | raw %}
                         {% trans with {'%fullpath_tgt_raw%' : fullpath_tgt_raw} %}thesaurus:: comme synonyme de %fullpath_tgt_raw%{% endtrans %}
                         <br/>
@@ -155,13 +153,12 @@
                         {{ 'thesaurus:: Accepter la branche comme' | trans }}
                         &nbsp;{{ 'thesaurus:: comme terme specifique' | trans }}
                         <br/><br/><h4>{{ fullpath_tgt | raw }}</h4><br/><br/>
-                        <input type='hidden' name='as' value='TS'>
+                        <input type='hidden' name='as' class="as_3" value='TS'>
                     {% endif %}
-                            <br/>
-                            <br/>
-                            <input style="position:relative; z-index:2; width:100px" type="button" id="ok_button" value="{{ 'boutton::valider' | trans }}" onclick="ok();">
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="self.close();">
+                           <div class="thesaurus_confirm_bottom_block">
+                              <input class="cancel_btn"  type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="closeModal();">
+                              <input class="validate_btn" type="button" id="ok_button" value="{{ 'boutton::valider' | trans }}" onclick="ok();">
+                           </div>
                         </form>
                     </center>
                 {% else %}
@@ -171,13 +168,9 @@
                         <br/>
                         {% trans with {'%cfield%' : cfield} %}thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte{% endtrans %}
                         <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="self.close();">
+                        <div class="thesaurus_confirm_bottom_block">
+                            <input class="cancel_btn" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="closeModal();">
+                        </div>
                 {% endif %}
             {% endif %}
         {% endif %}

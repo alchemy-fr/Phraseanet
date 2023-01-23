@@ -2,18 +2,20 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
 use Assert\Assertion;
-use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
-use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 
 class RangeExpression extends Node
 {
+    /** @var FieldKey  */
     private $key;
+
     private $lower_bound;
     private $lower_inclusive;
     private $higher_bound;
@@ -55,20 +57,34 @@ class RangeExpression extends Node
     public function buildQuery(QueryContext $context)
     {
         $params = array();
-        if ($this->lower_bound !== null) {
-            $this->assertValueCompatible($this->lower_bound, $context);
-            if ($this->lower_inclusive) {
-                $params['gte'] = $this->lower_bound;
-            } else {
-                $params['gt'] = $this->lower_bound;
+        /** @var StructureField $field */
+        // $field = $this->key->getField($context);
+        $lower_bound = $this->lower_bound;
+        $higher_bound = $this->higher_bound;
+
+        if($this->key->getFieldType($context) === FieldMapping::TYPE_DATE) {
+            if($lower_bound !== null) {
+                $lower_bound = RecordHelper::sanitizeDate($lower_bound);
+            }
+            if($higher_bound !== null) {
+                $higher_bound = RecordHelper::sanitizeDate($higher_bound);
             }
         }
-        if ($this->higher_bound !== null) {
-            $this->assertValueCompatible($this->higher_bound, $context);
-            if ($this->higher_inclusive) {
-                $params['lte'] = $this->higher_bound;
+
+        if ($lower_bound !== null) {
+            $this->assertValueCompatible($lower_bound, $context);
+            if ($this->lower_inclusive) {
+                $params['gte'] = $lower_bound;
             } else {
-                $params['lt'] = $this->higher_bound;
+                $params['gt'] = $lower_bound;
+            }
+        }
+        if ($higher_bound !== null) {
+            $this->assertValueCompatible($higher_bound, $context);
+            if ($this->higher_inclusive) {
+                $params['lte'] = $higher_bound;
+            } else {
+                $params['lt'] = $higher_bound;
             }
         }
 

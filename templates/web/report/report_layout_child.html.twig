@@ -1,214 +1,100 @@
 {% extends "report/report_layout.html.twig" %}
 
-{% block report_dashboard_layout %}
-    <div id="dash" class="inside-container">
-        <div class="answers container-fluid">
-            <div class="content">
-                <div class="row-fluid">
-                    <div class="well-large well" style="background: #313131;margin-top:20px;border:none;">
-                        <form id="dashboard-form" class="form-inline" method="GET" action="{{ path("report_dashboard") }}">
-                            <label for="dminDash" style="color:#eee">{{ "from"|trans|title }}</label>
-                            <div class="input-prepend">
-                                <span class="add-on"><i class="icon icon-calendar"></i></span>
-                                <input id="dminDash" name="dmin" style="font-size: 14px;width:220px;" size="10" type="text" placeholder="{{ "from"|trans }}" value="{{ "-1 month"|date("Y-m-d") }}">
-                            </div>
-                            <label for="dmaxDash" style="color:#eee">{{ "to"|trans|title }}</label>
-                            <div class="input-prepend">
-                                to
-                                <span class="add-on"><i class="icon icon-calendar"></i></span>
-                                <input id="dmaxDash" name="dmax" style="font-size: 14px;width:220px;" size="10" type="text" placeholder="{{ "to"|trans }}" value="{{ "now"|date("Y-m-d") }}">
-                            </div>
-                            <button class="btn submit-dashboard" type="button">{{ "Generate" | trans }}</button>
-                        </form>
-                        <div>
-                            <span class="text-info" style="font-style: italic">
-                                <i class="icon icon-warning-sign"></i>
-                                {{
-                                    "Report generation may take a long time to generate, depending on the number of collections and the period selected." | trans
-                                }}
-                            </span>
-                        </div>
-                        {# <div id="chooose" style="margin-left:15px;float:left;margin-top:15px;"> #}
-                        {#  <div class="form_titre">{% trans "report:: 2 - Bases" %}</div> #}
-                        {#  <label for="nameDash"></label> #}
-                        {#  <select name="nameDash" style = "background-color:#555;color:orange;border:none;"> #}
-                        {#    <option value="all">Global</option> #}
-                        {#  {% for it in dashboard.authorizedCollection %} #}
-                                {#  <option value="{{it.sbas_id}}">{{ it.name }}</option> #}
-                        {#  {% endfor %} #}
-                            {#</select> #}
-                        {#</div> #}
-                    </div>
-                </div>
-                <div id='dashboard' class="well well-large text-center" style="background-color:#696969;border:none;">
-                    <button class="btn btn-primary submit-dashboard" style="
-                        padding: 18px 28px;
-                        font-size: 22px; //change this to your desired size
-                        line-height: normal;
-                        -webkit-border-radius: 8px;
-                           -moz-border-radius: 8px;
-                                border-radius: 8px;"
-                    >
-                        {{ "Generate dashboard" | trans }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock report_dashboard_layout %}
+{% block report_connections_layout %}
+    <div id="report-connections" class="inside-container">
+        <form class="form row-fluid" id="report-connections-form" method="POST">
 
-{% block report_connexion_layout %}
-    <div id="report-connexions" class="inside-container">
+            {% include "report/form_date_and_base.html.twig" with {'tab': "connections", 'route': "report2_connections", 'displayCollections':false } %}
 
-        <form class="form row-fluid" >
-            {% include "report/form_date_and_base.html.twig" %}
             {% block form_connexion %}
-                <div class="form3 span4">
-                    <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
-                    {% if not anonymous %}
-                        <div>
-                            <input name="tbl" type="radio" value="CNXU" data-action="{{ path('report_activity_users_connexions') }}" id="CNXU-input" class="formsubmiter" />
-                            <label for="CNXU-input">{{ "report:: (connexions) Par utilisateurs" | trans }}</label>
-                        </div>
-                    {% else %}
-                        <div>
-                            <input name="tbl" type="radio" value="CNXU" data-action="{{ path('report_activity_users_connexions') }}" id="CNXU-input" class="formsubmiter" />
-                            <label for="CNXU-input">{{ "report:: Grouper par" | trans }}</label>
-                            <select class="options" style="display:inline;display:none;" id="list-select" name="on" >
-                                <option selected ="selected" value="fonction" class="formsubmiter">{{ "report:: fonction" | trans }}</option>
-                                <option value="societe" class="formsubmiter">{{ "report:: societe" | trans }}</option>
-                                <option value="activite" class="formsubmiter">{{ "report:: activite" | trans }}</option>
-                                <option value="pays" class="formsubmiter">{{ "report:: pays" | trans }}</option>
-                            </select>
-                        </div>
-                    {% endif %}
-                    <div>
-                        <input name="tbl" type="radio" value="CNX" data-action="{{ path('report_connexions') }}" id="CNX-input" class="formsubmiter" />
-                        <label for="CNX-input">{{ "report:: (connexions) Globales" | trans }}</label>
-                    </div>
-                    <div>
-                        <input name="tbl" type="radio" value="CNXB" data-action="{{ path('report_clients') }}" id="CNXB-input" class="formsubmiter" />
-                        <label for="CNXB-input">{{ "report:: (connexions) OS et navigateurs" | trans }}</label>
-                    </div>
-                </div>
+            <div class="form3 form_content">
+                <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
+                <select class="select_one" name="group">
+                        <option value="" id="connections_">{{ 'report:: (connexions)' | trans }}</option>
+                        <option value="user" id="connections_user">{{ 'report:: (connexions) user' | trans }}</option>
+                        <option value="nav" id="connections_nav">{{ 'report:: (connexions) nav' | trans }}</option>
+                        <option value="nav,version" id="connections_nav,version">{{ 'report:: (connexions) nav,version' | trans }}</option>
+                        <option value="os" id="connections_os">{{ 'report:: (connexions) os' | trans }}</option>
+                        <option value="os,nav" id="connections_os,nav">{{ 'report:: (connexions) os,nav' | trans }}</option>
+                        <option value="os,nav,version" id="connections_os,nav,version">{{ 'report:: (connexions) os,nav,version' | trans }}</option>
+                        <option value="res" id="connections_res">{{ 'report:: (connexions) res' | trans }}</option>
+                </select>
+            </div>
             {% endblock form_connexion %}
         </form>
 
-
-                {% include "report/panel_hide_button.html.twig" %}
-        <div class="answers">
-            <div class="content">
-                {% if ajax %}
-                    {% include "report/ajax_report_content.html.twig" %}
-                {%endif%}
-            </div>
+        <div class="form_submit">
+            <button class="formsubmiter" data-form_selector="#report-connections-form">Download</button>
         </div>
+        
     </div>
-{% endblock report_connexion_layout %}
+{% endblock report_connections_layout %}
 
-{% block report_telechargement_layout %}
-    <div id="report-telechargement" class="inside-container">
-        <form class="form row-fluid"  >
-            {% include "report/form_date_and_base.html.twig" %}
-            {% block form_telechargement %}
-                <div  class="form3 span4">
-                    <div class="form_titre">{% trans %}report:: 3 - Type de report{% endtrans %}</div>
-                    {% if anonymous %}
-                        <div>
-                            <input name="tbl" type="radio" value="USR" data-action="{{ path('report_activity_users_downloads') }}" id="USR-dl" class="formsubmiter" />
-                            <label for="USR-dl">{{ "report:: Grouper par" | trans }}</label>
-                            <select class="options" style="display:inline;display:none;" id="list-select2" name="on" >
-                                <option selected ="selected" value="fonction" class="formsubmiter">{{ "report:: fonction" | trans }}</option>
-                                <option value="societe" class="formsubmiter">{{ "report:: societe" | trans }}</option>
-                                <option value="activite" class="formsubmiter">{{ "report:: activite" | trans }}</option>
-                                <option value="pays" class="formsubmiter">{{ "report:: pays" | trans }}</option>
-                            </select>
-                        </div>
-                    {% else %}
-                        <div>
-                            <input name="tbl" type="radio" value="USR" data-action="{{ path('report_activity_users_downloads') }}" id="USR-input" class="formsubmiter" />
-                            <label for="USR-input">{{ "report:: par utilisateurs" | trans }}</label>
-                        </div>
-                    {% endif %}
-                    <div>
-                        <input name="tbl" type="radio" value="GEN" data-action="{{ path('report_downloads') }}" id="GEN-input" class="formsubmiter" />
-                        <label for="GEN-input">{{ "report:: (telechargement) Global" | trans }}</label>
-                    </div>
-                    <div>
-                        <input name="tbl" type="radio" value="DAY" data-action="{{ path('report_activity_instance_days') }}" id="DAY-input" class="formsubmiter" />
-                        <label for="DAY-input">{{ "report:: (telechargement) Par jours base par base" | trans }}</label>
-                    </div>
-                    <div>
-                        <input name="tbl" type="radio" value="DOC" data-action="{{ path('report_documents') }}" id="DOC-input" class="formsubmiter" />
-                        <label for="DOC-input">{{ "report:: (telechargement) Par documents sur la base" | trans }}</label>
-                        <select class="options" id="precise" name="precise" style="display:none;">
-                            <option value="0">{{ "report::aucune precision" | trans }}</option>
-                            <option value="1">{{ "report::la description contient" | trans }}</option>
-                            <option value="2">{{ "report:: recordid" | trans }}</option>
-                        </select>
-                        <input name="preciseWord" type="text" value="" class="options entersubmiter" />
-                    </div>
-                </div>
-            {% endblock form_telechargement %}
+{% block report_downloads_layout %}
+    <div id="report-downloads" class="inside-container">
+        <form class="form row-fluid" id="report-downloads-form" method="POST">
+
+            {% include "report/form_date_and_base.html.twig" with {'tab': "downloads", 'route': "report2_downloads", 'displayCollections': true }  %}
+
+            <div  class="form3 form_content">
+                <div class="form_titre">{% trans %}report:: 3 - Type de report{% endtrans %}</div>
+
+                <select class="select_one" name="group">
+                        <option value="" id="downloads_">{{ 'report:: (downloads)' | trans }}</option>
+                        <option value="user" id="downloads_user">{{ 'report:: (downloads) user' | trans }}</option>
+                        <option value="record" id="downloads_record">{{ 'report:: (downloads) record' | trans }}</option>
+                </select>
+            </div>
         </form>
-        {% include "report/panel_hide_button.html.twig" %}
-        <div class="answers">
-            <div class="content">
-                {% if ajax %}
-                    {% include "report/ajax_report_content.html.twig" %}
-                {%endif%}
-            </div>
-        </div>
-    </div>
-{% endblock report_telechargement_layout %}
 
-{% block report_activite_layout %}
-    <div id="report-activite" class="inside-container">
-        <form class="form row-fluid"  >
-            {% include "report/form_date_and_base.html.twig" %}
-            {% block form_activite %}
-                <div class="form3 span4">
-                    <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
-                    {% if anonymous %}
-                        <input name="on" type="hidden" value="" checked="checked"/>
-                    {% endif %}
-                    <div>
-                        <input name="tbl" type="radio" value="ASK" data-action="{{ path('report_questions') }}" id="ASK-input" class="formsubmiter" />
-                        <label for="ASK-input">{{ "report:: toutes les questions" | trans }}</label>
-                    </div>
-                    <div>
-                        <input name="tbl" type="radio" value="BESTOF" data-action="{{ path('report_activity_questions_bestof') }}" id="BESTOF-input" class="formsubmiter" />
-                        <label for="BESTOF-input">{{ "report:: Les questions les plus posees" | trans }}</label>
-                    </div>
-                    <div>
-                        <input name="tbl" type="radio" value="NOBESTOF" data-action="{{ path('report_activity_questions_nobestof') }}" id="NOBESTOF-input" class="formsubmiter" />
-                        <label for="NOBESTOF-input">{{ "report:: questions sans reponses" | trans }}</label>
-                    </div>
-                    <div>
-                        <input name="tbl" type="radio" value="SITEACTIVITY" data-action="{{ path('report_activity_instance_hours') }}" id="SITEACTIVITY-input" class="formsubmiter" />
-                        <label for="SITEACTIVITY-input">{{ "report:: activite du site" | trans }}</label>
-                    </div>
-                    <div>
-                        <input name="tbl" type="radio" value="WDOC" data-action="{{ path('report_activity_documents_pushed') }}" id="WDOC" class="formsubmiter" />
-                        <label for="WDOC">{{ "report:: document" | trans }}</label>
-                        <select class="options formsubmiter" style="display:inline;display:none;" id="list-select3" name="docwhat" >
-                            <option selected ="selected" value="PUSHDOC" data-action="{{ path('report_activity_documents_pushed') }}" class="formsubmiter">{{ "report:: pushe" | trans }}</option>
-                            <option value="ADDDOC" data-action="{{ path('report_activity_documents_added') }}" class="formsubmiter">{{ "report:: ajoute" | trans }}</option>
-                            <option value="EDIDOC" data-action="{{ path('report_activity_documents_edited') }}" class="formsubmiter">{{ "report:: edite" | trans }}</option>
-                            <option value="VALIDOC" data-action="{{ path('report_activity_documents_validated') }}" class="formsubmiter">{{ "report:: valide" | trans }}</option>
-                            <option value="SENTDOC" data-action="{{ path('report_activity_documents_sent') }}" class="formsubmiter">{{ "Sent" | trans }}</option>
-                        </select>
-                    </div>
-                </div>
-            {% endblock  form_activite %}
-        </form>
-        {% include "report/panel_hide_button.html.twig" %}
-        <div class="answers">
-            <div class="content">
-                {% if ajax %}
-                    {% include "report/ajax_report_content.html.twig" %}
-                {%endif%}
-            </div>
+        <div class="form_submit">
+            <button class="formsubmiter" data-form_selector="#report-downloads-form">Download</button>
         </div>
+
     </div>
-{% endblock report_activite_layout %}
+{% endblock report_downloads_layout %}
+
+{% block report_records_layout %}
+    <div id="report-records" class="inside-container">
+        <form class="form row-fluid" id="report-records-form" method="POST">
+
+            {% include "report/form_date_and_base.html.twig" with {'tab': "records", 'route': "report2_records", 'displayCollections': true } %}
+
+            {% block form_records %}
+            <div class="form3 form_content form_content_checkboxes">
+                <div class="form_titre">{{ "report:: 4 - Fields" | trans }}</div>
+
+                {% for sbas_id,databox in granted_bases %}
+                <div class="collist collist-{{ sbas_id }}">
+                    <div class="collist_buttons">
+                        <button class="select-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
+                            {% trans %}Select all{% endtrans %}
+                        </button>
+                        <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
+                            {% trans %}Deselect all{% endtrans %}
+                        </button>
+                    </div>
+
+                    <ul id="chkfld-records-{{ sbas_id }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
+                    {% for meta in databox.metas %}
+                        <li>
+                            <label class="checkbox custom_checkbox_label">
+                                <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
+                                <span class="custom_checkbox"></span>
+                                {{ meta }}
+                            </label>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+            {% endblock form_records %}
+        </form>
+
+        <div class="form_submit">
+            <button class="formsubmiter" data-form_selector="#report-records-form">Download</button>
+        </div>
+
+    </div>
+{% endblock report_records_layout %}

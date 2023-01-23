@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ 'thesaurus:: export en topics' | trans }}</title>
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
         <style>
             .toscreen
             {
@@ -32,12 +32,9 @@
             {% endfor %}
 
             {% if ofm == 'tofiles' %}
-                <center>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <input type="button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();" style="width:100px;">
-                </center>
+                <div class="thesaurus_confirm_bottom_block">
+                    <input type="button" class="cancel_btn" value="{{ 'boutton::fermer' | trans }}" onclick=" self.close();" style="width:120px;">
+                </div>
             {% endif %}
         </div>
     </body>

@@ -1,0 +1,340 @@
+{% if not reload %}
+
+<h1>{{ 'admin::workermanager:tab:workerinfo: description' |trans }}</h1>
+<div class="worker-info-block">
+    <p style="margin-bottom: 20px;">
+        <button class="change-status-jobs btn btn-primary">
+            {{ 'admin::workermanager:tab:workerinfo: change status to canceled' |trans }}
+        </button>
+    </p>
+
+    <p>
+        <button class="btn btn-primary erase-all">
+            {{ 'admin::workermanager:tab:workerinfo: Erase all information' |trans }}
+        </button>
+        <span class="alert alert-danger" style="padding-top: 5px;">
+            {{ "admin::workermanager:tab:workerinfo: Warning! Erase all information" |trans }}
+        </span>
+    </p>
+
+    <p>
+        <button class="btn btn-primary erase-finished">
+            {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
+        </button>
+        <span class="alert alert-info" style="padding-top: 5px;">
+            {{ "admin::workermanager:tab:workerinfo: Warning! Erase all finished"|trans }}
+        </span>
+
+    </p>
+    <br><br>
+    <button id="refresh-list" class="btn btn-success">
+        {{ 'admin::workermanager:tab:workerinfo: Refresh list' |trans }}
+    </button>
+    <span class="alert alert-info" style="margin-left: 15px;padding-top: 5px;">
+        <span class="total-count">{{ totalCount }}</span>
+        <span style="margin-left: 10px;">{{ "job::tab total entry in DB" | trans }}</span>
+    </span>
+
+    <div style="margin-top: 10px;margin-bottom: 10px;">
+        <select id="job-type-filter">
+            <option value="">{{ 'boutton::choose job type' | trans }}</option>
+            {% for jobType in jobTypes %}
+                <option value="{{ jobType }}">{{ jobType }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="databox-filter" style="margin-left: 30px;">
+            <option value="">{{ 'button::choose databox' | trans }}</option>
+            {% for databoxId in databoxIds %}
+                <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="number" id="record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+
+        <div class="pull-right" style="display:inline-block;margin-top:5px;">
+            <select id="field-time-filter" style="margin-left: 30px;max-width:150px;">
+                <option value="created">{{ 'started since' | trans }}</option>
+                <option value="published">{{ 'created since' | trans }}</option>
+            </select>
+            <span class="time-filter">
+                <a data-value="PT1H">{{ '1h' | trans }}</a>-
+                <a data-value="PT3H">{{ '3h' | trans }}</a>-
+                <a data-value="PT12H">{{ '12h' | trans }}</a>-
+                <a data-value="P1D">{{ '1d' | trans }}</a>-
+                <a data-value="P3D">{{ '3d' | trans }}</a>-
+                <a data-value="P7D">{{ '1w' | trans }}</a>-
+                <a data-value="P14D">{{ '2w' | trans }}</a>-
+                <a data-value="P1M">{{ '1m' | trans }}</a>-
+                <a data-value="" class="active">{{ 'all' | trans }}</a>
+            </span>
+            <span class="real-entry-duration" style="color:#2d7979;">{{ realEntryDuration }}</span>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <label class="checkbox inline">
+            <input class="running-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display running work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="finished-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display finished work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="error-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display error work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="interrupt-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display manually interrupt work' | trans }}
+        </label>
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="result-count" style="margin-left: 40px;">{{ resultCount }} / {{ resultTotal }}</span> <span style="margin-left: 10px;">{{ "job::tab results" | trans }}</span>
+        </span>
+
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="total-duration" style="margin-left: 40px;">{{ totalDuration }}</span> <span style="margin-left: 10px;">{{ "job::tab total duration" | trans }}</span>
+        </span>
+
+    </div>
+
+</div>
+<table class="admintable">
+    <thead>
+    <tr>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: databox_name' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: record_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work_on' | trans }}</th>
+{#        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: payload' | trans }}</th>#}
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: published' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: created' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: finished' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: duration' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: status' | trans }}</th>
+        <th></th>
+
+    </tr>
+    </thead>
+        <tbody class="work-list">
+{% endif %}
+
+{% for workerRow in workerRunningJob %}
+    <tr title="{{ workerRow.info }}">
+        <td>
+            {% if workerRow.databoxId %}
+                {{ workerRow.databoxId | sbas_labels(app) }}
+            {% endif %}
+        </td>
+        <td>{{ workerRow.recordId }}</td>
+        <td>{{ workerRow.work }}</td>
+        <td>{{ workerRow.workOn }}</td>
+{#        <td>{{ workerRow.payload| json_encode }}</td>#}
+        <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
+        <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
+        <td>
+            {% if workerRow.finished %}
+                {{ workerRow.finished|date('Y-m-d H:i:s') }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+        <td>
+            <span {% if workerRow.finished is empty%} style="color:#ff8100;" {% endif %}>
+                {{ workerRow.duration|date_duration }}
+            </span>
+        </td>
+        <td>{{ workerRow.status }}</td>
+        <td>
+            {% if workerRow.status == 'running' %}
+                <buton class="btn btn-danger btn-mini change-status-interrupt" data-id="{{ workerRow.id }}">{{ 'admin::workermanager:tab:workerinfo: Manually interrupt' | trans }}</buton>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+
+{% if not reload %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        function refreshJobList () {
+            var running  = 1;
+            var finished = 1;
+            var error = 1;
+            var interrupt = 1;
+            var jobType = $("#job-type-filter").val();
+            var databoxId = $("#databox-filter").val();
+            var recordId = $("#record-filter").val();
+            var timeFilter = $(".time-filter a.active").attr("data-value");
+            var fieldTimeFilter = $("#field-time-filter").val();
+
+            if (!$(".running-work").is(":checked"))
+            {
+                running = 0;
+            }
+            if (!$(".finished-work").is(":checked"))
+            {
+                finished = 0;
+            }
+            if (!$(".error-work").is(":checked"))
+            {
+                error = 0;
+            }
+            if (!$(".interrupt-work").is(":checked"))
+            {
+                interrupt = 0;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished+"&error="+error+"&interrupt="+interrupt,
+                data: {
+                    jobType: jobType,
+                    databoxId : databoxId,
+                    recordId : recordId,
+                    timeFilter: timeFilter,
+                    fieldTimeFilter: fieldTimeFilter
+                },
+                beforeSend: function () {
+                    $(".work-list").empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+                },
+                success: function (data) {
+                    $(".work-list").empty().html(data.content);
+                    $(".result-count").empty().text(data.resultCount + ' / ' + data.resultTotal);
+                    $(".total-count").empty().text(data.totalCount);
+                    $(".total-duration").empty().text(data.totalDuration);
+                    $(".real-entry-duration").empty().text(data.realEntryDuration);
+                }
+            });
+        }
+
+        $("#refresh-list").on('click', function () {
+            refreshJobList();
+        });
+
+        $(".refresh-list-checkbox").on('change', function () {
+            refreshJobList();
+        });
+
+        $("#job-type-filter").on('change', function () {
+            refreshJobList();
+        });
+
+        $("#databox-filter").on('change', function () {
+            refreshJobList();
+        });
+
+        $("#record-filter").on('input', function () {
+            refreshJobList();
+        });
+
+        $("#field-time-filter").on('change', function () {
+            refreshJobList();
+        });
+
+        $(".time-filter a").on('click', function () {
+            $(".time-filter a").removeClass('active');
+            $(this).addClass('active');
+            refreshJobList ();
+        });
+
+        $(".admintable").on('click', '.change-status-interrupt', function () {
+            var workerId = $(this).attr('data-id');
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    status: '{{ constant("\\Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob::INTERRUPT") }}',
+                    finished: '1'     // manual interrupt also means "finished", it must update the date and unlock the row
+                },
+                url: "/admin/worker-manager/"+ workerId +"/change-status",
+                success: function (data) {
+                    refreshJobList();
+                }
+            });
+
+        });
+
+        var buttons = {
+            'Apply': function () {
+                save_status_canceled();
+            },
+            'Cancel': function () {
+                $('#change_status_job_dialog').dialog('close');
+            }
+        };
+
+        $('#change_status_job_dialog').dialog({
+            resizable: false,
+            autoOpen: false,
+            draggable: false,
+            buttons: buttons,
+            width: 600,
+            height: 300,
+            modal: true
+        });
+
+        $('.change-status-jobs').on('click', function () {
+            $.ajax({
+                type: "GET",
+                url: "/admin/worker-manager/change-status/canceled",
+                success: function (data) {
+                    let $dialog = $('#change_status_job_dialog');
+                    $dialog.html(data).dialog('open');
+                    $dialog.on('click', '.refresh-job-count', function() {
+                        let hour = $dialog.find('input[name="hour"]').val();
+                        $.ajax({
+                            type: "GET",
+                            url: "/admin/worker-manager/running",
+                            data: {
+                                hour: hour ? hour : 0
+                            },
+                            success: function (data) {
+                                $dialog.find('#job-count').empty().html(data.count);
+                            }
+                        });
+                    })
+                }
+            });
+        });
+
+        function save_status_canceled() {
+            let hour = $('input[name="hour"]').val();
+            $.ajax({
+                type: 'POST',
+                url: '/admin/worker-manager/change-status/canceled',
+                data: {
+                    hour: hour ? hour : 0
+                },
+                success: function (data) {
+                    $('#change_status_job_dialog').dialog('close');
+                }
+            });
+        }
+
+        $('.erase-all').on('click', function () {
+            if (confirm("{{ 'Are you sure you want to erase all job informations ?' | trans }}")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/worker-manager/truncate',
+                    success: function (data) {
+                    }
+                });
+            }
+        });
+
+        $('.erase-finished').on('click', function () {
+            if (confirm("{{ 'Are you sure you want to erase finished job informations ?' | trans }}")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/worker-manager/delete-finished',
+                    success: function (data) {
+                    }
+                });
+            }
+        });
+
+    </script>
+{% endif %}
+
+

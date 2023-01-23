@@ -15,9 +15,9 @@
             <tr>
                 <th class="refresh-view" style="width:80px;"  data-refresh-url="{{ path('admin_tasks_live_info') }}">
                     <button class="btn btn-refresh">
-                        <i class="icon icon-refresh"/>
+                        <i class="icon fa fa-refresh" aria-hidden="true"/>
                     </button>
-                    <i id="spinner" style="font-size:16px" class='icon-spinner icon-spin'>
+                    <i id="spinner" style="font-size:16px" class="fa fa-spinner icon-spin" aria-hidden="true">
                 </th>
                 <th>ID</th>
                 <th>PID</th>
@@ -28,86 +28,8 @@
             </tr>
         </thead>
         <tbody class="scheduler-view">
-            <tr>
-                <td class="menu">
-                    <div class="btn-group dropdown">
-                        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
-                            <li>
-                                <a method="POST" href="{{ path('admin_tasks_scheduler_start') }}">
-                                    {{ 'Start' | trans }}
-                                </a>
-                            </li>
-                            <li>
-                                <a method="POST" href="{{ path('admin_tasks_scheduler_stop') }}">
-                                    {{ 'Stop' | trans }}
-                                </a>
-                            </li>
-                            {% endif %}
-                            <li>
-                                <a href="{{ path('admin_tasks_scheduler_log') }}">
-                                    {{ 'Logs' | trans }}
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{{ scheduler["status"] }}</td>
-                <td>{{ scheduler["name"] }}</td>
-            </tr>
         </tbody>
         <tbody class="tasks-list-view">
-            {% for task in tasks %}
-                <tr>
-                    <td class="menu">
-                        <div class="btn-group dropdown">
-                            <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{{ path('admin_tasks_task_show', {"task" : task["id"] }) }}">
-                                        {{ 'Edit' | trans }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a method="POST" href="{{ path('admin_tasks_task_start', {"task" : task["id"] }) }}">
-                                        {{ 'Start' | trans }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a method="POST" href="{{ path('admin_tasks_task_stop', {"task" : task["id"] }) }}">
-                                        {{ 'Stop' | trans }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a method="POST" href="{{ path('admin_tasks_task_delete', {"task" : task["id"] }) }}">
-                                        {{ 'Delete' | trans }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ path('admin_tasks_task_log', {"task" : task["id"] }) }}">
-                                        {{ 'Logs' | trans }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td>{{ task["id"] }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{ task["status"] }}</td>
-                    <td>{{ task["name"] }}</td>
-                </tr>
-            {% endfor %}
         </tbody>
     </table>
     <form id="form-create-task" method="post" name="form-create-task" action="{{ path('admin_tasks_task_create') }}">
@@ -124,7 +46,6 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $('.dropdown-toggle').dropdown();
         $("form[name='form-create-task'] select").bind("change", function() {
             $(this).closest('form').submit();
         });

@@ -15,8 +15,16 @@
         </td>
          <td valign="center" align="left">
              <ul style="list-style:none;">
-                <li><button class="btn" id="upbutton" disabled><i class="icon-chevron-up"></i>{{ 'admin::base:collorder: monter' | trans }}</button></li>
-                <li><button class="btn" id="downbutton" disabled ><i class="icon-chevron-down"></i>{{ 'admin::base:collorder: descendre' | trans }}</button></li>
+                 <li>
+                     <button class="btn" id="upbutton" disabled><i class="fa fa-chevron-up"
+                                                                   aria-hidden="true"></i>{{ 'admin::base:collorder: monter' | trans }}
+                     </button>
+                 </li>
+                 <li>
+                     <button class="btn" id="downbutton" disabled><i class="fa fa-chevron-down"
+                                                                     aria-hidden="true"></i>{{ 'admin::base:collorder: descendre' | trans }}
+                     </button>
+                 </li>
                 <li><a href="#" id="natcase-reorder">{{ 'admin::base:collorder: reinitialiser en ordre alphabetique' | trans }}</a></li>
             </ul>
         </td>
@@ -39,7 +47,7 @@
     $(document).ready(function(){
         var offsets = [
             {% for collection in collections|sort_collections %}
-                {% if not loop.first %},{% endif %} {{ collection.get_ord() }}
+                {% if not loop.first %},{% endif %} {{ loop.index }}
             {% endfor %}
         ];
         var select =  $("#coll-order");
@@ -83,13 +91,13 @@
                 data: {order: order},
                 url: '{{ path('admin_database_submit_collections_order', {'databox_id': app['request'].attributes.get('databox_id')}) }}',
                 beforeSend : function() {
-                    $this.prop('disabled',true)
+                    $this.prop('disabled',true);
                 },
                 success : function(datas) {
-                    var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
+                    var html = _.template($("#alert_" + (datas.success ? "success" : "error") + "_tpl").html());
+                    $('#notification').html(html({
                         content:datas.msg
-                    });
-                    $('#notification').html(html);
+                    }));
                     AdminApp.LeftView.reloadTree('bases:bases', true);
                 },
                 complete : function() {

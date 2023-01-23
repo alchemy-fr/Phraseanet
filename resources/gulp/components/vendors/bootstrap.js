@@ -9,19 +9,19 @@ var utils = require('../../utils.js');
 
 gulp.task('bootstrap-js', function () {
     var btSource = [
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-transition.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-alert.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-modal.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-dropdown.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-scrollspy.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-tab.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-tooltip.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-popover.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-button.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-collapse.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-carousel.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-typeahead.js',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/javascripts/bootstrap-affix.js'];
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-transition.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-alert.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-modal.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-dropdown.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-scrollspy.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-tab.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-tooltip.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-popover.js',
+        config.paths.nodes + 'bootstrap-sass/jss/bootstrap-button.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-collapse.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-carousel.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-typeahead.js',
+        config.paths.nodes + 'bootstrap-sass/js/bootstrap-affix.js'];
 
     gulp.src(btSource)
         .pipe(concat('bootstrap.js'))
@@ -31,21 +31,21 @@ gulp.task('bootstrap-js', function () {
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/js'))
 });
 gulp.task('bootstrap-assets', function () {
-    gulp.src([config.paths.vendors + 'bootstrap-sass/vendor/assets/images/**/*'])
+    gulp.src([config.paths.nodes + 'bootstrap-sass/img/**/*'])
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/img'));
 
 });
 gulp.task('build-bootstrap', ['bootstrap-assets', 'bootstrap-js'], function () {
     // build standalone version (not used, see: Common Component)
-    gulp.src(config.paths.vendors + 'bootstrap-sass/vendor/assets/stylesheets/bootstrap.scss')
+    gulp.src(config.paths.nodes + 'bootstrap-sass/bootstrap-2.3.2.css')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/css/'))
         .pipe(cssmin())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/css'));
     gulp.src([
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/stylesheets/bootstrap-responsive.scss',
-        config.paths.vendors + 'bootstrap-sass/vendor/assets/stylesheets/bootstrap/_responsive-utilities.scss'
+        config.paths.nodes + 'bootstrap-sass/bootstrap-responsive-2.3.2.css',
+        config.paths.nodes + 'bootstrap-sass/lib/_responsive-utilities.scss'
     ])
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest( config.paths.build + 'vendors/bootstrap/css/'))

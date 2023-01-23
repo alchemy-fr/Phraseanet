@@ -43,7 +43,7 @@ class SubdefsEditor extends AbstractEditor
 <?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
   <embedded>1</embedded>
-  <sbas/>
+  <sbas>0</sbas>
   <type_image>1</type_image>
   <type_video>1</type_video>
   <type_audio>1</type_audio>

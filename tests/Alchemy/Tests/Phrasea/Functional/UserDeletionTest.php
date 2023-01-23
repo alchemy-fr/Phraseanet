@@ -79,7 +79,7 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
         $apiLog = $apiLogManipulator->create($account, new Request(), new Response());
         $apiLogId = $apiLog->getId();
 
-        $this->userManipulator->delete($this->user, true);
+        $this->userManipulator->delete($this->user);
         $this->assertTrue($this->user->isDeleted(), 'User was not properly deleted');
 
         $apiLogRepository->clear();

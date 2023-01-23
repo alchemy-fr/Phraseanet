@@ -1,0 +1,154 @@
+{
+  "name": "phraseanet/phraseanet",
+  "description": "Phraseanet",
+  "license": "GPL-3.0",
+  "config": {
+    "bin-dir": "bin/"
+  },
+  "repositories": [
+    {
+      "type": "package",
+        "package": {
+          "name": "facebook/php-sdk",
+          "version": "3.2.3",
+          "source": {
+            "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
+            "type": "git",
+            "reference": "3.2.3"
+            }
+       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "exiftool/exiftool",
+        "version": "11",
+        "source": {
+          "url": "https://github.com/exiftool/exiftool.git",
+          "type": "git",
+          "reference": "11.84"
+        }
+      }
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/alchemy-fr/tcpdf-clone"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/romainneutron/ProcessManager.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/alchemy-fr/imagine"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/alchemy-fr/JMSTranslationBundle"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/alchemy-fr/embed-bundle.git"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/alchemy-fr/fractal.git"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "ext-intl": "*",
+    "alchemy-fr/tcpdf-clone": "~6.0",
+    "alchemy/embed-bundle": "^2.0.7",
+    "alchemy/geonames-api-consumer": "~0.1.0",
+    "alchemy/mediavorus": "^0.4.4",
+    "alchemy/oauth2php": "1.1.0",
+    "alchemy/phlickr": "0.2.9",
+    "alchemy/phpexiftool": "^0.7.0",
+    "alchemy/rest-bundle": "^0.0.5",
+    "alchemy/symfony-cors": "^0.1.0",
+    "alchemy/task-manager": "2.0.x-dev@dev",
+    "alchemy/zippy": "^0.3.0",
+    "beberlei/assert": "^2.3",
+    "cocur/slugify": "^2.0",
+    "dailymotion/sdk": "~1.5",
+    "data-uri/data-uri": "~0.1.0",
+    "dflydev/doctrine-orm-service-provider": "~1.0",
+    "doctrine/cache": "1.6.x-dev",
+    "doctrine/dbal": "^2.4.0",
+    "doctrine/migrations": "^1.0.0",
+    "doctrine/orm": "^2.4.0",
+    "elasticsearch/elasticsearch": "~2.0",
+    "firebase/php-jwt": "^3.0.0",
+    "gedmo/doctrine-extensions": "~2.3.0",
+    "goodby/csv": "^1.3.0",
+    "google/apiclient": "^2.0",
+    "guzzle/guzzle": "~3.0",
+    "hoa/compiler": "~2.0",
+    "hoa/console": "~2.0",
+    "hoa/dispatcher": "~0.0",
+    "hoa/router": "~2.0",
+    "igorw/get-in": "~1.0",
+    "imagine/imagine": "0.6.x-dev",
+    "jms/serializer": "~0.10",
+    "jms/translation-bundle": "dev-rebase-2015-10-20",
+    "justinrainbow/json-schema": "2.0.3 as 1.6.1",
+    "league/flysystem": "^1.0",
+    "league/flysystem-aws-s3-v2": "^1.0",
+    "league/fractal": "dev-webgalleries#af1acc0275438571bc8c1d08a05a4b5af92c9f97 as 0.13.0",
+    "media-alchemyst/media-alchemyst": "^0.5.5",
+    "monolog/monolog": "~1.3",
+    "mrclay/minify": "~2.1.6",
+    "neutron/process-manager": "2.0.x-dev@dev",
+    "neutron/recaptcha": "~0.1.0",
+    "neutron/silex-filesystem-provider": "~1.0",
+    "neutron/silex-imagine-provider": "~0.1.0",
+    "neutron/temporary-filesystem": "~2.1",
+    "pagerfanta/pagerfanta": "^1.0",
+    "php-ffmpeg/php-ffmpeg": "~0.5.0",
+    "php-xpdf/php-xpdf": "~0.2.1",
+    "exiftool/exiftool": "^11",
+    "ramsey/uuid": "^3.0",
+    "roave/security-advisories": "dev-master",
+    "silex/silex": "^1.3.0",
+    "silex/web-profiler": "~1.0",
+    "simple-bus/doctrine-orm-bridge": "^4.0",
+    "simple-bus/jms-serializer-bridge": "^1.0",
+    "simple-bus/message-bus": "^2.1",
+    "simple-bus/serialization": "^2.0",
+    "sorien/silex-dbal-profiler": "^1.1",
+    "sorien/silex-pimple-dumper": "^1.0",
+    "swiftmailer/swiftmailer": "~5.4.5",
+    "symfony/symfony": "~2.7.10|~2.8.3",
+    "themattharris/tmhoauth": "~0.7",
+    "twig/extensions": "^1.2.0",
+    "twig/twig": "~1.14, >=1.14.2",
+    "vierbergenlars/php-semver": "~2.1",
+    "webmozart/json": "^1.1",
+    "willdurand/negotiation": "^2.0.0-alpha1",
+    "zend/gdata": "~1.12.1",
+    "alchemy/worker-bundle": "^0.1.6",
+    "alchemy/queue-bundle": "^0.1.5",
+    "google/recaptcha": "^1.1",
+    "facebook/graph-sdk": "^5.6",
+    "box/spout": "^2.7",
+    "paragonie/random-lib": "^2.0",
+    "czproject/git-php": "^3.17"
+  },
+  "require-dev": {
+    "mikey179/vfsstream": "~1.5",
+    "phpunit/phpunit": "^4.8|^5.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "Alchemy\\": "lib",
+      "": "lib/classes"
+    }
+  },
+  "include-path": ["vendor/zend/gdata/library"],
+  "extra": {
+    "branch-alias": {
+      "dev-master": "4.1.x-dev"
+    }
+  }
+}

@@ -1,0 +1,436 @@
+.contextMenuWrapper {
+    position: relative;
+}
+#idFrameC {
+    .ui-accordion .ui-accordion-content {
+        padding: 0 10px;
+        &.content {
+            padding: 5px;
+        }
+    }
+    #baskets_wrapper {
+        top: 88px!important;
+    }
+    #expose_tabs {
+        #baskets {
+            top: 44px;
+        }
+        &.ui-tabs .ui-tabs-nav {
+            .expose_li {
+                height: 44px;
+                a {
+                    padding: 11px 10px;
+                    font-size: 13px;
+                    font-weight: bold;
+                    min-width: 154px;
+                }
+                &.ui-state-active a {
+                    border-bottom: 1px solid #076882;
+                }
+            }
+        }
+    }
+    #baskets {
+        top: $tabHeight ;
+        border-top: 1px solid $darkBorderColor;
+        > div {
+            // border-top: 1px solid $mediumBorderColor;
+        }
+        .bloc {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 1px;
+            bottom: 0;
+            /*
+            overflow-y: auto;
+            overflow-x: hidden;
+             */
+            &.groupDrop {
+                border: 3px solid #a00;
+            }
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            &.grouping .alert_datas_changed,
+            &.basket .alert_datas_changed {
+                position: relative;
+                margin: 10px 0;
+                right: 0;
+                left: 0;
+            }
+        }
+        .alert_datas_changed {
+            position: absolute;
+            top: 5px;
+            height: 20px;
+            right: 26px;
+            left: 10px;
+            background-color: $workzoneBasketAlertDataBg;
+            color: $workzoneBasketAlertDataColor;
+            text-align: center;
+            font-weight: bold;
+            font-size: $mediumFontSize;
+            display: none;
+            z-index: 500;
+        }
+        .insidebloc {
+            top: 0;
+            overflow-y: auto;
+        }
+        .top-scroller, .bottom-scroller {
+            height: 80px;
+            position: absolute;
+            border: none;
+            top: 0px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        .top-scroller {
+            bottom: auto;
+        }
+
+        .bottom-scroller {
+            top: auto;
+        }
+        .SSTT {
+            &.active {
+                &.ui-corner-top {
+                    border: none;
+                    top: 0;
+                    background-color: $STTHover;
+                }
+                a {
+                    color: $basketTitleHov;
+                }
+            }
+            &.grouping {
+                &.active {
+                    &.ui-corner-top {
+                        border-bottom: none;
+                    }
+                }
+            }
+            .title {
+                overflow: hidden;
+                left: 30px;
+                right: 40px;
+                height: 16px;
+                margin: 2px 0;
+                font-size: $mediumFontSize;
+            }
+            .menu {
+                text-align: right;
+                position: absolute;
+                right: 0;
+                top: 0;
+                padding: 0 3px;
+                margin: 0 5px 0 0;
+                table td {
+                    width: 27px;
+                    position: relative;
+                }
+            }
+            .workzone-menu-title {
+                text-overflow: ellipsis;
+                padding-right: 65px;
+                overflow: hidden;
+                white-space: nowrap;
+                display: block;
+            }
+            img {
+                max-height: 24px;
+                vertical-align: middle;
+                cursor: help;
+                margin-right: 9px;
+            }
+            img.basket_title {
+                margin: -5px 9px 0 -9px;
+                position: absolute;
+                right: 0;
+                top: 16px;
+            }
+            .contextMenuTrigger {
+                cursor: pointer;
+                padding: 0;
+                margin: 0;
+                width: 26px;
+                height: 35px;
+                display: none;
+            }
+            &:hover, &:focus {
+                .contextMenuTrigger {
+                    display: inline-block;
+                }
+            }
+        }
+
+        .ui-state-active a {
+            &:link, &:visited, &:hover, &:focus {
+                color: $basketTitleHov;
+            }
+        }
+    }
+}
+
+/** hack IE7 only */
+*:first-child + html .workzone-menu-title {
+    margin-right: 65px;
+}
+
+.ui-accordion .ui-accordion-header.baskDrop {
+    color: red;
+}
+
+#basket_menu_trigger {
+    padding: 32px 7px 0 0;
+    float: right;
+    font-size: 9px;
+    cursor: pointer;
+}
+.feedback-info {
+    background: $chimWrap;
+    padding: 14px;
+    margin: 10px;
+    position: relative;
+    .btn-not-shown {
+        visibility: hidden;
+        transition: 0.2s all;
+    }
+    .create-date {
+        margin-right: 64px;
+        font-weight: bold;
+    }
+        input.feed-datepicker {
+        width: 135px;
+        margin-left: 63px;
+    }
+    button.submit {
+        background: transparent;
+        border: 0;
+        border-radius: 4px;
+        margin-top: -8px;
+        margin-right: 4px;
+        color: #5cb85c;
+        font-size: 23px;
+        padding: 2px 5px;
+        &:hover {
+            color: #3d8b3d;
+        }
+    }
+    .record-number {
+        bottom: inherit;
+        top: -36px;
+        right: 0;
+        padding: 4px 8px;
+        z-index: 1;
+    }
+    form.update-feed-validation {
+        margin-bottom: 0;
+        display: inline-block;
+    }
+    .expiredDate {
+        text-align: center;
+        margin-top: 10px;
+        display: inline-block;
+        width: 100%;
+    }
+    .cancel-date  {
+        cursor: pointer;
+        .fa {
+            font-size: 24px;
+            color: #da4f49;
+            transition: 0.1s all;
+        }
+        &:hover {
+            .fa {
+                color: red;
+            }
+        }
+    }
+}
+
+.chim-content {
+    display: block;
+}
+.chim-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+    background: $chimWrap;
+    margin: 0 -1px;
+    display: inline-block;
+    span.feedback_user_name {
+        position: relative;
+        background: $feedback;
+        padding-right: 9px;
+        z-index: 1;
+    }
+    span.line_separator {
+        position: absolute;
+        height: 45%;
+        width: calc(100% - 10px);
+        right: 0;
+        top: 0;
+        border-bottom: 1px solid $lineSeparator;
+    }
+
+    .note_tips_holder {
+        .image-hover {
+            display: none;
+        }
+        &:hover {
+            .image-hover {
+                display: block;
+            }
+            .image-normal {
+                display: none;
+            }
+        }
+    }
+    .title , .status {
+        width: 100px;
+        overflow: hidden;
+        padding: 2px 4px;
+        text-align: center;
+        font-size: 10px;
+        line-height: 1;
+    }
+    .title {
+        height: 26px;
+        text-overflow: ellipsis;
+        margin-top: 6px;
+    }
+
+}
+.record-number {
+    position: absolute;
+    background-color: #5cb85c;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 3px;
+    z-index: 16;
+    bottom: 0;
+}
+
+.CHIM.diapo {
+    width: 108px;
+    overflow: hidden;
+    margin: 0;
+    float: none;
+}
+.basket-content {
+    margin: 0 7px;
+    overflow: hidden;
+    position: relative;
+    padding-left: 0;
+}
+.chim-feedback-item {
+    padding: 10px;
+}
+
+.CHIM.diapo .title, .CHIM.diapo .status {
+    position: relative;
+    height: 20px;
+    z-index: 15;
+    font-size: 0.8em;
+    background: rgba(0,0,0,0.4);
+}
+
+.CHIM.diapo .title {
+    margin: 0;
+    padding: 3px;
+    width: 100%;
+    line-height: 20px;
+    overflow: hidden;
+}
+
+.CHIM.diapo .bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 15;
+    vertical-align: middle;
+    .WorkZoneElementRemover {
+        padding: 3px;
+    }
+}
+.WorkZoneElementRemover {
+    display: inline-block;
+    height: 17px;
+    width: 12px;
+    position: relative;
+    bottom: -6px;
+    .icomoon {
+        font-size: 16px;
+        color: #d8d8d8;
+    }
+}
+
+.contextMenuTrigger {
+    .fa-inverse-bg {
+        color: $stackInverseBg!important;
+    }
+    .fa-inverse {
+        color : $stackInverse;
+    }
+    &:hover {
+
+        .fa-inverse-bg {
+            color: $stackBg!important;
+        }
+    }
+}
+.WorkZoneElementRemover {
+    .fa-stack-1x {
+        color: $stackInverse;
+    }
+
+}
+.captionTips {
+    .icomoon {
+        color: $stackInverse;
+        background: $stackInverseBg;
+        border-radius: 2px;
+        padding: 0px 1px;
+        line-height: 1;
+        margin: 0 4px;
+    }
+}
+
+.CHIM.diapo .bottom span, .CHIM.diapo .bottom img {
+    cursor: pointer;
+    vertical-align: middle;
+    color: $textPrimaryColor;
+    font-size: 10px;
+}
+
+.CHIM.diapo img {
+    z-index: 14;
+    position: relative;
+}
+
+.basket-filter {
+    padding: 10px 16px;
+
+    .filter-item {
+        margin: 0 10px 5px;
+        display: inline-block;
+    }
+    .checkbox input[type=checkbox], .radio input[type=radio] {
+        margin-top: 1px;
+    }
+
+    flex: 0 0 auto;
+}
+.basket_type {
+    width: 15px;
+    display: inline-block;
+}
+.bottom {
+    .captionRolloverTips {
+        padding-top: 4px;
+    }
+
+}

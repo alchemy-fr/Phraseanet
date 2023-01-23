@@ -1,0 +1,303 @@
+
+
+/******* UPLOAD MANAGER *******************************************************/
+
+#uploadBoxLeft, #uploadBoxRight {
+  width: 48.5%;
+  height: 100%;
+  overflow: auto;
+  text-align: center;
+}
+
+#uploadBoxLeft {
+  float: left;
+}
+
+#uploadBoxRight {
+  float: right;
+}
+
+#uploadBox {
+  height: 100%;
+  h5 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: $mediumFontSize;
+    font-weight: bold;
+    text-align: left;
+  }
+  .clear {
+    clear: both;
+  }
+  .upload-tabs {
+    height: 100%;
+  }
+  .ui-tabs .ui-tabs-panel {
+    padding: 20px;
+  }
+  .well {
+    margin: 0;
+    padding: 0.5%;
+    color: $textPrimaryInverseColor;
+  }
+  #fileupload {
+    height: 92%;
+  }
+  .fileinput-button {
+     color: #fff;
+     background-image: none;
+     border: 1px solid darken(#5cb85c, 15%);
+     background-color: #5cb85c;
+     width: 60%;
+     padding: 8px 0;
+     margin: 18px 0 0;
+     font-size: 14px;
+     transition: all 0.3s;
+     &:hover, &:active, &:focus {
+       background-color: darken(#5cb85c, 15%);
+     }
+  }
+  .or_upload {
+    text-align: center;
+    font-weight: bold;
+    margin: 12px 0;
+  }
+  .url_upload {
+    display: inline-block;
+    width: 60%;
+    position: relative;
+    input {
+      width: 100%;
+      max-width: 650px;
+      height: 42px;
+      padding: 0 120px 0 8px;;
+      margin: 0;
+      box-sizing: border-box;
+    }
+  }
+  .add_url_upload {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 42px;
+    color: #fff;
+    border: 1px solid darken(#5cb85c, 15%);
+    background-color: #5cb85c;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: bold;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    transition: all 0.3s;
+    &:hover, &:active, &:focus {
+      background-color: darken(#5cb85c, 15%);
+    }
+  }
+  span.comment {
+    font-style: italic;
+    color: $textSecondaryColor;
+  }
+  .fileinput-button {
+    position: relative;
+    overflow: hidden;
+    input {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      border: solid transparent;
+      border-width: 0 0 100px 200px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      -moz-transform: translate(-300px, 0) scale(4);
+      direction: ltr;
+      cursor: pointer;
+    }
+  }
+  .status-tab {
+    width: 100%;
+    margin-bottom: 10px;
+    td {
+      padding: 2px;
+    }
+  }
+  .status-tab-left {
+    width: 48%;
+    padding-right: 5px;
+    text-align: right;
+  }
+  .status-tab-right {
+    width: 48%;
+    padding-left: 5px;
+    text-align: left;
+  }
+  .status-tab-left input,
+  .status-tab-right input {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .thumbnails {
+    margin-left: -20px;
+    > li {
+      margin-left: 20px;
+    }
+  }
+  .upload-record {
+    height: 260px;
+    background-color: $uploadBg1;
+    .canva-wrapper {
+      height: 125px;
+      overflow: auto;
+    }
+    .name-doc {
+      height:40px;
+      overflow: hidden;
+      -o-text-overflow: ellipsis; /* pour Opera 9 */
+      text-overflow: ellipsis;
+      font-weight: bold;
+    }
+    .infos-doc {
+      overflow: hidden;
+      -o-text-overflow: ellipsis; /* pour Opera 9 */
+      text-overflow: ellipsis;
+      color: #777777;
+      height: 40px;
+    }
+    .error, .success{
+      padding-top: 2px;
+      padding-bottom: 3px;
+      display: none;
+      overflow: auto;
+    }
+    .error {
+      padding: 0;
+      width: 100%;
+    }
+    .remove-element {
+      margin: 2px 0;
+    }
+  }
+  .flash-box .upload-record {
+    height: 160px;
+    background-color: $uploadBg2;
+  }
+  .select-label {
+    font-style: italic;
+    color: $textSecondaryColor;
+  }
+  .select-row {
+    font-weight: normal;
+    font-style: normal;
+  }
+  .progress {
+    margin-top: 4px;
+    margin-bottom: 10px;
+    height: 10px;
+  }
+  .uploader-button{
+    text-align: center;
+    width:50%;
+  }
+  #addFileList {
+    width:100%;
+    table-layout:fixed;
+    border:none;
+    td{
+      vertical-align: middle;
+    }
+  }
+  .uploader-icon {
+    width:15%;
+    text-align:left;
+  }
+  .uploader-info {
+    font-size:10px;
+    width:35%;
+    text-align:left;
+    p {
+      line-height:10px;
+      font-size:10px;
+      word-wrap: break-word;
+    }
+    a {
+      text-decoration: underline;
+      color: darkblue;
+      margin:5px 0;
+    }
+  }
+}
+
+#uploadBoxRight .progress .progress-bar {
+  height: 10px;
+}
+#lazaretBox {
+  &.container-fluid {
+    margin: 0;
+    padding: 0;
+  }
+  .loading {
+    background-image: url('#{$iconsPath}#{$uploadLoaderImg}');
+    background-position: center right;
+    background-repeat: no-repeat;
+  }
+  li.wrapper-item {
+    margin-bottom: 20px;
+  }
+  .lazaret-file h5,
+  .lazaret-proposals h5 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  .lazaret-file p,
+  .lazaret-proposals p {
+    font-weight: bold;
+    overflow: hidden;
+    -o-text-overflow: ellipsis; /* for Opera 9 */
+    text-overflow: ellipsis;
+  }
+  span.info {
+    display: inline;
+    font-weight: normal;
+  }
+  .lazaret-file,
+  .lazaret-proposals {
+    .thumbnails {
+      margin-left: 0;
+      background-color: #FFFFFF;
+      min-height: 234px;
+      li {
+        margin: 0;
+      }
+      img {
+        max-height: 480px;
+      }
+
+      .record-thumb {
+        height: 180px;
+      }
+    }
+  }
+  .well {
+    .lazaret-file,
+    .lazaret-proposals {
+      a {
+        font-weight: normal;
+        color: $textPrimaryInverseColor;
+        &:hover {
+          color: $textInverseHoverColor;
+        }
+      }
+    }
+  }
+
+  .lazaret-proposals .records-subititution {
+    margin: 0 10px 10px 0;
+  }
+  button, .btn {
+    font-weight: normal;
+    img {
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+  }
+}

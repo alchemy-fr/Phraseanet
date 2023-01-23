@@ -1,0 +1,96 @@
+/******* PROD-TOOL-BOX ******************************************************/
+
+$accentColor: #aa46bb;
+
+#prod-tool-box.video-edit {
+    #tool-tabs.ui-tabs {
+        height: 100%;
+        .ui-tabs-nav li.ui-tabs-active {
+            background-color: transparent;
+            border-bottom: 4px solid $accentColor;
+            box-sizing: border-box;
+        }
+        .ui-tabs-nav li {
+            background-color: transparent;
+            border-bottom: 4px solid transparent;
+            box-sizing: border-box;
+        }
+        .ui-tabs-nav li a {
+            padding: 5px 8px;
+            font-weight: 500;
+            color: $darkerTextHoverColor;
+            background-color: transparent;
+        }
+    }
+}
+
+.videoEditor_dialog {
+    background: #333333;
+    .ui-dialog-title {
+        font-size: 17px;
+        font-weight: 500;
+        color: $darkerTextHoverColor;
+    }
+    .ui-icon.ui-icon-closethick {
+        background-image: url('/assets/common/images/icons/picto-close-window.png');
+        background-position: center;
+
+    }
+    .ui-dialog-titlebar-close {
+        border: none;
+        margin-right: 4px;
+        background: #1a1a1a;
+    }
+    .ui-dialog-titlebar-close:hover {
+        border: 1px solid $accentColor;
+    }
+    .ui-dialog-content {
+        overflow: hidden;
+    }
+}
+
+.screenCapture_validate_dialog {
+    .ui-dialog-title {
+        font-size: 17px;
+        font-weight: 500;
+        color: $darkerTextHoverColor;
+    }
+    .ui-icon.ui-icon-closethick {
+        background-image: url('/assets/common/images/icons/picto-close-window.png');
+        background-position: center;
+    }
+    .ui-dialog-titlebar-close {
+        border: none;
+        margin-right: 4px;
+    }
+    .ui-dialog-titlebar-close:hover {
+        border: 1px solid $accentColor;
+    }
+    .ui-dialog-buttonpane {
+        border: none;
+        .ui-button {
+            border-radius: 15px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background: #404040;
+            border: 1px solid #fff;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            font-style: normal;
+            margin: 0px 0px 0px 10px;
+            box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2), 0 4px 16px 0 rgba(0, 0, 0, 0.19);
+        }
+        .ui-button:nth-child(2) {
+            border: 1px solid $accentColor;
+        }
+        .ui-button:hover {
+            border: 1px solid $accentColor;
+            background: $accentColor;
+        }
+    }
+}
+
+.video-range-editor-container {
+    background: $darkerBackgroundColor;
+}

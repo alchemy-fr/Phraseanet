@@ -9,12 +9,17 @@ gulp.task('copy-common-images', function(){
 });
 
 gulp.task('copy-common-fonts',function(){
-    return gulp.src([config.paths.vendors + 'font-awesome/font/*'])
-        .pipe(gulp.dest( config.paths.build + 'common/font'));
+    return gulp.src([config.paths.nodes + 'font-awesome/fonts/*'])
+        .pipe(gulp.dest(config.paths.build + 'common/fonts'));
 });
 
-gulp.task('build-common-font-css', ['copy-common-fonts'],function(){
-    return gulp.src([config.paths.vendors + 'font-awesome/css/font-awesome-ie7.min.css'])
+gulp.task('copy-common-roboto-fonts', function () {
+    return gulp.src([config.paths.src + 'common/styles/fonts/**'])
+        .pipe(gulp.dest(config.paths.build + 'common/fonts'));
+});
+
+gulp.task('build-common-font-css', ['copy-common-fonts', 'copy-common-roboto-fonts'], function () {
+    return gulp.src([config.paths.nodes + 'font-awesome/css/font-awesome.min.css'])
         .pipe(gulp.dest( config.paths.build + 'common/css'));
 });
 
@@ -31,17 +36,20 @@ gulp.task('build-common-js', function(){
         // config.paths.dist + 'assets/bootstrap/js/bootstrap.js', // should append no conflict
         config.paths.src + 'vendors/jquery-mousewheel/js/jquery.mousewheel.js',
         // jquery ui date picker langs
-        config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-ar.js',
-        config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-de.js',
-        config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-es.js',
-        config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-fr.js',
-        config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-nl.js',
-        config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-en-GB.js',
-        config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
+        config.paths.nodes + 'jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-ar.js',
+        config.paths.nodes + 'jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-de.js',
+        config.paths.nodes + 'jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-es.js',
+        config.paths.nodes + 'jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-fr.js',
+        config.paths.nodes + 'jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-nl.js',
+        config.paths.nodes + 'jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-en-GB.js',
+        config.paths.nodes + 'jquery.cookie/jquery.cookie.js',
         config.paths.src + 'vendors/jquery-contextmenu/js/jquery.contextmenu_custom.js',
         config.paths.src + 'common/js/components/common.js',
         config.paths.src + 'common/js/components/tooltip.js',
-        config.paths.src + 'common/js/components/dialog.js'
+        config.paths.src + 'common/js/components/dialog.js',
+        config.paths.src + 'common/js/components/utils.js',
+        config.paths.src + 'common/js/components/download.js',
+        config.paths.src + 'common/js/components/bootstrap-tagsinput.min.js',
     ];
     return utils.buildJsGroup(commonGroup, 'common', 'common/js', debugMode);
 });

@@ -11,21 +11,24 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
+use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use RandomLib\Generator;
+use RuntimeException;
 
 class TokenManipulator implements ManipulatorInterface
 {
     const LETTERS_AND_NUMBERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     const TYPE_FEED_ENTRY = 'FEED_ENTRY';
     const TYPE_PASSWORD = 'password';
     const TYPE_ACCOUNT_UNLOCK = 'account-unlock';
+    const TYPE_ACCOUNT_DELETE = 'account-delete';
     const TYPE_DOWNLOAD = 'download';
     const TYPE_MAIL_DOWNLOAD = 'mail-download';
     const TYPE_EMAIL = 'email';
@@ -33,11 +36,13 @@ class TokenManipulator implements ManipulatorInterface
     const TYPE_VIEW = 'view';
     const TYPE_VALIDATE = 'validate';
     const TYPE_RSS = 'rss';
+    const TYPE_USER_RELANCE = 'user-relance';
 
     /** @var Objectmanager */
     private $om;
     private $random;
     private $repository;
+    private $conf;
 
     private $temporaryDownloadPath;
 
@@ -45,30 +50,33 @@ class TokenManipulator implements ManipulatorInterface
         ObjectManager $om,
         Generator $random,
         TokenRepository $repository,
-        $temporaryDownloadPath)
+        $temporaryDownloadPath,
+        PropertyAccess $configuration)
     {
         $this->om = $om;
         $this->random = $random;
         $this->repository = $repository;
         $this->temporaryDownloadPath = $temporaryDownloadPath;
+        $this->conf = $configuration;
     }
 
     /**
      * @param User|null      $user
      * @param string         $type
-     * @param \DateTime|null $expiration
+     * @param DateTime|null  $expiration
      * @param mixed|null     $data
      *
      * @return Token
      */
-    public function create(User $user = null, $type, \DateTime $expiration = null, $data = null)
+    public function create($user, $type, $expiration = null, $data = null)
     {
-        $this->removeExpiredTokens();
+        // remove all expired token after 30 days
+        $this->removeExpiredTokens(30);
 
         $n = 0;
         do {
             if ($n++ > 1024) {
-                throw new \RuntimeException('Unable to create a token.');
+                throw new RuntimeException('Unable to create a token.');
             }
             $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
             $found = null !== $this->om->getRepository('Phraseanet:Token')->find($value);
@@ -90,17 +98,14 @@ class TokenManipulator implements ManipulatorInterface
 
     /**
      * @param Basket $basket
-     * @param User   $user
+     * @param User $user
+     * @param DateTime|null $expiration
      *
      * @return Token
      */
-    public function createBasketValidationToken(Basket $basket, User $user = null)
+    public function createBasketValidationToken(Basket $basket, User $user, $expiration)
     {
-        if (null === $basket->getValidation()) {
-            throw new \InvalidArgumentException('A validation token requires a validation basket.');
-        }
-
-        return $this->create($user ?: $basket->getValidation()->getInitiator(), self::TYPE_VALIDATE, new \DateTime('+10 days'), $basket->getId());
+        return $this->create($user, self::TYPE_VALIDATE, $expiration, $basket->getId());
     }
 
     /**
@@ -126,6 +131,37 @@ class TokenManipulator implements ManipulatorInterface
     }
 
     /**
+     * Create feedEntryTokens for many users in one shot
+     *
+     * @param User[] $users
+     * @param FeedEntry $entry
+     * @return Token[]
+     */
+    public function createFeedEntryTokens($users, FeedEntry $entry)
+    {
+        // $this->removeExpiredTokens();
+
+        $tokens = [];
+        foreach ($users as $user) {
+            $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS) . $user->getId();
+
+            $token = new Token();
+            $token->setUser($user)
+                ->setType(self::TYPE_FEED_ENTRY)
+                ->setValue($value)
+                ->setExpiration(null)
+                ->setData($entry->getId());
+            $tokens[] = $token;
+
+            $this->om->persist($token);
+        }
+        $this->om->flush();
+        $this->om->clear();
+
+        return $tokens;
+    }
+
+    /**
      * @param User $user
      * @param $data
      *
@@ -133,7 +169,9 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createDownloadToken(User $user, $data)
     {
-        return $this->create($user, self::TYPE_DOWNLOAD, new \DateTime('+3 hours'), $data);
+        $downloadLinkValidity = (int) $this->conf->get(['registry', 'actions', 'download-link-validity'], 24);
+
+        return $this->create($user, self::TYPE_DOWNLOAD, new DateTime("+{$downloadLinkValidity} hours"), $data);
     }
 
     /**
@@ -143,7 +181,9 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createEmailExportToken($data)
     {
-        return $this->create(null, self::TYPE_EMAIL, new \DateTime('+1 day'), $data);
+        $downloadLinkValidity = (int) $this->conf->get(['registry', 'actions', 'download-link-validity'], 24);
+
+        return $this->create(null, self::TYPE_EMAIL, new DateTime("+{$downloadLinkValidity} hours"), $data);
     }
 
     /**
@@ -154,7 +194,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createResetEmailToken(User $user, $email)
     {
-        return $this->create($user, self::TYPE_EMAIL_RESET, new \DateTime('+1 day'), $email);
+        return $this->create($user, self::TYPE_EMAIL_RESET, new DateTime('+1 day'), $email);
     }
 
     /**
@@ -164,7 +204,18 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createAccountUnlockToken(User $user)
     {
-        return $this->create($user, self::TYPE_ACCOUNT_UNLOCK, new \DateTime('+3 days'));
+        return $this->create($user, self::TYPE_ACCOUNT_UNLOCK, new DateTime('+3 days'));
+    }
+
+    /**
+     * @param User $user
+     * @param string $email
+     *
+     * @return Token
+     */
+    public function createAccountDeleteToken(User $user, $email)
+    {
+        return $this->create($user, self::TYPE_ACCOUNT_DELETE, new DateTime('+1 hour'), $email);
     }
 
     /**
@@ -174,7 +225,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createResetPasswordToken(User $user)
     {
-        return $this->create($user, self::TYPE_PASSWORD, new \DateTime('+1 day'));
+        return $this->create($user, self::TYPE_PASSWORD, new DateTime('+3 day'));
     }
 
     /**
@@ -206,9 +257,9 @@ class TokenManipulator implements ManipulatorInterface
     /**
      * Removes expired tokens
      */
-    public function removeExpiredTokens()
+    public function removeExpiredTokens($nbDaysAfterExpiration = 0)
     {
-        foreach ($this->repository->findExpiredTokens() as $token) {
+        foreach ($this->repository->findExpiredTokens($nbDaysAfterExpiration) as $token) {
             switch ($token->getType()) {
                 case 'download':
                 case 'email':

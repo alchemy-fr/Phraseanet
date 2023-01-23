@@ -47,10 +47,13 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFields()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $public_field = new Field('foo', FieldMapping::TYPE_STRING, [
+            'private' => false
+        ]);
         $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2, 3]
+            'used_by_collections' => [1, 2, 3],
+            'used_by_databoxes' => [1]
         ]);
 
         $query_context = $this->prophesize(QueryContext::class);
@@ -75,7 +78,10 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
                 "should": [{
                     "multi_match": {
                         "type": "phrase",
-                        "fields": ["foo.fr", "foo.en"],
+                        "fields": [
+                            "foo.fr",
+                            "foo.en"
+                        ],
                         "query": "baz",
                         "lenient": true
                     }
@@ -89,7 +95,10 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
                         "query": {
                             "multi_match": {
                                 "type": "phrase",
-                                "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
+                                "fields": [
+                                    "private_caption.bar.fr",
+                                    "private_caption.bar.en"
+                                ],
                                 "query": "baz",
                                 "lenient": true
                             }

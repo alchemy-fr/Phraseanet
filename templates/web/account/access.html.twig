@@ -8,206 +8,71 @@
 
 {% block content_account %}
     <form name="updatingDemand" id="updatingDemand" action="{{ path("submit_update_account") }}" method="post">
-        <table style="table-layout: fixed; width:100%;">
-            <tr>
-                <td  style="width: 180px; text-align: right">&nbsp;</td>
-                <td  width="15px" style="width: 15px">&nbsp;</td>
-                <td  style="width: 180px;">&nbsp;</td>
-            </tr>
-            {% for sbasId, baseInfo in inscriptions %}
-
+        <div class="base-block">
+            {% for sbasId, baseInfo in inscriptions if baseInfo["display"] %}
                 {% set sbasName = sbasId | sbas_labels(app) %}
-                {% set private = 0 %}
-
-                {% if baseInfo["registrations"]["by-type"]["accepted"]|length > 0 %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Allowed access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for base in baseInfo["registrations"]["by-type"]["accepted"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                <span style="color: lightgreen;">
-                                    <b>{{ base["coll-name"] }}</b>
-                                </span>
-                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
-                                    {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>)
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% elseif baseInfo["registrations"]["by-type"]["rejected"]|length > 0 %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Rejected access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for base in baseInfo["registrations"]["by-type"]["rejected"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                <span style="color: red;">
-                                    <b>{{ base["coll-name"] }}</b>
-                                    (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
-                                        {{ "login::register::CGU: lire les CGU" | trans }}
-                                    </a>)
-                                </span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% elseif baseInfo["registrations"]["by-type"]["pending"]|length > 0 %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Pending access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for base in baseInfo["registrations"]["by-type"]["pending"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                <span style="color: #ffff00;"><b>{{ base["coll-name"] }}</b></span>
-                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
-                                    {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>)
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% elseif baseInfo["registrations"]["by-type"]["in-time"]|length > 0 %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Temporary access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for base in baseInfo["registrations"]["by-type"]["in-time"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                <span style="color: lightskyblue;"><b>{{ base["coll-name"] }}</b></span>
-                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
-                                    {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>)
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% elseif baseInfo["registrations"]["by-type"]["out-dated"]|length > 0 %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Outdated access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for base in baseInfo["registrations"]["by-type"]["out-dated"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                <span style="color:darkred;"><b>{{ base["coll-name"] }}</b></span>
-                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
-                                    {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>)
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% elseif baseInfo["registrations"]["by-type"]["inactive"]|length > 0 %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Suspended access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for base in baseInfo["registrations"]["by-type"]["inactive"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                <span style="color:orangered;"><b>{{ base["coll-name"] }}</b></span>
-                                (<a class="inscriptlink" style="font-size: 10px" href="{{ path('get_tou', {'to_display[]' : sbasId}) }}">
-                                    {{ "login::register::CGU: lire les CGU" | trans }}
-                                </a>)
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% else %}
-                    {% set private = 1 %}
-                {% endif %}
-
-                {% if attribute(baseInfo["config"]["cgu"], app['locale']) is defined and private == 0 %}
-                    {% set TOU = attribute(baseInfo["config"]["cgu"], app['locale']) %}
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <i class="icon-warning"></i>
+                <h3 onclick="$( this ).toggleClass('toggled');$( this ).next('div').slideToggle();">{{ sbasName }}</h3>
+                <div class="block">
+                    {% if attribute(baseInfo["cgu"], app['locale']) is defined %}
+                        {% set TOU = attribute(baseInfo["cgu"], app['locale']) %}
+                        {% if(TOU['value'] != '') %}
                             <h4>{{ "Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." | trans }}</h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="text-align: center;"><blockquote class="cgu" style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ TOU['value']|raw  }}</blockquote></td>
-                    </tr>
-                {% endif %}
-                {% for collInfo in baseInfo["config"]["collections"] if (collInfo['registration'] is none and collInfo['can-register']) %}
-                    {% if collInfo["cgu"] is not none and private == 0 %}
-                        <tr>
-                            <td colspan="3" style="text-align: center;">{{ "login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes" | trans }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" style="text-align: center;"><div style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ baseInsc["CGU"] }}</div></td>
-                        </tr>
+                            <div class="cgu-block">
+                                <blockquote>{{ TOU['value']|raw  }}</blockquote>
+                            </div>
+                        {% endif %}
                     {% endif %}
-                    <tr>
-                        <td style="text-align: right;">{{ collInfo["coll-name"] }}</td>
-                        <td></td>
-                        <td class="TD_R" style="width: 200px;">
-                            <input style="width: 15px;" class="checkbox" type="checkbox" name="registrations[]" value="{{ baseId }}" />
-                            <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
+                    {% for baseId, collInfo in baseInfo["collections"] %}
+                        {% set type = collInfo['type'] %}
+                        {% if type == 'inactive' and collInfo['can-register'] %}
+                            {% set type = 'registrable' %}
+                        {% endif %}
+                        {% set show = false %}
+                        {% if type == 'active' or type == 'registrable' or type == 'in-time' or type == 'out-dated'
+                            or type == 'pending' or type == 'rejected' or type == 'accepted' %}
+                            {% set show = true %}
+                        {% endif %}
+                        {% if show == true %}
+                            <div class="registration">
+                                <div class="coll-name">
+                                    <span>
+                                        {{ collInfo["coll-name"] }}
+                                    </span>
+                                </div>
+                                <div class="icon-box">
+                                    {% if type == 'registrable' %}
+                                        <input class="checkbox" type="checkbox" name="registrations[]" value="{{ baseId }}" />
+                                    {% else %}
+                                        <span class="icon {{ type }}"></span>
+                                    {% endif %}
+                                </div>
+                                <div class="status-box">
+                                    <span class="status {{ type }}" >
+                                        {% if type == 'active' %}
+                                            {{ "registration:collection.active" | trans }}
+                                        {% elseif type == 'registrable' %}
+                                            {{ "registration:collection.registrable" | trans }}
+                                        {% elseif type == 'in-time' %}
+                                            {{ "registration:collection.in-time" | trans }}
+                                        {% elseif type == 'out-dated' %}
+                                            {{ "registration:collection.out-dated" | trans }}
+                                        {% elseif type == 'pending' %}
+                                            {{ "registration:collection.pending" | trans }}
+                                        {% elseif type == 'rejected' %}
+                                            {{ "registration:collection.rejected" | trans }}
+                                        {% elseif type == 'accepted' %}
+                                            {{ "registration:collection.accepted" | trans }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             {% endfor %}
-        </table>
+        </div>
+        <div class="form-actions">
+            <input type="submit" class="btn btn-info" value="{{ "boutton::valider" | trans }}">
+        </div>
     </form>
 {% endblock %}

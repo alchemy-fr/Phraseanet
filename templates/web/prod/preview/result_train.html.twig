@@ -1,4 +1,4 @@
-<div id="PREVIEWCURRENTCONT" class="PNB10">
+<div id="PREVIEWCURRENTCONT" class="PNB10" data-records-count="{{ recordsTotal }}">
   <ul>
     {% for record in records %}
 
@@ -45,13 +45,15 @@
     <div class="cont_infos">
         <div>
             <button class="preview-navigate-action" data-direction="backward">
-                <i class="icon-caret-left"></i>
+                <i class="fa fa-caret-left" aria-hidden="true"></i>
             </button>
             <button class="preview-navigate-action" data-direction="forward">
-                <i class="icon-caret-right"></i>
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
             </button><br/>
-            <span onclick="startSlide()" id="start_slide">{{ 'preview:: demarrer le diaporama' | trans }} </span>
-            <span onclick="stopSlide()" id="stop_slide"> {{ 'preview:: arreter le diaporama' | trans }} </span>
+            <span class="preview-start-slideshow-action"
+                  id="start_slide">{{ 'preview:: demarrer le diaporama' | trans }} </span>
+            <span class="preview-stop-slideshow-action"
+                  id="stop_slide"> {{ 'preview:: arreter le diaporama' | trans }} </span>
         </div>
     </div>
     <div id="PREVIEWTOOL"></div>

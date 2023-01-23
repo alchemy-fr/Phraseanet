@@ -47,21 +47,23 @@ class WebhookNotifier implements ValidationNotifier
     /**
      * @param Order $order
      * @param User $recipient
+     * @param array $baseIds
      */
-    public function notifyCreation(Order $order, User $recipient)
+    public function notifyCreation(Order $order, User $recipient, array $baseIds = array())
     {
         $eventData = [
             'order_id' => $order->getId(),
             'user_id' => $recipient->getId(),
         ];
 
-        $this->getManipulator()->create(WebhookEvent::ORDER_CREATED, WebhookEvent::ORDER_TYPE, $eventData);
+        $this->getManipulator()->create(WebhookEvent::ORDER_CREATED, WebhookEvent::ORDER_TYPE, $eventData, $baseIds);
     }
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      */
-    public function notifyDelivery(OrderDelivery $delivery)
+    public function notifyDelivery(OrderDelivery $delivery, array $baseIds = array())
     {
         $eventData = [
             'order_id' => $delivery->getOrder()->getId(),
@@ -69,13 +71,14 @@ class WebhookNotifier implements ValidationNotifier
             'quantity' => $delivery->getQuantity()
         ];
 
-        $this->getManipulator()->create(WebhookEvent::ORDER_DELIVERED, WebhookEvent::ORDER_TYPE, $eventData);
+        $this->getManipulator()->create(WebhookEvent::ORDER_DELIVERED, WebhookEvent::ORDER_TYPE, $eventData, $baseIds);
     }
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      */
-    public function notifyDenial(OrderDelivery $delivery)
+    public function notifyDenial(OrderDelivery $delivery, array $baseIds = array())
     {
         $eventData = [
             'order_id' => $delivery->getOrder()->getId(),
@@ -83,6 +86,6 @@ class WebhookNotifier implements ValidationNotifier
             'quantity' => $delivery->getQuantity()
         ];
 
-        $this->getManipulator()->create(WebhookEvent::ORDER_DENIED, WebhookEvent::ORDER_TYPE, $eventData);
+        $this->getManipulator()->create(WebhookEvent::ORDER_DENIED, WebhookEvent::ORDER_TYPE, $eventData, $baseIds);
     }
 }

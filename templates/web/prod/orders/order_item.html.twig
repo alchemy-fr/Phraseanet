@@ -5,7 +5,8 @@
     <div class="alert">
         {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
     </div>
-    <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
+    <button class="order_launcher btn rightside"><i class="fa fa-chevron-left"
+                                                    aria-hidden="true"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
 <div style="display:none;position:relative;" id="basket-window" >
@@ -25,6 +26,32 @@
 
 <div style="display:none;position:relative;" id="validation-window" >
     <div class="box">
+        <div class="order-expireon-wrap">
+            <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+            <span>{{ 'prod::order-manager download expire on' | trans }}:</span>
+            <span style="font-size: 0;">
+                {% set canOverride = app['conf'].get(['order-manager', 'download-hd', 'expiration-override']) ? true : false %}
+                <input type="text" class="expireOn btn" name="expireOn" autocomplete="off"
+                       style="width: 100px; margin: 0;background-image: none; border-right: 0;border-top-right-radius: 0;border-bottom-right-radius: 0;"
+                       {% if not canOverride %} disabled {% endif %}
+                        data-default-expiration="{{ app['conf'].get(['order-manager', 'download-hd', 'expiration-days']) }}"
+                />
+                <button class="expireOn-menu"
+                        style="border-radius: 0px 13px 13px 0px;height: 30px;border: 1px solid transparent;"
+                        {% if not canOverride %} disabled {% endif %} >
+                    <i class="fa fa-ellipsis-h"></i>
+                </button>
+            </span>
+            <ul id="expire-menu"
+                style="position:fixed; z-index: 999999; width:80px; height:auto; display:block; top:-1000px;">
+                <li data-expireon="+7"><a href="#">7 days</a></li>
+                <li data-expireon="+15"><a href="#">15 days</a></li>
+                <li data-expireon="+20"><a href="#">20 days</a></li>
+                <li data-expireon="+30"><a href="#">30 days</a></li>
+                <li data-expireon="+60"><a href="#">60 days</a></li>
+                <li data-expireon=""><a href="#">no limitation</a></li>
+            </ul>
+        </div>
         <div class="validation-content" style="float:left; width:100%;margin-top:10px;">
         </div>
     </div>
@@ -88,9 +115,9 @@
                 <td colspan="2">
                     <span class="text_block">{{ displayName }} (<a
                                 style="font-size: 12px;color: #4990E2;" href="#" id="email-btn">{{ order.getUser().getEmail() }}</a>)
-                        <span class="icon-stack infoTips" id="userInfo">
-                            <i class="icon-circle icon-stack-base" style="color:#737373"></i>
-                            <i class="icon-info" style="color:#FFF"></i>
+                        <span class="fa-stack infoTips" id="userInfo">
+                            <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#737373"></i>
+                            <i class="fa fa-info fa-stack-1x" style="color:#FFF" aria-hidden="true"></i>
                         </span>
                     </span>
                 </td>
@@ -102,7 +129,9 @@
                 </td>
             </tr>
         </table>
-        <button class="btn validate outline" disabled><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
+        <button class="btn validate outline" style="display:none;"><i class="fa fa-check-circle-o" aria-hidden="true">
+            </i>{{ 'order-manager::order-item: validate' |trans }}
+        </button>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
@@ -130,10 +159,11 @@
                     <table class="table-order">
                         <tbody>
                         {% for element in order.getElements() %}
-                            <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                            {% if element.getBaseId() in grantedBaseIds %}
+                                <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
                                 <td width="10%" align="center">
                                     {% if element.getOrderMaster() %}
-                                        {% set name = element.getOrderMaster().getDisplayName() %}
+                                        {% set name = element.getOrderMaster().getDisplayName() | e %}
                                         {% if element.getDeny() == true %}
                                             {% set title %}
                                                 {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
@@ -142,7 +172,7 @@
                                                 {% trans %}Forcer l'envoi du document{% endtrans %}
                                             {% endset %}
                                             <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                                            <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+{#                                            <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />#}
                                         {% else %}
                                             {% set title %}
                                                 {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
@@ -166,6 +196,7 @@
                                     <span>{{element.getRecord(app).getOriginalName() }}</span>
                                 </td>
                             </tr>
+                            {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -176,9 +207,13 @@
             <div id="order_detail" style="width:60%;">
                 <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
                     <span class="action-text">{{ 'order-manager::order-item: refused-previously' | trans }}</span>
-                    <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
-                    <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
-                    <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
+                    <button class="btn deny outline"><i class="fa fa-times" aria-hidden="true"></i>{{ 'Deny' | trans }}
+                    </button>
+                    <button class="btn btn-primary send outline"><i class="fa fa-check"
+                                                                    aria-hidden="true"></i>{{ 'Send' | trans }}</button>
+                    <button class="btn reset outline"><i class="fa fa-refresh"
+                                                         aria-hidden="true"></i>{{ 'order-manager::order-item: reset' | trans }}
+                    </button>
                     <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                     <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                 </div>
@@ -187,9 +222,9 @@
                         {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
                     </div>
                     <div id="info-header">
-                        <span class="icon-stack infoTips">
-                            <i class="icon-circle icon-stack-base" style="color:#4990E2"></i>
-                            <i class="icon-info" style="color:#FFF"></i>
+                        <span class="fa-stack infoTips">
+                            <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#4990E2"></i>
+                            <i class="fa fa-info fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
                         </span>
                         <span class="info-text">{{ 'order-manager::order-item: information' | trans }}</span>
                     </div>
@@ -198,6 +233,18 @@
                     </div>
                 </div>
                 <div id="wrapper-multiple">
+                    <div id="order-action" style="color:#333;">
+                        <button class="btn deny outline"><i class="fa fa-times"
+                                                            aria-hidden="true"></i>{{ 'Deny' | trans }}</button>
+                        <button class="btn btn-primary send outline"><i class="fa fa-check"
+                                                                        aria-hidden="true"></i>{{ 'Send' | trans }}
+                        </button>
+                        <button class="btn reset outline"><i class="fa fa-refresh"
+                                                             aria-hidden="true"></i>{{ 'order-manager::order-item: reset' | trans }}
+                        </button>
+                        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                    </div>
                     <div id="preview-layout-multiple">
                         <span class="title">0</span>
                         <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
@@ -206,13 +253,7 @@
                              src="/assets/common/images/icons/substitution/image_jpg.png" ondragstart="return false;"/>
                         <div id="text-content"></div>
                     </div>
-                    <div id="order-action" style="color:#333;">
-                        <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
-                        <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
-                        <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
-                        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-                        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
-                    </div>
+
                 </div>
                 <div id="wrapper-no-item">
                     <img style="width:150px;height:150px;" src="/assets/common/images/icons/substitution/image_jpg.png">
@@ -227,7 +268,7 @@
         + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
         + '{{ order.getCreatedOn()|date('d/m/Y') }}'
         + ' {{ 'order-manager::order-item: by' |trans }} '
-        + '{{ order.getUser().getDisplayName() }}';
+        + '{{ order.getUser().getDisplayName() | e('js') }}';
 
     var orderItemData =  {
         path: '{{ path('prod_orders') }}',

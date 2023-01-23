@@ -27,6 +27,7 @@ class User_Query
     const SORT_CREATIONDATE = 'created';
     const SORT_COUNTRY = 'country';
     const SORT_LASTMODEL = 'last_model';
+    const SORT_LAST_CONNECTION = 'last_connection';
     const LIKE_FIRSTNAME = 'first_name';
     const LIKE_LASTNAME = 'last_name';
     const LIKE_NAME = 'name';
@@ -36,11 +37,19 @@ class User_Query
     const LIKE_COUNTRY = 'country';
     const LIKE_MATCH_AND = 'AND';
     const LIKE_MATCH_OR = 'OR';
+    const LIKE_TYPE_START = 'like_start';
+    const LIKE_TYPE_CONTAINS = 'like_contains';
+    const LIKE_TYPE_FINISH = 'like_finish';
+    const LIKE_TYPE_EMPTY = 'like_empty';
 
     protected $app;
     protected $results = [];
     protected $sort = [];
     protected $like_field = [];
+    protected $like_type = 'like_start';
+    protected $date_field;
+    protected $date_operator;
+    protected $date_value;
     protected $have_rights = null;
     protected $have_not_rights = null;
     protected $like_match = 'OR';
@@ -51,7 +60,10 @@ class User_Query
     protected $bases_restrictions = false;
     protected $sbas_restrictions = false;
     protected $include_templates = false;
-    protected $only_templates = false;
+    protected $only_user_templates = false;
+    protected $templates_only = false;
+    protected $mail_locked_only = false;
+    protected $grace_period_only = false;
     protected $email_not_null = false;
     protected $base_ids = [];
     protected $sbas_ids = [];
@@ -60,8 +72,10 @@ class User_Query
     protected $last_model = null;
     protected $results_quantity = null;
     protected $include_phantoms = true;
+    protected $phantoms_only = false;
     protected $include_special_users = false;
     protected $include_invite = false;
+    protected $emailDomains = null;
     protected $activities = null;
     protected $templates = null;
     protected $companies = null;
@@ -136,6 +150,19 @@ class User_Query
     }
 
     /**
+     * Users with no rights in any base only
+     *
+     * @param bool $boolean
+     * @return $this
+     */
+    public function phantoms_only($boolean = false)
+    {
+        $this->phantoms_only = !!$boolean;
+
+        return $this;
+    }
+
+    /**
      * Include user such as 'guest' and 'autoregister'
      *
      * @param bool $boolean
@@ -192,15 +219,62 @@ class User_Query
     }
 
     /**
-     * Restrict to templates
+     * Restrict to user templates
      *
      * @param $boolean
      *
      * @return $this
      */
-    public function only_templates($boolean)
+    public function only_user_templates($boolean)
     {
-        $this->only_templates = !!$boolean;
+        $this->only_user_templates = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict only to templates
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function templates_only($boolean)
+    {
+        $this->templates_only = !!$boolean;
+
+        // set include template if not restrict only to the templates
+        if (!$boolean) {
+            $this->include_templates = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Restrict only on mail locked
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function mail_locked_only($boolean)
+    {
+        $this->mail_locked_only = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict only on grace period
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function grace_period_only($boolean)
+    {
+        $this->grace_period_only = !!$boolean;
 
         return $this;
     }
@@ -399,14 +473,57 @@ class User_Query
      *
      * @param $like_field
      * @param $like_value
+     * @param $like_type
      *
      * @return $this
      */
-    public function like($like_field, $like_value)
+    public function like($like_field, $like_value, $like_type = self::LIKE_TYPE_START)
     {
         $this->like_field[trim($like_field)] = trim($like_value);
+        $this->like_type = $like_type;
         $this->total = $this->page = $this->total_page = null;
 
+        return $this;
+    }
+
+    /**
+     * Restrict on date
+     *
+     * @param $dateField
+     * @param $dateValue
+     * @param $dateOperator
+     *
+     * @return $this
+     */
+    public function date_filter($dateField, $dateValue, $dateOperator)
+    {
+        try {
+            $dValue = new \DateTime($dateValue);
+            $dateValue = $dValue->format('Y-m-d');
+        } catch (Exception $e) {
+            $dateValue = null;
+        }
+
+        switch ($dateOperator) {
+            case 'date_less_than':
+                $op = '<';
+
+                break;
+            case 'date_greater_than':
+                $op = '>=';
+
+                break;
+            default:
+                $op = $dateOperator;
+
+                break;
+        }
+
+        $this->date_field = $dateField;
+        $this->date_value = $dateValue;
+        $this->date_operator = $op;
+
+        $this->total = $this->page = $this->total_page = null;
         return $this;
     }
 
@@ -504,6 +621,38 @@ class User_Query
     }
 
     /**
+     * Restrict users with provided email domain
+     *
+     * @param array $req_emailDomains
+     * @return $this
+     */
+    public function haveEmailDomains(array $req_emailDomains)
+    {
+        $emailDomains = new ArrayCollection();
+
+        foreach ($req_emailDomains as $emailDomain) {
+            if (($emailDomain = trim($emailDomain)) === '') {
+                continue;
+            }
+
+            // use % for LIKE in SQL
+            $emailDomain = '%'.$emailDomain;
+
+            if ($emailDomains->contains($emailDomain)) {
+                continue;
+            }
+
+            $emailDomains->add($emailDomain);
+        }
+
+        if (!$emailDomains->isEmpty()) {
+            $this->emailDomains = $emailDomains;
+        }
+
+        return $this;
+    }
+
+    /**
      * Restrict users with provided activities
      *
      * @param array $req_activities
@@ -515,7 +664,7 @@ class User_Query
         $activities = new ArrayCollection();
 
         foreach ($req_activities as $activity) {
-            if ($activity = trim($activity) === '') {
+            if (($activity = trim($activity)) === '') {
                 continue;
             }
 
@@ -545,7 +694,7 @@ class User_Query
         $positions = new ArrayCollection();
 
         foreach ($req_positions as $position) {
-            if ($position = trim($position) === '') {
+            if (($position = trim($position)) === '') {
                 continue;
             }
             if ($positions->contains($position)) {
@@ -574,7 +723,7 @@ class User_Query
         $countries = new ArrayCollection();
 
         foreach ($req_countries as $country) {
-            if ($country = trim($country) === '') {
+            if (($country = trim($country)) === '') {
                 continue;
             }
             if ($countries->contains($country)) {
@@ -603,7 +752,7 @@ class User_Query
         $companies = new ArrayCollection();
 
         foreach ($req_companies as $company) {
-            if ($company = trim($company) === '') {
+            if (($company = trim($company)) === '') {
                 continue;
             }
             if ($companies->contains($company)) {
@@ -631,7 +780,7 @@ class User_Query
         $templates = new ArrayCollection();
 
         foreach ($req_templates as $template) {
-            if ($template = trim($template) === '') {
+            if (($template = trim($template)) === '') {
                 continue;
             }
             if ($templates->contains($template)) {
@@ -660,6 +809,33 @@ class User_Query
         $this->get_inactives = !!$boolean;
 
         return $this;
+    }
+
+    /**
+     * Get users email domain
+     *
+     * @return array
+     */
+    public function getRelatedEmailDomain()
+    {
+        $conn = $this->app->getApplicationBox()->get_connection();
+
+        $sql = 'SELECT DISTINCT SUBSTRING_INDEX(Users.email, "@", -1) as emailDomain' . $this->generate_sql_constraints(). 'ORDER BY emailDomain';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $emailDomains = [];
+        foreach ($rs as $row) {
+            if (trim($row['emailDomain']) === '') {
+                continue;
+            }
+            $emailDomains[] = $row['emailDomain'];
+        }
+
+        return $emailDomains;
     }
 
     /**
@@ -812,7 +988,7 @@ class User_Query
                 WHERE 1 ';
 
         if (! $this->include_special_users) {
-            $sql .= ' AND Users.login != "autoregister" AND Users.login != "invite" ';
+            $sql .= ' AND Users.login != "autoregister"';
         }
 
         $sql .= ' AND Users.deleted="0" ';
@@ -825,7 +1001,9 @@ class User_Query
             $sql .= ' AND Users.email IS NOT NULL ';
         }
 
-        if ($this->only_templates === true) {
+        if ($this->templates_only) {
+            $sql .= ' AND model_of IS NOT NULL';
+        } elseif ($this->only_user_templates === true) {
             if (!$this->app->getAuthenticatedUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
@@ -834,24 +1012,34 @@ class User_Query
             $sql .= ' AND model_of IS NULL';
         } elseif ($this->app->getAuthenticatedUser()) {
             $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId() . ' ) ';
-        } else {
-            $sql .= ' AND model_of IS NULL';
+        }
+
+        if ($this->mail_locked_only) {
+            $sql .= ' AND mail_locked = 1';
+        }
+
+        if ($this->grace_period_only) {
+            $sql .= ' AND Users.nb_inactivity_email > 0 ';
+        }
+
+        if ($this->emailDomains) {
+            $sql .= $this->generate_field_constraints('email', $this->emailDomains, 'LIKE');
         }
 
         if ($this->activities) {
-            $sql .= $this->generate_field_constraints('activite', $this->activities);
+            $sql .= $this->generate_field_constraints('activity', $this->activities);
         }
 
         if ($this->positions) {
-            $sql .= $this->generate_field_constraints('fonction', $this->positions);
+            $sql .= $this->generate_field_constraints('job', $this->positions);
         }
 
         if ($this->countries) {
-            $sql .= $this->generate_field_constraints('pays', $this->countries);
+            $sql .= $this->generate_field_constraints('country', $this->countries);
         }
 
         if ($this->companies) {
-            $sql .= $this->generate_field_constraints('societe', $this->companies);
+            $sql .= $this->generate_field_constraints('company', $this->companies);
         }
 
         if ($this->templates) {
@@ -863,14 +1051,18 @@ class User_Query
                 throw new Exception('No base available for you, not enough rights');
             }
         } else {
-            $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
-
-            $not_base_id = array_diff($this->active_bases, $this->base_ids);
-
-            if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
-                $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+            if ($this->phantoms_only) {
+                $sql .= ' AND base_id IS NULL ';
             } else {
-                $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
+
+                $not_base_id = array_diff($this->active_bases, $this->base_ids);
+
+                if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
+                    $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+                } else {
+                    $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                }
             }
         }
 
@@ -879,18 +1071,22 @@ class User_Query
                 throw new Exception('No base available for you, not enough rights');
             }
         } else {
-            $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
-
-            $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
-
-            if (count($not_sbas_id) > 0 && count($not_sbas_id) < count($this->sbas_ids)) {
-                $sql .= sprintf('  AND ((sbas_id != %s ) ' . $extra . ')'
-                    , implode(' AND sbas_id != ', $not_sbas_id)
-                );
+            if ($this->phantoms_only) {
+                $sql .= ' AND sbas_id IS NULL ';
             } else {
-                $sql .= sprintf(' AND (sbas_id = %s  ' . $extra . ') '
-                    , implode(' OR sbas_id = ', $this->sbas_ids)
-                );
+                $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
+
+                $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
+
+                if (count($not_sbas_id) > 0 && count($not_sbas_id) < count($this->sbas_ids)) {
+                    $sql .= sprintf('  AND ((sbas_id != %s ) ' . $extra . ')'
+                        , implode(' AND sbas_id != ', $not_sbas_id)
+                    );
+                } else {
+                    $sql .= sprintf(' AND (sbas_id = %s  ' . $extra . ') '
+                        , implode(' OR sbas_id = ', $this->sbas_ids)
+                    );
+                }
             }
         }
 
@@ -920,6 +1116,16 @@ class User_Query
             $sql .= ' AND Users.last_model = ' . $this->app->getApplicationBox()->get_connection()->quote($this->last_model) . ' ';
         }
 
+        if (!empty($this->date_field)) {
+            if ($this->date_operator == 'date_null') {
+                $sql .= sprintf(' AND  Users.`%s` is NULL', $this->date_field);
+            } else {
+                if (!empty($this->date_value)) {
+                    $sql .= sprintf(' AND DATE(Users.`%s`) %s  "%s" ', $this->date_field, $this->date_operator, $this->date_value);
+                }
+            }
+        }
+
         $sql_like = [];
 
         foreach ($this->like_field as $like_field => $like_value) {
@@ -930,12 +1136,40 @@ class User_Query
                         if (trim($like_val) === '')
                             continue;
 
+                        if ($this->like_type == self::LIKE_TYPE_CONTAINS) {
+                            $queries[] = sprintf(
+                                ' (Users.`%s` LIKE "%%%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%%%s%%"  COLLATE utf8_unicode_ci)  '
+                                , self::LIKE_FIRSTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                                , self::LIKE_LASTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            );
+                        } elseif ($this->like_type == self::LIKE_TYPE_FINISH) {
+                            $queries[] = sprintf(
+                                ' (Users.`%s` LIKE "%%%s"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%%%s"  COLLATE utf8_unicode_ci)  '
+                                , self::LIKE_FIRSTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                                , self::LIKE_LASTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            );
+                        } elseif ($this->like_type == self::LIKE_TYPE_START) {
+                            $queries[] = sprintf(
+                                ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
+                                , self::LIKE_FIRSTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                                , self::LIKE_LASTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            );
+                        }
+                    }
+
+                    if ($this->like_type == self::LIKE_TYPE_EMPTY) {
                         $queries[] = sprintf(
-                            ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
+                            ' ((Users.`%s` is NULL OR Users.`%s` = "") AND (Users.`%s` is NULL OR Users.`%s` = ""))  '
                             , self::LIKE_FIRSTNAME
-                            , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            , self::LIKE_FIRSTNAME
                             , self::LIKE_LASTNAME
-                            , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            , self::LIKE_LASTNAME
                         );
                     }
 
@@ -949,11 +1183,32 @@ class User_Query
                 case self::LIKE_EMAIL:
                 case self::LIKE_LOGIN:
                 case self::LIKE_COUNTRY:
-                    $sql_like[] = sprintf(
-                        ' Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
-                        , $like_field
-                        , str_replace(['"', '%'], ['\"', '\%'], $like_value)
-                    );
+                    if ($this->like_type == self::LIKE_TYPE_CONTAINS) {
+                        $sql_like[] = sprintf(
+                            ' Users.`%s` LIKE "%%%s%%"  COLLATE utf8_unicode_ci '
+                            , $like_field
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_value)
+                        );
+                    } elseif ($this->like_type == self::LIKE_TYPE_FINISH) {
+                        $sql_like[] = sprintf(
+                            ' Users.`%s` LIKE "%%%s"  COLLATE utf8_unicode_ci '
+                            , $like_field
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_value)
+                        );
+                    } elseif ($this->like_type == self::LIKE_TYPE_EMPTY) {
+                        $sql_like[] = sprintf(
+                            ' (Users.`%s` is NULL OR  Users.`%s` = "") '
+                            , $like_field
+                            , $like_field
+                        );
+                    } else {
+                        $sql_like[] = sprintf(
+                            ' Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
+                            , $like_field
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_value)
+                        );
+                    }
+
                     break;
                 default;
                     break;
@@ -967,7 +1222,7 @@ class User_Query
         return $sql;
     }
 
-    protected function generate_field_constraints($fieldName, ArrayCollection $fields)
+    protected function generate_field_constraints($fieldName, ArrayCollection $fields, $operator = '=')
     {
         $n = 0;
         $constraints = [];
@@ -975,7 +1230,8 @@ class User_Query
         foreach ($fields as $field) {
             $constraints[':' . $fieldName . $n ++] = $field;
         }
-        $sql = ' AND (' . $fieldName . ' = ' . implode(' OR ' . $fieldName . ' = ', array_keys($constraints)) . ') ';
+
+        $sql = ' AND (' . $fieldName . ' ' . $operator . ' ' . implode(' OR ' . $fieldName . ' ' . $operator . ' ' , array_keys($constraints)) . ') ';
 
         $this->sql_params = array_merge($this->sql_params, $constraints);
 
@@ -1001,6 +1257,7 @@ class User_Query
                 case self::SORT_CREATIONDATE:
                 case self::SORT_COUNTRY:
                 case self::SORT_LASTMODEL:
+                case self::SORT_LAST_CONNECTION:
                     $sorter[$k] = ' Users.`' . $sort . '` ';
                     break;
                 default:

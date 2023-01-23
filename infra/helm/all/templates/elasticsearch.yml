@@ -1,0 +1,37 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phraseanet-elasticsearch
+spec:
+  replicas: 1
+  strategy:
+      type: Recreate
+  selector:
+    matchLabels:
+      app: phraseanet
+      tier: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: phraseanet
+        tier: elasticsearch
+    spec:
+      volumes:
+      - name: elastic-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.elasticsearch.pvc_name }}
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
+      containers:
+      - name: elasticsearch
+        image: {{ .Values.image.registry }}/phraseanet-elasticsearch:{{ .Values.image.tag.phraseanet }}
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        resources:
+{{ toYaml .Values.elasticsearch.resources | indent 12 }}
+        volumeMounts:
+        - name: elastic-data
+          mountPath: "/usr/share/elasticsearch/data"

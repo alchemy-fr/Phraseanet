@@ -11,6 +11,9 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+
 
 class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 {
@@ -31,9 +34,9 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param  Array   $datas
+     * @param  string[]   $data
      * @param  boolean $unread
-     * @return string
+     * @return array
      */
     public function datas(array $data, $unread)
     {
@@ -41,24 +44,29 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $ssel_id = $data['ssel_id'];
         $n = $data['n'];
 
-        if (null === $user= $this->app['repo.users']->find(($from))) {
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->app['repo.users'];
+        if( ($user= $userRepo->find(($from))) === null ) {
             return [];
         }
 
         $sender = $user->getDisplayName();
 
         try {
+            /** @var BasketRepository $repository */
             $repository = $this->app['repo.baskets'];
 
             $basket = $repository->findUserBasket($ssel_id, $this->app->getAuthenticatedUser(), false);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return [];
         }
+
         $ret = [
-            'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', ['%user%' => $sender, '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
+            'text'  => $this->app->trans('%user% vous a delivre %quantity% document(s) pour votre commande %title%', ['%user%' => htmlentities($sender), '%quantity%' => $n, '%title%' => '<a href="/lightbox/compare/'
                 . $ssel_id . '/" target="_blank">'
-                . $basket->getName() . '</a>'])
-            , 'class' => ''
+                . htmlentities($basket->getName()) . '</a>']),
+            'class' => ''
         ];
 
         return $ret;

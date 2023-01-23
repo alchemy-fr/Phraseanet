@@ -74,10 +74,10 @@ class PermalinkController extends AbstractDelivery
 
     public function deliverPermaview(Request $request, $sbas_id, $record_id, $subdef)
     {
-        return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef);
+        return $this->doDeliverPermaview($sbas_id, $record_id, $request->query->get('token'), $subdef, $request->query->get('t'));
     }
 
-    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName)
+    private function doDeliverPermaview($sbas_id, $record_id, $token, $subdefName, $currentTime = null)
     {
         $databox = $this->findDataboxById($sbas_id);
         $record = $this->retrieveRecord($databox, $token, $record_id, $subdefName);
@@ -105,6 +105,7 @@ class PermalinkController extends AbstractDelivery
             'token'       => $token,
             'record'      => $record,
             'recordUrl'   => $information->getUrl(),
+            'currentTime' => $currentTime
         ]);
     }
 

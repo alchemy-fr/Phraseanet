@@ -1,0 +1,98 @@
+<h1>{{ 'admin::workermanager:tab:searchengine: description' |trans }}</h1>
+
+{{ form_start(form, {'action': path('worker_admin_searchengine')}) }}
+
+<div class="control-group">
+    {{ form_row(form.host) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.port) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.indexName) }}
+</div>
+
+<div class="control-group">
+    <label class="control-label"> {{ 'admin::workermanager:tab:searchengine: Databox to populate' | trans }}</label>
+    <div class="controls">
+        <label class="checkbox inline">
+            <input class="subdef_sbas" type="checkbox"  value="0"> {{ 'All' | trans }}
+        </label>
+
+        {% for databox in app.getApplicationBox().get_databoxes() %}
+            <label class="checkbox inline">
+                <input class="subdef_sbas" type="checkbox" name="worker_searchengine[sbas][]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
+                ({{ databox.get_sbas_id() }})
+            </label>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="control-group">
+    <button type="submit" class="btn btn-primary btn-trigger " id="populateButton" form="worker_searchengine">
+        {{ "admin::workermanager:tab:searchengine: Populate" |trans }}
+    </button>
+</div>
+
+{{ form_end(form) }}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".subdef_sbas").change(function (e) {
+            var alldb = $(".subdef_sbas[value=0]").prop('checked');
+            if (alldb) {
+                $(".subdef_sbas[value!=0]").prop('checked', true);
+            } else {
+                $(".subdef_sbas[value!=0]").attr('disabled', false);
+            }
+        });
+
+        $('#populateButton').on('click', function () {
+            checked = $('input[name="worker_searchengine[sbas][]"]:checked').length;
+
+            if(!checked) {
+                alert("You must check at least one databox to populate.");
+
+                return false;
+            }
+
+            $("form[name='worker_searchengine']").submit();
+        });
+
+        $("form[name='worker_searchengine']").on('submit', function () {
+            var form = $(this);
+            var sbasIds = [];
+            $.each($('input[name="worker_searchengine[sbas][]"]:checked'), function() {
+                sbasIds.push($(this).val());
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: '/admin/worker-manager/populate-status',
+                data: {
+                    sbasIds: sbasIds
+                },
+                success: function (data) {
+                    if (data == 0) {
+                        $('#right-ajax').empty().addClass('loading');
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'POST',
+                            data: form.serialize(),
+                            success: function (data) {
+                                $('#right-ajax').removeClass('loading').html(data);
+                            }
+                        });
+                    } else {
+                        alert('{{ "admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox" |trans }}');
+                    }
+                }
+            });
+
+            return false;
+        });
+
+    });
+</script>

@@ -1,30 +1,40 @@
 ---
 - name: ensure timezone is set in apache2 php.ini
-  lineinfile: dest=/etc/php/5.6/apache2/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
               regexp='date.timezone ='
               line='date.timezone = {{ server.timezone }}'
 
 - name: enabling opcache
-  lineinfile: dest=/etc/php/5.6/apache2/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
               regexp=';?opcache.enable=\d'
               line='opcache.enable=1'
 
 - name: Disable PHP cache limiter
-  lineinfile: dest=/etc/php/5.6/apache2/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
               regexp=';?\s*session.cache_limiter\s*=\s*'
               line='session.cache_limiter = ""'
 
 - name: set post_max_size
-  lineinfile: dest=/etc/php/5.6/apache2/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
               regexp=';?post_max_size\s*=\s*'
               line='post_max_size = 2G'
 
 - name: set upload_max_filesize
-  lineinfile: dest=/etc/php/5.6/apache2/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
               regexp=';?upload_max_filesize\s*=\s*'
               line='upload_max_filesize = 2G'
 
 - name: set max_input_vars
-  lineinfile: dest=/etc/php/5.6/apache2/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
               regexp=';?max_input_vars\s*=\s*'
               line='max_input_vars = 12000'
+
+- name: set session.hash_bits_per_character apache2
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
+              regexp=';?session.hash_bits_per_character\s*=\s*'
+              line='session.hash_bits_per_character = 6'
+
+- name: set session.hash_function apache2
+  lineinfile: dest=/etc/php/{{ phpversion }}/apache2/php.ini
+              regexp=';?session.hash_function\s*=\s*'
+              line='session.hash_function = 1'

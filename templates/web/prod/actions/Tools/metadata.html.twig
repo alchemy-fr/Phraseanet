@@ -1,0 +1,49 @@
+{% set thumbnail = record.get_thumbnail() %}
+
+<p><img class="metadatas-image" style='margin-right:15px'
+     src="{{thumbnail.get_url()}}"
+     width="{{thumbnail.get_width()}}"
+     height="{{thumbnail.get_height()}}" />
+</p>
+<h3 class="metadatas-title" ><span>{{"prod::tool:metadata:metadatas" | trans}} : {{ subdef_name }}</span></h3>
+
+<div>
+    <table>
+        <tbody>
+        {% if metadatas|length %}
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
+                {% for metadata in metadatas %}
+                    <tr>
+                        <td>
+                            {{ metadata.getTag().getTagname() }}
+                        </td>
+                        <td>
+                            {{ metadata.getValue().asString() }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                {% for metadata in metadatas if 'System' not in  metadata.getTag().getTagname() %}
+                    <tr>
+                        <td>
+                            {{ metadata.getTag().getTagname() }}
+                        </td>
+                        <td>
+                            {{ metadata.getValue().asString() }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            <tr>
+                <td>{{- "No metadata available"|trans -}}</td>
+            </tr>
+        {% endif %}
+
+        </tbody>
+    </table>
+</div>

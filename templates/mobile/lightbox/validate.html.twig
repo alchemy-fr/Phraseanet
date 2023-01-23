@@ -2,64 +2,144 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script type="text/javascript">
 
-    {% if basket.getValidation() %}
+    {% if basket.isVoteBasket %}
     var lightboxApp = lightboxMobileApplication.bootstrap({
         lang: '{{ app.locale }}',
         baseUrl: '{{ app['request'].getUriForPath('/') }}',
         basePath: '{{ app.request.basePath|e('js') }}',
-        releasable: {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+        releasable: {% if basket.getVoteInitiator().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     });
 
-    //var releasable = {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+
     {% endif %}
+
   </script>
 {% endblock %}
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox-mobile{% if not app.debug %}.min{% endif %}.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 {% endblock %}
 
 {% block content %}
 <div id="home" data-role="page">
     <div data-role="header">
-    <a href="{{ path('lightbox') }}{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+        <a rel="external"
+           href="{{ path('lightbox') }}{% if basket.isVoteBasket() %}#validation{% else %}#baskets{% endif %}"
+           data-icon="arrow-l">{{ 'Back' | trans }}</a>
     <h1>{{basket.getName()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
     <input type="hidden" id="basket_validation_id" value="{{ basket.getId() }}">
     <p>
       {% set basket_length = basket.getElements().count() %}
       {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
-    <ul class="image_set">
-    {% for basket_element in basket.getElements() %}
-      <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
-        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}disagree{% endif %}">
-          </div>
+
+
+        {% if basket.isVoteBasket() %}
+            <div id="FeedbackRelease" class="modal fade" role="dialog" style="display: none">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                &times;</button>
+                            <h4 class="modal-title">{{ 'lightbox:feedback:sendreport:warnwindows:title' | trans }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{'lightbox:feedback:sendreport:warnwindows:message ' | trans}}</p>
+
+                            <p>{{ 'lightbox:feedback:sendreport:warnwindows:record_approved'| trans }} : <span class="record_accepted"></span>
+
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_rejected'| trans }} : <span class="record_refused"></span>
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_unexpressed'| trans }} : <span class="record_null"></span>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="width:auto">{{ 'lightbox:feedback:sendreport:warnwindows:cancel'| trans }}</button>
+                            <button type="button" class="btn btn-primary" id="validate-release" style="width:auto">{{ 'lightbox:feedback:sendreport:warnwindows:validate'| trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="report_wrapper">
+                <a id="report_summary" class="report_btn report_summary" href="#" onclick="$.ajax({
+            type: 'GET',
+            url: '/lightbox/ajax/LOAD_REPORT/' + $('#navigation').val() + '/',
+            dataType: 'html',
+            success: function (data) {
+            $('#report_list_backup').empty().append($('#report').html());
+            $('#report').empty().append(data);
+            $('#report .record_image').css('height','auto');
+            return;
+            }
+            });
+            $(this).hide();
+            $('#report_list').show();">
+                    {{ 'lightbox::recaptitulatif' | trans }}
+                </a>
+                <a id="report_list" class="report_btn report_list" href="#" onclick=" $(this).hide();
+            $('#report_summary').show();
+            $('#report').empty().append($('#report_list_backup').html());">
+                    {{ 'lightbox::list' | trans }}
+                </a>
+            </div>
+            <div class="report_list_backup" id="report_list_backup">&nbsp;</div>
+            <div class="report_summary_backup " id="report_summary_backup">&nbsp;</div>
         {% endif %}
-        <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
-          {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
-        </a>
-        <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
-      </li>
-    {% endfor %}
-    </ul>
-  </div>
-    <div data-role="footer">
-        {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-            <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
-                {{ 'validation::envoyer mon rapport' | trans }}
-                <img src="/assets/common/images/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
-            </button>
-        {% endif %}
-  </div>
-</div>
+            <input type="hidden" id="navigation" value="{{ basket.getId() }}">
+            <div id="report" class="summary_block">
+                <ul class="image_set">
+                    {% for basket_element in basket.getElements() %}
+
+                        <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
+                            <div class="display_id">
+                                {{basket_element.getOrd()}}
+                            </div>
+                            {% if basket_element.getBasket().isVoteBasket() and basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+                                <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == true %}agree{% elseif basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == false and basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() is not null %}disagree{% endif %}">
+                                    </div>
+                            {% endif %}
+                            <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
+                                {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 300, 300, '', true, false)}}
+                            </a>
+                            <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+    </div>
+
+        <div class="btn-container">
+            {% if basket.isVoteBasket() and basket.getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+                <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}" onclick="
+
+
+
+">
+                    {{ 'validation::envoyer mon rapport' | trans }}
+                    <img src="/assets/common/images/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
 {% endblock %}
 
 

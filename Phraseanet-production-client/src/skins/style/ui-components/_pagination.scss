@@ -1,0 +1,89 @@
+$paginationLinkColor: $linkDefaultColor !default;
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+#tool_navigate input {
+  text-align: center;
+}
+
+#tool_navigate a {
+  padding: 1px 5px;
+  margin: 0 4px;
+  background-color: #0077BC;
+  font-size: $mediumFontSize;
+  line-height: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  color: $paginationLinkColor
+}
+
+
+#paginate {
+  min-height: 52px;
+}
+
+#idFrameT #answers:hover #paginate {
+  margin-right: 59px;
+}
+
+#paginate #tool_navigate {
+  background-color: $paginateBg1;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.31);
+  border-radius: 5px;
+  position: fixed;
+  bottom: 10px;
+  right: 45px;
+  z-index: 100;
+}
+
+
+#paginate #tool_navigate input,
+#paginate #tool_navigate a {
+  border: 0;
+  border-left:1px solid $paginateBorder;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  height: 40px;
+  line-height: 40px;
+  vertical-align: middle;
+  width: 40px;
+  background: none;
+  font-weight: bold;
+  font-size: 14px;
+  text-shadow: none;
+  box-shadow: none;
+  color: #ffffff;
+}
+
+#paginate #tool_navigate input,
+#paginate #tool_navigate a:hover {
+  color: $highlightTextColor;
+  background: $paginateBgHov;
+}
+
+#paginate #tool_navigate .btn-mini {
+    border-radius: 0;
+    &.last {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        &:hover {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    }
+    &:first-child {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        border: 0;
+    }
+    &.icon {
+        font-size: 18px;
+        &#last {
+            font-size: 10px;
+        }
+    }
+    .icon-inverse {
+        transform: rotate(180deg);
+        font-size: 10px;
+    }
+}
+

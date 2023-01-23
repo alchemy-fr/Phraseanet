@@ -1,0 +1,140 @@
+/*
+Menu contextuel
+    valeurs suggerees dans l'editing : Classic Windows Theme (default) */
+/* =============================== */
+.context-menu-theme-default {
+    border: 2px outset #ffffff;
+    background-color: #d4d0c8;
+}
+
+.context-menu-theme-default .context-menu-item {
+    text-align: left;
+    cursor: pointer;
+    padding: 2px 20px 2px 5px;
+    color: black;
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+.context-menu-theme-default .context-menu-separator {
+    margin: 1px 2px;
+    font-size: 0px;
+    border-top: 1px solid #808080;
+    border-bottom: 1px solid #ffffff;
+}
+
+.context-menu-theme-default .context-menu-item-disabled {
+    color: #808080;
+}
+
+.context-menu-theme-default .context-menu-item .context-menu-item-inner {
+    background: none no-repeat fixed 999px 999px; /* Make sure icons don't appear */
+}
+
+.context-menu-theme-default .context-menu-item-hover {
+    background-color: #0a246a;
+    color: $textPrimaryHoverColor;
+}
+
+.context-menu-theme-default .context-menu-item-disabled-hover {
+    background-color: #0a246a;
+}
+
+/******* DROPDOWN MENU ********************************************************/
+
+.context-menu-theme-vista .context-menu-item .context-menu-item-inner {
+    padding: 4px 12px;
+    margin-left: 0;
+    font-size: 12px;
+    font-weight: bold;
+    font-spacing: 0;
+    color: $darkerTextColor;
+
+}
+
+.context-menu-theme-vista .context-menu-item-hover {
+    background-image: none;
+    background-color: #75abff;
+    border: none;
+}
+
+.context-menu-theme-vista .context-menu-item-hover .context-menu-item-inner {
+    color: $darkerBackgroundColor;
+}
+
+.context-menu-theme-vista {
+    background-image: none;
+    background-color: $darkerBackgroundColor;
+    border-bottom-left-radius: $defaultBorderRadius;
+    border-bottom-right-radius: $defaultBorderRadius;
+}
+
+.context-menu-theme-vista .context-menu-item .context-menu-item-inner.published {
+    background-image: url('#{$iconsPath}ticktick.png');
+    background-repeat: no-repeat;
+    background-position: 5px center;
+}
+
+/* Flat theme */
+.context-menu-theme-flat {
+    min-width: 160px;
+    background-image: none;
+    background-color: $answersToolsBg;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 2px 2px 4px 0 $contextMenuShadow;
+  }
+
+  .context-menu-theme-flat .context-menu-item {
+    .context-menu-item-inner {
+      margin-left: 0;
+      font-weight: bold;
+      &:hover {
+        background-color: $answersToolsBgHover;
+        a {
+            color: $answersToolsBgColor;
+        }
+      }
+    }
+    a {
+      padding: 9px 16px 9px 10px;
+      font-size: 14px;
+      font-weight: 500;
+      display: block;
+      color: $answersToolsBgColor;
+      img {
+        width: 24px;
+        margin-bottom: -2px;
+      }
+      span {
+        margin-left: 8px;
+        vertical-align: initial;
+      }
+    }
+  }/* Flat theme End */
+
+  .context-menu-item.divider {
+    border-bottom: 1px solid $contextDivider;
+  }
+
+.context-menu-item .divider {
+    border-bottom: 1px solid #808080;
+    margin-left: 20px;
+}
+
+.context-menu-item a {
+    font-size: 12px;
+    font-weight: bold;
+    font-spacing: 0;
+    color: $darkerTextColor;
+    span {
+        vertical-align: middle;
+    }
+    img {
+        width: 16px;
+    }
+}
+
+.context-menu-item-hover a {
+    color: #212121;
+}

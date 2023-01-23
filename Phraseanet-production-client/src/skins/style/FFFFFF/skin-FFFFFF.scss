@@ -1,0 +1,263 @@
+$skinsImagesPath: '/assets/vendors/jquery-ui/images/ui-lightness/';
+
+$defaultBorderColor: #999999;
+$defaultBorderRadius: 2px;
+
+$textPrimaryColor: #333333;
+$textPrimaryHoverColor: #1a1a1a;
+$textPrimaryActiveColor: #1a1a1a;
+$textPrimaryInverseColor: #1a1a1a; //3b3b3b;
+$textSecondaryColor: #999999;
+
+$highlightDarkerColor: #0c4554;
+
+$highlightBackgroundColor: #076882;
+$highlightBackgroundAltColor: #0c4554;
+$highlightBorderColor: #0c4554;
+$highlightTextColor: #fff;
+
+$darkerBackgroundColor: #ffffff; // #F1F1F1 <- to try
+$darkerBorderColor: #bfbfbf;
+$darkerTextColor: #333;
+$darkerTextColor2: #333;
+$popoverColor: #2b2b2b;
+$darkerTextHoverColor: #000000;
+
+$darkBackgroundColor: #bfbfbf; //B1B1B1;
+$darkBorderColor: darken($darkBackgroundColor, 10);
+$darkTextColor: #9c9c9c;
+
+$mediumBackgroundColor: #f2f2f2; // B2B2B2 <- to try
+$mediumBorderColor: #fff; //darken($mediumBackgroundColor, 10);
+$mediumBorderHighlightColor: #bfbfbf;
+$mediumTextColor: $textPrimaryColor;
+$mediumTextHoverColor: #eaeaea;
+$mediumTextActiveColor: #eaeaea;
+
+$lightBackgroundColor: #cdcdcd;
+$lightBackgroundSelectedColor: darken($lightBackgroundColor, 10);
+$lightBackgroundActiveColor: #cdcdcd;
+$lightBorderColor: #b1b1b1;
+$lightBorderSelectedColor: darken($lightBorderColor, 10);
+$lightBorderActiveColor: darken($lightBorderColor, 10);
+$lightTextColor: #3b3b3b;
+
+// inverse
+$textInverseColor: #000;
+$textInverseHoverColor: #000;
+$bgInverseHoverColor: #333;
+
+/******* GLOBAL PROD **********************************************************/
+$scrollBgColor: #cccccc; //#3b3b3b;
+
+$paginateBorderColor: #bfbfbf;
+$paginateTextColor: #ffffff;
+$paginationLinkColor: #333;
+// $paginateBorder2Color: #999999;
+// $paginateTextColor: #FFFFFF;
+$paginateBg1: #979797;
+$paginateBgHov: #7d7d7d;
+$paginateBorder: #979797;
+
+$uploadBg1: #ffffff;
+$uploadBg2: transparent;
+$uploadLoaderImg: 'loader-black.gif';
+
+$bridgeDropdownToggleBg: #e6e6e6;
+$bridgeDropdownMenuBg: #f2f2f2;
+$bridgeDropdownMenuBorder: #bfbfbf;
+$bridgeDropdownMenuColor: #eaeaea;
+$bridgeDropdownMenuHoverBg: #bfbfbf;
+$bridgeDropdownMenuHoverColor: #ffffff;
+
+$thesaurusInputBackground: #d4d4d4;
+$thesaurusContextMenuColor: #ffffff;
+
+$basketsTextColor: #777777;
+
+$guiSplitterImg: 'vsplitter2-959595.png';
+
+$answersToolsBg: #d9d9d9;
+$answersToolsBgHover: #c4c4c4;
+$answersToolsBgColor: #2a2a2a;
+$answersToolsBtnSeparatorBorder: #eaeaea;
+$answersToolsBtnBg: #f2f2f2;
+$answersToolsBtnBorder: #bfbfbf;
+$answersToolsBtnColor: #4d4d4d;
+$answersToolsBtnHoverBg: #d8d8d8;
+$answersToolsBtnHoverColor: #4d4d4d;
+
+/*Sub nav*/
+$whiteCaret: #000000;
+$answersToolsBtnColorSub: $answersToolsBtnColor;
+$answersToolsBtnBgSub: #e3e3e3;
+$answersToolsBtnHoverBgSub: #cdcdcd;
+$answersToolsBtnHoverColorSub: $answersToolsBtnHoverColor;
+
+$answersToolsBtnSettingsColor: #000; //lighten($answersToolsBtnColor, 10);
+$answersToolsBtnSettingsHoverBg: #d6d6d6;
+$answersToolsBtnSettingsHoverColor: lighten($answersToolsBtnColor, 10);
+$answersToolsBtnSettingsBorder: #eaeaea;
+
+$diapoBorderColor: #bfbfbf;
+
+$editTextMultiValueBg: #ffffff;
+$editTextMultiValueBorder: #999999;
+$editTextMultiValueHighlightBg: #d0d0d0;
+
+$preferencesLabelColor: #333333;
+
+//$activeStateIcon: 'ui-icons_ffffff_256x240.png';
+$activeStateIcon: 'ui-icons_222222_256x240.png';
+$accordionLoaderImg: 'loader-black.gif';
+$accordionBgHeaderHover: #dadada;
+
+$inputButtonHoverColor: #fefefe;
+$inputFallbackBorderColor: #b1b1b1;
+
+$dropdownDividerBg: $darkerBorderColor;
+$dropdownDividerBorder: $darkerBorderColor;
+
+$overlayBg: #b1b1b1;
+
+$tabsNavBg: #999999;
+$tabsNavBgActive: #b2b2b2; //#D9D9D9;
+$contentLoaderImg: 'loading.svg';
+
+/*$btnBackground: #444444; //#B9B9B9;
+$btnBackgroundHighlight: #393939;
+$btnColor: #AAAAAA;
+$btnTextShadow: 0 -1px 0 rgba(0,0,0,.25);*/
+
+$btnBackground: #f2f2f2;
+$btnBackgroundHighlight: #d6d6d6;
+$btnColor: #737373;
+$btnTextShadow: 0 -1px 0 rgba(0, 0, 0, 0);
+
+$btnInverseBackground: #f2f2f2;
+$btnInverseBackgroundHighlight: #d6d6d6;
+$btnInverseColor: #5b5b5b;
+$btnInverseTextShadow: 0 -1px 0 rgba(255, 255, 255, .25);
+$btnGrpSeparatorColor: $defaultBorderColor;
+
+$widgetContentColor: $textPrimaryInverseColor;
+
+$linkDefaultColor: #444444;
+$linkDefaultHover: #444444;
+
+// override jquery ui theme colors:
+$uiTextContentColor: $mediumTextColor;
+$uiTextTitleColor: $mediumTextColor;
+$uiLinkColor: $darkTextColor;
+$uiLinkColor2: #383838;
+$uiLinkFocusColor: #383838;
+$uiLinkActiveColor: $darkTextColor;
+
+$pushboxBadgeColor: #bfbfbf;
+
+/******** MAIN MENU CONFIG ********/
+$mainMenuBottomBorder: none;
+$mainMenuBackgroundColor: #979797; //BFBFBF;
+$mainMenuBottomBorder: none;
+$mainMenuMarginBottom: 0;
+$mainMenuLinkColor: #ffffff;
+$mainMenuLinkBackgroundHoverColor: transparent; //$bgInverseHoverColor;
+$mainMenuLinkHoverColor: darken($mainMenuLinkColor, 10);
+@import '../../../../stylesheets/shared/variables';
+
+/******** PROPOSALS CONFIG ********/
+$proposalsTitleColor: #333;
+$proposalsTitleBorder: #bfbfbf;
+$proposalsTitleHoverColor: lighten($proposalsTitleColor, 10);
+$proposalsFacetHoverColor: #fff;
+$facetTitleBg: #e4e4e4;
+$facetContentBg: #f8f8f8;
+
+/******** WORKZONE TABS CONFIG ********/
+$workzoneBackgroundColor: $mediumBackgroundColor;
+$workzoneTabBgHover: #eaeaea;
+$workzoneTabBgActive: #eaeaea;
+$workzoneTabTopBorder: 1px solid #eaeaea;
+$workzoneTabBorderBottom: transparent;
+$workzoneBasketAlertDataBg: #fff190;
+$workzoneBasketAlertDataColor: #1a1a1a;
+$workzoneToolsLabelColor: #ffffff;
+
+/******** TABS CONFIG ********/
+$tabContentBackgroundColor: #f5f5f5;
+$tabBackgroundColor: #f2f2f2;
+$tabTextColor: lighten($textPrimaryInverseColor, 10);
+$tabActiveBackgroundColor: $tabContentBackgroundColor;
+$tabActiveTextColor: $textPrimaryInverseColor;
+$tabDisabledBackgroundColor: $tabBackgroundColor;
+$tabDisabledTextColor: $mediumTextActiveColor;
+
+/******** ANSWERS INFOS CONFIG ********/
+$answersInfoDialogBg: $highlightBackgroundAltColor !default;
+$answersInfoDialogColor: #ffffff !default;
+$answersDocInfoBg: #979797 !default;
+$answersDocInfoBorder: #fafafa !default;
+$answersDocInfoColor: #ffffff !default;
+$answersLinkColor: #ffffff !default;
+$answersInfoLabelColor: #ffffff !default;
+
+/******** FACETS SEE MORE BTN********/
+$see_more_btn_bg: #d3d3d3;
+$see_more_btn_color: #424242;
+$see_more_btn_border: #b7b7b7;
+$see_more_btn_shadow: rgba(0,0,0,0.1);
+
+$see_more_btn_bg_hov: #f1f1f1;
+$see_more_btn_color_hov: #424242;
+$see_more_btn_border_hov: #b7b7b7;
+
+$white: #ffffff;
+
+$toolsPanelBg: #cdcdcd;
+$toolTitleColor: #000000;
+$basketTips: rgba(0, 0, 0, 0.1);
+$basketTips2: rgba(0, 0, 0, 0.1);
+$dividerBg: #e4e4e4;
+
+$customCheckboxUnchecked: #444444;
+$lineSeparator: #e5e5e5;
+$basketBg: #f8f8f8;
+$feedback: $basketBg;
+$STTHover: #dad9da;
+$basketTitleHov: #383838;
+$btnHovLight: #d8d8d8;
+
+$facetFilterBg: #D6D6D6;
+$facetText: #4d4d4d;
+$guiVsplitter: #d7d7d7;
+$whiteActive: #000000;
+$contextDivider: #c7c7c7;
+$contextMenuShadow: rgba(0,0,0,0.07);
+$storyBg: #979797;
+$tooltipBg: #c2c2c2;
+$tooltipTxt: #2b2b2b;
+$editAllBg: #ffffff;
+$editFieldBg: #f2f2f2;
+
+$stackText: #ffffff;
+$stackBg: #808080;
+$stackInverse: #333;
+$stackInverseBg: #cccccc;
+$chimWrap: #e8e8e8;
+$chimImg: #cacaca;
+
+
+//Dialog custom
+$dialogHeaderBg: #f5f5f5;
+$dialogWrapBg: #fff;
+$dialogBtnBg: #e6e6e6;
+$dialogBtnBg2: #787878;
+$dialogBtnBgHover: #282828;
+$dialogBtnColor: #000;
+$dialogBtnColor2: #fff;
+
+$dialogTopBg: #b0b0b0;
+$recordBg: #e6e6e6;
+
+@import '../../../../stylesheets/shared/jquery-ui/ui-lightness';
+@import '../skin-shared';

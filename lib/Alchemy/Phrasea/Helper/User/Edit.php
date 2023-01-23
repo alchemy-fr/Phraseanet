@@ -15,7 +15,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Doctrine\DBAL\Connection;
@@ -71,12 +76,17 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(User $user)
     {
-        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
+        // only revoke access to bases on which I am admin
+        $I_Admin = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
-        $this->app->getAclForUser($user)->revoke_access_from_bases($list);
+        $oldGrantedBaseIds = array_keys($this->app->getAclForUser($user)->get_granted_base());
+
+        $this->app->getAclForUser($user)->revoke_access_from_bases($I_Admin);
 
         if ($this->app->getAclForUser($user)->is_phantom()) {
-            $this->app['manipulator.user']->delete($user);
+            /** @var UserManipulator $userManipulator */
+            $userManipulator = $this->app['manipulator.user'];
+            $userManipulator->delete($user, [$user->getId() => $oldGrantedBaseIds]);
         }
 
         return $this;
@@ -178,7 +188,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $query = $this->app['phraseanet.user-query'];
         $templates = $query
-                ->only_templates(true)
+                ->only_user_templates(true)
                 ->execute()->get_results();
 
         $this->users_datas = $rs;
@@ -197,6 +207,142 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         }
 
         return $out;
+    }
+
+    public function getFeeds($userId = null)
+    {
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'feeds' => [],
+                ];
+            }
+        }
+
+        $user = $this->app['repo.users']->find($userId);
+
+        /** @var FeedRepository $feedsRepository */
+        $feedsRepository = $this->app['repo.feeds'];
+        $feeds = $feedsRepository->getUserFeed($user);
+
+        /** @var FeedEntryRepository $feedEntryRepo */
+        $feedEntryRepo = $this->app['repo.feed-entries'];
+
+        $feedCount = [];
+        /** @var Feed $feed */
+        foreach ($feeds as $feed) {
+            $feedCount[$feed->getId()] = $feedEntryRepo->getByUserAndFeed($user, $feed, true);
+        }
+
+        return [
+            'feeds'         => $feedsRepository->getUserFeed($user),
+            'feeds_count'   => $feedCount
+        ];
+    }
+
+    public function getBasketElements($userId = null, $databoxId = null, $recordId = null)
+    {
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'basket_elements' => [],
+                ];
+            }
+        }
+
+        $user = $this->app['repo.users']->find($userId);
+
+        /** @var BasketElementRepository $basketElementRepository */
+        $basketElementRepository = $this->app['repo.basket-elements'];
+
+        return [
+            'basket_elements'        => $basketElementRepository->getElements($user, $databoxId, $recordId),
+            'basket_elements_count'  => $basketElementRepository->getElementsCount($user, $databoxId, $recordId)
+        ];
+    }
+
+    public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null, $type = null, $expiredRight = false)
+    {
+        $rows = [];
+        $totalCount = 0;
+
+        $databoxIds = array_map(function (\databox $databox) {
+            return $databox->get_sbas_id();
+        },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
+
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'records_acl' => $rows,
+                    'total_count' => $totalCount,
+                    'databoxIds'  => $databoxIds
+                ];
+            }
+        }
+
+        $whereClause = "WHERE rr.usr_id = :usr_id";
+        $params[':usr_id'] = $userId;
+
+        if (!empty($databoxId)) {
+            $whereClause .= " AND rr.sbas_id= :databox_id";
+            $params[':databox_id'] = $databoxId;
+        }
+
+        if (!empty($recordId)) {
+            $whereClause .= " AND rr.record_id= :record_id";
+            $params[':record_id'] = $recordId;
+        }
+
+        if (!empty($type)) {
+            $whereClause .= " AND rr.case= :case";
+            $params[':case'] = $type;
+        }
+
+        if ($expiredRight) {
+            $whereClause .= " AND rr.expire_on < NOW()";
+        }
+
+        $sql = "SELECT rr.sbas_id, rr.record_id, rr.preview, rr.document, rr.`case` as type, \n"
+              . "IF(TRIM(p.last_name)!='' OR TRIM(p.first_name)!='', \n"
+              . "   CONCAT_WS(' ', p.last_name, p.first_name),\n"
+              . "   IF(TRIM(p.email)!='', p.email, p.login)\n"
+              . ") as pusher_name, rr.expire_on\n"
+              . " FROM records_rights rr \n"
+              . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id\n"
+              . " JOIN Users as p ON p.id = rr.pusher_usr_id\n"
+              . $whereClause
+              . " ORDER BY rr.id DESC limit 200 \n"
+        ;
+
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $sql = "SELECT count(*) as nb \n"
+            . " FROM records_rights rr \n"
+            . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id\n"
+            . $whereClause
+        ;
+
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $totalCount = $stmt->fetchColumn();
+        $stmt->closeCursor();
+
+        return [
+            'records_acl' => $rows,
+            'total_count' => $totalCount,
+            'databoxIds'  => $databoxIds
+        ];
     }
 
     public function get_quotas()
@@ -583,8 +729,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $user = $this->app['repo.users']->find($usr_id);
 
                 $this->app->getAclForUser($user)->revoke_access_from_bases($delete)
-                    ->give_access_to_base($create)
-                    ->give_access_to_sbas($create_sbas);
+                    ->give_access_to_sbas($create_sbas)     // give access to sbas before bas
+                    ->give_access_to_base($create);
 
                 foreach ($update as $base_id => $rights) {
                     $this->app->getAclForUser($user)
@@ -654,11 +800,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $user->setFirstName($parm['first_name'])
             ->setLastName($parm['last_name'])
             ->setGender((int) $parm['gender'])
-            ->setEmail($parm['email'])
+            ->setEmail(trim($parm['email']))
             ->setAddress($parm['address'])
             ->setZipCode($parm['zip'])
-            ->setActivity($parm['function'])
-            ->setJob($parm['activite'])
+            ->setActivity($parm['activite'])
+            ->setJob($parm['function'])
             ->setCompany($parm['company'])
             ->setPhone($parm['telephone'])
             ->setFax($parm['fax']);
@@ -677,6 +823,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             if ($oldReceiver) {
                 $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, $this->app->trans('You will now receive notifications at %new_email%', ['%new_email%' => $new_email]));
+
+                if (($locale = $user->getLocale()) != null) {
+                    $mailOldAddress->setLocale($locale);
+                }
+
                 $this->deliver($mailOldAddress);
             }
 
@@ -688,6 +839,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             if ($newReceiver) {
                 $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, $this->app->trans('You will no longer receive notifications at %old_email%', ['%old_email%' => $old_email]));
+
+                if (($locale = $user->getLocale()) != null) {
+                    $mailNewAddress->setLocale($locale);
+                }
+
                 $this->deliver($mailNewAddress);
             }
         }
@@ -712,6 +868,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $user = $this->app['repo.users']->find($usr_id);
             
             $this->app->getAclForUser($user)->apply_model($template, $base_ids);
+
+            $this->app['manipulator.user']->updateUser($user);
         }
 
         return $this;

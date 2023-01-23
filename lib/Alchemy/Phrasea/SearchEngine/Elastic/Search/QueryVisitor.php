@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
@@ -108,6 +108,9 @@ class QueryVisitor implements Visit
             case NodeTypes::TIMESTAMP_KEY:
                 return $this->visitTimestampKeyNode($element);
 
+            case NodeTypes::GEOLOCATION_KEY:
+                return $this->visitGeolocationKeyNode($element);
+
             case NodeTypes::METADATA_KEY:
                 return new AST\KeyValue\MetadataKey($this->visitString($element));
 
@@ -163,6 +166,12 @@ class QueryVisitor implements Visit
         $key = $node->getChild(0)->accept($this);
         $boundary = $node->getChild(1)->accept($this);
 
+        if ($this->isDateKey($key)) {
+            if(($v = RecordHelper::sanitizeDate($boundary)) !== null) {
+                $boundary = $v;
+            }
+        }
+
         switch ($node->getId()) {
             case NodeTypes::LT_EXPR:
                 return AST\KeyValue\RangeExpression::lessThan($key, $boundary);
@@ -188,21 +197,36 @@ class QueryVisitor implements Visit
     private function visitEqualNode(TreeNode $node)
     {
         return $this->handleBinaryExpression($node, function($left, $right) {
+            if($right === AST\KeyValue\MissingExpression::MISSING_VALUE) {
+                return new AST\KeyValue\MissingExpression($left);
+            }
+
+            if($right === AST\KeyValue\ExistsExpression::EXISTS_VALUE) {
+                return new AST\KeyValue\ExistsExpression($left);
+            }
+
             if ($this->isDateKey($left)) {
                 try {
                     // Try to create a range for incomplete dates
                     $range = QueryHelper::getRangeFromDateString($right);
-                    return new AST\KeyValue\RangeExpression(
-                        $left,
-                        $range['from'], true,
-                        $range['to'], false
-                    );
-                } catch (\InvalidArgumentException $e) {
+                    if ($range['from'] === $range['to']) {
+                        return new AST\KeyValue\EqualExpression($left, $range['from']);
+                    }
+                    else {
+                        return new AST\KeyValue\RangeExpression(
+                            $left,
+                            $range['from'], true,
+                            $range['to'], false
+                        );
+                    }
+                }
+                catch (\InvalidArgumentException $e) {
                     // Fall back to equal expression
                 }
             }
 
             return new AST\KeyValue\EqualExpression($left, $right);
+
         });
     }
 
@@ -337,6 +361,11 @@ class QueryVisitor implements Visit
         });
     }
 
+    private function visitGeolocationKeyNode(TreeNode $node)
+    {
+        return AST\KeyValue\GeolocationKey::geolocation();
+    }
+
     private function visitNativeKeyNode(TreeNode $node)
     {
         $this->assertChildrenCount($node, 1);
@@ -346,6 +375,10 @@ class QueryVisitor implements Visit
                 return AST\KeyValue\NativeKey::database();
             case NodeTypes::TOKEN_COLLECTION:
                 return AST\KeyValue\NativeKey::collection();
+            case NodeTypes::TOKEN_SHA256:
+                return AST\KeyValue\NativeKey::sha256();
+            case NodeTypes::TOKEN_UUID:
+                return AST\KeyValue\NativeKey::uuid();
             case NodeTypes::TOKEN_MEDIA_TYPE:
                 return AST\KeyValue\NativeKey::mediaType();
             case NodeTypes::TOKEN_RECORD_ID:

@@ -1,60 +1,33 @@
 {# designed to be printed in a small box #}
 <div class="PNB10" callback="{{ callback }}">
-    <form  id="quickAddUser" method="POST" action="{{ path('prod_push_do_add_user') }}">
+    {# --- use the "push" class as theme : blue buttons #}
+    <form  id="quickAddUser" class="dead_push" method="POST" action="{{ path('prod_push_do_add_user') }}" style="padding-top: 20px">
         <table>
             <tr>
                 <td>
-                    <label for="">{{ 'First Name' | trans }} *</label>
+                    <input name="firstname" placeholder="{{ 'First Name' | trans }} *" type="text" value=""/>
                 </td>
                 <td>
-                    <input name="firstname" type="text" value=""/>
+                    <input name="lastname" placeholder="{{ 'Last Name' | trans }} *" type="text" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input name="email" placeholder="{{ 'Email Name' | trans }} *" type="text" value=""/>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for="">{{ 'Last Name' | trans }} *</label>
+                    <input name="company" placeholder="{{ 'Company' | trans }}" type="text" value=""/>
                 </td>
                 <td>
-                    <input name="lastname" type="text" value=""/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="">{{ 'Email Name' | trans }} *</label>
-                </td>
-                <td>
-                    <input name="email" type="text" value=""/>
+                    <input name="job" placeholder="{{ 'Job' | trans }}" type="text" value=""/>
                 </td>
             </tr>
             <tr>
-                <td>
-                    <label for="">{{ 'Job' | trans }}</label>
-                </td>
-                <td>
-                    <input name="job" type="text" value=""/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="">{{ 'Company' | trans }}</label>
-                </td>
-                <td>
-                    <input name="company" type="text" value=""/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="">{{ 'City' | trans }}</label>
-                </td>
-                <td>
-                    <input name="city" type="text" value="" class="geoname_field" autocomplete="false"/>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <button class="valid btn btn-inverse" type="submit">{{ 'Add' | trans }}</button>
-                    <button class="cancel btn btn-inverse" type="button">{{ 'Cancel' | trans }}</button>
+                <td colspan="2" style="text-align: center;padding: 10px 0px;">
+                    <button class="cancel colored" type="button">{{ 'Cancel' | trans }}</button>
+                    <button class="valid colored inverse" type="submit">{{ 'Add' | trans }}</button>
                 </td>
             </tr>
             <tr>

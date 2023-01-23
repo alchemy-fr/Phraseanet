@@ -1,0 +1,54 @@
+$asset-theme-path: './assets/images/';
+$icon-font-path: '../../../../../node_modules/videojs-font/fonts' ;
+// this file is loaded via include path - relative to the root of project...
+@import "../../../../../node_modules/video.js/src/css/variables";
+@import "../../../../../node_modules/video.js/src/css/private-variables";
+@import "../../../../../node_modules/video.js/src/css/utilities";
+
+@import "../../../../../node_modules/videojs-font/scss/icons";
+
+@import "../../../../../node_modules/video.js/src/css/components/layout";
+@import "../../../../../node_modules/video.js/src/css/components/big-play";
+//@import "../../../../../node_modules/video.js/src/css/components/button";
+@import "../../../../../node_modules/video.js/src/css/components/close-button";
+
+@import "../../../../../node_modules/video.js/src/css/components/menu/menu";
+@import "../../../../../node_modules/video.js/src/css/components/menu/menu-popup";
+@import "../../../../../node_modules/video.js/src/css/components/menu/menu-inline";
+
+@import "../../../../../node_modules/video.js/src/css/components/control-bar";
+@import "../../../../../node_modules/video.js/src/css/components/control";
+@import "../../../../../node_modules/video.js/src/css/components/control-spacer";
+
+@import "../../../../../node_modules/video.js/src/css/components/progress";
+@import "../../../../../node_modules/video.js/src/css/components/slider";
+
+@import "../../../../../node_modules/video.js/src/css/components/volume";
+
+@import "../../../../../node_modules/video.js/src/css/components/poster";
+@import "../../../../../node_modules/video.js/src/css/components/live";
+@import "../../../../../node_modules/video.js/src/css/components/time";
+@import "../../../../../node_modules/video.js/src/css/components/play-pause";
+@import "../../../../../node_modules/video.js/src/css/components/text-track";
+@import "../../../../../node_modules/video.js/src/css/components/fullscreen";
+@import "../../../../../node_modules/video.js/src/css/components/playback-rate";
+@import "../../../../../node_modules/video.js/src/css/components/error";
+@import "../../../../../node_modules/video.js/src/css/components/loading";
+@import "../../../../../node_modules/video.js/src/css/components/captions";
+@import "../../../../../node_modules/video.js/src/css/components/chapters";
+@import "../../../../../node_modules/video.js/src/css/components/subtitles";
+@import "../../../../../node_modules/video.js/src/css/components/adaptive";
+@import "../../../../../node_modules/video.js/src/css/components/captions-settings";
+@import "../../../../../node_modules/video.js/src/css/components/modal-dialog";
+@import "buttons";
+@import 'rangeCapture';
+@import 'skin';
+@import 'skin-big-play';
+@import 'tooltip';
+@import 'slider';
+
+.video-js-box, video.video-js {
+  width: 100%;
+  height: 100%;
+}
+

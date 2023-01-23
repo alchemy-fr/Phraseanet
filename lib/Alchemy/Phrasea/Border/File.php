@@ -49,6 +49,7 @@ class File
     protected $originalName;
     protected $md5;
     protected $attributes;
+    public static $xmpTag = ['XMP-xmpMM:DocumentID'];
 
     /**
      * Constructor
@@ -82,13 +83,9 @@ class File
     /**
      * Checks for UUID in metadatas
      *
-     * @todo Check if a file exists with the same checksum
-     * @todo Check if an UUID is contained in the attributes, replace It if
-     *              necessary
-     *
      * @param  boolean $generate if true, if no uuid found, a valid one is generated
      * @param  boolean $write    if true, writes uuid in all available metadatas
-     * @return File
+     * @return string
      */
     public function getUUID($generate = false, $write = false)
     {
@@ -102,6 +99,7 @@ class File
             'IPTC:UniqueDocumentID',
             'ExifIFD:ImageUniqueID',
             'Canon:ImageUniqueID',
+            'XMP-xmpMM:DocumentID',
         ];
 
         if (!$this->uuid) {
@@ -112,8 +110,12 @@ class File
             foreach ($availableUUIDs as $meta) {
                 if ($metadatas->containsKey($meta)) {
                     $candidate = $metadatas->get($meta)->getValue()->asString();
+                    if(in_array($meta, self::$xmpTag)){
+                        $candidate = self::sanitizeXmpUuid($candidate);
+                    }
                     if (Uuid::isValid($candidate)) {
                         $uuid = $candidate;
+
                         break;
                     }
                 }
@@ -137,8 +139,11 @@ class File
             try {
                 $writer = $this->app['exiftool.writer'];
                 $writer->reset();
+
                 $writer->write($this->getFile()->getRealPath(), $metadatas);
+
             } catch (PHPExiftoolException $e) {
+
                 // PHPExiftool throws exception on some files not supported
             }
         }
@@ -286,5 +291,14 @@ class File
         }
 
         return new File($app, $media, $collection, $originalName);
+    }
+
+    /**
+     * Sanitize XMP UUID
+     * @param $uuid
+     * @return mixed
+     */
+    public static function sanitizeXmpUuid($uuid){
+        return str_replace('xmp.did:', '', $uuid);
     }
 }

@@ -458,11 +458,12 @@ class Bridge_Element
             ':datas' => serialize($datas),
         ];
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
+        $connection = $app->getApplicationBox()->get_connection();
+        $stmt = $connection->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $element_id = $app->getApplicationBox()->get_connection()->lastInsertId();
+        $element_id = $connection->lastInsertId();
 
         return new self($app, $account, $element_id);
     }

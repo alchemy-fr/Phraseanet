@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\WorkzoneController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -46,21 +46,27 @@ class WorkZone implements ControllerProviderInterface, ServiceProviderInterface
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access']);;
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\WorkzoneController::displayWorkzone() */
         $controllers->get('/', 'controller.prod.workzone:displayWorkzone')
             ->bind('prod_workzone_show');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\WorkzoneController::browse() */
         $controllers->get('/Browse/', 'controller.prod.workzone:browse')
             ->bind('prod_workzone_browse');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\WorkzoneController::browserSearch() */
         $controllers->get('/Browse/Search/', 'controller.prod.workzone:browserSearch')
             ->bind('prod_workzone_search');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\WorkzoneController::browseBasket() */
         $controllers->get('/Browse/Basket/{basket}/', 'controller.prod.workzone:browseBasket')
             ->bind('prod_workzone_basket')
             ->assert('basket', '\d+');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\WorkzoneController::attachStories() */
         $controllers->post('/attachStories/', 'controller.prod.workzone:attachStories');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\WorkzoneController::detachStory() */
         $controllers->post('/detachStory/{sbas_id}/{record_id}/', 'controller.prod.workzone:detachStory')
             ->bind('prod_workzone_detach_story')
             ->assert('sbas_id', '\d+')

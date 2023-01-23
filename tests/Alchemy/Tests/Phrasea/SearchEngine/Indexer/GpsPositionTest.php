@@ -20,6 +20,13 @@ class GpsPositionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($position->isComplete());
     }
 
+    public function testIsCompleteCompositeWithSingleSet()
+    {
+        $position = new GpsPosition();
+        $position->set('Latitude', 48.856578);
+        $this->assertFalse($position->isCompleteComposite());
+    }
+
     public function testIsCompleteWithAllSet()
     {
         $position = new GpsPosition();
@@ -28,6 +35,14 @@ class GpsPositionTest extends \PHPUnit_Framework_TestCase
         $position->set('Longitude', 2.351828);
         $position->set('LongitudeRef', 'E');
         $this->assertTrue($position->isComplete());
+    }
+
+    public function testIsCompleteCompositeWithAllSet()
+    {
+        $position = new GpsPosition();
+        $position->set('Latitude', 48.856578);
+        $position->set('Longitude', 2.351828);
+        $this->assertTrue($position->isCompleteComposite());
     }
 
     /**
@@ -89,6 +104,13 @@ class GpsPositionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(-2.351828, $position->getSignedLongitude());
     }
 
+    public function testGetCompositeLongitude()
+    {
+        $position = new GpsPosition();
+        $position->set('Longitude', -2.351828);
+        $this->assertEquals(-2.351828, $position->getCompositeLongitude());
+    }
+
     public function testGetSignedLatitude()
     {
         $position = new GpsPosition();
@@ -108,5 +130,12 @@ class GpsPositionTest extends \PHPUnit_Framework_TestCase
         $position->set('Latitude', 48.856578);
         $position->set('LatitudeRef', 'S');
         $this->assertEquals(-48.856578, $position->getSignedLatitude());
+    }
+
+    public function testGetCompositeLatitude()
+    {
+        $position = new GpsPosition();
+        $position->set('Latitude', -48.856578);
+        $this->assertEquals(-48.856578, $position->getCompositeLatitude());
     }
 }

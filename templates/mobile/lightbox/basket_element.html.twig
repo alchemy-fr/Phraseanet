@@ -3,8 +3,8 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
     <script type="text/javascript">
 
 
@@ -25,47 +25,70 @@
         }
 
         #content {
-            position:absolute;
-            top:50px;
+            position: fixed;
+            top:90px;
             bottom: 0;
             right: 0;
             left: 0;
             text-align: center;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 {% endblock %}
 
 {% block content %}
   {% set record = basket_element.getRecord(app) %}
-<div data-role="page" id="page">
-  <div data-role="header">
-    <a href="{{ path('lightbox_validation', { 'basket' : basket_element.getBasket().getId() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
-    <h1>{{basket_element.getOrd()}} - {{record.get_title()}}</h1>
-    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
-  </div>
-  <div id="content" data-role="content">
-    {{ thumbnail.format100percent(record.get_preview()) }}
-    {% if basket_element.getBasket().getValidation() %}
-      {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-        <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
-          <input {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
-            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{{ 'validation:: OUI' | trans }}</label>
-          <input {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
-            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{{ 'validation:: NON' | trans }}</label>
-        </fieldset>
-      {% endif %}
-      <div style="text-align:center;margin:0 0 1em 0">
-        <a href="{{ path('lightbox_ajax_note_form', { 'sselcont_id' : basket_element.getId() }) }}" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
-          {{ 'validation:: editer ma note' | trans }}
-        </a>
+
+    <div data-role="page" id="page">
+      <div data-role="header">
+          <a href="{{ path('lightbox_validation', { 'basket' : basket_element.getBasket().getId() }) }}"
+             data-icon="arrow-l">{{ 'Back' | trans }}</a>
+        <h1>{{basket_element.getOrd()}} - {{record.get_title()}}</h1>
+          <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse"
+             class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
       </div>
-      <div>
-        <ul data-role="listview" id="notes_{{basket_element.getId()}}">
-          {% include 'lightbox/sc_note.html.twig' %}
-        </ul>
-      </div>
-    {% endif %}
-  </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
+    <div id="content" data-role="content">
+       <div class="nav_button">
+          {% if prevId != NULL %}
+              <a data-ajax="false" id="left-btn"
+                 href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : prevId }) }}"
+                 class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext">Left</a>
+          {% endif %}
+          {% if nextId != NULL %}
+              <a data-ajax="false" id="right-btn" data-ajax="false"
+                 href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : nextId }) }}"
+                 class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-notext">Right</a>
+          {% endif %}
+          <div style="clear: both;"></div>
+       </div>
+      <div class="center-image">{{ thumbnail.format100percent(record.get_preview()) }}</div>
+        {% if basket_element.getBasket().isVoteBasket() %}
+          {% if (basket_element.getBasket().isVoteFinished() != true) and basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+            <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
+              <input {% if basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
+                <label class="agreement_radio" style="width:110px;text-align:center;margin-top: 10px;"
+                       for="radio-view-yes_{{ basket_element.getId() }}">{{ 'validation:: OUI' | trans }}</label>
+              <input {% if basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == false and basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
+                <label class="agreement_radio" style="width:110px;text-align:center;margin-top: 10px;"
+                       for="radio-view-no_{{ basket_element.getId() }}">{{ 'validation:: NON' | trans }}</label>
+            </fieldset>
+          {% endif %}
+          <div style="text-align:center;margin:20px 0">
+            <a style="margin: 0"  href="{{ path('lightbox_ajax_note_form', { 'sselcont_id' : basket_element.getId() }) }}" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
+              {{ 'validation:: editer ma note' | trans }}
+            </a>
+          </div>
+          <div>
+            <ul data-role="listview" class="lightbox-list-view" id="notes_{{basket_element.getId()}}">
+              {% include 'lightbox/sc_note.html.twig' %}
+            </ul>
+          </div>
+        {% endif %}
+    </div>
   <div data-role="footer">
 
   </div>

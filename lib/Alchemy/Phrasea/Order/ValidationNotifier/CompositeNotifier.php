@@ -26,8 +26,9 @@ class CompositeNotifier implements ValidationNotifier
     /**
      * @param Order $order
      * @param User $recipient
+     * @param array $baseIds
      */
-    public function notifyCreation(Order $order, User $recipient)
+    public function notifyCreation(Order $order, User $recipient, array $baseIds = array())
     {
         foreach ($this->notifiers as $notifier) {
             $notifier->notifyCreation($order, $recipient);
@@ -36,21 +37,23 @@ class CompositeNotifier implements ValidationNotifier
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      */
-    public function notifyDelivery(OrderDelivery $delivery)
+    public function notifyDelivery(OrderDelivery $delivery, array $baseIds = array())
     {
         foreach ($this->notifiers as $notifier) {
-            $notifier->notifyDelivery($delivery);
+            $notifier->notifyDelivery($delivery, $baseIds);
         }
     }
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      */
-    public function notifyDenial(OrderDelivery $delivery)
+    public function notifyDenial(OrderDelivery $delivery, array $baseIds = array())
     {
         foreach ($this->notifiers as $notifier) {
-            $notifier->notifyDenial($delivery);
+            $notifier->notifyDenial($delivery, $baseIds);
         }
     }
 }

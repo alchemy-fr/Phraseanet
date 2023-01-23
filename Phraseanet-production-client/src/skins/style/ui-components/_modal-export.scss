@@ -1,0 +1,33 @@
+/******* EXPORT ***************************************************************/
+
+#printBox {
+  background-color: $mediumBackgroundColor;
+  border-radius: $defaultBorderRadius;
+}
+
+#printBox h4, #download h4,
+#sendmail h4, #ftp h4 {
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  color: $textPrimaryColor;
+  text-decoration: none;
+}
+
+#printBox label, #download label,
+#sendmail label, #ftp label {
+  line-height: 18px;
+  color: $textPrimaryColor;
+}
+
+#sendmail p, #ftp p,
+.buttons_line p {
+  margin: 20px 0 10px 0;
+  font-weight: bold;
+}
+
+#ftp .form-horizontal .control-group {
+  margin-bottom: 10px;
+}
+

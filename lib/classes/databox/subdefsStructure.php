@@ -90,6 +90,9 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             $isDocumentOrderable = isset($subdefs->attributes()->document_orderable)
                 ? p4field::isyes($subdefs->attributes()->document_orderable) : true;
 
+            $writemetaOriginalDocument = isset($subdefs->attributes()->writemetaoriginaldocument)
+                ? p4field::isyes($subdefs->attributes()->writemetaoriginaldocument) : true;
+
             if (! isset($this->subdefGroups[$subdefgroup_name])) {
                 try {
                     $type = $mediaTypeFactory->createMediaType($subdefgroup_name);
@@ -98,7 +101,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
                     continue;
                 }
 
-                $this->subdefGroups[$subdefgroup_name] = new SubdefGroup($subdefgroup_name, $type, $isDocumentOrderable);
+                $this->subdefGroups[$subdefgroup_name] = new SubdefGroup($subdefgroup_name, $type, $isDocumentOrderable, $writemetaOriginalDocument);
             }
 
             $group = $this->getSubdefGroup($subdefgroup_name);
@@ -187,17 +190,27 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param  string $class
      * @param  string $mediatype
      * @param  string $preset
+     * @param  string $path
      * @return databox_subdefsStructure
      */
-    public function add_subdef($groupname, $name, $class, $mediatype, $preset)
+    public function add_subdef($groupname, $name, $class, $mediatype, $preset, $path)
     {
         $dom_struct = $this->databox->get_dom_structure();
 
         $subdef = $dom_struct->createElement('subdef');
         $subdef->setAttribute('class', $class);
         $subdef->setAttribute('name', mb_strtolower($name));
+
+        $preset = ($preset == 'Choose') ? 'Custom' : $preset ;
         $subdef->setAttribute('presets', $preset);
-        $subdef->setAttribute('mediaType', $mediatype);
+
+        $mediaTypeElement = $dom_struct->createElement('mediatype');
+        $mediaTypeElement->appendChild($dom_struct->createTextNode($mediatype));
+        $subdef->appendChild($mediaTypeElement);
+
+        $pathElement = $dom_struct->createElement('path');
+        $pathElement->appendChild($dom_struct->createTextNode($path));
+        $subdef->appendChild($pathElement);
 
         $dom_xp = $this->databox->get_xpath_structure();
         $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
@@ -229,10 +242,11 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param array $labels
      * @param boolean $orderable
      * @param string $preset
+     * @param boolean $toBuild
      * @return databox_subdefsStructure
      * @throws Exception
      */
-    public function set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable = true, $preset = "Custom")
+    public function set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable = true, $preset = "Custom", $toBuild = true)
     {
         $dom_struct = $this->databox->get_dom_structure();
 
@@ -241,6 +255,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('name', mb_strtolower($name));
         $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
         $subdef->setAttribute('orderable', ($orderable ? 'true' : 'false'));
+        $subdef->setAttribute('tobuild', ($toBuild ? 'true' : 'false'));
         $subdef->setAttribute('presets', $preset);
 
         foreach ($labels as $code => $label) {
@@ -306,6 +321,32 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $this->databox->saveStructure($dom_struct);
 
         $this->load_subdefs();
+
+        return $this;
+    }
+
+    /**
+     * @param $groupeName
+     * @param $attributeName
+     * @param $attributeValue
+     * @return $this
+     */
+    public function setGroupAttribute($groupeName, $attributeName, $attributeValue)
+    {
+        $dom_struct = $this->databox->get_dom_structure();
+        $dom_xp = $this->databox->get_xpath_structure();
+
+        $nodes = $dom_xp->query('//record/subdefs/'
+            . 'subdefgroup[@name="' . $groupeName . '"]');
+
+        if ($nodes->length > 0) {
+            $dom_group = $nodes->item(0);
+            $dom_group->setAttribute($attributeName, $attributeValue);
+
+            $this->databox->saveStructure($dom_struct);
+
+            $this->load_subdefs();
+        }
 
         return $this;
     }

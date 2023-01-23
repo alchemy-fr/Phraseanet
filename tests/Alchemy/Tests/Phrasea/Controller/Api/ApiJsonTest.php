@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
 use Ramsey\Uuid\Uuid;
@@ -59,10 +60,10 @@ class ApiJsonTest extends ApiTestCase
         );
         $record = \record_adapter::createFromFile($file, $app);
 
-        $story['story_records'] = array(array(
+        $story['story_records'] = [[
                                             'databox_id' => $record->getDataboxId(),
                                             'record_id' => $record->getRecordId()
-                                        ));
+                                        ]];
 
         $client = $this->getClient();
         $client->request(
@@ -74,7 +75,7 @@ class ApiJsonTest extends ApiTestCase
                 'HTTP_ACCEPT' => $this->getAcceptMimeType(),
                 'CONTENT_TYPE' => 'application/json',
             ],
-            json_encode(array('stories' => array($story)))
+            json_encode(['stories' => [$story]])
         );
         $content = $this->unserialize($client->getResponse()->getContent());
 
@@ -105,10 +106,10 @@ class ApiJsonTest extends ApiTestCase
         );
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
-        $records = array(
+        $records = [
             'databox_id' => $record->getDataboxId(),
             'record_id' => $record->getRecordId()
-        );
+        ];
 
         self::$DI['client']->request(
             'POST',
@@ -119,7 +120,7 @@ class ApiJsonTest extends ApiTestCase
                 'HTTP_ACCEPT' => $this->getAcceptMimeType(),
                 'CONTENT_TYPE' => 'application/json',
             ],
-            json_encode(array('story_records' => array($records)))
+            json_encode(['story_records' => [$records]])
         );
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -147,10 +148,10 @@ class ApiJsonTest extends ApiTestCase
         $story->appendChild($record);
 
         $route = sprintf('/api/v1/stories/%s/%s/delrecords', $story->getDataboxId(), $story->getRecordId());
-        $records = array(
+        $records = [
             'databox_id' => $record->getDataboxId(),
             'record_id' => $record->getRecordId()
-        );
+        ];
 
         self::$DI['client']->request(
             'DELETE',
@@ -161,7 +162,7 @@ class ApiJsonTest extends ApiTestCase
                 'HTTP_ACCEPT' => $this->getAcceptMimeType(),
                 'CONTENT_TYPE' => 'application/json',
             ],
-            json_encode(array('story_records' => array($records)))
+            json_encode(['story_records' => [$records]])
         );
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -742,7 +743,7 @@ class ApiJsonTest extends ApiTestCase
             }
 
             $this->assertTrue(is_string($metadatas['thesaurus_branch']));
-            $this->assertTrue(in_array($metadatas['type'], [\databox_field::TYPE_DATE, \databox_field::TYPE_STRING, \databox_field::TYPE_NUMBER, \databox_field::TYPE_TEXT]));
+            $this->assertTrue(in_array($metadatas['type'], [\databox_field::TYPE_DATE, \databox_field::TYPE_STRING, \databox_field::TYPE_NUMBER]));
             $this->assertTrue(is_bool($metadatas['indexable']));
             $this->assertTrue(is_bool($metadatas['multivalue']));
             $this->assertTrue(is_bool($metadatas['readonly']));
@@ -877,7 +878,6 @@ class ApiJsonTest extends ApiTestCase
         $this->setToken($this->userAccessToken);
         $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($response->getContent());
-
         $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
@@ -909,7 +909,7 @@ class ApiJsonTest extends ApiTestCase
         $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
         $app['phraseanet.SE'] = $mock;
 
-            $mock
+        $mock
             ->expects($this->once())
             ->method('query')
             ->withAnyParameters()
@@ -1065,7 +1065,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1093,7 +1093,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1257,13 +1257,33 @@ class ApiJsonTest extends ApiTestCase
         $record1 = $this->getRecord1();
         $route = '/api/v1/records/' . $record1->getDataboxId() . '/' . $record1->getRecordId() . '/setstatus/';
 
-        $record_status = strrev($record1->getStatus());
+        $initialRecordStatus = $record_status = strrev($record1->getStatus());
+
+        /** @var StatusStructureProviderInterface $statusProvider */
+        $statusProvider = $app['status.provider'];
+
+        // initialize status structure for test eg: 4 to 15 bit
+        foreach (range(4, 15) as $n) {
+            $properties = [
+                'searchable' => '0',
+                'printable'  => '0',
+                'name'       => 'status_test_' . $n,
+                'labelon'    => '',
+                'labeloff'   => '',
+                'labels_on'  => [],
+                'labels_off' => [],
+            ];
+
+            $statusProvider->updateStatus($record1->getStatusStructure(), $n, $properties);
+        }
+
         $statusStructure = $record1->getStatusStructure();
 
         $tochange = [];
         foreach ($statusStructure as $n => $datas) {
-            $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
+            $tochange[$n] = substr($record_status, $n, 1) == '0' ? '1' : '0';
         }
+
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
         $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
@@ -1281,6 +1301,28 @@ class ApiJsonTest extends ApiTestCase
         foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
+
+        // test  record_status in string
+        $record_status_expected = $record_status;
+
+        $bitToChange = [];
+        $pos = strpos($record_status, '1', 4);
+        $bitToChange[$pos] = '1';
+
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $bitToChange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($response->getContent());
+
+        // Get fresh record_1
+        $testRecord = new \record_adapter($app, $testRecord->getDataboxId(), $testRecord->getRecordId());
+
+        $this->evaluateResponse200($response);
+        $this->evaluateMeta200($content);
+
+        $this->evaluateRecordsStatusResponse($testRecord, $content);
+
+        $record_new_status = strrev($testRecord->getStatus());
+        $this->assertEquals($record_status_expected, $record_new_status);
+
 
         foreach ($tochange as $n => $value) {
             $tochange[$n] = $value == '0' ? '1' : '0';
@@ -1301,6 +1343,8 @@ class ApiJsonTest extends ApiTestCase
         foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
+
+        $this->assertEquals($initialRecordStatus, $record_status);
 
         $record1->setStatus(str_repeat('0', 32));
     }

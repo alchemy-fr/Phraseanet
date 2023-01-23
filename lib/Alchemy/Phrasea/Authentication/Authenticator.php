@@ -13,10 +13,10 @@ namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
 use Browser;
 use Doctrine\ORM\EntityManager;
-use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Authenticator
@@ -94,6 +94,13 @@ class Authenticator
     private function populateSession(Session $session)
     {
         $user = $session->getUser();
+        $user->setLastConnection($session->getCreated());
+        // reset inactivity email when login
+        $user->setNbInactivityEmail(0);
+        $user->setLastInactivityEmail(null);
+
+        $this->em->persist($user);
+        $this->em->flush();
 
         $this->session->set('usr_id', $user->getId());
         $this->session->set('session_id', $session->getId());
@@ -126,13 +133,11 @@ class Authenticator
      */
     public function closeAccount()
     {
-        if (!$this->session->has('session_id')) {
-            throw new RuntimeException('No session to close.');
-        }
-
-        if (null !== $session = $this->app['repo.sessions']->find($this->session->get('session_id'))) {
-            $this->em->remove($session);
-            $this->em->flush();
+        if ($this->session->has('session_id')) {
+            if (null !== $session = $this->app['repo.sessions']->find($this->session->get('session_id'))) {
+                $this->em->remove($session);
+                $this->em->flush();
+            }
         }
 
         $this->session->invalidate();

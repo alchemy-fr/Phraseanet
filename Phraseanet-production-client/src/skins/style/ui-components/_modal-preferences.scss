@@ -1,0 +1,82 @@
+#look_box .input-small {
+  height: 22px;
+  font-size: 12px;
+}
+
+#look_box .btn {
+  margin: 2px;
+  font-weight: bold;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#look_box .radio.inline, #look_box .checkbox.inline {
+  padding-top: 0px;
+}
+
+#look_box label, #basket_preferences label {
+  line-height: 21px;
+  color: $preferencesLabelColor;
+}
+
+#look_box h1, #basket_preferences h1 {
+  margin: 5px 0;
+  color: $textPrimaryColor;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+#look_box div.box, #basket_preferences div.box {
+  margin: 5px;
+  float: left;
+  width: 98%;
+}
+
+.hiddenFiltersListContainer {
+    .hiddenFacetFilter {
+        font-weight: bold;
+        height: 40px;
+        line-height: 38px;
+        vertical-align: middle;
+        border-left: 7px solid #4c5d84;
+        color: $facetText;
+        padding-left: 13px;
+        padding-right: 13px;
+        display: block;
+        margin: 5px 0;
+        margin-right: 10px;
+        overflow: hidden;
+        position: relative;
+        background-color: $facetFilterBg;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.21);
+        width: 262px;
+        .remove-btn {
+            position: absolute;
+            cursor: pointer;
+            font-family: "icomoon";
+            right:13px;
+            &:before {
+                content: "\ea50";
+                position: relative;
+                z-index: 1;
+                color: #666666;
+                font-size: 15px;
+            }
+            &:after {
+                content: "\e94b";
+                color: #eeeeee;
+                font-size: 17px;
+                position: absolute;
+                left: -1px;
+                z-index: 0;
+            }
+            &:hover, &:focus, &:active {
+                &:before {
+                    content: "\ea51";
+                    color: #333333;
+                }
+            }
+        }
+    }
+}

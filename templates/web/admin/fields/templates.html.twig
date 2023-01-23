@@ -5,7 +5,7 @@
 
 <script type="text/template" id="save_template">
     <button type="button" class="btn btn-primary save-all">
-        <i class="icon-hdd icon-white"></i> {% trans %}Save all changes{% endtrans %}
+        <i class="fa fa-hdd-o icon-white" aria-hidden="true"></i> {% trans %}Save all changes{% endtrans %}
     </button>
 </script>
 
@@ -39,7 +39,9 @@
     <div class="row-fluid">
         <div class="span12">
             <div class="sidebar-add-block">
-                <button type="button" class="btn btn-success btn-add-field"><i class="icon-plus icon-white"></i>{% trans %}Add a new field{% endtrans %}</button>
+                <button type="button" class="btn btn-success btn-add-field"><i class="fa fa-plus icon-white"
+                                                                               aria-hidden="true"></i>{% trans %}Add a
+                    new field{% endtrans %}</button>
             </div>
             <div class="well well-small add-field-block" style="display:none">
                 <h3>{% trans %}Add a new field{% endtrans %}</h3>
@@ -60,7 +62,9 @@
                     </div>
                     <div class="control-group">
                         <div class="controls">
-                            <button type="button" class="btn btn-success btn-submit-field"><i class="icon-ok icon-white"></i>{% trans %}Add{% endtrans %}</button>
+                            <button type="button" class="btn btn-success btn-submit-field"><i
+                                        class="fa fa-check icon-white" aria-hidden="true"></i>{% trans %}
+                                Add{% endtrans %}</button>
                             <button type="button" class="btn btn-cancel-field">{% trans %}Cancel{% endtrans %}</button>
                         </div>
                     </div>
@@ -77,7 +81,11 @@
             <tr class="edit-order">
                 <td>{% trans %}Order{% endtrans %}</td>
                 <td><%= field.sorter %></td>
-                <td><button type="button" class="btn btn-danger delete-field pull-right"><i class="icon-trash icon-white"></i>delete</button></td>
+                <td>
+                    <button type="button" class="btn btn-danger delete-field pull-right"><i
+                                class="fa fa-trash-o icon-white" aria-hidden="true"></i>delete
+                    </button>
+                </td>
             </tr>
             <tr class="edit-name">
                 <td colspan="2">
@@ -122,7 +130,6 @@
                     <select id="type">
                         <option <%= field.type == '' ? 'selected' : '' %> value=""></option>
                         <option <%= field.type == 'string' ? 'selected' : '' %> value="string">string</option>
-                        <option <%= field.type == 'text' ? 'selected' : '' %> value="text">text</option>
                         <option <%= field.type == 'number' ? 'selected' : '' %> value="number">number</option>
                         <option <%= field.type == 'date' ? 'selected' : '' %> value="date">date</option>
                     </select>
@@ -183,6 +190,30 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>
+                        <label for="gui_editable" class="checkbox">
+                            <input id="gui_editable" type="checkbox" <%= field.gui_editable ? "checked='checked'" : "" %> />
+                            {% trans %}Gui-editable{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="gui_visible" class="checkbox">
+                            <input id="gui_visible" type="checkbox" <%= field.gui_visible ? "checked='checked'" : "" %> />
+                            {% trans %}Gui-visible{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="printable" class="checkbox">
+                            <input id="printable" type="checkbox" <%= field.printable ? "checked='checked'" : "" %> />
+                            {% trans %}field-printable{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="2">
                         <label for="business" class="checkbox">
                             <input id="business" type="checkbox" <%= field.business ? "checked='checked'" : "" %> />
@@ -215,14 +246,12 @@
                         <label for="aggregable">{% trans %}Aggregation{% endtrans %}</label>
                     </td>
                     <td>
-                        <select id="aggregable">
-                            <option <%= field['aggregable'] == "0" ? 'selected' : '' %> value='0'>{% trans %}Not aggregated{% endtrans %}</option>
-                            <option <%= field['aggregable'] == "10" ? 'selected' : '' %> value='10'>10 values</option>
-                            <option <%= field['aggregable'] == "20" ? 'selected' : '' %> value='20'>20 values</option>
-                            <option <%= field['aggregable'] == "50" ? 'selected' : '' %> value='50'>50 values</option>
-                            <option <%= field['aggregable'] == "100" ? 'selected' : '' %> value='100'>100 values</option>
-                            <option <%= field['aggregable'] == "-1" ? 'selected' : '' %> value='-1'>{% trans %}All values{% endtrans %}</option>
-                        </select>
+                        <%= field['aggregable'] == "0" ? '{% trans %}Not aggregated{% endtrans %}' : '' %>
+                        <%= field['aggregable'] == "10" ? '10 values' : '' %>
+                        <%= field['aggregable'] == "20" ? '20 values' : '' %>
+                        <%= field['aggregable'] == "50" ? '50 values' : '' %>
+                        <%= field['aggregable'] == "100" ? '100 values' : '' %>
+                        <%= field['aggregable'] == "-1" ? 'All values' : '' %>
                     </td>
                 </tr>
                 <tr>
@@ -238,7 +267,14 @@
                 </tr>
                 <tr>
                     <td><label for="tbranch">{% trans %}Thesaurus branch{% endtrans %}</label></td>
-                    <td><input id="tbranch" type="text" value="<%= field.tbranch %>"/></td>
+                    <td>
+                        <input id="tbranch" type="text" value="<%= field.tbranch %>"/>
+                        <div style="display: inline-block;" <%= (field.tbranch == "") ? "class='generate-cterms hidden'" : "class='generate-cterms'" %> >
+                            <label for="generate_cterms" class="checkbox">
+                                <input id="generate_cterms" type="checkbox" <%= field.generate_cterms ? "checked='checked'" : "" %> />
+                                {% trans %}Generate-cterms{% endtrans %}</label>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -249,14 +285,14 @@
     <table>
         <tr>
             <td class="handle">
-                <i class="icon-move"></i>
+                <i class="fa fa-arrows" aria-hidden="true"></i>
             </td>
             <td rowspan="2" class="trigger-click">
                 <div class="field-name"><%= name %></div>
                 <div class="field-tag"><%= tag %></div>
             </td>
             <td rowspan="2" class="chip trigger-click">
-                <i class="icon-chevron-right"></i>
+                <i class="fa fa-chevron-right" aria-hidden="true"></i>
             </td>
         </tr>
         <tr>
@@ -279,7 +315,8 @@
 <script type="text/template" id="field_error_template">
     <% if(messages.length > 0) { %>
         <div class="well well-small">
-            <i class="icon-exclamation-sign"></i> {% trans %}Current configuration contains some errors{% endtrans %}
+            <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {% trans %}Current configuration contains some
+            errors{% endtrans %}
         </div>
     <% } %>
 </script>

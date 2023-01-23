@@ -206,11 +206,18 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $elasticsearchRecord->setDataboxId($record->getDataboxId());
         $elasticsearchRecord->setRecordId($record->getRecordId());
 
+        $queryText = '';
+        $queryAST = '<NULL>';    // fake, real is really more complex
+        $queryCompiled = '{match_all:[]}';    // fake, real is really more complex
+        $queryESLib = '{index:"test", match:{""}}';    // fake, real is really more complex
+
         $result = new SearchEngineResult(
-            new SearchEngineOptions(),
+            new SearchEngineOptions(self::$DI['app']['repo.collection-references']),
             new ArrayCollection([$elasticsearchRecord]), // Records
-            '', // Query as user typed
-            '{}', // Query as engine parsed
+            $queryText,    // the query as typed by the user
+            $queryAST,
+            $queryCompiled,
+            $queryESLib,
             0, // Duration
             0, // offsetStart
             1, // available

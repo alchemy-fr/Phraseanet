@@ -5,6 +5,8 @@
   <dt>{{ 'Record_id' | trans }}</dt><dd>{{ record.recordId }}</dd>
 {% endif %}
 
+  <dt>{{ 'prod::tech_info: databox_name' | trans }}</dt><dd>{{ record.getDataboxName }} ( {{ record.getDataboxId }} ) </dd>
+
 {% if not record.story %}
     {% block td_original_name %}
         <dt>{{ 'Nom Original' | trans }}</dt><dd class="break-word">{{ record.originalName }}</dd>
@@ -126,7 +128,7 @@
     {% block td_duration %}
         {% if record.exif[constant('media_subdef::TC_DATA_DURATION')] is defined %}
           <dt>{{ 'Duree' | trans }} :
-          <dd>{{ record.exif[constant('media_subdef::TC_DATA_DURATION')] }}</dd>
+            <dd>{{ record.exif[constant('media_subdef::TC_DATA_DURATION')]|formatDuration }}</dd>
         {% endif %}
     {% endblock %}
     {% block td_framerate %}

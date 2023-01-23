@@ -1,11 +1,11 @@
 {% extends "lightbox/index_layout.html.twig" %}
 
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/lightbox/js/lightboxIe6{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/lightbox/js/lightboxIe6{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -84,7 +84,7 @@
                         <div class="lightbox_container">
               {% set business = app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), constant('\\ACL::CANMODIFRECORD')) %}
               {% if first_item %}
-                {{macro.caption(first_item.getRecord(app), business, false)}}
+                {{ macro_caption.caption(first_item.getRecord(app), business, false) }}
               {% endif %}
             </div>
                     </div>

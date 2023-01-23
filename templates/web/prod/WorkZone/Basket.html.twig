@@ -1,90 +1,236 @@
-<div style="margin:0 7px;overflow:hidden;">
-{% set basket_length = basket.getElements()|length %}
-    <div class="tools">
+{# @var basket \Alchemy\Phrasea\Model\Entities\Basket #}
+<div>
+    <button class="tools-accordion">{{ 'prod::workzone:Actions' | trans }}</button>
+    <div class="tools-panel">
+        <button class="ui-corner-all TOOL_disktt_btn basket_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/disktt_history.png"/>
+            <span>{{ 'action : exporter' | trans }}</span>
+        </button>
+        <button class="ui-corner-all TOOL_print_btn basket_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/print_history.png"/>
+            <span>{{ 'action : print' | trans }}</span>
+        </button>
 
-      <label>Actions</label>
-
-      <button class="ui-corner-all TOOL_disktt_btn basket_window" title="{{ 'action : exporter' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/disktt_history.png"/>
-      </button>
-      <button class="ui-corner-all TOOL_print_btn basket_window" title="{{ 'action : print' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/print_history.png"/>
-      </button>
-
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
-      <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{{ 'action : editer' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/ppen_history.png"/>
-      </button>
-      {% endif %}
-
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
-      <button class="ui-corner-all TOOL_chgstatus_btn basket_window" title="{{ 'action : status' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/chgstatus_history.png"/>
-      </button>
-      {% endif %}
-
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
-      <button class="ui-corner-all TOOL_chgcoll_btn basket_window" title="{{ 'action : collection' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/chgcoll_history.png"/>
-      </button>
-      {% endif %}
-
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-      <button class="ui-corner-all TOOL_pushdoc_btn basket_window" title="{{ 'action : push' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/push16.png"/>
-      </button>
-      {% endif %}
-
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-      <button class="ui-corner-all TOOL_feedback_btn basket_window" title="{{ 'Feedback' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/feedback16.png"/>
-      </button>
-      {% endif %}
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
-          {#<button class="ui-corner-all TOOL_bridge_btn basket_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}">#}
-          {#<img src="/assets/common/images/icons/door.png"/>#}
-          {#</button>#}
-      <button class="ui-corner-all TOOL_publish_btn basket_window" title="{{ 'action : publier' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/rss16.png"/>
-      </button>
-      {% endif %}
-
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
-      <button class="ui-corner-all TOOL_imgtools_btn basket_window" title="{{ 'action : outils' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/imgtools_history.png"/>
-      </button>
-      {% endif %}
-      <button class="ui-corner-all TOOL_trash_btn basket_window" title="{{ 'action : supprimer' | trans }}" data-selection-source="basket">
-        <img src="/assets/common/images/icons/delete.png"/>
-      </button>
-
-      {% if plugins['actionbar'] is not empty %}
-        {% for plugin in plugins['actionbar'] %}
-          {% for key, action in plugin.getBasketActionBar() %}
-            {% set label = action.label %}
-            <button class="ui-corner-all basket_window  {{ action.classes|default('') }}" title="{{ label|trans([], plugin.PluginLocale) }}" data-selection-source="basket">
-              <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}"/>
+        {% if app.getAuthenticatedUser().getId() == basket.getUser().getId() or (basket.isParticipant(app.getAuthenticatedUser()) and basket.getParticipant(app.getAuthenticatedUser()).canModify()) %}
+            <div class="divider"></div>
+            <button class="ui-corner-all TOOL_delete_selection_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/delete-selection.png"/>
+                <span>{{ 'basket:action:delete record form basket' | trans }}</span>
             </button>
-          {% endfor %}
-        {% endfor %}
-      {% endif %}
+        {% endif %}
 
+        <div class="divider"></div>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+            <button class="ui-corner-all TOOL_ppen_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/ppen_history.png"/>
+                <span>{{ 'action : editer' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
+            <button class="ui-corner-all TOOL_chgstatus_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/chgstatus_history.png"/>
+                <span>{{ 'action : status' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
+            <button class="ui-corner-all TOOL_chgcoll_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/chgcoll_history.png"/>
+                <span>{{ 'action : collection' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH'))
+            or app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH'))
+            or app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB'))
+            or app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS'))
+        %}
+            <div class="divider"></div>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+            <button class="ui-corner-all TOOL_pushdoc_btn basket_window" data-selection-source="basket">
+                <i class="fa fa-gift push_rec" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 15px;width:16px; height:16px"></i>
+                <span>{{ 'action : push' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+            <button class="ui-corner-all TOOL_feedback_btn basket_window" data-selection-source="basket">
+                <i class="fa fa-bullhorn vote_sent" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 13px;width:16px; height:16px"></i>
+                <span>{{ 'Feedback' | trans }}</span>
+            </button>
+        {% endif %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+            {#<button class="ui-corner-all TOOL_bridge_btn basket_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}">#}
+            {#<img src="/assets/common/images/icons/door.png"/>#}
+            {#</button>#}
+            <button class="ui-corner-all TOOL_publish_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/rss16.png"/>
+                <span>{{ 'action : publier' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
+            <button class="ui-corner-all TOOL_imgtools_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/imgtools_history.png"/>
+                <span>{{ 'action : outils' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) %}
+            <div class="divider"></div>
+            <button class="ui-corner-all TOOL_trash_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/delete.png"/>
+                <span>{{ 'basket:action:delete record form database' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if plugins['actionbar'] is not empty %}
+            {% for plugin in plugins['actionbar'] %}
+                {% for key, action in plugin.getBasketActionBar() %}
+                    {% set label = action.label %}
+                    <button class="ui-corner-all basket_window  {{ action.classes|default('') }}"
+                            data-selection-source="basket">
+                        <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}"/>
+                        <span>{{ label|trans([], plugin.PluginLocale) }}</span>
+                    </button>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
     </div>
-            <div class="alert_datas_changed ui-corner-all">{{ 'Certaines donnees du panier ont change' | trans }} <a class="basket_refresher" href="#">{{ 'rafraichir' | trans }}</a></div>
-{% if basket_length == 0 %}
-            <div style="height:120px;"></div>
+
+    {% set nparticipants = basket.getParticipants | length %}
+
+    {% if nparticipants > 0 and basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
+        {% set disabled = '' %}
+        {% if (basket.isVoteBasket() and basket.isVoteFinished()) or (not basket.isVoteBasket() and basket.isShareExpires()) %}
+            {% set disabled = 'disabled' %}
+        {% endif %}
+
+        <div class="feedback-info">
+            {% set nb_records = basket.getElements()|length %}
+            {% set date = app['date-formatter'].getPrettyString(basket.getCreated()) %}
+
+            <p class="create-date">
+                {{ 'prod:workzone:basket:creation-date' | trans }} : {{ date }}
+            </p>
+            <div class="record-number">
+                {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
+            </div>
+
+            {% if basket.isVoteBasket() %}
+                {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getVoteExpires()) %}
+            {% else %}
+                {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getShareExpires()) %}
+            {% endif %}
+
+            <div class="expiredDate">
+                {% if basket.isVoteBasket() %}
+                    {% if basket.isVoteFinished() %}
+                        <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
+                    {% else %}
+                        <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>
+                    {% endif %}
+                {% else %}
+                    {% if basket.isShareExpires() %}
+                        <span>{{ 'workzone:shared:expiration-closed' | trans }} :</span>
+                    {% else %}
+                        {% if dateExpired is empty %}
+                            <span>{{ 'workzone:shared: permanent sharing' | trans }}</span>
+                        {% else %}
+                            <span>{{ 'workzone:shared:expiration-open' | trans }} :</span>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                <form class="update-feed-validation">
+                    <input type="hidden" name="feedbackId" value={{ basket.getId}} />
+                    <input type="hidden" name="feedbackDate" class="alternate" />
+                <input type="text" class="btn feed-datepicker" name="feedback-deadline" value="{{ dateExpired }}" autocomplete="off">
+                    <button type="submit" class="submit submit-validation btn-not-shown" title="{{ 'workzone:feedback:update' | trans }}"><svg width="22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="calendar-check" class="svg-inline--fa fa-calendar-check fa-w-14" role="img" viewBox="0 0 448 512"><path fill="currentColor" d="M436 160H12c-6.627 0-12-5.373-12-12v-36c0-26.51 21.49-48 48-48h48V12c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v52h128V12c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v52h48c26.51 0 48 21.49 48 48v36c0 6.627-5.373 12-12 12zM12 192h424c6.627 0 12 5.373 12 12v260c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V204c0-6.627 5.373-12 12-12zm333.296 95.947l-28.169-28.398c-4.667-4.705-12.265-4.736-16.97-.068L194.12 364.665l-45.98-46.352c-4.667-4.705-12.266-4.736-16.971-.068l-28.397 28.17c-4.705 4.667-4.736 12.265-.068 16.97l82.601 83.269c4.667 4.705 12.265 4.736 16.97.068l142.953-141.805c4.705-4.667 4.736-12.265.068-16.97z"/></svg></button>
+                    <span class="cancel-date btn-not-shown"><i class="fa fa-times"></i></span>
+                </form>
+                <p class="message text-right" style="opacity: 0;transition: all 0.2s; color: green; display: block; ">{{ 'prod:workzone:basket:updated-message' | trans }}</p>
+            </div>
+            <div>
+                <button class="btn feedback-reminder" data-basket-id="{{ basket.getId() }}"  {{ disabled }}>{{ 'prod::workzone:manual feedback reminder button' | trans }}</button>
+                <button class="btn feedback-user" data-basket-id="{{ basket.getId() }}" style="margin-left: 10px;" {{ disabled }}>{{ 'prod::workzone:feedback add user' | trans }}</button>
+            </div>
+            </div>
+    {% endif %}
+
+    {% set mailto_basket_user_name =  '<a href="mailto:' ~ basket.getUser().getEmail() ~ '?subject=' ~ basket.getName() ~ '" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">' ~
+        basket.getUser().displayName() ~'</a>' %}
+
+    {% if not basket.isVoteBasket() and basket.getUser().getId() != app.getAuthenticatedUser().getId()  %}
+        <p>
+            {% if basket.getShareExpires() is null %}
+                {% trans with {'%user_name%' : mailto_basket_user_name } %}Basket shared by %user_name% indefinitely{% endtrans %}
+            {% else %}
+                {% trans with {'%user_name%' : mailto_basket_user_name, '%expires%':  app['date-formatter'].getFormatedDate(basket.getShareExpires()) } %}Basket shared by %user_name% until %expires%{% endtrans %}
+            {% endif %}
+        </p>
+    {% elseif basket.isVoteBasket() and basket.getUser().getId() != app.getAuthenticatedUser().getId() %}
+        <p>
+            {% trans with {'%user_name%' : mailto_basket_user_name, '%vote_expires%':  app['date-formatter'].getFormatedDate(basket.getVoteExpires()) } %}Feedback request by %user_name% until %vote_expires%{% endtrans %}
+        </p>
+    {% endif %}
+
+</div>
+    {% set basket_length = basket.getElements()|length %}
+    <div class="alert_datas_changed ui-corner-all">{{ 'Certaines donnees du panier ont change' | trans }} <a class="basket_refresher" href="#">{{ 'rafraichir' | trans }}</a></div>
+    {% if basket_length == 0 %}
+        <div style="height:120px;"></div>
+    {% endif %}
+
+    {% set basket_scope = 'objects' %}
+
+    {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
+
+    {% if basket.isVoteBasket() %}
+        {{ Macros.display_validation(app, basket, ordre) }}
+
+    {% else %}
+        {{ Macros.display_basket(app, basket) }}
+    {% endif %}
+</div>
+
+{% if basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
+
+<script type="text/javascript">
+    $( function() {
+        $.datepicker.regional['default'] = {
+            closeText: "Close",
+            prevText: "{{ 'workzone:datepicker:prevText' | trans }}",
+            nextText: "{{ 'workzone:datepicker:nextText' | trans }}",
+            currentText: "Today",
+            monthNames: [ "{{ 'workzone:datepicker:january' | trans }}", "{{ 'workzone:datepicker:february' | trans }}", "{{ 'workzone:datepicker:march' | trans }}", "{{ 'workzone:datepicker:april' | trans }}", "{{ 'workzone:datepicker:may' | trans }}", "{{ 'workzone:datepicker:june' | trans }}",
+                "{{ 'workzone:datepicker:july' | trans }}", "{{ 'workzone:datepicker:august' | trans }}", "{{ 'workzone:datepicker:september' | trans }}", "{{ 'workzone:datepicker:october' | trans }}", "{{ 'workzone:datepicker:november' | trans }}", "{{ 'workzone:datepicker:december' | trans }}" ],
+            dayNames: [ "{{ 'workzone:datepicker:sunday' | trans }}", "{{ 'workzone:datepicker:monday' | trans }}", "{{ 'workzone:datepicker:tuesday' | trans }}", "{{ 'workzone:datepicker:wednesday' | trans }}", "{{ 'workzone:datepicker:thursday' | trans }}", "{{ 'workzone:datepicker:friday' | trans }}", "{{ 'workzone:datepicker:saturday' | trans }}" ],
+            dayNamesMin: [ "D","L","M","M","J","V","S" ],
+            dateFormat: "d MM yy",
+            altField: ".alternate",
+            altFormat: "yy-mm-dd",
+            minDate: null
+
+        };
+
+        $(".feed-datepicker" ).datepicker( $.datepicker.regional[ 'default' ]);
+        $(".feed-datepicker" ).change(function() {
+            $('.submit-validation').removeClass('btn-not-shown');
+            $('.cancel-date').removeClass('btn-not-shown');
+        });
+        $(".cancel-date" ).click(function() {
+            $('.cancel-date').removeClass('btn-not-shown');
+            $('.feed-datepicker').val('{{ dateExpired }}');
+            setTimeout(function(){ $('.cancel-date').addClass('btn-not-shown');$('.submit-validation').addClass('btn-not-shown'); }, 1000);
+        })
+    })
+
+</script>
+
 {% endif %}
-
-{% set basket_scope = 'objects' %}
-
-{% import 'prod/WorkZone/Macros.html.twig' as Macros %}
-
-{% if basket.getValidation() %}
-    {{ Macros.display_validation(app, basket, ordre) }}
-{% else %}
-    {{ Macros.display_basket(app, basket) }}
-{% endif %}
-
-          </div>
 
 

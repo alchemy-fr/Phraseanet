@@ -12,9 +12,12 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Gedmo\Mapping\Annotation as Gedmo;
+use record_adapter;
 
 /**
  * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
@@ -57,9 +60,9 @@ class BasketElement
     private $updated;
 
     /**
-     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="basket_element", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="BasketElementVote", mappedBy="basket_element", cascade={"all"})
      */
-    private $validation_datas;
+    private $votes;
 
     /**
      * @ORM\ManyToOne(targetEntity="Basket", inversedBy="elements", cascade={"persist"})
@@ -72,7 +75,7 @@ class BasketElement
      */
     public function __construct()
     {
-        $this->validation_datas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->votes = new ArrayCollection();
     }
 
     /**
@@ -88,10 +91,10 @@ class BasketElement
     /**
      * Set record_id
      *
-     * @param  integer       $recordId
+     * @param integer $recordId
      * @return BasketElement
      */
-    public function setRecordId($recordId)
+    public function setRecordId(int $recordId)
     {
         $this->record_id = $recordId;
 
@@ -111,10 +114,10 @@ class BasketElement
     /**
      * Set sbas_id
      *
-     * @param  integer       $sbasId
-     * @return BasketElement
+     * @param integer $sbasId
+     * @return self
      */
-    public function setSbasId($sbasId)
+    public function setSbasId(int $sbasId)
     {
         $this->sbas_id = $sbasId;
 
@@ -133,10 +136,10 @@ class BasketElement
 
     public function getRecord(Application $app)
     {
-        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
+        return new record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
     }
 
-    public function setRecord(\record_adapter $record)
+    public function setRecord(record_adapter $record)
     {
         $this->setRecordId($record->getRecordId());
         $this->setSbasId($record->getDataboxId());
@@ -145,10 +148,10 @@ class BasketElement
     /**
      * Set ord
      *
-     * @param  integer       $ord
-     * @return BasketElement
+     * @param integer $ord
+     * @return self
      */
-    public function setOrd($ord)
+    public function setOrd(int $ord)
     {
         $this->ord = $ord;
 
@@ -168,10 +171,10 @@ class BasketElement
     /**
      * Set created
      *
-     * @param  \DateTime     $created
-     * @return BasketElement
+     * @param  DateTime     $created
+     * @return self
      */
-    public function setCreated(\DateTime $created)
+    public function setCreated(DateTime $created)
     {
         $this->created = $created;
 
@@ -181,7 +184,7 @@ class BasketElement
     /**
      * Get created
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreated()
     {
@@ -191,10 +194,10 @@ class BasketElement
     /**
      * Set updated
      *
-     * @param  \DateTime     $updated
-     * @return BasketElement
+     * @param  DateTime     $updated
+     * @return self
      */
-    public function setUpdated(\DateTime $updated)
+    public function setUpdated(DateTime $updated)
     {
         $this->updated = $updated;
 
@@ -204,7 +207,7 @@ class BasketElement
     /**
      * Get updated
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdated()
     {
@@ -212,36 +215,75 @@ class BasketElement
     }
 
     /**
-     * Add validation_datas
+     * Add vote
      *
-     * @param  ValidationData $validationDatas
-     * @return BasketElement
+     * @param  BasketElementVote $vote
+     * @return self
      */
-    public function addValidationData(ValidationData $validationDatas)
+    public function addVote(BasketElementVote $vote)
     {
-        $this->validation_datas[] = $validationDatas;
+        $this->votes[] = $vote;
 
         return $this;
     }
 
     /**
-     * Remove validation_datas
+     * Remove vote
      *
-     * @param ValidationData $validationDatas
+     * @param BasketElementVote $vote
      */
-    public function removeValidationData(ValidationData $validationDatas)
+    public function removeVote(BasketElementVote $vote)
     {
-        $this->validation_datas->removeElement($validationDatas);
+        $this->votes->removeElement($vote);
     }
 
     /**
-     * Get validation_datas
+     * Get votes
+     * @param false $includeUnVoted     true to include empty votes for all participants that haven't voted
      *
-     * @return Collection|ValidationData[]
+     * @return ArrayCollection|BasketElementVote[]
      */
-    public function getValidationDatas()
+    public function getVotes($includeUnVoted = false)
     {
-        return $this->validation_datas;
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // hack : a participant+element may have no matching "vote" row
+        // if the basket is a "vote", we fix this here
+//        if($this->getBasket()->isVoteBasket()) {
+//            /** @var BasketParticipant $participant */
+//            foreach($this->getBasket()->getParticipants() as $participant) {
+//                // don't call getUserVote() as it will call getVotes() ...
+//                $found = false;
+//                foreach ($this->votes as $vote) {
+//                    if ($vote->getParticipant()->getId() == $participant->getId()) {
+//                        $found = true;
+//                        break;
+//                    }
+//                }
+//                if(!$found) {
+//                    $this->addVote($this->createVote($participant));
+//                }
+//            }
+//        }
+
+        if(!$includeUnVoted) {
+            return $this->votes;
+        }
+
+        $votes = [];
+        foreach($this->getBasket()->getParticipants() as $participant) {
+            $participantId = $participant->getId();
+            $vote = null;
+            /** @var BasketElementVote $v */
+            foreach ($this->votes as $v) {
+                if($v->getParticipant()->getId() == $participantId) {
+                    $vote = $v;
+                    break;
+                }
+            }
+            $votes[] = $vote ?: new BasketElementVote($participant, $this);
+        }
+
+        return $votes;
     }
 
     /**
@@ -268,18 +310,40 @@ class BasketElement
     }
 
     /**
-     * @param User $user
-     * @return ValidationData
-     * @throws \Exception
+     * create a vote data for a participant on this element (unique)
+     *
+     * @param BasketParticipant $participant
+     * @return BasketElementVote
      */
-    public function getUserValidationDatas(User $user)
+    public function createVote(BasketParticipant $participant)
     {
-        foreach ($this->validation_datas as $validationData) {
-            if ($validationData->getParticipant()->getUser()->getId() == $user->getId()) {
-                return $validationData;
+        $bev = new BasketElementVote($participant, $this);
+        $participant->addVote($bev);
+
+        return $bev;
+    }
+
+    /**
+     * @param User $user
+     * @param bool $createIfMissing
+     * @return BasketElementVote
+     * @throws Exception
+     */
+    public function getUserVote(User $user, bool $createIfMissing)
+    {
+        // ensure the user is a participant
+        $participant = $this->getBasket()->getParticipant($user);
+        $participantId = $participant->getId();
+
+        foreach ($this->getVotes() as $vote) {
+            if ($vote->getParticipant()->getId() == $participantId) {
+                return $vote;
             }
         }
+        if($createIfMissing) {
+            return $this->createVote($participant);
+        }
 
-        throw new \Exception('There is no such participant ' . $user->getEmail());
+        throw new Exception('There is no such participant ' . $user->getEmail());
     }
 }

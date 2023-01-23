@@ -11,9 +11,14 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use DateTime;
 use PHPExiftool\Driver\Metadata\Metadata;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhraseanetMetadataSetter
 {
@@ -22,9 +27,12 @@ class PhraseanetMetadataSetter
      */
     private $repository;
 
-    public function __construct(DataboxRepository $repository)
+    private $dispatcher;
+
+    public function __construct(DataboxRepository $repository, EventDispatcherInterface $dispatcher)
     {
         $this->repository = $repository;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -65,14 +73,56 @@ class PhraseanetMetadataSetter
                     continue;
                 }
 
-                $data['value'] = $value;
+                if ($field->get_type() == 'date') {
+                    try {
+                        $dateTime = new DateTime($value);
+                        $value = $dateTime->format('Y/m/d H:i:s');
+                    } catch (\Exception $e) {
+                        // $value unchanged
+                    }
+                }
 
+                $data['value'] = $value;
                 $metadataInRecordFormat[] = $data;
             }
         }
 
         if (! empty($metadataInRecordFormat)) {
-            $record->set_metadatas($metadataInRecordFormat, true);
+            /*
+             * todo : tryout to write meta AFTER meta was written in db by set_metadatas()
+             * how : uncomment section
+             *
+             */
+            /*
+            $this->dispatcher->addListener(
+                RecordEvents::METADATA_CHANGED,
+                function () use ($record) {
+                    // order to write meta in file
+                    // this event will add a msg to the writemeta q
+                    $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                        new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+                },
+                0
+            );
+            */
+            /*
+             * end of section to uncomment
+             */
+
+            $record->set_metadatas($metadataInRecordFormat, true);  // will send METADATA_CHANGED when done
+
+            /*
+             * todo : tryout to write meta AFTER meta was written in db by set_metadatas()
+             * how : comment section
+             *
+             */
+            // order to write meta in file
+
+            $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+            /*
+             * end of section to comment
+             */
         }
     }
 
@@ -119,8 +169,11 @@ class PhraseanetMetadataSetter
                 if (!isset($metadataPerField[$fieldName])) {
                     $metadataPerField[$fieldName] = [];
                 }
-
-                $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
+                if(in_array($tagName, File::$xmpTag)){
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], (array) File::sanitizeXmpUuid($metadata->getValue()->asString()));
+                }else{
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
+                }
             }
         }
 

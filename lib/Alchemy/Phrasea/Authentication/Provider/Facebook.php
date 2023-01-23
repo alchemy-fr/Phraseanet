@@ -11,54 +11,44 @@
 
 namespace Alchemy\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Authentication\Provider\Token\Token;
-use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Authentication\Provider\Token\Token;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class Facebook extends AbstractProvider
 {
-    /** @var \Facebook */
+    /** @var \Facebook\Facebook */
     private $facebook;
 
-    public function __construct(\Facebook $facebook, UrlGenerator $generator)
+
+    public function __construct(UrlGenerator $generator, SessionInterface $session, \Facebook\Facebook $facebook)
     {
+        parent::__construct($generator, $session);
         $this->facebook = $facebook;
-        $this->generator = $generator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public function authenticate(array $params = array()): RedirectResponse
     {
-        return 'facebook';
-    }
+        $params = array_merge(['providerId' => $this->getId()], $params);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'Facebook';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function authenticate()
-    {
-        return new RedirectResponse($this->facebook->getLoginUrl([
-            'scope'        => 'email',
-            'redirect_uri' => $this->generator->generate(
-                'login_authentication_provider_callback',
-                ['providerId' => $this->getId()],
-                UrlGenerator::ABSOLUTE_URL
+        return new RedirectResponse(
+            $this->facebook->getRedirectLoginHelper()->getLoginUrl(
+                $this->generator->generate(
+                    'login_authentication_provider_callback',
+                    $params,
+                    UrlGenerator::ABSOLUTE_URL
+                ),
+                ['email']
             )
-        ]));
+        );
     }
 
     /**
@@ -66,15 +56,15 @@ class Facebook extends AbstractProvider
      */
     public function logout()
     {
-        $this->facebook->destroySession();
+        $this->session->remove('fb_access_token');
     }
 
     /**
-     * @param \Facebook $facebook
+     * @param \Facebook\Facebook $facebook
      *
      * @return Facebook
      */
-    public function setFacebook(\Facebook $facebook)
+    public function setFacebook(\Facebook\Facebook $facebook)
     {
         $this->facebook = $facebook;
 
@@ -82,35 +72,53 @@ class Facebook extends AbstractProvider
     }
 
     /**
-     * @return \Facebook
+     * @return \Facebook\Facebook
      */
-    public function getFacebook()
+    public function getFacebook(): \Facebook\Facebook
     {
         return $this->facebook;
     }
 
     /**
-     * {@inheritdoc}
+     * @param $dataToRetrieve
+     * @return \Facebook\GraphNodes\GraphUser
+     * @throws \Facebook\Exceptions\FacebookSDKException
      */
-    public function getIdentity()
+    protected function getGraphUser($dataToRetrieve)
     {
         try {
-            $data = $this->facebook->api('/me');
-            $identity = new Identity();
-
-            $identity->set(Identity::PROPERTY_ID, $data['id']);
-            $identity->set(Identity::PROPERTY_IMAGEURL, sprintf(
-                'https://graph.facebook.com/%s/picture?return_ssl_resources=1',
-                $data['username']
-            ));
-            $identity->set(Identity::PROPERTY_EMAIL, $data['email']);
-            $identity->set(Identity::PROPERTY_FIRSTNAME, $data['first_name']);
-            $identity->set(Identity::PROPERTY_LASTNAME, $data['last_name']);
-            $identity->set(Identity::PROPERTY_USERNAME, $data['username']);
-
-        } catch (\FacebookApiException $e) {
-            throw new NotAuthenticatedException('Unable to get profile informations', $e->getCode(), $e);
+            $response = $this->facebook->get(
+                "/me?fields=" . implode(',', $dataToRetrieve),
+                $this->session->get('fb_access_token')
+            );
+        } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+            throw new NotAuthenticatedException('Graph returned an error: ' . $e->getMessage());
+        } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+            throw new NotAuthenticatedException('Facebook SDK returned an error: ' . $e->getMessage());
         }
+
+        if (!$response) {
+            throw new NotAuthenticatedException('Not authenticated');
+        }
+
+        return $response->getGraphUser();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIdentity(): Identity
+    {
+        $user = $this->getGraphUser(['id', 'name', 'email', 'picture', 'last_name', 'first_name']);
+        
+        $identity = new Identity();
+
+        $identity->set(Identity::PROPERTY_ID, $user['id']);
+        $identity->set(Identity::PROPERTY_IMAGEURL, $user['picture']);
+        $identity->set(Identity::PROPERTY_EMAIL, $user['email']);
+        $identity->set(Identity::PROPERTY_FIRSTNAME, $user['first_name']);
+        $identity->set(Identity::PROPERTY_LASTNAME, $user['last_name']);
+        $identity->set(Identity::PROPERTY_USERNAME, $user['first_name']);
 
         return $identity;
     }
@@ -120,27 +128,57 @@ class Facebook extends AbstractProvider
      */
     public function onCallback(Request $request)
     {
-        if (!$this->facebook->getUser()) {
-            throw new NotAuthenticatedException('Facebook authentication failed');
+        $helper = $this->facebook->getRedirectLoginHelper();
+
+        try {
+            $accessToken = $helper->getAccessToken();
+        } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+            throw new NotAuthenticatedException('Graph returned an error: ' . $e->getMessage());
+        } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+            throw new NotAuthenticatedException('Facebook SDK returned an error: ' . $e->getMessage());
         }
+
+        if (! isset($accessToken)) {
+            if ($helper->getError()) {
+                $error  = "Error: " . $helper->getError() . "\n";
+                $error .= "Error Code: " . $helper->getErrorCode() . "\n";
+                $error .= "Error Reason: " . $helper->getErrorReason() . "\n";
+                $error .= "Error Description: " . $helper->getErrorDescription() . "\n";
+
+                throw new NotAuthenticatedException($error);
+
+            } else {
+                throw new NotAuthenticatedException('Facebook authentication failed');
+            }
+        }
+
+        $oAuth2Client = $this->facebook->getOAuth2Client();
+
+        if (! $accessToken->isLongLived()) {
+            try {
+                $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
+            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+                throw new NotAuthenticatedException('Error getting long-lived access token: ' . $e->getMessage() );
+            }
+        }
+        $this->session->set('fb_access_token', (string) $accessToken);
     }
 
     /**
      * {@inheritdoc}
+     * @throws \Facebook\Exceptions\FacebookSDKException
      */
-    public function getToken()
+    public function getToken(): Token
     {
-        if (0 >= $this->facebook->getUser()) {
-            throw new NotAuthenticatedException('Provider has not authenticated');
-        }
+        $user = $this->getGraphUser(['id']);
 
-        return new Token($this, $this->facebook->getUser());
+        return new Token($this, $user['id']);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getIconURI()
+    public function getIconURI(): string
     {
         return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAAwCAYAAAC4w'
             . 'JK5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0W'
@@ -190,15 +228,25 @@ class Facebook extends AbstractProvider
     /**
      * {@inheritdoc}
      *
-     * @return Facebook
+     * @return self
+     * @throws \Facebook\Exceptions\FacebookSDKException
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
+    public static function create(UrlGenerator $generator, SessionInterface $session, array $options): self
     {
-        $config['appId'] = $options['app-id'];
-        $config['secret'] = $options['secret'];
+        foreach (['app-id', 'secret', 'default-graph-version'] as $parm) {
+            if (!isset($options[$parm])) {
+                throw new InvalidArgumentException(sprintf('Missing Facebook "%s" parameter in conf/authentication/providers', $parm));
+            }
+        }
 
-        $facebook = new \Facebook($config);
-
-        return new static($facebook, $generator);
+        return new static(
+            $generator,
+            $session,
+            new \Facebook\Facebook([
+                'app_id' => $options['app-id'],
+                'app_secret' => $options['secret'],
+                'default_graph_version' => $options['default-graph-version']
+            ])
+        );
     }
 }

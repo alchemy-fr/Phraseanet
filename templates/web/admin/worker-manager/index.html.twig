@@ -1,0 +1,111 @@
+<h1>Worker</h1>
+
+{% if isConnected %}
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="configurationTabs">
+
+            <li class="worker-configuration" role="presentation">
+                <a href="#worker-configuration" aria-controls="worker-configuration" role="tab" data-toggle="tab" data-url="/admin/worker-manager/configuration">
+                    {{ "admin::workermanager:tab:configuration: title" | trans }}
+                </a>
+            </li>
+            <li class="worker-info" role="presentation">
+                <a href="#worker-info" aria-controls="worker-info" role="tab" data-toggle="tab" data-url="/admin/worker-manager/info?running=1">
+                    {{ 'admin::workermanager:tab:workerinfo: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-searchengine" role="presentation">
+                <a href="#worker-searchengine" aria-controls="worker-searchengine" role="tab" data-toggle="tab" data-url="/admin/worker-manager/searchengine">
+                    {{ 'admin::workermanager:tab:searchengine: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-ftp" role="presentation">
+                <a href="#worker-ftp" aria-controls="worker-ftp" role="tab" data-toggle="tab" data-url="/admin/worker-manager/ftp">
+                    {{ 'admin::workermanager:tab:ftp: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-subview" role="presentation">
+                <a href="#worker-subview" aria-controls="worker-subview" role="tab" data-toggle="tab" data-url="/admin/worker-manager/subview">
+                    {{ 'admin::workermanager:tab:subview: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-metadata" role="presentation">
+                <a href="#worker-metadata" aria-controls="worker-metadata" role="tab" data-toggle="tab" data-url="/admin/worker-manager/metadata">
+                    {{ 'admin::workermanager:tab:metadata: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-reminder" role="presentation">
+                <a href="#worker-reminder" aria-controls="worker-reminder" role="tab" data-toggle="tab" data-url="/admin/worker-manager/validation-reminder">
+                    {{ 'admin::workermanager:tab:reminder: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-records-actions" role="presentation">
+                <a href="#worker-records-actions" aria-controls="worker-records-actions" role="tab" data-toggle="tab" data-url="/admin/worker-manager/records-actions">
+                    {{ 'admin::workermanager:tab:recordsActions: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-queue-monitor" role="presentation">
+                <a href="#worker-queue-monitor" aria-controls="worker-queue-monitor" role="tab" data-toggle="tab" data-url="/admin/worker-manager/queue-monitor">
+                    {{ 'admin::workermanager:tab:queueMonitor: title' |trans }}
+                </a>
+            </li>
+
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade" id="worker-configuration"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-info"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-searchengine"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-ftp"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-subview"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-metadata"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-reminder"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-records-actions"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-queue-monitor"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var contentsDownloaded = {};
+        var remoteContent = function(url) {
+            return $.get(url);
+        };
+
+        var tabs = $('#configurationTabs a[data-toggle="tab"]');
+
+        tabs.on('click', function(){
+            $(this).tab('show');
+        });
+
+        $('.nav-tabs li').on('show.bs.tab', function (e) {
+            if (contentsDownloaded[e.target.hash] === undefined) {
+                $(e.target.hash).empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            }
+        });
+
+        $('.nav-tabs').on('shown.bs.tab', function (e) {
+
+            if (contentsDownloaded[e.target.hash] === undefined) {
+                var targetDiv = $(e.target.hash);
+
+                remoteContent($(e.target).attr('data-url')).then(function(response) {
+                    targetDiv.empty().html(response);
+                    contentsDownloaded[e.target.hash] = true;
+                }, function(error) {
+                    console.log(error);
+                    targetDiv.empty().html('<i class="icon-fire">{{ 'admin:worker Retrieve configuration error'|trans }}</i>');
+                });
+            }
+        });
+
+        var sel = '#configurationTabs li.{{ _fragment }} a';
+        $(sel).click();
+
+    </script>
+{% else %}
+    <h1 class="alert alert-danger">
+        {{ 'admin::workermanager: Rabbit config error' |trans }}
+    </h1>
+{% endif %}

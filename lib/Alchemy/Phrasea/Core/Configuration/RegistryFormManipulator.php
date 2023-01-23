@@ -82,13 +82,16 @@ class RegistryFormManipulator
 
     private function filterNullValues(array &$array)
     {
-        return array_filter($array, function (&$value) {
+        foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                $value = $this->filterNullValues($value);
+                $this->filterNullValues($value);
             }
+            else if ($key !== 'geonames-server' && $value === null) {
+                unset($array[$key]);
+            }
+        }
 
-            return null !== $value;
-        });
+        return $array;
     }
 
     private function getDefaultData(array $config)
@@ -99,6 +102,8 @@ class RegistryFormManipulator
                 'keywords' => null,
                 'description' => null,
                 'analytics' => null,
+                'matomo-analytics-url' => null,
+                'matomo-analytics-id' => null,
                 'allow-indexation' => true,
                 'home-presentation-mode' => 'GALLERIA',
                 'default-subdef-url-ttl' => 7200,
@@ -112,7 +117,7 @@ class RegistryFormManipulator
             ],
             'actions' => [
                 'download-max-size' => 120,
-                'validation-reminder-days' => 2,
+                'validation-reminder-time-left-percent' => 20,
                 'validation-expiration-days' => 10,
                 'auth-required-for-export' => true,
                 'tou-validation-required-for-export' => false,
@@ -122,6 +127,8 @@ class RegistryFormManipulator
                 'enable-push-authentication' => false,
                 'force-push-authentication' => false,
                 'enable-feed-notification' => true,
+                'download-link-validity' => 24,
+                'export-stamp-choice' => false,
             ],
             'ftp'          => [
                 'ftp-enabled' => false,
@@ -139,10 +146,11 @@ class RegistryFormManipulator
                 'api-enabled' => true,
                 'navigator-enabled' => true,
                 'office-enabled' => true,
+                'adobe_cc-enabled' => true,
             ],
             'webservices'  => [
                 'google-charts-enabled' => true,
-                'geonames-server' => 'http://geonames.alchemyasp.com/',
+                'geonames-server' => 'https://geonames.alchemyasp.com/',
                 'captchas-enabled' => false,
                 'recaptcha-public-key' => '',
                 'recaptcha-private-key' => '',
@@ -176,19 +184,14 @@ class RegistryFormManipulator
             ],
             'custom-links' => [
                 [
-                    'linkName'     => 'Phraseanet store',
-                    'linkLanguage' => 'fr',
-                    'linkUrl'      => 'https://alchemy.odoo.com/shop',
-                    'linkLocation' => 'help-menu',
-                    'linkOrder'    => '1',
-                ],
-                [
-                    'linkName'     => 'Phraseanet store',
-                    'linkLanguage' => 'en',
-                    'linkUrl'      => 'https://alchemy.odoo.com/en_US/shop',
-                    'linkLocation' => 'help-menu',
-                    'linkOrder'    => '1',
-                ],
+                    'linkName'      => 'Phraseanet store',
+                    'linkLanguage'  => 'all',
+                    'linkUrl'       => 'http://store.alchemy.fr',
+                    'linkLocation'  => 'help-menu',
+                    'linkOrder'     =>  1,
+                    'linkBold'      =>  false,
+                    'linkColor'     =>  ''
+                ]
             ]
         ];
     }

@@ -15,8 +15,8 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\LightboxController;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
-use Silex\ControllerProviderInterface;
 use Silex\Application;
+use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,6 +76,7 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('basket', '\d+')
         ;
 
+        /** @uses LightboxController::compareAction() */
         $controllers->get('/compare/{basket}/', 'controller.lightbox:compareAction')
             ->bind('lightbox_compare')
             ->assert('basket', '\d+');
@@ -102,6 +103,11 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/ajax/SET_RELEASE/{basket}/', 'controller.lightbox:ajaxSetReleaseAction')
             ->bind('lightbox_ajax_set_release')
+            ->assert('basket', '\d+')
+        ;
+
+        $controllers->get('/ajax/GET_ELEMENTS/{basket}/', 'controller.lightbox:ajaxGetElementsAction')
+            ->bind('lightbox_ajax_get_elements')
             ->assert('basket', '\d+')
         ;
 

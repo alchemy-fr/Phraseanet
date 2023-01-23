@@ -1,0 +1,84 @@
+{% if not reload %}
+    <h1>{{ 'admin::workermanager:tab:queueMonitor: description' |trans }}</h1>
+
+    <button id="refresh-monitor" class="btn btn-success">
+        {{ 'admin::workermanager:tab:queueMonitor: Refresh list' |trans }}
+    </button>
+
+    <table class="admintable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>{{ 'admin::workermanager:tab:queueMonitor: Message count' |trans }}</th>
+                <th>{{ 'admin::workermanager:tab:queueMonitor: Consumer count' |trans }}</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="queue-list">
+
+{% endif %}
+        {% for queueStatus in queuesStatus %}
+            <tr>
+                <td>{{ queueStatus.queueName }}</td>
+                <td>{{ queueStatus.messageCount }}</td>
+                <td>{{ queueStatus.consumerCount }}</td>
+                <td>
+                    <button class="btn btn-danger btn-mini purge-queue" data-queue-name="{{ queueStatus.queueName }}">{{ 'admin::workermanager:tab:queueMonitor: Purge Queue' | trans }}</button>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-mini delete-queue" data-queue-name="{{ queueStatus.queueName }}">{{ 'admin::workermanager:tab:queueMonitor: Delete Queue' | trans }}</button>
+                </td>
+            </tr>
+        {% endfor %}
+
+{% if not reload %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        $("#refresh-monitor").on('click', function () {
+            $.ajax({
+                type: "GET",
+                url: "/admin/worker-manager/queue-monitor?reload=1",
+                success: function (data) {
+                    $(".queue-list").empty().html(data);
+                }
+            });
+        });
+
+        $("#worker-queue-monitor").on('click', '.purge-queue', function() {
+            if (confirm("Warning! Are you sure? Messages cannot be recovered after purging.")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/worker-manager/purge-queue",
+                    dataType: 'json',
+                    data : {
+                        queueName : $(this).attr("data-queue-name")
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#refresh-monitor").trigger("click");
+                    }
+                });
+            }
+        });
+
+        $("#worker-queue-monitor").on('click', '.delete-queue', function() {
+            if (confirm("Warning! Are you sure? Messages cannot be recovered after deleting queue.")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/worker-manager/delete-queue",
+                    dataType: 'json',
+                    data : {
+                        queueName : $(this).attr("data-queue-name")
+                    },
+                    success: function (data) {
+                        $("#refresh-monitor").trigger("click");
+                    }
+                });
+            }
+        });
+
+    </script>
+{% endif %}

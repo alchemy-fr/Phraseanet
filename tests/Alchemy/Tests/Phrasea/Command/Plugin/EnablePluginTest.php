@@ -22,6 +22,8 @@ class EnablePluginTest extends PluginCommandTestCase
               ->with($this->equalTo('name'))
               ->will($this->returnValue('test-plugin'));
 
+        $bkp = self::$DI['cli']['conf']->get('plugins');
+
         self::$DI['cli']['conf']->set(['plugins', 'test-plugin', 'enabled'], $initial);
 
         $command = new EnablePlugin();
@@ -29,6 +31,13 @@ class EnablePluginTest extends PluginCommandTestCase
 
         $this->assertSame(0, $command->execute($input, $output));
         $this->assertTrue(self::$DI['cli']['conf']->get(['plugins', 'test-plugin', 'enabled']));
+
+        if(is_null($bkp)) {
+            self::$DI['cli']['conf']->remove('plugins');
+        }
+        else {
+            self::$DI['cli']['conf']->set('plugins', $bkp);
+        }
     }
 
     public function provideVariousInitialConfs()

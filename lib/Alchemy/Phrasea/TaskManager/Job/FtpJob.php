@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 
 use ftpclient;
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPReceiver;
@@ -344,6 +345,8 @@ class FtpJob extends AbstractJob
 
     private function send_mails(Application $app, FtpExport $export)
     {
+        $this->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
+
         $transferts = [];
         $transfert_status = $this->translator->trans('task::ftp:Tous les documents ont ete transferes avec succes');
 

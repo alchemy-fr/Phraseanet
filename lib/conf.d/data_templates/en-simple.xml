@@ -5,10 +5,11 @@
         <subdefgroup name="image">
             <subdef class="preview" name="preview" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>1024</size>
+                <size>1280</size>
                 <method>resample</method>
-                <dpi>72</dpi>
-                <strip>no</strip>
+                <dpi>300</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
                 <quality>75</quality>
                 <meta>yes</meta>
                 <devices>screen</devices>
@@ -18,11 +19,12 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>yes</strip>
-                <quality>75</quality>
+                <flatten>yes</flatten>
+                <quality>50</quality>
                 <meta>no</meta>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
@@ -30,9 +32,10 @@
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview_mobile" downloadable="false">
-                <size>480</size>
+                <size>640</size>
                 <resolution>72</resolution>
                 <strip>yes</strip>
+                <flatten>yes</flatten>
                 <quality>75</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
@@ -42,10 +45,11 @@
                 <label lang="en">Mobile Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
+                <size>192</size>
                 <resolution>72</resolution>
                 <strip>yes</strip>
-                <quality>75</quality>
+                <flatten>yes</flatten>
+                <quality>50</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <meta>no</meta>
@@ -57,7 +61,7 @@
         <subdefgroup name="video">
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
@@ -79,7 +83,7 @@
                 <size>748</size>
                 <mediatype>video</mediatype>
                 <writeDatas>yes</writeDatas>
-                <acodec>libfaac</acodec>
+                <acodec>libfdk_aac</acodec>
                 <vcodec>libx264</vcodec>
                 <devices>screen</devices>
                 <bitrate>1000</bitrate>
@@ -89,6 +93,21 @@
                 <GOPsize>25</GOPsize>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="poster" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>1</meta>
+                <size>1280</size>
+                <mediatype>image</mediatype>
+                <writeDatas>yes</writeDatas>
+                <devices>screen</devices>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <icodec>jpeg</icodec>
+                <label lang="fr">Poster video</label>
+                <label lang="en">Poster video</label>
             </subdef>
             <subdef class="preview" name="preview_webm" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -110,7 +129,7 @@
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
-                <size>240</size>
+                <size>384</size>
                 <devices>screen</devices>
                 <writeDatas>no</writeDatas>
                 <label lang="fr">Vignette</label>
@@ -140,7 +159,8 @@
                 <mediatype>image</mediatype>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <size>240</size>
+                <size>384</size>
+                <flatten>yes</flatten>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Vignette</label>
@@ -148,32 +168,8 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
-                <devices>screen</devices>
-                <label lang="fr">Prévisualisation</label>
-                <label lang="en">Preview</label>
-            </subdef>
-        </subdefgroup>
-        <subdefgroup name="flash">
-            <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>240</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Vignette</label>
-                <label lang="en">Thumbnail</label>
-            </subdef>
-            <subdef class="preview" name="preview" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>800</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
@@ -182,27 +178,27 @@
     </subdefs>
 
     <description>
-        <Object src="IPTC:ObjectName" />
-        <Category src="IPTC:Category"/>
-        <SupplCategory src="IPTC:SupplementalCategories" multi="1"/>
-        <Keywords src="IPTC:Keywords" multi="1"/>
-        <SpecialInstruct src="IPTC:SpecialInstructions"/>
+        <Object src="IPTC:ObjectName" type="string"/>
+        <Category src="IPTC:Category" type="string"/>
+        <SupplCategory src="IPTC:SupplementalCategories" type="string" multi="1"/>
+        <Keywords src="IPTC:Keywords" type="string" multi="1"/>
+        <SpecialInstruct src="IPTC:SpecialInstructions" type="string"/>
         <Date src="IPTC:DateCreated" type="date" />
-        <Byline src="IPTC:By-line"/>
-        <BylineTitle src="IPTC:By-lineTitle"/>
-        <City src="IPTC:City" />
-        <Province src="IPTC:Province-State" />
-        <Country src="IPTC:Country-PrimaryLocationName" />
-        <OriginalRef src="IPTC:OriginalTransmissionReference" />
-        <Headline src="IPTC:Headline" report="1" thumbtitle="1" />
-        <Credit src="IPTC:Credit" report="1" />
-        <Source src="IPTC:Source" />
-        <Caption src="IPTC:Caption-Abstract" />
-        <CaptionWriter src="IPTC:Writer-Editor" />
-        <Longitude src="GPS:GPSLongitude" readonly="1"/>
-        <Latitude src="GPS:GPSLatitude" readonly="1"/>
-        <CameraModel src="IFD0:Model" readonly="1"/>
-        <FileName src="Phraseanet:tf-basename" readonly="1" type="text" />
+        <Byline src="IPTC:By-line" type="string"/>
+        <BylineTitle src="IPTC:By-lineTitle" type="string"/>
+        <City src="IPTC:City" type="string"/>
+        <Province src="IPTC:Province-State" type="string"/>
+        <Country src="IPTC:Country-PrimaryLocationName" type="string"/>
+        <OriginalRef src="IPTC:OriginalTransmissionReference" type="string"/>
+        <Headline src="IPTC:Headline" type="string" report="1" thumbtitle="1"/>
+        <Credit src="IPTC:Credit" type="string" report="1"/>
+        <Source src="IPTC:Source" type="string"/>
+        <Caption src="IPTC:Caption-Abstract" type="string"/>
+        <CaptionWriter src="IPTC:Writer-Editor" type="string"/>
+        <Longitude src="Composite:GPSLongitude" type="number" readonly="1"/>
+        <Latitude src="Composite:GPSLatitude" type="number" readonly="1"/>
+        <CameraModel src="IFD0:Model" type="string" readonly="1"/>
+        <FileName src="Phraseanet:tf-basename" type="string" readonly="1"/>
     </description>
 
     <statbits>

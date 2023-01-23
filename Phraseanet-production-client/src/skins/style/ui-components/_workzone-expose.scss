@@ -1,0 +1,74 @@
+#idFrameC {
+  .basketTips.expose_basket_item {
+    background: $chimWrap;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid $chimWrap;
+    box-sizing: border-box;
+    .top_block {
+      position: relative;
+      padding-left: 40px;
+      &:before {
+        content: "\f054";
+        font-family: fontawesome;
+        font-size: 23px;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: 0.3s all;
+      }
+      &.open {
+        &:before {
+          transform: translateY(-50%) rotate(90deg);
+        }
+      }
+    }
+  }
+  .expose_item_deployed {
+    height: 0;
+    max-height: 0;
+    transition: max-height 0.3s;
+    overflow: hidden;
+    &.open {
+      height: auto;
+      max-height: 100vh;
+      min-height: 130px;
+    }
+  }
+  .top_image {
+      width: 100px;
+      height: 60px;
+      object-fit: contain;
+  }
+  .expose_item_title {
+    padding: 0px 20px;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    flex-wrap: wrap;
+  }
+  .expose_item_top {
+    position: relative;
+  }
+  .edit_expose {
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .expose_item_bottom {
+    max-height: 500px;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .expose_drag_drop {
+      min-height: 120px;
+      padding: 10px;
+      display: inline-block;
+      width: 100%;
+    }
+    .load_more_asset {
+      text-align: center;
+    }
+  }
+}

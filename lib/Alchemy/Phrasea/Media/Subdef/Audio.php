@@ -19,6 +19,7 @@ class Audio extends Provider
     const OPTION_THREADS = 'threads';
     const OPTION_ACODEC = 'acodec';
     const OPTION_AUDIOSAMPLERATE = 'audiosamplerate';
+    const OPTION_AUDIOCHANNEL = 'audiochannel';
 
     public function __construct(TranslatorInterface $translator)
     {
@@ -29,9 +30,12 @@ class Audio extends Provider
             47250, 48000, 50000, 50400, 88200, 96000
         ];
 
+        $audioChannel = ['mono', 'stereo'];
+
         $this->registerOption(new OptionType\Range($this->translator->trans('Audio Birate'), self::OPTION_AUDIOBITRATE, 32, 320, 128, 32));
         $this->registerOption(new OptionType\Enum($this->translator->trans('AudioSamplerate'), self::OPTION_AUDIOSAMPLERATE, $AVaudiosamplerate));
-        $this->registerOption(new OptionType\Enum($this->translator->trans('Audio Codec'), self::OPTION_ACODEC, ['libmp3lame', 'flac'], 'libmp3lame'));
+        $this->registerOption(new OptionType\Enum($this->translator->trans('Audio Codec'), self::OPTION_ACODEC, ['libmp3lame', 'flac', 'pcm_s16le'], 'libmp3lame'));
+        $this->registerOption(new OptionType\Enum($this->translator->trans('Audio channel'), self::OPTION_AUDIOCHANNEL, $audioChannel));
     }
 
     public function getType()
@@ -53,7 +57,21 @@ class Audio extends Provider
         $this->spec->setAudioCodec($this->getOption(self::OPTION_ACODEC)->getValue());
         $this->spec->setAudioSampleRate($this->getOption(self::OPTION_AUDIOSAMPLERATE)->getValue());
         $this->spec->setAudioKiloBitrate($this->getOption(self::OPTION_AUDIOBITRATE)->getValue());
+        $this->spec->setAudioChannels($this->getChannelNumber($this->getOption(self::OPTION_AUDIOCHANNEL)->getValue()));
 
         return $this->spec;
+    }
+
+    private function getChannelNumber($audioChannel)
+    {
+        switch($audioChannel)
+        {
+            case 'mono':
+                return 1;
+            case 'stereo':
+                return 2;
+            default:
+                return null;
+        }
     }
 }

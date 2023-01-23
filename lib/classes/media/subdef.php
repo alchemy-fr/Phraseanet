@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
@@ -19,6 +20,7 @@ use Guzzle\Http\Url;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+
 
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
@@ -30,6 +32,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     private static function getMediaSubdefRepository(Application $app, $databoxId)
     {
         return $app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
+    }
+
+    /**
+     * @return Filesystem
+     */
+    private function getFilesystem()
+    {
+        return $this->app['filesystem'];
     }
 
     /** @var Application */
@@ -77,6 +87,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     /** @var integer */
     private $size = 0;
 
+    /** @var array */
+    private static $technicalFieldsList = [];
+
     /*
      * Players types constants
      */
@@ -86,6 +99,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TYPE_AUDIO_MP3 = 'AUDIO_MP3';
     const TYPE_IMAGE = 'IMAGE';
     const TYPE_NO_PLAYER = 'UNKNOWN';
+    const TYPE_PDF = 'PDF';
 
     /*
      * Technical datas types constants
@@ -95,6 +109,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_COLORSPACE = 'ColorSpace';
     const TC_DATA_CHANNELS = 'Channels';
     const TC_DATA_ORIENTATION = 'Orientation';
+    const TC_DATA_THUMBNAILORIENTATION = 'ThumbnailOrientation';
     const TC_DATA_COLORDEPTH = 'ColorDepth';
     const TC_DATA_DURATION = 'Duration';
     const TC_DATA_AUDIOCODEC = 'AudioCodec';
@@ -247,6 +262,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function remove_file()
     {
         if ($this->is_physically_present() && is_writable($this->getRealPath())) {
+            // @unlink($this->getWatermarkRealPath());
+            @unlink($this->getStampRealPath());
             unlink($this->getRealPath());
 
             $this->delete_data_from_cache();
@@ -358,11 +375,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function getEtag()
     {
-        if (!$this->etag && $this->is_physically_present()) {
+        if ((!$this->etag && $this->is_physically_present())) {
             $file = new SplFileInfo($this->getRealPath());
-
             if ($file->isFile()) {
-                $this->setEtag(md5($file->getRealPath() . $file->getMTime()));
+                $this->generateEtag($file);
             }
         }
 
@@ -404,6 +420,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     {
         static $types = [
             'application/x-shockwave-flash' => self::TYPE_FLEXPAPER,
+            'application/pdf' => self::TYPE_PDF,
             'audio/mp3' => self::TYPE_AUDIO_MP3,
             'audio/mpeg' => self::TYPE_AUDIO_MP3,
             'image/gif' => self::TYPE_IMAGE,
@@ -550,6 +567,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function rotate($angle, Alchemyst $alchemyst, MediaVorus $mediavorus)
     {
+        // @unlink($this->getWatermarkRealPath());
+        @unlink($this->getStampRealPath());
+
         if (!$this->is_physically_present()) {
             throw new \Alchemy\Phrasea\Exception\RuntimeException('You can not rotate a substitution');
         }
@@ -568,7 +588,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->width = $media->getWidth();
         $this->height = $media->getHeight();
 
-        return $this->save();
+        // generate a new etag after rotation
+        $file = new SplFileInfo($this->getRealPath());
+        $this->generateEtag($file);  // with repository save
+
+        return $this;
     }
 
     /**
@@ -587,38 +611,16 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $datas = [];
 
-        $methods = [
-            self::TC_DATA_WIDTH              => 'getWidth',
-            self::TC_DATA_HEIGHT             => 'getHeight',
-            self::TC_DATA_FOCALLENGTH        => 'getFocalLength',
-            self::TC_DATA_CHANNELS           => 'getChannels',
-            self::TC_DATA_COLORDEPTH         => 'getColorDepth',
-            self::TC_DATA_CAMERAMODEL        => 'getCameraModel',
-            self::TC_DATA_FLASHFIRED         => 'getFlashFired',
-            self::TC_DATA_APERTURE           => 'getAperture',
-            self::TC_DATA_SHUTTERSPEED       => 'getShutterSpeed',
-            self::TC_DATA_HYPERFOCALDISTANCE => 'getHyperfocalDistance',
-            self::TC_DATA_ISO                => 'getISO',
-            self::TC_DATA_LIGHTVALUE         => 'getLightValue',
-            self::TC_DATA_COLORSPACE         => 'getColorSpace',
-            self::TC_DATA_DURATION           => 'getDuration',
-            self::TC_DATA_FRAMERATE          => 'getFrameRate',
-            self::TC_DATA_AUDIOSAMPLERATE    => 'getAudioSampleRate',
-            self::TC_DATA_VIDEOCODEC         => 'getVideoCodec',
-            self::TC_DATA_AUDIOCODEC         => 'getAudioCodec',
-            self::TC_DATA_ORIENTATION        => 'getOrientation',
-            self::TC_DATA_LONGITUDE          => 'getLongitude',
-            self::TC_DATA_LONGITUDE_REF      => 'getLongitudeRef',
-            self::TC_DATA_LATITUDE           => 'getLatitude',
-            self::TC_DATA_LATITUDE_REF       => 'getLatitudeRef',
-        ];
+        $techDatas = self::getTechnicalFieldsList();
 
-        foreach ($methods as $tc_name => $method) {
-            if (method_exists($media, $method)) {
-                $result = call_user_func([$media, $method]);
+        foreach ($techDatas as $tc_name => $techData) {
+            if (array_key_exists('method', $techData)) {
+                if (method_exists($media, $techData['method'])) {
+                    $result = call_user_func([$media, $techData['method']]);
 
-                if (null !== $result) {
-                    $datas[$tc_name] = $result;
+                    if (null !== $result) {
+                        $datas[$tc_name] = $result;
+                    }
                 }
             }
         }
@@ -681,6 +683,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $symlinker = $app['phraseanet.thumb-symlinker'];
             $symlinker->symlink($subdef->getRealPath());
         }
+
+        // delete from cache the list of available subdef for the record to taken account the new subdef
+        $subdef->get_record()->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
 
         return $subdef;
     }
@@ -781,7 +786,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     private function isStillAccessible()
     {
-        return $this->is_physically_present && file_exists($this->getRealPath());
+        // return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath(), 10);    // allow 10 secs for the file to be visible on shared fs
+        return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath());    // NO delay allowed, this slows down phr if any subdef is missing
     }
 
     /**
@@ -817,6 +823,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
+     * @param SplFileInfo $file
+     */
+    private function generateEtag(SplFileInfo $file)
+    {
+        $this->setEtag(md5($file->getRealPath() . $file->getMTime()));
+    }
+
+    /**
      * @return $this
      */
     private function save()
@@ -824,5 +838,47 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         self::getMediaSubdefRepository($this->app, $this->record->getDataboxId())->save($this);
 
         return $this;
+    }
+
+    /**
+     * Return list of technical data and their attributes
+     *
+     * @return array
+     */
+    public static function getTechnicalFieldsList()
+    {
+        if (empty(self::$technicalFieldsList)) {
+            self::$technicalFieldsList = [
+              self::TC_DATA_WIDTH              => ['method' => 'getWidth', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_HEIGHT             => ['method' => 'getHeight', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_FOCALLENGTH        => ['method' => 'getFocalLength', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_CHANNELS           => ['method' => 'getChannels', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_COLORDEPTH         => ['method' => 'getColorDepth', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_CAMERAMODEL        => ['method' => 'getCameraModel', 'type' => 'string', 'analyzable' => false],
+              self::TC_DATA_FLASHFIRED         => ['method' => 'getFlashFired', 'type' => 'boolean', 'analyzable' => false],
+              self::TC_DATA_APERTURE           => ['method' => 'getAperture', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_SHUTTERSPEED       => ['method' => 'getShutterSpeed', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_HYPERFOCALDISTANCE => ['method' => 'getHyperfocalDistance', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_ISO                => ['method' => 'getISO', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_LIGHTVALUE         => ['method' => 'getLightValue', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_COLORSPACE         => ['method' => 'getColorSpace', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_DURATION           => ['method' => 'getDuration', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_FRAMERATE          => ['method' => 'getFrameRate', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_AUDIOSAMPLERATE    => ['method' => 'getAudioSampleRate', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_VIDEOCODEC         => ['method' => 'getVideoCodec', 'type' => 'string', 'analyzable' => false],
+              self::TC_DATA_AUDIOCODEC         => ['method' => 'getAudioCodec', 'type' => 'string', 'analyzable' => false],
+              self::TC_DATA_ORIENTATION        => ['method' => 'getOrientation', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_THUMBNAILORIENTATION => ['type' => 'string', 'analyzable' => false],
+              self::TC_DATA_LONGITUDE          => ['method' => 'getLongitude', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_LONGITUDE_REF      => ['method' => 'getLongitudeRef'],
+              self::TC_DATA_LATITUDE           => ['method' => 'getLatitude', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_LATITUDE_REF       => ['method' => 'getLatitudeRef'],
+              self::TC_DATA_MIMETYPE           => ['type' => 'string', 'analyzable' => false],
+              self::TC_DATA_FILESIZE           => ['type' => 'long', 'analyzable' => false],
+            ];
+        }
+
+
+        return self::$technicalFieldsList;
     }
 }

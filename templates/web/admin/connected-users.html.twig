@@ -81,7 +81,7 @@
 <hr class="spacehr">
 
 <div class="center">
-    <table class='admintable'>
+    <table class='admintable connected-users'>
         <thead>
             <tr>
                 <th style="width:140px;" >{{ 'admin::monitor: utilisateur' | trans }}</th>
@@ -89,12 +89,13 @@
                 <th style="width:120px;" >{{ 'phraseanet:: adresse' | trans }}</th>
                 <th style="width:140px;" >{{ 'admin::monitor: date de connexion' | trans }}</th>
                 <th style="width:140px;" >{{ 'admin::monitor: dernier access' | trans }}</th>
+                <th style="width:140px;"></th>
             </tr>
         </thead>
         <tbody>
             {% for session in data['sessions'] %}
                 {% set row = session['session'] %}
-            <tr title="{{ _self.tooltip_connected_users(row) | raw }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
+            <tr data-user="{{ row.getUser().getId() }}" title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
                 {% if row.getId() == app['session'].get('session_id') %}
                     <td style="color:#ff0000"><i>{{ row.getUser().getDisplayName() }}</i></td>
@@ -111,7 +112,13 @@
                 <td>{{ row.getIpAddress() }}<br/>{{ session['info'] }}</td>
                 <td>{{ app['date-formatter'].getDate(row.getCreated()) }}</td>
                 <td>{{ app['date-formatter'].getPrettyString(row.getUpdated()) }}</td>
-
+                <td>
+                    {% if row.getId() != app['session'].get('session_id') %}
+                        <form method="post" action="/admin/connected-users/{{ row.getId() }}/disconnect" class="form-inline">
+                            <input type="submit" class="btn btn-secondary pull-right" value="Disconnect">
+                        </form>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -125,7 +132,27 @@
         $('.usrTips').uitooltip({
             content: function() {
                 return $( this ).attr( "title" );
+            },
+            classes: {
+                "ui-tooltip": "ui-tooltip ui-corner-all ui-widget ui-widget-content"
             }
+        });
+
+        $('.connected-users tbody tr').on('dblclick', function () {
+            var userId = $(this).attr('data-user');
+
+            $('#right-ajax').empty().addClass('loading');
+            $.ajax({
+                type: 'POST',
+                url: '../admin/users/rights/',
+                data: {
+                    users: userId
+                },
+                success: function (data) {
+                    $('#right-ajax').removeClass('loading').html(data);
+                }
+            });
+            return false;
         });
     }
 );

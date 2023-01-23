@@ -1,7 +1,7 @@
 
-<div class="PNB" id="BasketBrowser">
+<div class="PNB BasketBrowser" id="BasketBrowser">
   <div class="PNB10 Browser">
-    <div class="PNB10" style="width:190px;right:auto;">
+    <div class="PNB10 leftBrowser">
       <form name="BasketBrowser" method="GET" action="{{ path('prod_workzone_search') }}">
         <input name="Query" class="Query search" placeholder="{{ 'Search baskets' | trans }}" type="text"/>
 
@@ -78,9 +78,47 @@
       </form>
 
     </div>
-    <div class="PNB results" style="left:220px;">
+    <div class="PNB results rightBrowser">
     </div>
   </div>
   <div class="PNB10 Basket">
   </div>
 </div>
+<style>
+.dialog-Medium {
+  height: 544px!important;
+  overflow: hidden!important;
+}
+.paginator a {
+  background: none!important;
+  border: 0;
+  border-radius: 0;
+  padding: 0 9px;
+  font-weight: bold;
+}
+.result_loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
+<script>
+    //load the next result page
+    jQuery(document).ready(function(){
+        jQuery('.next_res').click(function(){
+            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
+            jQuery('.results').load($(this).attr('href'));
+            return false;
+        });
+    });
+    //load the prev result page
+    jQuery(document).ready(function(){
+        jQuery('.prev_res').click(function(){
+            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
+            jQuery('.results').load($(this).attr('href'));
+            return false;
+        });
+    });
+</script>
+

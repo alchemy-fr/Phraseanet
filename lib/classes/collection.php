@@ -597,6 +597,12 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
 
+        // clear cached collection
+        $this->getCollectionRepository()->clearCache();
+
+        // clear the trivial cache of databox->get_collections()
+        $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);
+
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
 	    $this->dispatch(CollectionEvents::DISABLED, new DisabledEvent($this));
@@ -613,6 +619,12 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
+
+        // clear cached collection
+        $this->getCollectionRepository()->clearCache();
+
+        // clear the trivial cache of databox->get_collections()
+        $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
@@ -631,6 +643,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->collectionService->emptyCollection($this->databox, $this->collectionVO, $pass_quantity);
         $this->dispatch(CollectionEvents::EMPTIED, new EmptiedEvent($this));
         return $this;
+    }
+
+    public function getCollectionRecordIdList()
+    {
+        return $this->collectionService->getCollectionRecordIdList($this->collectionVO);
     }
 
     /**
@@ -793,19 +810,26 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     }
 
     /**
-     * Gets terms of use.
+     * matches a email against the auto-register whitelist
      *
-     * @return null|string
+     * @param string $email
+     * @return null|string  the user-model to apply if the email matches
      */
-    public function getTermsOfUse()
+    public function getAutoregisterModel($email)
     {
-        if (false === $xml = simplexml_load_string($this->get_prefs())) {
-            return null;
+        // try to match against the collection whitelist
+        if($this->isRegistrationEnabled()) {
+            if (($xml = @simplexml_load_string($this->get_prefs())) !== false) {
+                foreach ($xml->xpath('/baseprefs/registration/auto_register/email_whitelist/email') as $element) {
+                    if (preg_match($element['pattern'], $email) === 1) {
+                        return (string)$element['user_model'];
+                    }
+                }
+            }
         }
 
-        foreach ($xml->xpath('/baseprefs/cgu') as $sbpcgu) {
-            return $sbpcgu->saveXML();
-        }
+        // no match ? try against the databox whitelist
+        return $this->get_databox()->getAutoregisterModel($email);
     }
 
     public function get_cache_key($option = null)

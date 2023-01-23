@@ -3,24 +3,20 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" media="screen"/>
 {% endblock %}
-
-  {% block icon %}
-  <link rel="shortcut icon" type="image/x-icon" href="/assets/lightbox/images/favicon.ico">
-  {% endblock %}
 
 {% block content %}
     <div id="main_index" style="margin-top:50px;">
         <table id="main_wrapper" cellspacing="0" cellpadding="0">
             <thead>
                 <tr>
-                    <th class="title">
+                    <th class="title" id="feed_list">
                         <h1>{{ 'Validations' | trans }}</h1>
                     </th>
                     <th>
@@ -29,10 +25,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for basket in baskets_collection %}
-                  {% if basket.getValidation() %}
+                {% for basket in baskets_collection | sort | reverse%}
+                  {% if basket.isVoteBasket() %}
                       {% set basket_length = basket.getElements().count() %}
-      <tr>
+                      {% set counter = ( counter | default(0) ) + 1 %}
+
+        <tr class="{% if counter >=4 %}other_feed hidden{% endif %}">
           <td colspan="2">
               <div class="basket_wrapper ui-corner-all clickable">
                   <table cellspacing="0" cellpadding="0" border="0">
@@ -51,11 +49,11 @@
                                           <tr>
                                               <td>
                                                   <h2 class="title15">
-                                                      {{basket.getName()|raw}}
+                                                      {{basket.getName()|e}}
                                                   </h2>
-                                                  {% if basket.getValidation().isFinished() %}
+                                                  {% if basket.isVoteFinished() %}
                                                       {{ '(validation) session terminee' | trans }}
-                                                  {% elseif basket.getValidation().getParticipant(app.getAuthenticatedUser()).getIsConfirmed() %}
+                                                  {% elseif basket.isParticipant(app.getAuthenticatedUser()) and basket.getParticipant(app.getAuthenticatedUser()).getIsConfirmed() %}
                                                       {{ '(validation) envoyee' | trans }}
                                                   {% else %}
                                                       {{ '(validation) a envoyer' | trans }}
@@ -71,7 +69,7 @@
                                           <tr>
                                               <td colspan="2">
                                                   <div>{{ basket.getDescription() }}</div>
-                                                  <div>{{ basket.getValidation().getValidationString(app, app.getAuthenticatedUser()) }}</div>
+                                                  <div>{{ basket.getValidationString(app, app.getAuthenticatedUser()) }}</div>
                                               </td>
                                           </tr>
                                       </table>
@@ -84,20 +82,26 @@
               </div>
           </td>
       </tr>
+                      {% if counter == 3 %}<tr><td colspan="2" style="text-align: center"><a href="#see_more_feed" id="see_more_feed" class="see_more_feed btn btn-info">{{ 'lightbox::See_more_feedback' | trans }}</a></td></tr>{% endif %}
+
                   {% endif %}
                 {% endfor %}
+                <tr><td colspan="2" style="text-align: center"><a href="#feed_list" id="see_less_feed" class="see_more_feed hidden btn btn-success">{{ 'lightbox::See_less_feedback' | trans }}</a></td></tr>
                 <tr>
-                    <th class="title">
+                    <th class="title" id="panier_list">
                         <h1>{{ 'Paniers' | trans }}</h1>
                     </th>
                     <th>
                         <i>{{ 'Voici vos paniers' | trans }}</i>
                     </th>
                 </tr>
-                {% for basket in baskets_collection %}
-                  {% if basket.getValidation is null %}
+                {% for basket in baskets_collection | sort | reverse%}
+                  {% if not basket.isVoteBasket() %}
                       {% set basket_length = basket.getElements().count() %}
-      <tr>
+                      {% set counter = ( counter | default(0) ) + 1 %}
+                      {% set counter_length = baskets_collection | length %}
+
+      <tr class="{% if counter >=4 %}other_basket hidden{% endif %}">
           <td colspan="2">
               <div class="basket_wrapper ui-corner-all clickable">
                   <table cellspacing="0" cellpadding="0" border="0">
@@ -116,7 +120,7 @@
                                           <tr>
                                               <td>
                                                   <h2 class="title15">
-                                                      {{ basket.getName()|raw}}
+                                                      {{ basket.getName()|e}}
                                                   </h2>
                                               </td>
                                               <td class="right">
@@ -140,9 +144,14 @@
                   <input type="hidden" name="ssel_id" value="{{ basket.getId() }}"/>
               </div>
           </td>
+
       </tr>
+                      {% if counter == 3 %}<tr><td colspan="2" style="text-align: center"><a href="#see_more_basket" id="see_more_basket" class="see_more_basket btn btn-info">{{ 'lightbox::see_more_basket' | trans }}</a></td></tr>{% endif %}
+
                   {% endif %}
                 {% endfor %}
+               <tr><td colspan="2" style="text-align: center"><a href="#panier_list" id="see_less_basket" class="see_more_basket hidden btn btn-success">{{ 'lightbox::see_less_basket' | trans }}</a></td></tr>
+
             </tbody>
         </table>
     </div>

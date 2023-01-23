@@ -1,0 +1,560 @@
+/******* EDITION **************************************************************/
+
+#EDIT_ALL {
+    white-space: normal;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .content-wrapper {
+        margin: 10px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+    .active {
+        color: $whiteActive!important;
+    }
+    .diapo {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+}
+
+#EDIT_TOP {
+    background-color: $mediumBackgroundColor;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: visible;
+    border-radius: $defaultBorderRadius;
+}
+
+#EDIT_MENU {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    width: 100%;
+    height: 24px;
+    overflow: hidden;
+    padding: 0;
+}
+
+.GRP_IMAGE_REP {
+    margin: 5px;
+    padding: 5px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 146px;
+    height: 156px;
+}
+
+#EDIT_GRPDIAPO {
+    position: absolute;
+}
+
+#EDIT_FILM2 {
+    border: 1px solid $darkerBorderColor;
+    background-color: $darkerBackgroundColor;
+    position: absolute;
+    top: 36px;
+    left: 10px;
+    bottom: 10px;
+    right: 10px;
+    overflow: auto;
+}
+
+#EDIT_ZOOMSLIDER {
+    position: absolute;
+    top: 7px;
+    width: 80px;
+    right: 50px;
+    z-index: 9999;
+}
+
+#EDIT_MID {
+    position: absolute;
+    left: 0;
+    bottom: 32px;
+    width: 100%;
+    border: none;
+    overflow: hidden;
+}
+
+#EDIT_MID_L, #EDIT_MID_R {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    overflow: visible;
+}
+
+#EDIT_MID_L {
+    background-color: $mediumBackgroundColor;
+    width: 700px;
+    left: 0;
+    border-radius: $defaultBorderRadius;
+}
+
+#EDIT_MID_R {
+    width: 400px;
+    right: 0;
+    .ui-tabs-panel {
+        background-color: $mediumBackgroundColor;
+    }
+}
+
+#EDIT_MID_R li.ui-tabs-active,
+#EDIT_MID_R li.ui-state-active {
+    background-color: $mediumBackgroundColor;
+}
+
+#divS_wrapper {
+    overflow-x: visible;
+    overflow-y: visible;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
+    width: 390px;
+}
+
+#divS {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 10px;
+    background: $editAllBg;
+    div.edit_field {
+        cursor: pointer;
+        font-weight: bold;
+        padding: 2px;
+        margin-right: 10px;
+        position: relative;
+        background-color: $editFieldBg;
+
+        .fa-stack {
+            font-size: 11px;
+            cursor: pointer;
+            width: 19px;
+            //height: 15px;
+            //line-height: 14px;
+            .fa-stack-2x {
+                color: #777777; //darken($darkerBackgroundColor, 10);
+            }
+            .fa-inverse {
+                color: $darkerBackgroundColor; //$darkerTextColor;
+            }
+        }
+    }
+    div.edit_field.odd {
+        background-color: $darkBackgroundColor;
+    }
+    div.edit_field.hover {
+        background-color: $lightBackgroundColor;
+        color: $lightTextColor;
+    }
+    div.edit_field.active {
+        background-color: $lightBackgroundActiveColor;
+        border: 1px solid $lightBackgroundActiveColor;
+    }
+    span.fieldvalue {
+        white-space: normal;
+        font-weight: normal;
+    }
+}
+
+#idEditZone {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    left: 420px;
+}
+
+#idFieldNameEdit {
+    width: 80px;
+    text-align: center;
+    overflow: hidden;
+}
+
+#idEditZTextArea {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 99%;
+    height: 99%;
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+}
+
+#idEditDateZone {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    display: none;
+}
+
+#ZTextMultiValued {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#ZTextStatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#idExplain {
+    top: auto;
+    height: 20px;
+    color: #FFB300;
+    text-align: right;
+    img {
+        vertical-align: middle;
+        width: 20px;
+        height: 20px;
+    }
+    .metadatas_restrictionsTips {
+        cursor: help;
+    }
+}
+
+#idDivButtons {
+    bottom: 30px;
+    top: auto;
+    height: 20px;
+    display: none;
+    text-align: center;
+}
+
+#EditSearch, #EditReplace {
+    width: 100%;
+    height: 45px;
+    font-size: 14px;
+}
+
+#buttonEditing {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 28px;
+    overflow: hidden;
+    text-align: center;
+}
+
+#EDIT_WORKING {
+    position: absolute;
+    top: 100px;
+    left: 1px;
+    width: 100%;
+    display: none;
+}
+
+.edit-zone-title {
+    height: 45px;
+    bottom: auto;
+}
+
+#EDIT_EDIT {
+    top: 45px;
+    bottom: 60px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#EDIT_TOP .diapo div.titre {
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: auto;
+    text-align: center;
+    z-index: 10;
+}
+
+#Edit_copyPreset_dlg form span {
+    color: $textPrimaryColor;
+}
+
+.Edit_preset_item {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 550px;
+    height: 250px;
+    overflow: auto;
+    color: $textSecondaryColor;
+}
+
+#idFieldSuggestedValues {
+    padding: 2px 13px 0px 10px;
+    select {
+        width: 100%;
+        background: #C6C6C6;
+
+    }
+}
+
+#ZTextMultiValued_values {
+    background-color: $editTextMultiValueBg;
+    border: 1px solid $editTextMultiValueBorder;
+    position: absolute;
+    top: 30px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    overflow-x: auto;
+    overflow-y: scroll;
+}
+.submit-multivalued {
+    border: none;
+    background: none;
+}
+
+#EDITWINDOW {
+    .ui-datepicker-inline {
+        background-color: $darkerBackgroundColor;
+        background-repeat: repeat-x;
+        background-position: 50% top;
+    }
+
+    #ZTextMultiValued_values {
+        div {
+            cursor: pointer;
+            height: 20px;
+            padding: 2px 14px 2px 2px;
+            table {
+                width: 100%;
+                border: none;
+                td {
+                    vertical-align: middle;
+                    &.options {
+                        width: 40px;
+                        text-align: right;
+                        .add_all {
+                            display: none;
+                        }
+                    }
+                }
+            }
+            &.hetero {
+                table {
+                    td.options {
+                        .add_all {
+                            display: inline;
+                        }
+                    }
+                }
+            }
+            &.hilighted {
+                background-color: $editTextMultiValueHighlightBg;
+            }
+            i {
+                color: #FFFF00;
+                font-style: normal;
+                font-weight: 700;
+                background-color: #222222;
+            }
+        }
+    }
+    .hetero {
+        color: #ff8000;
+    }
+    .EDIT_presets_list {
+        padding-left: 3px;
+        padding-right: 6px;
+        li {
+            margin: 0px;
+            &.opened {
+                div {
+                    display: block;
+                }
+                .triRight {
+                    display: none;
+                }
+                .triDown {
+                    display: inherit;
+                }
+            }
+            .triDown {
+                display: none;
+            }
+        }
+        div {
+            display: none;
+            padding-left: 15px;
+            padding-bottom: 5px;
+            p {
+                font-size: 9px;
+                padding: 0px;
+                margin: 0px;
+            }
+        }
+        h1 {
+            margin: 0px;
+            padding: 0px;
+            font-size: 12px;
+            a.delete {
+                font-weight: 100;
+                font-size: 10px;
+            }
+        }
+    }
+}
+
+/******* THESAURUS ************************************************************/
+$thesaurusBorderColor: #a9a9a9 !default;
+div.thesaurus {
+    margin-left: 2px;
+    white-space: nowrap;
+    p {
+        margin: 0;
+    }
+    div.c {
+        display: none
+    }
+}
+
+#EDITWINDOW #TH_Ofull, #idFrameTH #TH_Oprop, #idFrameTH #TH_Oclip {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#EDITWINDOW {
+    div.searchZone {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        padding: 0px;
+        margin: 0px;
+        background: $darkerBackgroundColor;
+        border: $thesaurusBorderColor 1px solid;
+    }
+    div.thesaurus {
+        div.c {
+            display: none
+        }
+        div.o {
+            margin-bottom: 1px;
+            padding-bottom: 2px;
+            padding-left: 5px;
+            margin-left: 3px;
+            border-left: $thesaurusBorderColor 1px solid;
+            border-bottom: $thesaurusBorderColor 1px solid;
+        }
+        div.h {
+            margin-bottom: 1px;
+            padding-bottom: 2px;
+            padding-left: 5px;
+            margin-left: 3px;
+            border-left: $thesaurusBorderColor 1px solid;
+            border-bottom: $thesaurusBorderColor 1px solid;
+        }
+        u {
+            width: 9px;
+            height: 10px;
+            margin-right: 2px;
+            text-align: center;
+            display: inline-block;
+            font-size: 8px;
+            text-decoration: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            color: black;
+            line-height: 10px;
+            &.w {
+                cursor: auto;
+            }
+        }
+        b {
+            cursor: pointer;
+        }
+    }
+    .ui-tabs {
+        position: absolute;
+        top: 0px;
+        left: 10px;
+        bottom: 0px;
+        right: 0;
+        .ui-tabs-nav {
+            background-color: transparent;
+            top: 0px;
+            left: 10px;
+            right: 10px;
+            margin-top: 0px;
+            border-top: 1px solid $workzoneTabTopBorder;
+            border-radius: 0;
+            height: 32px;
+            border-bottom: 1px solid $workzoneTabBorderBottom;
+        }
+        .ui-tabs-panel {
+            position: absolute;
+            top: 32px;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+    }
+    #geonameTabContainer {
+        ul.geoname-results {
+            list-style-type: none;
+            margin: 10px;
+            .geoname-add-action {
+                cursor: pointer;
+            }
+            .ui-state-highlight {
+                color: #2e7db2;
+            }
+        }
+    }
+
+    .zoom-menu-icon {
+        position: absolute;
+        width: 28px;
+    }
+    .zoom-menu-left {
+        left: calc(100% - 168px);
+        top: 3px;
+        font-size: 12px;
+    }
+
+    .zoom-menu-right {
+        left: 98%;
+        top: 3px;
+        font-size: 21px;
+    }
+}
+
+.story-select-all-block {
+    display: inline-block;
+    padding: 6px;
+    background: #404040;
+    margin: 3px 5px;
+    width: 121px;
+    text-align: center;
+}
+

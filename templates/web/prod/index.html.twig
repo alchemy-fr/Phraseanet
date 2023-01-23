@@ -1,46 +1,46 @@
 {% macro bas_list(module, search_datas) %}
     {% set unique_id = module.getRandom() %}
+    <div style="max-height: 57vh; overflow-x: hidden;">
     {% for base in search_datas['bases'] %}
         {% set sbas_id = base['sbas_id'] %}
         <div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom: 10px;">
             <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas">
-                <span class="toggle-collection deployer_closed" data-toggle-content=".sbascont_{{sbas_id}}"></span>
-                <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="select-database sbasChkr_{{sbas_id}}"  data-database="{{sbas_id}}" />
-                <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox danger_indicator" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
-                    <span>{{sbas_id|sbas_labels(app)}}</span>
-                    <span class="infos_sbas_{{sbas_id}}">
-                        {{base["collections"]|length}}/{{base['collections']|length}}
+                <span class="toggle-collection deployer_toggle deployer_closed" data-toggle-content=".sbascont_{{sbas_id}}"></span>
+                <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox custom_checkbox_label" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
+                    <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="select-database sbasChkr_{{sbas_id}}"  data-database="{{sbas_id}}" />
+
+                    <span class="base_indicator">
+                        {{sbas_id|sbas_labels(app)}}
+                    </span>
+                    <span class="custom_checkbox">
+                        <span class="infos_sbas_{{sbas_id}}">
+                            {{base["collections"]|length}}/{{base['collections']|length}}
+                        </span>
                     </span>
                 </label>
             </div>
-            <div class="sbascont sbascont_{{sbas_id}}" style="display:none; -moz-column-width:150px; -webkit-column-width: 150px; -moz-column-gap: 20px; -webkit-column-gap: 20px;">
-                <ul style="list-style-type:none; padding:0; margin:0;" class="basChild_{{sbas_id}}">
+            <div class="sbascont sbascont_{{sbas_id}}" style="display:none; margin-bottom: 8px;">
+                <ul class="basChild_{{sbas_id}} basChild_list">
                     {% for collection in base["collections"] %}
                         {% set base_id = collection["base_id"] %}
                         <li class="clkbas">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <input class="ck_{{collection["base_id"]}} checkbas check-filters" style="*margin-top:-18px;" data-save="true"
-
-                                            id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
-                                            name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
-                                    </td>
-                                    <td>
-                                        <label style="line-height: 18px;"
-                                            for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox inline">
-                                            {{base_id|get_collection_logo(app)|raw}} {{base_id|bas_labels(app)}}
-                                        </label>
-                                    </td>
-                                </tr>
-                            </table>
+                            <label style="line-height: 18px;"
+                                for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox inline custom_checkbox_label">
+                                <input class="ck_{{base_id}} checkbas check-filters"
+                                id="ck_{{base_id}}_{{unique_id}}" type="checkbox"
+                                data-save="true"
+                                name="bases[]" value="{{base_id}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+                                <span class="custom_checkbox"></span>
+                                {{base_id|get_collection_logo(app)|raw}} {{base_id|bas_labels(app)}}
+                            </label>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
     {% endfor %}
+    </div>
 {% endmacro %}
 
 {% set jquery_theme = 'dark-hive' %}
@@ -66,19 +66,25 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/production/production{% if not app.debug %}.min{% endif %}.css">
-    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/production/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
+    <link type="text/css" rel="stylesheet" href="/assets/production/production{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
+    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/production/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
     <style title="color_selection" type="text/css">
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
-            background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
+            background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', 'ab47bc')}};
         }
+        #idFrameC .diapo.selected {
+            border: 3px solid {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', 'ab47bc')}} !important;
+            background-color: transparent;
+        }
+
     </style>
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
 
     <script type="text/javascript">
 
@@ -89,16 +95,17 @@
         {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
         {% set initialAppState = 'publication' %}
         {% endif %}
+        {% set savedHiddenFacetsList = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'hiddenFacetsList') %}
 
         window.prodApp = ProductionApplication.bootstrap({
             lang: "{{ app.locale }}",
             baseUrl: '{{ app['request'].getUriForPath('/') }}',
             basePath: '{{ app.request.basePath|e('js') }}',
-            notify: {
-                url: "{{ path('list_notifications') }}",
-                moduleId: 1,
-                userId: {{app.getAuthenticatedUser().getId()}}
-            },
+            {#notify: {#}
+            {#    url: "{{ path('list_notifications') }}",#}
+            {#    moduleId: 1,#}
+            {#    userId: {{app.getAuthenticatedUser().getId()}}#}
+            {#},#}
             debug: {% if app.debug %}true{% else %}false{% endif %},
             initialState: "{{ initialAppState }}",
             geonameServerUrl: '{{ app['geonames.server-uri'] }}',
@@ -138,14 +145,22 @@
                     },
                     {% endfor %}
                 ]
-            }
+            },
+            savedHiddenFacetsList: {{ savedHiddenFacetsList|json_encode()|raw }}
         });
 
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
-            prodApp.appEvents.emit('search.setFilterFacet', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %}")
+            prodApp.appEvents.emit('search.updateFacetData');
+            $('body').addClass('{{ cssfile }}');
 
+        });
 
+        // manage focus in a ui dialog
+        $(document).on('focusin', function(e) {
+            if ($(event.target).closest(".mce-window").length) {
+                e.stopImmediatePropagation();
+            }
         });
     </script>
     {% include "common/templates.html.twig" %}
@@ -167,24 +182,143 @@
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
         {% endif %}
-        {% set w1 = (100 * ratio)|round %}
+        {% set w1 = (100 * ratio) %}
         {% set w2 = (100 - w1) %}
         <div id="idFrameC" class="PNB" style="right:auto;width:{{ w1 ~ '%' }}">
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     {% block tabs_panel %}
-                        <div id="retractableButton"><i class="icon-double-angle-left"></i></div>
+                        <div id="retractableButton"><i class="fa fa-angle-double-left" aria-hidden="true"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
-                        <div id="baskets" class="PNB">
-                            {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                            {{WorkZoneMacros.make_bloc(app, WorkZone)}}
-                        </div>
+
+                        {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
+
+                        {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
+                        {% if expose_activate == 'true' %}
+                            {% block tab_headers_wrapper %}
+                            <div id="baskets_wrapper" class="PNB">
+                                <div id="expose_tabs" class="tabs" aria-expanded="false">
+                                    <ul>
+                                        <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
+                                        <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>
+                                    </ul>
+                                    <div class="ui-tabs-panels-container">
+                                        <div id="baskets" class="PNB">
+                                            {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                                        </div>
+                                        <div id="expose_tab">
+                                            {{ WorkZoneMacros.make_expose_bloc(app, WorkZone) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endblock %}
+                        {% else %}
+                            <div id="baskets" class="PNB">
+                               {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                            </div>
+                        {% endif %}
+
+                        {# actions menu displayed when a basket is wip
+                           nb: no need for a trigger element ; menu will be created, not attached #}
+                        <table style="display:none;" class="contextMenu basketcontextmenu" id="basket_wip_menu">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="context-menu context-menu-theme-flat">
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner">
+                                                    {{ 'prod::workzone:Basket is WIP' | trans }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
+                                <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
+                                <input type="hidden" id="facet_and" value="{{ 'prod:workzone:facetstab:tooltips:facet_and_filter' | trans }}" />
+                                <input type="hidden" id="facet_remove" value="{{ 'prod:workzone:facetstab:tooltips:remove_facet_filter' | trans }}" />
+                                <div class="filter-facet-setting look_box_settings" style="border-bottom: 1px solid #969595;
+">
+                                    <div id="accordion">
+                                        <div class="card">
+                                            <div class="card-header" id="headingOne">
+                                                <h5 class="mb-0" style="margin-left: 10px">
+                                                    <button class="btn btn-facet-option collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                        {{ 'prod:workzone:facetstab:search_and_facets_sort_options' | trans }} <span class="icomoon">&#xE96C;</span>
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                <div class="card-body">
+                                                    <div class="left-facet-filter facet-filter">
+                                                        <h4>{{ 'index::advance_search: facet-order' | trans }}</h4>
+                                                        <form class="form-inline">
+                                                            {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
+                                                            <label class="select" for="orderFacet">
+                                                                <select class="preferences-facet-order" name="orderFacet" style="margin-left: 5px">
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
+                                                                </select>
+                                                            </label>
+                                                        </form>
+                                                    </div>
+                                                    <div class="right-facet-filter facet-filter">
+                                                    <h4>{{ 'index::advance_search: facet-values-order' | trans }}</h4>
+                                                    <form class="form-inline">
+                                                        {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
+                                                        <label class="select" for="facetValuesOrder">
+                                                            <select class="preferences-facet-values-order" name="facetValuesOrder">
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') }}">{{ 'index::advance_search: order-by-hits-asc' | trans }}</option>
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                            </select>
+                                                        </label>
+                                                    </form>
+                                                    </div>
+
+                                                    <div style="padding-left: 5px;">
+                                                        {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                                                        {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show_unset_field_facet') %}
+                                                        <h5 style="font-size:13px;">{{ 'index::advance_search: facet' | trans }}</h5>
+
+                                                         {# TODO : make behaviour as in 4.0 #}
+{#                                                        <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em;font-size:13px;">#}
+{#                                                            <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>#}
+{#                                                            {{ 'index::advance_search: disable-facet' | trans }}#}
+{#                                                        </label>#}
+{#                                                        <br/>#}
+                                                        <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em;font-size:13px;">
+                                                            <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == '1' %}checked="checked"{% endif %}>
+                                                            {{ 'index::advance_search: show-unset-field-facet' | trans }}
+                                                        </label>
+
+                                                        <h5 style="font-size:13px;">{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h5>
+
+                                                        <div class="hiddenFiltersListContainer"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <button id="facets-back-btn" style="display:none;">back</button>
                             </div>
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
                         {% endif %}
+
                     {% endblock %}
                     {% if plugins.workzone is not empty %}
                     <div id="plugins" class="PNB {{ plugins.workzone|length > 1 ? 'multiple-plugin' : 'single-plugin' }}" style="top:52px;">
@@ -195,39 +329,43 @@
                     {% endif %}
                 </div>
             </div>
-            <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
+            <div id="basket_menu" class="context-menu context-menu-theme-flat" style="display:none;">
                 <ul style="list-style-type:none;margin:0;padding:0">
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'action:: nouveau panier' | trans }}" class="basket-create-action" href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/new_basket.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-New.png"
                                      title="{{ 'action:: nouveau panier' | trans }}"/>
                                 <span>{{ 'action:: nouveau panier' | trans }}</span>
                             </a>
                         </div>
+                    </li>
+                    <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'Browse Baskets' | trans }}" class="basket-browse-action" href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/browse_basket.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-Browse.png"
                                      title="{{ 'Browse Baskets' | trans }}"/>
                                 <span>{{ 'Browse Baskets' | trans }}</span>
                             </a>
                         </div>
+                    </li>
+                    <li class="context-menu-item divider"></li>
+                    <li class="context-menu-item">
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
-                            <div class="context-menu-item-inner" style="line-height: 34px;">
-                                <div class="divider"></div>
+                            <div class="context-menu-item-inner">
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="story-create-action" href="#">
-                                    <img style="cursor:pointer;" src="/assets/common/images/icons/new_report.png"
+                                    <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-New-Story.png"
                                          title="{{ 'action:: nouveau reportage' | trans }}"/>
                                     <span>{{ 'action:: nouveau reportage' | trans }}</span>
                                 </a>
-                                <div class="divider"></div>
                             </div>
                        {% endif %}
                     </li>
+                    <li class="context-menu-item divider"></li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-filter-action" data-sort="date">
                             <a title="{{ 'phraseanet:: tri par date' | trans }} " href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/sort_date.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Sort-Date.png"
                                      title="{{ 'phraseanet:: tri par date' | trans }}"/>
                                 <span>{{ 'phraseanet:: tri par date' | trans }}</span>
                             </a>
@@ -236,7 +374,7 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-filter-action" data-sort="name">
                             <a title="{{ 'phraseanet:: tri par nom' | trans }} " href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/sort_alpha.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Alphabetique.png"
                                      title="{{ 'phraseanet:: tri par nom' | trans }}"/>
                                 <span>{{ 'phraseanet:: tri par nom' | trans }}</span>
                             </a>
@@ -245,6 +383,8 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-preferences-action">
                             <a title="{{ 'Preferences' | trans }} " href="#">
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-Settings.png"
+                                     title="{{ 'phraseanet:: Preferences' | trans }}"/>
                                 <span>{{ 'Preferences' | trans }}</span>
                             </a>
                         </div>
@@ -256,13 +396,29 @@
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
+                    {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
+                        {% set startq = "{\"query\":{\"_ux_zone\":\"\",\"type\":\"CLAUSES\",\"must_match\":\"ALL\",\"enabled\":true,\"clauses\":[{\"_ux_zone\":\"FULLTEXT\",\"type\":\"FULLTEXT\",\"value\":\"" %}
+                        {% set startq = startq ~ (app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query') | replace({'"': '\\"'})) %}
+                        {% set startq = startq ~ "\",\"enabled\":true}]}}" %}
+                        <div id="FIRST_QUERY_CONTAINER" class="start-query" style="display: none" data-format="json">{{ startq | raw }}</div>
+                    {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
+                        {% set startq = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') %}
+                        {% if startq is empty %}
+                            {% set startq = "{\"query\":{\"_ux_zone\":\"\",\"type\":\"CLAUSES\",\"must_match\":\"ALL\",\"enabled\":true,\"clauses\":[{\"_ux_zone\":\"FULLTEXT\",\"type\":\"FULLTEXT\",\"value\":\"" %}
+                            {% set startq = startq ~ "\",\"enabled\":true}]}}" %}
+                        {% endif %}
+                        <div id="FIRST_QUERY_CONTAINER" class="last-query" style="display: none" data-format="json">{{ startq | raw }}</div>
+                    {% endif %}
+                    {#container fetched by js #}
+                    <input type="hidden" name="advanced-search-title" id="advanced-search-title" value="{{ 'Advanced Search' | trans }}">
+
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
                         <input type="hidden" name="sel" value="">
 
                         <div class="controls controls-row">
-                            <div class="input-append">
+                            <div class="input-append advance_search_action">
                                 <input id="EDIT_query" name="fake_qry" type="text" autocomplete="off" class="search query danger_indicator" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                                 <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                     <img src="/assets/common/images/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
@@ -274,32 +430,42 @@
                                 {% endif %}
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
-                            <div class="control-group">
+                            <div class="control-group pull-left search-header-block">
                             {% if GV_multiAndReport %}
-                                <label for="mode_type_doc" class="radio inline">
+                                <label for="mode_type_doc" class="radio inline custom_checkbox_label">
                                     <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
+                                    <span class="custom_radio" style="width:9px;height:9px;margin-top:2px;"></span>
                                     {{ 'phraseanet::type:: documents' | trans }}
                                 </label>
-                                <label for="mode_type_reg" class="radio inline">
+                                <label for="mode_type_reg" class="radio inline custom_checkbox_label">
                                     <input type="radio" value="1" class="mode_type_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
+                                    <span class="custom_radio" style="width:9px;height:9px;margin-top:2px;"></span>
                                     {{ 'phraseanet::type:: reportages' | trans }}
                                 </label>
                             {% else %}
                                 <input type="hidden" value="0" name="search_type" />
                             {% endif %}
-                                <select name="record_type" id="recordtype_sel" class="input-small">
-                                    <option value="">{{ 'Tout type' | trans }}</option>
-                                    <option value="image">{{ 'Image' | trans }}</option>
-                                    <option value="video">{{ 'Video' | trans }}</option>
-                                    <option value="audio">{{ 'Audio' | trans }}</option>
-                                    <option value="document">{{ 'Document' | trans }}</option>
-                                    <option value="flash">{{ 'Flash' | trans }}</option>
-                                </select>
+                                <div id="recordtype_sel" class="custom_select_dark" style="display: inline-block;">
+                                    <select name="record_type" class="input-small">
+                                        <option value="">{{ 'Tout type' | trans }}</option>
+                                        <option value="image">{{ 'Image' | trans }}</option>
+                                        <option value="video">{{ 'Video' | trans }}</option>
+                                        <option value="audio">{{ 'Audio' | trans }}</option>
+                                        <option value="document">{{ 'Document' | trans }}</option>
+                                        <option value="flash">{{ 'Flash' | trans }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pull-right">
+                                <input class="btn btn_lightgrey reset_button search-reset-action" style="display: none;" type="button" value="{{ 'Re-initialiser' | trans }}" />
+
+                                <span class="btn btn-info btn-lg reload-search hidden " id="reload-search">{{ 'help::help-search: relaunch search without filter' | trans }}</span>
+
                             </div>
                         </div>
 
                         <div id="advancedSearchForm" class="controls controls-row adv_options" style="display:none;">
-                            <table style="width:100%; table-layout:fixed;">
+                            <table style="width:100%; height:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
                                         {% set useTruncation = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'use_truncation') %}
@@ -310,11 +476,14 @@
                                             {{ 'index:advanced-preferences:: use truncation' | trans }}
                                         </label>
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
+                                            <label class="base-section-title">
+                                                <span class="danger_indicator">{{ 'Selected base(s)' | trans }}</span>
+                                            </label>
                                             <div class="btn-toolbar">
-                                                <input class="btn btn-inverse toggle-database" type="button"
+                                                <input class="btn btn_dark toggle-database" type="button"
                                                     value="{{ 'boutton:: selectionner toutes les bases' | trans }}"
                                                        data-state="true" />
-                                                <input class="btn btn-inverse toggle-database" type="button" data-state="false"
+                                                <input class="btn btn_dark toggle-database" type="button" data-state="false"
                                                     value="{{ 'boutton:: selectionner aucune base' | trans }}" />
                                             </div>
                                             {{_self.bas_list(module_prod, search_datas)}}
@@ -322,9 +491,6 @@
                                     </td>
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="sbasfiltercont">
-                                            <div  class="btn-toolbar">
-                                                <input class="btn btn-inverse search-reset-action" type="button" value="{{ 'Re-initialiser' | trans }}" />
-                                            </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
                                                 <div id="ADVSRCH_SORT_ZONE">
                                                     {% set sortByDefault =  app['phraseanet.SE'].getDefaultSort()%}
@@ -344,18 +510,48 @@
                                                         {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
+                                                        {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_UPDATED_ON')) %}
+                                                        {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_UPDATED_ON')) %}
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_UPDATED_ON') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Date Updated"|trans }}</option>
                                                         {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
                                                         {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
-                                                        <optgroup label="{{ 'By field'|trans }}">
-                                                        {% for fieldname, sort in search_datas['sort'] %}
-                                                            {% set b = (sortOrderPreference == fieldname) %}
-                                                            <option value="{{ fieldname }}"
-                                                                    {% if b %}selected="selected"{% endif %}
-                                                                    class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                        <optgroup label="{{ 'Advanced Search:: By string field'|trans }}">
+                                                            {% if(search_datas['sort'][constant('\\databox_field::TYPE_STRING')]|length) > 0 %}
+                                                                {% for fieldname, sort in search_datas['sort'][constant('\\databox_field::TYPE_STRING')] %}
+                                                                    {% set b = (sortOrderPreference == fieldname) %}
+                                                                    <option value="{{ fieldname }}"
+                                                                            {% if b %}selected="selected"{% endif %}
+                                                                            class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
                                                                     >{{ fieldname }}</option>
-                                                        {% endfor %}
+                                                                {% endfor %}
+                                                            {% endif %}
                                                         </optgroup>
+
+                                                        <optgroup label="{{ 'Advanced Search:: By date field'|trans }}">
+                                                            {% if(search_datas['sort'][constant('\\databox_field::TYPE_DATE')]|length) > 0 %}
+                                                                {% for fieldname, sort in search_datas['sort'][constant('\\databox_field::TYPE_DATE')] %}
+                                                                    {% set b = (sortOrderPreference == fieldname) %}
+                                                                    <option value="{{ fieldname }}"
+                                                                            {% if b %}selected="selected"{% endif %}
+                                                                            class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                                    >{{ fieldname }}</option>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </optgroup>
+
+                                                        <optgroup label="{{ 'Advanced Search:: By numeric field'|trans }}">
+                                                            {% if(search_datas['sort'][constant('\\databox_field::TYPE_NUMBER')]|length) > 0 %}
+                                                                {% for fieldname, sort in search_datas['sort'][constant('\\databox_field::TYPE_NUMBER')] %}
+                                                                    {% set b = (sortOrderPreference == fieldname) %}
+                                                                    <option value="{{ fieldname }}"
+                                                                            {% if b %}selected="selected"{% endif %}
+                                                                            class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                                    >{{ fieldname }}</option>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </optgroup>
+
                                                     </select>
                                                     <select name="ord" class="input-medium check-filters" data-save="true">
                                                         {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
@@ -366,55 +562,147 @@
                                                     </select>
                                                 </div>
 
-                                                <div id="ADVSRCH_FIELDS_ZONE" class="danger_indicator">
-                                                    <span>{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
-                                                    <select size="8" multiple onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" name="fields[]" style="vertical-align:middle; width:99%;">
-                                                        <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
-                                                        {% for field_id, field in search_datas['fields'] %}
-                                                            {% if field['type'] != 'date' %}
-                                                                <option class="dbx db_{{field['sbas']|join(' db_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </select>
+                                                <div id="ADVSRCH_FIELDS_ZONE">
+                                                    <label class="status-section-title">
+                                                        <span class="danger_indicator">{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
+                                                        <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
+                                                        <div id="info-box">
+                                                            <p>{{ 'prod::advancesearch:tooltips:field_restriction_explanation' | trans }}</p>
+                                                        </div>
+                                                    </label>
+                                                    <label for="multiple-terms" class="radio inline custom_checkbox_label">
+                                                        <input type="radio" class="multiple_terms" name="must_match" value="ALL" checked="checked" id="multiple-terms"/>
+                                                        <span class="custom_radio"></span>
+                                                        {{ 'All these conditions' | trans }}
+                                                    </label>
+                                                    <label for="single-terms" class="radio inline custom_checkbox_label">
+                                                        <input type="radio" class="single_terms" name="must_match" value="ONE" id="single-terms"/>
+                                                        <span class="custom_radio"></span>
+                                                        {{ 'One of these conditions' | trans }}
+                                                    </label>
+
+                                                    <div class="term_select">
+                                                        <div class="term_select_wrapper_template" style="display: none;">
+                                                        <select class="term_select_field" style="vertical-align:middle; width:30%;">
+                                                                <option value="">{{ 'Select a field' | trans }}</option>
+                                                                {% for field_id, field in search_datas['fields'] %}
+                                                                   {# {% if field['type'] != 'date' %}#}
+                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                    {#{% endif %}#}
+                                                                {% endfor %}
+                                                            </select>
+                                                            <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
+                                                                <option value=":">{{ 'Contains' | trans }}</option>
+                                                                <option value="=">{{ 'Equals' | trans }}</option>
+                                                            </select>
+                                                            <input class="term_select_value" disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
+                                                            <input class="term_deleter" style="margin-bottom: 4px;">
+                                                        </div>
+
+                                                        <button class="add_new_term"><span>&plus;</span> Add</button>
+                                                    </div>
+
+                                                   {# <div style="display:none;">
+                                                        <select class="term_select_multiple" size="8" multiple onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" name="fields[]" style="vertical-align:middle; width:99%;">
+                                                            <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
+                                                            {% for field_id, field in search_datas['fields'] %}
+                                                                {% if field['type'] != 'date' %}
+                                                                    <option class="dbx db_{{field['sbas']|join(' db_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>#}
+                                                </div>
+
+                                                <div id="ADVSRCH_DATE_ZONE">
+                                                {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
+                                                    <hr />
+                                                    <label class="status-section-title">
+                                                        <span class="danger_indicator">{{ 'Date(s) from field(s)' | trans }}</span>
+                                                        <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
+                                                        <div id="info-box">
+                                                            <p>
+                                                                {{ 'prod::advancesearch:tooltips:datefield_restriction_explanation' | trans }}
+                                                            </p>
+                                                        </div>
+                                                    </label>
+                                                    <span>
+                                                        <select name="date_field" class="date-field input-medium check-filters" data-save="true" style="width: 166px;">
+                                                            <option selected="selected"
+                                                                    value="">{{ 'Rechercher dans un champ date' | trans }}</option>
+                                                            {% for fieldname, date in search_datas['dates'] %}
+                                                                <option
+                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
+                                                            {% endfor %}
+                                                             <option value="updated_on">{{ 'updated_on' | trans }}</option>
+                                                            <option value="created_on">{{ 'created_on' | trans }}</option>
+                                                        </select>
+                                                    </span>
+                                                    <span id="ADVSRCH_DATE_SELECTORS"  style="display: inline-block;height: 26px;line-height: 26px;">
+                                                        {{ 'phraseanet::time:: de' | trans }}
+                                                        <div class="input-prepend">
+                                                            <span class="add-on">
+                                                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                            </span>
+                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                        </div>
+                                                        {{ 'phraseanet::time:: a' | trans }}
+                                                        <div class="input-prepend">
+                                                            <span class="add-on">
+                                                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                            </span>
+                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                        </div>
+                                                    </span>
+                                                {% endif %}
                                                 </div>
 
                                                 <div id="ADVSRCH_SB_ZONE">
                                                 {% if search_status|length > 0 %}
                                                     <hr />
-                                                    <span class="status-section-title">{{ 'Status des documents a rechercher' | trans }}</span>
+                                                    <label class="status-section-title">
+                                                        <span class="danger_indicator">{{ 'Status des documents a rechercher' | trans }}</span>
+                                                    </label>
                                                     {% for databox_id, databox in search_status %}
                                                     {% if databox.status|length > 0 %}
                                                     <table style="width: 100%;" id="ADVSRCH_SB_ZONE_{{databox_id}}" class="field_{{databox_id}}">
                                                         <thead>
                                                             <tr>
                                                                 <td colspan="2">
-                                                                    <span class="toggle-collection deployer_closed" data-toggle-content="#ADVSRCH_SB_{{databox_id}}"></span>
-                                                                    <span class="danger_indicator">{{ databox['name'] }}</span>
+                                                                    <span class="toggle-collection deployer_toggle deployer_closed" data-toggle-content="#ADVSRCH_SB_{{databox_id}}"></span>
+                                                                    <span>{{ databox['name'] }}</span>
                                                                 </td>
                                                             </tr>
                                                         </thead>
-                                                        <tbody id="ADVSRCH_SB_{{databox_id}}" style="display: none">
+                                                        <tbody id="ADVSRCH_SB_{{databox_id}}" style="display: none; margin-top: 15px;">
                                                             {% for status_bit, status in databox.status %}
                                                             <tr>
                                                                 <td>
-                                                                    <label class="checkbox inline">
+
+                                                                    <label class="checkbox inline custom_checkbox_label">
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
-                                                                        type="checkbox" value="0"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]" />
+                                                                        <input type="checkbox"  class="field_switch field_{{databox_id}}"
+                                                                               value="0"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
+                                                                        <span class="custom_checkbox"></span>
                                                                         {{status['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
-                                                                    <label class="checkbox inline">
+                                                                    <label class="checkbox inline custom_checkbox_label">
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
-                                                                        type="checkbox" value="1"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]"/>
+                                                                        <input type="checkbox" class="field_switch field_{{databox_id}}"
+                                                                               value="1"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
+                                                                        <span class="custom_checkbox"></span>
                                                                         {{status['labels_on_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
@@ -426,34 +714,6 @@
                                                     {% endfor %}
                                                 {% endif %}
                                                 </div>
-
-                                                <div id="ADVSRCH_DATE_ZONE" class="danger_indicator">
-                                                    {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
-                                                    <hr />
-                                                    <span>
-                                                        <select name="date_field" class="input-medium check-filters" data-save="true">
-                                                            <option selected="selected"
-                                                                    value="">{{ 'Rechercher dans un champ date' | trans }}</option>
-                                                            {% for fieldname, date in search_datas['dates'] %}
-                                                                <option
-                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </span>
-                                                    <span id="ADVSRCH_DATE_SELECTORS">
-                                                        {{ 'phraseanet::time:: de' | trans }}
-                                                        <div class="input-prepend">
-                                                            <span class="add-on"><i class="icon-calendar"></i></span>
-                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
-                                                        </div>
-                                                        {{ 'phraseanet::time:: a' | trans }}
-                                                        <div class="input-prepend">
-                                                            <span class="add-on"><i class="icon-calendar"></i></span>
-                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
-                                                        </div>
-                                                    </span>
-                                                    {% endif %}
-                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -461,6 +721,8 @@
                             </table>
                         </div>
                     </form>
+                    <div id="facet_filter_in_search" style="width:100%;height:40px;overflow-y: scroll;">
+                    </div>
                 </div>
             </div>
 
@@ -583,6 +845,20 @@
                     </div>
                 </div>
                 <div class="box">
+                    <h1>{{  'Language selection' | trans }}</h1>
+                    <label class="inline" for="language">
+                        <select onchange="window.location = $(this).val();" id="language">
+                            {% for code, language in app.getAvailableLanguages() %}
+                                {% if code == app['locale'] %}
+                                <option selected="selected" disabled="disabled">{{ language }}</option>
+                            {% else %}
+                                <option value="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}"><a href="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}" data-country-code="{{ code }}">{{ language }}</a></option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+                <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{{ 'Mode de presentation' | trans }}</h1>
                         {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'view') %}
@@ -640,7 +916,7 @@
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{{ 'reponses:: images par pages :' | trans }}</h1>
-                        <div class="box">
+                        <div class="box" style="margin-top: -1px">
                             <div id="nperpage_slider" class="ui-corner-all" style="width:100px; display:inline-block;"></div>
                             <input type="text" readonly style="width:35px;" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'images_per_page')}}" id="nperpage_value"/>
                         </div>
@@ -648,8 +924,10 @@
                     <div style="float:right; width:49%;">
                         <h1>{{ 'reponses:: taille des images :' | trans }}</h1>
                         <div class="box">
+                            <i class="fa fa-image setting-zoom-icon zoom-menu-left" aria-hidden="true"></i>
                             <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
                             <input type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'images_size')}}" id="sizeAns_value"/>
+                            <i class="fa fa-image setting-zoom-icon zoom-menu-right" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
@@ -701,42 +979,34 @@
                         </label>
                     </form>
                 </div>
-                <div class="box">
-                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
-                    {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
-                    <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
-                        <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
-                        {{ 'index::advance_search: disable-facet' | trans }}
-                    </label>
-                </div>
             </div>
         </div>
     </div>
 
     <div id="PREVIEWBOX" class="PNB10 ui-dialog " style="overflow:hidden;">
-        <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
+        <div id="PREVIEWTITLE" style="height:70px;bottom:auto;" class="PNB">
             <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
-                <div style="padding-top: 0px; padding-left: 5px;">
-                    <span id="PREVIEWTITLE_COLLLOGO"> </span>
-                    &nbsp;
-                    <span id="PREVIEWTITLE_COLLNAME"> </span>
-                    &nbsp;
+                <div style="padding-top: 6px; padding-left: 5px;">
                     <span id="SPANTITLE"> </span>
+                    <br/>
+                    <span id="PREVIEWTITLE_COLLNAME"> </span>
+
+                    <span id="PREVIEWTITLE_COLLLOGO" style="margin-left: 10px;"> </span>
                 </div>
             </div>
         </div>
         <div class="PNB" style="right:180px;">
-            <div class="PNB" style="top:55px;">
+            <div class="PNB" style="top:70px;">
                 <div id="PREVIEWLEFT" class="preview_col PNB" style="width:60%;right:auto;overflow:hidden;">
                     <div id="PREVIEWCURRENT" class="ui-corner-bottom PNB10" style="top:11px;height:116px;bottom:auto;">
                         <div id="PREVIEWCURRENTGLOB" style=""></div>
                     </div>
                     <div class="PNB10" style="top:146px;">
                         <button id="left-btn" class="invisible-btn preview-navigate-action" data-direction="backward">
-                            <i class="icon-caret-left"></i>
+                            <i class="fa fa-caret-left" aria-hidden="true"></i>
                         </button>
                         <button id="right-btn" class="invisible-btn preview-navigate-action" data-direction="forward">
-                            <i class="icon-caret-right"></i>
+                            <i class="fa fa-caret-right" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div id="PREVIEWIMGCONT" class="dblclick preview_col_cont PNB10" style="overflow:hidden;top:146px;"></div>
@@ -749,6 +1019,7 @@
                         <ul class="PNB" style="height:30px;bottom:auto;">
                             <li><a href="#PREVIEWIMGDESCINNER-BOX">{{ 'preview:: Description' | trans }}</a></li>
                             <li><a href="#HISTORICOPS-BOX">{{ 'preview:: Historique' | trans }}</a></li>
+                            <li><a href="#NOTICE-BOX">{{ 'preview::tab:feedback' | trans }}</a></li>
                             {% if GV_google_api is not empty %}
                             <li><a href="#popularity-BOX">{{ 'preview:: Popularite' | trans }}</a></li>
                             {% endif %}
@@ -758,6 +1029,9 @@
                         </div>
                         <div id="HISTORICOPS-BOX" class="descBoxes PNB">
                             <div id="HISTORICOPS" class="PNB10"></div>
+                        </div>
+                        <div id="NOTICE-BOX" class="descBoxes PNB">
+                            <div id="NOTICE-INNER" class="PNB10"></div>
                         </div>
                         {% if GV_google_api is not empty %}
                         <div id="popularity-BOX" class="descBoxes PNB">
@@ -775,7 +1049,7 @@
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
                 </button>
             </div>
-            <div id="PREVIEWOTHERS" style="top:95px;" class="PNB10 ui-corner-all">
+            <div id="PREVIEWOTHERS" style="top:109px;" class="PNB10 ui-corner-all">
             <div id="PREVIEWOTHERSINNER" style=""></div>
             </div>
         </div>
@@ -792,7 +1066,7 @@
                 {% set basket_status_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
                     <input
-                    name="basket_status_display" type="checkbox preferences-options-basket-status" class="checkbox" value="1"
+                    name="basket_status_display" type="checkbox" class="checkbox preferences-options-basket-status" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher les status' | trans }}
                 </label>
@@ -815,12 +1089,40 @@
                     {{ 'Afficher le titre' | trans }}
                 </label>
             </div>
+            <div>
+                {% set basket_type_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_type_display') %}
+                <label for="basket_type_display" class="checkbox">
+                    <input
+                            name="basket_type_display" type="checkbox" class="checkbox preferences-options-basket-type" value="1"
+                            id="basket_type_display" {% if basket_type_display == '1' %}checked="checked"{% endif %} />
+                    {{ 'Afficher le type' | trans }}
+                </label>
+            </div>
         </div>
     </div>
 
     <div id="dialog_publicator" title="{{ 'action : bridge' | trans }}" style="display:none;"></div>
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
+
+    <input type="hidden" id="default-video-chapter-label" value="{{ 'prod::videoTools:chapterTitle' | trans }}"/>
+    {# Set the property dialog title #}
+    <input type="hidden" id="property-title" value="{{ 'prod::action:property title' | trans }} ">
+    {# Set the notification dialog title #}
+    <input type="hidden" id="notification-title" value="{{ 'prod::notification: notification title' | trans }} ">
+    <input type="hidden" id="push-new-list-title" value="{{ 'prod::push: New list title' | trans }} ">
+    <input type="hidden" id="push-list-name-empty" value="{{ 'prod::push: List name can not be empty' | trans }} ">
+    <input type="hidden" id="btn-add" value="{{ 'prod::push: add' | trans }} ">
+    <input type="hidden" id="export-send-mail-notif" value="{{ 'prod::export: send mail notification' | trans }} ">
+
+    {# Set mapbox conf to user setting #}
+    <input type="hidden" id="map-zoom-to-setting" >
+    <input type="hidden" id="map-zoom-from-setting" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'map_zoom') }}" >
+    <input type="hidden" id="map-position-to-setting">
+    <input type="hidden" id="map-position-from-setting" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'map_position') }}">
+
+    <input type="hidden" id="basket-tab" value="#baskets">
+
     <script type="text/javascript" id="bitly_loader"></script>
     <script type="text/javascript">
         $(document).ready(function(){

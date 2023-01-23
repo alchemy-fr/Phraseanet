@@ -26,6 +26,8 @@ class Configuration implements ConfigurationInterface
     private $compiled;
     private $autoReload;
 
+    private $noCompile = false;
+
     /**
      * @param Yaml     $yaml       The Yaml Parser
      * @param Compiler $compiler   The PHP Compiler
@@ -117,11 +119,25 @@ class Configuration implements ConfigurationInterface
         return $newConfig;
     }
 
+    public function setNoCompile(bool $noCompile)
+    {
+        $this->noCompile = !!$noCompile;
+    }
+
+    public function getNoCompile()
+    {
+        return $this->noCompile;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getConfig()
     {
+        if ($this->noCompile) {
+            return $this->parser->parse($this->loadFile($this->config));
+        }
+
         if (null !== $this->cache) {
             return $this->cache;
         }
@@ -145,7 +161,9 @@ class Configuration implements ConfigurationInterface
     {
         $this->cache = $config;
         $this->dumpFile($this->config, $this->parser->dump($config, 7), 0660);
-        $this->writeCacheConfig($this->compiler->compile($config));
+        if (!$this->noCompile) {
+            $this->writeCacheConfig($this->compiler->compile($config));
+        }
 
         return $this;
     }
@@ -232,21 +250,13 @@ class Configuration implements ConfigurationInterface
         return file_get_contents($file);
     }
 
-    private function dumpFile($file, $content, $mod = 0600)
+    private function dumpFile($file, $content, $mod = 0650)
     {
-        $tmpFile = tempnam(dirname($file), basename($file));
-
-        if (false !== @file_put_contents($tmpFile, $content)) {
-            // rename does not work on Win32 before 5.2.6
-            if (@rename($tmpFile, $file)) {
-                @chmod($file, $mod & ~umask());
-
-                return;
-            }
+        if(false === @file_put_contents($file, $content)){
+            throw new RuntimeException(sprintf('Unable to write %s', $file));
+        }else{
+            @chmod($file, $mod & ~umask());
         }
-
-        unlink($tmpFile);
-        throw new RuntimeException(sprintf('Unable to write %s', $file));
     }
 
     private function eraseFile($file)

@@ -4,10 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
-use Assert\Assertion;
 use databox_field;
 
 /**
@@ -23,6 +20,11 @@ class Field implements Typed
      * @var string
      */
     private $name;
+
+    /**
+     * @var int
+     */
+    private $databox_id;
 
     /**
      * @var string
@@ -43,39 +45,40 @@ class Field implements Typed
 
     private $thesaurus_roots;
 
+    private $generate_cterms;
+
     private $used_by_collections;
 
-    public static function createFromLegacyField(databox_field $field, $with = Structure::WITH_EVERYTHING)
+    private $used_by_databoxes;
+
+    public static function createFromLegacyField(databox_field $field)
     {
         $type = self::getTypeFromLegacy($field);
         $databox = $field->get_databox();
 
+        // Thesaurus concept inference
         $roots = null;
-        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_STRING) {
-            // Thesaurus concept inference
-            $xpath = $field->get_tbranch();
-            if (!empty($xpath)) {
-                $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
-            }
+        if($type === FieldMapping::TYPE_STRING && !empty($xpath = $field->get_tbranch())) {
+            $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
         }
 
-        $facet = self::FACET_DISABLED;
-        if($with & Structure::FIELD_WITH_FACETS) {
-            // Facet (enable + optional limit)
-            $facet = $field->getFacetValuesLimit();
-            if ($facet === databox_field::FACET_DISABLED) {
-                $facet = self::FACET_DISABLED;
-            } elseif ($facet === databox_field::FACET_NO_LIMIT) {
-                $facet = self::FACET_NO_LIMIT;
-            }
+        // Facet (enable + optional limit)
+        $facet = $field->getFacetValuesLimit();
+        if ($facet === databox_field::FACET_DISABLED) {
+            $facet = self::FACET_DISABLED;
+        } elseif ($facet === databox_field::FACET_NO_LIMIT) {
+            $facet = self::FACET_NO_LIMIT;
         }
 
         return new self($field->get_name(), $type, [
+            'databox_id' => $databox->get_sbas_id(),
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
             'facet' => $facet,
             'thesaurus_roots' => $roots,
-            'used_by_collections' => $databox->get_collection_unique_ids()
+            'generate_cterms' => $field->get_generate_cterms(),
+            'used_by_collections' => $databox->get_collection_unique_ids(),
+            'used_by_databoxes' => [$databox->get_sbas_id()]
         ]);
     }
 
@@ -89,7 +92,6 @@ class Field implements Typed
             case databox_field::TYPE_NUMBER:
                 return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
-            case databox_field::TYPE_TEXT:
                 return FieldMapping::TYPE_STRING;
         }
 
@@ -100,34 +102,40 @@ class Field implements Typed
     {
         $this->name = (string) $name;
         $this->type = $type;
-        $this->is_searchable   = \igorw\get_in($options, ['searchable'], true);
-        $this->is_private      = \igorw\get_in($options, ['private'], false);
-        $this->facet           = \igorw\get_in($options, ['facet']);
-        $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
-        $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
-
-        Assertion::boolean($this->is_searchable);
-        Assertion::boolean($this->is_private);
-
-        if ($this->facet !== self::FACET_DISABLED) {
-            Assertion::integer($this->facet);
+        if(1) {
+            $this->databox_id = \igorw\get_in($options, ['databox_id'], 0);
+            $this->is_searchable = \igorw\get_in($options, ['searchable'], true);
+            $this->is_private = \igorw\get_in($options, ['private'], false);
+            $this->facet = \igorw\get_in($options, ['facet']);
+            $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
+            $this->generate_cterms = \igorw\get_in($options, ['generate_cterms'], false);
+            $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
+            $this->used_by_databoxes = \igorw\get_in($options, ['used_by_databoxes'], []);
         }
-
-        if ($this->thesaurus_roots !== null) {
-            Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
+        else {
+            // todo: this is faster code, but need to fix unit-tests to pass all options
+            $this->databox_id = $options['databox_id'];
+            $this->is_searchable = $options['searchable'];
+            $this->is_private = $options['private'];
+            $this->facet = $options['facet'];
+            $this->thesaurus_roots = $options['thesaurus_roots'];
+            $this->generate_cterms = $options['generate_cterms'];
+            $this->used_by_collections = $options['used_by_collections'];
+            $this->used_by_databoxes = $options['used_by_databoxes'];
         }
-
-        Assertion::allScalar($this->used_by_collections);
     }
 
     public function withOptions(array $options)
     {
         return new self($this->name, $this->type, $options + [
+            'databox_id' => $this->databox_id,
             'searchable' => $this->is_searchable,
             'private' => $this->is_private,
             'facet' => $this->facet,
             'thesaurus_roots' => $this->thesaurus_roots,
-            'used_by_collections' => $this->used_by_collections
+            'generate_cterms' => $this->generate_cterms,
+            'used_by_collections' => $this->used_by_collections,
+            'used_by_databoxes' => $this->used_by_databoxes
         ]);
     }
 
@@ -151,6 +159,11 @@ class Field implements Typed
         return sprintf('concept_path.%s', $this->name);
     }
 
+    public function get_databox_id()
+    {
+        return $this->databox_id;
+    }
+
     public function getType()
     {
         return $this->type;
@@ -159,6 +172,11 @@ class Field implements Typed
     public function getDependantCollections()
     {
         return $this->used_by_collections;
+    }
+
+    public function getDependantDataboxes()
+    {
+        return $this->used_by_databoxes;
     }
 
     public function isSearchable()
@@ -189,6 +207,11 @@ class Field implements Typed
     public function getThesaurusRoots()
     {
         return $this->thesaurus_roots;
+    }
+
+    public function get_generate_cterms()
+    {
+        return $this->generate_cterms;
     }
 
     /**
@@ -243,9 +266,21 @@ class Field implements Typed
             )
         );
 
+        $used_by_databoxes = array_values(
+            array_unique(
+                array_merge(
+                    $this->used_by_databoxes,
+                    $other->used_by_databoxes
+                ),
+                SORT_REGULAR
+            )
+        );
+
         return $this->withOptions([
             'thesaurus_roots' => $thesaurus_roots,
-            'used_by_collections' => $used_by_collections
+            'used_by_collections' => $used_by_collections,
+            'used_by_databoxes' => $used_by_databoxes
         ]);
     }
+
 }

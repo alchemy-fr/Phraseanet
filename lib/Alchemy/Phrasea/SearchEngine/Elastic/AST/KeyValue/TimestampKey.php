@@ -34,6 +34,11 @@ class TimestampKey implements Key, Typed
         return FieldMapping::TYPE_DATE;
     }
 
+    public function getFieldType(QueryContext $context)
+    {
+        return FieldMapping::TYPE_DATE;
+    }
+
     public function getIndexField(QueryContext $context, $raw = false)
     {
         return $this->index_field;

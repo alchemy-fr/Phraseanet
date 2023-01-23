@@ -23,7 +23,7 @@ use Silex\ServiceProviderInterface;
 
 class V1 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
-    const VERSION = '1.5.0';
+    const VERSION = '2.0.0';
 
     public static $extendedContentTypes = [
         'json' => ['application/vnd.phraseanet.record-extended+json'],
@@ -37,6 +37,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
             return (new V1Controller($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setJsonBodyHelper(new LazyLocator($app, 'json.body_helper'));
         });
     }
@@ -263,6 +264,9 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->get('/me/', 'controller.api.v1:getCurrentUserAction');
         $controllers->delete('/me/', 'controller.api.v1:deleteCurrentUserAction');
+        $controllers->get('/me/structures/', 'controller.api.v1:getCurrentUserStructureAction');
+        $controllers->get('/me/subdefs/', 'controller.api.v1:getCurrentUserSubdefsAction');
+        $controllers->get('/me/collections/', 'controller.api.v1:getCurrentUserCollectionsAction');
 
         $controllers->post('/me/request-collections/', 'controller.api.v1:createCollectionRequests');
         $controllers->post('/me/update-account/', 'controller.api.v1:updateCurrentUserAction');
@@ -279,6 +283,9 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->post('/accounts/unlock/{token}/', 'controller.api.v1:unlockAccount')
             ->before('controller.api.v1:ensureUserManagementRights');
+
+        // the api route for the uploader service
+        $controllers->post('/upload/enqueue/', 'controller.api.v1:sendAssetsInQueue');
 
         return $controllers;
     }

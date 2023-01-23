@@ -1,0 +1,21 @@
+---
+- hosts: all
+  sudo: true
+  vars_files:
+    - vars/all.yml
+  roles:
+#    - server
+#    - repositories
+#    - vagrant_local
+    - nginx
+#    - mariadb
+#    - elasticsearch
+#    - rabbitmq
+#    - php
+    - xdebug
+#    - composer
+    - mailcatcher
+#    - node
+#    - yarn
+#    - ffmpeg
+    - app

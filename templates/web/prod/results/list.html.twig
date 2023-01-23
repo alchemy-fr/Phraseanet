@@ -1,4 +1,4 @@
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 {% block content_item %}
     <div class='list ui-corner-all'>
@@ -7,14 +7,15 @@
                 <td valign="top" style='width:{{ settings.images_size + 50 }}px'>
                     {% include 'prod/results/record.html.twig' with {
                         'record': record,
-                        'settings': settings
+                        'settings': settings,
+                        'plugins': plugins
                     } %}
                 </td>
                 <td valign="middle">
                     <div class='desc' style='max-height:{{ settings.images_size + 70 }}px;overflow-y:auto;'>
                         <div class="fixeddesc">
                             {% set can_see_business = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
-                            {{ macro.caption(record, can_see_business) }}
+                            {{ macro_caption.caption(record, can_see_business) }}
                         </div>
                     </div>
                 </td>

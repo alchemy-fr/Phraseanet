@@ -12,10 +12,10 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Assert\Assertion;
 use Doctrine\Common\Persistence\ObjectManager;
+use record_adapter;
 
 class BasketManipulator
 {
@@ -35,12 +35,12 @@ class BasketManipulator
 
     /**
      * @param Basket            $basket
-     * @param \record_adapter[] $records
+     * @param record_adapter[] $records
      * @return BasketElement[]
      */
     public function addRecords(Basket $basket, $records)
     {
-        Assertion::allIsInstanceOf($records, \record_adapter::class);
+        Assertion::allIsInstanceOf($records, record_adapter::class);
 
         $elements = [];
 
@@ -56,7 +56,7 @@ class BasketManipulator
             $this->manager->persist($basket_element);
 
             $elements[] = $basket_element;
-
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! adding vote (former data) for a participant should be dynamic
             if (null !== $validationSession = $basket->getValidation()) {
 
                 $participants = $validationSession->getParticipants();
@@ -69,6 +69,7 @@ class BasketManipulator
                     $this->manager->persist($validationData);
                 }
             }
+*/
         }
 
         $this->manager->flush();
@@ -116,6 +117,14 @@ class BasketManipulator
     public function removeBasket(Basket $basket)
     {
         $this->manager->remove($basket);
+        $this->manager->flush();
+    }
+
+    public function removeBaskets(array $baskets)
+    {
+        foreach ($baskets as $basket) {
+            $this->manager->remove($basket);
+        }
         $this->manager->flush();
     }
 }

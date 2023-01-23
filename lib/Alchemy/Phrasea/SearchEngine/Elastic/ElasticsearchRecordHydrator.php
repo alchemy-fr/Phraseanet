@@ -32,7 +32,10 @@ class ElasticsearchRecordHydrator
             if (substr($key, 0, strlen($prefix)) == $prefix) {
                 $key = substr($key, strlen($prefix));
             }
-            $highlight[$key] = $value;
+            if (substr($key, -6) == '.light') {
+                $key = substr($key, 0, strlen($key) - 6);
+                $highlight[$key] = $value;
+            }
         }
 
         $record = new ElasticsearchRecord();
@@ -46,7 +49,9 @@ class ElasticsearchRecordHydrator
         $createdOn = igorw\get_in($data, ['created_on']);
         $record->setCreated($createdOn ? new \DateTime($createdOn) : $createdOn);
         $record->setDataboxId(igorw\get_in($data, ['databox_id'], 0));
+        $record->setDataboxName(igorw\get_in($data, ['databox_name'], null));
         $record->setIsStory(igorw\get_in($data, ['record_type']) === 'story');
+        $record->setCoverRecordId(igorw\get_in($data, ['cover_record_id']));
         $record->setMimeType(igorw\get_in($data, ['mime'], 'application/octet-stream'));
         $record->setOriginalName(igorw\get_in($data, ['original_name'], ''));
         $record->setRecordId(igorw\get_in($data, ['record_id'], 0));
@@ -62,7 +67,7 @@ class ElasticsearchRecordHydrator
         $record->setTitles((array) igorw\get_in($data, ['title'], []));
         $record->setCaption((array) igorw\get_in($data, ['caption'], []));
         $record->setPrivateCaption((array) igorw\get_in($data, ['private_caption'], []));
-        $record->setExif((array) igorw\get_in($data, ['exif'], []));
+        $record->setExif((array)igorw\get_in($data, ['metadata_tags'], []));
         $record->setSubdefs((array) igorw\get_in($data, ['subdefs'], []));
         $record->setFlags((array) igorw\get_in($data, ['flags'], []));
         $record->setHighlight((array) $highlight);

@@ -70,7 +70,7 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.metadata-setter'] = $app->share(function (Application $app) {
-            return new PhraseanetMetadataSetter($app['repo.databoxes']);
+            return new PhraseanetMetadataSetter($app['repo.databoxes'], $app['dispatcher']);
         });
 
         $app['phraseanet.user-query'] = function (SilexApplication $app) {
@@ -92,5 +92,19 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
 
     public function boot(SilexApplication $app)
     {
+        if ($app['configuration.store']->isSetup()) {
+            if (php_sapi_name() == 'cli') {
+                $servername = $app['conf']->get('servername');
+                if (preg_match('#^http(s)?://#', $servername)) {
+                    $t = explode('://', $servername);
+                    if (count($t) == 2) {
+                        $app['url_generator']->getContext()->setHost($t[1]);
+                        $app['url_generator']->getContext()->setScheme($t[0]);
+                    }
+                } else {
+                    $app['url_generator']->getContext()->setHost($servername);
+                }
+            }
+        }
     }
 }

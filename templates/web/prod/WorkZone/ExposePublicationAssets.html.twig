@@ -1,0 +1,100 @@
+{% if page == 1 %}
+    <div class="expose_item_top" style="margin-top: 20px; margin-bottom: 20px;">
+        {% if capabilitiesEdit %}
+            <span class="green_button edit_expose" title="Edit" data-id="{{ publicationId }}" style="margin-right: 30px;">
+                <i class="fa fa-edit"></i>
+            </span>
+        {% endif %}
+
+        {% if enabled %}
+            <span>
+                <i class="fa fa-circle fa-lg" style="color: #1141db;"></i>
+                {{ 'prod:expose: enabled' | trans }}
+            </span>
+        {% else %}
+            <span>
+                <i class="fa fa-circle fa-lg" style="color: #ffffff;"></i>
+                {{ 'prod:expose: disabled' | trans }}
+            </span>
+        {% endif %}
+
+        {% if childrenCount == 0 %}
+            {% if capabilitiesDelete %}
+                <button type="button" class="delete-publication btn-danger pull-right" data-publication-id="{{ publicationId }}" title="{{ 'prod:expose:publication:Delete' | trans }}" style="margin-left: 40px;">
+                    <i class="fa fa-trash"></i>
+                </button>
+            {% endif %}
+        {% else  %}
+            <span style="margin-left: 30px;">{{ 'prod:expose:publication:Parent Publication' | trans }}</span>
+        {% endif %}
+
+        <button class="btn-success refresh-publication pull-right" data-publication-id="{{ publicationId }}" title="{{ 'prod:expose:publication:Refresh Publication' | trans }}" style="margin-left: 40px; margin-right: 20px;">
+            <i class="fa fa-refresh" aria-hidden="true"></i>
+        </button>
+
+        {% if capabilitiesEdit %}
+            <button class="btn-secondary order-assets pull-right" data-publication-id="{{ publicationId }}" style="margin-left: 5px; display:none;">
+                {{ 'prod:expose:publication:Set order' | trans }}
+            </button>
+        {% endif %}
+    </div>
+
+    <div class="expose_item_bottom">
+        <div class="expose_drag_drop">
+
+            <input type="hidden" id="list_assets_page" value="1"/>
+
+            <div class="assets_bottom_info" style="height: 40px;">
+                <span class="item_numbers">{{ totalItems }} assets</span>
+                {% if capabilitiesEdit %}
+                    <span class="pull-right" style="margin-right: 20px;">{{ 'prod:expose:publication:Info drag element and set order' | trans }}</span>
+                {% endif %}
+            </div>
+
+            <div class="assets_list">
+
+{% endif %}
+
+{% for pubAsset in pubAssets %}
+<div class="chim-wrapper" data-pub-asset-id="{{ pubAsset.id }}">
+    <div class="chim-content">
+        <div class="CHIM diapo">
+            <div class="thumb_wrapper">
+                <img
+                        data-kind="image" oncontextMenu="return(false);"
+                        src="{{ pubAsset.asset.thumbUrl|trim }}" data-original="{{ pubAsset.asset.thumbUrl|trim }}" ondragstart="return false;">
+            </div>
+
+            {% if capabilitiesEdit %}
+                <div class="set-cover" style="position: absolute;bottom: 0;cursor: pointer;" title="Set as Cover"
+                     data-publication-id="{{ pubAsset.publication.id }}" data-asset-id="{{ pubAsset.asset.id }}">
+
+                    <img src="/assets/common/images/icons/icon_story.gif" title="Set as Cover">
+                </div>
+            {% endif %}
+
+            {% if capabilitiesDelete %}
+                <div class="bottom">
+                    <a class="WorkZoneElementRemover removeAsset" data-asset-id="{{ pubAsset.asset.id }}" data-publication-id="{{ pubAsset.publication.id }}">
+                        <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
+                        <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% if page == 1 %}
+            </div>
+        </div>
+
+        <div class="load_more_asset" data-publication-id="{{ publicationId }}">
+            <div class="loading_more loading hidden" style="height:40px;"></div>
+            <button type="button">
+                {{ "Load More" | trans }}
+            </button>
+        </div>
+    </div>
+{% endif %}

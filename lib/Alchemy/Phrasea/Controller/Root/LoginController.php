@@ -13,9 +13,11 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\AccountCreator;
-use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
-use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
@@ -27,45 +29,43 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
-use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
-use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
+use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Alchemy\Phrasea\Helper\User\Manage;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
-use Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository;
-use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
-use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
-use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
-use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
-use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
-use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
-use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
+use Alchemy\Phrasea\Notification\Receiver;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use RandomLib\Generator;
 use ReCaptcha\ReCaptcha;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormError;
 
 class LoginController extends Controller
 {
@@ -155,7 +155,7 @@ class LoginController extends Controller
             'great'                     => $this->app->trans('Great'),
         ]);
 
-        $response->setExpires(new \DateTime('+1 day'));
+        $response->setExpires(new DateTime('+1 day'));
 
         return $response;
     }
@@ -235,6 +235,7 @@ class LoginController extends Controller
                     $registrationService = $this->getRegistrationService();
                     $providerId = isset($data['provider-id']) ? $data['provider-id'] : null;
                     $selectedCollections = isset($data['collections']) ? $data['collections'] : null;
+                    $data['email'] = trim($data['email']);
 
                     $user = $registrationService->registerUser($data, $selectedCollections, $providerId);
 
@@ -268,7 +269,7 @@ class LoginController extends Controller
         return $this->render('login/register-classic.html.twig', array_merge(
             $this->getDefaultTemplateVariables($request),
             [
-                'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($url, PHP_URL_SCHEME)), '', $url),
+                'geonames_server_uri' => $url,
                 'form' => $form->createView()
             ]));
     }
@@ -319,13 +320,6 @@ class LoginController extends Controller
         return $this->app->redirectPath('homepage');
     }
 
-    private function sendAccountUnlockEmail(User $user, Request $request)
-    {
-        $helper = new Manage($this->app, $request);
-
-        $helper->sendAccountUnlockEmail($user);
-    }
-
     /**
      * Validation of email address
      *
@@ -370,14 +364,28 @@ class LoginController extends Controller
 
         if (count($this->getAclForUser($user)->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($this->app, $receiver);
+
+            if (($locale = $user->getLocale()) != null) {
+                $mail->setLocale($locale);
+            }
+
             $this->deliver($mail);
 
             $this->app->addFlash('success', $this->app->trans('Account has been unlocked, you can now login.'));
         } else {
             $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, $receiver);
+
+            if (($locale = $user->getLocale()) != null) {
+                $mail->setLocale($locale);
+            }
+
             $this->deliver($mail);
 
             $this->app->addFlash('info', $this->app->trans('Account has been unlocked, you still have to wait for admin approval.'));
+        }
+
+        if ($request->query->get('send_credentials')) {
+            $this->sendPasswordSetupMail($user, $request);
         }
 
         return $this->app->redirectPath('homepage');
@@ -418,6 +426,7 @@ class LoginController extends Controller
     {
         $form = $this->app->form(new PhraseaForgotPasswordForm());
         $service = $this->getRecoveryService();
+        $flashMessage = $this->app->trans('login:: request password mail sent');
 
         try {
             if ('POST' === $request->getMethod()) {
@@ -435,13 +444,13 @@ class LoginController extends Controller
                         throw new FormProcessingException($message, 0, $ex);
                     }
 
-                    $this->app->addFlash('info', $this->app->trans('phraseanet:: Un email vient de vous etre envoye'));
+                    $this->app->addFlash('info', $flashMessage);
 
                     return $this->app->redirectPath('login_forgot_password');
                 }
             }
         } catch (FormProcessingException $e) {
-            $this->app->addFlash('error', $e->getMessage());
+            $this->app->addFlash('info', $flashMessage);
         }
 
         return $this->render('login/forgot-password.html.twig', array_merge(
@@ -477,17 +486,43 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
-        $this->getAuthenticator()->closeAccount();
+        $providerId = $this->getSession()->get('auth_provider.id', null);
 
-        $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+        /** @var RedirectResponse $response */
+        $response = null;
 
-        $response = $this->app->redirectPath('homepage', [
-            'redirect' => $request->query->get("redirect")
-        ]);
+        // does the provider provides a logout redirection ?
+        if($providerId && ($provider = $this->findProvider($providerId))) {
+            if(method_exists($provider, 'logoutAndRedirect')) {
+                $redirectToPhr = $this->app->url('logout', [
+                    'redirect' => $request->query->get("redirect")
+                ]);
+                $response = $provider->logoutAndRedirect($redirectToPhr);
+            }
+            else {
+                $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+                $this->getAuthenticator()->closeAccount();
 
-        $response->headers->clearCookie('persistent');
-        $response->headers->clearCookie('last_act');
+                $response = $provider->logout();
+            }
+        }
+
+        if($response) {
+            $this->getSession()->set('auth_provider.id', null);
+        }
+        else {
+            // no provider logout : use ours
+            $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+            $this->getAuthenticator()->closeAccount();
+
+            $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+
+            $response = $this->app->redirectPath('homepage', [
+                'redirect' => $request->query->get("redirect")
+            ]);
+            $response->headers->clearCookie('persistent');
+            $response->headers->clearCookie('last_act');
+        }
 
         return $response;
     }
@@ -555,6 +590,7 @@ class LoginController extends Controller
         } while (null !== $this->getUserRepository()->findOneBy(['login' => $login]));
 
         $user = $this->getUserManipulator()->createUser($login, $this->getStringGenerator()->generateString(128));
+        $user->setGuest(true);
         $invite_user = $this->getUserRepository()->findByLogin(User::USER_GUEST);
 
         $usr_base_ids = array_keys($this->getAclForUser($user)->get_granted_base());
@@ -594,25 +630,41 @@ class LoginController extends Controller
     // move this in an event
     public function postAuthProcess(Request $request, User $user)
     {
-        $date = new \DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
+        $date = new DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-time-left-percent']) . ' days');
         $manager = $this->getEntityManager();
 
+        /*
+         * PHRAS-3214_validation-tokens-refacto : This code is moved to console command "SendValidationRemindersCommand.php"
+         *
         foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
 
-            if (null === $token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser())) {
-                continue;
+            // find the token if exists
+            // nb : a validation may have not generated tokens if forcing auth was required upon creation
+            try {
+                $token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser());
+            }
+            catch (\Exception $e) {
+                // not unique token ? should not happen
+                $token = null;
             }
 
-            $url = $this->app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]);
+            if(!is_null($token)) {
+                $url = $this->app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]);
+            }
+            else {
+                $url = $this->app->url('lightbox_validation', ['basket' => $basket->getId()]);
+            }
+
             $this->dispatch(PhraseaEvents::VALIDATION_REMINDER, new ValidationEvent($participant, $basket, $url));
 
-            $participant->setReminded(new \DateTime('now'));
+            $participant->setReminded(new DateTime('now'));
             $manager->persist($participant);
         }
 
         $manager->flush();
+        */
 
         $session = $this->getAuthenticator()->openAccount($user);
 
@@ -647,12 +699,15 @@ class LoginController extends Controller
 
     public function authenticationCallback(Request $request, $providerId)
     {
+        $this->getSession()->set('auth_provider.id', null);
+
         $provider = $this->findProvider($providerId);
 
         // triggers what's necessary
         try {
             $provider->onCallback($request);
             $token = $provider->getToken();
+            $this->getSession()->set('auth_provider.id', $providerId);
         } catch (NotAuthenticatedException $e) {
             $this->getSession()->getFlashBag()->add('error', $this->app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
 
@@ -721,6 +776,20 @@ class LoginController extends Controller
         $this->app->addFlash('error', $this->app->trans('Your identity is not recognized.'));
 
         return $this->app->redirectPath('homepage');
+    }
+
+    private function sendAccountUnlockEmail(User $user, Request $request)
+    {
+        $helper = new Manage($this->app, $request);
+
+        $helper->sendAccountUnlockEmail($user);
+    }
+
+    private function sendPasswordSetupMail(User $user, Request $request)
+    {
+        $helper = new Manage($this->app, $request);
+
+        $helper->sendPasswordSetupMail($user);
     }
 
     /**
@@ -931,11 +1000,11 @@ class LoginController extends Controller
     }
 
     /**
-     * @return ValidationParticipantRepository
+     * @return BasketParticipantRepository
      */
-    private function getValidationParticipantRepository()
+    private function getBasketParticipantRepository()
     {
-        return $this->app['repo.validation-participants'];
+        return $this->app['repo.basket-participants'];
     }
 
     /**

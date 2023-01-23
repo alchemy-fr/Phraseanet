@@ -17,13 +17,15 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxRepository;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use vierbergenlars\SemVer\version;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 class appbox extends base
 {
@@ -93,6 +95,27 @@ class appbox extends base
         $manager->setThumbnail($databox, $pic_type, $pathfile);
 
         return $this;
+    }
+
+    public function write_application_logo(Filesystem $filesystem, $blob)
+    {
+        $logo_path = $this->app['root.path'] . '/www/custom/minilogos/personalize_logo.';
+
+        list($type, $imageData) = explode(';', $blob);
+        list(,$extension) = explode('/',$type);
+        list(,$imageData)      = explode(',', $imageData);
+
+        $data = str_replace(' ', '+', $imageData);
+        $data = base64_decode($data);
+        $extension= ($extension=='svg+xml')?'svg':$extension;
+
+        try{
+            $filesystem->dumpFile($logo_path.$extension, $data);
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
+
+        return 'success';
     }
 
     /**
@@ -202,6 +225,13 @@ class appbox extends base
         // it is need before applying patches
         $advices = $this->upgradeDB(false, $app);
 
+        // update also the doctrine table schema before applying patch
+        if ($app['orm.em']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
+            $tool = new SchemaTool($app['orm.em']);
+            $metas = $app['orm.em']->getMetadataFactory()->getAllMetadata();
+            $tool->updateSchema($metas, true);
+        }
+
         foreach ($this->get_databoxes() as $s) {
             $advices = array_merge($advices, $s->upgradeDB(false, $app));
         }
@@ -216,12 +246,6 @@ class appbox extends base
         $this->post_upgrade($app);
 
         $app['phraseanet.cache-service']->flushAll();
-
-        if ($app['orm.em']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
-            $tool = new SchemaTool($app['orm.em']);
-            $metas = $app['orm.em']->getMetadataFactory()->getAllMetadata();
-            $tool->updateSchema($metas, true);
-        }
 
         if (version::lt($from_version, '3.1')) {
             $upgrader->addRecommendation($app->trans('Your install requires data migration, please execute the following command'), 'bin/setup system:upgrade-datas --from=3.1');

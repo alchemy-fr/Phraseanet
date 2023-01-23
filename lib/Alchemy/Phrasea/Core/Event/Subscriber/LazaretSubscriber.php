@@ -63,6 +63,11 @@ class LazaretSubscriber extends AbstractNotificationSubscriber
 
             if ($readyToSend) {
                 $mail = MailInfoRecordQuarantined::create($this->app, $receiver);
+
+                if (($locale = $user->getLocale()) != null) {
+                    $mail->setLocale($locale);
+                }
+
                 $this->deliver($mail);
                 $mailed = true;
             }

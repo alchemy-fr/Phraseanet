@@ -1,0 +1,32 @@
+.lt-ie8 {
+	div.diapo {
+		display:inline;
+		float:left;
+		position:relative;
+		margin:7px 4px;
+
+	}
+	#baskets .insidebloc{
+		left:10px;
+		position:absolute;
+		width:70%;
+		top:0;
+	}
+
+	.list .diapo{
+		margin:0;
+	}
+
+	#adv_search table.colllist
+	{
+		width:270px;
+	}
+
+	#adv_search table.filterlist
+	{
+		width:580px;
+	}
+	.loading{
+		background-image:none;
+	}
+}

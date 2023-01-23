@@ -121,9 +121,9 @@ class cache_databox
 
         $conn = $app->getApplicationBox()->get_connection();
 
-        $sql = 'UPDATE sitepreff SET memcached_update = :date';
+        $sql = 'UPDATE sitepreff SET memcached_update = current_timestamp()';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([':date' => $now]);
+        $stmt->execute();
         $stmt->closeCursor();
 
         self::$refreshing = false;

@@ -35,8 +35,13 @@
                      {% if app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')]) | length > 0 %}
                         <select id="othcollsel" name="othcollsel" disabled>
                             <option>{{ "choisir" | trans }}</option>
-                            {% for collection in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')]) %}
-                               <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
+                            {% for  sbasId, availableCollections in collections %}
+                                <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}">
+                                    {% for collection in availableCollections['databox_collections'] %}
+                                        <option value="{{ collection.get_base_id() }}">
+                                            {{ collection.get_label(app['locale']) }}</option>
+                                    {% endfor %}
+                                </optgroup>
                             {% endfor %}
                         </select>
                     {% endif %}

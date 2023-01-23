@@ -15,11 +15,10 @@ use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Helper;
-use Alchemy\Phrasea\Model\Entities\UserSetting;
+use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
+
 
 class RootController extends Controller
 {
@@ -41,11 +40,10 @@ class RootController extends Controller
     public function indexAction(Request $request) {
         try {
             \Session_Logger::updateClientInfos($this->app, 1);
-        } catch (SessionNotFound $e) {
+        }
+        catch (SessionNotFound $e) {
             return $this->app->redirectPath('logout');
         }
-
-        $css = [];
 
         $user = $this->getAuthenticatedUser();
         $cssfile = $this->getSettings()->getUserSetting($user, 'css');
@@ -85,6 +83,22 @@ class RootController extends Controller
         /** @var \Closure $filter */
         $filter = $this->app['plugin.filter_by_authorization'];
 
+        /* prepare work to extend whole taskbar... later
+        $menus = [
+            'push' => ['native'=>true, 'n'=>0],
+            'tools' => ['native'=>true, 'n'=>0],
+        ];
+        / ** @var ActionBarPluginInterface $plugin * /
+        foreach($filter('actionbar') as $kplugin=>$plugin) {
+            foreach($plugin->getActionBar() as $kmenu=>$menu) {
+                if(!array_key_exists($kmenu, $menus)) {
+                    $menus[$kmenu] = ['native'=>false, 'n'=>0];
+                }
+                $menus[$kmenu]['n']++;
+            }
+        }
+        */
+
         $plugins = [
             'workzone' => $filter('workzone'),
             'actionbar' => $filter('actionbar'),
@@ -92,7 +106,7 @@ class RootController extends Controller
 
         return $this->render('prod/index.html.twig', [
             'module_name'          => 'Production',
-            'WorkZone'             => new Helper\WorkZone($this->app, $request),
+            'WorkZone'             => new WorkzoneHelper($this->app, $request),
             'module_prod'          => $helper,
             'search_datas'         => $helper->get_search_datas(),
             'cssfile'              => $cssfile,
@@ -105,7 +119,7 @@ class RootController extends Controller
             'feeds'                => $feeds,
             'aggregate'            => $aggregate,
             'GV_google_api'        => $conf->get(['registry', 'webservices', 'google-charts-enabled']),
-            'geocodingProviders'    => $conf->get(['geocoding-providers']),
+            'geocodingProviders'   => $conf->get(['geocoding-providers']),
             'search_status'        => \databox_status::getSearchStatus($this->app),
             'thesau_js_list'       => $thjslist,
             'thesau_json_sbas'     => json_encode($sbas),

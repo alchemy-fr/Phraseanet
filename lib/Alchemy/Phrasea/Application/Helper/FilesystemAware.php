@@ -9,8 +9,10 @@
  */
 namespace Alchemy\Phrasea\Application\Helper;
 
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Neutron\TemporaryFilesystem\Manager;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 trait FilesystemAware
 {

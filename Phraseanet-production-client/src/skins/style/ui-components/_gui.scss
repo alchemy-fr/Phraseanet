@@ -1,0 +1,92 @@
+
+/******* GUI ******************************************************************/
+
+.gui_vsplitter,.ui-resizable-e {
+  top: 50%;
+  width: 13px;
+  padding: 0 0;
+  height: 54px;
+  position: absolute;
+  background-image:  url('#{$iconsPath}vsplitter.png');
+  background-color: $guiVsplitter;
+  background-position:  center center;
+  background-repeat:  no-repeat;
+  right: 0;
+  cursor: col-resize;
+  z-index: 500;
+}
+
+#PREVIEWBOX .gui_vsplitter, .ui-resizable-w {
+  top: 50%;
+  width: 10px;
+  padding: 35px 0;
+  height: 0;
+  position: absolute;
+  background-position: center center;
+  background-repeat: no-repeat;
+  left: -10px;
+  cursor: col-resize;
+  z-index: 500;
+  background-image: url('#{$iconsPath}#{$guiSplitterImg}');
+}
+
+.gui_hsplitter, .ui-resizable-s {
+  height: 10px;
+  left: 50%;
+  width: 0;
+  padding: 0 35px;
+  bottom: -10px;
+  position: absolute;
+  background-image:  url('#{$iconsPath}hsplitter.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  cursor: row-resize;
+}
+/*
+.gui_hslider {
+  position: absolute;
+  height: 0px;
+  border: #959595 1px inset
+}
+
+.gui_hslider DIV {
+  position: absolute;
+  top: -6px;
+  left: 0px;
+  width: 4px;
+  height: 10px;
+  border: #c0c0c0 1px outset;
+  background-color: #959595;
+  background-image: url('#{$skinsImagesPath}vsplitter.gif');
+  cursor: pointer;
+}*/
+
+.gui_ckbox_0 {
+  display: block;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  float: left;
+  background-image: url('#{$iconsPath}ccoch0.gif');
+  cursor: pointer;
+}
+
+.gui_ckbox_1 {
+  display: block;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  float: left;
+  background-image: url('#{$iconsPath}ccoch1.gif');
+  cursor: pointer;
+}
+
+.gui_ckbox_2 {
+  display: block;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  float: left;
+  background-image: url('#{$iconsPath}ccoch2.gif');
+  cursor: pointer;
+}

@@ -8,13 +8,7 @@ gulp.task('copy-report-images', function(){
         .pipe(gulp.dest( config.paths.build + 'report/images'));
 });
 
-gulp.task('build-report-print-css', function(){
-    return utils.buildCssGroup([
-        config.paths.src + 'report/styles/main-print.scss'
-    ], 'print', 'report/css/', debugMode);
-});
-
-gulp.task('build-report-css', ['build-report-print-css'], function(){
+gulp.task('build-report-css', function(){
     return utils.buildCssGroup([
         config.paths.src + 'report/styles/main.scss'
     ], 'report', 'report/css/', debugMode);
@@ -22,10 +16,6 @@ gulp.task('build-report-css', ['build-report-print-css'], function(){
 
 gulp.task('build-report-js', function(){
     var reportGroup = [
-        config.paths.src + 'report/js/jquery.print.js',
-        config.paths.src + 'report/js/jquery.cluetip.js',
-        config.paths.src + 'report/js/jquery.nicoslider.js',
-        config.paths.src + 'report/js/jquery.gvChart-0.1.js',
         config.paths.src + 'report/js/report.js'
     ];
     return utils.buildJsGroup(reportGroup, 'report', 'report/js', debugMode);

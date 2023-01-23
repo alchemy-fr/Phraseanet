@@ -1,0 +1,36 @@
+
+/******* INPUTS ***************************************************************/
+input.input-button.hover {
+  color: $inputButtonHoverColor;
+}
+
+input.search {
+  padding-left: 25px;
+  background-image: url('#{$iconsPath}search.png');
+  background-repeat: no-repeat;
+  background-position: 3px center;
+}
+
+input, select, textarea {
+  margin: 2px;
+  padding: 2px;
+  *border: 1px solid $inputFallbackBorderColor;
+}
+
+input[type="radio"], input[type="checkbox"], .checkbox {
+  border: none;
+  background: transparent;
+}
+
+input.btn-mini {
+  margin: 0 2px;
+  height: 12px;
+  width: auto;
+  cursor: default;
+  font-size: 12px;
+}
+
+.input-small {
+  height: 25px;
+  font-size: 12px;
+}

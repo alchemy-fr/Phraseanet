@@ -56,6 +56,10 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
                 $mail = MailInfoUserRegistered::create($this->app, $receiver);
                 $mail->setRegisteredUser($registeredUser);
 
+                if (($locale = $adminUser->getLocale()) != null) {
+                    $mail->setLocale($locale);
+                }
+
                 $this->deliver($mail);
 
                 $mailed = true;
@@ -104,12 +108,14 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
 
     private function autoregisterEMail(User $to, User $registeredUser)
     {
+        $locale = ($to->getLocale() != null)? $to->getLocale() : null;
+
         $body = '';
         $body .= sprintf("Login : %s\n", $registeredUser->getLogin());
-        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur nom'), $registeredUser->getFirstName());
-        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur prenom'), $registeredUser->getLastName());
-        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur email'), $registeredUser->getEmail());
-        $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->getCompany());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur nom', [], 'messages', $locale), $registeredUser->getFirstName());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur prenom', [], 'messages', $locale), $registeredUser->getLastName());
+        $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur email', [], 'messages', $locale), $registeredUser->getEmail());
+        $body .= sprintf("%s/%s\n", $registeredUser->getJob(), $registeredUser->getCompany());
 
         $readyToSend = false;
         try {
@@ -121,6 +127,11 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
 
         if ($readyToSend) {
             $mail = MailInfoSomebodyAutoregistered::create($this->app, $receiver, null, $body);
+
+            if ($locale != null) {
+                $mail->setLocale($locale);
+            }
+
             $this->deliver($mail);
         }
 

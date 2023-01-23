@@ -52,7 +52,7 @@ class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
         $app['exception_handler']->disable();
 
         $client = new Client($app);
-        $this->setExpectedException('\Exception');
+        $this->setExpectedException(\Exception::class);
         $client->request('GET', '/');
     }
 }

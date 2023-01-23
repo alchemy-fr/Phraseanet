@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Install Dependencies
-  apt: pkg=oracle-java8-installer state=latest
+  apt: pkg=openjdk-8-jre state=latest
 
 - name: Remove temporary debian package
   shell: rm -f /tmp/elasticsearch-{{ elasticsearch.version }}.deb
@@ -38,11 +38,15 @@
   when: not is_installed
   with_items: "{{ elasticsearch.plugins }}"
 
-- name: Set port
-  replace: >
-    dest="/etc/elasticsearch/elasticsearch.yml"
-    regexp='^#?(http\.port\:).*'
-    replace='\1 {{ elasticsearch.port }}'
+- name: Configure Elasticsearch.
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - { regexp: '^#? ?network\.host', line: 'network.host: {{ elasticsearch.host }}' }
+    - { regexp: '^#? ?http\.port', line: 'http.port: {{ elasticsearch.port }}' }
 
 - name: Flush handlers to apply config changes
   meta: flush_handlers

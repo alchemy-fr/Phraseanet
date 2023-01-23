@@ -13,13 +13,12 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class SessionManagerSubscriber implements EventSubscriberInterface
 {
@@ -32,6 +31,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         'thesaurus' => 5,
         'report' => 10,
         'lightbox' => 6,
+        'user' => 7,
     ];
 
     public function __construct(Application $app)
@@ -43,56 +43,62 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => [
-                ['initSession', Application::EARLY_EVENT],
+                /** @uses SessionManagerSubscriber::checkSessionActivity */
                 ['checkSessionActivity', Application::LATE_EVENT]
             ]
         ];
     }
 
-    public function initSession(GetResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        $request = $event->getRequest();
-
-        if ($this->isFlashUploadRequest($request) && null !== $sessionId = $request->request->get('php_session_id')) {
-            $request->cookies->set($this->app['session']->getName(), $sessionId);
-        }
-    }
-
     /**
      * log real human activity on application, to keep session alive
+     *
+     * to "auto-disconnect" when idle duration is passed, we use the "poll" requests.
+     * nb : the route "/sessions/notifications" is not considered as comming from a "module" (prod, admin, ...)
+     *      so it will not update session
+     *
      * @param GetResponseEvent $event
      */
     public function checkSessionActivity(GetResponseEvent $event)
     {
         $request = $event->getRequest();
 
+        // ignore routes that comes from api (?) : todo : check if usefull since "api" is not a "module"
+        // todo : "LOG" ???
         if ($request->request->has('oauth_token')
             || $request->query->has('oauth_token')
             || $request->query->has('LOG')
-            || null === $moduleId = $this->getModuleId($request->getPathInfo())
         ) {
             return;
         }
 
-        if ($this->isAdminJsPolledRoute($moduleId, $request)) {
+        $moduleName= $this->getModuleName($request->getPathInfo());
+        $moduleId = $this->getModuleId($request->getPathInfo());
+
+        // "unknown" modules do not keep session alive, nor close session, nor redirect to login
+        //
+        if(is_null($moduleId)) {
             return;
         }
 
-        if ($moduleId === self::$modulesIds['prod'] && $this->isFlashUploadRequest($request)) {
-            return;
-        }
+        // any other route can redirect to login if user is diconnected
 
         // if we are already disconnected (ex. from another window), quit immediately
+        //
         if (!($this->app->getAuthenticator()->isAuthenticated())) {
             $this->setDisconnectResponse($event);
-
             return;
         }
 
+        if(!is_null($h_usr_id = $request->headers->get('user-id'))) {
+            $a_usr_id = $this->app->getAuthenticator()->getUser()->getId();
+            if((int)$h_usr_id !== (int)$a_usr_id) {
+                $this->setDisconnectResponse($event);
+                return;
+            }
+        }
+
+        // ANY route can disconnect the user if idle duration is passed
+        //
         /** @var Session $session */
         $session = $this->app['repo.sessions']->find($this->app['session']->get('session_id'));
 
@@ -112,6 +118,15 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // only routes from "modules" (prod, admin, ...) are considered as "user activity"
+        // we must still ignore some "polling" (js) routes
+        //
+        if ($this->isJsPollingRoute($request)) {
+            return;
+        }
+
+        // here the route is considered as "user activity" : update session
+        //
         $entityManager = $this->app['orm.em'];
 
         $module = $this->addOrUpdateSessionModule($session, $moduleId, $now);
@@ -119,11 +134,6 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $entityManager->persist($module);
         $entityManager->persist($session);
         $entityManager->flush();
-    }
-
-    private function isFlashUploadRequest(Request $request)
-    {
-        return false !== stripos($request->server->get('HTTP_USER_AGENT'), 'flash') && $request->getRequestUri() === '/prod/upload/';
     }
 
     /**
@@ -134,7 +144,6 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $response = $request->isXmlHttpRequest() ? $this->getXmlHttpResponse() : $this->getRedirectResponse($request);
-
         $event->setResponse($response);
     }
 
@@ -163,7 +172,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
      * @param string $pathInfo
      * @return int|null
      */
-    private function getModuleId($pathInfo)
+    private function getModuleName($pathInfo)
     {
         $parts = array_filter(explode('/', $pathInfo));
 
@@ -171,7 +180,16 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return null;
         }
 
-        $moduleName = strtolower($parts[1]);
+        return strtolower($parts[1]);
+    }
+
+    /**
+     * @param string $pathInfo
+     * @return int|null
+     */
+    private function getModuleId($pathInfo)
+    {
+        $moduleName = $this->getModuleName($pathInfo);
 
         if (!isset(self::$modulesIds[$moduleName])) {
             return null;
@@ -181,23 +199,39 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * returns true is the route match a "polling" route (databox progressionbar, task manager, ...)
+     * polling routes (sent every n seconds with no user action) must not update the session
+     *
+     * the request should contain a "update-session=0" header, but for now we still test hardcoded routes
+     *
      * @param int $moduleId
      * @param Request $request
      * @return bool
      */
-    private function isAdminJsPolledRoute($moduleId, Request $request)
+    private function isJsPollingRoute(Request $request)
     {
-        if ($moduleId !== self::$modulesIds['admin']) {
-            return false;
+        if($request->headers->get('update-session', '1') === '0') {
+            return true;
         }
 
         $pathInfo = $request->getPathInfo();
 
+        // nutifications poll in menubar (header "update-session=0") sent
+        if ($pathInfo === '/user/notifications/' && $request->getContentType() === 'json') {
+            return true;
+        }
+
+        // admin/task managers poll tasks
         if ($pathInfo === '/admin/task-manager/tasks/' && $request->getContentType() === 'json') {
             return true;
         }
 
-        return preg_match('#^/admin/databox/\d+/informations/documents/#', $pathInfo) === 1;
+        // admin/databox poll to update the indexation progress bar (header "update-session=0") sent
+        if(preg_match('#^/admin/databox/\d+/informations/documents/#', $pathInfo)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

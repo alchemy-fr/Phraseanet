@@ -300,8 +300,8 @@ blockquote {
     page-break-inside: avoid;
     background: #f9f9f9;
     border-left: 10px solid #ccc;
-    margin: 1.5em 10px;
-    padding: 0.5em 10px;
+    margin: 1.5rem 10px;
+    padding: 0.5rem 10px;
     quotes: "\201C""\201D""\2018""\2019";
     color: #333;
 }
@@ -341,11 +341,6 @@ blockquote p {
 .facebook-badge {
     background-color: $colorFacebook;
     @include gradient($colorFacebook, 0.8);
-}
-
-.google-plus-badge {
-    background-color: $colorGooglePlus;
-    @include gradient($colorGooglePlus, 0.8);
 }
 
 .viadeo-badge {
@@ -818,8 +813,8 @@ form[name=registerForm] .multiselect-container li.active label {
 }
 
 form[name=registerForm] .multiselect b.caret {
-    float: right;
-
+    position: absolute;
+    right: 10px;
 }
 
 form[name=registerForm] .multiselect-group {
@@ -1054,6 +1049,170 @@ h1, h2, h3, h4 {
 .control-span {
     padding-top: 5px;
     line-height: 20px;
+}
+
+#updatingDemand .icon-box {
+    display: inline-block;
+    width:2%;
+    height: 29px;
+}
+
+#updatingDemand .icon-box input {
+    position: relative;
+    bottom: 0.4rem;
+}
+
+#updatingDemand .coll-name {
+    width:48%;
+    padding-left:2%;
+    display: inline-block;
+    line-height: 1.8rem;
+    height: 100%;
+}
+
+#updatingDemand h3 {
+    border: 1px solid whitesmoke;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+#updatingDemand .coll-name span{
+    font-size:initial;
+}
+
+#updatingDemand .cgu-block {
+    margin:1.6rem auto;
+}
+
+#updatingDemand .base-block {
+    font-size: 0;
+}
+
+#updatingDemand .status {
+    font-size:initial;
+    padding-left: 0.6rem;
+}
+
+#updatingDemand .status-box {
+    display: inline-block;
+    width:48%;
+    line-height: 1.2rem;
+}
+
+#updatingDemand .registration {
+    width:100%;
+    display: inline-block;
+    position:relative;
+    line-height: 0.8rem;
+    border: 1px solid #333333;
+    height: 30px;
+}
+
+#updatingDemand h3:after {
+    content: "";
+    font-family: FontAwesome;
+    font-weight: 400;
+    font-style: normal;
+    text-decoration: inherit;
+    -webkit-font-smoothing: antialiased;
+    display: inline;
+    width: auto;
+    height: auto;
+    line-height: normal;
+    vertical-align: baseline;
+    background-image: none;
+    background-position: 0 0;
+    background-repeat: repeat;
+    margin-top: 0;
+    font-size:2.3rem;
+    color:#a1a1a1;
+    float: right;
+    position: relative;
+    right: 10px;
+    -webkit-transition:-webkit-transform .5s;
+    -moz-transition:-moz-transform .5s;
+    -o-transition:-o-transform .5s;
+    -ms-transition:-ms-transform .5s;
+    transition:transform .5s;
+    -ms-transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    transform: rotate(270deg);
+    top: 2px;
+}
+
+#updatingDemand h3.toggled:after {
+    -ms-transform: rotate(180deg); /* IE 9 */
+    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+    transform: rotate(180deg);
+}
+
+#updatingDemand .icon {
+    width: 20px;
+    height:20px;
+    border-radius:10px;
+    display:inline-block;
+    position: relative;
+    top: -15px;
+}
+
+#updatingDemand .icon.active {
+    background-color:#61BD4F;
+}
+
+#updatingDemand .status.active {
+    color: #61BD4F;
+}
+
+#updatingDemand .icon.registrable {
+    background-color:#F2D600;
+}
+
+#updatingDemand .status.registrable {
+    color: #F2D600;
+}
+
+#updatingDemand .icon.in-time {
+    background-color:#0079BF;
+}
+
+#updatingDemand .status.in-time {
+    color: #0079BF;
+}
+
+#updatingDemand .icon.out-dated {
+    background-color:#EB5A46;
+}
+
+#updatingDemand .status.out-dated {
+    color: #EB5A46;
+}
+
+#updatingDemand .icon.pending {
+    background-color:#FFAB4A;
+}
+
+#updatingDemand .status.pending {
+    color: #FFAB4A;
+}
+
+#updatingDemand .icon.rejected {
+    background-color:red;
+}
+
+#updatingDemand .status.rejected {
+    color: red;
+}
+
+#updatingDemand .icon.accepted {
+    background-color:#61BD4F;
+}
+
+#updatingDemand .status.accepted {
+    color: #61BD4F;
+}
+
+#updatingDemand .registration:nth-of-type(even) {
+    background: #333;
 }
 
 form[name="changeEmail"] .control-label {

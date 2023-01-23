@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -95,6 +96,46 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('user', $content['response']);
 
         $this->evaluateGoodUserItem($content['response']['user'], self::$DI['user_notAdmin']);
+    }
+
+    public function testRouteMeStructure()
+    {
+        $this->setToken($this->userAccessToken);
+
+        $route = '/api/v1/me/structures/';
+
+        $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertArrayHasKey('meta_fields', $content['response']);
+        $this->assertArrayHasKey('aggregable_fields', $content['response']);
+        $this->assertArrayHasKey('technical_fields', $content['response']);
+    }
+
+    public function testRouteMeSubdefs()
+    {
+        $this->setToken($this->userAccessToken);
+
+        $route = '/api/v1/me/subdefs/';
+
+        $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertArrayHasKey('subdefs', $content['response']);
+    }
+
+    public function testRouteMeCollections()
+    {
+        $this->setToken($this->userAccessToken);
+        $route = '/api/v1/me/collections/';
+        $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $this->assertArrayHasKey('collections', $content['response']);
     }
 
     protected function evaluateGoodUserItem($data, User $user)
@@ -419,6 +460,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function evaluateMeta($content, $version = null)
     {
+        if(mb_strpos($content['meta']['request'], '/api/v1') !== FALSE){
+            $version = V1::VERSION;
+        }
+
         $this->assertTrue(is_array($content), 'La reponse est un objet');
         $this->assertArrayHasKey('meta', $content);
         $this->assertArrayHasKey('response', $content);

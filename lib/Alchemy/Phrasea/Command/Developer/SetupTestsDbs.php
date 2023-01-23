@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Utilities\StringHelper;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,21 +46,35 @@ class SetupTestsDbs extends Command
         $dbs[] = $settings['database']['ab_name'];
         $dbs[] = $settings['database']['db_name'];
 
-        $schema = $this->container['orm.em']->getConnection()->getSchemaManager();
+        /** @var Connection $connection */
+        $connection = $this->container['orm.em']->getConnection();
+        $schema = $connection->getSchemaManager();
 
         foreach($dbs as $name) {
             $output->writeln('Creating database "'.$name.'"...<info>OK</info>');
+            $name = StringHelper::SqlQuote($name, StringHelper::SQL_IDENTIFIER);    // quote as `identifier`
             $schema->dropAndCreateDatabase($name);
         }
 
-        $this->container['orm.em']->getConnection()->executeUpdate('
-            GRANT ALL PRIVILEGES ON '.$settings['database']['ab_name'].'.* TO \''.$settings['database']['user'].'\'@\''.$settings['database']['host'].'\' IDENTIFIED BY \''.$settings['database']['password'].'\' WITH GRANT OPTION
-        ');
+        $user = StringHelper::SqlQuote($settings['database']['user'], StringHelper::SQL_VALUE); // quote as 'value'
+        $host = StringHelper::SqlQuote($settings['database']['host'], StringHelper::SQL_VALUE);
+        $pass = StringHelper::SqlQuote($settings['database']['password'], StringHelper::SQL_VALUE);
 
-        $this->container['orm.em']->getConnection()->executeUpdate('
-            GRANT ALL PRIVILEGES ON '.$settings['database']['db_name'].'.* TO \''.$settings['database']['user'].'\'@\''.$settings['database']['host'].'\' IDENTIFIED BY \''.$settings['database']['password'].'\' WITH GRANT OPTION
-        ');
+        $ab_name = StringHelper::SqlQuote($settings['database']['ab_name'], StringHelper::SQL_IDENTIFIER);
+        $db_name = StringHelper::SqlQuote($settings['database']['db_name'], StringHelper::SQL_IDENTIFIER);
+/*
+        $this->container['orm.em']->getConnection()->executeUpdate(
+            'CREATE USER '.$user.'@'.$host.' IDENTIFIED WITH mysql_native_password BY '.$pass
+        );
 
+        $this->container['orm.em']->getConnection()->executeUpdate(
+            'GRANT ALL PRIVILEGES ON '.$ab_name.'.* TO '.$user.'@'.$host
+        );
+
+        $this->container['orm.em']->getConnection()->executeUpdate(
+            'GRANT ALL PRIVILEGES ON '.$db_name.'.* TO '.$user.'@'.$host
+        );
+*/
         $this->container['orm.em']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
 
         return 0;

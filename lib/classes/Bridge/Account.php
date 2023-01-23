@@ -362,11 +362,12 @@ class Bridge_Account
             , ':name'    => $name
         ];
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
+        $connection = $app->getApplicationBox()->get_connection();
+        $stmt = $connection->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $account_id = $app->getApplicationBox()->get_connection()->lastInsertId();
+        $account_id = $connection->lastInsertId();
 
         return new self($app, $api, $account_id);
     }

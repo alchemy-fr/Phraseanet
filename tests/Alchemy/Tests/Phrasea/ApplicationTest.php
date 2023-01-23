@@ -6,17 +6,17 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
+use Symfony\Component\BrowserKit\CookieJar;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\BrowserKit\CookieJar;
-use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 /**
  * @group functional
@@ -141,23 +141,6 @@ class ApplicationTest extends \PhraseanetTestCase
         $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => '']);
 
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
-    public function testFlashSession()
-    {
-        $app = new Application(Application::ENV_TEST);
-        $sessionId = null;
-        $app->post('/prod/upload/', function (Application $app) use (&$sessionId) {
-            $sessionId = $app['session']->getId();
-        });
-
-        $client = new Client($app);
-
-        $client->request('POST', '/prod/upload/', ['php_session_id'=>'123456'], [], ['HTTP_USER_AGENT'=>'flash']);
-        $this->assertEquals('123456', $sessionId);
     }
 
     public function testGeneratePath()

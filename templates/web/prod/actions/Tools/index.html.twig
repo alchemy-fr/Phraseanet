@@ -20,7 +20,7 @@
 <div id='prod-tool-box' class="PNB10">
 
     {# jquery Tabs #}
-    <div id="tool-tabs"  class="tabs">
+    <div id="tool-tabs"  class="tabs tool-modal-wrapper">
         {# jquery menu #}
         <div>
             <ul>
@@ -29,22 +29,6 @@
                         {{ "regeneration of sub-definitions" | trans }}
                     </a>
                 </li>
-                {% if selectionLength == 1%}
-                    {% for record in records %}
-                        {% if record.get_type() == 'video' %}
-                            <li>
-                                <a href="#thumbExtractor">
-                                    {{ "video tool" | trans }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#rangeExtractor">
-                                    {{ "video range extractor" | trans }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
                 <li>
                     <a href="#image">
                         {{ "image tool" | trans }}
@@ -59,7 +43,7 @@
                 {% endif %}
                 {% if metadatas %}
                     <li>
-                        <a href="#exiftool">
+                        <a class="tool-metadata" href="#exiftool">
                             {{ "meta-datas" | trans }}
                         </a>
                     </li>
@@ -79,7 +63,7 @@
         <div id="subdefs" class="tabBox">
             <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
-                    <legend>&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
+                    <legend style="margin-bottom: 0px;">&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
                     {% if nbSubdefSubstitute > 0 %}
                         <div style="color:#A00;">
                             {{ "Attention, certain documents ont des sous-definitions substituees" | trans }}
@@ -92,7 +76,23 @@
                     {% else %}
                         <input type="hidden" name="force_substitution" value="1">
                     {% endif %}
-                    <div>
+
+                    <div class="well-small">
+                        <label for="recreate_all" class="checkbox">
+                            <input class="subdefTodo" id="recreate_all" type="checkbox"  value="0"> {{ 'All' | trans }}
+                        </label>
+                    </div>
+
+                    {% for subdefName in availableSubdefName %}
+                        <div class="well-small">
+                            <label for="recreate_{{ subdefName }}" class="checkbox">
+                                <input class="subdefTodo" type="checkbox" id="recreate_{{ subdefName }}" name="subdefs[]" value="{{ subdefName }}" />
+                                {{ subdefName }} {{ countSubdefTodo[subdefName] }} / {{ nbRecords }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    <div style="margin-top: 20px;">
                         <p>
                             {{ 'Are you sure you want to rebuild the sub-definitions of selected records?' | trans }}
                         </p>
@@ -104,114 +104,17 @@
                     <button class="action_submiter btn btn-inverse" type="button">{{ "validate" | trans }}</button>
                     <button class="action_cancel btn btn-inverse" type="button">{{ "cancel" | trans }}</button>
                 </div>
+                <div class="confirm_block text-center hide" style="margin-top: 45px;">
+                    <span class="alert alert-info">
+                        {{ 'prod::tool:recreatesubviews: warning for rebuild sub-definitions' | trans }}
+                    </span></div>
             </form>
         </div>
 
-     {% if selectionLength == 1 %}
-      {% for record in records %}
-        {% if record.get_type() == 'video' %}
-          <div id="thumbExtractor"  class="tabBox">
-            <div class="PNB10 main_title">
-              <img src='/assets/prod/images/ThumbExtractor/camera_title.png'/>
-              {{ "screenshot video" | trans }}
-            </div>
-            <hr style='margin-top:25px;'/>
-            <div class="PNB part_title_left"></div>
-
-            <div class="PNB frame_video">
-              {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
-              {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
-              {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
-              {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
-
-              {% set technical_info = record.get_technical_infos %}
-              {% set width = technical_info[dataW].value %}
-              {% set height = technical_info[dataH].value %}
-
-              {% if width and height %}
-                  {% set rawRatio =  (width / height)|number_format(3, '.') %}
-                  {% set rawRatioLength =  rawRatio|length %}
-                {% set ratio = rawRatio|slice(0,rawRatioLength-1) %}
-              {% else %}
-                 {% set ratio = '' %}
-              {% endif %}
-
-              <video id="thumb_video" controls="" preload="auto" data-ratio="{{ ratio }}">
-                {% for subdef in previewHtml5 %}
-                <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}" />
-                {% endfor %}
-                {{ 'No preview available' | trans }}
-              </video>
-            </div>
-
-            <div class="PNB action_bar_left">
-            </div>
-
-            <div id="thumb_camera_button" class="PNB">
-              <img src="/assets/prod/images/ThumbExtractor/camera_button.png" alt="{{ 'take a screenshot' | trans }}" />
-            </div>
-
-            <div class="PNB part_title_right">
-            </div>
-
-            <div class="PNB frame_canva">
-              <div id="thumb_delete_button">
-                <img src="/assets/prod/images/ThumbExtractor/delete.png" />
-              </div>
-              <p id='thumb_info'>{{ 'To take a screenshot click on camera' | trans }}</p>
-                <canvas id="thumb_canvas"></canvas>
-                <div id="alt_canvas_container" style="position:absolute;overflow:hidden;top:-1200px;visibility: hidden; width:0!important;height:0!important">
-                    {% for subdef in outputFormats %}
-                        <canvas data-width="{{ subdef.get_width() }}" data-name="{{ subdef.get_name() }}" class="alt_canvas" id="{{ subdef.get_name() }}"></canvas>
-                    {% endfor %}
-                </div>
-
-            </div>
-            <div id="thumb_slider" class="PNB">
-              <div id="thumb_wrapper">
-              </div>
-            </div>
-            <div class="thumb_submit_action PNB">
-              <input type="hidden" value='{{record.get_sbas_id()}}' name='sbas_id'>
-              <input type="hidden" value='{{record.get_record_id()}}' name='record_id'>
-                <button  id="thumb_validate_button" class="btn btn-inverse" type="button">{{ "validate" | trans }}</button>
-
-            </div>
-          </div>
-            <div id="rangeExtractor"  class="">
-                <div class="main_title">
-                    <img src='/assets/prod/images/ThumbExtractor/camera_title.png'/>
-                    {{ "video range extractor" | trans }}
-                </div>
-                <div class="video-range-editor-container"></div>
-                <div class="video-data-container">
-                    <dl class="dl-horizontal">
-                        <dt>Ratio</dt><dd>{{ ratio }}</dd>
-                        <dt>Type</dt><dd>{{ record.get_mime() }}</dd>
-                        {% if record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] is defined %}
-                            <dt>{{ 'Images par secondes' | trans }}</dt>
-                            <dd>{{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }} ips</dd>
-                        {% endif %}
-                        {% if record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] is defined %}
-                            <dt>{{ 'Codec Audio' | trans }}</dt>
-                            <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}</dd>
-                        {% endif %}
-                        <dt>{{ 'Size' | trans }}</dt><dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
-                            (null) %}
-                            {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
-                            {% if width is not none and height is not none %}
-                                {{ width ~ " x " ~ height }}
-                            {% endif %}</dd>
-                    </dl>
-                </div>
-            </div>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-
     <div id="image" class="tabBox">
       <div class="text-info">
-          <i class=" icon-info-sign"></i> {% trans %}Changes for rotation will be applied only on the sub-definitions of "image" type.{% endtrans %}
+          <i class="fa fa-info-circle" aria-hidden="true"></i> {% trans %}Changes for rotation will be applied only on
+          the sub-definitions of "image" type.{% endtrans %}
       </div>
       <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
         <fieldset style='border:1px solid #999;padding:20px;'>
@@ -242,7 +145,8 @@
         <div id="substitution" class="tabBox">
 
          {% if "unknown" == record.get_type() %}
-            <i class="icon-warning-sign icon-white"></i>{{ "Substitution is not possible for this kind of record" | trans }}
+             <i class="fa fa-exclamation-triangle icon-white"
+                aria-hidden="true"></i>{{ "Substitution is not possible for this kind of record" | trans }}
          {% else %}
             {% if app['conf'].get(['registry', 'modules', 'doc-substitution']) %}
                 <div id="substitution-hd">
@@ -309,51 +213,31 @@
 
     {# exiftool section #}
     {% if metadatas %}
-      {% for record in records %}
         <div id="exiftool"  class="tabBox">
-          {% set thumbnail = record.get_thumbnail() %}
-
-          <img style='float:left; margin-right:15px'
-            src="{{thumbnail.get_url()}}"
-            width="{{thumbnail.get_width()}}"
-            height="{{thumbnail.get_height()}}" />
-
-          <div>
-            <h1><b>Metadatas</b></h1>
-            <hr>
-            <table>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                {% for metadata in metadatas %}
-                    <tr>
-                        <td>
-                            {{ metadata.getTag().getTagname() }}
-                        </td>
-                        <td>
-                            {{ metadata.getValue().asString() }}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-          </div>
+            <div class="metadatas-top-block">
+                <select id="select-meta-subdef" name="metaSubdef" class="input-medium check-filters">
+                    <option value="" disabled >{{"prod::tool:select subdef" | trans}}</option>
+                    {% if listsubdef is defined and listsubdef is not null %}
+                        {% for subdef in listsubdef %}
+                        <option value= "{{ subdef }}" {{ subdef== 'document'? 'selected' : 'false' }}>{{ subdef }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <div id="metadata-load" style="height: 100%"></div>
+            <div id="metadata-content"></div>
         </div>
-      {% endfor %}
     {% endif %}
         {% if selectionLength == 1 and recordSubdefs is not empty %}
             <div id="tools-sharing" class="tabBox">
                 <div class="well-large">
                     {% for subdef in recordSubdefs %}
-                        <div class="row-fluid">
-                            <div class="span6">
+                        <div class="row-fluid tools-sharing-row">
+                            <div class="span6 tools-sharing-title">
                                 <span class="status-marker {{ subdef.state ? 'status-active' : 'status-inactive' }}"></span>{{ subdef.label }}
                             </div>
-                            <div class="span6">
-                                <p class="text-right">
-                                    <button type="button" class="stateChange_button btn btn-inverse text-right"
+                            <div class="span6 text-right">
+                                    <button type="button" class="tools-sharing-btn stateChange_button btn btn-inverse text-right"
                                             data-name="{{ subdef.name }}" data-state="{{ subdef.state }}">
                                         {% if subdef.state %}
                                             {{- "Disable document type sharing"|trans -}}
@@ -361,7 +245,6 @@
                                             {{- "Enable document type sharing"|trans -}}
                                         {% endif %}
                                     </button>
-                                </p>
                             </div>
                         </div>
                     {% endfor %}
@@ -385,14 +268,12 @@
     var toolsConfig = {
         selectionLength: {{ selectionLength }},
         databaseId: {% if selectionLength == 1%}{{record.get_base_id}}{% else %}0{% endif %},
-        recordId: {% if selectionLength == 1%}{{record.get_record_id}}{% else %}0{% endif %},
         translations: {
             alertTitle: '{{ "alert" | trans }}',
             noImgSelected: '{{ "no image selected" | trans }}',
             processing: '{{ "processing" | trans }}',
-            thumbnailTitle: '{{ 'thumbnail validation' | trans }}'
+            thumbnailTitle: '{{ 'thumbnail validation' | trans }}',
         },
-        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
         records: [
 
             {% for record in records %}
@@ -433,4 +314,51 @@
         ]
 
     };
+
+
+    function loadMetadataTab (url) {
+        $.ajax({
+            "url": url,
+            "type": "GET",
+            beforeSend: function () {
+                $('#metadata-content').empty();
+                $('#metadata-load').removeClass('hidden').addClass('loading');
+            },
+            success: function (data) {
+                $('#metadata-load').removeClass('loading').addClass('hidden');
+                $('#metadata-content').append(data);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        {% if record is not null %}
+            /**load default Subdef info **/
+            loadMetadataTab( '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'  }) }}');
+
+            /**load selected Subdef info **/
+            $('#select-meta-subdef').on('change', function (e) {
+                var selectedSubdef = $(this).children('option:selected');
+                if (selectedSubdef.val() !== "") {
+                   var url = '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'subdefName'  }) }}';
+                   url = url.replace("subdefName", selectedSubdef.val() );
+                   loadMetadataTab(url);
+                }
+            });
+        {% endif %}
+        $('.tool-modal-wrapper .tabBox').height($('#prod-tool-box').height() - 61 );
+        $('#exiftool').height($('#prod-tool-box').height() - 55 );
+
+    });
+
+    $(".subdefTodo").change(function (e) {
+        var allsubdef = $(".subdefTodo[value=0]").prop('checked');
+        if (allsubdef) {
+            $(".subdefTodo[value!=0]").prop('checked', true);
+        }
+
+        if ($(this).val() === '0' && !allsubdef) {
+            $(".subdefTodo[value!=0]").prop('checked', false);
+        }
+    });
 </script>

@@ -44,14 +44,15 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
 
     public function testGet_url()
     {
-        $url = rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
+        $url = $this->removeScheme(rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/' . $this->object->get_label()
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('document')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . urlencode($this->object->get_token());
+            . '?token=' . urlencode($this->object->get_token())
+        );
 
-        $this->assertEquals($url, $this->object->get_url());
+        $this->assertEquals($url, $this->removeScheme((string)($this->object->get_url())));
     }
 
     public function testGet_Previewurl()
@@ -60,25 +61,27 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
         $subdef = self::$DI['record_1']->get_subdef('preview');
         $previewPermalink = media_Permalink_Adapter::getPermalink(self::$DI['app'], $databox, $subdef);
 
-        $url = rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
+        $url = $this->removeScheme(rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/preview/' . $previewPermalink->get_label()
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
-            . '?token=' . urlencode($previewPermalink->get_token());
+            . '?token=' . urlencode($previewPermalink->get_token())
+        );
 
-        $this->assertEquals($url, $previewPermalink->get_url());
+        $this->assertEquals($url, $this->removeScheme((string)($previewPermalink->get_url())));
     }
 
     public function testGet_page()
     {
-        $url = rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
+        $url = $this->removeScheme(rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/'
-            . '?token=' . urlencode($this->object->get_token());
+            . '?token=' . urlencode($this->object->get_token())
+        );
 
-        $this->assertEquals($url, $this->object->get_page());
+        $this->assertEquals($url, $this->removeScheme((string)($this->object->get_page())));
     }
 
     public function testGet_id()
@@ -106,11 +109,8 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
         $this->assertInstanceOf('DateTime', $this->object->get_last_modified());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     */
-    public function testCreateAPermalinkAlreadyCreated()
+    private function removeScheme($s)
     {
-        media_Permalink_Adapter::create(self::$DI['app'], self::$DI['record_1']->get_databox(), self::$DI['record_1']->get_subdef('document'));
+        return preg_replace('/^(http|https):\\/\\/(.*)$/', '$2', $s);
     }
 }

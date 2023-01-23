@@ -3,12 +3,7 @@
 {% else %}
     {% set opener = "opener" %}
 {% endif %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="{{ app['locale'] }}">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>{{ 'thesaurus:: Proprietes' | trans }}</title>
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
         <style type="text/css">
             a
             {
@@ -23,111 +18,122 @@
             {
                 font-weight:900;
             }
+            #TSY thead {
+                display:table;
+                table-layout:fixed;
+            }
+            #TSY table tbody {
+                display: block;
+                height: 150px;
+                overflow: scroll;
+            }
+            #TSY tbody tr {
+                display:table;
+                width:100%;
+                table-layout:fixed;
+            }
         </style>
-        <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
 
         <script type="text/javascript">
             function loaded()
             {
-                window.name="PROPERTIES";
                 self.focus();
             }
+            $( document ).ready(function() {
+                loaded();
+                $('#TSY table thead').width($("#LSY")[0].scrollWidth);
+            });
         </script>
-    </head>
-    <body id="desktop" onload="loaded();" class="dialog">
-        <div class="menu" id="flagsMenu" style="z-index:50">
-            {% for code, language in languages %}
-                <a id='flagMenu_{{ code }}' href='javascript:void(0)' class=''>
-                <img src='/assets/common/images/lng/{{ code }}_flag_18.gif' />{{ language }}</a>
-            {% endfor %}
-        </div>
-        <div class="menu" id="syMenu" style="z-index:50">
-            <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus::menu: supprimer' | trans }}</a>
-        </div>
+<div class="menu" id="syMenu" style="z-index:999">
+    <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus:properties::  Mettre dans le stock' | trans }}</a>
+</div>
+    <div id="desktop" class="dialog">
 
-        <div style='text-align:right'>
+        <H4>{{ fullpath | raw }}</H4>
+        <div style='float:right'>
             <b>id:</b>&nbsp;{{ id }}
         </div>
-        <H4>{{ fullpath | raw }}</H4><br/>
         {% if typ == "CT" %}
             <br/>
-        {% elseif typ == "TH" %}
+        {#{% elseif typ == "TH" %}
             {% trans with {'%hits%' : hits} %}thesaurus:: %hits% reponses retournees{% endtrans %}
             <br/>
-            <br/>
+            <br/>#}
         {% endif %}
         <div id="TSY" class="tableContainer" style="margin:10px; position:relative; top:0px; left:0px">
             <div>
                 <table border="0" cellpadding="0" cellspacing="0" style="width:100%; ">
-                    <col style="width:40px;" />
-                    <col style="width:30px;" />
-                    <col style="width:auto;" />
-                    <col style="width:40px;" />
-                    <col style="width:140px;" />
-                    <col style="width:14px;" />
                     <thead>
                         <tr>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
+                            <th style="width:40px;">&nbsp;</th>
+                            <th style="width:30px;">&nbsp;</th>
                             <th>{{ 'thesaurus:: synonymes' | trans }}</th>
-                            <th>{{ 'thesaurus:: hits' | trans }}</th>
-                            <th>{{ 'thesaurus:: ids' | trans }}</th>
-                            <th></th>
+                            <th style="width:180px;" colspan="2">{{ 'thesaurus:termePorperties:termeId' | trans }}</th>
                         </tr>
                     </thead>
-                </table>
-            </div>
-            <div style="position:relative; height:150px; overflow:scroll">
-                <div style="position:relative; height:150px; ">
-                    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
-                        <col style="width:40px;" />
-                        <col style="width:30px;" />
-                        <col style="width:auto;" />
-                        <col style="width:40px;" />
-                        <col style="width:140px;" />
-                        <tbody id="LSY" style="">
+                    <tbody id="LSY" style="">
 
-                        {% for data in synonyms %}
-                            <tr class='s_' id='SYN_{{ data['id'] }}' hits='{{ data['hits'] }}'>
-                                <td style='text-align:center;'>
+                    {% for data in synonyms %}
+                        <tr class='s_' id='SYN_{{ data['id'] }}' hits='{{ data['hits'] }}'>
+                            <td style='text-align:center;width:40px;'>
                                 {% if loop.index > 0 %}
                                     <img id="BTNU_{{ data['id'] }}" src="/assets/thesaurus/images/up.gif" />
                                 {% endif %}
                                 {% if not loop.last %}
                                     <img id="BTND_{{ data['id'] }}" src="/assets/thesaurus/images/down.gif" />
                                 {% endif %}
-                                </td>
-                                {% if data['lng'] %}
-                                    <td id='FLG_{{ data['id'] }}'><img src='/assets/common/images/lng/{{ data['lng'] }}_flag_18.gif' /></td>
-                                {% else %}
-                                    <td id='FLG_{{ data['id'] }}'><img src='/assets/thesaurus/images/noflag.gif' /></td>
-                                {% endif %}
-                                <td>{{ data['t'] }}</td>
-                                <td>{{ data['hits'] }}</td>
-                                <td>{{ data['id'] }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                            </td>
+                            {% if data['lng'] %}
+                                <td id='FLG_{{ data['id'] }}' style='width:30px;'>{{ data['lng'] }}</td>
+                            {% else %}
+                                <td style="width:30px;" id='FLG_{{ data['id'] }}' style='width:30px;'></td>
+                            {% endif %}
+                            <td>{{ data['t'] }}</td>
+                            <td style="width:100px;">{{ data['id'] }}</td>
+                            <td style="width:calc( 86px - 1em )" ><span class="delete_term"></span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
+{#            <div style="position:relative; height:150px; overflow:scroll">#}
+{#                <div style="position:relative; height:150px; ">#}
+{#                    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">#}
+{#                        <col style="width:40px;" />#}
+{#                        <col style="width:30px;" />#}
+{#                        <col style="width:auto;" />#}
+{#                        <col style="width:40px;" />#}
+{#                        <col style="width:140px;" />#}
+{#                        <col style="width:14px;" />#}
+
+{#                    </table>#}
+{#                </div>#}
+{#            </div>#}
         </div>
     <center>
         <form onsubmit="return(false);">
-            <input style="position:relative; z-index:2" type="button" id="close_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+            <div class="thesaurus_confirm_bottom_block">
+                <input type="button" id="close_button" class="close_button cancel_btn" value="{{ 'boutton::fermer' | trans }}" >
+            </div>
         </form>
     </center>
     <script type="text/javascript">
+        $(".close_button").on("click", function(){
+            $('.close-dialog').trigger('click');
+        });
         // gui callback du menu des drapeaux
         var nsy = {{ synonyms | length }};
-
         function cbME_flags(action, cbParm, menuelem_id)
         {
             if(action != "SELECT" || !menuelem_id) {
                 return;
             }
+
             lng = menuelem_id.substr(9,2);
+
+            if (lng == '') {
+                return;
+            }
 
             url = "xmlhttp/changesylng.x.php";
             parms  = "bid={{ bid | url_encode }}";
@@ -148,16 +154,22 @@
                 switch(refresh.item(i).getAttribute("type"))
                 {
                     case "CT":
-                    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
-                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                    reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                    myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                     case "TH":
-                    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
-                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                    reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                    myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                 }
             }
         }
+
+
+        $('.delete_term').click(function (e) {
+            e.preventDefault();
+            $('#delete_sy').trigger('click');
+        });
 
         // gui callback du menu des synonymes
         function cbME_synonym(action, cbParm, menuelem_id)
@@ -169,6 +181,7 @@
                     // pas d'action possible s'il ne reste qu'un seul synonyme
                     // alert(nsy);
                     document.getElementById("delete_sy").className = "disabled";
+                   $('.delete_term').addClass('disabled');
                     // document.getElementById("reject_sy").className = "disabled";
                 }
                 else
@@ -178,12 +191,14 @@
                         // y'a des hits, on peut pas supprimer
                         // document.getElementById("reject_sy").className = "";
                         document.getElementById("delete_sy").className = "";
+                        $('.delete_term').removeClass('disabled');
                     }
                     else
                     {
                         // pas de hits : on peut supprimer
                         // document.getElementById("reject_sy").className = "";
                         document.getElementById("delete_sy").className = "";
+                        $('.delete_term').removeClass('disabled');
                     }
                 }
                 return;
@@ -216,7 +231,7 @@
                         ret = loadXMLDoc(url, parms, true);
 
                         sy_list = ret.getElementsByTagName("sy_list").item(0);
-                        refresh_sy(sy_list);
+                        //refresh_sy(sy_list);
 
                         refresh = ret.getElementsByTagName("refresh");
                         for(i=0; i<refresh.length; i++)
@@ -224,15 +239,24 @@
                             switch(refresh.item(i).getAttribute("type"))
                             {
                                 case "CT":
-                                    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
-                                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                                    reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                    myGUI.select(document.getElementById("THE_{{ id }}"));
                                     break;
                                 case "TH":
-                                    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
-                                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                                    reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                    myGUI.select(document.getElementById("THE_{{ id }}"));
                                     break;
                             }
                         }
+                        var new_url =  $('#url_properties').val();
+                        $.ajax({
+                            type: "GET",
+                            url: `${new_url}`,
+                            success: function(data){
+                                $('#DLG_PROPERTIES').html('');
+                                $('#DLG_PROPERTIES').append(data);
+                            }
+                        });
                     }
                     break;
             }
@@ -253,6 +277,7 @@
 
                 td = tr.appendChild(document.createElement("td"));
                 td.style.textAlign = "center";
+                td.style.width = "40px";
                 if(nsy > 0)
                 {
                     img = td.appendChild(document.createElement("img"));
@@ -272,24 +297,28 @@
 
                 td = tr.appendChild(document.createElement("td"));
                 td.id = "FLG_"+(nsy+1);
+                td.style.width = "30px";
                 // td.innerText = n.getAttribute("lng");
-                img = td.appendChild(document.createElement("img"));
-                img.setAttribute("src", "/assets/common/images/lng/"+n.getAttribute("lng")+"_flag_18.gif");
+                span = td.appendChild(document.createElement("span"));
+                span.innerHTML = n.getAttribute("lng");
 
                 td = tr.appendChild(document.createElement("td"));
                 // td.colSpan = "2";
                 // td.setAttribute("colSpan", "3");          // attention au 'S' majuscule !!!
                 td.innerHTML = n.getAttribute("t");
 
-                td = tr.appendChild(document.createElement("td"));
-                td.innerHTML = n.getAttribute("hits");
+                /*td = tr.appendChild(document.createElement("td"));
+                td.innerHTML = n.getAttribute("hits");*/
 
                 td = tr.appendChild(document.createElement("td"));
+                td.style.width = "100px";
                 td.innerHTML = n.getAttribute("id");
 
                 if(n.getAttribute("sel")) {
                     myGUI.select(tr);
                 }
+                td = tr.appendChild(document.createElement("td"));
+                td.style.width = "calc( 86px - 1em )";
             }
 
             newtbody = oldtbody.parentNode.replaceChild(tbody, oldtbody);
@@ -308,15 +337,6 @@
                             ;
                         if(tr)
                             myGUI.select(tr);
-                        switch(o.id.substr(0, 4))
-                        {
-                            case "FLG_":    // le drapeau
-                                document.getElementById("flagsMenu").runAsMenu( evt, tr );
-                                break;
-                            case "SYN_":    // le synonyme
-                                document.getElementById("syMenu").runAsMenu( evt, tr );
-                                break;
-                        }
                     }
                     break;
                 case "MOUSEDOWN":
@@ -333,6 +353,21 @@
                                 break;
                             case "BTND_":
                                 syChgPos(-1);
+                                break;
+                        }
+
+                        switch(o.id.substr(0, 4))
+                        {
+                            case "FLG_":    // le drapeau
+                                document.getElementById("flagsMenu").runAsMenu( evt, tr );
+                                break;
+                            case "SYN_":    // le synonyme
+                                if (stock == false)
+                                    {
+                                        document.getElementById("syMenu").runAsMenu(evt, tr);
+                                        $('.delete_term').html('');
+                                        $('.delete_term', tr).append($('#syMenu').html());
+                                    }
                                 break;
                         }
                     }
@@ -368,12 +403,12 @@
                 switch(refresh.item(i).getAttribute("type"))
                 {
                     case "CT":
-                        {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
-                        {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                        myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                     case "TH":
-                        {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
-                        {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                        myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                 }
             }
@@ -383,7 +418,5 @@
         myGUI.setClickable("TSY", cbDD_TSY);
         myGUI.setAsMenu("flagsMenu", cbME_flags);
         myGUI.setAsMenu("syMenu", cbME_synonym);
-
     </script>
-    </body>
-</html>
+    </div>

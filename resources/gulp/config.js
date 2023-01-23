@@ -5,7 +5,8 @@ var configPaths = {
     src: 'resources/www/',
     vendors: 'www/bower_components/',
     build: 'www/assets/',
-    dist: 'www/'
+    dist: 'www/',
+    nodes: 'node_modules/'
 };
 
 exports.paths = configPaths;

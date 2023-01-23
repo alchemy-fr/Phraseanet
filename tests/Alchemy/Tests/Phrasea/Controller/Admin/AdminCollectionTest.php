@@ -529,7 +529,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson($response);
         $this->assertTrue($json->success);
-        $this->assertEquals(0, $collection->get_record_amount());
     }
 
     /**

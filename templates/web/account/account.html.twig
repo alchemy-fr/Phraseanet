@@ -1,6 +1,6 @@
 {% extends "account/base.html.twig" %}
 
-{% import "common/macros.html.twig" as auth_macro %}
+{% import "common/macro_flashes.html.twig" as macro_flashes %}
 
 {% set selected = "informations" %}
 
@@ -25,7 +25,7 @@
 {% block content_account %}
     <div class="row-fluid">
         <div class="span12">
-            {{ auth_macro.flashes() }}
+            {{ macro_flashes.flashes() }}
             <form name="account" id="account" class="form-horizontal" action="{{ path("submit_update_account") }}" method="post">
                 <div class="row-fluid">
                     <div class="span12 well well-small" id="phr-account" style="background: #191919;border: 1px solid #333333;">
@@ -107,7 +107,7 @@
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_function"><strong>{{ "admin::compte-utilisateur poste" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_function" id="form_function" value="{{ app["authentication"].getUser().getActivity() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_function" id="form_function" value="{{ app["authentication"].getUser().getJob() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
@@ -121,7 +121,7 @@
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_activity"><strong>{{ "admin::compte-utilisateur activite" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_activity" id="form_activity" value="{{ app["authentication"].getUser().getJob() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_activity" id="form_activity" value="{{ app["authentication"].getUser().getActivity() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
@@ -221,23 +221,97 @@
                                         <p class="form_alert help-block"></p>
                                     </div>
                                 </div>
-                                <div class="control-group">
-                                    <label class="form_label control-label" for="form_retryFTP"><strong>{{ "admin::compte-utilisateur:ftp: Nombre d\'essais max" | trans }}</strong></label>
-                                    <div class="controls">
-                                        <input class="input_element input-xlarge" type="text" name="form_retryFTP" id="form_retryFTP" value="{{ ftpCredential is not none ? ftpCredential.getMaxRetry() : '' }}" />
-                                        <p class="form_alert help-block"></p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="well well-large" style="border: 1px solid #333333;">
-                        <div style="max-width: 400px;margin-left: 52px">
+                        <div style="max-width: 400px;margin-left: 2%;display: inline-block;width: 47%;margin-right: 1%;">
                             <input type="submit" class="btn btn-info btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
+
                         </div>
+
+                        <div style="max-width: 400px;margin-left: 1%;width: 47%;display: inline-block;margin-right: 2%;float: right;">
+
+                            {% if not user.isadmin() and not user.hasLdapCreated() and (owned_feeds|length == 0) and (initiated_validations|length == 0) %}
+
+                                <a  href="#delete-account-process" type="button" role="button" data-toggle="modal" class="btn btn-danger btn-block btn-large">{{ 'phraseanet::account: Delete my account' | trans }}</a>
+
+                                <!-- Modal -->
+                                <div id="delete-account-process" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        <h3 id="myModalLabel">{{ "phraseanet::account: Process to delete account" }}</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>{{ "phraseanet::account: Are you sure you want to delete your account?" | trans }} </p>
+                                        <h6>{{ "phraseanet::account: List of data to be deleted" | trans }}</h6>
+
+                                        {% if baskets|length > 0  %}
+                                            - {{ 'Paniers' | trans }}
+                                            <ul style="padding-left: 30px">
+                                                {% for basket in baskets %}
+                                                    <li>{{ basket.getName() }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+
+                                        {% if api_accounts|length > 0 %}
+                                            - {{ "My application " | trans }}
+                                            <ul style="padding-left: 30px">
+                                                {% for api_account in api_accounts %}
+                                                    <li>{{ api_account.getApplication().getName() ~ " => Client_id: " ~ api_account.getApplication().getClientId() }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif%}
+
+                                            - {{ "phraseanet::account: My phraseanet account" | trans }}
+                                            <ul style="padding-left: 30px">
+                                                <li>Name : {{ user.getFirstName() ~ ' ' ~ user.getLastName() }}</li>
+                                                <li>Login : {{ user.getLogin() }}</li>
+                                            </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <label style="text-align: left;" class="form_label checkbox" for="delete_account_aggree">
+                                            {% if app['conf'].get(['user_account', 'deleting_policies', 'email_confirmation']) %}
+                                                {{ "phraseanet::account: I am agree to delete my account, need confirmation on mail" | trans }}
+                                            {% else %}
+                                                {{ "phraseanet::account: I am agree to delete my account" | trans }}
+                                            {% endif %}
+                                            <input class="input_element input-xlarge" type="checkbox" id="delete_account_aggree"/>
+                                        </label>
+
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ "No" | trans }}</button>
+                                        <a id="delete_account_confirm" class="btn btn-info" style="opacity:0.5;pointer-events: none;" >{{ "Yes" | trans }}</a>
+                                    </div>
+                                </div>
+
+                            {% else %}
+                                <p style="font-size: 12px"> {{ "phraseanet::account: << your account can be deleted via admin interface >> " | trans }}</p>
+                            {% endif %}
+
+                        </div>
+
                     </div>
                 </div>
             </form>
         </div>
     </div>
+
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var deleteButton = $("#delete_account_confirm");
+            $("#delete_account_aggree").bind("click", function(e) {
+                if ($(this).is(":checked")) {
+                    deleteButton.attr("href", '{{ path("account_process_delete") }}');
+                    deleteButton.css({"opacity": "1", "pointer-events": "auto"});
+                } else {
+                    deleteButton.removeAttr("href");
+                    deleteButton.css({"opacity": "0.5", "pointer-events": "none"});
+                }
+
+            });
+        });
+    </script>
+
 {% endblock %}

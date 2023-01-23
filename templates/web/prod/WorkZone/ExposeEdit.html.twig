@@ -1,0 +1,787 @@
+{% block css %}
+    <style type="text/css">
+        #permission-editing td, #permission-editing th {
+            min-width: 135px;
+            text-align: center;
+            height: 50px;
+        }
+    </style>
+{% endblock %}
+
+<div id="publication-tabs" class=" PNB10 expose-edit-wrapper" >
+    <ul>
+        <li>
+            <a href="#publication-editing">
+                {{ 'prod:expose:publication:Editing' | trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#permission-editing">
+                {{ 'prod:expose:publication:Permission' | trans }}
+            </a>
+        </li>
+    </ul>
+
+    <div id="publication-editing">
+        <div class="expose-edit-wrapper">
+            <br/>
+            <form id="publication-data-form" >
+                <div class="edit-publication-block">
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Name' | trans }}</label>
+                        <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
+                        <input type="text" data-actual-slug="{{ publication.slug }}" value="{{ publication.slug }}" name="slug" class="publication-field" id="slug-field"/>
+                        <input type="button" class="slug-availability" style="height: 31px;" value="{{ 'prod:expose:publication:check slug' | trans }}">
+                        <img class="expose-slug-ok" src="/assets/common/images/icons/ok.png" style="height: 32px;display:none;" >
+                        <img class="expose-slug-nok" src="/assets/common/images/icons/red-cross.png" style="height: 32px;display:none;">
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Description' | trans }}</label>
+                        <textarea class="publication-field description-field-edit" name="description" id="description" cols="250" rows="5" style="width: 530px;">{{ publication.description }}</textarea>
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
+                        <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
+                            {% if publication.parent.id %}
+                                {% set parentId =  publication.parent.id %}
+                            {% endif %}
+                            <select id="publication_parent" name="parent" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select a parent publication' | trans }}</option>
+                                {% if publication.parent %}
+                                    <option value="/publications/{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+
+                    {% if publication.capabilities.operator %}
+                        <div class="ui-widget profile-wrapper hide">
+                            <label>{{ 'prod:expose:publication:Profile' | trans }}</label>
+                            {% set nbProfile =  publication.profile|length %}
+
+                            <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
+                                {% if nbProfile %}
+                                    <option value="/publication-profiles/{{ publication.profile.id }}">{{ publication.profile.name }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    {% endif %}
+
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Enabled' | trans }} </label>
+                        <label class="switch">
+                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled"
+                                    {% if publication.enabled == 1 %} checked {% endif %}
+                            >
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="ui-widget available-wrapper">
+                        <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
+                        <div class="available-widget">
+                            <label>{{ 'prod:expose:publication:From' | trans }}</label>
+                            <input type="text" autocomplete="off" value="{% if publication.config.beginsAt %} {{ publication.config.beginsAt | date('Y/m/d H:i', timezone)}} {% endif %}" name="beginsAt" class="use-datepicker publication-field"/>
+                        </div>
+                        <div class="available-widget">
+                            <label>{{ 'prod:expose:publication:To' | trans }} </label>
+                            <input type="text" autocomplete="off" value="{% if publication.config.expiresAt %} {{ publication.config.expiresAt | date('Y/m/d H:i') }} {% endif %}" name="expiresAt" class="use-datepicker publication-field"/>
+                        </div>
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
+                        <label class="switch">
+                            <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed"
+                                    {% if publication.publiclyListed == 1 %} checked {% endif %}
+                            >
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="ui-widget access-wrapper available-wrapper">
+                        <label>{{ 'prod:expose:publication:Access rules' | trans }}</label>
+                        <div class="available-widget">
+                            <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Open access' | trans }}</option>
+                                <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Password' | trans }}</option>
+                                <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Users' | trans }}</option>
+                            </select>
+                        </div>
+                        <div class="available-widget ui-widget securityOptions_wrapper {% if publication.securityMethod != 'password'%} visibility-hidden {% endif %}">
+                            <input class="publication-field" type="text" name="password" placeholder="Password" value="{{ publication.securityOptions.password }}"
+                                   id="publication_password"/>
+                        </div>
+                        <div class="available-widget ui-widget publication_securityMethod_error hidden"
+                             id="publication_securityMethod_error">
+                            <p class="error form-error alert alert-error">Not implemented</p>
+                        </div>
+                    </div>
+
+                    <h4 class="expose-more-setting" style="text-align: center;margin-bottom: 20px;">{{ 'expose:: More setting' | trans }}</h4>
+
+                    <div id="moreSettingInner" class="hidden">
+                        <div class="ui-widget">
+                            <label>{{ 'prod:expose:publication:Layout' | trans }} </label>
+                            <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
+                                <option value="gallery" {% if publication.config.layout == 'gallery'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                                <option value="grid" {% if publication.config.layout == 'grid'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Grid' | trans }}</option>
+                                <option value="mapbox" {% if publication.config.layout == 'mapbox'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Mapbox' | trans }}</option>
+                                <option value="download" {% if publication.config.layout == 'download'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Download' | trans }}</option>
+                            </select>
+                        </div>
+                        <div class="ui-widget">
+                            <label>{{ 'prod:expose:publication:Theme' | trans }} </label>
+                            <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
+                                <option value="light" {% if publication.config.theme == 'light'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Light' | trans }}</option>
+                                <option value="dark" {% if publication.config.theme == 'dark'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Dark' | trans }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+            <form name="publication-json" id="publication-json" class="text-center">
+                <div id="advancedSettingBlock">
+{#                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>#}
+                    <div id="advancedSettingInner" class="hidden">
+                        <div>
+                            <textarea name="advancedSetting" id="advancedSetting" cols="100" rows="11">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="publication-btn-container submit-blockr">
+                    <p class="text-center"><span id="pub-error" class="hidden alert alert-error"></span></p>
+                    <p class="text-center"><span id="pub-success" class="hidden alert alert-success"></span></p>
+                    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                        <div class="ui-dialog-buttonset">
+                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="update-publication">
+                                {{ 'prod:expose:publication:Update Publication'| trans }}
+                            </button>
+                            <button type="button"
+                                    class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                    role="button" aria-disabled="false"><span class="ui-button-text">{{ 'prod:expose:publication:Cancel'| trans }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+
+    <div id="permission-editing">
+        <div>
+            <h3 style="display:inline-block">{{ 'prod:expose:publication:Permission'| trans }}</h3>
+            <div style="float:right;margin:10px;">
+                <p id="permission-success" class="hidden alert alert-success text-center"></p>
+                <p id="permission-error" class="hidden alert alert-error text-center"></p>
+            </div>
+
+        </div>
+
+        <div id="permission-list" style="padding: 10px;">
+            {% include 'prod/WorkZone/ExposePermission.html.twig' %}
+        </div>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        var publicationEdit = $(document).find("#DIALOG-expose-edit");
+
+        var publicationForm = publicationEdit.find("#publication-data-form");
+        var publicationParent = publicationEdit.find("#publication_parent");
+        var securityMethod = publicationEdit.find("#publication_securityMethod");
+        var profileField = publicationEdit.find("#profile-field");
+        var userList = publicationEdit.find("#user-list");
+        var groupList = publicationEdit.find("#group-list");
+        var advancedSetting = publicationEdit.find("#advancedSetting");
+
+        var publicationFieldClass = publicationEdit.find(".publication-field");
+        var permissionList = publicationEdit.find("#permission-list");
+        var slugField = publicationEdit.find('#slug-field');
+
+        //generate publication list
+        $(document).ready(function () {
+            $( "#publication-tabs" ).tabs();
+
+            publicationEdit.find('.expose-more-setting').on('click', function (e) {
+                $(this).toggleClass('open');
+                $(this).next("div#moreSettingInner").toggleClass('hidden');
+            });
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/list-publication/?format=pub-list&exposeName={{ exposeName }}`,
+                success: function (data) {
+                    publicationParent.empty().html('<option value="">{{ "prod:expose:publication:Select a parent publication" | trans }}</option>');
+                    for (i = 0; i < data.publications.length; i++) {
+                        let selected = '';
+                        if (data.publications[i].id == '{{ parentId }}') {
+                            selected = 'selected="selected"';
+                        }
+
+                        if (data.publications[i].id !== '{{ publication.id }}') {
+                            publicationParent.append('<option value='+ data.basePath + '/' + data.publications[i].id+' ' + selected +'>'+data.publications[i].title+'</option>');
+                        }
+                    }
+                }
+            });
+
+            {% if publication.capabilities.operator %}
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
+                    success: function (data) {
+                        profileField.empty().html('<option value="">{{ "prod:expose:publication:Select Profile" | trans }}</option>');
+                        for (let i = 0; i < data.profiles.length; i++) {
+                            let selected = '';
+                            if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
+                                selected = 'selected="selected"';
+                            }
+
+                            $('#DIALOG-expose-edit select#profile-field').append('<option ' +
+                                'value=' + data.basePath + '/' + data.profiles[i].id + ' ' + selected + ' >'
+                                + data.profiles[i].name +
+                                '</option>'
+                            );
+                        }
+
+                    }
+                });
+            {% endif %}
+
+            tinymce.remove('.description-field-edit');
+
+            tinymce.init({
+                selector: '.description-field-edit',
+                init_instance_callback: function (editor) {
+                    editor.on('keyup Change', function (e) {
+                        $('textarea.description-field-edit').val(editor.getContent());
+                        removeSecurityField();
+                    });
+                },
+                menubar: 'edit view insert format table help',
+                plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
+                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+            });
+
+            $.datetimepicker.setLocale('{{ app['locale'] }}');
+
+            $(".use-datepicker").datetimepicker({
+                i18n:{
+                    de:{
+                        months:[
+                            'Januar','Februar','März','April',
+                            'Mai','Juni','Juli','August',
+                            'September','Oktober','November','Dezember',
+                        ],
+                        dayOfWeek:[
+                            'So','Mo','Di','Mi','Do','Fr','Sa'
+                        ]
+                    },
+                    fr:{
+                        months:[
+                            'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                            'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+                        ],
+                        dayOfWeek:[
+                            'dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'
+                        ]
+                    },
+                    du:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    nl:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    en:{
+                        months:[
+                            'January','February','March','April','May','June',
+                            'July','August','September','October','November','December'
+                        ],
+                        dayOfWeek:[
+                            'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+                        ]
+                    }
+                },
+                format:'Y/m/d H:i',
+                theme: 'dark',
+                minDate:0,
+                closeOnWithoutClick :true
+            });
+        });
+
+        bindPermissionEvent();
+
+        slugField.on('keyup', function() {
+            publicationEdit.find('.expose-slug-ok').hide();
+            publicationEdit.find('.expose-slug-nok').hide();
+        });
+
+        publicationFieldClass.on('keyup change', function (e) {
+            if ($(this).attr('id') === 'publication_securityMethod') {
+                if ($(this).val() === 'password') {
+                    $(".securityOptions_wrapper").removeClass('visibility-hidden');
+                } else {
+                    publicationEdit.find("#publication_password").val('');
+                    $(".securityOptions_wrapper").addClass('visibility-hidden');
+                }
+            }
+            try {
+                publicationEdit.find("#pub-success").addClass("hidden");
+                publicationEdit.find("#pub-error").addClass("hidden");
+                jQuery.parseJSON(JSON.stringify($(this).val()));
+            } catch (err) {
+                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
+            }
+
+            removeSecurityField();
+        });
+
+        publicationEdit.find('#publication-json').on('submit', function (e) {
+            e.preventDefault();
+
+            removeSecurityField();
+
+            try {
+                publicationEdit.find("#pub-error").addClass("hidden");
+
+            } catch (err) {
+                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
+                return;
+            }
+            if (advancedSetting.val() !== '') {
+                $.ajax({
+                    type: "PUT",
+                    url: "/prod/expose/update-publication/{{ publication.id }}",
+                    dataType: 'json',
+                    data: {
+                        exposeName: "{{ exposeName }}",
+                        publicationData: advancedSetting.val()
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
+                            document.getElementById("publication-data-form").reset();
+                            setTimeout(function(){
+                                    $('#DIALOG-expose-edit').dialog('close');
+                                }
+                                , 2000
+                            );
+                        } else {
+                            publicationEdit.find("#pub-error").removeClass("hidden").text(data.message);
+                        }
+                    }
+                });
+            } else {
+                publicationEdit.find("#pub-error").removeClass("hidden").text("No changed!");
+            }
+
+        });
+
+        permissionList.on('change', '#input-user-list', function () {
+            let optionSelected = permissionList.find('#user-list option[value="'+this.value+'"]');
+
+            if (optionSelected.length !== 0) {
+                let userId = optionSelected.text();
+
+                if (userId !== '') {
+                    optionSelected.attr('disabled','disabled');
+
+                    let userName = this.value;
+
+                    let permissionLine = '<tr data-user-id="'+ userId +'" data-mask="0">\n' +
+                        '                <td>\n' + userName +
+                        '                </td>\n' +
+                        '                <td>\n' +
+                        '                <input class="user-view" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="user-edit" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="user-delete" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '<td><button class="btn-danger btn-mini delete-user-permission" >Delete</button></td>\n'+
+                        '            </tr>'
+                    ;
+
+                    permissionList.find("#user-permission-list").append(permissionLine);
+
+                    // new permission
+                    updatePermission(null, userId, 0, 1, 'user', true);
+                }
+            }
+
+        });
+
+        permissionList.on('change', '#input-group-list', function() {
+            let optionSelected = permissionList.find('#group-list option[value="'+this.value+'"]');
+
+            if (optionSelected.length !== 0) {
+                let groupId = optionSelected.text();
+
+                if (groupId !== '') {
+                    optionSelected.attr('disabled','disabled');
+
+                    let groupName = this.value;
+
+                    let permissionLine = '<tr data-group-id="'+ groupId +'" data-mask="0">\n' +
+                        '                <td>\n' + groupName +
+                        '                </td>\n' +
+                        '                <td>\n' +
+                        '                <input class="group-view" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="group-edit" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="group-delete" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '<td><button class="btn-danger btn-mini delete-group-permission">Delete</button></td>\n'+
+                        '            </tr>'
+                    ;
+
+                    permissionList.find("#group-permission-list").append(permissionLine);
+
+                    // new permission
+                    updatePermission(null, groupId, 0, 1, 'group', true);
+                }
+            }
+        });
+
+        function bindPermissionEvent() {
+            // user right
+            permissionList.on('change', '.user-view', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    1,
+                    'user'
+                );
+            });
+
+            permissionList.on('change', '.user-edit', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    4,
+                    'user'
+                );
+            });
+
+            permissionList.on('change', '.user-owner', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    128,
+                    'user'
+                );
+            });
+
+            permissionList.on('change', '.user-delete', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    8,
+                    'user'
+                );
+            });
+
+            permissionList.on('click', '.delete-user-permission', function () {
+                deletePermission('user', $(this).parents('tr').attr('data-user-id'));
+
+            });
+
+            // group right
+            permissionList.on('change', '.group-view', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    1,
+                    'group'
+                );
+            });
+
+            permissionList.on('change', '.group-edit', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    4,
+                    'group'
+                );
+            });
+
+            permissionList.on('change', '.group-owner', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    128,
+                    'group'
+                );
+            });
+
+            permissionList.on('change', '.group-delete', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    8,
+                    'group'
+                );
+            });
+
+            permissionList.on('click', '.delete-group-permission', function () {
+                deletePermission('group', $(this).parents('tr').attr('data-group-id'));
+            });
+        }
+
+        function updatePermission(checkboxSelector, userId, mask, singleMask, userType, isNew = false) {
+            hideInfo();
+
+            if ( !isNew ) {
+                if (checkboxSelector.is(':checked')) {
+                    mask = mask | singleMask;
+                } else {
+                    mask = mask & (~singleMask);
+                }
+                checkboxSelector.parents('tr').attr('data-mask', mask);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/prod/expose/publication/permission/update",
+                dataType: 'json',
+                data: {
+                    exposeName: "{{ exposeName }}",
+                    jsonData: {
+                        userType: userType,
+                        userId: userId,
+                        objectType: "publication",
+                        objectId: "{{ publication.id }}",
+                        mask: mask
+                    },
+                    action: "update"
+                },
+                success: function (data) {
+                    if (data.success) {
+                        publicationEdit.find("#permission-error").addClass("hidden");
+                        publicationEdit.find("#permission-success").removeClass("hidden").html(data.message);
+                    } else {
+                        publicationEdit.find("#permission-success").addClass("hidden");
+                        publicationEdit.find("#permission-error").removeClass("hidden").html(data.message);
+                    }
+                }
+            });
+        }
+
+        function deletePermission(userType, userId) {
+            hideInfo();
+
+            $.ajax({
+                type: "POST",
+                url: "/prod/expose/publication/permission/update",
+                dataType: 'json',
+                data: {
+                    exposeName: "{{ exposeName }}",
+                    jsonData: {
+                        userType: userType,
+                        userId: userId,
+                        objectType: "publication",
+                        objectId: "{{ publication.id }}"
+                    },
+                    action: "delete"
+                },
+                success: function (data) {
+                    if (data.success) {
+                        publicationEdit.find("#permission-error").addClass("hidden");
+                        publicationEdit.find("#permission-success").removeClass("hidden").html(data.message);
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/prod/expose/publication/permission/list?exposeName={{ exposeName }}&publicationId={{ publication.id }}",
+                            success: function (data) {
+                                permissionList.empty().append(data);
+                                // bindCheckboxEvent();
+                            }
+                        });
+
+                    } else {
+                        publicationEdit.find("#permission-success").addClass("hidden");
+                        publicationEdit.find("#permission-error").removeClass("hidden").html(data.message);
+                    }
+                }
+            });
+        }
+
+        function hideInfo() {
+            publicationEdit.find("#permission-error").addClass("hidden");
+            publicationEdit.find("#permission-success").addClass("hidden");
+        }
+
+        /**convert Object data  to Json**/
+        function booleanizeObject(obj) {
+            var keys = Object.keys(obj);
+            keys.forEach(function (key) {
+                var value = obj[key];
+                if (typeof value === 'string') {
+                    var lvalue = value.toLowerCase();
+                    if (lvalue === 'true') {
+                        obj[key] = true;
+                    } else if (lvalue === 'false') {
+                        obj[key] = false;
+                    }
+                } else if (value !== null && typeof value === 'object') {
+                    booleanizeObject(obj[key]);
+                }
+            });
+        }
+
+        function buildData() {
+            try {
+                var allData = publicationForm.serializeArray();
+                var dataValue = allData.reduce((acc, it) => {
+                    acc[it.name] = it.value;
+                    return acc;
+                }, {});
+
+                /**Build Config elt**/
+                var config = {};
+
+                if (dataValue.enabled == 'on') {
+                    config = {...config, enabled: true};
+                } else {
+                    config = {...config, enabled: false};
+                }
+
+                if (dataValue.publiclyListed == 'on') {
+                    config = {...config, publiclyListed: true};
+                } else {
+                    config = {...config, publiclyListed: false};
+                }
+
+                if (dataValue.password == '') {
+                    config = {...config, password: null};
+                } else {
+                    config = {...config, password: dataValue.password};
+                }
+
+                if (dataValue.beginsAt == '') {
+                    config = {...config, beginsAt: null};
+                } else {
+                    try {
+                        config = {...config, beginsAt: new Date(dataValue.beginsAt).toISOString()};
+                    } catch (err) {
+                    }
+                }
+
+                if (dataValue.expiresAt == '') {
+                    config = {...config, expiresAt: null};
+                } else {
+                    try {
+                        config = {...config, expiresAt: new Date(dataValue.expiresAt).toISOString()};
+                    } catch (err) {
+                    }
+                }
+
+                if (dataValue.layout == '') {
+                    config = {...config, layout: null};
+                } else {
+                    config = {...config, layout: dataValue.layout};
+                }
+
+                if (dataValue.theme == '') {
+                    config = {...config, theme: null};
+                } else {
+                    config = {...config, theme: dataValue.theme};
+                }
+
+                if (dataValue.securityMethod == '') {
+                    config = {...config, securityMethod: null};
+                } else {
+                    config = {...config, securityMethod: dataValue.securityMethod};
+                }
+
+                dataValue = {...dataValue, config};
+
+                booleanizeObject(dataValue);
+
+                return dataValue;
+
+            } catch (err) {
+                console.log(err);
+                return;
+            }
+        }
+
+        function removeSecurityField() {
+            var datavalueMinus = buildData();
+
+            if (publicationEdit.find('input[name="slug"]').val() === '') {
+                datavalueMinus['slug'] = null;
+            }
+
+            if (publicationParent.val() == "") {
+                datavalueMinus['parent'] = null;
+            }
+
+            if (profileField.val() == "") {
+                datavalueMinus['profile'] = null;
+            }
+
+            delete datavalueMinus['layout'];
+            delete datavalueMinus['enabled'];
+            delete datavalueMinus['publiclyListed'];
+            delete datavalueMinus['password'];
+            delete datavalueMinus['securityMethod'];
+            delete datavalueMinus['theme'];
+            delete datavalueMinus['beginsAt'];
+            delete datavalueMinus['expiresAt'];
+
+            advancedSetting.val(JSON.stringify(datavalueMinus, undefined, 4));
+            console.log(JSON.stringify(datavalueMinus, undefined, 4));
+
+        }
+
+    </script>
+    <style>
+        .visibility-hidden {
+            visibility: hidden;
+        }
+        .publication-block .ui-widget.hide {
+            display: none;
+        }
+    </style>
+

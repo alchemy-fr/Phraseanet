@@ -1,0 +1,110 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phraseanet-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phraseanet
+      tier: worker
+  template:
+    metadata:
+      labels:
+        app: phraseanet
+        tier: worker
+    spec:
+      volumes:
+      - name: phraseanet-config
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc_name.config }}
+      - name: phraseanet-datas
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc_name.data }}
+      - name: phraseanet-thumbnails
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc_name.thumbnails }}
+      - name: phraseanet-custom
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc_name.custom }}
+      - name: phraseanet-tmp
+        emptyDir:
+      - name: phraseanet-logs
+        emptyDir:
+      - name: phraseanet-cache
+        emptyDir:
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
+      containers:
+      - name: phraseanet-worker
+        image: {{ .Values.image.registry }}/phraseanet-worker:{{ .Values.image.tag.phraseanet }}
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        resources:
+{{ toYaml .Values.app.worker.resources | indent 12 }}
+        volumeMounts:
+        - name: phraseanet-config
+          mountPath: "/var/alchemy/Phraseanet/config"
+        - name: phraseanet-datas
+          mountPath: "/var/alchemy/Phraseanet/datas"
+        - name: phraseanet-tmp
+          mountPath: "/var/alchemy/Phraseanet/tmp"
+        - name: phraseanet-logs
+          mountPath: "/var/alchemy/Phraseanet/logs"
+        - name: phraseanet-thumbnails
+          mountPath: "/var/alchemy/Phraseanet/www/thumbnails"
+        - name: phraseanet-custom
+          mountPath: "/var/alchemy/Phraseanet/www/custom"
+        - name: phraseanet-cache
+          mountPath: "/var/alchemy/Phraseanet/cache"
+        env:
+        - name: MAX_BODY_SIZE
+          value: {{ .Values.http.max_body_size | quote }}
+        - name: MAX_INPUT_VARS
+          value: {{ .Values.http.max_input_vars | quote }}
+        - name: OPCACHE_ENABLED
+          value: {{ .Values.php.opcache_enabled | quote }}
+        - name: PHP_LOG_LEVEL
+          value: {{ .Values.php.log_level | quote }}
+        - name: SESSION_CACHE_LIMITER
+          value: {{ .Values.php.session_cache_limiter | quote }}
+        - name: SESSION_SAVE_HANDLER
+          value: {{ .Values.php.session_save_handler | quote }}
+        - name: SESSION_SAVE_PATH
+          value: {{ .Values.php.session_save_path | quote }}
+        - name: XDEBUG
+          value: "0"
+        - name: LC_MESSAGES
+          value: "C.UTF-8"
+        - name: LC_COLLATE
+          value: "C.UTF-8"
+        - name: LC_IDENTIFICATION
+          value: "C.UTF-8"
+        - name: LANG
+          value: "C.UTF-8"
+        - name: LC_MEASUREMENT
+          value: "C.UTF-8"
+        - name: LC_CTYPE
+          value: "C.UTF-8"
+        - name: LC_TIME
+          value: "C.UTF-8"
+        - name: LC_NAME
+          value: "C.UTF-8"
+      initContainers:
+      - name: create-tmp-locks
+        image: {{ .Values.image.registry }}/phraseanet-worker:{{ .Values.image.tag.phraseanet }}
+        volumeMounts:
+        - name: phraseanet-tmp
+          mountPath: "/var/alchemy/Phraseanet/tmp"
+        command: ['mkdir', '-p', '/var/alchemy/Phraseanet/tmp/locks']
+      - name: chown-phraseanet-tmp
+        image: {{ .Values.image.registry }}/phraseanet-worker:{{ .Values.image.tag.phraseanet }}
+        volumeMounts:
+        - name: phraseanet-tmp
+          mountPath: "/var/alchemy/Phraseanet/tmp"
+        command: ['chown', '-R', 'app:app', '/var/alchemy/Phraseanet/tmp']
+

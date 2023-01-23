@@ -4,8 +4,8 @@
 @import 'variables';
 @import '../../vendors/bootstrap/bootstrap';
 @import 'skin';
-@import '../../../../www/bower_components/font-awesome/scss/font-awesome.scss';
-@import '../../../../www/bower_components/jquery-ui/themes/base/jquery.ui.autocomplete'; // not extension for inline import
+@import '../../../../node_modules/font-awesome/scss/font-awesome.scss';
+@import '../../../../node_modules/jquery-ui/themes/base/autocomplete'; // not extension for inline import
 
 $mainMenuBackgroundColor: #3b3b3b;
 $mainMenuLinkColor: #A6A6A6;
@@ -16,4 +16,158 @@ $mainMenuMarginBottom: 30px;
 
 #mainContent {
   padding-top: $mainMenuHeight;
+}
+
+
+/*Help menu*/
+.contextMenu.helpcontextmenu {
+  display: none;
+  &.shown {
+    display: block;
+    position: absolute;
+    z-index: 101;
+  }
+}
+.help-trigger {
+  display:inline-block;
+  cursor:pointer;
+  padding: 0 4px;
+  border:none;
+  margin-left: -12px;
+}
+
+.phraseanet_logo {
+  background: url(../../common/images/logo_phraseanet.png) no-repeat center center /contain;
+  height: 75px;
+  width: 230px;
+  display: inline-block;
+}
+
+.phraseanet_version {
+  font-size: 15px;
+  font-family: Roboto;
+  font-weight: 500;
+  color: #b7b7b7;
+  padding-left: 58px;
+  a {
+    color: #b7b7b7;
+    &:hover {
+      color: #FFFFFF;
+    }
+  }
+}
+
+.phraseanet_about_top {
+  background: #4e4e4e;
+  padding: 30px 20px;
+}
+.phraseanet_about_bottom {
+  padding: 25px 20px;
+  min-height: 150px;
+  background: #c8c8c8;
+  a {
+    font-family: Roboto;
+    line-height: 1.2;
+    font-size: 15px!important;
+    font-weight: 500;
+    color: #000000!important;
+    text-decoration: underline;
+  }
+
+}
+.phraseanet_gpl {
+  img {
+    position: absolute;
+    width: 84px;
+  }
+  span {
+    padding-top: 26px;
+    display: inline-block;
+    padding-left: 100px;
+    padding-bottom: 20px;
+    text-decoration: underline;
+  }
+  a {
+    text-decoration: underline;
+  }
+
+}
+
+
+
+.ui-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: .2em;
+  outline: 0;
+}
+.ui-dialog .ui-dialog-titlebar {
+  padding: .4em 1em;
+  position: relative;
+}
+.ui-dialog .ui-dialog-title {
+  float: left;
+  margin: .1em 0;
+  white-space: nowrap;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ui-dialog .ui-dialog-titlebar-close {
+  position: absolute;
+  right: .3em;
+  top: 50%;
+  width: 21px;
+  margin: -10px 0 0 0;
+  padding: 1px;
+  height: 20px;
+  text-indent: -9999999px;
+}
+.ui-dialog .ui-dialog-content {
+  position: relative;
+  border: 0;
+  padding: .5em 1em;
+  background: none;
+  overflow: auto;
+}
+.ui-dialog .ui-dialog-buttonpane {
+  text-align: left;
+  border-width: 1px 0 0 0;
+  background-image: none;
+  margin-top: .5em;
+  padding: .3em 1em .5em .4em;
+}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+  float: right;
+}
+.ui-dialog .ui-dialog-buttonpane button {
+  margin: .5em .4em .5em 0;
+  cursor: pointer;
+}
+
+.overlay,
+.ui-widget-overlay {
+  background-color: #000;
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+  height: 100%;
+  width: 100%
+}
+
+
+.ui-icon, .ui-widget-content .ui-icon {
+  background-image: url(/assets/vendors/jquery-ui/images/ui-lightness/ui-icons_222222_256x240.png)!important;
+  display: block;
+  text-indent: -99999px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: -96px -128px;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
 }

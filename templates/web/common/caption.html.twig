@@ -1,21 +1,21 @@
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 {% set business = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
 {% set display_exif = true %}
 
 {% if view == 'answer' %}
-    {{ macro.caption(record, business, display_exif) }}
+    {{ macro_caption.caption(record, business, display_exif) }}
 {% elseif view == 'lazaret' %}
-    {{ macro.caption(record, business, display_exif) }}
+    {{ macro_caption.caption(record, business, display_exif) }}
 {% elseif view == 'preview' %}
     {% set display_exif = false %}
-    {{ macro.caption(record, business, display_exif, true) }}
+    {{ macro_caption.caption(record, business, display_exif, true) }}
 {% elseif view == 'basket' %}
     {% set display_exif = false %}
-    {{ macro.caption(record, business, display_exif) }}
+    {{ macro_caption.caption(record, business, display_exif) }}
 {% elseif view == 'overview' %}
     {% set display_exif = false %}
-    {{ macro.caption(record, business, display_exif) }}
+    {{ macro_caption.caption(record, business, display_exif) }}
 {% elseif view == 'publi' %}
-    {{ macro.caption(record, business, display_exif) }}
+    {{ macro_caption.caption(record, business, display_exif) }}
 {% endif %}

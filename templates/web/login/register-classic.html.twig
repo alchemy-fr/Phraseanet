@@ -1,7 +1,7 @@
 {% extends "login/layout/sidebar-layout.html.twig" %}
 
 {% import "login/common/macros.html.twig" as auth_macro %}
-{% import "common/macros.html.twig" as macro %}
+{% import "common/macro_captcha.html.twig" as macro_captcha %}
 
 {% block title %}
     {{ "Register" | trans }}
@@ -40,11 +40,11 @@
 
                     <div class="row-fluid">
                         <div class="span12">
-                            {{ auth_macro.fieldInput(form.email, "registerForm", 'icon-envelope') }}
+                            {{ auth_macro.fieldInput(form.email, "registerForm", 'fa fa-envelope') }}
                         </div>
                     </div>
 
-                    {{ auth_macro.repeatedInput(form.password, "registerForm", 'icon-lock') }}
+                    {{ auth_macro.repeatedInput(form.password, "registerForm", 'fa fa-lock') }}
 
                     {% for field in registration_fields %}
                         {% set name = field['name'] %}
@@ -85,7 +85,7 @@
                     {% if recaptcha_enabled %}
                         <div class="row-fluid">
                             <div class="span12">
-                                {{ macro.captcha() }}
+                                {{ macro_captcha.captcha() }}
                             </div>
                         </div>
                     {% endif %}

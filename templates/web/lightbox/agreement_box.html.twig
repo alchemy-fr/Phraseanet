@@ -5,18 +5,18 @@
             <tr>
                 <td class="title title15">{{ 'VALIDATION' | trans }}</td>
                 <td class="report_wrapper">
-                  <a class="report" href="#">
+                  <a class="report btn btn-info" href="#">
                     {{ 'lightbox::recaptitulatif' | trans }}
                   </a>
                 </td>
             </tr>
         </tbody>
     </table>
-    {% if basket.getValidation() %}
-        <div>{{ basket.getValidation().getValidationString(app, app.getAuthenticatedUser()) }}</div>
+    {% if basket.isVoteBasket() %}
+        <div>{{ basket.getVoteString(app, app.getAuthenticatedUser()) }}</div>
         <ul>
-            {% for choice in basket_element.getValidationDatas() %}
-              {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
+            {% for choice in basket_element.getVotes(true) %}
+              {% if basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
                 {% if choice.getAgreement() == true %}
                     {% set classuser = 'agree' %}
                 {% elseif choice.getAgreement() is null %}
@@ -25,17 +25,20 @@
                     {% set classuser = 'disagree' %}
                 {% endif %}
                 {% set participant = choice.getParticipant().getUser() %}
-                <li class="{% if participant.getId() == app.getAuthenticatedUser().getId() %}me{% endif %} {{classuser}} userchoice">{{participant.getDisplayName()}}</li>
+
+                {% if choice.getParticipant().getCanAgree() %}
+                    <li class="{% if participant.getId() == app.getAuthenticatedUser().getId() %}me{% endif %} {{classuser}} userchoice">{{participant.getDisplayName()}}</li>
+                {% endif %}
               {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
 </div>
 <div class="PNB user_infos">
-{% if basket_element and basket_element.getBasket().getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+{% if basket_element and basket_element.getBasket().isVoteBasket() and (basket.isVoteFinished() != true) and basket.getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
     <div class="PNB choices">
         <div style="height:60px;">
-          {% set agreement = basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() %}
+          {% set agreement = basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() %}
             <div class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if agreement is null or agreement == false  %}not_decided{% endif %}">
                 <img src="/assets/lightbox/images/agree-big.png"/><span class="title15">{{ 'validation:: OUI' | trans }}</span>
             </div>
@@ -47,4 +50,16 @@
         </div>
     </div>
 {% endif %}
+    {% if basket_element.getBasket().isVoteBasket() %}
+        <button class="comment_button btn btn-mini btn-inverse">
+            <i class="fa fa-comment icon-white" aria-hidden="true"></i>
+            {% set n = 0 %}
+            {% for vote in basket_element.getVotes() %}
+                {% if vote.getNote() %}
+                    {% set n = n+1 %}
+                {% endif %}
+            {% endfor %}
+            {{ n }}
+        </button>
+    {% endif %}
 </div>

@@ -61,24 +61,6 @@
   div.no_switch{
     background-image:url(/assets/common/images/icons/ccoch5.gif);
   }
-  div.switch_quota.mixed,
-  div.switch_masks.mixed,
-  div.switch_time.mixed,
-  div.switch_right.mixed{
-    background-image:url(/assets/common/images/icons/ccoch2.gif);
-  }
-  div.switch_quota.checked,
-  div.switch_masks.checked,
-  div.switch_time.checked,
-  div.switch_right.checked{
-    background-image:url(/assets/common/images/icons/ccoch1.gif);
-  }
-  div.switch_quota.unchecked,
-  div.switch_masks.unchecked,
-  div.switch_time.unchecked,
-  div.switch_right.unchecked{
-    background-image:url(/assets/common/images/icons/ccoch0.gif);
-  }
   td.users_col{
     vertical-align:middle;
     text-align:center;
@@ -88,18 +70,74 @@
   .ui-datepicker{
     z-index:1500;
   }
+  #api_tab .info-label {
+    width: 250px;
+    display: inline-block;
+  }
+
+  #auth_failure_tab table,
+  #user_infos_tab table {
+    width: 70%;
+  }
+
+  #basket_tab table, #basket_tab th,
+  #feed_tab table, #feed_tab th,
+  #record_acl_tab table,
+  #record_acl_tab th {
+    border: 1px solid #a5a0a0;
+    border-collapse: collapse;
+    text-align: center;
+    padding:0px 10px;
+  }
+
+  #basket_tab td,
+  #feed_tab td,
+  #record_acl_tab td{
+    border-right: 1px solid #a5a0a0;
+    border-left: 1px solid #a5a0a0;
+    padding:0px 10px;
+  }
+
+  #api_tab th,
+  #api_tab td,
+  #auth_failure_tab th,
+  #auth_failure_tab td,
+  #user_infos_tab th,
+  #user_infos_tab td {
+    text-align: left;
+  }
+
 </style>
 
 <div>
+  {% if main_user is not empty %}
+    <h4>{{ main_user.getDisplayName() ~ ' ( ' ~ main_user.getId() ~' )'}}</h4>
+  {% endif %}
+
   <div class="tabs PNB" style="bottom:40px;">
     <ul>
       <li>
         <a href="#rights_tab">{{ 'Rights' | trans }}</a>
       </li>
       {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
-      <li>
-        <a href="#user_infos_tab">{{ 'Infos' | trans }}</a>
-      </li>
+        <li>
+          <a href="#user_infos_tab">{{ 'Infos' | trans }}</a>
+        </li>
+        <li>
+          <a href="#api_tab">{{ 'admin::users: api list' | trans }}</a>
+        </li>
+        <li>
+          <a href="#auth_failure_tab">{{ 'admin::users: Auth failure' | trans }}</a>
+        </li>
+        <li>
+          <a href="#record_acl_tab">Record ACL</a>
+        </li>
+        <li>
+          <a href="#feed_tab">Publications</a>
+        </li>
+        <li>
+          <a href="#basket_tab">Baskets</a>
+        </li>
       {% endif %}
     </ul>
     <div id="rights_tab" class="" style="top:40px;">
@@ -117,7 +155,7 @@
                       {{ 'Reglages:: reglages d inscitpition automatisee' | trans }}
                   {% endif %}
                 {% else %}
-                  {% set display_name = main_user.getDisplayName() %}
+                  {% set display_name = main_user.getDisplayName() | e %}
                   {% trans with {'%display_name%' : display_name} %}Edition des droits de %display_name%{% endtrans %}
                 {% endif %}
               {% else %}
@@ -137,40 +175,20 @@
             </td>
           </tr>
         </table>
-        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="">
+        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:850px;height:67px;bottom:auto;top:50px;" class="">
           <thead>
             <tr>
-              <th style="width:122px;">
+              <th style="width:168px;">
 
               </th>
-              <th colspan="26">
-                <img src="/assets/common/images/lng/inclin-{{app['locale']}}.png" style="width:698px"/>
+              <th colspan="25">
+                <img src="/assets/common/images/lng/inclin-{{app['locale']}}.png" style="width:682px"/>
               </th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>
-
-              </td>
-              <td colspan="26">
-
-              </td>
-            </tr>
-          </tbody>
         </table>
-        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;">
-          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:820px;">
-      <!--      <thead>
-              <tr>
-                <th style="width:122px;">
-
-                </th>
-                <th colspan="26">
-                  <img src="/assets/common/images/lng/inclin-{{app['locale']}}.gif" >
-                </th>
-              </tr>
-            </thead>-->
+        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:870px;max-height: 450px;">
+          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:840px;">
             <tbody>
               {% set sbas = '' %}
               {% for rights in datas %}
@@ -183,54 +201,55 @@
               {% endif %}
 
               <tr>
-                <td style="width:122px;overflow:hidden;white-space:nowrap;">
+                <td style="width:140px;overflow:hidden;white-space:nowrap;">
                   {{rights['sbas_id']|sbas_labels(app)}}
                 </td>
+                <td style="width:25px"></td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_access"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_actif"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canputinalbum"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_candwnldpreview"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_nowatermark"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_candwnldhd"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_cancmd"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
@@ -240,132 +259,142 @@
                 </td>
                 <td class="users_col">
                   <div class="time_trigger time_sbas_{{rights['sbas_id']}}">
-                    <img src="/assets/common/images/icons/user_details_gray.png" />
+                    <img width="14" src="/assets/common/images/icons/info-circle-grey.svg" />
                     <input type="hidden" name="time_sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col">
 
                 </td>
-                <td>
+                <td width="97" style="width: 97px;">
 
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canaddrecord"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canmodifrecord"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_chgstatus"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_candeleterecord"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_imgtools"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canadmin"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canreport"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canpush"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_manage"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_modify_struct"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_CHUPUB'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIF_TH'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MANAGE'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIFY_STRUCT'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:48px;"></td>
+                <td style="text-align:center;width:48px;">
+                </td>
               </tr>
               {% endif %}
-              <tr>
-                <td style="overflow:hidden;white-space:nowrap;">
+              <tr class="right-items">
+                <td style="width: 140px;overflow:hidden;white-space:nowrap;" title="{{rights['base_id']|bas_labels(app)}}">
                   {{rights['base_id']|bas_labels(app)}}
                 </td>
-                <td class="users_col case_right_access" title="{{ 'Access' | trans }}">
+                <td class="select-all-line" title="{{'admin::users:edit: Manage inline selection' | trans }}" style="width: 25px">
+                  <div class="select-all-line-btn">
+                    <i class="fa fa-caret-right fa-right"></i>
+                  </div>
+                  <div class="users_check_line_wrap hide">
+                    <div class="checker check_left_right">{{'admin::users:edit: check read right' | trans }}</div>
+                    <div class="unchecker check-all_right">{{'admin::users:edit: check all right' | trans }}</div>
+                  </div>
+                </td>
+                <td class="users_col case_right_access left-right" title="{{ 'Access' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::ACCESS'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_actif" title="{{ 'Active' | trans }}">
+                <td class="users_col case_right_actif left-right" title="{{ 'Active' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::ACTIF'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_canputinalbum" title="{{ 'Allowed to add in basket' | trans }}">
+                <td class="users_col case_right_canputinalbum left-right" title="{{ 'Allowed to add in basket' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANPUTINALBUM'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldpreview" title="{{ 'Access to preview' | trans }}">
+                <td class="users_col case_right_candwnldpreview left-right" title="{{ 'Access to preview' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDPREVIEW'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_nowatermark" title="{{ 'Remove watermark' | trans }}">
+                <td class="users_col case_right_nowatermark left-right" title="{{ 'Remove watermark' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::NOWATERMARK'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldhd" title="{{ 'Access to HD' | trans }}">
+                <td class="users_col case_right_candwnldhd left-right" title="{{ 'Access to HD' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDHD'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_cancmd" title="{{ 'Allowed to order' | trans }}">
+                <td class="users_col case_right_cancmd left-right" title="{{ 'Allowed to order' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANCMD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_quota" title="{{ 'Set download quotas' | trans }}">
                   <div class="quota_trigger quota_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights[constant('\\ACL::RESTRICT_DWNLD')] > 0 %}
-                    <img src="/assets/common/images/icons/user_details_on.png" />
+                    <img width="14" src="/assets/common/images/icons/info-circle-red.svg" />
                     {% else %}
-                    <img src="/assets/common/images/icons/user_details_off.png" />
+                    <img width="14" src="/assets/common/images/icons/info-circle-green.svg" />
                     {% endif %}
                     <input type="hidden" name="quota_base_id" value="{{rights['base_id']}}"/>
                   </div>
@@ -373,9 +402,9 @@
                 <td class="users_col case_right_time" title="{{ 'Set time restrictions' | trans }}">
                   <div class="time_trigger time_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['time_limited'] > 0 %}
-                    <img src="/assets/common/images/icons/user_details_on.png" />
+                      <img width="14" src="/assets/common/images/icons/info-circle-red.svg" />
                     {% else %}
-                    <img src="/assets/common/images/icons/user_details_off.png" />
+                      <img width="14" src="/assets/common/images/icons/info-circle-green.svg" />
                     {% endif %}
                     <input type="hidden" name="time_base_id" value="{{rights['base_id']}}"/>
                   </div>
@@ -383,15 +412,15 @@
                 <td class="users_col case_right_masks" title="{{ 'Set statuses restrictions' | trans }}">
                   <div class="masks_trigger quotatime_{{rights['base_id']}} base_{{rights['base_id']}}">
                     {% if rights['masks'] > 0 %}
-                    <img src="/assets/common/images/icons/user_details_on.png" />
+                      <img width="14" src="/assets/common/images/icons/info-circle-red.svg" />
                     {% else %}
-                    <img src="/assets/common/images/icons/user_details_off.png" />
+                      <img width="14" src="/assets/common/images/icons/info-circle-green.svg" />
                     {% endif %}
                     <input type="hidden" name="masks_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
 
-                <td style="text-align:center;width:100px;"></td>
+                <td style="text-align:center;width:97px;"></td>
 
                 <td class="users_col case_right_canaddrecord" title="{{ 'Allowed to add' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANADDRECORD'), users, 'base')}}
@@ -423,8 +452,8 @@
                 <td class="users_col case_right_modify" title="{{ 'Manage values lists' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::COLL_MODIFY_STRUCT'), users, 'base')}}
                 </td>
-                <td colspan="5">
 
+                <td colspan="5">
                 </td>
               </tr>
               {% endfor %}
@@ -435,121 +464,393 @@
     </div>
 
     {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
-    <div id="user_infos_tab" class="" style="top:40px;overflow:auto;">
-      <form id="user_infos_form">
-        <table>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur identifiant' | trans }}
-            </td>
-            <td>
-              <input type="text" value="{{main_user.getLogin()}}" readonly="readonly" />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur sexe' | trans }}
-            </td>
-            <td>
-              <select name="gender">
-                <option {% if main_user.getGender() == 0 %}selected="selected"{% endif %} value="0" >{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
-                <option {% if main_user.getGender() == 1 %}selected="selected"{% endif %} value="1" >{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
-                <option {% if main_user.getGender() == 2 %}selected="selected"{% endif %} value="2" >{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur prenom' | trans }}
-            </td>
-            <td>
-              <input type="text" name="first_name" value="{{main_user.getFirstName()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur nom' | trans }}
-            </td>
-            <td>
-              <input type="text" name="last_name" value="{{main_user.getLastName()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur email' | trans }}
-            </td>
-            <td>
-              <input type="text" name="email" value="{{main_user.getEmail()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur adresse' | trans }}
-            </td>
-            <td>
-              <input type="text" name="address" value="{{main_user.getAddress()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur code postal' | trans }}
-            </td>
-            <td>
-              <input type="text" name="zip" value="{{main_user.getZipCode()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur ville' | trans }}
-            </td>
-            <td>
-              <input type="text" value="{{ main_user.getGeonameId() }}" class="geoname_field" name="geonameid" autocomplete="off"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur poste' | trans }}
-            </td>
-            <td>
-              <input type="text" name="function" value="{{main_user.getActivity()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur societe' | trans }}
-            </td>
-            <td>
-              <input type="text" name="company" value="{{main_user.getCompany()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur activite' | trans }}
-            </td>
-            <td>
-              <input type="text" name="activite" value="{{main_user.getJob()}}"/>
-            </td>
-          </tr>
+      <div id="user_infos_tab" class="" style="top:40px;overflow:auto;">
+        <form id="user_infos_form">
+          <table>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur identifiant' | trans }}
+              </td>
+              <td>
+                <input type="text" value="{{main_user.getLogin()}}" readonly="readonly" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur sexe' | trans }}
+              </td>
+              <td>
+                <select name="gender">
+                  <option {% if main_user.getGender() == 0 %}selected="selected"{% endif %} value="0" >{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
+                  <option {% if main_user.getGender() == 1 %}selected="selected"{% endif %} value="1" >{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
+                  <option {% if main_user.getGender() == 2 %}selected="selected"{% endif %} value="2" >{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur prenom' | trans }}
+              </td>
+              <td>
+                <input type="text" name="first_name" value="{{main_user.getFirstName()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur nom' | trans }}
+              </td>
+              <td>
+                <input type="text" name="last_name" value="{{main_user.getLastName()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur email' | trans }}
+              </td>
+              <td>
+                <input type="text" name="email" value="{{main_user.getEmail()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur adresse' | trans }}
+              </td>
+              <td>
+                <input type="text" name="address" value="{{main_user.getAddress()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur code postal' | trans }}
+              </td>
+              <td>
+                <input type="text" name="zip" value="{{main_user.getZipCode()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur ville' | trans }}
+              </td>
+              <td>
+                <input type="text" value="{{ main_user.getGeonameId() }}" class="geoname_field" name="geonameid"
+                       autocomplete="false"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur poste' | trans }}
+              </td>
+              <td>
+                <input type="text" name="function" value="{{main_user.getJob()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur societe' | trans }}
+              </td>
+              <td>
+                <input type="text" name="company" value="{{main_user.getCompany()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur activite' | trans }}
+              </td>
+              <td>
+                <input type="text" name="activite" value="{{main_user.getActivity()}}"/>
+              </td>
+            </tr>
 
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur telephone' | trans }}
-            </td>
-            <td>
-              <input type="text" name="telephone" value="{{main_user.getPhone()}}"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              {{ 'admin::compte-utilisateur fax' | trans }}
-            </td>
-            <td>
-              <input type="text" name="fax" value="{{main_user.getFax()}}"/>
-            </td>
-          </tr>
-        </table>
-      </form>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur telephone' | trans }}
+              </td>
+              <td>
+                <input type="text" name="telephone" value="{{main_user.getPhone()}}"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ 'admin::compte-utilisateur fax' | trans }}
+              </td>
+              <td>
+                <input type="text" name="fax" value="{{main_user.getFax()}}"/>
+              </td>
+            </tr>
+          </table>
+        </form>
+
+        <div>
+          <label for="lock" style="margin-right: 20px;display:inline-block;">Email locked</label>
+          <input type="radio" id="lock" name="email-locked" value="locked" style="margin-right: 10px;"
+                  {% if main_user.isMailLocked() %} checked {% endif %}>
+          <input type="radio" id="unlock" name="email-locked" value="unlock" style="margin-left: 10px;"
+                  {% if not main_user.isMailLocked() %} checked {% endif %}>
+          <label for="unlock" style="margin-left: 20px;display:inline-block;">Email unlocked</label>
+        </div>
+
+        <div style="margin-top: 20px;">
+          {% set usrProviders = app['repo.usr-auth-providers'].findByUser(main_user) %}
+          {% if usrProviders|length > 0 %}
+            <h3>{{ 'admin::users: list user providers' | trans }}</h3>
+            <table>
+              <thead>
+                <th>{{ 'admin::users: provider' | trans }}</th>
+                <th>{{ 'admin::users: distance_id' | trans }}</th>
+                <th>{{ 'admin::users: creation date' | trans }}</th>
+                <th>{{ 'admin::users: modification date' | trans }}</th>
+              </thead>
+              <tbody>
+              {% for usrProvider in usrProviders %}
+                <tr>
+                  <td>{{ usrProvider.getProvider() }}</td>
+                  <td>{{ usrProvider.getDistantId() }}</td>
+                  <td>{{ usrProvider.getUpdated() | date('Y-m-d H:i:s') }}</td>
+                  <td>{{ usrProvider.getCreated() | date('Y-m-d H:i:s')}}</td>
+                </tr>
+              {% endfor %}
+                </tbody>
+            </table>
+          {% endif %}
+        </div>
     </div>
+
+      <div id="api_tab" class="" style="top:40px;">
+        <h1>{{ 'admin::users: list user api application' | trans }}</h1>
+        {% set apiApplications = app['repo.api-applications'].findByUser(main_user, true) %}
+        {% if apiApplications|length > 0 %}
+          {% for apiApplication in apiApplications %}
+            <div style="margin-top: 30px;">
+              <h2>
+                - {{ apiApplication.getName() }}
+                {% if apiApplication.getCreator() is not empty and apiApplication.getCreator().getId() == main_user.getId() %}
+                  <span style="margin-left: 30px;" class="badge badge-success">{{ 'admin :users: user owned api' | trans }}</span>
+                {% else %}
+                  <span style="margin-left: 30px;" class="badge badge-inverse">{{ 'admin::users: user api use' | trans }}</span>
+                {% endif %}
+              </h2>
+              <div><span class="info-label"><strong> {{ 'admin::users: api ID' | trans }} : </strong></span> <span> {{ apiApplication.getId() }} </span></div>
+              <div><span class="info-label"><strong> {{ 'admin::users: creation date' | trans }} : </strong></span> <span> {{ apiApplication.getCreated() | date('Y-m-d H:i:s') }} </span></div>
+              <div><span class="info-label"><strong> {{ 'admin::users: modification date' | trans }} : </strong></span> <span> {{ apiApplication.getUpdated() | date('Y-m-d H:i:s') }} </span></div>
+              <div>
+                <span class="info-label"><strong> {{ 'admin::users: grant password info' | trans }} : </strong></span>
+                <span> {% if apiApplication.isPasswordGranted() %} {{ 'admin::users: password granted' | trans }} {% else %} {{ 'admin::users: password not granted' | trans }} {% endif %}</span>
+              </div>
+              <div><span class="info-label"><strong> {{ 'admin::users: type info' | trans }} : </strong></span> <span> {{ apiApplication.getType() }} </span></div>
+              <div><span class="info-label"><strong> {{ 'admin::users: webhook url' | trans }} : </strong></span> <span> {{ apiApplication.getWebhookUrl() }} </span></div>
+
+              <label class="checkbox" style="padding-left: 0px; margin-top:10px">
+                {{ 'admin::users: webhook activation' | trans }}
+                <input data-path="{{ path('developers_application_active_webhook', { "application" : apiApplication.getId() }) }}"
+                       type="checkbox"  id="webhook_activation"
+                        {% if apiApplication.isWebhookActive() %} checked="checked" {% endif %}
+                        {% if apiApplication.getWebhookUrl() is empty%} disabled {% endif %}
+                       style="margin-left:10px; margin-right:10px;" />
+              </label>
+            </div>
+          {% endfor %}
+        {% else %}
+          <h5>{{ 'admin::users: no api defined for this user' | trans }}</h5>
+        {% endif %}
+
+        {% set apiCodes = app['orm.em'].getRepository('Phraseanet:ApiOauthCode').findByUserAccount(main_user) %}
+        {% if apiCodes | length > 0 %}
+          <h3 style="margin-top: 30px;">{{ 'admin::users: api oauth code list' | trans }}</h3>
+          <table style="border-spacing: 20px;width: 80%;">
+          <thead>
+          <tr>
+            <th>{{ 'admin::users: Api id' | trans }}</th>
+            <th>{{ 'admin::users: Api name' | trans }}</th>
+            <th>{{ 'admin::users: redirect uri' | trans }}</th>
+            <th>{{ 'admin::users: scope' | trans }}</th>
+            <th>{{ 'admin::users: creation date' | trans }}</th>
+          </tr>
+          </thead>
+          <tbody >
+          {% for apiCode in apiCodes %}
+            <tr>
+              <td>{{ apiCode.account.application.id }}</td>
+              <td>{{ apiCode.account.application.name }}</td>
+              <td>{{ apiCode.redirectUri }}</td>
+              <td>{{ apiCode.scope }}</td>
+              <td>{{ apiCode.created | date('Y-m-d H:i:s') }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+      </div>
+
+      <div id="auth_failure_tab">
+        <div id="auth_failure_locked">
+          {% set failuresLocked = app['repo.auth-failures'].findBy({'username':main_user.getLogin(), 'locked': true}, {'created': 'desc'}) %}
+          {% if failuresLocked | length > 0 %}
+            <h3>{{ 'admin::users: auth failure locked list' | trans }}</h3>
+            <table style="border-spacing: 20px;">
+              <thead>
+              <tr>
+                <th>{{ 'admin::users: username' | trans }}</th>
+                <th>{{ 'admin::users: ip' | trans }}</th>
+                <th>{{ 'admin::users: creation date' | trans }}</th>
+              </tr>
+              </thead>
+              <tbody >
+              {% for failure in failuresLocked %}
+                <tr>
+                  <td>{{ failure.getUsername() }}</td>
+                  <td>{{ failure.getIp }}</td>
+                  <td>{{ failure.getCreated() | date('Y-m-d H:i:s') }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+            <button data-username="{{ main_user.getLogin() }}" style="margin-top: 20px; margin-bottom: 20px" class="btn btn-warning" id="reset-auth-failure">{{ 'admin::users: reset auth failure' | trans }}</button>
+          {% endif %}
+        </div>
+
+        <div id="auth_failure_unlocked">
+          {% set failuresUnlocked = app['repo.auth-failures'].findBy({'username':main_user.getLogin(), 'locked': false}, {'created': 'desc'}) %}
+          {% if failuresUnlocked | length > 0 %}
+            <h3>{{ 'admin::users: auth failure unlocked list' | trans }}</h3>
+            <table style="border-spacing: 20px;">
+              <thead>
+              <tr>
+                <th>{{ 'admin::users: username' | trans }}</th>
+                <th>{{ 'admin::users: ip' | trans }}</th>
+                <th>{{ 'admin::users: creation date' | trans }}</th>
+              </tr>
+              </thead>
+              <tbody id="auth_failure_unlocked_list">
+              {% for failure in failuresUnlocked %}
+                <tr>
+                  <td>{{ failure.getUsername() }}</td>
+                  <td>{{ failure.getIp() }}</td>
+                  <td>{{ failure.getCreated() | date('Y-m-d H:i:s') }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+        </div>
+      </div>
+
+      <div id="record_acl_tab">
+        <h1>User record acl</h1>
+        <div style="margin-bottom: 20px;">
+          <label class="checkbox" for="expired-right" style="display:inline-block;margin-right: 30px;">
+            <input type="checkbox" id="expired-right" name="expired-right" value="1">
+            expired right
+          </label>
+          <select id="acl-databox-filter">
+            <option value="">{{ 'button::choose databox' | trans }}</option>
+            {% for databoxId in databoxIds %}
+              <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+            {% endfor %}
+          </select>
+
+          <select id="acl-type-filter" style="margin-bottom: 0px;margin-left: 30px;">
+            <option value="">{{ 'button::choose type' | trans }}</option>
+            <option value="order">order</option>
+            <option value="push">push</option>
+            <option value="validate">validate</option>
+          </select>
+
+          <input type="number" id="acl-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        </div>
+
+        <p> <span class="acl-result-count">{{ records_acl|length }} / {{ total_count }}</span> (last 200 rights displayed)</p>
+        <table>
+          <thead>
+            <tr>
+              <th>databox name</th>
+              <th>record_id</th>
+              <th>right on document</th>
+              <th>right on subdef</th>
+              <th>type</th>
+              <th>pusher name</th>
+              <th>expire on</th>
+            </tr>
+          </thead>
+          <tbody id="record_acl_list">
+            {% for r_a in records_acl %}
+              <tr>
+                <td>{{ r_a.sbas_id | sbas_labels(app) }}</td>
+                <td>{{ r_a.record_id }}</td>
+                <td>{{ r_a.document }}</td>
+                <td>{{ r_a.preview }}</td>
+                <td>{{ r_a.type }}</td>
+                <td>{{ r_a.pusher_name }}</td>
+                <td>
+                  {% if r_a.expire_on %}
+                    {{ r_a.expire_on|date('Y-m-d H:i:s') }}
+                    {% if r_a.expire_on|date('Y-m-d H:i:s') > "now"|date('Y-m-d H:i:s') %}
+                       <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c;"></i>
+                    {% else %}
+                      <i class="fa fa-times" aria-hidden="true" style="color:#d1051f;"></i>
+                    {% endif %}
+                  {% else %}
+                    -  <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c"></i>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div id="feed_tab">
+        <h1>{{ "User's publications in feeds" | trans}}</h1>
+        <div id="feeds-list">
+          {% for f in feeds %}
+            <h6 style="max-width:400px; max-height: 30px; padding-bottom: 0px; padding-top: 0px;" data-feed="{{ f.id }}">
+              {{ f.title }}
+              {% if f.public %}<span style="margin-top: 1px;margin-left:15px;" class="badge badge-success pull-right">public</span>{% endif %}
+              <span class="pull-right ">
+                <span class="publication-count">{{ feeds_count[f.getId()] }} </span> publication(s)
+              </span>
+            </h6>
+            <div data-feed="{{ f.id }}" class="feed-content" style="max-height: 300px; max-width:600px;"></div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="basket_tab">
+        <h1>User basket</h1>
+
+        <div style="margin-bottom: 20px;">
+          <select id="basket-databox-filter">
+            <option value="">{{ 'button::choose databox' | trans }}</option>
+            {% for databoxId in databoxIds %}
+              <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+            {% endfor %}
+          </select>
+
+          <input type="number" id="basket-record-filter" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        </div>
+
+        <p> <span class="basket-result-count">{{ basket_elements|length }} / {{ basket_elements_count }}</span> (last 200 basket records displayed)</p>
+        <table>
+          <thead>
+          <tr>
+            <th>databox name</th>
+            <th>record_id</th>
+            <th>Basket name</th>
+          </tr>
+          </thead>
+          <tbody id="record_basket_list">
+          {% for b_e in basket_elements %}
+            <tr>
+              <td>{{ b_e.getSbasId() | sbas_labels(app) }}</td>
+              <td>{{ b_e.getRecordId() }}</td>
+              <td>{{ b_e.basket.name }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
     {% endif %}
   </div>
   <div class="form-actions" style="">
@@ -1058,7 +1359,15 @@
 
     ini_edit_usrs();
 
-    $('div.tabs').tabs();
+    $('div.tabs').tabs({
+      activate:function( event, ui ) {
+        if (ui.newPanel.selector === '#rights_tab' || ui.newPanel.selector === '#user_infos_tab') {
+          $("#right-ajax .form-actions").removeClass('hidden');
+        } else {
+          $("#right-ajax .form-actions").addClass('hidden');
+        }
+      }
+    });
 
     $('#users_rights_form button#reset_rights').bind('click', function () {
       if (confirm("{{ 'Are you sure you want to reset rights?' | trans }}")) {
@@ -1098,6 +1407,200 @@
         });
       }
     });
+
+
+    $('body').click(function() {
+      $('.users_check_line_wrap').addClass('hide');
+    });
+    $('.select-all-line-btn').click(function (event) {
+      event.stopPropagation();
+      var top = $(this).offset().top - 50;
+      var left = $(this).offset().left + 60;
+      $('.users_check_line_wrap').addClass('hide');
+      $(this).closest('.select-all-line').find('.users_check_line_wrap').removeClass('hide').css('top', +top+'px');
+
+    });
+    $('.check_left_right').click(function () {
+      $(this).closest('.right-items').find('.left-right div').show().removeClass('unchecked').addClass('checked');
+      $(this).closest('.right-items').find('.left-right input').val(1);
+      $('.users_check_line_wrap').addClass('hide');
+    });
+
+    $('.check-all_right').click(function () {
+      $(this).closest('.right-items').find('div').show().removeClass('unchecked').addClass('checked');
+      $(this).closest('.right-items').find('input').val(1);
+      $('.users_check_line_wrap').addClass('hide');
+    });
+
+    $('#webhook_activation').on('click', function() {
+      let $this = $(this);
+      $.ajax({
+        type: 'POST',
+        url: $this.attr('data-path'),
+        dataType: 'json',
+        data: {
+          action: $this.is(':checked') ? 'activate' : 'deactivate'
+        },
+        success: function (data) {
+          console.log(data.success);
+        }
+      });
+    });
+
+    {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
+      $('#reset-auth-failure').on('click', function() {
+        let $this = $(this);
+        $.ajax({
+          type: 'POST',
+          url: '/admin/users/auth-failure/reset/',
+          dataType: 'json',
+          data: {
+            username: $this.attr('data-username')
+          },
+          success: function (data) {
+            if (data.success == true) {
+              var list =  '';
+              $('#auth_failure_locked').empty();
+              for (var i=0; i < data.authFailureUnlocked.length; i++ ) {
+                 list += '<tr><td>' +
+                         data.authFailureUnlocked[i]['username'] + '</td><td>' +
+                         data.authFailureUnlocked[i]['ip'] + '</td><td>' +
+                         data.authFailureUnlocked[i]['created'] + '</td></tr>';
+              }
+
+                $('#auth_failure_unlocked_list').empty().append(list);
+            }
+          }
+        });
+      });
+
+      $('input[type=radio][name="email-locked"]').change( function() {
+        let $this = $(this);
+        $.ajax({
+          type: 'POST',
+          url: '/admin/users/mail-locked/change/',
+          dataType: 'json',
+          data: {
+            user_id: {{ main_user.getId() }},
+            action: $this.val()
+          },
+          success: function (data) {
+          }
+        });
+      });
+
+      function listRecordAcl() {
+        let expiredRight = 0;
+        if ($("#expired-right").is(":checked"))
+        {
+          expiredRight = 1;
+        }
+
+        $.ajax({
+          type: "GET",
+          url: "/admin/users/records-acl/",
+          data: {
+            databoxId : $("#acl-databox-filter").val(),
+            recordId : $("#acl-record-filter").val(),
+            expiredRight: expiredRight,
+            type: $("#acl-type-filter").val(),
+            userId: {{ main_user.getId() }}
+          },
+          success: function (data) {
+            $("#record_acl_list").empty().html(data.content);
+            $(".acl-result-count").empty().text(data.total_result + ' / ' + data.total_count);
+          }
+        });
+      }
+
+      function listRecordBasket() {
+        $.ajax({
+          type: "GET",
+          url: "/admin/users/records-basket/",
+          data: {
+            databoxId : $("#basket-databox-filter").val(),
+            recordId : $("#basket-record-filter").val(),
+            userId: {{ main_user.getId() }}
+          },
+          success: function (data) {
+            $("#record_basket_list").empty().html(data.content);
+            $(".basket-result-count").empty().text(data.total_result + ' / ' + data.total_count);
+          }
+        });
+      }
+
+      function listFeedEntry(userId, feedId, dest) {
+        $.ajax({
+          type: 'GET',
+          url: '/admin/users/feed-entry/',
+          dataType: 'json',
+          data: {
+            userId: userId,
+            feedId: feedId
+          },
+          success: function (data) {
+            dest.empty().html(data.content);
+            dest.siblings('.ui-state-active').find(".publication-count").text(data.feed_entries_count);
+          }
+        });
+      }
+
+      $("#acl-databox-filter").on('change', function() {
+        listRecordAcl();
+      });
+
+      $("#acl-record-filter").on('input', function() {
+        listRecordAcl();
+      });
+
+      $("#expired-right").on('change', function () {
+        listRecordAcl();
+      });
+
+      $("#acl-type-filter").on('change', function () {
+        listRecordAcl();
+      });
+
+      $("#basket-databox-filter").on('change', function() {
+        listRecordBasket();
+      });
+
+      $("#basket-record-filter").on('input', function() {
+        listRecordBasket();
+      });
+
+      $("#feeds-list").accordion({
+        active: false,
+        heightStyle: 'content',
+        collapsible: true,
+        autoHeight:  true,
+        fillSpace:   true,
+        activate: function(){
+          let dest = $(this).find('.ui-state-active').next('.feed-content');
+          let feedId = $(this).find('.ui-state-active').attr('data-feed');
+
+          listFeedEntry({{ main_user.getId() }}, feedId, dest)
+        }
+      });
+
+      $("#feed_tab").on('click', '.delete-publication', function() {
+        let feedId = $(this).closest('.feed-content').attr('data-feed');
+        let dest = $(this).closest('.feed-content');
+        if(confirm('This delete the publication "' + $(this).siblings('.publication-name').text() + '"')) {
+          $.ajax({
+            type: "POST",
+            url: "/admin/users/feed-entry/delete/",
+            data: {
+              feedEntryId : $(this).attr('data-feed-entry'),
+            },
+            success: function (data) {
+              listFeedEntry({{ main_user.getId() }}, feedId, dest)
+            }
+          });
+        }
+      });
+
+    {% endif %}
   });
 
   require([

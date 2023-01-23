@@ -31,7 +31,10 @@
                                         <span>{{ 'Select files...' | trans }}</span>
                                         <input type="file" name="files[]" multiple>
                                     </span>
-                                        <br />
+                                    <br />
+                                    <p class="or_upload">{{ "Or" | trans }}</p>
+                                    <div class="url_upload"><input type="url" value="" id="add-url"><button class="add-url add_url_upload">{{ 'Add this url' | trans }}</button></div>
+                                    <br/>
                                     <span class="comment">
                                         ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
                                     </span>
@@ -72,32 +75,34 @@
                             {# collections status #}
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'
-                                         style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
-                                        <h5>{{ 'upload:: Status :' | trans }} :</h5>
-                                        <table class="status-tab">
-                                            <tbody>
-                                            {% for bit, status in availableCollections['databox'].getStatusStructure() %}
-                                                <tr>
-                                                    <td class="status-tab-left">
-                                                        {% if status['img_off'] is not empty %}
-                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
-                                                    </td>
-                                                    <td class="status-tab-right">
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
-                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                        {% if status['img_on'] is not empty %}
-                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), constant('\\ACL::CHGSTATUS')) %}
+                                        <div id="status-{{ collection.get_base_id() }}" class='collection-status'
+                                             style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
+                                            <h5>{{ 'upload:: Status :' | trans }} :</h5>
+                                            <table class="status-tab">
+                                                <tbody>
+                                                {% for bit, status in availableCollections['databox'].getStatusStructure() %}
+                                                    <tr>
+                                                        <td class="status-tab-left">
+                                                            {% if status['img_off'] is not empty %}
+                                                                <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                            {% endif %}
+                                                            <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                        </td>
+                                                        <td class="status-tab-right">
+                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                            <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                            {% if status['img_on'] is not empty %}
+                                                                <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             {% endfor %}
                         </div>
@@ -137,12 +142,6 @@
                     </div>
 
                 </form>
-                <div>
-                    <select name="upload_type" id="upload_type" class="input-large" style="width: 200px; float:right">
-                        <option value="html" selected>{{ 'Use the HTML5 uploader' | trans }}</option>
-                        <option value="flash">{{ 'Use the Flash uploader' | trans }}</option>
-                    </select>
-                </div>
             {% else %}
                 {{ 'You can not upload files' | trans }}
             {% endif %}

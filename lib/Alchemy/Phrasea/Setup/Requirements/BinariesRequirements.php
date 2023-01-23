@@ -60,7 +60,7 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             );
         }
 
-        $exiftool = __DIR__ . '/../../../../../vendor/phpexiftool/exiftool/exiftool' . (defined('PHP_WINDOWS_VERSION_BUILD') ? '.exe' : '');
+        $exiftool = __DIR__ . '/../../../../../vendor/exiftool/exiftool/exiftool' . (defined('PHP_WINDOWS_VERSION_BUILD') ? '.exe' : '');
 
         $this->addRequirement(
             is_file($exiftool) && is_executable($exiftool),
@@ -80,12 +80,6 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
         }
 
         $pdf2swf = isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : $finder->find('pdf2swf');
-
-        $this->addRecommendation(
-            null !== $pdf2swf && is_executable($pdf2swf),
-            'SWFTools are required for documents (Word, Excel, PDF, etc...) support',
-            'Please install SWFTools (http://www.swftools.org/)'
-        );
 
         if (null !== $pdf2swf) {
             $output = null;

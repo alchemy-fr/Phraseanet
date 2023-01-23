@@ -47,9 +47,16 @@ class PluginManagerTest extends PluginTestCase
 
     public function testHasPlugin()
     {
+        $prevPlugins = self::$DI['cli']['conf']->get('plugins');
+
+        self::$DI['cli']['conf']->set('plugins', []);
+        self::$DI['cli']['conf']->set(['plugins', 'test-plugin', 'enabled'], true);
+
         $manager = new PluginManager(__DIR__ . '/Fixtures/PluginDirInstalled', self::$DI['cli']['plugins.plugins-validator'], self::$DI['cli']['conf']);
         $this->assertTrue($manager->hasPlugin('test-plugin'));
         $this->assertFalse($manager->hasPlugin('test-plugin2'));
+
+        self::$DI['cli']['conf']->set('plugins', $prevPlugins);
     }
 
     private function createValidatorMock()

@@ -15,7 +15,11 @@
 
 {% set previewHtml5 = null %}
 
-{% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_subdef(record, 'preview') %}
+{# first check if type audio and there is no preview , fallback to thumbnail #}
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_subdef(record, 'preview') and record.getType == 'audio' and record.has_preview == false %}
+    {% set preview_obj = record.get_thumbnail() %}
+{% elseif app.getAclForUser(app.getAuthenticatedUser()).has_access_to_subdef(record, 'preview') %}
     {% set preview_obj = record.get_preview() %}
 {% else %}
     {% set preview_obj = record.get_thumbnail() %}

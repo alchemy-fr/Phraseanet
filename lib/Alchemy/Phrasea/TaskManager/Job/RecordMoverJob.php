@@ -74,7 +74,6 @@ class RecordMoverJob extends AbstractJob
 
     private function processData(Application $app, $row, $logsql)
     {
-        /** @var databox $databox */
         $databox = $app->findDataboxById($row['sbas_id']);
         $rec = $databox->get_record($row['record_id']);
 
@@ -83,7 +82,7 @@ class RecordMoverJob extends AbstractJob
                 // change collection ?
                 if (array_key_exists('coll', $row)) {
                     $coll = \collection::getByCollectionId($app, $databox, $row['coll']);
-                    $rec->move_to_collection($coll, $app['phraseanet.appbox']);
+                    $rec->move_to_collection($coll);
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                     }

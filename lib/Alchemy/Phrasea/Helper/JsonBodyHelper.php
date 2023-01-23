@@ -21,6 +21,16 @@ use Webmozart\Json\ValidationFailedException;
 
 class JsonBodyHelper
 {
+    /**
+     * Decode a JSON value as PHP object.
+     */
+    const OBJECT = 0;
+
+    /**
+     * Decode a JSON value as associative array.
+     */
+    const ASSOC_ARRAY = 1;
+
     /** @var JsonValidator */
     private $validator;
     /** @var JsonDecoder */
@@ -60,13 +70,19 @@ class JsonBodyHelper
      * @param null|string|object $schemaUri
      * @return mixed
      */
-    public function decodeJsonBody(Request $request, $schemaUri = null)
+    public function decodeJsonBody(Request $request, $schemaUri = null, $format = self::OBJECT)
     {
-        $content = $request->getContent();
+        if(empty($content = $request->getContent())) {
+            // in case of multipart/form-data (e.g. to upload a file), the only way to send
+            // also json is to pass as parameter.
+            // we decide to use "body" as parameter name
+            $content = $request->get('body');
+        }
 
         $schema = $schemaUri ? $this->retrieveSchema($schemaUri) : null;
 
         try {
+            $this->decoder->setObjectDecoding($format===self::ASSOC_ARRAY ? JsonDecoder::ASSOC_ARRAY : JsonDecoder::OBJECT);
             return $this->decoder->decode($content, $schema);
         } catch (DecodingFailedException $exception) {
             throw new UnprocessableEntityHttpException('Json request cannot be decoded', $exception);

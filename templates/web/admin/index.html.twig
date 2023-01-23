@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link rel="stylesheet" href="/bower_components/jquery-simplecolorpicker/jquery.simplecolorpicker.css">
+    <link rel="stylesheet" href="/assets/vendors/jquery-simplecolorpicker/jquery.simplecolorpicker.css">
     <link type="text/css" rel="stylesheet" href="/assets/admin/css/admin{% if not app.debug %}.min{% endif %}.css" />
 {% endblock %}
 
@@ -22,8 +22,8 @@
     <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>
     {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
     <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/admin/js/admin{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/admin/js/admin{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
     <script type="text/javascript">
         var p4 = p4 || {};
         p4.users = {sel:[]};
@@ -64,7 +64,7 @@
     {#<script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>#}
 {% endblock %}
 {% block content %}
-    <div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}" data-notif-url="{{ path('list_notifications') }}">
+    <div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}">
     <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">
         <div class="PNB10" style="right:0; top:0px;">
             <div id="FNDR">
@@ -105,10 +105,11 @@
     <div id="template_add_dialog" title="{{ 'Creer un modele' | trans }}">
         <form>
             <label>{{ 'Nom du nouveau modele' | trans }}</label>
-            <input type="text" name="value" />
+            <input id="template-add-input" type="text" name="value"/>
             <img src="/assets/common/images/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
         </form>
     </div>
     <div id="DIALOG" style="color:white;"></div>
+    <div id="change_status_job_dialog"></div>
     </div>
 {% endblock %}

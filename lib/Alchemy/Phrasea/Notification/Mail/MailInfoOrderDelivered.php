@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Model\Entities\User;
 
-class MailInfoOrderDelivered extends AbstractMail
+class MailInfoOrderDelivered extends AbstractMailWithLink
 {
     /** @var Basket */
     private $basket;
@@ -51,7 +51,7 @@ class MailInfoOrderDelivered extends AbstractMail
             throw new LogicException('You must set a basket before calling getSubject');
         }
 
-        return $this->app->trans('push::mail:: Reception de votre commande %title%', ['%title%' => $this->basket->getName()]);
+        return $this->app->trans('push::mail:: Reception de votre commande %title%', ['%title%' => $this->basket->getName()], 'messages', $this->getLocale());
     }
 
     /**
@@ -63,7 +63,7 @@ class MailInfoOrderDelivered extends AbstractMail
             throw new LogicException('You must set a deliverer before calling getMessage');
         }
 
-        return $this->app->trans('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', ['%user%' => $this->deliverer->getDisplayName()]);
+        return $this->app->trans('%user% vous a delivre votre commande, consultez la en ligne a l\'adresse suivante', ['%user%' => $this->deliverer->getDisplayName()], 'messages', $this->getLocale());
     }
 
     /**
@@ -71,7 +71,7 @@ class MailInfoOrderDelivered extends AbstractMail
      */
     public function getButtonText()
     {
-        return $this->app->trans('See my order');
+        return $this->app->trans('See my order', [], 'messages', $this->getLocale());
     }
 
     /**

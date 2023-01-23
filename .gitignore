@@ -19,9 +19,11 @@
 # Exclude configuration folder exception the configuration sample file
 /config
 !/config/configuration.sample.yml
+!/config/filebeat.yml
+!/config/logstash.conf
 
 # Exclude generated proxies from doctrine2
-/resources/proxies
+#/resources/proxies
 
 # Exclude temporaries resources (zip files, quarantine documents etc ..) folder
 /tmp
@@ -48,6 +50,7 @@
 !/bin/console
 !/bin/developer
 !/bin/setup
+!/bin/maintenance
 
 # Exclude composer
 composer.phar
@@ -62,10 +65,25 @@ behat.yml
 # Exclude crossdomain.xml file it's generated
 /www/crossdomain.xml
 
-# Exclude jison files
+# Exclude json files
 grammar/query.js
 grammar/jison-*
+
 
 pimple.json
 playbook.retry
 npm-debug.log
+
+# Exclude stack datas
+/Phrasea_datas
+/volumes
+
+# Exclude alternate env files
+.env.*
+env.local
+
+# Exclude gitlog files
+www/gitlog.txt
+
+
+

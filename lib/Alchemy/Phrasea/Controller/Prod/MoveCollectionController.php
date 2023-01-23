@@ -110,14 +110,45 @@ class MoveCollectionController extends Controller
                 return $this->app->json($datas);
             }
 
+            /** @var \collection[] $trashCollectionsBySbasId */
+            $trashCollectionsBySbasId = [];
+
             foreach ($records as $record) {
-                $record->move_to_collection($collection, $this->getApplicationBox());
+                $oldCollectionId = $record->getCollection()->get_coll_id();
+                $record->move_to_collection($collection);
 
                 if ($request->request->get("chg_coll_son") == "1") {
                     /** @var \record_adapter $child */
                     foreach ($record->getChildren() as $child) {
                         if ($this->getAclForUser()->has_right_on_base($child->getBaseId(), \ACL::CANDELETERECORD)) {
-                            $child->move_to_collection($collection, $this->getApplicationBox());
+                            $child->move_to_collection($collection);
+                        }
+                    }
+                }
+
+                $sbasId = $record->getDatabox()->get_sbas_id();
+                if (!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                    $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+                }
+                if ($trashCollectionsBySbasId[$sbasId] !== null) {
+                    if ($oldCollectionId == $trashCollectionsBySbasId[$sbasId]->get_coll_id() && $collection->get_coll_id() !== $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                        // record is already in trash so active it
+                        foreach ($record->get_subdefs() as $subdef) {
+                            if (($pl = $subdef->get_permalink())) {
+                                $pl->set_is_activated(true);
+                            }
+                        }
+                        if ($request->request->get("chg_coll_son") == "1") {
+                            /** @var \record_adapter $child */
+                            foreach ($record->getChildren() as $child) {
+                                if ($this->getAclForUser()->has_right_on_base($child->getBaseId(), \ACL::CANDELETERECORD)) {
+                                    foreach ($child->get_subdefs() as $childSubdef) {
+                                        if (($childPl = $childSubdef->get_permalink())) {
+                                            $childPl->set_is_activated(true);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

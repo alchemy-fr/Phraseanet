@@ -31,17 +31,15 @@ class BasketElementRepository extends EntityRepository
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN e.validation_datas vd
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
-WHERE (b.user = :usr_id OR p.user = :same_usr_id)
+LEFT JOIN b.participants p WITH p.user = :usr_id
+LEFT JOIN e.votes vd WITH vd.participant = :usr_id
+WHERE (b.user = :usr_id OR p.user = :usr_id)
     AND e.id = :element_id
 DQL;
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([
             'usr_id' => $user->getId(),
-            'same_usr_id' => $user->getId(),
             'element_id' => $element_id,
         ]);
 
@@ -64,8 +62,7 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
+LEFT JOIN b.participants p
 WHERE e.record_id = :record_id
 AND e.sbas_id = :sbas_id
 DQL;
@@ -89,14 +86,35 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
+LEFT JOIN b.participants p
 WHERE e.sbas_id = :sbas_id
 DQL;
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([
             'sbas_id' => $databox->get_sbas_id(),
+        ]);
+
+        return $query->getResult();
+    }
+
+    public function findElementsDatasByRecord(\record_adapter $record)
+    {
+        $dql = <<<'DQL'
+SELECT be
+FROM Phraseanet:BasketElement AS be
+INNER JOIN be.basket b
+INNER JOIN b.participants AS vp
+INNER JOIN vp.votes AS vd 
+WHERE be.record_id = :record_id
+AND be.sbas_id = :sbas_id
+ORDER BY b.created DESC
+DQL;
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters([
+            'sbas_id' => $record->getDataboxId(),
+            'record_id' => $record->getRecordId(),
         ]);
 
         return $query->getResult();
@@ -113,8 +131,7 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
+LEFT JOIN b.participants p
 WHERE b.user = :usr_id
 AND b.pusher IS NOT NULL
 AND e.record_id = :record_id
@@ -142,8 +159,7 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-JOIN b.validation v
-JOIN v.participants p
+JOIN b.participants p
 WHERE p.user = :usr_id
 AND e.record_id = :record_id
 AND e.sbas_id = :sbas_id
@@ -216,5 +232,51 @@ DQL;
         $builder->setParameters($parameters);
 
         return $builder->getQuery()->getResult();
+    }
+
+    public function getElements(User $user, $databoxId = null, $recordId = null, $nbElement = 200)
+    {
+        $qb = $this->createQueryBuilder('be');
+        $qb->innerJoin('be.basket', 'b');
+
+        $qb->where($qb->expr()->eq('b.user', ':user'));
+        $qb->setParameter(':user', $user);
+
+        if ($databoxId != null) {
+            $qb->andWhere('be.sbas_id = :databoxId');
+            $qb->setParameter(':databoxId', $databoxId);
+        }
+
+        if ($recordId != null) {
+            $qb->andWhere('be.record_id = :recordId');
+            $qb->setParameter(':recordId', $recordId);
+        }
+
+        $qb->orderBy('be.id', 'DESC');
+        $qb->setMaxResults($nbElement);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getElementsCount(User $user, $databoxId = null, $recordId = null)
+    {
+        $qb = $this->createQueryBuilder('be');
+        $qb->select('count(be)');
+        $qb->innerJoin('be.basket', 'b');
+
+        $qb->where($qb->expr()->eq('b.user', ':user'));
+        $qb->setParameter(':user', $user);
+
+        if ($databoxId != null) {
+            $qb->andWhere('be.sbas_id = :databoxId');
+            $qb->setParameter(':databoxId', $databoxId);
+        }
+
+        if ($recordId != null) {
+            $qb->andWhere('be.record_id = :recordId');
+            $qb->setParameter(':recordId', $recordId);
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

@@ -10,17 +10,18 @@
 
 namespace Alchemy\Phrasea\Filesystem;
 
+use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use Alchemy\Phrasea\Model\RecordInterface;
 use MediaAlchemyst\Specification\SpecificationInterface;
 
 class FilesystemService
 {
     /**
-     * @var \Symfony\Component\Filesystem\Filesystem
+     * @var PhraseanetFilesystem
      */
     private $filesystem;
 
-    public function __construct(\Symfony\Component\Filesystem\Filesystem $filesystem)
+    public function __construct(PhraseanetFilesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }
@@ -45,7 +46,10 @@ class FilesystemService
             $pathout = sprintf('%s%s%05d', $repository_path, $comp, $n++);
         } while (is_dir($pathout) && iterator_count(new \DirectoryIterator($pathout)) > 100);
 
-        $this->filesystem->mkdir($pathout, 0770);
+        if (!file_exists($pathout)) {
+            $this->filesystem->mkdir($pathout, 0770);
+        }
+
 
         return $pathout . DIRECTORY_SEPARATOR;
     }
@@ -66,6 +70,20 @@ class FilesystemService
         return $pathdest . $this->generateSubdefFilename($record, $subdef);
     }
 
+    public function generateTemporaryFfmpegPathname(\record_adapter $record, \databox_subdef $subdef, $tmpDir)
+    {
+        $tmpDir = \p4string::addEndSlash($tmpDir);
+        $ffmpegDir = $tmpDir."ffmpeg/";
+
+        if(!is_dir($ffmpegDir)){
+            $this->filesystem->mkdir($ffmpegDir);
+        }
+
+        $filenameSufix = "_".$record->getDataboxId()."_".$this->generateSubdefFilename($record, $subdef);
+
+        return $ffmpegDir . hash('sha256', $filenameSufix) . $filenameSufix;
+    }
+
     /**
      * @param RecordInterface $record
      * @param string|\SplFileInfo $source
@@ -84,18 +102,20 @@ class FilesystemService
      * @param \record_adapter $record
      * @param \databox_subdef $subdef
      * @param string $marker
+     * @param string $extension  if not set,get from subdef spec
      * @return string
      */
-    public function generateSubdefFilename(\record_adapter $record, \databox_subdef $subdef, $marker = '')
+    public function generateSubdefFilename(\record_adapter $record, \databox_subdef $subdef, $marker = '', $extension = null)
     {
-        return $record->getRecordId() . '_' . $marker . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
+        $extension = empty($extension) ? $this->getExtensionFromSpec($subdef->getSpecs()) : $extension;
+        return $record->getRecordId() . '_' . $marker . $subdef->get_name() . '.' . $extension;
     }
 
-    public function generateSubdefSubstitutionPathname(\record_adapter $record, \databox_subdef $subdef)
+    public function generateSubdefSubstitutionPathname(\record_adapter $record, \databox_subdef $subdef, $extension = null)
     {
         $pathdest = $this->directorySpread($subdef->get_path());
 
-        return $pathdest . $this->generateSubdefFilename($record, $subdef, '0_');
+        return $pathdest . $this->generateSubdefFilename($record, $subdef, '0_', $extension);
     }
 
     /**
@@ -128,6 +148,17 @@ class FilesystemService
     }
 
     /**
+     * rename file from source to target
+     *
+     * @param string $source
+     * @param string $target
+     */
+    public function rename($source, $target)
+    {
+        $this->filesystem->rename($source, $target, true);
+    }
+
+    /**
      * Copy file from source to target
      *
      * @param string $source
@@ -143,6 +174,11 @@ class FilesystemService
         $this->filesystem->chmod($files, $mode, $umask, $recursive);
     }
 
+    public function mkdir($dirs, int $mode = 0777)
+    {
+        $this->filesystem->mkdir($dirs, $mode);
+    }
+
     /**
      * Get the extension from MediaAlchemyst specs
      *
@@ -150,7 +186,7 @@ class FilesystemService
      *
      * @return string
      */
-    private function getExtensionFromSpec(SpecificationInterface $spec)
+    public function getExtensionFromSpec(SpecificationInterface $spec)
     {
         switch ($spec->getType()) {
             case SpecificationInterface::TYPE_IMAGE:
@@ -163,6 +199,8 @@ class FilesystemService
                 return $this->getExtensionFromVideoCodec($spec->getVideoCodec());
             case SpecificationInterface::TYPE_SWF:
                 return 'swf';
+            case PdfSpecification::TYPE_PDF:
+                return 'pdf';
         }
 
         return null;
@@ -184,6 +222,8 @@ class FilesystemService
                 return 'ogg';
             case 'libmp3lame':
                 return 'mp3';
+            case 'pcm_s16le':
+                return 'wav';
         }
 
         return null;

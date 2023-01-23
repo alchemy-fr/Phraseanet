@@ -38,7 +38,7 @@ class LazaretController extends Controller
      *
      * @param Request     $request The current request
      *
-     * @return Response
+     * @return String
      */
     public function listElement(Request $request)
     {
@@ -70,7 +70,7 @@ class LazaretController extends Controller
     public function getElement($file_id)
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
-        
+
         /* @var LazaretFile $lazaretFile */
         $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
 
@@ -125,6 +125,16 @@ class LazaretController extends Controller
         $lazaretManipulator = $this->app['manipulator.lazaret'];
 
         $ret = $lazaretManipulator->add($file_id, $keepAttributes, $attributesToKeep);
+
+        try{
+            // get the new record
+            $record = \Collection::getByBaseId($this->app, $request->request->get('bas_id'))->get_databox()->get_record($ret['result']['record_id']);
+            $postStatus = (array) $request->request->get('status');
+            // update status
+            $this->updateRecordStatus($record, $postStatus);
+        }catch(\Exception $e){
+            $ret['message'] = $this->app->trans('An error occured when wanting to change status!');
+        }
 
         return $this->app->json($ret);
     }
@@ -216,6 +226,7 @@ class LazaretController extends Controller
 
             return $this->app->json($ret);
         }
+        $postStatus = (array) $request->request->get('status');
 
         $path = $this->app['tmp.lazaret.path'] . '/';
         $lazaretFileName = $path .$lazaretFile->getFilename();
@@ -225,14 +236,16 @@ class LazaretController extends Controller
             $media = $this->app->getMediaFromUri($lazaretFileName);
 
             $record = $lazaretFile->getCollection($this->app)->get_databox()->get_record($recordId);
-            $this->getSubDefinitionSubstituer()
-                ->substitute($record, 'document', $media);
+            $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
             $this->getDataboxLogger($record->getDatabox())->log(
                 $record,
                 \Session_Logger::EVENT_SUBSTITUTE,
                 'HD',
                 ''
             );
+
+            // update status
+            $this->updateRecordStatus($record, $postStatus);
 
             //Delete lazaret file
             $manager = $this->getEntityManager();
@@ -280,6 +293,35 @@ class LazaretController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param $databox_id
+     * @param $record_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getDestinationStatus(Request $request, $databox_id, $record_id)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            $this->app->abort(400);
+        }
+        $record = new \record_adapter($this->app, (int) $databox_id, (int) $record_id);
+        $databox = $this->findDataboxById($databox_id);
+        $statusStructure = $databox->getStatusStructure();
+        $recordsStatuses = [];
+        foreach ($statusStructure as $status) {
+            //  make the key as a string for the json usage in javascript
+            $bit = "'".$status['bit']."'";
+            if (!isset($recordsStatuses[$bit])) {
+                $recordsStatuses[$bit] = $status;
+            }
+            $statusSet = \databox_status::bitIsSet($record->getStatusBitField(), $status['bit']);
+            if (!isset($recordsStatuses[$bit]['flag'])) {
+                $recordsStatuses[$bit]['flag'] = (int) $statusSet;
+            }
+        }
+        return $this->app->json(['status' => $recordsStatuses]);
+    }
+
+    /**
      * @return LazaretFileRepository
      */
     private function getLazaretFileRepository()
@@ -293,5 +335,33 @@ class LazaretController extends Controller
     private function getBorderManager()
     {
         return $this->app['border-manager'];
+    }
+
+    /**
+     * Set new status to selected record
+     *
+     * @param  \record_adapter $record
+     * @param  array           $postStatus
+     * @return array|null
+     */
+    private function updateRecordStatus(\record_adapter $record, array $postStatus)
+    {
+        $sbasId = $record->getDataboxId();
+        if (isset($postStatus[$sbasId]) && is_array($postStatus[$sbasId])) {
+            $postStatus = $postStatus[$sbasId];
+            $currentStatus = strrev($record->getStatus());
+            $newStatus = '';
+            foreach (range(0, 31) as $i) {
+                $newStatus .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : $currentStatus[$i];
+            }
+            $record->setStatus(strrev($newStatus));
+            $this->getDataboxLogger($record->getDatabox())
+                ->log($record, \Session_Logger::EVENT_STATUS, '', '');
+            return [
+                'current_status' => $currentStatus,
+                'new_status'     => $newStatus,
+            ];
+        }
+        return null;
     }
 }

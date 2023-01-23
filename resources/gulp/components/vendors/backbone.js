@@ -7,11 +7,11 @@ var utils = require('../../utils.js');
 
 gulp.task('build-underscore', function(){
     return utils.buildJsGroup([
-        config.paths.vendors + 'underscore-amd/underscore.js'
+        config.paths.nodes + 'underscore/underscore.js'
     ], 'underscore', 'vendors/underscore');
 });
 gulp.task('build-backbone', ['build-underscore'], function(){
     return utils.buildJsGroup([
-        config.paths.vendors + 'backbone-amd/backbone.js'
+        config.paths.nodes + 'backbone/backbone.js'
     ], 'backbone', 'vendors/backbone');
 });

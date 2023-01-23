@@ -34,6 +34,11 @@ abstract class AbstractChecker implements CheckerInterface
      */
     protected $collections = [];
 
+    /**
+     * @var \collection[]
+     */
+    protected $compareIgnoreCollections = [];
+
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -44,7 +49,7 @@ abstract class AbstractChecker implements CheckerInterface
      * Warning, you can not restrict on both databoxes and collections
      *
      * @param  \databox[] $databoxes A databox or an array of databoxes
-     * @return bool
+     * @return \databox[]
      *
      * @throws \LogicException           If already restricted to collections
      * @throws \InvalidArgumentException In case invalid databoxes are provided
@@ -72,7 +77,7 @@ abstract class AbstractChecker implements CheckerInterface
      * Warning, you can not restrict on both databoxes and collections
      *
      * @param  \collection[] $collections
-     * @return bool
+     * @return \collection[]
      *
      * @throws \LogicException           If already restricted to databoxes
      * @throws \InvalidArgumentException In case invalid collections are provided
@@ -93,6 +98,11 @@ abstract class AbstractChecker implements CheckerInterface
         }
 
         return $this->collections;
+    }
+
+    public function setCompareIgnoreCollections($collections)
+    {
+        $this->compareIgnoreCollections = $collections;
     }
 
     /**

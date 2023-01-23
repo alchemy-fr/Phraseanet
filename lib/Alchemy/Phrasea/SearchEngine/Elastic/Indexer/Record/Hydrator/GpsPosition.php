@@ -11,10 +11,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
-use Assert\Assertion;
+use InvalidArgumentException;
 
 class GpsPosition
 {
+    const FULL_GEO_NOTATION = 'FullNotation';
     const LONGITUDE_TAG_NAME = 'Longitude';
     const LONGITUDE_REF_TAG_NAME = 'LongitudeRef';
     const LONGITUDE_REF_WEST = 'W';
@@ -29,37 +30,98 @@ class GpsPosition
     private $latitude;
     private $latitude_ref;
 
+    public function __construct()
+    {
+        $this->clear();
+    }
+
+    public function clear()
+    {
+        $this->longitude = $this->longitude_ref = $this->latitude = $this->latitude_ref = null;
+    }
+
     public function set($tag_name, $value)
     {
         switch ($tag_name) {
             case self::LONGITUDE_TAG_NAME:
-                Assertion::numeric($value);
-                $this->longitude = (float) $value;
+                if(is_numeric($value)) {
+                    $value = (float)$value;
+                    if ($value >= -180.0 && $value <= 180.0) {
+                        $this->longitude = $value;
+                    }
+                }
                 break;
 
             case self::LATITUDE_TAG_NAME:
-                Assertion::numeric($value);
-                $this->latitude = (float) $value;
+                if(is_numeric($value)) {
+                    $value = (float)$value;
+                    if ($value >= -90.0 && $value <= 90.0) {
+                        $this->latitude = $value;
+                    }
+                }
                 break;
 
             case self::LONGITUDE_REF_TAG_NAME:
                 $normalized = strtoupper($value);
-                if ($normalized !== self::LONGITUDE_REF_EAST && $normalized !== self::LONGITUDE_REF_WEST) {
-                    throw new \InvalidArgumentException(sprintf('Invalid longitude reference "%s" (expecting "%s" or "%s").', $value, self::LONGITUDE_REF_EAST, self::LONGITUDE_REF_WEST));
+                if ($normalized === self::LONGITUDE_REF_EAST || $normalized === self::LONGITUDE_REF_WEST) {
+                    $this->longitude_ref = $value;
                 }
-                $this->longitude_ref = $value;
                 break;
 
             case self::LATITUDE_REF_TAG_NAME:
                 $normalized = strtoupper($value);
-                if ($normalized !== self::LATITUDE_REF_NORTH && $normalized !== self::LATITUDE_REF_SOUTH) {
-                    throw new \InvalidArgumentException(sprintf('Invalid latitude reference "%s" (expecting "%s" or "%s").', $value, self::LATITUDE_REF_NORTH, self::LATITUDE_REF_SOUTH));
+                if ($normalized === self::LATITUDE_REF_NORTH || $normalized === self::LATITUDE_REF_SOUTH) {
+                    $this->latitude_ref = $normalized;
                 }
-                $this->latitude_ref = $normalized;
+                break;
+
+            case self::FULL_GEO_NOTATION:
+                $re = '/(-?\d+(?:\.\d+)?°?)\s*(\d+(?:\.\d+)?\')?\s*(\d+(?:\.\d+)?")?\s*(N|S|E|W)?/um';
+                $normalized = trim(strtoupper($value));
+                $matches = null;
+                preg_match_all($re, $normalized, $matches, PREG_SET_ORDER, 0);
+                if(count($matches) === 2) {     // we need lat and lon
+                    $lat = $lon = null;
+                    foreach ($matches as $imatch => $match) {
+                        if(count($match) != 5) {
+                            continue;
+                        }
+                        $v = 0.0;
+                        for($part=1, $div=1.0; $part<=3; $part++, $div*=60.0) {
+                            $v += floatval($match[$part]) / $div;
+                        }
+                        switch($match[4]) {     // N S E W
+                            case 'N':
+                                $lat = $v;
+                                break;
+                            case 'S':
+                                $lat = -$v;
+                                break;
+                            case 'E':
+                                $lon = $v;
+                                break;
+                            case 'W':
+                                $lon = -$v;
+                                break;
+                            case '':        // no ref -> lat lon (first=lat, second=lon)
+                                if($imatch === 0) {
+                                    $lat = $v;
+                                }
+                                else {
+                                    $lon = $v;
+                                }
+                                break;
+                        }
+                    }
+                    if($lat !== null && $lon != null) {
+                        $this->set(self::LATITUDE_TAG_NAME, $lat);
+                        $this->set(self::LONGITUDE_TAG_NAME, $lon);
+                    }
+                }
                 break;
 
             default:
-                throw new \InvalidArgumentException(sprintf('Unsupported tag name "%s".', $tag_name));
+                throw new InvalidArgumentException(sprintf('Unsupported tag name "%s".', $tag_name));
         }
     }
 
@@ -79,6 +141,22 @@ class GpsPosition
             && $this->longitude_ref !== null
             && $this->latitude !== null
             && $this->latitude_ref !== null;
+    }
+
+    public function isCompleteComposite()
+    {
+        return $this->longitude !== null
+            && $this->latitude !== null;
+    }
+
+    public function getCompositeLongitude()
+    {
+        return $this->longitude ;
+    }
+
+    public function getCompositeLatitude()
+    {
+        return $this->latitude;
     }
 
     public function getSignedLongitude()

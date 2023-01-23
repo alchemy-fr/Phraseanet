@@ -1,0 +1,178 @@
+<table cellspacing="0">
+    <tr class="personalise-logo-row-container">
+        <td>
+            {{ form_widget(form.logoChoice[0]) }}
+            {{ form_label(form.logoChoice[0]) }}
+            <div class="image-container">
+                <img id="original-image-placeholder" alt="gabari"
+                     src="/assets/common/images/logo.png"/>
+            </div>
+
+        </td>
+        <td>
+            {{ form_widget(form.logoChoice[1]) }}
+            {{ form_label(form.logoChoice[1]) }}
+            <br>
+            <span id="help-text">{{ 'admin::setup:personalisation_logo: help text' | trans }}</span>
+            <br>
+            <a id="download-image-template" href="#">{{ 'admin::setup:personalisation_logo: download gabari' | trans }}</a>
+            <br>
+            <div class="image-container" id="personalize-image-container">
+                {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+                    {% set extension = app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'fileType']) %}
+                    {% set personalise_path = '/custom/minilogos/personalize_logo.' ~ extension %}
+
+                    <img id="personalise-image-placeholder" src="{{ personalise_path }}"/>
+                {% endif %}
+            </div>
+            <div>
+                {{ form_widget(form.personalizeLogoInput) }}
+                <label for="general_personalize-logo-choice_personalizeLogoInput"
+                       id="select-logo-btn">{{ 'admin::setup:personalisation_logo: select file' | trans }}</label>
+            </div>
+            <span id="error-text"></span>
+        </td>
+        {{ form_widget(form.personalizeFile) }}
+        {{ form_widget(form.fileType) }}
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var fileToUpload = null;
+
+        var errorDimension = '{{ 'admin::setup:personalisation_logo: error text dimension' | trans }}';
+        var errorFileType = '{{ 'admin::setup:personalisation_logo: error text file type' | trans }}';
+
+        $('#help-text').show();
+
+        // show personalize logo if exist
+        {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+            $('#personalize-image-container').show();
+        {% else %}
+            $('#personalize-image-container').hide();
+        {% endif %}
+
+        $('#error-text').hide();
+
+        $("#download-image-template").on('click', function (event) {
+            event.preventDefault();
+            var imageInBase64 = 'data:image/png;base64,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';
+            var mimeInfo = base64MimeType(imageInBase64);
+            var ext = mimeInfo.split('/').pop();
+            var filename = $('#original-image-placeholder').attr('alt') + "." + ext;
+            download(imageInBase64, filename, mimeInfo);
+        });
+
+        var base64MimeType = function base64MimeType(encoded) {
+            var result = null;
+            if (typeof encoded !== 'string') {
+                return result;
+            }
+            var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+            if (mime && mime.length) {
+                result = mime[1];
+            }
+            return result;
+        };
+
+        $("#setupForm").fileupload({
+            dataType: 'html',
+            add: function (e, data) {
+                $.each(data.files, function (i, file) {
+                    var reader = new FileReader();
+
+                    reader.readAsDataURL(data.files[0]);
+                    reader.data = data;
+                    reader.file = data.files[0];
+
+                    reader.onload = function (_file) {
+                        var image = new Image();
+
+                        fileToUpload = _file.target.result;
+                        image.src = _file.target.result;
+                        image.file = this.file;
+                        image.data = this.data;
+
+                        if (image.file.type != 'image/png' && image.file.type!= 'image/svg+xml') {
+                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                            $('#error-text').text(errorFileType);
+                            $('#error-text').show();
+                            /*$('#help-text').hide();*/
+                            $('#personalize-image-container').hide();
+                            return false;
+                        }
+
+                        image.onload = function () {
+                            var w = this.width,
+                                h = this.height;
+
+                            var ext = this.file.type.split('/').pop().toLowerCase();
+
+                            if (h > 41 || w > 120 ) {
+                                $('#error-text').text(errorDimension);
+                                $('#error-text').show();
+                                /*$('#help-text').hide();*/
+                                $('#personalize-image-container').hide();
+                                $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                                return false;
+                            }
+
+                            require([
+                                "blueimp.loadimage"
+                            ], function (loadImage) {
+                                loadImage(file, function (img) {
+                                    $('#personalize-image-container').show();
+                                    $('#error-text').hide();
+                                    /*$('#help-text').hide();*/
+                                    $('#personalize-image-container').empty().append(img);
+                                }, {
+                                    maxSize: 5242880, // 5MB
+                                    maxWidth: 120,
+                                    maxHeight: 41,
+                                });
+                            });
+
+                            var fd = new FormData();
+                            fd.append("fileToUpload", fileToUpload);
+                            $.ajax({
+                                type: 'POST',
+                                url: '{{ path('setup_send_personalize_logo') }}',
+                                data: fd,
+                                processData: false,
+                                contentType: false,
+                                async: false,
+                                success: function (data) {
+                                    if(data === 'success'){
+                                        $('#general_personalize-logo-choice_personalizeFile').val(true);
+                                        if(ext==='svg+xml'){
+                                            ext = 'svg';
+                                        }
+                                        $('#general_personalize-logo-choice_fileType').val(ext);
+                                    }else{
+                                        $('#general_personalize-logo-choice_personalizeFile').val(false);
+                                    }
+
+                                   /* console.log(data);*/
+                                }
+
+                            });
+                        }
+                    }
+
+                });
+
+                return false;
+            },
+            submit: function (e, data) {
+            },
+            done: function (e, data) {
+            }
+        });
+
+    });
+
+</script>
+
+
+

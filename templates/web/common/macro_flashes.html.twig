@@ -1,0 +1,19 @@
+{% macro flashes() %}
+    {% for type in app.getAvailableFlashTypes %}
+        {% for message in app.getFlash(type) %}
+            <div class="alert alert-{{ type }}">
+                <table>
+                    <tr>
+                        <td class="alert-block-logo">
+                            <i class="fa-2x icon-white fa fa-exclamation-circle" aria-hidden="true"></i>
+                        </td>
+                        <td class="alert-block-content">{{ message }}</td>
+                        <td class="alert-block-close">
+                            <a href="#"><b>&times;</b></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}

@@ -1,11 +1,11 @@
 ---
-- stat: path=/etc/php/5.6/apache2/php.ini
+- stat: path=/etc/php/{{ phpversion }}/apache2/php.ini
   register: modphp
 
-- stat: path=/etc/php/5.6/fpm/php.ini
+- stat: path=/etc/php/{{ phpversion }}/fpm/php.ini
   register: phpfpm
 
-- stat: path=/etc/php/5.6/cli/php.ini
+- stat: path=/etc/php/{{ phpversion }}/cli/php.ini
   register: phpcli
 
 - include: php-fpm.yml

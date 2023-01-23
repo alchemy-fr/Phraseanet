@@ -5,7 +5,6 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Context;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\TextNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
@@ -48,6 +47,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
         $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
+        $query_context->truncationField($field)->willReturn([]);
 
         $node = new TextNode('bar', new Context('baz'));
         $query = $node->buildQuery($query_context->reveal());
@@ -67,10 +67,14 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFields()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $public_field = new Field('foo', FieldMapping::TYPE_STRING, [
+            'private' => false,
+            'used_by_databoxes' => [1]
+        ]);
         $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2, 3]
+            'used_by_collections' => [1, 2, 3],
+            'used_by_databoxes' => [1]
         ]);
 
         $query_context = $this->prophesize(QueryContext::class);
@@ -81,11 +85,17 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
             ->localizeField($public_field)
             ->willReturn(['foo.fr', 'foo.en']);
         $query_context
+            ->truncationField($public_field)
+            ->willReturn([]);
+        $query_context
             ->getPrivateFields()
             ->willReturn([$private_field]);
         $query_context
             ->localizeField($private_field)
             ->willReturn(['private_caption.bar.fr', 'private_caption.bar.en']);
+        $query_context
+            ->truncationField($private_field)
+            ->willReturn([]);
 
         $node = new TextNode('baz');
         $query = $node->buildQuery($query_context->reveal());
@@ -109,7 +119,10 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                         },
                         "query": {
                             "multi_match": {
-                                "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
+                                "fields": [
+                                    "private_caption.bar.fr",
+                                    "private_caption.bar.en"
+                                ],
                                 "query": "baz",
                                 "type": "cross_fields",
                                 "operator": "and",
@@ -126,15 +139,20 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithConcepts()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_STRING, [
+            'private' => false ,
+            'thesaurus_roots' => "/thesaurus/te[@id='T1']",
+            'used_by_databoxes' => [2]
+        ]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
         $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
+        $query_context->truncationField($field)->willReturn([]);
 
         $node = new TextNode('bar');
         $node->setConcepts([
-            new Concept('/qux'),
+            new Concept(2, '/qux'),
         ]);
         $query = $node->buildQuery($query_context->reveal());
 
@@ -162,11 +180,17 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFieldAndConcept()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $public_field = new Field('foo', FieldMapping::TYPE_STRING, [
+            'private' => false,
+            'used_by_collections' => [1, 2, 3],
+            'used_by_databoxes' => [1],
+        ]);
         $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2, 3]
-        ]);
+            'used_by_collections' => [4, 5, 6],
+            'used_by_databoxes' => [2],
+            'thesaurus_roots' => "/thesaurus/te[@id='T1']",
+       ]);
 
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
@@ -176,15 +200,21 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
             ->localizeField($public_field)
             ->willReturn(['foo.fr', 'foo.en']);
         $query_context
+            ->truncationField($public_field)
+            ->willReturn([]);
+        $query_context
             ->getPrivateFields()
             ->willReturn([$private_field]);
         $query_context
             ->localizeField($private_field)
             ->willReturn(['private_caption.bar.fr', 'private_caption.bar.en']);
+        $query_context
+            ->truncationField($private_field)
+            ->willReturn([]);
 
         $node = new TextNode('baz');
         $node->setConcepts([
-            new Concept('/qux'),
+            new Concept(2, '/2/qux'),
         ]);
         $query = $node->buildQuery($query_context->reveal());
 
@@ -199,24 +229,20 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                         "lenient": true
                     }
                 }, {
-                    "multi_match": {
-                        "fields": [
-                            "concept_path.foo"
-                        ],
-                        "query": "\/qux"
-                    }
-                }, {
                     "filtered": {
                         "filter": {
                             "terms": {
-                                "base_id": [1, 2, 3]
+                                "base_id": [4, 5, 6]
                             }
                         },
                         "query": {
                             "bool": {
                                 "should": [{
                                     "multi_match": {
-                                        "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
+                                        "fields": [
+                                            "private_caption.bar.fr",
+                                            "private_caption.bar.en"
+                                        ],
                                         "query": "baz",
                                         "type": "cross_fields",
                                         "operator": "and",
@@ -224,8 +250,10 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                                     }
                                 }, {
                                     "multi_match": {
-                                        "fields": ["concept_path.bar"],
-                                        "query": "/qux"
+                                        "fields": [
+                                            "concept_path.bar"
+                                        ],
+                                        "query": "/2/qux"
                                     }
                                 }]
                             }

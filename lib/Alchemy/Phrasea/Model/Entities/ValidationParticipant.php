@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,22 +55,16 @@ class ValidationParticipant
     private $reminded;
 
     /**
-     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="participant", cascade={"all"})
-     */
-    private $datas;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="ValidationSession", inversedBy="participants", cascade={"persist"})
-     * @ORM\JoinColumn(name="validation_session_id", referencedColumnName="id")
+     * @ORM\Column(type="integer", nullable=true, name="validation_session_id")
      */
     private $session;
 
     /**
-     * Constructor
+     * ValidationParticipant constructor.
      */
     public function __construct()
     {
-        $this->datas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->datas = new ArrayCollection();
     }
 
     /**
@@ -81,17 +78,14 @@ class ValidationParticipant
     }
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     *
-     * @return User
-     **/
+     * @ORM\Column(type="integer", nullable=true, name="user_id")
+     */
     private $user;
 
     /**
      * @param User $user
      *
-     * @return AggregateToken
+     * @return self
      */
     public function setUser(User $user)
     {
@@ -158,7 +152,7 @@ class ValidationParticipant
      * Set can_agree
      *
      * @param  boolean               $canAgree
-     * @return ValidationParticipant
+     * @return self
      */
     public function setCanAgree($canAgree)
     {
@@ -181,7 +175,7 @@ class ValidationParticipant
      * Set can_see_others
      *
      * @param  boolean               $canSeeOthers
-     * @return ValidationParticipant
+     * @return self
      */
     public function setCanSeeOthers($canSeeOthers)
     {
@@ -203,7 +197,7 @@ class ValidationParticipant
     /**
      * Set reminded
      *
-     * @param  \DateTime             $reminded
+     * @param  DateTime             $reminded
      * @return ValidationParticipant
      */
     public function setReminded($reminded)
@@ -216,7 +210,7 @@ class ValidationParticipant
     /**
      * Get reminded
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getReminded()
     {
@@ -249,7 +243,7 @@ class ValidationParticipant
     /**
      * Get datas
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getDatas()
     {

@@ -23,18 +23,21 @@ class ColorspaceTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Colorspace(self::$DI['app'], ['colorspaces' => ['RGB', 'cmyk']]);
+        $this->object = new Colorspace(self::$DI['app'], ['colorspaces' => ['RGB', 'cmyk'], 'media_types' => ['Image', 'Document']]);
     }
 
     /**
      * @covers Alchemy\Phrasea\Border\Checker\Colorspace::check
      */
-    public function testCheck()
+    public function testCheckImage()
     {
         $media = $this
             ->getMockBuilder('\\MediaVorus\\Media\\Image')
             ->disableOriginalConstructor()
             ->getMock();
+        $media->expects($this->any())
+          ->method('getType')
+          ->will($this->returnValue('Image'));
         $media->expects($this->once())
             ->method('getColorSpace')
             ->will($this->returnValue('RGB'));
@@ -48,6 +51,58 @@ class ColorspaceTest extends \PhraseanetTestCase
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\Checker\Colorspace::check
+     */
+    public function testCheckVideo()
+    {
+        $media = $this
+          ->getMockBuilder('\\MediaVorus\\Media\\Video')
+          ->disableOriginalConstructor()
+          ->getMock();
+        $media->expects($this->any())
+          ->method('getType')
+          ->will($this->returnValue('Video'));
+        $media->expects($this->any())
+          ->method('getFile')
+          ->will($this->returnValue(new \SplFileInfo(__FILE__)));
+
+        $File = new File(self::$DI['app'], $media, self::$DI['collection']);
+
+        $response = $this->object->check(self::$DI['app']['orm.em'], $File);
+
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\Checker\Colorspace::check
+     */
+    public function testCheckFailDocument()
+    {
+        $media = $this
+          ->getMockBuilder('\\MediaVorus\\Media\\Document')
+          ->disableOriginalConstructor()
+          ->getMock();
+        $media->expects($this->once())
+          ->method('getColorSpace')
+          ->will($this->returnValue(''));
+        $media->expects($this->any())
+          ->method('getType')
+          ->will($this->returnValue('Document'));
+        $media->expects($this->any())
+          ->method('getFile')
+          ->will($this->returnValue(new \SplFileInfo(__FILE__)));
+
+        $File = new File(self::$DI['app'], $media, self::$DI['collection']);
+
+        $response = $this->object->check(self::$DI['app']['orm.em'], $File);
+
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
+
+        $this->assertEquals($this->createTranslatorMock()->trans('The file does not match available color'), $response->getMessage($this->createTranslatorMock()));
     }
 
     /**

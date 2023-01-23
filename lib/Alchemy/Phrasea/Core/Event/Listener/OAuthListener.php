@@ -13,6 +13,9 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Controller\Api\Result;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\ControllerProvider\Api\V3;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
@@ -72,7 +75,18 @@ class OAuthListener
 
         $oAuth2Account = $token->getAccount();
         // Sets the Api Version
-        $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
+        
+        $CalledController = $request->attributes->get('_controller');
+        if (mb_strpos($CalledController, 'controller.api.v1') !== FALSE) {
+            $request->attributes->set('api_version', V1::VERSION);
+        } elseif(mb_strpos($CalledController, 'controller.api.v2') !== FALSE) {
+            $request->attributes->set('api_version', V2::VERSION);
+        } elseif(mb_strpos($CalledController, 'controller.api.v3') !== FALSE) {
+            $request->attributes->set('api_version', V3::VERSION);
+        } else {
+            $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
+        }
+
         $oAuth2App = $oAuth2Account->getApplication();
 
         /** @var PropertyAccess $conf */
@@ -87,6 +101,12 @@ class OAuthListener
             && !$conf->get(['registry', 'api-clients', 'office-enabled'])
         ) {
             return Result::createError($request, 403, 'The use of Office Plugin is not allowed.')->createResponse();
+        }
+
+        if ($oAuth2App->getClientId() == \API_OAuth2_Application_AdobeCCPlugin::CLIENT_ID
+            && !$conf->get(['registry', 'api-clients', 'adobe_cc-enabled'])
+        ) {
+            return Result::createError($request, 403, 'The use of AdobeCC Plugin is not allowed.')->createResponse();
         }
 
         $authentication = $this->getAuthenticator($app);

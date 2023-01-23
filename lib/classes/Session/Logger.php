@@ -41,7 +41,6 @@ class Session_Logger
 
     /**
      *
-     * @param Application $app
      * @param databox     $databox
      * @param integer     $log_id
      *
@@ -64,17 +63,19 @@ class Session_Logger
         return $this->id;
     }
 
-    public function log(record_adapter $record, $action, $final, $comment)
+    public function log(record_adapter $record, $action, $final, $comment, $coll_id_from=null)
     {
         $sql = 'INSERT INTO log_docs
-          (id, log_id, date, record_id, action, final, comment)
-          VALUES (null, :log_id, NOW(), :record_id, :action, :final, :comm)';
+          (id, log_id, date, record_id, coll_id_from, coll_id, action, final, comment)
+          VALUES (null, :log_id, NOW(), :record_id, :coll_id_from, :coll_id, :action, :final, :comm)';
 
         $stmt = $this->databox->get_connection()->prepare($sql);
 
         $params = [
             ':log_id'    => $this->get_id(),
             ':record_id' => $record->getRecordId(),
+            ':coll_id_from' => $coll_id_from,
+            ':coll_id' => $record->getCollectionId(),
             ':action'    => $action,
             ':final' => $final,
             ':comm' => $comment,
@@ -139,17 +140,6 @@ class Session_Logger
         $log_id = $conn->lastInsertId();
         $stmt->closeCursor();
 
-        $sql = "INSERT INTO log_colls (id, log_id, coll_id) VALUES (null, :log_id, :coll_id)";
-        $stmt = $conn->prepare($sql);
-
-        foreach ($colls as $collId) {
-            $stmt->execute([
-                ':log_id'  => $log_id,
-                ':coll_id' => $collId
-            ]);
-        }
-
-        $stmt->closeCursor();
         unset($stmt, $conn);
 
         return new Session_Logger($databox, $log_id);
@@ -178,6 +168,27 @@ class Session_Logger
             throw new Exception_Session_LoggerNotFound('Logger not found');
 
         return new self($databox, $row['id']);
+    }
+
+    public static function loadById($databox, $logId)
+    {
+        $sql = 'SELECT id, site FROM log
+            WHERE id = :log_id ';
+
+        $params = [
+            ':log_id'   => $logId
+        ];
+
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (!$row) {
+            throw new Exception_Session_LoggerNotFound('Logger not found');
+        }
+
+        return new self($databox, $logId);
     }
 
     public static function updateClientInfos(Application $app, $appId)

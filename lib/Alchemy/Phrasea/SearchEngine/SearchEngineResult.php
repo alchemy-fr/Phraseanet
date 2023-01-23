@@ -17,8 +17,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 class SearchEngineResult
 {
     protected $results;
-    protected $user_query;
-    protected $engine_query;
+    protected $queryText;
+    protected $queryAST;
+    protected $queryCompiled;
+    protected $queryESLib;
     protected $duration;
     protected $offsetStart;
     protected $available;
@@ -37,11 +39,12 @@ class SearchEngineResult
     private $options;
 
     /**
-     * SearchEngineResult constructor.
      * @param SearchEngineOptions $options
      * @param ArrayCollection $results
-     * @param string $user_query        query as user typed, "dog"
-     * @param string $engine_query      query parsed for engine, "{"ast":"<text:\"dog\">","query_main" ....
+     * @param string $queryText
+     * @param string $queryAST
+     * @param string $queryCompiled
+     * @param string $queryESLib
      * @param float $duration
      * @param int $offsetStart
      * @param int $available
@@ -49,15 +52,17 @@ class SearchEngineResult
      * @param mixed $error
      * @param mixed $warning
      * @param ArrayCollection $suggestions
-     * @param array $propositions
-     * @param array $indexes
-     * @param FacetsResponse|null $facets
+     * @param Array $propositions
+     * @param Array $indexes
+     * @param FacetsResponse $facets
      */
     public function __construct(
         SearchEngineOptions $options,
         ArrayCollection $results,
-        $user_query,
-        $engine_query,
+        $queryText,
+        $queryAST,
+        $queryCompiled,
+        $queryESLib,
         $duration,
         $offsetStart,
         $available,
@@ -70,10 +75,11 @@ class SearchEngineResult
         FacetsResponse $facets = null
     ) {
         $this->options = $options;
-
         $this->results = $results;
-        $this->user_query = $user_query;
-        $this->engine_query = $engine_query;
+        $this->queryText = $queryText;
+        $this->queryAST = $queryAST;
+        $this->queryCompiled = $queryCompiled;
+        $this->queryESLib = $queryESLib;
         $this->duration = (float) $duration;
         $this->offsetStart = (int) $offsetStart;
         $this->available = (int) $available;
@@ -105,34 +111,29 @@ class SearchEngineResult
     }
 
     /**
-     * The query related to these results
-     * @obsolete    use getUserQuery (unparsed query) or getEngineQuery (parsed)
-     *
-     * @return string
-     */
-    public function getQuery()
-    {
-        return $this->getEngineQuery();
-    }
-
-    /**
      * The unparsed query related to these results
      *
      * @return string
      */
-    public function getUserQuery()
+    public function getQueryText()
     {
-        return $this->user_query;
+        return $this->queryText;
     }
 
-    /**
-     * The parsed query related to these results
-     *
-     * @return string
-     */
-    public function getEngineQuery()
+
+    public function getQueryAST()
     {
-        return $this->engine_query;
+        return $this->queryAST;
+    }
+
+    public function getQueryCompiled()
+    {
+        return $this->queryCompiled;
+    }
+
+    public function getQueryESLib()
+    {
+        return $this->queryESLib;
     }
 
     /**
@@ -153,7 +154,7 @@ class SearchEngineResult
      */
     public function getTotalPages($amountPerPage)
     {
-        return ceil($this->available / $amountPerPage);
+        return ceil($this->total / $amountPerPage);
     }
 
     /**

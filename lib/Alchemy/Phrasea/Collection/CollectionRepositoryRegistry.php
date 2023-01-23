@@ -84,6 +84,15 @@ class CollectionRepositoryRegistry
         throw new \OutOfBoundsException('No repository available for given base [baseId: ' . $baseId . ' ].');
     }
 
+    public function getBaseIdMap()
+    {
+        if ($this->baseIdMap === null) {
+            $this->loadBaseIdMap();
+        }
+
+        return $this->baseIdMap;
+    }
+
     public function purgeRegistry()
     {
         $this->baseIdMap = null;

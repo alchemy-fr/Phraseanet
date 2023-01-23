@@ -12,13 +12,16 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ORM\Table(name="ValidationSessions")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository")
  */
 class ValidationSession
 {
@@ -30,11 +33,8 @@ class ValidationSession
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="initiator_id", referencedColumnName="id", nullable=false)
-     *
-     * @return User
-     **/
+     * @ORM\Column(type="integer", nullable=true, name="initiator_id")
+     */
     private $initiator;
 
     /**
@@ -55,22 +55,16 @@ class ValidationSession
     private $expires;
 
     /**
-     * @ORM\OneToOne(targetEntity="Basket", inversedBy="validation", cascade={"persist"})
-     * @ORM\JoinColumn(name="basket_id", referencedColumnName="id")
+     * @ORM\Column(type="integer", nullable=true, name="basket_id")
      */
     private $basket;
-
-    /**
-     * @ORM\OneToMany(targetEntity="ValidationParticipant", mappedBy="session", cascade={"all"})
-     */
-    private $participants;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->participants = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     /**
@@ -118,10 +112,10 @@ class ValidationSession
     /**
      * Set created
      *
-     * @param  \DateTime         $created
+     * @param  DateTime         $created
      * @return ValidationSession
      */
-    public function setCreated(\DateTime $created)
+    public function setCreated(DateTime $created)
     {
         $this->created = $created;
 
@@ -131,7 +125,7 @@ class ValidationSession
     /**
      * Get created
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreated()
     {
@@ -141,10 +135,10 @@ class ValidationSession
     /**
      * Set updated
      *
-     * @param  \DateTime         $updated
+     * @param  DateTime         $updated
      * @return ValidationSession
      */
-    public function setUpdated(\DateTime $updated)
+    public function setUpdated(DateTime $updated)
     {
         $this->updated = $updated;
 
@@ -154,7 +148,7 @@ class ValidationSession
     /**
      * Get updated
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdated()
     {
@@ -164,7 +158,7 @@ class ValidationSession
     /**
      * Set expires
      *
-     * @param  \DateTime         $expires
+     * @param  DateTime         $expires
      * @return ValidationSession
      */
     public function setExpires($expires)
@@ -177,7 +171,7 @@ class ValidationSession
     /**
      * Get expires
      *
-     * @return \DateTime
+     * @return DateTime|null
      */
     public function getExpires()
     {
@@ -233,7 +227,7 @@ class ValidationSession
     /**
      * Get participants
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getParticipants()
     {
@@ -246,7 +240,7 @@ class ValidationSession
             return null;
         }
 
-        $date_obj = new \DateTime();
+        $date_obj = new DateTime();
 
         return $date_obj > $this->getExpires();
     }
@@ -261,15 +255,17 @@ class ValidationSession
             return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
         } else {
             if ($this->getParticipant($user)->getCanSeeOthers()) {
-                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator()->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
             }
 
-            return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName()]);
+            return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator()->getDisplayName()]);
         }
     }
 
     /**
      * Get a participant
+     *
+     * @param User $user
      *
      * @return ValidationParticipant
      */
@@ -282,5 +278,37 @@ class ValidationSession
         }
 
         throw new NotFoundHttpException('Participant not found' . $user->getEmail());
+    }
+
+    /**
+     * Check if an user is a participant
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isParticipant(User $user)
+    {
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() == $user->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get list of participant user Ids
+     *
+     * @return array
+     */
+    public function getListParticipantsUserId()
+    {
+        $userIds = [];
+        foreach ($this->getParticipants() as $participant) {
+            $userIds[] = $participant->getUser()->getId();
+        }
+
+        return $userIds;
     }
 }

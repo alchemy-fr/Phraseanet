@@ -3,6 +3,8 @@
 namespace Alchemy\Phrasea\ControllerProvider;
 
 use Alchemy\EmbedProvider\EmbedServiceProvider;
+use Alchemy\Phrasea\PhraseanetService\Provider\PSAdminServiceProvider;
+use Alchemy\Phrasea\PhraseanetService\Provider\PSExposeServiceProvider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -54,6 +56,9 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Admin\Setup::class => [],
             Admin\Subdefs::class => [],
             Admin\TaskManager::class => [],
+            \Alchemy\Phrasea\WorkerManager\Provider\ControllerServiceProvider::class => [],
+            PSAdminServiceProvider::class => [],
+            PSExposeServiceProvider::class => [],
             Admin\Users::class => [],
             Client\Root::class => [],
             Datafiles::class => [],
@@ -77,17 +82,18 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Prod\Push::class => [],
             Prod\Query::class => [],
             Prod\Record::class => [],
+            \Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider::class => [],
             Prod\Root::class => [],
             Prod\Share::class => [],
             Prod\Story::class => [],
+            Prod\Subdefs::class => [],
+            Prod\Thesaurus::class => [],
             Prod\Tools::class => [],
             Prod\Tooltip::class => [],
             Prod\TOU::class => [],
             Prod\Upload::class => [],
             Prod\UsrLists::class => [],
             Prod\WorkZone::class => [],
-            Report\Activity::class => [],
-            Report\Information::class => [],
             Report\Root::class => [],
             Root\Account::class => [],
             Root\Developers::class => [],

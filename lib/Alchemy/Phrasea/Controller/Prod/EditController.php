@@ -14,16 +14,17 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\StoryCoverChangedEvent;
-use Alchemy\Phrasea\Core\Event\RecordEdit;
-use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Repositories\PresetRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
+use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use stdClass;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,6 +47,7 @@ class EditController extends Controller
         $status = $ids = $elements = $suggValues = $fields = $JSFields = [];
         $databox = null;
         $databoxes = $records->databoxes();
+        $multipleStories = count($records->stories()) > 1;
 
         $multipleDataboxes = count($databoxes) > 1;
 
@@ -75,6 +77,10 @@ class EditController extends Controller
                     'format'               => '',
                     'explain'              => '',
                     'tbranch'              => $meta->get_tbranch(),
+                    'generate_cterms'      => $meta->get_generate_cterms(),
+                    'gui_editable'         => $meta->get_gui_editable(),
+                    'gui_visible'          => $meta->get_gui_visible(),
+                    'printable'            => $meta->get_printable(),
                     'maxLength'            => $meta->get_tag()
                         ->getMaxLength(),
                     'minLength'            => $meta->get_tag()
@@ -222,6 +228,7 @@ class EditController extends Controller
         $conf = $this->getConf();
         $params = [
             'multipleDataboxes' => $multipleDataboxes,
+            'multipleStories'   => $multipleStories,
             'recordsRequest'    => $records,
             'videoEditorConfig' => $conf->get(['video-editor']),
             'databox'           => $databox,
@@ -293,12 +300,16 @@ class EditController extends Controller
             && $records->isSingleStory()
         ) {
             try {
-                $reg_record = $records->singleStory();
+                $story = $records->singleStory();
+                $story->setSubDefinitionSubstituerLocator(new LazyLocator($this->app, 'subdef.substituer'));
+                $story->setDataboxLoggerLocator($this->app['phraseanet.logger']);
 
-                $newsubdef_reg = new \record_adapter($this->app, $reg_record->getDataboxId(), $request->request->get('newrepresent'));
+                $story->setStoryCover($request->request->get('newrepresent'));
+/*
+                $cover_record = new \record_adapter($this->app, $story->getDataboxId(), $request->request->get('newrepresent'));
 
                 $subdefChanged = false;
-                foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
+                foreach ($cover_record->get_subdefs() as $name => $value) {
                     if (!in_array($name, ['thumbnail', 'preview'])) {
                         continue;
                     }
@@ -307,9 +318,9 @@ class EditController extends Controller
                     }
 
                     $media = $this->app->getMediaFromUri($value->getRealPath());
-                    $this->getSubDefinitionSubstituer()->substituteSubdef($reg_record, $name, $media);
-                    $this->getDataboxLogger($reg_record->getDatabox())->log(
-                        $reg_record,
+                    $this->getSubDefinitionSubstituer()->substituteSubdef($story, $name, $media);
+                    $this->getDataboxLogger($story->getDatabox())->log(
+                        $story,
                         \Session_Logger::EVENT_SUBSTITUTE,
                         $name,
                         ''
@@ -317,75 +328,52 @@ class EditController extends Controller
                     $subdefChanged = true;
                 }
                 if($subdefChanged) {
-                    $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($reg_record, $newsubdef_reg));
-                    $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
+                    $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($story, $cover_record));
+                    $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
                 }
+*/
             } catch (\Exception $e) {
-
+                // no-op
             }
         }
-
         if (!is_array($request->request->get('mds'))) {
             return $this->app->json(['message' => '', 'error'   => false]);
         }
 
-        $elements = $records->toArray();
+        $sessionLogId = $this->getDataboxLogger($databox)->get_id();
+        // order the worker to save values in fields
+        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), $sessionLogId)
+        );
 
-        foreach ($request->request->get('mds') as $rec) {
-            try {
-                $record = $databox->get_record($rec['record_id']);
-            } catch (\Exception $e) {
-                continue;
-            }
+        return $this->app->json(['success' => true]);
+    }
 
-            $key = $record->getId();
 
-            if (!array_key_exists($key, $elements)) {
-                continue;
-            }
+    /**
+     * performs an editing using a similar json-body as api_v3:record:patch (except here we can work on a list of records)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function applyJSAction(Request $request): JsonResponse
+    {
+        /** @var stdClass $arg */
+        $arg = json_decode($request->getContent());
+        $sbasIds = array_unique(array_column($arg->records, 'sbas_id'));
 
-            $statbits = $rec['status'];
-            $editDirty = $rec['edit'];
-
-            if ($editDirty == '0') {
-                $editDirty = false;
-            } else {
-                $editDirty = true;
-            }
-
-            if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
-                $record->set_metadatas($rec['metadatas']);
-                $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
-            }
-
-            $newstat = $record->getStatus();
-            $statbits = ltrim($statbits, 'x');
-            if (!in_array($statbits, ['', 'null'])) {
-                $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
-                if ($mask_and != '') {
-                    $newstat = \databox_status::operation_and_not($newstat, $mask_and);
-                }
-
-                $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
-
-                if ($mask_or != '') {
-                    $newstat = \databox_status::operation_or($newstat, $mask_or);
-                }
-
-                $record->setStatus($newstat);
-            }
-
-            $record->write_metas();
-
-            if ($statbits != '') {
-                $this->getDataboxLogger($databox)
-                    ->log($record, \Session_Logger::EVENT_STATUS, '', '');
-            }
-            if ($editDirty) {
-                $this->getDataboxLogger($databox)
-                    ->log($record, \Session_Logger::EVENT_EDIT, '', '');
-            }
+        if (count($sbasIds) !== 1) {
+            throw new \Exception('Unable to edit on multiple databoxes');
         }
+
+        $databoxId =  reset($sbasIds);
+        $databox = $this->findDataboxById($databoxId);
+        $sessionLogId = $this->getDataboxLogger($databox)->get_id();
+
+        // order the worker to save values in fields
+        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId, $sessionLogId)
+        );
 
         return $this->app->json(['success' => true]);
     }
@@ -407,7 +395,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsLoadAction($preset_id)
     {
@@ -429,7 +417,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsListAction(Request $request)
     {
@@ -447,7 +435,7 @@ class EditController extends Controller
      * route DELETE "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsDeleteAction($preset_id)
     {
@@ -469,7 +457,7 @@ class EditController extends Controller
      * route POST "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsSaveAction(Request $request)
     {

@@ -84,10 +84,14 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             $service = $app['phraseanet.cache-service'];
 
             $config->setMetadataCacheImpl(
-                $service->factory('ORM_metadata', $app['orm.cache.driver'], $app['orm.cache.options'])
+                $app['orm.cache.factory.filesystem'](array(
+                    'path' => $app['cache.path'].'/doctrine/metadata',
+                ))
             );
             $config->setQueryCacheImpl(
-                $service->factory('ORM_query', $app['orm.cache.driver'], $app['orm.cache.options'])
+                $app['orm.cache.factory.filesystem'](array(
+                    'path' => $app['cache.path'].'/doctrine/query',
+                ))
             );
             $config->setResultCacheImpl(
                 $service->factory('ORM_result', $app['orm.cache.driver'], $app['orm.cache.options'])

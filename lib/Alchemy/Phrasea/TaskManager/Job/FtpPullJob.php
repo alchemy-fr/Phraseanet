@@ -94,8 +94,8 @@ class FtpPullJob extends AbstractJob
         }
 
         $ftp = $app['phraseanet.ftp.client']($host, $port, 90, $ssl, $proxy, $proxyport);
-        $ftp->passive($passive);
         $ftp->login($user, $password);
+        $ftp->passive($passive);
         $ftp->chdir($ftpPath);
         $list_1 = $ftp->list_directory(true);
 

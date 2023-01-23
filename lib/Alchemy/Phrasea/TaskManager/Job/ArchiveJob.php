@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as borderManager;
@@ -21,10 +23,13 @@ use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\MetadataBag;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Exception\IOException;
+
 
 class ArchiveJob extends AbstractJob
 {
@@ -69,6 +74,10 @@ class ArchiveJob extends AbstractJob
     protected function doJob(JobData $data)
     {
         $app = $data->getApplication();
+
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+
         $task = $data->getTask();
 
         $settings = simplexml_load_string($task->getSettings());
@@ -81,6 +90,9 @@ class ArchiveJob extends AbstractJob
         }
 
         $databox = $app->findDataboxById($sbasId);
+
+        // quick fix to reconnect if mysql is lost
+        $databox->get_connection();
 
         $TColls = [];
         $collection = null;
@@ -171,11 +183,12 @@ class ArchiveJob extends AbstractJob
 
             $dom = new \DOMDocument();
             $dom->formatOutput = true;
+            /** @var \DOMElement $root */
             $root = $dom->appendChild($dom->createElement('root'));
 
             $nnew = $this->listFilesPhase1($app, $dom, $root, $path_in, $server_coll_id, 0, $TColls);
             if ($app['debug']) {
-                $this->log('debug', "=========== listFilesPhase1 ========== (returned " . $nnew . ")\n" . $dom->saveXML());
+                $this->log('debug', "== listFilesPhase1 returned " . $nnew . ")\n" . $dom->saveXML());
             }
 
             if (!$this->isStarted()) {
@@ -183,15 +196,16 @@ class ArchiveJob extends AbstractJob
             }
 
             // wait for files to be cold
-            $this->pause($cold);
-
-            if (!$this->isStarted()) {
-                return;
+            for($i=0; $i<($cold*2); $i++) {
+                if (!$this->isStarted()) {
+                    return;
+                }
+                $this->pause(0.5);
             }
 
             $this->listFilesPhase2($app, $dom, $root, $path_in, 0);
             if ($app['debug']) {
-                $this->log('debug', "=========== listFilesPhase2 ========== : \n" . $dom->saveXML());
+                $this->log('debug', "== listFilesPhase2\n" . $dom->saveXML());
             }
 
             if (!$this->isStarted()) {
@@ -200,31 +214,35 @@ class ArchiveJob extends AbstractJob
 
             $this->makePairs($dom, $root, $path_in, $path_archived, $path_error, false, 0, $tmask, $tmaskgrp);
             if ($app['debug']) {
-                $this->log('debug', "=========== makePairs ========== : \n" . $dom->saveXML());
-            }
-
-            $r = $this->removeBadGroups($app, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveError);
-            if ($app['debug']) {
-                $this->log('debug', "=========== removeBadGroups ========== (returned " . ((Boolean) $r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
-            }
-
-            $this->archive($app, $databox, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveError, $moveArchived, $stat0, $stat1);
-            if ($app['debug']) {
-                $this->log('debug', "=========== archive ========== : \n" . $dom->saveXML());
+                $this->log('debug', "== makePairs\n" . $dom->saveXML());
             }
 
             if (!$this->isStarted()) {
                 return;
             }
 
+            $this->removeBadGroups($app, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveError);
+            if ($app['debug']) {
+                $this->log('debug', "== removeBadGroups\n" . $dom->saveXML());
+            }
+
+            if (!$this->isStarted()) {
+                return;
+            }
+
+            $this->archive($app, $databox, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveError, $moveArchived, $stat0, $stat1);
+            if ($app['debug']) {
+                $this->log('debug', "== archive\n" . $dom->saveXML());
+            }
+
             $this->bubbleResults($dom, $root, $path_in, 0, \p4field::isyes($settings->copy_spe));
             if ($app['debug']) {
-                $this->log('debug', "=========== bubbleResults ========== : \n" . $dom->saveXML());
+                $this->log('debug', "== bubbleResults\n" . $dom->saveXML());
             }
 
             $moved = $this->moveFiles($app, $dom, $root, $path_in, $path_archived, $path_error, 0, $moveArchived, $moveError);
             if ($app['debug']) {
-                $this->log('debug', "=========== moveFiles ========== (returned " . ($moved ? 'true' : 'false') . ") : \n" . $dom->saveXML());
+                $this->log('debug', "== moveFiles returned " . ($moved ? 'true' : 'false') . "\n" . $dom->saveXML());
             }
         }
     }
@@ -233,15 +251,17 @@ class ArchiveJob extends AbstractJob
     {
         $nnew = 0;
 
-        if (false !== $sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) {
+        $magicfile = $magicmethod = null;
+
+        if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) !== false) {
 
             // test for magic file
             if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                 $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                if ($magicmethod == 'LOCK' && true === $app['filesystem']->exists($path . '/' . $magicfile)) {
-                    return;
-                } elseif ($magicmethod == 'UNLOCK' && false === $app['filesystem']->exists($path . '/' . $magicfile)) {
-                    return;
+                if ($magicmethod == 'LOCK' && ($app['filesystem']->exists($path . '/' . $magicfile) === true)) {
+                    return 0;
+                } elseif ($magicmethod == 'UNLOCK' && ($app['filesystem']->exists($path . '/' . $magicfile) === false)) {
+                    return 0;
                 }
             }
 
@@ -268,6 +288,7 @@ class ArchiveJob extends AbstractJob
                 continue;
             }
 
+            /** @var \DOMElement $n */
             if (is_dir($path . '/' . $file)) {
                 $n = $node->appendChild($dom->createElement('file'));
                 $n->setAttribute('isdir', '1');
@@ -282,6 +303,16 @@ class ArchiveJob extends AbstractJob
                 $stat = stat($path . '/' . $file);
                 foreach (["size", "ctime", "mtime"] as $k) {
                     $n->setAttribute($k, $stat[$k]);
+                }
+                // special file
+                if($file == '.phrasea.xml') {
+                    $n->setAttribute('match', '*');
+                }
+                // special file
+                if($file === $magicfile) {
+                    $n->setAttribute('match', '*');
+                    $node->setAttribute('magicfile', $magicfile);
+                    $node->setAttribute('magicmethod', $magicmethod);
                 }
                 $nnew++;
             }
@@ -325,27 +356,31 @@ class ArchiveJob extends AbstractJob
             $dnl = @$xp->query('./file[@name="' . $file . '"]', $node);
             if ($dnl && $dnl->length == 0) {
                 if (is_dir($path . '/' . $file)) {
+                    /** @var \DOMElement $n */
                     $n = $node->appendChild($dom->createElement('file'));
                     $n->setAttribute('isdir', '1');
                     $n->setAttribute('name', $file);
 
                     $nnew += $this->listFilesPhase2($app, $dom, $n, $path . '/' . $file, $depth + 1);
                 } else {
+                    /** @var \DOMElement $n */
                     $n = $node->appendChild($dom->createElement('file'));
                     $n->setAttribute('name', $file);
                     $nnew++;
                 }
-                $this->setBranchHot($dom, $n);
+                $this->setBranchHot($n);
             } elseif ($dnl && $dnl->length == 1) {
-                $dnl->item(0)->setAttribute('temperature', 'cold');
+                /** @var \DOMElement $n */
+                $n = $dnl->item(0);
+                $n->setAttribute('temperature', 'cold');
 
                 if (is_dir($path . '/' . $file)) {
-                    $this->listFilesPhase2($app, $dom, $dnl->item(0), $path . '/' . $file, $depth + 1);
+                    $this->listFilesPhase2($app, $dom, $n, $path . '/' . $file, $depth + 1);
                 } else {
                     $stat = stat($path . '/' . $file);
                     foreach (["size", "ctime", "mtime"] as $k) {
-                        if ($dnl->item(0)->getAttribute($k) != $stat[$k]) {
-                            $this->setBranchHot($dom, $dnl->item(0));
+                        if ($n->getAttribute($k) != $stat[$k]) {
+                            $this->setBranchHot($n);
                             break;
                         }
                     }
@@ -389,13 +424,16 @@ class ArchiveJob extends AbstractJob
                     if ($dnl->length == 1) {
                         // this group is old (don't care about any linked files), just flag it
                         $n->setAttribute('grp', 'tocomplete');
-                        $dnl->item(0)->setAttribute('match', '*');
+                        /** @var \DOMElement $_n */
+                        $_n = $dnl->item(0);
+                        $_n->setAttribute('match', '*');
                         // recurse only if group is ok
                         $this->makePairs($dom, $n, $path . '/' . $name, $path_archived, $path_error, true, $depth + 1, $tmask, $tmaskgrp);
                     } else {
                         // this group in new (to be created)
                         // do we need one (or both) linked file ? (caption or representation)
                         $err = false;
+                        /** @var \DOMElement[] $flink */
                         $flink = ['caption'        => null, 'representation' => null];
 
                         foreach ($flink as $linkName => $v) {
@@ -463,12 +501,12 @@ class ArchiveJob extends AbstractJob
                 // this is a file
                 if (!$n->getAttribute('match')) {
                     // because match can be set before
-                    if ($name == '.phrasea.xml') {
-                        // special file(s) always ok
-                        $n->setAttribute('match', '*');
-                    } else {
+//                    if ($name == '.phrasea.xml') {
+//                        // special file(s) always ok
+//                        $n->setAttribute('match', '*');
+//                    } else {
                         $this->checkMatch($dom, $n, $tmask);
-                    }
+//                    }
                 }
             }
         }
@@ -493,7 +531,7 @@ class ArchiveJob extends AbstractJob
 
         // if root of hotfolder if hot, die...
         if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
-            return $ret;
+            return;
         }
 
         $nodesToDel = [];
@@ -512,7 +550,7 @@ class ArchiveJob extends AbstractJob
             $name = $n->getAttribute('name');
 
             if ($n->getAttribute('isdir')) {
-                $ret |= $this->removeBadGroups($app, $dom, $n, $path . '/' . $name
+                 $this->removeBadGroups($app, $dom, $n, $path . '/' . $name
                     , $path_archived . '/' . $name
                     , $path_error . '/' . $name
                     , $depth + 1, $moveError);
@@ -561,6 +599,10 @@ class ArchiveJob extends AbstractJob
 
     private function archive(Application $app, \databox $databox, \DOMDOcument $dom, \DOMElement $node, $path, $path_archived, $path_error, $depth, $moveError, $moveArchived, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         if ($node->getAttribute('temperature') == 'hot') {
             return;
         }
@@ -628,7 +670,7 @@ class ArchiveJob extends AbstractJob
         }
 
         if ($node->getAttribute('temperature') == 'hot') {
-            return;
+            return 0;
         }
 
         $ret = 0;
@@ -744,7 +786,7 @@ class ArchiveJob extends AbstractJob
                     }
                 }
 
-                if (!$n->getAttribute('keep')) {
+                if (!$n->getAttribute('keep') && !$n->getAttribute('match')) {
                     $this->log('debug', sprintf('delete \'%s\'', $path . '/' . $name));
 
                     try {
@@ -778,7 +820,9 @@ class ArchiveJob extends AbstractJob
                     if ($dnl->length == 1) {
                         // the caption file exists
                         $node->setAttribute('match', $captionFileName);
-                        $dnl->item(0)->setAttribute('match', '*');
+                        /** @var \DOMElement $n */
+                        $n = $dnl->item(0);
+                        $n->setAttribute('match', '*');
                     } else {
                         // the caption file is missing
                         $node->setAttribute('match', '?');
@@ -803,7 +847,7 @@ class ArchiveJob extends AbstractJob
         return ($f[0] == '.' && $f != '.phrasea.xml' && $f != '.grouping.xml') || $f == 'thumbs.db' || $f == 'par-system';
     }
 
-    private function setBranchHot(\DOMDocument $dom, \DOMElement $node)
+    private function setBranchHot(\DOMElement $node)
     {
         for ($n = $node; $n; $n = $n->parentNode) {
             if ($n->nodeType == XML_ELEMENT_NODE) {
@@ -819,6 +863,10 @@ class ArchiveJob extends AbstractJob
 
     private function archiveGrp(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel, $moveError, $moveArchived, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         $xpath = new \DOMXPath($dom);
 
         // grp folders stay in place
@@ -829,8 +877,10 @@ class ArchiveJob extends AbstractJob
 
         if ($node->getAttribute('grp') == 'tocreate') {
             $representationFileName = null;
+            /** @var \DOMElement $representationFileNode */
             $representationFileNode = null;
             $captionFileName = null;
+            /** @var \DOMElement $captionFileNode */
             $captionFileNode = null;
             $cid = $node->getAttribute('cid');
             $genericdoc = null;
@@ -874,7 +924,7 @@ class ArchiveJob extends AbstractJob
 
                 $rid = $story->getRecordId();
 
-                $this->log('debug', sprintf('story %s created', $rid));
+                $this->log('info', sprintf('story %s created', $rid));
 
                 if ($genericdoc) {
                     try {
@@ -885,6 +935,7 @@ class ArchiveJob extends AbstractJob
                 }
 
                 file_put_contents($groupingFile, '<?xml version="1.0" encoding="ISO-8859-1" ?><record grouping="' . $rid . '" />');
+                /** @var \DOMElement $n */
                 $n = $node->appendChild($dom->createElement('file'));
                 $n->setAttribute('name', '.grouping.xml');
                 $n->setAttribute('temperature', 'cold');
@@ -983,6 +1034,10 @@ class ArchiveJob extends AbstractJob
 
     public function createStory(Application $app, \collection $collection, $pathfile, $captionFile, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $collection->get_connection();
+
         $status = \databox_status::operation_or($stat0, $stat1);
 
         $media = $app->getMediaFromUri($pathfile);
@@ -1003,7 +1058,9 @@ class ArchiveJob extends AbstractJob
         }
 
         $story = \record_adapter::createStory($app, $collection);
-        $app['subdef.substituer']->substitute($story, 'document', $media);
+
+        $story->setStatus($status);
+        $app['subdef.substituer']->substituteDocument($story, $media);
 
         $story->set_metadatas($metadatas->toMetadataArray($metadatasStructure), true);
 
@@ -1011,8 +1068,13 @@ class ArchiveJob extends AbstractJob
             $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
         }
 
+        // order to write meta in file
+        $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+            new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
+
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
-        $story->rebuild_subdefs();
+
+        $app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($story));
 
         unset($media);
 
@@ -1031,6 +1093,10 @@ class ArchiveJob extends AbstractJob
      */
     public function createRecord(Application $app, \collection $collection, $pathfile, $captionFile, $grp_rid, $force, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $collection->get_connection();
+
         $status = \databox_status::operation_or($stat0, $stat1);
 
         $media = $app->getMediaFromUri($pathfile);
@@ -1053,12 +1119,14 @@ class ArchiveJob extends AbstractJob
 
         $file->addAttribute(new BorderAttribute\Status($app, $status));
 
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfFilepath(), new MonoValue($media->getFile()->getRealPath()))));
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfDirname(), new MonoValue(dirname($media->getFile()->getRealPath())))));
+        /** @var \MediaVorus\File $mediaFile */
+        $mediaFile = $media->getFile();
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfFilepath(), new MonoValue($mediaFile->getRealPath()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfDirname(), new MonoValue(dirname($mediaFile->getRealPath())))));
 
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfAtime(), new MonoValue($media->getFile()->getATime()))));
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfMtime(), new MonoValue($media->getFile()->getMTime()))));
-        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfCtime(), new MonoValue($media->getFile()->getCTime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfAtime(), new MonoValue($mediaFile->getATime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfMtime(), new MonoValue($mediaFile->getMTime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfCtime(), new MonoValue($mediaFile->getCTime()))));
 
         foreach ($metadatas as $meta) {
             $file->addAttribute(new BorderAttribute\Metadata($meta));
@@ -1075,8 +1143,13 @@ class ArchiveJob extends AbstractJob
         $record = null;
 
         $postProcess = function ($element, $visa, $code) use (&$record) {
-                $record = $element;
-            };
+            $r = isset($visa);  // one way to avoid "variable not used" with phpstorm 10. ugly.
+            unset($r);          //
+            $r = isset($code);  // one way to avoid "variable not used" with phpstorm 10. ugly.
+            unset($r);          //
+
+            $record = $element;
+        };
 
         /** @var borderManager $borderManager */
         $borderManager = $app['border-manager'];
@@ -1096,6 +1169,10 @@ class ArchiveJob extends AbstractJob
      */
     private function archiveFilesToGrp(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, $grp_rid, $stat0, $stat1, $moveError, $moveArchived)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         $nodesToDel = [];
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             if (!$this->isStarted()) {
@@ -1133,6 +1210,10 @@ class ArchiveJob extends AbstractJob
      */
     private function archiveFile(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel, $grp_rid, $stat0, $stat1, $moveError, $moveArchived)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         $match = $node->getAttribute('match');
 
         if ($match == '*') {
@@ -1171,12 +1252,13 @@ class ArchiveJob extends AbstractJob
             }
         }
 
-        $this->archiveFileAndCaption($app, $databox, $dom, $node, $captionFileNode, $path, $path_archived, $path_error, $grp_rid, $nodesToDel, $stat0, $stat1, $moveError, $moveArchived);
+        $this->archiveFileAndCaption($app, $databox, $node, $captionFileNode, $path, $path_archived, $path_error, $grp_rid, $nodesToDel, $stat0, $stat1, $moveError, $moveArchived);
     }
 
     /**
      *
-     * @param \DOMDOcument $dom
+     * @param Application $app
+     * @param \databox $databox
      * @param \DOMElement  $node
      * @param \DOMElement  $captionFileNode
      * @param string       $path
@@ -1184,19 +1266,27 @@ class ArchiveJob extends AbstractJob
      * @param string       $path_error
      * @param integer      $grp_rid
      * @param array        $nodesToDel      out, filled with files to delete
+     * @param $stat0
+     * @param $stat1
+     * @param $moveError
+     * @param $moveArchived
      */
-    private function archiveFileAndCaption(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel, $stat0, $stat1, $moveError, $moveArchived)
+    private function archiveFileAndCaption(Application $app, \databox $databox, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel, $stat0, $stat1, $moveError, $moveArchived)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
 
-        $this->log('debug', sprintf("Archiving file '%s'", $path . '/' . $file));
+        $this->log('info', sprintf("Archiving file '%s'", $path . '/' . $file));
         if ($captionFileName !== null) {
-            $this->log('debug', sprintf(' ' . (" (caption in '%s')"), $captionFileName));
+            $this->log('info', sprintf(' ' . (" (caption in '%s')"), $captionFileName));
         }
         if ($grp_rid !== 0) {
-            $this->log('debug', sprintf(' ' . (" into GRP rid=%s"), $grp_rid));
+            $this->log('info', sprintf(' ' . (" into GRP rid=%s"), $grp_rid));
         }
 
         try {
@@ -1360,6 +1450,9 @@ class ArchiveJob extends AbstractJob
      */
     protected function getLazaretSession(Application $app)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+
         $lazaretSession = new LazaretSession();
 
         $app['orm.em']->persist($lazaretSession);
@@ -1380,6 +1473,7 @@ class ArchiveJob extends AbstractJob
     {
         $ret = new MetadataBag();
 
+        /** @var \databox_field $databox_field */
         foreach ($metadatasStructure as $databox_field) {
             if ($bag->containsKey($databox_field->get_tag()->getTagname())) {
                 $ret->set($databox_field->get_name(), $bag->get($databox_field->get_tag()->getTagname()));

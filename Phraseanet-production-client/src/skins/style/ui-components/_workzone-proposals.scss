@@ -1,0 +1,330 @@
+$proposalsTitleColor: $darkerTextColor !default;
+$proposalsTitleHoverColor: $darkerTextHoverColor !default;
+$proposalsContentTextColor: $darkerTextColor !default;
+$proposalsContentTextColor: $darkerTextColor !default;
+$proposalFacetColor: #FFF !default;
+$proposalsFacetHoverColor: #FFF !default;
+$facetTitleBg: #3b3b3b !default;
+$facetContentBg: #292929 !default;
+$see_more_btn_shadow: $see_more_btn_border !default;
+/******* PROPOSALS ************************************************************/
+
+#proposals {
+    position: relative;
+    left: 5px;
+    border-top: 1px solid $darkBorderColor;
+    top: $tabHeight !important;
+    *:focus {
+        outline: none;
+    }
+    ul {
+        ul {
+            background-color: $facetContentBg;
+        }
+        li {
+            line-height: 17px;
+            font-size: $mediumFontSize;
+        }
+        &.fancytree-container {
+            background-color: $facetTitleBg;
+            border: 0px none transparent;
+            overflow-x: hidden;
+            padding-left: 0;
+            padding-top: 0;
+            ul {
+                padding: 17px 0;
+                overflow: auto;
+                width: 101%;
+                max-height: 400px;
+                overflow-x: hidden;
+                li {
+                    padding-left: 34px;
+                    line-height: 25px;
+                    white-space: pre-line !important;
+                    &:hover {
+                        background-color: $proposalColor;
+                        .fancytree-title {
+                            color: $proposalsFacetHoverColor;
+                            // color: $textPrimaryHoverColor;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .fancytree-folder {
+        font-weight: bold;
+        font-size: $xmediumFontSize;
+        color: $proposalsTitleColor;
+        min-height: 49px;
+        //line-height: 49px;
+        margin-left: 0;
+        border-left: 4px solid $mediumBackgroundColor;
+        border-bottom: 1px solid $mediumBorderColor;
+        overflow: auto;
+        position: relative;
+        .newNode {
+            position: relative;
+            overflow: auto;
+            clear: both;
+            margin-left: 20px;
+        }
+        .dataNode {
+            float: left;
+            width: 60%;
+            height: 100%;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .fancytree-title {
+            font-size: $xmediumFontSize;
+            margin-left: 24px;
+            float: left;
+            width: 27%;
+            line-height: 49px;
+        }
+        .mask-facets-btn {
+            position: absolute;
+            display: none;
+            height: 50px;
+            width: 15px;
+            padding-left: 6px;
+            padding-right: 6px;
+            a {
+                position: relative;
+                cursor: pointer;
+                font-family: "icomoon";
+                color: $proposalsFacetHoverColor;
+                height: 25px;
+                width: 14px;
+                top: 17px;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+                &:before {
+                    content: "\ea50";
+                    position: relative;
+                    z-index: 1;
+                    color: #666666;
+                    font-size: 13px;
+                }
+                &:after {
+                    content: "\e94b";
+                    color: #eeeeee;
+                    font-size: 15px;
+                    position: absolute;
+                    left: -1px;
+                    z-index: 0;
+                }
+            }
+        }
+        &:hover {
+            border-left: 4px solid $proposalColor;
+            color: $proposalsTitleHoverColor;
+            .fancytree-title {
+                color: $proposalsTitleHoverColor;
+            }
+        }
+        .fancytree-expander {
+            &:before {
+                content: '\25C0'; /* U+25C0 BLACK LEFT-POINTING TRIANGLE */
+                color: $mediumTextColor;
+            }
+            &:hover {
+                &:before {
+                    color: $basketsColor;
+                }
+            }
+
+        }
+    }
+    .fancytree-expanded {
+        .fancytree-expander:before {
+            content: '\25BC'; /* U+25BC BLACK BLACK DOWN-POINTING TRIANGLE */
+            color: $textPrimaryHoverColor;
+        }
+    }
+
+    .fancytree-expander {
+        position: relative;
+        right: 10px;
+        background-image: none;
+        margin: 0;
+        padding: 0;
+        width: auto;
+        height: auto;
+        font-weight: normal;
+        font-size: 65%;
+        float: right;
+        line-height: 49px;
+    }
+
+    .fancytree-title {
+        font-size: $xmediumFontSize;
+        color: $proposalsTitleColor;
+        background-color: transparent;
+        border: 0px none transparent;
+    }
+
+    .fancytree-node {
+        font-size: $xmediumFontSize;
+        color: $proposalsContentTextColor;
+        //background-color: transparent;
+        //border: 0px none transparent;
+        cursor: pointer;
+    }
+
+    .facetFilter {
+        font-weight: normal;
+        position: absolute;
+        width: 127px;
+        height: 25px;
+        line-height: 25px;
+        vertical-align: middle;
+        border-radius: 4px;
+        right: 28px;
+        background-color: $proposalColor;
+        color: $proposalFacetColor;
+        padding-left: 13px;
+        padding-right: 13px;
+        margin-top: 11px;
+    }
+
+    .facetFilter_AND {
+        font-weight: normal;
+        position: relative;
+        width: 127px;
+        height: 25px;
+        line-height: 25px;
+        vertical-align: middle;
+        border-radius: 4px;
+        //right: 28px;
+        background-color: $proposalColor_AND;
+        color: $proposalFacetColor;
+        padding-left: 13px;
+        padding-right: 13px;
+        display: inline-block;
+        margin: 2px 0px;
+        float: right;
+        margin-right: 10px;
+        //margin-top: 11px;
+        overflow: hidden;
+        .buttons-span {
+            background-color: $proposalColor_AND;
+            max-width: 86px;
+            left: 67px;
+        }
+        .facetFilter-inverse {
+            background: url('#{$iconsPath}inverse-negative.png') 10px 2px no-repeat;
+        }
+        &:hover {
+            .facetFilter-label {
+                color: transparent;
+            }
+        }
+    }
+
+    .facetFilter_EXCEPT {
+        font-weight: normal;
+        position: relative;
+        width: 127px;
+        height: 25px;
+        line-height: 25px;
+        vertical-align: middle;
+        border-radius: 4px;
+        //right: 28px;
+        background-color: $proposalColor_EXCEPT;
+        color: $proposalFacetColor;
+        padding-left: 13px;
+        padding-right: 13px;
+        //margin-top: 11px;
+        display: inline-block;
+        margin: 2px 0px;
+        float: right;
+        margin-right: 10px;
+        overflow: hidden;
+        .buttons-span {
+            background-color: $proposalColor_EXCEPT;
+            max-width: 86px;
+            left: 67px;
+        }
+        .facetFilter-inverse {
+            background: url('#{$iconsPath}inverse-positive.png') 10px 2px no-repeat;
+        }
+        &:hover {
+            .facetFilter-label {
+                color: transparent;
+            }
+        }
+    }
+
+    .facetFilter-label {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        line-height: 25px;
+        display: inline-block;
+        min-width: 54px;
+        .color-dot {
+            height: 16px;
+            width: 16px;
+        }
+    }
+
+    .facetFilter-gradient {
+        position: absolute;
+        width: 20px;
+        right: 0;
+    }
+
+    .buttons-span {
+        position: absolute;
+        top: 2px;
+        bottom: 2px;
+        left: 0;
+        right: 0;
+        margin: 0;
+        display: none;
+    }
+
+    .facetFilter-closer {
+        position: absolute;
+        right: 4px;
+        cursor: pointer;
+        background: url('#{$iconsPath}bgd_facetFilter.png') 12px 4px no-repeat;
+        height: 21px;
+        width: 37px;
+        border-left: 1px solid #FFF;
+    }
+
+    .facetFilter-inverse {
+        position: absolute;
+        right: 42px;
+        cursor: pointer;
+        height: 21px;
+        width: 37px;
+        border-left: 1px solid #FFF;
+    }
+
+    .see_more_btn {
+        display: block;
+        margin: 14px auto;
+        padding: 1px 20px;
+        line-height: 21px;
+        background-color: $see_more_btn_bg;
+        border-color: $see_more_btn_border;
+        color: $see_more_btn_color;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: bold;
+        box-shadow: 0 -2px 3px 0 $see_more_btn_shadow;
+        border-style: solid;
+
+        &:hover {
+            background-color: $see_more_btn_bg_hov;
+            color: $see_more_btn_color_hov;
+            border-color: $see_more_btn_border_hov;
+        }
+    }
+}

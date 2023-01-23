@@ -1,0 +1,132 @@
+{% macro widget_prototype(form) %}
+    <h3 class="target-title">{{ 'admin:phrasea-service-setting:tab:uploader:: New uploader target' | trans }}</h3>
+    <div class="control-group well well-small action-block target-block">
+        <div class="upload-delete-btn">
+            <p> <button type="button" class="btn btn-danger delete-target pull-right"><i class="fa fa-trash-o icon-white" aria-hidden="true"></i>{{ 'admin:phrasea-service-setting:tab:uploader:: Delete' | trans }}
+                </button>
+            </p>
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.target_name) }}
+        </div>
+
+        <div class="control-group" style="margin-bottom: 20px;">
+            {{ form_widget(form.verify_ssl) }}
+            {{ form_label(form.verify_ssl) }}
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.pullmodeUri) }}
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.clientSecret) }}
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.clientId) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{{ form_start(form, {'action': path('ps_admin_uploader')}) }}
+<div class="uploader-header" style="margin-top: 30px;">
+    <div style="margin-bottom: 20px;">
+        <button type="submit" value="save" class="btn btn-success">{{ 'admin:phrasea-service-setting:tab:uploader:: Save' | trans }}</button>
+    </div>
+
+    <h2 style="margin-top: 30px;">{{ 'admin:phrasea-service-setting:tab:uploader:: uploader setting' | trans }}</h2>
+
+    <div class="control-group" style="margin-top: 20px;">
+        {{ form_widget(form.push_verify_ssl) }}
+        {{ form_label(form.push_verify_ssl) }}
+    </div>
+
+    <h2 style="margin-top: 30px;">{{ 'admin:phrasea-service-setting:tab:uploader:: pull setting' | trans }}</h2>
+
+    <div class="control-group" style="margin-top: 20px;">
+        {{ form_label(form.pullInterval) }}
+        {{ form_widget(form.pullInterval, {'attr': {'placeholder': '60'}}) }}
+    </div>
+
+    <div class="control-group" style="margin-top: 20px;">
+        {% if(running) %}
+            <button type="submit" value="stop" class="btn btn-danger stop-pull-assets">{{ 'Stop' | trans }}</button>
+        {% else %}
+            <button type="submit" value="start" class="btn btn-primary start-pull-assets">{{ "Start"|trans }}</button>
+        {% endif %}
+    </div>
+
+    <div class="control-group text-center">
+        <div><input id="add-new-target" type="button" class="btn btn-primary " data-list="#target-list"
+                    value="{{ 'admin:phrasea-service-setting:tab:uploader:: New target pull name' | trans }}">
+        </div>
+    </div>
+</div>
+
+<div id="target-list"  data-prototype="{{ _self.widget_prototype(form.pulled_target.vars.prototype)|e('html_attr') }}" style="height:800px;overflow-y:auto;">
+    {% for uploader_connection in form.pulled_target %}
+        {{ _self.widget_prototype(uploader_connection) }}
+    {% endfor %}
+</div>
+
+{{ form_end(form) }}
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#add-new-target').on('click', function () {
+            collectionHolder = $('#target-list');
+            prototype = collectionHolder.attr('data-prototype');
+            var newTarget = prototype.replace(/__name__/g, collectionHolder.children('.control-group').length);
+            collectionHolder.append(newTarget);
+            $("#target-list" ).accordion('refresh');
+            $( "h3:last" ).trigger( "click" );
+        });
+
+        $('#target-list').on('click', '.delete-target', function () {
+            $(this).closest('.target-block').prev('h3').remove();
+            $("#target-list" ).accordion('refresh');
+            $(this).closest('.target-block').remove();
+        });
+
+        $( function() {
+            $( ".target-block" ).each(function( index ) {
+                $(this).prev('.target-title').html( $(this).find('.target-name').val() );
+            });
+            $("#target-list" ).accordion(
+                {
+                    event: "click",
+                    active: false,
+                    collapsible: true
+                }
+            );
+        } );
+
+        $("#uploader").on('click', 'BUTTON[type=submit]', function(e, z) {
+            e.preventDefault();
+            var button = $(e.target);
+            var form = button.closest("FORM");
+            $("INPUT.act", form).val(button.val());     // "save", "start" or "stop"
+
+            var ok = true;
+            {% if(running) %}
+                if(button.val() === 'save') {
+                    // saving will empty the queue, "stopping"
+                    ok = confirm("Warning! Changing the settings will stop pulling assets!")
+                }
+            {% endif %}
+            if(button.val() === 'stop') {
+                // saving will empty the queue, "stopping"
+                ok = confirm("Warning! You are about to stop pulling assets!")
+            }
+
+            if(ok) {
+                form.submit();
+            }
+        });
+
+    });
+
+</script>

@@ -11,15 +11,17 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
-use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\BasketElementVote;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Alchemy\Phrasea\Model\Entities\Token;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,17 +80,39 @@ class LightboxController extends Controller
     {
         /** @var BasketElementRepository $repository */
         $repository = $this->app['repo.basket-elements'];
-
         $basketElement = $repository->findUserElement($sselcont_id, $this->getAuthenticatedUser());
+
+        $basket = $basketElement->getBasket();
+
+        $elements = $basket->getElements();
+        for ($i = 0; $i < count($elements); ++$i) {
+            if ($sselcont_id == $elements[$i]->getId()) {
+                $nextKey = $i + 1;
+                $prevKey = $i - 1;
+                if ($nextKey < count($elements)) {
+                    $nextId = $elements[$nextKey]->getId();
+                }
+                else {
+                    $nextId = null;
+                }
+                if ($prevKey >= 0) {
+                    $prevId = $elements[$prevKey]->getId();
+                }
+                else {
+                    $prevId = null;
+                }
+            }
+        }
 
         if ($this->app['browser']->isMobile()) {
             return $this->renderResponse('lightbox/basket_element.html.twig', [
                 'basket_element' => $basketElement,
-                'module_name'    => $basketElement->getRecord($this->app)->get_title()
+                'module_name'    => $basketElement->getRecord($this->app)->get_title(),
+                'nextId'         => $nextId,
+                'prevId'         => $prevId
             ]);
         }
 
-        $basket = $basketElement->getBasket();
 
         $ret = [];
         $ret['number'] = $basketElement->getRecord($this->app)->getNumber();
@@ -248,13 +272,13 @@ class LightboxController extends Controller
      */
     private function markBasketUserAwareOfValidation(Basket $basket)
     {
-        if ($basket->getValidation() && $basket->getValidation()
+        if ($basket->isVoteBasket() && $basket
                 ->getParticipant($this->getAuthenticatedUser())
                 ->getIsAware() === false
         ) {
             /** @var Basket $basket */
             $basket = $this->app['orm.em']->merge($basket);
-            $basket->getValidation()
+            $basket
                 ->getParticipant($this->getAuthenticatedUser())
                 ->setIsAware(true)
             ;
@@ -324,10 +348,12 @@ class LightboxController extends Controller
 
         $basket_element = $repository->findUserElement($sselcont_id, $this->getAuthenticatedUser());
 
-        $validationData = $basket_element->getUserValidationDatas($this->getAuthenticatedUser());
-        /** @var ValidationData $validationData */
-        $validationData = $this->app['orm.em']->merge($validationData);
-        $validationData->setNote($note);
+        // get the vote (create if not exists)
+        $vote = $basket_element->getUserVote($this->getAuthenticatedUser(), true);
+
+        /** @var BasketElementVote $vote */
+        $vote = $this->app['orm.em']->merge($vote);
+        $vote->setNote($note);
         $this->app['orm.em']->flush();
 
         $data = $this->render('lightbox/sc_note.html.twig', ['basket_element' => $basket_element]);
@@ -357,19 +383,17 @@ class LightboxController extends Controller
             $repository = $this->app['repo.basket-elements'];
 
             $basketElement = $repository->findUserElement($sselcont_id, $this->getAuthenticatedUser());
-            $validationData = $basketElement->getUserValidationDatas($this->getAuthenticatedUser());
+            $vote = $basketElement->getUserVote($this->getAuthenticatedUser(), true);
 
             if (!$basketElement->getBasket()
-                ->getValidation()
                 ->getParticipant($this->getAuthenticatedUser())->getCanAgree()
             ) {
                 throw new Exception('You can not agree on this');
             }
 
-            $validationData->setAgreement($agreement);
+            $vote->setAgreement($agreement);
 
             $participant = $basketElement->getBasket()
-                ->getValidation()
                 ->getParticipant($this->getAuthenticatedUser());
 
             $this->app['orm.em']->merge($basketElement);
@@ -394,26 +418,36 @@ class LightboxController extends Controller
     /**
      * @param Basket $basket
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function ajaxSetReleaseAction(Basket $basket)
     {
         try {
-            if (!$basket->getValidation()) {
+            if (!$basket->isVoteBasket()) {
                 throw new Exception('There is no validation session attached to this basket');
             }
 
-            if (!$basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getCanAgree()) {
+            if (!$basket->getParticipant($this->getAuthenticatedUser())->getCanAgree()) {
                 throw new Exception('You have not right to agree');
             }
 
             $this->assertAtLeastOneElementAgreed($basket);
-            $participant = $basket->getValidation()->getParticipant($this->getAuthenticatedUser());
+            $participant = $basket->getParticipant($this->getAuthenticatedUser());
 
-            /** @var Token $token */
-            $token = $this->app['manipulator.token']->createBasketValidationToken($basket);
+            // find / create a "validate" token so the initator of the session can view results (no expiration)
+            $initiatorUser = $basket->getVoteInitiator();
+
+            if(is_null($token = $this->getTokenRepository()->findValidationToken($basket, $initiatorUser))) {
+                // should not happen since when a validation is created, the initiator is force-included as a participant
+                $token = $this->getTokenManipulator()->createBasketValidationToken($basket, $initiatorUser, null);
+            }
+            else {
+                // a token already exists for the initiator
+                $token->setExpiration(null);        // the expiration for initiator should already be null...
+            }
             $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
 
-            $this->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($participant, $basket, $url));
+            $this->dispatch(PhraseaEvents::VALIDATION_DONE, new BasketParticipantVoteEvent($participant, $url));
 
             $participant->setIsConfirmed(true);
 
@@ -421,7 +455,8 @@ class LightboxController extends Controller
             $this->app['orm.em']->flush();
 
             $data = ['error' => false, 'datas' => $this->app->trans('Envoie avec succes')];
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             $data = ['error' => true, 'datas' => $e->getMessage()];
         }
 
@@ -430,12 +465,72 @@ class LightboxController extends Controller
 
     /**
      * @param Basket $basket
+     * @return Response
+     */
+    public function ajaxGetElementsAction(Basket $basket)
+    {
+        $ret = [
+            'error'  => false,
+            'datas' => [
+                'counts' => [
+                    'yes'   => 0,
+                    'no'    => 0,
+                    'nul'   => 0,
+                    'total' => 0
+                ]
+            ]
+        ];
+        try {
+            if (!$basket->isVoteBasket()) {
+                throw new Exception('There is no validation session attached to this basket');
+            }
+            /** @var BasketElement $element */
+            foreach ($basket->getElements() as $element) {
+                try {
+                    $vd = $element->getUserVote($this->getAuthenticatedUser(), false);
+                }
+                catch (\Exception $e) {
+                    continue;   // no vote (data)
+                }
+
+                if($vd->getAgreement() === true) {
+                    $ret['datas']['counts']['yes']++;
+                }
+                elseif($vd->getAgreement() === false) {
+                    $ret['datas']['counts']['no']++;
+                }
+                elseif($vd->getAgreement() === null) {
+                    $ret['datas']['counts']['nul']++;
+                }
+                $ret['datas']['counts']['total']++;
+            }
+        }
+        catch (Exception $e) {
+            $ret = [
+                'error' => true,
+                'datas' => $e->getMessage()
+            ];
+        }
+
+        return $this->app->json($ret);
+    }
+
+    /**
+     * @param Basket $basket
      * @throws Exception
      */
     private function assertAtLeastOneElementAgreed(Basket $basket)
     {
+        /** @var BasketElement $element */
         foreach ($basket->getElements() as $element) {
-            if (null !== $element->getUserValidationDatas($this->getAuthenticatedUser())->getAgreement()) {
+            try {
+                $vote = $element->getUserVote($this->getAuthenticatedUser(), false);
+            }
+            catch (\Exception $e) {
+                continue;   // no vote (data)
+            }
+
+            if (!is_null($vote->getAgreement())) {
                 return;
             }
         }
@@ -443,4 +538,21 @@ class LightboxController extends Controller
         $message = $this->app->trans('You have to give your feedback at least on one document to send a report');
         throw new Exception($message);
     }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
+    }
+
+    /**
+     * @return TokenRepository
+     */
+    private function getTokenRepository()
+    {
+        return $this->app['repo.tokens'];
+    }
+
 }

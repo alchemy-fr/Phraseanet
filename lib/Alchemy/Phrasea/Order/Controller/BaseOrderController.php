@@ -144,9 +144,10 @@ class BaseOrderController extends Controller
      * @param int $order_id
      * @param array<int> $elementIds
      * @param User $acceptor
+     * @param \DateTime|null $expireDate
      * @return BasketElement[]
      */
-    protected function doAcceptElements($order_id, $elementIds, User $acceptor)
+    protected function doAcceptElements($order_id, $elementIds, User $acceptor, \DateTime $expireDate = null)
     {
         $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
         $order = $this->findOr404($order_id);
@@ -161,7 +162,25 @@ class BaseOrderController extends Controller
         $this->assertRequestedElementsWereNotAlreadyAdded($basket, $basketElements);
 
         $orderValidator->accept($acceptor, $partialOrder);
-        $orderValidator->grantHD($basket->getUser(), $basketElements);
+        $expireOn = null;
+        if ($this->app['conf']->get(['order-manager', 'download-hd', 'expiration-override'], false)) {
+            if ($expireDate !== null) {
+                $expireOn = $expireDate->format(DATE_ATOM);
+                $expireDateTime = $expireDate;
+            }
+        } else {
+            $expirationDays = $this->app['conf']->get(['order-manager', 'download-hd', 'expiration-days'], 15);
+
+            try {
+                $expireDateTime = new \DateTime('+ '. $expirationDays . ' day');
+                $expireOn = $expireDateTime->format(DATE_ATOM);
+            } catch (\Exception $e) {
+                $expireDateTime = null;
+                $expireOn = null;
+            }
+        }
+
+        $orderValidator->grantHD($basket->getUser(), $basket->getPusher(), $basketElements, $expireOn);
 
         try {
             $manager = $this->getEntityManager();
@@ -172,7 +191,7 @@ class BaseOrderController extends Controller
                     $manager->persist($element);
                 }
 
-                $delivery = new OrderDelivery($order, $acceptor, count($basketElements));
+                $delivery = new OrderDelivery($order, $acceptor, count($basketElements), $partialOrder, $expireDateTime);
 
                 $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($delivery));
             }
@@ -198,11 +217,13 @@ class BaseOrderController extends Controller
         $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
         $order = $this->findOr404($order_id);
 
+        $partialOrder = new PartialOrder($order, $elements);
+
         $this->getOrderValidator()->deny($acceptor, new PartialOrder($order, $elements));
 
         try {
             if (!empty($elements)) {
-                $delivery = new OrderDelivery($order, $acceptor, count($elements));
+                $delivery = new OrderDelivery($order, $acceptor, count($elements), $partialOrder);
 
                 $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($delivery));
             }

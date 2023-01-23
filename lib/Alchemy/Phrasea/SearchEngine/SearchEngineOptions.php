@@ -14,13 +14,13 @@ namespace Alchemy\Phrasea\SearchEngine;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
-use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
-use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
+use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Assert\Assertion;
+use databox_descriptionStructure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use databox_descriptionStructure;
 
 class SearchEngineOptions
 {
@@ -36,11 +36,12 @@ class SearchEngineOptions
     const TYPE_ALL = '';
     const SORT_RELEVANCE = 'relevance';
     const SORT_CREATED_ON = 'created_on';
+    const SORT_UPDATED_ON = 'updated_on';
     const SORT_RANDOM = 'random';
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
 
-    /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+    /** @var CollectionReferenceRepository */
     private $collectionReferenceRepository;
 
     /** @var string */
@@ -70,6 +71,8 @@ class SearchEngineOptions
     protected $i18n;
     /** @var bool */
     protected $stemming = true;
+    /** @var bool */
+    protected $use_truncation = false;
     /** @var string */
     protected $sort_by;
 
@@ -79,14 +82,13 @@ class SearchEngineOptions
     /** @var int[] */
     protected $business_fields = [];
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $max_results = 10;
 
-    /**
-     * @var int
-     */
+    /** @var bool */
+    private $include_unset_field_facet = false;
+
+    /** @var int */
     private $first_result = 0;
 
     private static $serializable_properties = [
@@ -104,7 +106,9 @@ class SearchEngineOptions
         'sort_ord',
         'business_fields',
         'max_results',
-        'first_result'
+        'first_result',
+        'use_truncation',
+        'include_unset_field_facet',
     ];
 
     /**
@@ -217,6 +221,29 @@ class SearchEngineOptions
     }
 
     /**
+     * Tells whether to use truncation or not
+     *
+     * @param  boolean             $boolean
+     * @return $this
+     */
+    public function setUseTruncation($boolean)
+    {
+        $this->use_truncation = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Return wheter the use of truncation is enabled or not
+     *
+     * @return boolean
+     */
+    public function useTruncation()
+    {
+        return $this->use_truncation;
+    }
+
+    /**
      * Return wheter the use of stemming is enabled or not
      *
      * @return boolean
@@ -224,6 +251,16 @@ class SearchEngineOptions
     public function isStemmed()
     {
         return $this->stemming;
+    }
+
+    public function setIncludeUnsetFieldFacet(bool $include_unset_field_facet)
+    {
+        $this->include_unset_field_facet = $include_unset_field_facet;
+    }
+
+    public function getIncludeUnsetFieldFacet()
+    {
+        return $this->include_unset_field_facet;
     }
 
     /**
@@ -261,10 +298,10 @@ class SearchEngineOptions
     /**
      * Set the bases where to search for
      *
-     * @param  int[] $basesIds An array of ids
+     * @param  null|int[] $basesIds An array of ids
      * @return $this
      */
-    public function onBasesIds(array $basesIds)
+    public function onBasesIds($basesIds)
     {
         $this->basesIds = $basesIds;
 
@@ -428,6 +465,20 @@ class SearchEngineOptions
         return $this->date_fields;
     }
 
+    public function __construct(CollectionReferenceRepository $collectionReferenceRepository)
+    {
+        $this->collectionReferenceRepository = $collectionReferenceRepository;
+    }
+
+    /**
+     * @param $app
+     * @return DisplaySettingService
+     */
+    static private function getSettings($app)
+    {
+        return $app['settings'];
+    }
+
     /**
      * Creates options based on a Symfony Request object
      *
@@ -441,10 +492,16 @@ class SearchEngineOptions
         /** @var Authenticator $authenticator */
         $authenticator = $app->getAuthenticator();
         $isAuthenticated = $authenticator->isAuthenticated();
+        $user = $authenticator->getUser();
 
-        $options = new static();
+        $options = new static($app['repo.collection-references']);
 
-        $options->collectionReferenceRepository = $app['repo.collection-references'];
+        if($user) {
+            $options->setIncludeUnsetFieldFacet((Boolean)(self::getSettings($app)->getUserSetting($user, 'show_unset_field_facet', false)));
+        }
+        else {
+            $options->setIncludeUnsetFieldFacet(false);
+        }
 
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
@@ -541,6 +598,8 @@ class SearchEngineOptions
         $options->setFields($databoxFields);
         $options->setDateFields($databoxDateFields);
 
+        $options->setUseTruncation((Boolean) $request->get('truncation'));
+
         return $options;
     }
 
@@ -627,6 +686,7 @@ class SearchEngineOptions
                 }
             },
             'stemming' => $optionSetter('setStemming'),
+            'use_truncation' => $optionSetter('setUseTruncation'),
             'date_fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
                 $options->setDateFields($fieldNormalizer($value));
             },
@@ -644,6 +704,7 @@ class SearchEngineOptions
             },
             'first_result' => $optionSetter('setFirstResult'),
             'max_results' => $optionSetter('setMaxResults'),
+            'include_unset_field_facet' => $optionSetter('setIncludeUnsetFieldFacet'),
         ];
     }
 
@@ -683,7 +744,7 @@ class SearchEngineOptions
             throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
         }
 
-        $options = new static();
+        $options = new static($app['repo.collection-references']);
         $options->disallowBusinessFields();
 
         $methods = self::getHydrateMethods($app);

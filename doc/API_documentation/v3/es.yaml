@@ -1,0 +1,180 @@
+ESRecord:
+  description: 'Raw response from es search on "record" index/mapping'
+  type: object
+  properties:
+    _index:
+      type: string
+      description: 'ES index'
+      example:
+        'phraseanet_dxmpcw3y8td68f+h_20201124161735.910647'
+    _type:
+      type: string
+      description: 'Data type'
+      example:
+        'record'
+    _id:
+      type: string
+      description: 'unique id of document (sbas_id + "_" + record_id)'
+      example:
+        '1_555'
+    _version:
+      type: integer
+      description: 'auto-increment at each indexation of the document'
+      example:
+        1
+    _score:
+      type: number
+      description: 'score of the document related to a whole resultset'
+      example:
+        1
+    _source:
+      $ref: '#/ESRecordSource'
+
+ESRecordSource:
+  type: object
+  properties:
+    record_id:
+      $ref: 'common.yaml#/ID'
+      example: 555
+    collection_id:
+      $ref: 'common.yaml#/ID'
+      example: 123
+    uuid:
+      type: string
+      example:
+        'dcee40ea-ee26-4d8b-b0c2-d61305b03bc0'
+    flags_bitfield:
+      type: integer
+    sha256:
+      type: string
+      example:
+        '7fad283de349b903c850548cda65cf2d86d24c4e3856cdc2b97e47430494b8c8'
+    original_name:
+      type: string
+      example:
+        '1134340545.jpg'
+    mime:
+      type: string
+      example:
+        'image/jpeg'
+    type:
+      type: string
+      example:
+        'image'
+    cover_record_id:
+      $ref: 'common.yaml#/ID'
+      description: 'for a story, id of the record chosen as "cover" (or null)'
+      example: null
+    created_on:
+      type: string
+      format: date-time
+      example:
+        '2020-12-07 09:48:01'
+    updated_on:
+      type: string
+      format: date-time
+      example:
+        '2021-01-01 15:30:00'
+    coll_id:
+      $ref: 'common.yaml#/ID'
+      example: '123'
+    collection_name:
+      type: string
+      example:
+        'collection de test'
+    witdh:
+      type: integer
+      example: 5616
+    height:
+      type: integer
+      example: 3744
+    size:
+      type: integer
+      example:
+        5618218
+    base_id:
+      $ref: 'common.yaml#/ID'
+    databox_id:
+      $ref: 'common.yaml#/ID'
+    databox_name:
+      type: string
+      example:
+        'db_databox1'
+    record_type:
+      type: string
+      enum: ['record','story']
+    title:
+      type: object
+      description: 'key->value list, where (key) is the lng, and (value) the title in this lng.'
+      additionalProperties: true
+      example:
+        fr: 'titre en Français'
+        en: 'title in english'
+        '': 'undefined-lng title ? To be fixed'
+    metadata_tags:
+      type: object
+      description: 'key->value list, where (key) is the name of the metadata, and (value) the value.'
+      additionalProperties: true
+      example:
+        Channels: 3
+        ColorDepth: 8
+        ColorSpace: 0
+        FileSize: 5618218
+        Height: 3744
+        MimeType: 'image/jpeg'
+        Width: 5616
+    caption:
+      type: object
+      description: >
+        'key->value list, where (key) is the field name, and (value) the value(s).'
+
+        'nb: mono-valued field value is a 1 element array.'
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      example:
+        Artist: ['Bob']
+        Title: ['Cropped Hand Of Person Holding Computer Mouse']
+        Keywords: ['Hand', 'Mouse (computer)']
+    caption_all:
+      type: array
+      items:
+        type: string
+      description: >
+        'all fields values in a single array'
+      example: ['Bob','Cropped Hand Of Person Holding Computer Mouse','Hand','Mouse (computer)']
+    flags:
+      $ref: '#/Flags'
+    subdefs:
+      type: object
+      description: 'key->value list, where (key) is the name of the subdef, and (value) is the subdef object.'
+      additionalProperties:
+        type: object
+      example:
+        document:
+          type: object
+          properties:
+            width: 5616
+            height: 3744
+            size: 5618218
+            mime: 'image/jpeg'
+            permalink: 'http://localhost/permalink/v1/2/34/document/1134340545.jpg?token=xrdMnK6peB...'
+        thumbnail:
+          type: object
+          properties:
+            width: 1024
+            height: 683
+            size: 20011
+            mime: 'image/jpeg'
+            permalink: 'http://localhost/permalink/v1/2/34/preview/1134340545.jpg?token=E5aSbXQTmAz...'
+
+Flags:
+  type: object
+  description: 'key->value list, where (key) is the name of the flag (=status bit), and (value) is the boolean value.'
+  additionalProperties:
+    type: boolean
+  example:
+    public: true
+    color_checked: true
+    embargo: false

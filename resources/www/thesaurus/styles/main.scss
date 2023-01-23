@@ -1,3 +1,40 @@
+$blue-tsr: #2196f3;
+$grey-tsr: #aaa;
+$iconsPath: '../../../assets/thesaurus/images/';
+@mixin blue-btn {
+  color: #fff;
+  background: $blue-tsr;
+  padding: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-color: darken($blue-tsr, 20%);
+  min-width: 120px;
+  margin: 0 10px;
+  position: relative;
+  z-index: 2;
+  &:hover {
+    background: darken($blue-tsr, 20%);
+  }
+}
+
+@mixin grey-btn {
+  color: #000;
+  background: $grey-tsr;
+  padding: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-color: darken($grey-tsr, 20%);
+  min-width: 120px;
+  margin: 0 10px;
+  position: relative;
+  z-index: 2;
+  &:hover {
+    background: darken($grey-tsr, 20%);
+  }
+}
+
 BODY, TD, INPUT {
   FONT-FAMILY: Verdana, Arial, helvetica, sans-serif;
   font-size: 12px;
@@ -8,11 +45,11 @@ FORM {
   margin: 0px;
 }
 
-BODY.dialog {
+.dialog {
   background-color: ButtonFace;
 }
 
-BODY.dialog .x3Dbox {
+.x3Dbox {
   position: relative;
   top: 0px;
   left: 0px;
@@ -24,7 +61,7 @@ BODY.dialog .x3Dbox {
   border-right: 1px solid #ffffff;
 }
 
-BODY.dialog .x3Dbox .title {
+.x3Dbox .title {
   position: absolute;
   top: -9px;
   left: 20px;
@@ -58,7 +95,7 @@ H3, H4 {
   display: inline;
 }
 
-DIV.thbox {
+.thbox {
   BACKGROUND-COLOR: #ffffff;
   border-top: 1px solid #d0d0d0;
   border-left: 1px solid #d0d0d0;
@@ -69,7 +106,7 @@ DIV.thbox {
   z-index: 1;
 }
 
-DIV.thbox .onglet {
+.thbox .onglet {
   position: absolute;
   top: -22px;
   left: 5px;
@@ -87,20 +124,20 @@ DIV.thbox .onglet {
   z-index: 2;
 }
 
-DIV.thbox HR {
+.thbox HR {
   COLOR: #d0d0d0;
   height: 1px;
   margin: 0px;
   padding: 0px;
 }
 
-DIV.glossaire {
+.glossaire {
   position: relative;
   left: 4px;
   white-space: nowrap;
 }
 
-DIV.glossaire U {
+.glossaire U {
   position: relative;
   left: 1px;
   TEXT-DECORATION: none;
@@ -116,30 +153,30 @@ DIV.glossaire U {
   cursor: pointer;
 }
 
-DIV.glossaire U.nots {
+.glossaire U.nots {
   border: 1px solid #F0F0F0;
   BACKGROUND-COLOR: #F0F0F0;
   cursor: default;
 }
 
-DIV.glossaire DIV.S_ {
+.glossaire .S_ {
   cursor: pointer;
   BACKGROUND-COLOR: #99a2d0;
   COLOR: #FFFFFF;
 }
 
-DIV.glossaire DIV.s_ {
+.glossaire .s_ {
   cursor: pointer;
 }
 
-DIV.glossaire DIV.r0_ {
+.glossaire .r0_ {
 }
 
-DIV.glossaire DIV.r1_ {
+.glossaire .r1_ {
   COLOR: #FF4000;
 }
 
-DIV.glossaire DIV.OB {
+.glossaire .OB {
   position: relative;
   top: 0px;
   padding-top: 0px;
@@ -149,11 +186,11 @@ DIV.glossaire DIV.OB {
   border-bottom: 1px solid #cccccc;
 }
 
-DIV.glossaire DIV.ob {
+.glossaire .ob {
   display: none;
 }
 
-DIV.glossaire DIV.hb {
+.glossaire .hb {
   position: relative;
   top: 0px;
   padding-top: 0px;
@@ -163,46 +200,46 @@ DIV.glossaire DIV.hb {
   border-bottom: 1px solid #cccccc;
 }
 
-DIV.glossaire DIV.ctroot {
+.glossaire .ctroot {
   position: relative;
   top: 0px;
   padding: 0px;
   border: none;
 }
 
-DIV.glossaire P.sy {
+.glossaire P.sy {
 }
 
-DIV.glossaire P.ta {
+.glossaire P.ta {
 }
 
-DIV.glossaire P.tc {
+.glossaire P.tc {
 }
 
-DIV.glossaire P.tce {
+.glossaire P.tce {
 }
 
-DIV.tableContainer {
+.tableContainer {
   margin: 2px;
   border: 1px solid #000000;
   background-color: #ffffff;
 }
 
-DIV.tableContainerDragOver {
+.tableContainerDragOver {
   margin: 0px;
   border: 3px solid #99a2d0;
 }
 
-DIV.tableContainer DIV.tbody {
+.tableContainer .tbody {
   position: relative;
   overflow: auto;
 }
 
-DIV.tableContainer TABLE {
+.tableContainer TABLE {
   table-layout: fixed;
 }
 
-DIV.tableContainer THEAD TH {
+.tableContainer THEAD TH {
   background: #e0ece8;
   border-left: 1px solid #ffffff;
   border-right: 1px solid #c0ccc8;
@@ -216,15 +253,15 @@ DIV.tableContainer THEAD TH {
   margin: 0px;
 }
 
-DIV.tableContainer TBODY TR.s_ {
+.tableContainer TBODY TR.s_ {
 }
 
-DIV.tableContainer TBODY TR.S_ {
+.tableContainer TBODY TR.S_ {
   BACKGROUND-COLOR: #99a2d0;
   COLOR: #FFFFFF;
 }
 
-DIV.tableContainer TBODY TD {
+.tableContainer TBODY TD {
   border-left: 1px solid #ffffff;
   border-right: 1px solid #cccccc;
   font-weight: normal;
@@ -235,77 +272,68 @@ DIV.tableContainer TBODY TD {
   margin: 0px;
 }
 
-DIV.menu {
+.menu {
   FONT-FAMILY: Arial, helvetica, sans-serif;
   font-size: 12px;
-  border-left: 1px solid #ffffff;
-  border-top: 1px solid #ffffff;
-  border-right: 2px solid #000000;
-  border-bottom: 2px solid #000000;
   padding: 0px;
   margin: 0px;
   visibility: hidden;
   position: absolute;
-  top: 0px;
-  left: 0px;
-  background-color: #d4d0c8;
+  top: 0;
+  left: 0;
+  background-color: #535353;
 }
 
-DIV.menu IMG {
-  padding: 0px;
-  margin: 0px;
+.menu IMG {
+  padding-right: 2px;
+  margin: 0;
   position: relative;
-  left: -10px;
-  top: 2px;
 }
 
-DIV.menu A {
+.menu p {
+  padding: 2px;
+  position: relative;
+}
+
+.menu a {
   font-size: 12px;
   display: block;
   position: relative;
   text-decoration: none;
-  color: #000000;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  padding-left: 13px;
-  padding-right: 3px;
-  overflow: hidden;
-  border: none 0px #FFFFFF;
-  white-space: nowrap;
+  color: #fff;
+  padding: 5px 6px;
+  background-color: #535353;
+
 }
 
-DIV.menu A:hover {
+.menu A:hover {
   font-size: 12px;
   display: block;
   position: relative;
   text-decoration: none;
   color: #ffffff;
-  background-color: #000080;
+  background-color: #884c92;
 }
 
-DIV.menu A.disabled {
+.menu A.disabled {
   font-size: 12px;
   display: block;
   position: relative;
   text-decoration: none;
-  color: #A0A0A0;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  padding-left: 13px;
-  padding-right: 3px;
+  color: lighten(#535353, 10%);
   overflow: hidden;
 }
 
-DIV.menu A.disabled:hover {
+.menu A.disabled:hover {
   font-size: 12px;
   display: block;
   position: relative;
   text-decoration: none;
-  color: #A0A0A0;
-  background-color: #d4d0c8;
+  color: lighten(#535353, 5%);
+  background-color: #535353;
 }
 
-DIV.menu .line {
+.menu .line {
   display: block;
   position: relative;
   height: 0px;
@@ -315,4 +343,97 @@ DIV.menu .line {
   padding: 0px;
   border-top: 1px solid #555555;
   border-bottom: 1px solid #ffffff;
+}
+
+#delete_sy {
+  background: orange;
+  border: 1px solid darken(orange,20%);
+  color: #fff;
+  font-weight: bold;
+  padding: 1px 10px;
+  margin-left: 12px;
+  &.disabled {
+    background: grey;
+  }
+}
+
+#DLG_PROPERTIES > #syMenu {
+  display: none;
+}
+
+.thesaurus_confirm_bottom_block {
+  margin-top: 20px;
+  text-align: center;
+  #ifrsample & {
+    display: none;
+  }
+}
+
+.thesaurus-page {
+  .validate_btn {
+    @include blue-btn;
+  }
+  .cancel_btn {
+    @include grey-btn;
+  }
+
+  .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none;
+  }
+  .ui-dialog-buttonset {
+    text-align: center;
+  }
+  .ui-button {
+    &:nth-child(1) {
+      @include grey-btn
+    }
+    &:nth-child(2) {
+      @include blue-btn
+    }
+  }
+}
+
+.text-center {
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.populate_btn, #kth_import {
+  position: absolute;
+  background: #884c92;
+  z-index: 2;
+  right: 50px;
+  top: 50px;
+  font-size: 14px;
+  color: #fff;
+  padding: 7px 10px;
+  font-weight: bold;
+  border: 1px solid #d0d0d0;
+  cursor: pointer;
+
+  &:hover {
+    background: darken(#884c92, 20%);
+  }
+}
+
+#kth_import {
+  right: 150px !important;
+  text-decoration: none;
+}
+
+.thesaurus-page {
+  .ui-widget-header {
+    border: 1px solid darken(#884c92, 20%);
+    background: #884c92;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+#flagsMenu p {
+  color: #fff;
+  padding: 0 10px;
+  cursor: pointer;
 }

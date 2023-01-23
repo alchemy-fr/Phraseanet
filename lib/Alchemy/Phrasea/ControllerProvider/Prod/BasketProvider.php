@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -24,7 +25,8 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
     public function register(Application $app)
     {
         $app['controller.prod.basket'] = $app->share(function (PhraseaApplication $app) {
-            return new BasketController($app);
+            return (new BasketController($app))
+                ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
         });
     }
 
@@ -42,8 +44,22 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access']);
 
+        /** @uses   \Alchemy\Phrasea\Controller\Prod\BasketController::displayBasket() */
         $controllers->get('/{basket}/', 'controller.prod.basket:displayBasket')
             ->bind('prod_baskets_basket')
+            ->assert('basket', '\d+');
+
+        /** @uses   \Alchemy\Phrasea\Controller\Prod\BasketController::getWip() */
+        $controllers->get('/{basket}/wip/', 'controller.prod.basket:getWip')
+            ->bind('prod_baskets_getwip')
+            ->assert('basket', '\d+');
+
+        $controllers->get('/{basket}/reminder/', 'controller.prod.basket:displayReminder')
+            ->bind('prod_baskets_reminder')
+            ->assert('basket', '\d+');
+
+        $controllers->post('/{basket}/reminder/', 'controller.prod.basket:doReminder')
+            ->bind('prod_baskets_do_reminder')
             ->assert('basket', '\d+');
 
         $controllers->post('/', 'controller.prod.basket:createBasket')
@@ -58,7 +74,7 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
             ->bind('prod_baskets_basket_element_remove')
             ->assert('basket', '\d+')
             ->assert('basket_element_id', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
+            ->before($app['middleware.basket.user-can-modify-content']);
 
         $controllers->post('/{basket}/update/', 'controller.prod.basket:updateBasket')
             ->bind('prod_baskets_basket_update')
@@ -85,7 +101,7 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->post('/{basket}/addElements/', 'controller.prod.basket:addElements')
             ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
+            ->before($app['middleware.basket.user-can-modify-content']);
 
         $controllers->post('/{basket}/stealElements/', 'controller.prod.basket:stealElements')
             ->assert('basket', '\d+')

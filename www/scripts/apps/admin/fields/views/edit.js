@@ -22,6 +22,7 @@ define([
     var FieldEditView = Backbone.View.extend(_.extend({}, MultiViews, {
         tagName: "div",
         className: "field-edit",
+        template: _.template($("#edit_template").html()),
         initialize: function () {
             this.model.on("change", this._onModelChange, this);
         },
@@ -34,15 +35,15 @@ define([
         },
         render: function () {
             var self = this;
-            var template = _.template($("#edit_template").html(), {
-                lng: AdminFieldApp.lng(),
-                field: this.model.toJSON(),
-                vocabularyTypes: AdminFieldApp.vocabularyCollection.toJSON(),
-                modelErrors: AdminFieldApp.errorManager.getModelError(this.model),
-                languages: AdminFieldApp.languages
-            });
 
-            this.$el.empty().html(template);
+            this.$el.empty().html(this.template({
+                    lng: AdminFieldApp.lng(),
+                    field: this.model.toJSON(),
+                    vocabularyTypes: AdminFieldApp.vocabularyCollection.toJSON(),
+                    modelErrors: AdminFieldApp.errorManager.getModelError(this.model),
+                    languages: AdminFieldApp.languages
+                }
+            ));
 
             this._assignView({
                 ".dc-fields-subview": new DcFieldView({

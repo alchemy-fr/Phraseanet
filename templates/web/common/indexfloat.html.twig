@@ -9,7 +9,12 @@
     {% block rss %}{% endblock %}
     {% block stylesheet %}{% endblock %}
     {% block icon %}{% endblock %}
-    {% block javascript %}{% endblock %}
+      {% block javascript %}
+        <script type="text/javascript"
+                src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript"
+                src="/assets/vendors/underscore/underscore{% if not app.debug %}.min{% endif %}.js"></script>
+      {% endblock %}
   </head>
   <body>
     <div id="mainContainer">
@@ -20,5 +25,6 @@
         </div>
     </div>
     {% include 'common/analytics.html.twig' %}
+    {% include 'common/matomo_analytics.html.twig' %}
   </body>
 </html>

@@ -25,7 +25,6 @@ class PermalinkTransformer extends TransformerAbstract
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
             'id'           => $permalink->get_id(),
             'is_activated' => $permalink->get_is_activated(),
-            /** @Ignore */
             'label'        => $permalink->get_label(),
             'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
             'page_url'     => $permalink->get_page(),

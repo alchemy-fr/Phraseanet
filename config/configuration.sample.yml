@@ -6,7 +6,7 @@ main:
     maintenance: false
     languages: []
     key: ''
-    api_require_ssl: true
+    delete-account-require-email-confirmation: true
     database:
         host: 127.0.0.1
         port: 3306
@@ -20,13 +20,55 @@ main:
         path: '/tmp/db.sqlite'
         charset: UTF8
     cache:
-        type: MemcacheCache
+        type: redis
         options:
             host: localhost
-            port: 11211
+            port: 6379
     search-engine:
-        type: phrasea
-        options: []
+        type: elasticsearch
+        options:
+            host: elasticsearch
+            port: 9200
+            index: ''
+            shards: 3
+            replicas: 0
+            minScore: 2
+            highlight: true
+            populate_order: RECORD_ID
+            populate_direction: DESC
+            populate_permalinks: false
+            activeTab: ''
+            facets:
+                _base:
+                    limit: 10
+                _collection:
+                    limit: 10
+                _doctype:
+                    limit: 10
+                _camera_model:
+                    limit: 0
+                _iso:
+                    limit: 0
+                _aperture:
+                    limit: 0
+                _shutterspeed:
+                    limit: 0
+                _flashfired:
+                    limit: 0
+                _framerate:
+                    limit: 0
+                _audiosamplerate:
+                    limit: 0
+                _videocodec:
+                    limit: 0
+                _audiocodec:
+                    limit: 0
+                _orientation:
+                    limit: 0
+                _colorspace:
+                    limit: 0
+                _mimetype:
+                    limit: 0
     task-manager:
         status: started
         enabled: true
@@ -60,12 +102,7 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
-    task-manager:
-        status: started
-        listener:
-            protocol: tcp
-            host: 127.0.0.1
-            port: 6700
+        exiftool_timeout: 60
     storage:
         subdefs: null
         cache: null
@@ -73,35 +110,31 @@ main:
         download: null
         lazaret: null
         caption: null
-    bridge:
-        youtube:
-            enabled: false
-            client_id: null
-            client_secret: null
-            developer_key: null
-        flickr:
-            enabled: false
-            client_id: null
-            client_secret: null
-        dailymotion:
-            enabled: false
-            client_id: null
-            client_secret: null
+        worker_tmp_files: null
 border-manager:
     enabled: true
-    extension-mapping: { }
+    extension-mapping:
+        otc: application/vnd.oasis.opendocument.chart-template
+        ttc: application/x-font-ttf
+        svg: image/svg+xml
     checkers:
         -
             type: Checker\Sha256
             enabled: true
+            collections: []
+            compare-ignore-collections: []
         -
             type: Checker\UUID
             enabled: true
+            collections: []
+            compare-ignore-collections: []
         -
             type: Checker\Colorspace
             enabled: false
+            collections: []
             options:
                 colorspaces: [cmyk, grayscale, rgb]
+                media_types: [Image]
         -
             type: Checker\Dimension
             enabled: false
@@ -118,6 +151,8 @@ border-manager:
             enabled: false
             options:
                 sensitive: true
+            collections: []
+            compare-ignore-collections: []
         -
             type: Checker\MediaType
             enabled: false
@@ -132,34 +167,65 @@ authentication:
     providers:
         facebook:
             enabled: false
+            display: false
+            title: Facebook
+            type: facebook
             options:
                 app-id: ''
                 secret: ''
+                default-graph-version: 'v2.10'
         twitter:
             enabled: false
+            display: false
+            title: Twitter
+            type: twitter
             options:
                 consumer-key: ''
                 consumer-secret: ''
-        google-plus:
-            enabled: false
-            options:
-                client-id: ''
-                client-secret: ''
         github:
             enabled: false
+            display: false
+            title: Github
+            type: github
             options:
                 client-id: ''
                 client-secret: ''
         viadeo:
             enabled: false
+            display: false
+            title: Viadeo
+            type: viadeo
             options:
                 client-id: ''
                 client-secret: ''
         linkedin:
             enabled: false
+            display: false
+            title: LinkedIN
+            type: linkedin
             options:
                 client-id: ''
                 client-secret: ''
+        ps_auth_1:
+            enabled: false
+            display: false
+            title: 'PS Auth 1'
+            type: 'ps-auth'
+            options:
+                client-id: ''
+                client-secret: ''
+                base-url: 'https://api-auth.phrasea.local'
+                provider-type: 'oauth'
+                provider-name: 'v2'
+                icon-uri: null
+                debug: false
+                birth-group: '_firstlog'
+                everyone-group: '_everyone'
+                metamodel: '_metamodel'
+                model-gpfx: '_M_'
+                model-upfx: '_U_'
+                auto-logout: false
+                auto-connect-idp-name: null
 registration-fields:
     -
         name: company
@@ -195,6 +261,13 @@ api_cors_paths: []
 session:
   idle: 0
   lifetime: 604800 # 1 week
+registry:
+    api-clients:
+        api-require-ssl: false
+        api-auth-token-header-only: false
+        api-subdef_service: false
+    actions:
+        export-stamp-choice: false
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
@@ -225,27 +298,112 @@ embed_bundle:
     video:
         player: videojs
         autoplay: false
-        coverSubdef: previewx4
-        available-speeds:
+        cover_subdef: thumbnail
+        message_start: StartOfMessage
+        available_speeds:
             - 1
             - 1.5
             - 3
     audio:
         player: videojs
         autoplay: false
+        cover_subdef: thumbnail
     document:
         player: flexpaper
-        enable-pdfjs: true
+        enable_pdfjs: true
+video-editor:
+    ChapterVttFieldName: VideoTextTrackChapters
+    seekBackwardStep: 500 # in ms
+    seekForwardStep: 500  # in ms
+    playbackRates:
+        - 1
+        - '1.5'
+        - 3       
 geocoding-providers:
-  -
-    name: 'mapBox'
-    public-key: ''
+    -
+        map-provider: mapboxWebGL
+        enabled: false
+        public-key: ''
+        map-layers:
+            -
+                name: Light
+                value: 'mapbox://styles/mapbox/light-v9'
+            -
+                name: Streets
+                value: 'mapbox://styles/mapbox/streets-v9'
+            -
+                name: Basic
+                value: 'mapbox://styles/mapbox/basic-v9'
+            -
+                name: Satellite
+                value: 'mapbox://styles/mapbox/satellite-v9'
+            -
+                name: Dark
+                value: 'mapbox://styles/mapbox/dark-v9'
+        transition-mapboxgl:
+            -
+                animate: true
+                speed: '2.2'
+                curve: '1.42'
+        default-position:
+            - '48.879162'
+            - '2.335062'
+        default-zoom: 5
+        marker-default-zoom: 9
+        position-fields: []
+        geonames-field-mapping: true
+        cityfields: City, Ville
+        provincefields: Province
+        countryfields: Country, Pays
 workers:
-  queue:
-    worker-queue:
-      registry: alchemy_worker.queue_registry
-      host: localhost
-      port: 5672
-      user: guest
-      password: guest
-      vhost: /
+    queue:
+        worker-queue:
+          registry: alchemy_worker.queue_registry
+          host: localhost
+          port: 5672
+          user: guest
+          password: guest
+          ssl: false
+          vhost: /
+          heartbeat: 60
+    queues:
+        writeMetadatas:           # this Q is "delayable" in case of record is locked
+            ttl_retry: 1500         # overwrite 1000 ms default delay
+            ttl_delayed: 10000      # overwrite 5000 ms default delay
+        subdefCreation:           # this Q is "delayable" in case of record is locked
+            ttl_delayed: 10000      # overwrite 5000 ms default delay
+        pullAssets:
+            ttl_retry: 5000
+    webhook:
+        timeout: 30
+        verify_ssl: true
+
+externalservice:
+    ginger:
+        AutoSubtitling:
+            service_base_url: https://base.uri
+            token: 39c6011d
+            transcript_format: text/vtt
+            subdef_source: preview
+
+user_account:
+    deleting_policies:
+        email_confirmation: true
+
+Console_logger_enabled_environments: [test]
+
+phraseanet-service:
+    uploader-service:
+        push_verify_ssl: true
+        pulled_target:
+            pull-test-local:
+                pullmodeUri: 'https://api-uploader.phrasea.local/commits?target=bdb5b019-340b-4c96-892c-d07deba5a425'
+                clientSecret: 239zb7mhzmu8cgg48cgok8ww4ccokw0ck8kwow4ggw80s84koc
+                clientId: pull-local-test_3pj0iu
+                verify_ssl: true
+
+
+order-manager:
+    download-hd:
+        expiration-days: null
+        expiration-override: false

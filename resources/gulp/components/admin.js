@@ -15,14 +15,14 @@ gulp.task('build-admin-css', function(){
 
 gulp.task('build-admin-js', function(){
     var adminGroup = [
-        config.paths.vendors + 'underscore-amd/underscore.js',
-        config.paths.vendors + 'jquery-treeview/jquery.treeview.js',
+        config.paths.nodes + 'underscore/underscore.js',
+        config.paths.nodes + 'jquery-treeview/jquery.treeview.js',
         // config.paths.vendors + 'jquery-file-upload/js/vendor/jquery.ui.widget.js',
         // config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
         // config.paths.vendors + 'jquery-file-upload/js/jquery.fileupload.js',
         config.paths.src +  'admin/js/jquery.kb-event.js',
         config.paths.src +  'admin/js/template-dialogs.js',
-        config.paths.vendors + 'requirejs/require.js',
+        config.paths.nodes + 'requirejs/require.js',
         config.paths.dist +  'scripts/apps/admin/require.config.js',
         config.paths.dist +  'scripts/apps/admin/main/main.js'
     ];

@@ -831,158 +831,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-      <table name="cache">
-        <fields>
-          <field>
-            <name>session_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>usr_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>nact</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>created_on</name>
-            <type>timestamp</type>
-            <null></null>
-            <extra></extra>
-            <default>CURRENT_TIMESTAMP</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>lastaccess</name>
-            <type>datetime</type>
-            <null></null>
-            <extra></extra>
-            <default>0000-00-00 00:00:00</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>session</name>
-            <type>longblob</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>query</name>
-            <type>varchar(128)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>query_time</name>
-            <type>DATETIME</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>duration</name>
-            <type>float</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>total</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>session_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-
-      <table name="registry">
-        <fields>
-          <field>
-            <name>id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>key</name>
-            <type>char(32)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-            <collation>ascii_bin</collation>
-          </field>
-          <field>
-            <name>value</name>
-            <type>varchar(1024)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>type</name>
-            <type>enum('string','boolean','array','integer','text','binary','timezone','enum_multi','enum')</type>
-            <null></null>
-            <extra></extra>
-            <default>string</default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>id</field>
-            </fields>
-          </index>
-          <index>
-            <name>UNIQUE</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>key</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-
-
-
 
       <table name="records_rights">
         <fields>
@@ -1056,6 +904,14 @@
             <default></default>
             <comment></comment>
             <collation></collation>
+          </field>
+          <field>
+            <name>expire_on</name>
+            <type>datetime</type>
+            <null>yes</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
           </field>
         </fields>
         <indexes>
@@ -1430,6 +1286,27 @@
               <field>id</field>
             </fields>
           </index>
+          <index>
+            <name>usr_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>unread</name>
+            <type>INDEX</type>
+            <fields>
+              <field>unread</field>
+            </fields>
+          </index>
+          <index>
+            <name>created_on</name>
+            <type>INDEX</type>
+            <fields>
+              <field>created_on</field>
+            </fields>
+          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>
@@ -1459,7 +1336,7 @@
           <field>
             <name>host</name>
 
-            <type>char(64)</type>
+            <type>char(255)</type>
             <null></null>
             <extra></extra>
 
@@ -1534,7 +1411,7 @@
           </field>
           <field>
             <name>label_en</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -1542,7 +1419,7 @@
           </field>
           <field>
             <name>label_fr</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -1550,7 +1427,7 @@
           </field>
           <field>
             <name>label_de</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -1558,7 +1435,7 @@
           </field>
           <field>
             <name>label_nl</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -1797,125 +1674,6 @@
         <engine>InnoDB</engine>
       </table>
 
-      <table name="task2">
-        <fields>
-          <field>
-            <name>task_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>usr_id_owner</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>pid</name>
-            <type>int(11) unsigned</type>
-            <null>YES</null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>status</name>
-            <type>enum('stopped','started','starting','stopping','tostart','tostop','manual','torestart')</type>
-            <null></null>
-            <extra></extra>
-            <default>stopped</default>
-            <comment></comment>
-            <collation>ascii_bin</collation>
-          </field>
-          <field>
-            <name>crashed</name>
-            <type>int(2) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>active</name>
-            <type>int(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>name</name>
-            <type>varchar(100)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>last_exec_time</name>
-            <type>datetime</type>
-            <null></null>
-            <extra></extra>
-            <default>0000-00-00 00:00:00</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>class</name>
-            <type>varchar(100)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>settings</name>
-            <type>text</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-            <field>
-                <name>todo</name>
-                <type>int(11)</type>
-                <null></null>
-                <extra></extra>
-                <default>0</default>
-                <comment></comment>
-            </field>
-            <field>
-                <name>done</name>
-                <type>int(11)</type>
-                <null></null>
-                <extra></extra>
-                <default>0</default>
-                <comment></comment>
-            </field>
-          <field>
-            <name>runner</name>
-            <type>char(20)</type>
-            <null></null>
-            <extra></extra>
-            <default>-1</default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>task_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
     </tables>
   </appbox>
   <databox>
@@ -2103,36 +1861,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-      <table name="emptyw">
-        <fields>
-          <field>
-            <name>emptyw_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>word</name>
-            <type>varchar(64)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>emptyw_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
 
       <table name="metadatas_structure">
         <fields>
@@ -2202,7 +1930,7 @@
           </field>
           <field>
             <name>type</name>
-            <type>enum('string','text','date','number')</type>
+            <type>enum('string','date','number')</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -2311,6 +2039,38 @@
             <null>YES</null>
             <extra></extra>
             <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>generate_cterms</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>gui_editable</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>gui_visible</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>printable</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
             <comment></comment>
           </field>
         </fields>
@@ -2442,168 +2202,6 @@
             <fields>
               <field>record_id</field>
               <field>meta_struct_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-      <table name="idx">
-        <fields>
-          <field>
-            <name>idx_id</name>
-            <type>bigint(20) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>c2</name>
-            <type>char(2)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>record_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>kword_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>iw</name>
-            <type>int(6)</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>xpath_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>hit</name>
-            <type>varchar(14)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>hitstart</name>
-            <type>int(10) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>hitlen</name>
-            <type>smallint(5) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>business</name>
-            <type>tinyint(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>idx_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>record_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>record_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>kword_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>kword_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-      <table name="kword">
-        <fields>
-          <field>
-            <name>kword_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>k2</name>
-            <type>char(2)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>keyword</name>
-            <type>char(64)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>lng</name>
-            <type>char(4)</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>kword_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>keyword</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>keyword</field>
-              <field>lng</field>
             </fields>
           </index>
         </indexes>
@@ -2848,67 +2446,6 @@
         <engine>InnoDB</engine>
       </table>
 
-      <table name="log_colls">
-        <fields>
-          <field>
-            <name>id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>log_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>coll_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>id</field>
-            </fields>
-          </index>
-          <index>
-            <name>couple</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>log_id</field>
-              <field>coll_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>log_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>log_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>coll_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>coll_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-
       <table name="log_search">
         <fields>
           <field>
@@ -3035,7 +2572,7 @@
           </field>
           <field>
             <name>action</name>
-            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete')</type>
+            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','')</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -3054,6 +2591,22 @@
             <name>comment</name>
             <type>text</type>
             <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>coll_id_from</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>coll_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
             <extra></extra>
             <default></default>
             <comment></comment>
@@ -3079,6 +2632,20 @@
             <type>INDEX</type>
             <fields>
               <field>record_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id_from</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
             </fields>
           </index>
           <index>
@@ -3159,6 +2726,14 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>coll_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -3201,6 +2776,13 @@
             <type>INDEX</type>
             <fields>
               <field>site_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
             </fields>
           </index>
         </indexes>
@@ -3506,112 +3088,6 @@
         </defaults>
         <engine>InnoDB</engine>
       </table>
-      <table name="prop">
-
-        <fields>
-          <field>
-            <name>prop_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-
-
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>record_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>xpath_id</name>
-            <type>int(11) unsigned</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>name</name>
-
-            <type>char(32)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-            <collation>ascii_general_ci</collation>
-          </field>
-          <field>
-
-            <name>value</name>
-            <type>char(100)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-          </field>
-
-          <field>
-            <name>type</name>
-            <type>tinyint(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-
-            <comment></comment>
-          </field>
-          <field>
-            <name>business</name>
-            <type>tinyint(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>prop_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>xpath_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>xpath_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>record_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>record_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>name</name>
-            <type>INDEX</type>
-            <fields>
-              <field>name</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
       <table name="record">
         <fields>
           <field>
@@ -3643,7 +3119,14 @@
             <comment></comment>
           </field>
           <field>
-
+            <name>cover_record_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
             <name>status</name>
             <type>int(10) unsigned</type>
             <null></null>
@@ -3717,7 +3200,7 @@
           </field>
           <field>
             <name>mime</name>
-            <type>char(40)</type>
+            <type>char(255)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -3823,6 +3306,13 @@
             <fields>
               <field>parent_record_id</field>
             </fields>
+          </index>
+          <index>
+              <name>moddate</name>
+              <type>INDEX</type>
+              <fields>
+                  <field>moddate</field>
+              </fields>
           </index>
         </indexes>
         <engine>InnoDB</engine>
@@ -3980,7 +3470,7 @@
           </field>
           <field>
             <name>mime</name>
-            <type>char(64)</type>
+            <type>char(255)</type>
 
             <null></null>
             <extra></extra>
@@ -4199,227 +3689,6 @@
             <type>INDEX</type>
             <fields>
               <field>record_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-
-
-
-
-
-
-
-
-
-
-      <table name="thit">
-        <fields>
-          <field>
-            <name>thit_id</name>
-
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-
-            <default></default>
-            <comment></comment>
-          </field>
-
-          <field>
-            <name>record_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-
-            <comment></comment>
-          </field>
-          <field>
-            <name>xpath_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>name</name>
-            <type>char(32)</type>
-            <null></null>
-
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-            <collation>ascii_general_ci</collation>
-          </field>
-          <field>
-            <name>value</name>
-            <type>char(100)</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-            <collation>ascii_bin</collation>
-          </field>
-          <field>
-            <name>hitstart</name>
-
-            <type>int(10) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-
-            <name>hitlen</name>
-            <type>smallint(5) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-            <default>0</default>
-            <comment></comment>
-
-          </field>
-          <field>
-            <name>business</name>
-            <type>tinyint(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>thit_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>value</name>
-            <type>INDEX</type>
-            <fields>
-              <field>value</field>
-            </fields>
-          </index>
-          <index>
-            <name>name</name>
-            <type>INDEX</type>
-            <fields>
-              <field>name</field>
-            </fields>
-          </index>
-          <index>
-            <name>xpath_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>xpath_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>record_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>record_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-      <table name="uids">
-        <fields>
-          <field>
-            <name>uid</name>
-            <type>int(11) unsigned</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default>1</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>name</name>
-
-            <type>char(16)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-          </field>
-        </fields>
-        <defaults>
-          <default>
-            <data key="uid">1</data>
-            <data key="name">XPATH</data>
-          </default>
-          <default>
-            <data key="uid">1</data>
-            <data key="name">KEYWORDS</data>
-          </default>
-        </defaults>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>name</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
-      <table name="xpath">
-        <fields>
-          <field>
-            <name>xpath_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>xpath</name>
-            <type>char(150)</type>
-
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-            <collation>ascii_general_ci</collation>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>xpath_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>xpath</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>xpath</field>
             </fields>
           </index>
         </indexes>

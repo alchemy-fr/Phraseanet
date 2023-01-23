@@ -51,6 +51,7 @@ class UserManager
     {
         $this->cleanProperties($user);
         $this->cleanRights($user);
+        $this->cleanNotifications($user);
 
         $this->objectManager->persist($user);
 
@@ -83,6 +84,14 @@ class UserManager
     public function getObjectManager()
     {
         return $this->objectManager;
+    }
+
+    private function cleanNotifications(User $user)
+    {
+        $sql = 'DELETE FROM notifications WHERE usr_id = :usr_id';
+        $stmt = $this->appboxConnection->prepare($sql);
+        $stmt->execute([':usr_id' => $user->getId()]);
+        $stmt->closeCursor();
     }
 
     /**
@@ -222,10 +231,20 @@ class UserManager
         $this->cleanAuthProvider($user);
         $this->cleanUserSessions($user);
         $this->cleanOauthApplication($user);
+        $this->cleanLazarets($user);
+    }
+
+    private function cleanLazarets(User $user)
+    {
+        $lazaretSessions = $this->objectManager->getRepository('Phraseanet:LazaretSession')->findBy(['user' => $user]);
+
+        foreach ($lazaretSessions as $lazaretSession) {
+            $this->objectManager->remove($lazaretSession);
+        }
     }
 
     /**
-     * Removes all user's rights.
+     * Removes all user's rights, records right.
      *
      * @param User $user
      */
@@ -234,6 +253,7 @@ class UserManager
         foreach ([
             'DELETE FROM `basusr` WHERE usr_id = :usr_id',
             'DELETE FROM `sbasusr` WHERE usr_id = :usr_id',
+            'DELETE FROM `records_rights` WHERE usr_id = :usr_id',
         ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
             $stmt->execute([':usr_id' => $user->getId()]);
@@ -245,6 +265,12 @@ class UserManager
         $accounts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findByUser($user);
 
         foreach ($accounts as $account) {
+            // remove ApiOauthCodes before ApiAccount
+            $oauthCodes = $this->objectManager->getRepository('Phraseanet:ApiOauthCode')->findByAccount($account);
+            foreach ($oauthCodes as $oauthCode) {
+                $this->objectManager->remove($oauthCode);
+            }
+
             $this->objectManager->remove($account);
         }
 

@@ -10,20 +10,39 @@ class QueryContextFactory
 {
     private $structure;
 
-    public function __construct(Structure $structure, array $locales, $current_locale)
+    /**
+     * QueryContextFactory constructor.
+     * @param Structure|callable $structure
+     * @param array $locales
+     * @param $current_locale
+     */
+    public function __construct($structure, array $locales, $current_locale)
     {
         $this->structure = $structure;
         $this->locales = $locales;
         $this->current_locale = $current_locale;
     }
 
+    /**
+     * @return Structure
+     */
+    public function getStructure()
+    {
+        if (!($this->structure instanceof Structure)) {
+            $this->structure = call_user_func($this->structure);
+        }
+
+        return $this->structure;
+    }
+
+
     public function createContext(SearchEngineOptions $options = null)
     {
         $structure = $options
             ? $this->getLimitedStructure($options)
-            : $this->structure;
+            : $this->getStructure();
 
-        $context = new QueryContext($structure, $this->locales, $this->current_locale);
+        $context = new QueryContext($options, $structure, $this->locales, $this->current_locale);
 
         if ($options) {
             $fields = $this->getSearchedFields($options);
@@ -46,6 +65,6 @@ class QueryContextFactory
 
     public function getLimitedStructure(SearchEngineOptions $options)
     {
-        return new LimitedStructure($this->structure, $options);
+        return new LimitedStructure($this->getStructure(), $options);
     }
 }

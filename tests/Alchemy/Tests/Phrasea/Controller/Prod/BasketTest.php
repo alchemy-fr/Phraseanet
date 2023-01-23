@@ -2,7 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -336,7 +335,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAddElementToValidationPost()
     {
-        $countData = count(self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll());
+        $countData = count(self::$DI['app']['orm.em']->getRepository('Phraseanet:BasketElementVote')->findAll());
 
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
         $this->assertCount(2, $basket->getElements());
@@ -359,8 +358,11 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(4, $basket->getElements());
-        $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll();
+
+        /* no. votes are now dynamic, so adding elements to a "vote" basket do not add empty votes for participnts
+        $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:BasketElementVote')->findAll();
         $this->assertTrue($countData < count($datas), 'assert that ' . count($datas) . ' > ' . $countData);
+        */
     }
 
     public function testAddElementPostJSON()
@@ -454,14 +456,11 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
 
-        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationParticipant v');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:BasketParticipant v');
         $this->assertEquals(0, $query->getSingleScalarResult());
 
         $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:BasketElement b');
         $this->assertEquals(1, $query->getSingleScalarResult());
-
-        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationSession v');
-        $this->assertEquals(0, $query->getSingleScalarResult());
 
         $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $this->assertEquals(3, $query->getSingleScalarResult());

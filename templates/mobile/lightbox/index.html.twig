@@ -1,13 +1,15 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
    {# <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>#}
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 {% endblock %}
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox-mobile{% if not app.debug %}.min{% endif %}.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 {% endblock %}
 
 {% block icon %}
@@ -17,7 +19,7 @@
 {% macro valid_baskets_length(baskets) %}
     {% set number = 0 %}
     {% for item in baskets %}
-        {% if item.getValidation() %}
+        {% if item.isVoteBasket() %}
             {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
@@ -27,7 +29,7 @@
 {% macro baskets_length(baskets) %}
     {% set number = 0 %}
     {% for item in baskets %}
-        {% if item.getValidation() == false %}
+        {% if not item.isVoteBasket %}
             {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
@@ -40,18 +42,21 @@
     <h1>{{module_name}}</h1>
     <a href="#about" class="ui-btn-right">{{ 'a propos' | trans }}</a>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
-    <ul data-role="listview" style="width:100%;margin: 0;">
-      <li>
+    <ul id="lightbox-menu" data-role="listview" style="width:100%;margin: 0;">
+      <li class="lightbox-item">
         <a href="#validation">{{ 'Validations' | trans }}</a>
         <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection)}}</span>
       </li>
-      <li>
+        <li class="lightbox-item">
         <a href="#baskets">{{ 'Paniers' | trans }}</a>
         <span class="ui-li-count">{{_self.baskets_length(baskets_collection)}}</span>
       </li>
     </ul>
-    <div style="margin:2em 0 0 0">
+    <div class="lightbox-bottom-btn">
       <a href="{{ path ('logout') }}" data-role="button" rel="external">{{ 'Deconnexion' | trans }}</a>
     </div>
   </div>
@@ -59,11 +64,14 @@
 
   </div>
 </div>
-
 <div id="about" data-role="page">
     <div data-role="header">
+        <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
     <h1>{{ 'a propos' | trans }}</h1>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
     <p>Phraseanet Version {{ app['phraseanet.version'].getName() }} - {{ app['phraseanet.version'].getNumber() }}</p>
     <p>
@@ -81,28 +89,40 @@
 
 <div id="validation" data-role="page">
     <div data-role="header">
-     <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
-     <h1>{{ 'Validations' | trans }}</h1>
+        <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+     <h1>{{ module_name }}</h1>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
-    <p>
-      {{ 'Voici vos validations en cours' | trans }}
-    </p>
-    <ul data-role="listview"  style="width:100%;margin: 0;">
-            {% for basket in baskets_collection %}
-              {% if basket.getValidation() %}
-                {% set basket_length = basket.getElements().count() %}
-                <li>
-                  {% if basket.getElements().first() %}
-                  <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
-                  {% endif %}
-                  <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{basket.getName()}}</a></h3>
-                  <p>{{ basket.getDescription() }}</p>
-                  <span class="ui-li-count">{{ basket_length }}</span>
-                </li>
-              {% endif %}
-            {% endfor %}
-    </ul>
+      <p class="basket-title">
+        {{ 'Validations' | trans }}
+        <span>{{_self.valid_baskets_length(baskets_collection)}}</span>
+      </p>
+
+      <p class="lightbox-msg">
+        {{ 'Voici vos validations en cours' | trans }}
+      </p>
+        <div class="feed-list">
+            <ul data-role="listview"  style="width:100%;margin: 0;">
+                    {% for basket in baskets_collection | sort | reverse%}
+                      {% if basket.isVoteBasket() %}
+                        {% set basket_length = basket.getElements().count() %}
+                        <li>
+                          {% if basket.getElements().first() %}
+                              <div class="lightbox-img">
+                                <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
+                              </div>
+                                  {% endif %}
+                          <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{basket.getName()}}</a></h3>
+                          {#<p>{{ basket.getDescription() }}</p>#}
+                          <span class="ui-li-count validation">{{ basket_length }}</span>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+            </ul>
+        </div>
   </div>
     <div data-role="footer">
 
@@ -111,33 +131,44 @@
 
 <div id="baskets" data-role="page">
     <div data-role="header">
-     <h1>{{ 'Paniers' | trans }}</h1>
+        <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+        <h1>{{module_name}}</h1>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
-    <p>
+    <p class="basket-title">
+        {{ 'Paniers' | trans }}
+        <span>{{_self.baskets_length(baskets_collection)}}</span>
+    </p>
+    <p class="lightbox-msg">
       {{ 'Voici vos paniers' | trans }}
     </p>
-    <ul data-role="listview"  style="width:100%;margin: 0;">
-            {% for basket in baskets_collection %}
-              {% if basket.getValidation() is empty %}
-                {% set basket_length = basket.getElements().count() %}
-                <li>
-                  {% if basket.getElements().first() %}
-                  <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
-                  {% endif %}
-                  <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{ basket.getName() }}</a></h3>
-                  <p>{{ basket.getDescription() }}</p>
-                  <span class="ui-li-count">{{basket_length}}</span>
-                </li>
-              {% endif %}
-            {% endfor %}
-    </ul>
+        <div class="feed-list">
+            <ul data-role="listview"  style="width:100%;margin: 0;">
+                    {% for basket in baskets_collection | sort | reverse %}
+                      {% if not basket.isVoteBasket() %}
+                        {% set basket_length = basket.getElements().count() %}
+                        <li>
+                          {% if basket.getElements().first() %}
+                            <div class="lightbox-img">
+                                <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
+                            </div>
+                          {% endif %}
+                          <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{ basket.getName() }}</a></h3>
+                          {#<p>{{ basket.getDescription() }}</p>#}
+                          <span class="ui-li-count baskets">{{basket_length}}</span>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+            </ul>
+        </div>
   </div>
     <div data-role="footer">
 
   </div>
 </div>
-
 
     <script>
         var lightboxApp = lightboxMobileApplication.bootstrap({

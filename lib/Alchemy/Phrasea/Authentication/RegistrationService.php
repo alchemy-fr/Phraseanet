@@ -10,9 +10,9 @@ use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Alchemy\Phrasea\Core\Event\RegistrationEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
+use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
@@ -176,7 +176,7 @@ class RegistrationService
         );
 
         if ($userAuthenticationProvider) {
-            return $userAuthenticationProvider->getUser($this->app);
+            return $userAuthenticationProvider->getUser();
         }
 
         return null;
@@ -190,8 +190,7 @@ class RegistrationService
             $provider = $this->oauthProviderCollection->get($providerId);
         }
 
-        $inscriptions = $this->registrationManager->getRegistrationSummary();
-        $authorizedCollections = $this->getAuthorizedCollections($selectedCollections, $inscriptions);
+        $authorizedCollections = $this->getAuthorizedCollections($selectedCollections);
 
         if (!isset($data['login'])) {
             $data['login'] = $data['email'];
@@ -205,7 +204,7 @@ class RegistrationService
 
         foreach (self::$userPropertySetterMap as $property => $method) {
             if (isset($data[$property])) {
-                call_user_func(array($user, $method), $data[$property]);
+                $user->$method($data[$property]);
             }
         }
 
@@ -217,7 +216,17 @@ class RegistrationService
             $this->entityManager->flush();
         }
 
-        $this->applyAclsToUser($authorizedCollections, $user);
+        if ($this->configuration->get(['registry', 'registration', 'auto-register-enabled'])) {
+            $acl = $this->aclProvider->get($user);
+            foreach ($authorizedCollections as $baseId => $collection) {
+                if( ($model = $collection->getAutoregisterModel($data['email'])) !== null) {
+                    if( ($template_user = $this->userRepository->findByLogin($model)) !== null) {
+                        $acl->apply_model($template_user, [$baseId]);
+                    }
+                }
+            }
+        }
+
         $this->createCollectionAccessDemands($user, $authorizedCollections);
         $user->setMailLocked(true);
 
@@ -226,8 +235,7 @@ class RegistrationService
 
     public function createCollectionRequests(User $user, array $collections)
     {
-        $inscriptions = $this->registrationManager->getRegistrationSummary($user);
-        $authorizedCollections = $this->getAuthorizedCollections($collections, $inscriptions);
+        $authorizedCollections = $this->getAuthorizedCollections($collections);
 
         $this->createCollectionAccessDemands($user, $authorizedCollections);
     }
@@ -279,9 +287,9 @@ class RegistrationService
 
     /**
      * @param array $selectedCollections
-     * @return array
+     * @return \collection[]
      */
-    private function getAuthorizedCollections(array $selectedCollections = null)
+    private function getAuthorizedCollections($selectedCollections)
     {
         $inscriptions = $this->registrationManager->getRegistrationSummary();
         $authorizedCollections = [];
@@ -292,8 +300,8 @@ class RegistrationService
                     continue;
                 }
 
-                if ($canRegister = \igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'config', 'collections', $collection->get_base_id(), 'can-register'])) {
-                    $authorizedCollections[$collection->get_base_id()] = $canRegister;
+                if (\igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'collections', $collection->get_base_id(), 'can-register'])) {
+                    $authorizedCollections[$collection->get_base_id()] = $collection;
                 }
             }
         }
@@ -302,41 +310,41 @@ class RegistrationService
     }
 
     /**
-     * @param $authorizedCollections
-     * @param $user
-     * @return mixed
-     * @throws \Exception
-     */
-    private function applyAclsToUser(array $authorizedCollections, User $user)
-    {
-        $acl = $this->aclProvider->get($user);
-
-        if ($this->configuration->get(['registry', 'registration', 'auto-register-enabled'])) {
-            $template_user = $this->userRepository->findByLogin(User::USER_AUTOREGISTER);
-            $acl->apply_model($template_user, array_keys($authorizedCollections));
-        }
-    }
-
-    /**
      * @param User $user
      * @param array $authorizedCollections
      */
     private function createCollectionAccessDemands(User $user, $authorizedCollections)
     {
-        $successfulRegistrations = [];
         $acl = $this->aclProvider->get($user);
-        $autoReg = $acl->get_granted_base();
+
         $registrationManipulator = $this->registrationManipulator;
-
-        array_walk($authorizedCollections, function ($authorization, $baseId) use ($registrationManipulator, $user, &$successfulRegistrations, $acl) {
-            if (false === $authorization || $acl->has_access_to_base($baseId)) {
-                return;
+        $successfulRegistrations = [];
+        foreach($authorizedCollections as $baseId => $collection) {
+            if(!$acl->has_access_to_base($baseId)) {
+                $registrationManipulator->createRegistration($user, $collection);
+                $successfulRegistrations[$baseId] = $collection;
             }
+        }
 
-            $collection = \collection::getByBaseId($this->app, $baseId);
-            $registrationManipulator->createRegistration($user, $collection);
-            $successfulRegistrations[$baseId] = $collection;
-        });
+
+        $autoReg = $acl->get_granted_base();
+        foreach ($autoReg as $baseId => $collection) {
+            $granted[$baseId] = $collection->get_label($this->app['locale']);
+
+            $this->app['manipulator.webhook-event']->create(
+                WebhookEvent::USER_REGISTRATION_GRANTED,
+                WebhookEvent::USER_REGISTRATION_TYPE,
+                [
+                    'user_id'  => $user->getId(),
+                    'granted'  => $granted,
+                    'rejected' => []
+                ],
+                [$baseId]
+            );
+
+            unset($granted);
+        }
+
 
         $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
         $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $successfulRegistrations));

@@ -223,6 +223,28 @@ class CollectionService
     }
 
     /**
+     * Get list of the record_id
+     *
+     * @param Collection $collection
+     *
+     * @return array
+     */
+    public function getCollectionRecordIdList(Collection $collection)
+    {
+        $sql = "SELECT record_id FROM record WHERE coll_id = :coll_id
+            ORDER BY record_id DESC";
+
+        $connection = $this->connectionProvider->getConnection($collection->getDataboxId());
+
+        $stmt = $connection->prepare($sql);
+        $stmt->execute([':coll_id' => $collection->getCollectionId()]);
+        $recordIdsList = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        $stmt->closeCursor();
+
+        return $recordIdsList;
+    }
+
+    /**
      * @param CollectionReference $reference
      * @return $this
      * @throws \Doctrine\DBAL\DBALException
@@ -319,7 +341,9 @@ class CollectionService
 
             $result = $userQuery->on_base_ids([ $reference->getBaseId()] )
                 ->who_have_right([\ACL::ORDER_MASTER])
-                ->execute()->get_results();
+                ->include_templates(true)
+                ->execute()
+                ->get_results();
 
             /** @var ACLProvider $acl */
             $acl = $this->app['acl'];

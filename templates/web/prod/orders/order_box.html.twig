@@ -23,7 +23,7 @@
     <div id="ORDERPREVIEW">
         <div id="filter-date">
             <a href="#"><span id="filter-text">{{ 'order-manager::order-list: no-filter' | trans }}</span> <span class="order-indicator">&#x25bc;</span></a>
-            <i class="icon-remove-sign reset-btn" style="display: none"></i>
+            <i class="fa fa-times-circle reset-btn" aria-hidden="true" style="display: none"></i>
         </div>
         <div>
             <form id="date-form">
@@ -52,7 +52,7 @@
                             <button class="toggle-button-text" type="button" name="BEFORE">{{ 'order-manager::order-list: before' | trans }}</button>
                             <button class="toggle-button-text" type="button" name="AFTER">{{ 'order-manager::order-list: after' | trans }}</button>
                             <div class="input-prepend">
-                                <span class="add-on"><i class="icon icon-calendar"></i></span>
+                                <span class="add-on"><i class="icon fa fa-calendar" aria-hidden="true"></i></span>
                                 <input type="text" id="datepicker" class="datepicker" name="datepicker" size="10" value="{{ "today"|date("Y/m/d") }}" />
                             </div>
                         </td>
@@ -68,14 +68,14 @@
         </div>
         <ul style="height:30px;bottom:auto;">
             <li><a href="#TODO-ORDER">{{ 'order-manager::order-list: pending' | trans }}
-                    <span class="icon-stack infoTips">
-                    <i class="icon-circle icon-stack-base" style="color:#7CD11E"></i>
-                    <i class="icon-exclamation" style="color:#FFF"></i>
+                    <span class="fa-stack infoTips">
+                    <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#7CD11E"></i>
+                    <i class="fa fa-exclamation fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
                     </span></a></li>
             <li><a href="#PROCESSED-ORDER">{{ 'order-manager::order-list: processed' | trans }}
-                    <span class="icon-stack infoTips">
-                    <i class="icon-circle icon-stack-base" style="color:#999"></i>
-                    <i class="icon-check" style="color:#FFF"></i>
+                    <span class="fa-stack infoTips">
+                    <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#999"></i>
+                    <i class="fa fa-check-square-o fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
                     </span></a></li></a></li>
         </ul>
         <div id="TODO-ORDER" class="order_preview_box">
@@ -86,9 +86,9 @@
                         {% for order in orders_todo %}
                             {% set deadline = order.getDeadline()|date('d/m/Y') %}
                             <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
-                                <td> <span class="icon-stack infoTips">
-                                <i class="icon-circle icon-stack-base" style="color:#7CD11E"></i>
-                                <i class="icon-exclamation" style="color:#FFF"></i>
+                                <td> <span class="fa-stack infoTips">
+                                <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#7CD11E"></i>
+                                <i class="fa fa-exclamation fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
                                 </span>
                                 </td>
                                 <td>
@@ -136,9 +136,10 @@
                         {% for order in orders_processed %}
                             {% set deadline = order.getDeadline()|date('d/m/Y') %}
                             <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
-                                <td> <span class="icon-stack infoTips">
-                                    <i class="icon-circle icon-stack-base" style="color:#999"></i>
-                                    <i class="icon-check" style="color:#FFF"></i>
+                                <td> <span class="fa-stack infoTips">
+                                    <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#999"></i>
+                                    <i class="fa fa-check-square-o fa-stack-1x" aria-hidden="true"
+                                       style="color:#FFF"></i>
                                     </span>
                                 </td>
                                 <td>
@@ -185,10 +186,13 @@
             {% set previousPage = page < 2 ? false : (page - 1) %}
             {% set nextPage = page >= (totalTodo / perPage)|ceil ? false : (page + 1) %}
             {% if previousPage %}
-                <li  class="previous"><a class="btn btn-inverse" data-page="{{ previousPage }}" href="#">{{ 'Previous' | trans }}&nbsp;<i class="icon-arrow-left"></i></a></li>
+                <li class="previous"><a class="btn btn-inverse" data-page="{{ previousPage }}"
+                                        href="#">{{ 'Previous' | trans }}&nbsp;<i class="fa fa-arrow-left"
+                                                                                  aria-hidden="true"></i></a></li>
             {% endif %}
             {% if nextPage %}
-                <li class="next"><a class="btn btn-inverse" data-page="{{ nextPage }}" href="#"><i class="icon-arrow-right"></i>&nbsp;{{ 'Next' | trans }}</a></li>
+                <li class="next"><a class="btn btn-inverse" data-page="{{ nextPage }}" href="#"><i
+                                class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;{{ 'Next' | trans }}</a></li>
             {% endif %}
         </ul>
     </div>
@@ -198,10 +202,13 @@
             {% set previousPage = page < 2 ? false : (page - 1) %}
             {% set nextPage = page >= (totalProcessed / perPage)|ceil ? false : (page + 1) %}
             {% if previousPage %}
-                <li  class="previous"><a class="btn btn-inverse" data-page="{{ previousPage }}" href="#">{{ 'Previous' | trans }}&nbsp;<i class="icon-arrow-left"></i></a></li>
+                <li class="previous"><a class="btn btn-inverse" data-page="{{ previousPage }}"
+                                        href="#">{{ 'Previous' | trans }}&nbsp;<i class="fa fa-arrow-left"
+                                                                                  aria-hidden="true"></i></a></li>
             {% endif %}
             {% if nextPage %}
-                <li class="next"><a class="btn btn-inverse" data-page="{{ nextPage }}" href="#"><i class="icon-arrow-right"></i>&nbsp;{{ 'Next' | trans }}</a></li>
+                <li class="next"><a class="btn btn-inverse" data-page="{{ nextPage }}" href="#"><i
+                                class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;{{ 'Next' | trans }}</a></li>
             {% endif %}
         </ul>
     </div>

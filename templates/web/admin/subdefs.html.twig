@@ -192,7 +192,7 @@
             $("#dialog:ui-dialog").dialog("destroy");
 
             var name = $("#name"), accessclass = $("#accessclass"), subviewType = $("#subviewType"),
-                mediaType = $("#mediaType"), presets = $("#presets"),
+                mediaType = $("#mediaType"), presets = $("#presets"), subviewPath = $("#subviewPath"),
                 allFields = $([]).add(name).add(accessclass).add(subviewType).add(mediaType).add(presets),
                 tips = $(".validateTips");
 
@@ -214,6 +214,27 @@
                     return false;
                 } else {
                     return true;
+                }
+            }
+
+            function isNotEmpty(o){
+                if(o.val().length > 0){
+                    return true;
+                }else{
+                    o.addClass("ui-state-error");
+                    updateTips("Path is required");
+                    return false;
+                }
+            }
+
+            function isOptionChosen(o) {
+                console.log(o.val());
+                if (o.val() != 'Choose') {
+                    return true;
+                } else {
+                    o.addClass("ui-state-error");
+                    updateTips("Choose an option");
+                    return false;
                 }
             }
 
@@ -244,20 +265,25 @@
             }
 
 
-            $("#dialog-form").dialog({
+            var subdefCreateDialog = $("#dialog-form").dialog({
                 autoOpen: false,
-                height: 420,
-                width: 300,
+                width: 382,
                 modal: true,
                 buttons: {
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    },
                     "Create a Subdef": function () {
                         var bValid = true;
 
                         allFields.removeClass("ui-state-error");
 
-                        bValid = bValid && checkLength(name, "subdef name", 3, 16);
+                        bValid = bValid && checkLength(name, "subdef name", 3, 64);
+                        bValid = bValid && isOptionChosen(subviewType);
+                        bValid = bValid && isOptionChosen(mediaType);
                         bValid = bValid && checkSpecialChar(name);
                         bValid = bValid && checkPresence(subviewType.val(), name);
+                        bValid = bValid && isNotEmpty(subviewPath);
 
                         if (bValid) {
                             $('input[name="add_subdef[group]"]').val(subviewType.val());
@@ -265,18 +291,18 @@
                             $('input[name="add_subdef[mediaType]"]').val(mediaType.val());
                             $('input[name="add_subdef[class]"]').val(accessclass.val());
                             $('input[name="add_subdef[presets]"]').val(presets.val());
+                            $('input[name="add_subdef[path]"]').val(subviewPath.val());
                             $(this).dialog("close");
                             $('form.subdefs').submit();
                         }
-                    },
-                    Cancel: function () {
-                        $(this).dialog("close");
                     }
                 },
                 close: function () {
                     allFields.val("").removeClass("ui-state-error");
                 }
             });
+
+            subdefCreateDialog.closest('.ui-dialog').addClass('dialog_container');
 
             $("#create-subdef")
             // .button()
@@ -295,7 +321,7 @@
             function delete_subdef(name) {
                 $("#dialog-delete-subdef").dialog({
                     resizable: false,
-                    height: 140,
+                    width: 382,
                     modal: true,
                     buttons: {
                         "Delete subdef": function () {
@@ -307,7 +333,13 @@
                             $(this).dialog("destroy");
                         }
                     }
+                })
+                .closest('.ui-dialog').addClass('dialog_container')
+                .find('.ui-dialog-buttonpane button').css({
+                    float: 'right',
+                    marginRight: '23px'
                 });
+                
             }
 
         });
@@ -318,11 +350,12 @@
 
 {% block content %}
     <p>
-        <button id="create-subdef" class="btn btn-success">{{ 'Create new subdef' | trans }}</button>
+        <button id="create-subdef" class="btn btn-success">{{ 'create_subdef_button_label' | trans }}</button>
     </p>
-    <div id="dialog-delete-subdef" title="{{ 'Delete the subdef ?' | trans }}" style="display:none;">
+
+    <div id="dialog-delete-subdef" title="{{ 'Delete the subview ?' | trans }}" style="display:none;">
         <p>
-            <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+            {# <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span> #}
             {{ 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' | trans }}
         </p>
     </div>
@@ -331,31 +364,42 @@
         <p class="validateTips"></p>
         <form>
             <fieldset>
-                <label for="name">{{ 'Subdef name' | trans }}</label>
+                <label for="name">{{ 'create_subdef_modal_subdefinition_name' | trans }}</label>
                 <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=""/><br/>
-                <label for="accessclass">{{ 'classe d\'acces' | trans }}</label>
-                <select name="accessclass" id="accessclass">
-                    <option value="document">{{ 'document' | trans }}</option>
-                    <option value="preview" selected="selected">{{ 'preview' | trans }}</option>
-                    <option value="thumbnail">{{ 'tout le monde' | trans }}</option>
-                </select>
-                <label for="subviewType">{{ 'subviewType' | trans }}</label>
-                <select name="subviewType" id="subviewType" onchange="subview_type(this)">
-                    <option>{{ 'Choisir' | trans }}</option>
-                    <option value="image">{{ 'image' | trans }}</option>
-                    <option value="video">{{ 'video' | trans }}</option>
-                    <option value="audio">{{ 'audio' | trans }}</option>
-                    <option value="document">{{ 'document' | trans }}</option>
-                    <option value="flash">{{ 'flash' | trans }}</option>
-                </select>
-                <label for="mediaType">{{ 'mediatype' | trans }}</label>
-                <select name="mediaType" id="mediaType" onchange="media_type(this)">
-                    <option>{{ 'Choisir' | trans }}</option>
-                </select>
-                <label for="presets">{{ 'Presets' | trans }}</label>
-                <select name="presets" id="presets">
-                    <option>{{ 'Choisir' | trans }}</option>
-                </select>
+                <label for="accessclass">{{ 'create_subdef_modal_access_class' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="accessclass" id="accessclass">
+                        <option value="document">{{ 'create_subdef_modal_access_class_document' | trans }}</option>
+                        <option value="preview"
+                                selected="selected">{{ 'create_subdef_modal_access_class_preview' | trans }}</option>
+                        <option value="thumbnail">{{ 'create_subdef_modal_access_class_no_restriction' | trans }}</option>
+                    </select>
+                </div>
+                <label for="subviewType">{{ 'create_subdef_modal_record_phraseanet_type' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="subviewType" id="subviewType" onchange="subview_type(this)">
+                        <option>{{ 'Choisir' | trans }}</option>
+                        <option value="image">{{ 'image' | trans }}</option>
+                        <option value="video">{{ 'video' | trans }}</option>
+                        <option value="audio">{{ 'audio' | trans }}</option>
+                        <option value="document">{{ 'document' | trans }}</option>
+                        <option value="flash">{{ 'flash' | trans }}</option>
+                    </select>
+                </div>
+                <label for="mediaType">{{ 'create_subdef_modal_preview_mediatype' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="mediaType" id="mediaType" onchange="media_type(this)">
+                        <option>{{ 'Choisir' | trans }}</option>
+                    </select>
+                </div>
+                <label for="presets">{{ 'create_subdef_modal_presets' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="presets" id="presets">
+                        <option>{{ 'Choisir' | trans }}</option>
+                    </select>
+                </div>
+                <label for="subviewPath">{{ 'Path' | trans }}</label>
+                <input type="text" name="subviewPath" id="subviewPath" class="text ui-widget-content ui-corner-all" value="{{ databox.getSubdefStorage }}" />
             </fieldset>
         </form>
     </div>
@@ -372,6 +416,14 @@
                     class="btn btn-primary subviews-submit">{{ 'boutton::valider' | trans }}</button>
             {% for subdefgroup, subdeflist in subdefs %}
                 <div id="{{ subdefgroup }}">
+                    <div>
+                        <label class="checkbox inline">
+                            <input type="checkbox" name="document_meta[{{ subdefgroup }}]"
+                                   value="1"
+                                   {% if  subdeflist.toWritemetaOriginalDocument() %}checked="checked"{% endif %}/>{{ 'write metadata in original document' | trans }}
+                        </label>
+                    </div>
+
                     {% for subdefname , subdef in subdeflist %}
                         <div>
                             <input type="hidden" name="subdefs[]" value="{{ subdefgroup }}_{{ subdefname }}"/>
@@ -382,6 +434,14 @@
                             <table class="subdefTab" cellspacing="0" cellpading="0" border="0"
                                    style="display:inline-block;">
                                 <tbody>
+                                <tr>
+                                    <td style="width:100px;line-height: 0.9rem;">{{ 'To build by phraseanet' | trans }}</td>
+                                    <td style="width:300px;"><input type="checkbox"
+                                                                    name="{{ subdefgroup }}_{{ subdefname }}_tobuild"
+                                                                    {% if subdef.isTobuild() %}checked="checked"{% endif %}
+                                                                    value="1"/></td>
+                                    <td></td>
+                                </tr>
                                 <tr>
                                     <td style="width:100px;line-height: 0.9rem;">{{ 'Telechargeable' | trans }}</td>
                                     <td style="width:300px;"><input type="checkbox"
@@ -456,7 +516,7 @@
                                         Path
                                     </td>
                                     <td>
-                                        <input class="path_testable test_writeable" type="text"
+                                        <input class="required path_testable test_writeable" type="text"
                                                value="{{ subdef.get_path() }}"
                                                name="{{ subdefgroup }}_{{ subdefname }}_path"/>
                                     </td>
@@ -494,7 +554,7 @@
                                       data-toggle="#box{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}"
                                       {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
                     {{ 'Advanced settings' | trans }}
-                </span>
+                                </span>
                                 <div id="box{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}"
                                      class="{{ subdefgroup }}{{ subdefname }}"
                                      {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
@@ -507,6 +567,9 @@
                                                 </td>
                                                 <td style="width:250px;">
                                                     {% set extradata = '' %}
+                                                    {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_TEXT') %}
+                                                        <input name="{{ varname }}" type="text" value="{{ option.getValue() }}">
+                                                    {% endif %}
                                                     {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
                                                         <div style="width:250px;"
                                                              id="slider{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}"></div>
@@ -536,7 +599,7 @@
                                                             })
 
                                                         </script>
-                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
                                                         <select name="{{ varname }}">
                                                             <option value="">{{ 'Choisir' | trans }}</option>
                                                             {% for pot_value in option.getAvailableValues() %}
@@ -544,19 +607,19 @@
                                                                         {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
                                                             {% endfor %}
                                                         </select>
-                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
-                                                    <input name="{{ varname }}" type="radio" value="yes"
-                                                           {% if option.getValue() %}checked="checked"{% endif %} /> {{ 'yes' | trans }}
-                                                    <input name="{{ varname }}" type="radio" value="no"
-                                                           {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
-                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
-                                                        {% for pot_value, selected in option.Value(true) %}
-                                                        <label class="checkbox inline">
-                                                            <input type="checkbox" name="{{ varname }}[]"
-                                                                   value="{{ pot_value }}"
-                                                                   {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
-                                                        </label>
-                                                        {% endfor %}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
+                                                        <input name="{{ varname }}" type="radio" value="yes"
+                                                               {% if option.getValue() %}checked="checked"{% endif %} /> {{ 'yes' | trans }}
+                                                        <input name="{{ varname }}" type="radio" value="no"
+                                                               {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
+                                                            {% for pot_value, selected in option.Value(true) %}
+                                                            <label class="checkbox inline">
+                                                                <input type="checkbox" name="{{ varname }}[]"
+                                                                       value="{{ pot_value }}"
+                                                                       {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
+                                                            </label>
+                                                            {% endfor %}
                                                     {% endif %}
                                                 </td>
                                                 <td>
@@ -588,6 +651,7 @@
         <input type="hidden" name="add_subdef[mediaType]" value=""/>
         <input type="hidden" name="add_subdef[class]" value=""/>
         <input type="hidden" name="add_subdef[presets]" value=""/>
+        <input type="hidden" name="add_subdef[path]" value=""/>
     </form>
 
     <div style="display:none;">

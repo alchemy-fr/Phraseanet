@@ -2,17 +2,11 @@ language: php
 sudo: require
 
 branches:
-  except:
-    - /^3\..*$/
-    - /^scrutinizer-.*$/
+  only:
+    - 3.8
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: 7.0
-      env: TEST_SUITE=1
-    - php: 7.0
-      env: TEST_SUITE=2
   include:
     - php: 5.5
       env: TEST_SUITE=1
@@ -41,22 +35,31 @@ before_install:
   - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.6.0.deb && sudo dpkg -i --force-confnew elasticsearch-1.6.0.deb
   - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0
   - sudo service elasticsearch start
+  - sudo apt-get install libzmq-dev
+  - yes '' | pecl install zmq-beta
   - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="redis.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then echo 'extension="memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi;
   - echo 'extension="memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - echo "extension=zmq.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - yes | pecl install imagick-beta
-  - sudo apt-get install librabbitmq-dev
-  - pecl install amqp-1.4.0
+  # ok php 5
+  #- sudo apt-get install librabbitmq-dev
+  #- pecl install amqp-1.4.0
+  # ok php 5 and php 7
+  - git clone https://github.com/alanxz/rabbitmq-c
+  - cd rabbitmq-c
+  - git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
+  - git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
+  - cd ..
+  - yes '' | pecl install amqp-1.9.3
+
 install:
-  - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then travis_retry composer install --no-progress --no-interaction --optimize-autoloader; fi;
-  - if [[ $TRAVIS_PHP_VERSION = 7.* ]];then travis_retry composer update --no-progress --no-interaction --optimize-autoloader; fi;
+  - travis_retry composer install --no-progress --no-interaction --optimize-autoloader
   - travis_retry npm install
 before_script:
   - mysql -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;'
   - "./bin/developer system:uninstall"
-  - "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
+  - "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr-simple --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;"
   - |
      ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
       php resources/hudson/cleanupSubdefs.php;

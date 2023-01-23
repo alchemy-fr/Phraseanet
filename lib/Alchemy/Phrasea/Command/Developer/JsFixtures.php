@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Plugin\Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\Client;
@@ -30,8 +31,17 @@ class JsFixtures extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var Plugin $plugin */
+        $msg = [];
+        foreach($this->container['plugins.manager']->listPlugins() as $plugin) {
+            $msg[] = sprintf(" bin/setup plugins:remove \"%s\"", $plugin->getName());
+        }
+        if(count($msg) !== 0) {
+            throw new RuntimeException("You must remove plugins first:\n" . join("\n", $msg));
+        }
+
         if (!file_exists($this->container['db.fixture.info']['path'])) {
-            throw new RuntimeException('You must generate sqlite db first, run "bin/console phraseanet:regenerate-sqlite" command.');
+            throw new RuntimeException('You must generate sqlite db first, run "bin/developer phraseanet:regenerate-sqlite" command.');
         }
 
         $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
@@ -104,6 +114,7 @@ class JsFixtures extends Command
     private function writeResponse(OutputInterface $output, $method, $path, $to, $authenticateUser = false)
     {
         $environment = Application::ENV_TEST;
+        /** @var Application $app */
         $app = require __DIR__ . '/../../Application/Root.php';
         $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
             return $app['orm.ems'][$app['db.fixture.hash.key']];

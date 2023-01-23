@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\ControllerProvider\Api\OAuth2;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\ControllerProvider\Api\V3;
 use Alchemy\Phrasea\ControllerProvider\Datafiles;
 use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
@@ -24,8 +25,10 @@ use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Provider\JsonSchemaServiceProvider;
+use Alchemy\Phrasea\Report\ControllerProvider\ApiReportControllerProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 
 class ApiApplicationLoader extends BaseApplicationLoader
 {
@@ -34,6 +37,8 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->register(new OAuth2());
         $app->register(new V1());
         $app->register(new V2());
+        $app->register(new V3());
+        $app->register(new ApiReportControllerProvider());
         $app->register(new JsonSchemaServiceProvider());
     }
 
@@ -116,6 +121,16 @@ class ApiApplicationLoader extends BaseApplicationLoader
                             'access_token'        => '/api/oauthv2/token'
                         ],
                     ],
+                    '3' => [
+                        'number'                  => V3::VERSION,
+                        'uri'                     => '/api/v3/',
+                        'authenticationProtocol'  => 'OAuth2',
+                        'authenticationVersion'   => 'draft#v9',
+                        'authenticationEndPoints' => [
+                            'authorization_token' => '/api/oauthv2/authorize',
+                            'access_token'        => '/api/oauthv2/token'
+                        ]
+                    ],
                 ]
             ])->createResponse();
         });
@@ -132,6 +147,8 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->mount('/datafiles/', new Datafiles());
         $app->mount('/api/v1', new V1());
         $app->mount('/api/v2', new V2());
+        $app->mount('/api/v3', new V3());
+        $app->mount('/api/report', new ApiReportControllerProvider());
         $app->mount('/permalink/', new Permalink());
         $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
         $app->mount('/include/minify/', new Minifier());

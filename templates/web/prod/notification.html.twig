@@ -1,0 +1,19 @@
+{# css from resources/www/_shared/styles/_notification.scss #}
+<div class="notification {% if notification['unread'] == '1' %}unread{% endif %}" data-notification_id="{{notification['id']}}">
+    <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td style="width:25px; vertical-align: top;">
+                <img src="{{notification['icon']}}" style="vertical-align:middle;width:16px;margin:2px;" />
+            </td>
+            <td class="{{notification['class']}}">
+                {{notification['text'] | raw}}
+                <span class="time">{{notification['created_on']}}</span>
+                <span class="time-in-dialog" style="color: #666666;display: none;" >{{notification['time']}}</span>
+            </td>
+            <td style="width:25px; vertical-align: bottom;">
+                <span class="icon_read" title="{{ 'notification::read:tooltip' | trans }}"></span>
+                <span class="icon_unread" title="{{ 'notification::unread:tooltip' | trans }}"></span>
+            </td>
+        </tr>
+  </table>
+</div>

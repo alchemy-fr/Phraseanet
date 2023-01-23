@@ -9,12 +9,18 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Alchemy\Phrasea\Out\Module\PDFCgu;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 class set_export extends set_abstract
 {
@@ -60,6 +66,7 @@ class set_export extends set_abstract
         $remain_hd = [];
 
         if ($storyWZid) {
+            /** @var StoryWZRepository $repository */
             $repository = $app['repo.story-wz'];
 
             $storyWZ = $repository->findByUserAndId($this->app, $app->getAuthenticatedUser(), $storyWZid);
@@ -68,6 +75,7 @@ class set_export extends set_abstract
         }
 
         if ($sstid != "") {
+            /** @var BasketRepository $repository */
             $repository = $app['repo.baskets'];
 
             $Basket = $repository->findUserBasket($sstid, $app->getAuthenticatedUser(), false);
@@ -383,19 +391,27 @@ class set_export extends set_abstract
         return $this->total_ftp;
     }
 
+    const NO_STAMP = 'NO_STAMP';
+    const STAMP_SYNC = 'STAMP_SYNC';
+    const STAMP_ASYNC = 'STAMP_ASYNC';
     /**
      * @param User $user
      * @param Filesystem $filesystem
-     * @param array $subdefs
+     * @param array $wantedSubdefs
      * @param bool $rename_title
      * @param bool $includeBusinessFields
+     * @param $no_stamp
      * @return array
      * @throws Exception
      */
-    public function prepare_export(User $user, Filesystem $filesystem, array $subdefs, $rename_title, $includeBusinessFields)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod)
     {
-        if (!is_array($subdefs)) {
+        if (!is_array($wantedSubdefs)) {
             throw new Exception('No subdefs given');
+        }
+
+        if(!$stampMethod) {
+            $stampMethod = self::STAMP_SYNC;
         }
 
         $includeBusinessFields = (bool) $includeBusinessFields;
@@ -403,18 +419,20 @@ class set_export extends set_abstract
         $n_files = 0;
         $file_names = [];
         $size = 0;
-        $unicode = new \unicode();
+        $unicode = $this->app['unicode'];
 
         /** @var record_exportElement $download_element */
-        foreach ($this->get_elements() as $download_element) {
+        foreach ($this->elements as $download_element) {
+
             $id = count($files);
 
             $files[$id] = [
-                'base_id' => $download_element->getBaseId(),
-                'record_id' => $download_element->getRecordId(),
+                'base_id'       => $download_element->getBaseId(),
+                'databox_id'    => $download_element->getDataboxId(),
+                'record_id'     => $download_element->getRecordId(),
                 'original_name' => '',
-                'export_name' => '',
-                'subdefs' => [],
+                'export_name'   => '',
+                'subdefs'       => [],
             ];
 
             $BF = false;
@@ -423,261 +441,262 @@ class set_export extends set_abstract
                 $BF = true;
             }
 
-            $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), CaptionSerializer::SERIALIZE_XML, $BF);
+            // $original_name : the original_name WITHOUT extension (ex. "DSC_1234")
+            // $extension     : the extension WITHOUT DOT (ex. "jpg")
+            // $export_name   : the export name WITHOUT extension, (ex. "Hollydays_2016_DSC_1234")
 
-            $files[$id]['original_name'] =
-            $files[$id]['export_name'] =
-                $download_element->get_original_name(false);
+            //
+            // build the original_name
+            //
+            $original_name = trim($download_element->get_original_name(false));   // false: don't remove extension
+            if($original_name !== '') {
+                $infos = pathinfo($original_name);  // pathinfo DOES USE the last '.' to find extension
+                $original_name = $infos['filename'];
+                $extension = isset($infos['extension']) ? $infos['extension'] : '';
+            }
+            else {
+                $extension = '';
+            }
+            if($original_name == '') {
+                $original_name = (string)$id;
+            }
+            $files[$id]['original_name'] = $original_name;
 
-            $files[$id]['original_name'] =
-                trim($files[$id]['original_name']) != '' ?
-                    $files[$id]['original_name'] : $id;
-
-            $infos = pathinfo($files[$id]['original_name']);
-
-            $extension = isset($infos['extension']) ? $infos['extension'] :
-                substr($files[$id]['original_name'], 0 - strrpos($files[$id]['original_name'], '.'));
-
+            //
+            // build the export_name
+            //
             if ($rename_title) {
-                $title = strip_tags($download_element->get_title(['removeExtension' => true]));
-                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
+                // use the title (may be a concat of fields)
+                $export_name = strip_tags($download_element->get_title(['removeExtension' => true]));
+                // if the "title" ends up with a "filename-like" field, remove extension
+                if (strtolower(substr($export_name, -strlen($extension)-1)) === '.'.strtolower($extension)) {
+                    $export_name = substr($export_name, 0, strlen($export_name)-1-strlen($extension));
+                }
             } else {
-                $files[$id]["export_name"] = $infos['filename'];
+                $export_name = $original_name;
             }
 
-            if (substr(strrev($files[$id]['export_name']), 0, strlen($extension)) != strrev($extension)) {
-                $files[$id]['export_name'] .= '.' . $extension;
+            // cleanup the exportname so it can be used as a filename (even if it came from the originale_name)
+            $export_name = str_replace([' ', "\t", "\r", "\n"], '_', $export_name);
+            $export_name = $unicode->remove_nonazAZ09($export_name, true, true, true);  // keep '_', '-', '.'
+            // really no luck if nothing left
+            if($export_name == '') {
+                $export_name = (string)$id;
             }
 
-            $sizeMaxAjout = 0;
-            $sizeMaxExt = 0;
+            //
+            // loop on subdefs to be downloaded (this may change the export_name)
+            //
+            $sizeMaxAjout = $sizeMaxExt = 0;
+            $sd = $download_element->get_subdefs();
 
-            foreach ($download_element->get_downloadable() as $name => $properties) {
-                if ($properties === false || !in_array($name, $subdefs)) {
+            foreach ($download_element->get_downloadable() as $subdefName => $properties) {
+                if ($properties === false || !in_array($subdefName, $wantedSubdefs)) {
+                    continue;
+                }
+                if (!in_array($subdefName, ['caption', 'caption-yaml']) && !isset($sd[$subdefName])) {
                     continue;
                 }
 
-                $subdef = null;
-                if (!in_array($name, ['caption', 'caption-yaml'])) {
-                    try {
-                        // get_subdef() can throw a 404
-                        $subdef = $download_element->get_subdef($name);
-                    }
-                    catch(\Exception $e) {
-                        continue;
-                    }
-                }
-
-                set_time_limit(100);
-                $subdef_export = $subdef_alive = false;
+                set_time_limit(0);
+                $subdef_ok = false;
 
                 $n_files++;
 
-                $tmp_pathfile = ['path' => null, 'file' => null];
+                $tmp_pathfile = [
+                    'path' => null,
+                    'file' => null
+                ];
 
                 switch ($properties['class']) {
                     case 'caption':
                     case 'caption-yaml':
-                        $subdef_export = true;
-                        $subdef_alive = true;
+                        $subdef_ok = true;
+
                         break;
                     case 'thumbnail':
+                        $subdef_ok = true;
                         $tmp_pathfile = [
-                            'path' => $subdef->get_path(),
-                            'file' => $subdef->get_file(),
+                            'path' => $sd[$subdefName]->get_path(),
+                            'file' => $sd[$subdefName]->get_file(),
+                            'to_stamp' => false,
+                            'to_watermark' => false
                         ];
-                        $subdef_export = true;
-                        $subdef_alive = true;
+
                         break;
                     case 'document':
-                        $subdef_export = true;
-                        $path = \recordutils_image::stamp($this->app, $subdef);
+                        $subdef_ok = true;
                         $tmp_pathfile = [
-                            'path' => $subdef->get_path(),
-                            'file' => $subdef->get_file(),
+                            'path' => $sd[$subdefName]->get_path(),
+                            'file' => $sd[$subdefName]->get_file(),
+                            'to_stamp' => false,
+                            'to_watermark' => false
                         ];
-                        if (file_exists($path)) {
-                            $tmp_pathfile = [
-                                'path' => dirname($path),
-                                'file' => basename($path),
-                            ];
-                            $subdef_alive = true;
+
+                        if($this->app['conf']->get(['registry', 'actions', 'export-stamp-choice']) !== true || $stampMethod !== self::NO_STAMP ){
+                            // stamp is mandatory, or user did not check "no stamp" : we must apply stamp
+                            if($stampMethod === self::STAMP_SYNC) {
+                                // we prepare a direct download, we must stamp now
+                                $path = \recordutils_image::stamp($this->app, $sd[$subdefName]);
+                                if ($path && file_exists($path)) {
+                                    $tmp_pathfile = [
+                                        'path'         => dirname($path),
+                                        'file'         => basename($path),
+                                        'to_stamp'     => false,
+                                        'to_watermark' => false
+                                    ];
+                                }
+                            }
+                            else {
+                                // we prepare an email or ftp download : the worker will apply stamp
+                                $tmp_pathfile ['to_stamp'] = true;
+                            }
                         }
+
                         break;
-
                     case 'preview':
-                        $subdef_export = true;
-
                         $tmp_pathfile = [
-                            'path' => $subdef->get_path(),
-                            'file' => $subdef->get_file(),
+                            'path' => $sd[$subdefName]->get_path(),
+                            'file' => $sd[$subdefName]->get_file(),
+                            'to_stamp' => false,
+                            'to_watermark' => false
                         ];
+
                         if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::NOWATERMARK)
                             && !$this->app->getAclForUser($user)->has_preview_grant($download_element)
-                            && $subdef->get_type() == media_subdef::TYPE_IMAGE
-                        ) {
-                            $path = recordutils_image::watermark($this->app, $subdef);
+                            && $sd[$subdefName]->get_type() == media_subdef::TYPE_IMAGE )
+                        {
+                            $path = recordutils_image::watermark($this->app, $sd[$subdefName]);
                             if (file_exists($path)) {
                                 $tmp_pathfile = [
                                     'path' => dirname($path),
                                     'file' => basename($path),
+                                    'to_stamp' => false,
+                                    'to_watermark' => false
                                 ];
-                                $subdef_alive = true;
+                                $subdef_ok = true;
                             }
-                        } else {
-                            $subdef_alive = true;
                         }
+                        else {
+                            $subdef_ok = true;
+                        }
+
                         break;
                 }
 
-                if ($subdef_export === true && $subdef_alive === true) {
+                if ($subdef_ok) {
                     switch ($properties['class']) {
                         case 'caption':
-                            if ($name == 'caption-yaml') {
-                                $suffix = '_captionyaml';
-                                $extension = 'yml';
-                                $mime = 'text/x-yaml';
+                            $ajout = '_caption';
+                            if ($subdefName == 'caption-yaml') {
+                                $ext = 'txt';
+                                $mime = 'text/plain';
                             } else {
-                                $suffix = '_caption';
-                                $extension = 'xml';
+                                $ext = 'xml';
                                 $mime = 'text/xml';
                             }
 
-                            $files[$id]["subdefs"][$name]["ajout"] = $suffix;
-                            $files[$id]["subdefs"][$name]["exportExt"] = $extension;
-                            $files[$id]["subdefs"][$name]["label"] = $properties['label'];
-                            $files[$id]["subdefs"][$name]["path"] = null;
-                            $files[$id]["subdefs"][$name]["file"] = null;
-                            $files[$id]["subdefs"][$name]["size"] = 0;
-                            $files[$id]["subdefs"][$name]["folder"] = $download_element->get_directory();
-                            $files[$id]["subdefs"][$name]["mime"] = $mime;
+                            $files[$id]["subdefs"][$subdefName] = [
+                                "ajout"     => $ajout,
+                                "exportExt" => $ext,
+                                "label"     => $properties['label'],
+                                "path"      => null,
+                                "file"      => null,
+                                "to_stamp"  => false,
+                                "size"      => 0,
+                                "mime"      => $mime,
+                                "folder"    => $download_element->get_directory()
+                            ];
 
                             break;
                         case 'document':
                         case 'preview':
                         case 'thumbnail':
-                            $infos = pathinfo(p4string::addEndSlash($tmp_pathfile["path"]) .
-                                $tmp_pathfile["file"]);
+                            $ajout = $subdefName == 'document' ? '' : ("_" . $subdefName);
+                            $infos = pathinfo(p4string::addEndSlash($tmp_pathfile["path"]) . $tmp_pathfile["file"]);
+                            $ext = isset($infos['extension']) ? $infos['extension'] : '';
 
-                            $files[$id]["subdefs"][$name]["ajout"] = $name == 'document' ? '' : "_" . $name;
-                            $files[$id]["subdefs"][$name]["path"] = $tmp_pathfile["path"];
-                            $files[$id]["subdefs"][$name]["file"] = $tmp_pathfile["file"];
-                            $files[$id]["subdefs"][$name]["label"] = $properties['label'];
-                            $files[$id]["subdefs"][$name]["size"] = $subdef->get_size();
-                            $files[$id]["subdefs"][$name]["mime"] = $subdef->get_mime();
-                            $files[$id]["subdefs"][$name]["folder"] = $download_element->get_directory();
-                            $files[$id]["subdefs"][$name]["exportExt"] = isset($infos['extension']) ? $infos['extension'] : '';
+                            $files[$id]["subdefs"][$subdefName] = [
+                                "ajout"     => $ajout,
+                                "exportExt" => $ext,
+                                "label"     => $properties['label'],
+                                "path"      => $tmp_pathfile["path"],
+                                "file"      => $tmp_pathfile["file"],
+                                "to_stamp"  => $tmp_pathfile["to_stamp"],
+                                "size"      => $sd[$subdefName]->get_size(),
+                                "mime"      => $sd[$subdefName]->get_mime(),
+                                "folder"    => $download_element->get_directory()
+                            ];
 
-                            $size += $subdef->get_size();
+                            $size += $sd[$subdefName]->get_size();
+
+                            break;
+                        default:    // should not happen
+                            $ajout = $ext = '';
 
                             break;
                     }
 
-                    $longueurAjoutCourant =
-                        mb_strlen($files[$id]["subdefs"][$name]["ajout"]);
-                    $sizeMaxAjout = max($longueurAjoutCourant, $sizeMaxAjout);
-
-                    $longueurExtCourant =
-                        mb_strlen($files[$id]["subdefs"][$name]["exportExt"]);
-                    $sizeMaxExt = max($longueurExtCourant, $sizeMaxExt);
+                    $sizeMaxAjout = max($sizeMaxAjout, mb_strlen($ajout));
+                    $sizeMaxExt   = max($sizeMaxExt, mb_strlen($ext));
                 }
             }
 
-            $max_length = self::$maxFilenameLength - 1 - $sizeMaxExt - $sizeMaxAjout;
+            // end loop on downloadable subdefs
 
-            $name = $files[$id]["export_name"];
-
-            $start_length = mb_strlen($name);
-            if ($start_length > $max_length)
-                $name = mb_substr($name, 0, $max_length);
+            // check that no exportNames are double, else add a number
+            // also truncate exportName so the whole filename will not be too long
+            //     "aTooLongName_caption.xml" --> "aTooLo_caption-2.xml"
 
             $n = 1;
 
-            while (in_array(mb_strtolower($name), $file_names)) {
+            do {
+                $nSuffix = ($n==1) ? '' : ('#'.$n);
+                $maxExportNameLength = self::$maxFilenameLength - $sizeMaxAjout - strlen($nSuffix) - 1 - $sizeMaxExt;
+                $newExportName = mb_substr($export_name, 0, $maxExportNameLength).$nSuffix;
+                $kName = mb_strtolower($newExportName);
                 $n++;
-                $suffix = "-" . $n; // pour diese si besoin
-                $max_length = self::$maxFilenameLength - 1 - $sizeMaxExt - $sizeMaxAjout - mb_strlen($suffix);
-                $name = mb_strtolower($files[$id]["export_name"]);
-                if ($start_length > $max_length)
-                    $name = mb_substr($name, 0, $max_length) . $suffix;
-                else
-                    $name = $name . $suffix;
             }
-            $file_names[] = mb_strtolower($name);
-            $files[$id]["export_name"] = $name;
+            while(in_array($kName, $file_names));
 
-            $files[$id]["export_name"] = $unicode->remove_nonazAZ09($files[$id]["export_name"], true, true, true);
-            $files[$id]["original_name"] = $unicode->remove_nonazAZ09($files[$id]["original_name"], true, true, true);
+            // here we have a unique exportName
+            $file_names[] = $kName;
 
-            $i = 0;
-            $name = utf8_decode($files[$id]["export_name"]);
-            $tmp_name = "";
-            $good_keys = [
-                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-                'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-                '4', '5', '6', '7', '8', '9', '-', '_', '.', '#',
-            ];
+            $files[$id]["export_name"] = $newExportName;
 
-            while (isset($name[$i])) {
-                if (!in_array(mb_strtolower($name[$i]), $good_keys))
-                    $tmp_name .= '_';
-                else
-                    $tmp_name .= $name[$i];
+            //
+            // add files for caption and/or caption-yaml ?
+            //
+            $caption_dir = null;
+            foreach(['caption'=>CaptionSerializer::SERIALIZE_XML, 'caption-yaml'=>CaptionSerializer::SERIALIZE_YAML]
+                    as $subdefName => $serializeMethod)
+            {
+                if (in_array($subdefName, $wantedSubdefs)) {
+                    if (!$caption_dir) {
+                        // do this only once
+                        $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $this->app->getAuthenticatedUser()->getId() . '/';
+                        $filesystem->mkdir($caption_dir, 0750);
+                    }
 
-                $tmp_name = str_replace('__', '_', $tmp_name);
+                    $file = $files[$id]["export_name"]
+                        . $files[$id]["subdefs"][$subdefName]["ajout"] . '.'
+                        . $files[$id]["subdefs"][$subdefName]["exportExt"];
 
-                $i++;
-            }
-            $files[$id]["export_name"] = $tmp_name;
+                    $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), $serializeMethod, $BF);
+                    file_put_contents($caption_dir . $file, $desc);
 
-            if (in_array('caption', $subdefs)) {
-                $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $this->app->getAuthenticatedUser()->getId() . '/';
-
-                $filesystem->mkdir($caption_dir, 0750);
-
-                $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), CaptionSerializer::SERIALIZE_XML, $BF);
-
-                $file = $files[$id]["export_name"]
-                    . $files[$id]["subdefs"]['caption']["ajout"] . '.'
-                    . $files[$id]["subdefs"]['caption']["exportExt"];
-
-                $path = $caption_dir;
-
-                file_put_contents($path . $file, $desc);
-
-                $files[$id]["subdefs"]['caption']["path"] = $path;
-                $files[$id]["subdefs"]['caption']["file"] = $file;
-                $files[$id]["subdefs"]['caption']["size"] = filesize($path . $file);
-                $files[$id]["subdefs"]['caption']['businessfields'] = $BF ? '1' : '0';
-            }
-
-            if (in_array('caption-yaml', $subdefs)) {
-                $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $this->app->getAuthenticatedUser()->getId() . '/';
-
-                $filesystem->mkdir($caption_dir, 0750);
-
-                $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), CaptionSerializer::SERIALIZE_YAML, $BF);
-
-                $file = $files[$id]["export_name"]
-                    . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
-                    . $files[$id]["subdefs"]['caption-yaml']["exportExt"];
-
-                $path = $caption_dir;
-
-                file_put_contents($path . $file, $desc);
-
-                $files[$id]["subdefs"]['caption-yaml']["path"] = $path;
-                $files[$id]["subdefs"]['caption-yaml']["file"] = $file;
-                $files[$id]["subdefs"]['caption-yaml']["size"] = filesize($path . $file);
-                $files[$id]["subdefs"]['caption-yaml']['businessfields'] = $BF ? '1' : '0';
+                    $files[$id]["subdefs"][$subdefName]["path"] = $caption_dir;
+                    $files[$id]["subdefs"][$subdefName]["file"] = $file;
+                    $files[$id]["subdefs"][$subdefName]["size"] = filesize($caption_dir . $file);
+                    $files[$id]["subdefs"][$subdefName]['businessfields'] = $BF ? '1' : '0';
+                }
             }
         }
 
         $this->list = [
             'files' => $files,
             'names' => $file_names,
-            'size' => $size,
+            'size'  => $size,
             'count' => $n_files,
         ];
 
@@ -707,6 +726,13 @@ class set_export extends set_abstract
 
         $toRemove = [];
         $archiveFiles = [];
+        $databoxIds = [];
+        $recordIdsPerDatabox = [];
+
+        // group recordId per databoxId
+        foreach ($files as $file) {
+            $recordIdsPerDatabox[$file['databox_id']][] = $file['record_id'];
+        }
 
         foreach ($files as $record) {
             if (isset($record["subdefs"])) {
@@ -724,6 +750,28 @@ class set_export extends set_abstract
                                 $toRemove[] = dirname($path);
                             }
                             $toRemove[] = $path;
+                        }
+
+                        if (!in_array($record['databox_id'], $databoxIds)) {
+                            // add also the databox cgu in the zip
+                            $databoxIds[] = $record['databox_id'];
+
+                            // if cgu content empty, do not add pdf in zip
+                            if (!PDFCgu::isDataboxCguEmpty($app, $record['databox_id'])) {
+                                try {
+                                    $pdfCgu = new PDFCgu($app, $record['databox_id'], $recordIdsPerDatabox[$record['databox_id']]);
+                                    $pdfCgu->save();
+
+                                    $databoxCguPath = PDFCgu::getDataboxCguPath($app, $record['databox_id']);
+                                } catch (\Exception $e) {
+                                    $app['logger']->error("Exception occurred when generating cgu pdf : " . $e->getMessage());
+
+                                    continue;
+                                }
+
+                                $archiveFiles[$app['unicode']->remove_diacritics($obj["folder"].PDFCgu::getDataboxCguPdfName($app, $record['databox_id']))] = $databoxCguPath;
+                                $toRemove[] = $databoxCguPath;
+                            }
                         }
                     }
                 }
@@ -808,5 +856,28 @@ class set_export extends set_abstract
 
             $stmt->closeCursor();
         }
+    }
+
+    public function has_stamp_option()
+    {
+        if ($this->total_download == 0) {
+            return false;
+        }
+
+        $domprefs = new DOMDocument();
+        foreach ($this->elements as $download_element) {
+            if ( ($domprefs->loadXML($download_element->getCollection()->get_prefs())) === false) {
+                continue;
+            }
+            $xpprefs = new DOMXPath($domprefs);
+            $stampNodes = $xpprefs->query('/baseprefs/stamp');
+            if ($stampNodes->length != 0) {
+
+                return true;
+            }
+
+        }
+
+        return false;
     }
 }

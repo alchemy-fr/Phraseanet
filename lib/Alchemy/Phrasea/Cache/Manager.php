@@ -45,12 +45,18 @@ class Manager
     /**
      * Flushes all registered cache
      *
+     * @param null| string $pattern
+     *
      * @return Manager
      */
-    public function flushAll()
+    public function flushAll($pattern = null)
     {
         foreach ($this->drivers as $driver) {
-            $driver->flushAll();
+            if ($driver->getName() === 'redis' && !empty($pattern)) {
+                $driver->removeByPattern($pattern);
+            } else {
+                $driver->flushAll();
+            }
         }
 
         $this->registry = [];
@@ -74,7 +80,7 @@ class Manager
 
         try {
             $cache = $this->factory->create($name, $options);
-        } catch (RuntimeException $e) {
+        } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             $cache = $this->factory->create('array', []);
         }
@@ -89,7 +95,14 @@ class Manager
 
         if (!$this->isAlreadyRegistered($name, $label)) {
             $this->register($name, $label);
-            $cache->flushAll();
+
+            // by default we use redis cache
+            // so only initiate the corresponding namespace after register
+            if ($cache->getName() === 'redis') {
+                $cache->removeByPattern($cache->getNamespace() . '*');
+            } else {
+                $cache->flushAll();
+            }
         }
 
         return $cache;

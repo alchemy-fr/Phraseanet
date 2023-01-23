@@ -139,6 +139,15 @@ abstract class base implements cache_cacheableInterface
      */
     public function get_connection()
     {
+        if($this->connection->ping() === false){
+            if(isset($this->app['task-manager.logger'])){
+                $this->app['task-manager.logger']->info("MySQL server is not available : close and connect .....");
+            }
+
+            $this->connection->close();
+            $this->connection->connect();
+        }
+
         return $this->connection;
     }
 
@@ -198,7 +207,11 @@ abstract class base implements cache_cacheableInterface
     public function get_version()
     {
         if (! $this->version) {
-            $this->version = $this->versionRepository->getVersion();
+            try {
+                $this->version = $this->versionRepository->getVersion();
+            } catch(\Throwable $e) {
+                return PhraseaVersion\VersionRepository::DEFAULT_VERSION;
+            }
         }
 
         return $this->version;

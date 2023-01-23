@@ -1,0 +1,40 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phraseanet-db
+spec:
+  replicas: 1
+  strategy:
+      type: Recreate
+  selector:
+    matchLabels:
+      app: phraseanet
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: phraseanet
+        tier: db
+    spec:
+      volumes:
+      - name: database
+        persistentVolumeClaim:
+          claimName: {{ .Values.mysql.pvc_name }}
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
+      containers:
+      - name: db
+        image: {{ .Values.image.registry }}/phraseanet-db:{{ .Values.image.tag.phraseanet }}
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ .Values.mysql.root_password }}
+        - name  : MYSQL_MAX_ALLOWED_PACKET
+          value : {{ .Values.mysql.max_allowed_packet }}
+        volumeMounts:
+        - name: "database"
+          mountPath: "/var/lib/mysql"

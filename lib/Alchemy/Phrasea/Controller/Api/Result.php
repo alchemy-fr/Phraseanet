@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V3;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,17 +88,30 @@ class Result
     /**
      * Creates a Symfony Response
      *
+     * include lapses from stopwatch(es) as server-timing headers
+     *
+     * @param Stopwatch[] $stopwatches
      * @return Response
      */
-    public function createResponse()
+    public function createResponse($stopwatches=[])
     {
         $response = $this->format();
         $response->headers->set('content-type', $this->getContentType());
+        // add specific timing debug
+        foreach($stopwatches as $stopwatch) {
+            $response->headers->set('Server-Timing', $stopwatch->getLapsesAsServerTimingHeader(), false);
+        }
         $response->setStatusCode($this->getStatusCode());
         $response->setCharset('UTF-8');
 
+        // add general timing debug
+        $duration = (microtime(true) - $this->request->server->get('REQUEST_TIME_FLOAT')) * 1000.0;
+        $h = '_global;' . 'dur=' . $duration;
+        $response->headers->set('Server-Timing', $h, false);    // false : add header (don't replace)
+
         return $response;
     }
+
 
     /**
      * @param Request $request
@@ -163,6 +179,14 @@ class Result
         }
 
         return new static($request, null, $code, $errorType, $errorMessage, $errorDetails);
+    }
+
+    public static function createBadRequest(Request $request, $message = '')
+    {
+        $response = self::createError($request, 400, $message)->createResponse();
+        $response->headers->set('X-Status-Code', $response->getStatusCode());
+
+        return $response;
     }
 
     private function parseResponseType()
@@ -267,7 +291,15 @@ class Result
     public function getVersion()
     {
         if (null === $this->version) {
-            $this->version = $this->request->attributes->get('api_version') ?: self::$defaultVersion;
+            if ($this->request->attributes->get('api_version')) {
+                $this->version = $this->request->attributes->get('api_version');
+            } elseif (mb_strpos($this->request->getPathInfo(), '/api/v1') !== FALSE) {
+                $this->version = V1::VERSION;
+            }  elseif (mb_strpos($this->request->getPathInfo(), '/api/v3') !== FALSE) {
+                $this->version = V3::VERSION;
+            } else {
+                $this->version = self::$defaultVersion;
+            }
         }
 
         return $this->version;

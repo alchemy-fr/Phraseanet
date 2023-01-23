@@ -11,6 +11,8 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
@@ -74,10 +76,14 @@ class SetupController extends Controller
             $warnings[] = $this->app->trans('It is not recommended to install Phraseanet without HTTPS support');
         }
 
+        /** @var StructureTemplate $st */
+        $st = $this->app['phraseanet.structure-template'];
+
         return $this->render('/setup/step2.html.twig', [
             'locale'              => $this->app['locale'],
             'available_locales'   => Application::getAvailableLanguages(),
-            'available_templates' => $this->app['phraseanet.structure-template']->getAvailable()->getTemplates(),
+            'available_templates' => $st->getNames(),
+            'elasticOptions'      =>  ElasticsearchOptions::fromArray([]),
             'warnings'            => $warnings,
             'error'               => $request->query->get('error'),
             'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
@@ -92,7 +98,7 @@ class SetupController extends Controller
 
         $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
 
-         $dbConn = null;
+        $dbConn = null;
 
         $database_host = $request->request->get('hostname');
         $database_port = $request->request->get('port');
@@ -101,6 +107,20 @@ class SetupController extends Controller
 
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
+
+        $elastic_settings = $request->request->get('elasticsearch_settings');
+
+        $elastic_settings = [
+            'host' => (string) $elastic_settings['host'],
+            'port' => (int) $elastic_settings['port'],
+            'index' => (string) (isset($elastic_settings['index_name']) ? $elastic_settings['index_name'] : ''),
+            'shards' => (int) $elastic_settings['shards'],
+            'replicas' => (int) $elastic_settings['replicas'],
+            'minScore' => (int) $elastic_settings['min_score'],
+            'highlight' => (bool) (isset($elastic_settings['highlight']) ? $elastic_settings['highlight'] : false)
+        ];
+
+        $elastic_settings = ElasticsearchOptions::fromArray($elastic_settings);
 
         try {
             $abInfo = [
@@ -154,7 +174,9 @@ class SetupController extends Controller
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         $template = $request->request->get('db_template');
-        $dataPath = $request->request->get('datapath_noweb');
+        $storagePath = [
+            'subdefs' => $request->request->get('datapath_noweb')
+        ];
 
         try {
             $installer = $this->app['phraseanet.installer'];
@@ -173,9 +195,15 @@ class SetupController extends Controller
                 $binaryData[$key] = $path;
             }
 
-            $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
+            $user = $installer->install($email, $password, $abConn, $servername, $storagePath, $dbConn, $template, $binaryData);
 
             $this->app->getAuthenticator()->openAccount($user);
+
+            if(empty($elastic_settings->getHost())){
+                $elastic_settings = ElasticsearchOptions::fromArray([]);
+            }
+
+            $this->app['conf']->set(['main', 'search-engine', 'options'], $elastic_settings->toArray());
 
             return $this->app->redirectPath('admin', [
                 'section' => 'taskmanager',

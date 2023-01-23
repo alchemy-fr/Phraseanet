@@ -1,0 +1,194 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phraseanet-fpm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phraseanet
+      tier: fpm
+  template:
+    metadata:
+      labels:
+        app: phraseanet
+        tier: fpm
+    spec:
+      volumes:
+      - name: phraseanet-config
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.config.name }}
+      - name: phraseanet-datas
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.data.name }}
+      - name: phraseanet-thumbnails
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.thumbnails.name }}
+      - name: phraseanet-custom
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.custom.name }}
+      - name: phraseanet-wwwplugins
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.wwwplugins.name }}
+      - name: phraseanet-tmp
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.pvc.tmp.name }}
+      - name: phraseanet-logs
+        emptyDir:
+      - name: phraseanet-cache
+        emptyDir:
+        
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
+      containers:
+      - name: phraseanet-fpm
+        image: {{ .Values.image.registry }}/phraseanet-fpm:{{ .Values.image.tag.phraseanet }}
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        resources:
+{{ toYaml .Values.app.web.resources | indent 12 }}
+        volumeMounts:
+        - name: phraseanet-config
+          mountPath: "/var/alchemy/Phraseanet/config"
+        - name: phraseanet-datas
+          mountPath: "/var/alchemy/Phraseanet/datas"
+        - name: phraseanet-tmp
+          mountPath: "/var/alchemy/Phraseanet/tmp"
+        - name: phraseanet-logs
+          mountPath: "/var/alchemy/Phraseanet/logs"
+        - name: phraseanet-thumbnails
+          mountPath: "/var/alchemy/Phraseanet/www/thumbnails"
+        - name: phraseanet-custom
+          mountPath: "/var/alchemy/Phraseanet/www/custom"
+        - name: phraseanet-wwwplugins
+          mountPath: "/var/alchemy/Phraseanet/www/plugins"
+        - name: phraseanet-cache
+          mountPath: "/var/alchemy/Phraseanet/cache"
+
+        env:
+        - name: MAX_BODY_SIZE
+          value: {{ .Values.http.max_body_size | quote }}
+        - name: MAX_INPUT_VARS
+          value: {{ .Values.http.max_input_vars | quote }}
+        - name: MAX_EXECUTION_TIME
+          value: "600"
+        - name: MAX_INPUT_TIME
+          value: "60"
+        - name: GATEWAY_PROXY_TIMEOUT
+          value: "1200"
+        - name: GATEWAY_FASTCGI_TIMEOUT
+          value: "1200"
+        - name: REQUEST_TERMINATE_TIMEOUT
+          value: "1200s"
+        - name: OPCACHE_ENABLED
+          value: {{ .Values.php.opcache_enabled | quote }}
+        - name: PHP_LOG_LEVEL
+          value: {{ .Values.php.log_level | quote }}
+        - name: PHRASEANET_INSTALL
+          value: {{ .Values.app.phraseanet_install | quote }}
+        - name: PHRASEANET_SETUP
+          value: {{ .Values.app.phraseanet_setup | quote }}
+        - name: PHRASEANET_ADMIN_ACCOUNT_EMAIL
+          value: {{ .Values.app.phraseanet_admin_account_email | quote }}
+        - name: PHRASEANET_ADMIN_ACCOUNT_PASSWORD
+          value: {{ .Values.app.phraseanet_admin_account_password | quote }}
+        - name: PHRASEANET_DB_HOST
+          value: {{ .Values.app.phraseanet_db_host | quote }}
+        - name: PHRASEANET_DB_USER
+          value: {{ .Values.app.phraseanet_db_user | quote }}
+        - name: PHRASEANET_DB_PASSWORD
+          value: {{ .Values.app.phraseanet_db_password | quote }}
+        - name: INSTALL_DB_TEMPLATE
+          value: {{ .Values.app.install_db_template | quote }}
+        - name: INSTALL_APPBOX
+          value: {{ .Values.app.install_appbox | quote }}
+        - name: INSTALL_DATABOX
+          value: {{ .Values.app.install_databox | quote }}
+        - name: PHRASEANET_HOSTNAME
+          value: {{ .Values.app.phraseanet_hostname | quote }}
+        - name: PHRASEANET_SCHEME
+          value: {{ .Values.app.phraseanet_scheme | quote }}
+        - name: PHRASEANET_APP_PORT
+          value: {{ .Values.app.phraseanet_app_port | quote }}
+        - name: PHRASEANET_DOWNLOAD_DIR
+          value: "/var/alchemy/Phraseanet/datas/download"
+        - name: PHRASEANET_LAZARET_DIR
+          value: "/var/alchemy/Phraseanet/datas/lazaret"
+        - name: "PHRASEANET_WORKER_TMP"
+          value: "/var/alchemy/Phraseanet/tmp/worker"
+        - name: PHRASEANET_CAPTION_DIR
+          value: "/var/alchemy/Phraseanet/tmp/caption"
+        - name: PHRASEANET_FFMPEG_TIMEOUT
+          value: {{ .Values.app.phraseanet_ffmpeg_timeout | quote }}
+        - name: PHRASEANET_FFPROBE_TIMEOUT
+          value: {{ .Values.app.phraseanet_ffprobe_timeout | quote }}
+        - name: PHRASEANET_GS_TIMEOUT
+          value: {{ .Values.app.phraseanet_gs_timeout | quote }}
+        - name: PHRASEANET_MP4BOX_TIMEOUT
+          value: {{ .Values.app.phraseanet_mp4box_timeout | quote }}
+        - name: PHRASEANET_SWFTOOLS_TIMEOUT
+          value: {{ .Values.app.phraseanet_swftools_timeout | quote }}
+        - name: PHRASEANET_UNOCON_TIMEOUT
+          value: {{ .Values.app.phraseanet_unocon_timeout | quote }}
+        - name: PHRASEANET_EXIFTOOL_TIMEOUT
+          value: {{ .Values.app.phraseanet_exiftool_timeout | quote }}
+        - name: PHRASEANET_SMTP_ENABLED
+          value: {{ .Values.app.phraseanet_smtp_enabled | quote }}
+        - name: PHRASEANET_SMTP_AUTH_ENABLED
+          value: {{ .Values.app.phraseanet_smtp_auth_enabled | quote }}
+        - name: PHRASEANET_SMTP_SECURE_MODE
+          value: {{ .Values.app.phraseanet_smtp_secure_mode | quote }}
+        - name: PHRASEANET_SMTP_HOST
+          value: {{ .Values.app.phraseanet_smtp_host | quote }}
+        - name: PHRASEANET_SMTP_PORT
+          value: {{ .Values.app.phraseanet_smtp_port | quote }}
+        - name: PHRASEANET_SMTP_USER
+          value: {{ .Values.app.phraseanet_smtp_user | quote }}
+        - name: PHRASEANET_SMTP_PASSWORD
+          value: {{ .Values.app.phraseanet_smtp_password | quote }}
+        - name: PHRASEANET_EMITTER_EMAIL
+          value: {{ .Values.app.phraseanet_emitter_email | quote }}
+        - name: PHRASEANET_MAIL_OBJECT_PREFIX
+          value: {{ .Values.app.phraseanet_mail_object_prefix | quote }}
+        - name: PHRASEANET_RABBITMQ_HOST
+          value: {{ .Values.rabbitmq.host | quote }}
+        - name: PHRASEANET_RABBITMQ_PORT
+          value: {{ .Values.rabbitmq.port | quote }}
+        - name: PHRASEANET_RABBITMQ_USER
+          value: {{ .Values.rabbitmq.default_user | quote }}
+        - name: PHRASEANET_RABBITMQ_PASSWORD
+          value: {{ .Values.rabbitmq.default_pass | quote }}
+        - name: PHRASEANET_RABBITMQ_VHOST
+          value: {{ .Values.rabbitmq.default_vhost | quote }}
+        - name: PHRASEANET_RABBITMQ_SSL
+          value: {{ .Values.rabbitmq.ssl | quote }}
+        - name: PHRASEANET_RABBITMQ_HEARTBEAT
+          value: {{ .Values.rabbitmq.heartbeat | quote }}
+        - name: SESSION_CACHE_LIMITER
+          value: {{ .Values.php.session_cache_limiter | quote }}
+        - name: SESSION_SAVE_HANDLER
+          value: {{ .Values.php.session_save_handler | quote }}
+        - name: SESSION_SAVE_PATH
+          value: {{ .Values.php.session_save_path | quote }}
+        - name: PHRASEANET_TRUSTED_PROXIES
+          value: {{ .Values.app.phraseanet_trusted_proxies | quote }}
+        - name: XDEBUG
+          value: "0"
+        - name: LC_MESSAGES
+          value: "C.UTF-8"
+        - name: LC_COLLATE
+          value: "C.UTF-8"
+        - name: LC_IDENTIFICATION
+          value: "C.UTF-8"
+        - name: LANG
+          value: "C.UTF-8"
+        - name: LC_MEASUREMENT
+          value: "C.UTF-8"
+        - name: LC_CTYPE
+          value: "C.UTF-8"
+        - name: LC_TIME
+          value: "C.UTF-8"
+        - name: LC_NAME
+          value: "C.UTF-8"

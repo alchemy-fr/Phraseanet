@@ -45,7 +45,7 @@
 {% endmacro %}
 
 {% block content_account %}
-<form id="form_create" action="{{ path("submit_developers_application") }}" method="POST" class="form-horizontal">
+<form id="form_create" action="{{ path("submit_developers_application") }}" method="POST" class="form-horizontal" style="padding: 20px; background: #757575;">
     {% if form is none %}
       {% set name, description, website, callback = "", "", "", "" %}
       {% set app_type = "web" %}
@@ -74,7 +74,7 @@
     <div class="control-group">
         <label for="website" class="control-label"><b>{{ "Site web" | trans }}</b></label>
         <div class="controls">
-            <select name="scheme-website"  class="input-mini">
+            <select name="scheme-website"  class="input-mini" style="min-height: 40px;">
                 <option value="http://">http://</option>
                 <option value="https://">https://</option>
             </select>
@@ -101,7 +101,7 @@
         <div class="control-group callback-control-group">
             <label for="callback" class="control-label"><b>{{ "URL de callback" | trans }}</b></label>
             <div class="controls">
-                <select name="scheme-callback" class="input-mini">
+                <select name="scheme-callback" class="input-mini" style="min-height: 40px;">
                     <option value="http://">http://</option>
                     <option value="https://">https://</option>
                 </select>
@@ -110,14 +110,18 @@
         </div>
     {% endif %}
 
-    <div class="form-actions">
-        <button class="btn btn-info" type="submit">
-            {{ "boutton::valider" | trans }}
-        </button>
-
-        <a class="btn" href="{{ path("developers_applications") }}">
+    <div class="control-group">
+        <div class="col-md-6 controls" style="margin-right: 25px; float: left">
+        <a class="btn btn-warning" href="{{ path("developers_applications") }}">
             {{ "boutton::retour" | trans }}
         </a>
+        </div>
+        <div class="col-md-6" style="width: 50%; float: left">
+        <button class="btn btn-info no-margin" type="submit" style="margin: 0;width: auto;min-width: 200px">
+            {{ "boutton::valider" | trans }}
+        </button>
+        </div>
+
     </div>
   </form>
 {% endblock %}

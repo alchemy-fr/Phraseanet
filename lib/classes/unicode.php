@@ -15,8 +15,30 @@ class unicode
     const CONVERT_TO_ND   = 'nd';           // no-diacritics
     const CONVERT_TO_LCND = 'lcnd';         // lowercase no-diacritics
 
-    protected static $map = [
-        self::CONVERT_TO_LC => [
+    private $maps = [];
+
+    private function &getMap($mapId)
+    {
+        if(array_key_exists($mapId, $this->maps)) {
+            return $this->maps[$mapId];
+        }
+        switch($mapId) {
+            case self::CONVERT_TO_LC:
+                $this->setMap_LC();
+                return $this->maps[self::CONVERT_TO_LC];
+            case self::CONVERT_TO_ND:
+                $this->setMap_ND();
+                return $this->maps[self::CONVERT_TO_ND];
+            case self::CONVERT_TO_LCND:
+                $this->setMap_LCND();
+                return $this->maps[self::CONVERT_TO_LCND];
+        }
+        return [];
+    }
+
+    private function setMap_LC()
+    {
+        $this->maps[self::CONVERT_TO_LC] = [
             "\x41"     => "\x61"        ,  /* U+0041: LATIN CAPITAL LETTER A                                   -> U+0061: LATIN SMALL LETTER A                                   */
             "\x42"     => "\x62"        ,  /* U+0042: LATIN CAPITAL LETTER B                                   -> U+0062: LATIN SMALL LETTER B                                   */
             "\x43"     => "\x63"        ,  /* U+0043: LATIN CAPITAL LETTER C                                   -> U+0063: LATIN SMALL LETTER C                                   */
@@ -481,9 +503,13 @@ class unicode
             "\xD5\x94" => "\xD6\x84"    ,  /* U+0554: ARMENIAN CAPITAL LETTER KEH                              -> U+0584: ARMENIAN SMALL LETTER KEH                              */
             "\xD5\x95" => "\xD6\x85"    ,  /* U+0555: ARMENIAN CAPITAL LETTER OH                               -> U+0585: ARMENIAN SMALL LETTER OH                               */
             "\xD5\x96" => "\xD6\x86"       /* U+0556: ARMENIAN CAPITAL LETTER FEH                              -> U+0586: ARMENIAN SMALL LETTER FEH                              */
-        ],
 
-        self::CONVERT_TO_ND => [
+        ];
+    }
+
+    private function setMap_ND()
+    {
+        $this->maps[self::CONVERT_TO_ND] = [
             "\xC2\xA0" => "\x20"    ,  /* U+00A0: NO-BREAK SPACE                                           -> U+0020: SPACE                                            */
             "\xC2\xA8" => "\x20"    ,  /* U+00A8: DIAERESIS                                                -> U+0020: SPACE                                            */
             "\xC2\xAA" => "\x61"    ,  /* U+00AA: FEMININE ORDINAL INDICATOR                               -> U+0061: LATIN SMALL LETTER A                             */
@@ -859,9 +885,13 @@ class unicode
             "\xD3\xB5" => "\xD1\x87",  /* U+04F5: CYRILLIC SMALL LETTER CHE WITH DIAERESIS                 -> U+0447: CYRILLIC SMALL LETTER CHE                        */
             "\xD3\xB8" => "\xD0\xAB",  /* U+04F8: CYRILLIC CAPITAL LETTER YERU WITH DIAERESIS              -> U+042B: CYRILLIC CAPITAL LETTER YERU                     */
             "\xD3\xB9" => "\xD1\x8B"   /* U+04F9: CYRILLIC SMALL LETTER YERU WITH DIAERESIS                -> U+044B: CYRILLIC SMALL LETTER YERU                       */
-        ],
 
-        self::CONVERT_TO_LCND => [
+        ];
+    }
+
+    private function setMap_LCND()
+    {
+        $this->maps[self::CONVERT_TO_LCND] = [
             "\x41"     => "\x61"        ,  /* U+0041: LATIN CAPITAL LETTER A                                   -> U+0061: LATIN SMALL LETTER A                               */
             "\x42"     => "\x62"        ,  /* U+0042: LATIN CAPITAL LETTER B                                   -> U+0062: LATIN SMALL LETTER B                               */
             "\x43"     => "\x63"        ,  /* U+0043: LATIN CAPITAL LETTER C                                   -> U+0063: LATIN SMALL LETTER C                               */
@@ -1538,8 +1568,9 @@ class unicode
             "\xD5\x94" => "\xD6\x84"    ,  /* U+0554: ARMENIAN CAPITAL LETTER KEH                              -> U+0584: ARMENIAN SMALL LETTER KEH                          */
             "\xD5\x95" => "\xD6\x85"    ,  /* U+0555: ARMENIAN CAPITAL LETTER OH                               -> U+0585: ARMENIAN SMALL LETTER OH                           */
             "\xD5\x96" => "\xD6\x86"       /* U+0556: ARMENIAN CAPITAL LETTER FEH                              -> U+0586: ARMENIAN SMALL LETTER FEH                          */
-        ]
-    ];
+
+        ];
+    }
 
     protected $endCharacters_utf8 = "\t\r\n !\"#\$%&'()+,-./:;<=>@[\\]^_`{|}~£§¨°";
 
@@ -1555,7 +1586,7 @@ class unicode
      */
     public function convert($string, $target)
     {
-        $ok_methods = array_keys(self::$map);
+        $ok_methods = [self::CONVERT_TO_LC, self::CONVERT_TO_ND, self::CONVERT_TO_LCND];
 
         if (!in_array($target, $ok_methods)) {
             throw new Exception_InvalidArgument(
@@ -1570,7 +1601,7 @@ class unicode
         }
 
         $out = '';
-        $_map = &self::$map[$target];   // faster in loop
+        $_map = $this->getMap($target);   // faster in loop
         $length = mb_strlen($string, 'UTF-8');
 
         for ($i = 0; $i < $length; $i++) {
@@ -1614,28 +1645,16 @@ class unicode
 
     public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true, $keep_dot = false)
     {
-        $regexp = '/[a-zA-Z0-9';
-        if ($keep_minus === true) {
-            $regexp .= '-';
-        }
-        if ($keep_underscores === true) {
-            $regexp .= '_';
-        }
-        if ($keep_dot === true) {
-            $regexp .= '\.';
-        }
-
-        $regexp .= ']{1}/';
-
         $string = $this->remove_diacritics($string);
 
         $out = '';
-
         $l = mb_strlen($string);
         for ($i = 0; $i < $l; $i ++) {
             $c = mb_substr($string, $i, 1);
-            if (preg_match($regexp, $c))
+            if(($c>='a'&&$c<='z')||($c>='A'&&$c<='Z')||($c>='0'&&$c<='9')
+                ||($keep_underscores&&$c=='_')||($keep_dot&&$c=='.')||($keep_minus&&$c=='-')) {
                 $out .= $c;
+            }
         }
 
         return $out;

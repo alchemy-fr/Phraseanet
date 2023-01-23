@@ -74,6 +74,6 @@ class PhpRequirements extends RequirementCollection implements RequirementInterf
         $this->addPhpIniRecommendation('session.use_cookies', true, true);
 
         $this->addPhpIniRecommendation('session.cookie_http_only', true, true);
-        $this->addPhpIniRecommendation('session.cookie_secure', true, true);
+        $this->addPhpIniRecommendation('session.cookie_secure', true, true, 'session.cookie_secure should be enabled in php.ini, but only if you use HTTPS');
     }
 }

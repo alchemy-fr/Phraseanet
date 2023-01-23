@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\StructureChangeSubscriber;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
@@ -68,6 +69,11 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
                 $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
+
+                // if phr is not yet installed, don't use non-existing service 'search_engine.structure'
+                if($app->offsetExists('search_engine.structure')) {
+                    $dispatcher->addSubscriber(new StructureChangeSubscriber($app['search_engine.structure']));
+                }
 
                 return $dispatcher;
             })

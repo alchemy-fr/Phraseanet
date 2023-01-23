@@ -53,6 +53,7 @@ foo < 42|<range:field.foo lt="42">
 foo ≤ 42|<range:field.foo lte="42">
 foo > 42|<range:field.foo gt="42">
 foo ≥ 42|<range:field.foo gte="42">
+foo = 2015/01/01|(<field.foo> == <value:"2015/01/01">)
 foo < 2015/01/01|<range:field.foo lt="2015/01/01">
 foo ≤ 2015/01/01|<range:field.foo lte="2015/01/01">
 foo > 2015/01/01|<range:field.foo gt="2015/01/01">
@@ -93,19 +94,93 @@ id:90 AND foo|(<record_identifier:"90"> AND <text:"foo">)
 id:90 foo|(<record_identifier:"90"> AND <text:"foo">)
 recordid:90|<record_identifier:"90">
 
-# Timestamps
-created_on < "2015/01/01"|<range:creation lt="2015/01/01">
-created_on ≤ "2015/01/01"|<range:creation lte="2015/01/01">
-created_on = "2015/01/01"|<range:creation gte="2015/01/01" lt="2015/01/02">
-created_on ≥ "2015/01/01"|<range:creation gte="2015/01/01">
-created_on > "2015/01/01"|<range:creation gt="2015/01/01">
-updated_on < "2015/01/01"|<range:update lt="2015/01/01">
-updated_on ≤ "2015/01/01"|<range:update lte="2015/01/01">
-updated_on = "2015/01/01"|<range:update gte="2015/01/01" lt="2015/01/02">
-updated_on ≥ "2015/01/01"|<range:update gte="2015/01/01">
-updated_on > "2015/01/01"|<range:update gt="2015/01/01">
-created_at > "2015/01/01"|<range:creation gt="2015/01/01">
-updated_at > "2015/01/01"|<range:update gt="2015/01/01">
+# Timestamps yyyy
+created_on < "2015"|<range:creation lt="2015">
+created_on ≤ "2015"|<range:creation lte="2015">
+created_on = "2015"|<range:creation gte="2015-01-01 00:00:00" lt="2016-01-01 00:00:00">
+created_on ≥ "2015"|<range:creation gte="2015">
+created_on > "2015"|<range:creation gt="2015">
+updated_on < "2015"|<range:update lt="2015">
+updated_on ≤ "2015"|<range:update lte="2015">
+updated_on = "2015"|<range:update gte="2015-01-01 00:00:00" lt="2016-01-01 00:00:00">
+updated_on ≥ "2015"|<range:update gte="2015">
+updated_on > "2015"|<range:update gt="2015">
+created_at > "2015"|<range:creation gt="2015">
+updated_at > "2015"|<range:update gt="2015">
+
+# Timestamps yyyy/mm
+created_on < "2015/01"|<range:creation lt="2015-01">
+created_on ≤ "2015/01"|<range:creation lte="2015-01">
+created_on = "2015/01"|<range:creation gte="2015-01-01 00:00:00" lt="2015-02-01 00:00:00">
+created_on ≥ "2015/01"|<range:creation gte="2015-01">
+created_on > "2015/01"|<range:creation gt="2015-01">
+updated_on < "2015/01"|<range:update lt="2015-01">
+updated_on ≤ "2015/01"|<range:update lte="2015-01">
+updated_on = "2015/01"|<range:update gte="2015-01-01 00:00:00" lt="2015-02-01 00:00:00">
+updated_on ≥ "2015/01"|<range:update gte="2015-01">
+updated_on > "2015/01"|<range:update gt="2015-01">
+created_at > "2015/01"|<range:creation gt="2015-01">
+updated_at > "2015/01"|<range:update gt="2015-01">
+
+# Timestamps yyyy/mm/dd
+created_on < "2015/01/01"|<range:creation lt="2015-01-01">
+created_on ≤ "2015/01/01"|<range:creation lte="2015-01-01">
+created_on = "2015/01/01"|<range:creation gte="2015-01-01 00:00:00" lt="2015-01-02 00:00:00">
+created_on ≥ "2015/01/01"|<range:creation gte="2015-01-01">
+created_on > "2015/01/01"|<range:creation gt="2015-01-01">
+updated_on < "2015/01/01"|<range:update lt="2015-01-01">
+updated_on ≤ "2015/01/01"|<range:update lte="2015-01-01">
+updated_on = "2015/01/01"|<range:update gte="2015-01-01 00:00:00" lt="2015-01-02 00:00:00">
+updated_on ≥ "2015/01/01"|<range:update gte="2015-01-01">
+updated_on > "2015/01/01"|<range:update gt="2015-01-01">
+created_at > "2015/01/01"|<range:creation gt="2015-01-01">
+updated_at > "2015/01/01"|<range:update gt="2015-01-01">
+
+# Timestamps yyyy/mm/dd hh
+created_on < "2015/01/01 12"|<range:creation lt="2015-01-01 12:00:00">
+created_on ≤ "2015/01/01 12"|<range:creation lte="2015-01-01 12:00:00">
+created_on = "2015/01/01 12"|<range:creation gte="2015-01-01 12:00:00" lt="2015-01-01 13:00:00">
+created_on ≥ "2015/01/01 12"|<range:creation gte="2015-01-01 12:00:00">
+created_on > "2015/01/01 12"|<range:creation gt="2015-01-01 12:00:00">
+updated_on < "2015/01/01 12"|<range:update lt="2015-01-01 12:00:00">
+updated_on ≤ "2015/01/01 12"|<range:update lte="2015-01-01 12:00:00">
+updated_on = "2015/01/01 12"|<range:update gte="2015-01-01 12:00:00" lt="2015-01-01 13:00:00">
+updated_on ≥ "2015/01/01 12"|<range:update gte="2015-01-01 12:00:00">
+updated_on > "2015/01/01 12"|<range:update gt="2015-01-01 12:00:00">
+created_at > "2015/01/01 12"|<range:creation gt="2015-01-01 12:00:00">
+updated_at > "2015/01/01 12"|<range:update gt="2015-01-01 12:00:00">
+
+# Timestamps yyyy/mm/dd hh:mm
+created_on < "2015/01/01 12.34"|<range:creation lt="2015-01-01 12:34:00">
+created_on ≤ "2015/01/01 12.34"|<range:creation lte="2015-01-01 12:34:00">
+created_on = "2015/01/01 12.34"|<range:creation gte="2015-01-01 12:34:00" lt="2015-01-01 12:35:00">
+created_on ≥ "2015/01/01 12.34"|<range:creation gte="2015-01-01 12:34:00">
+created_on > "2015/01/01 12.34"|<range:creation gt="2015-01-01 12:34:00">
+updated_on < "2015/01/01 12.34"|<range:update lt="2015-01-01 12:34:00">
+updated_on ≤ "2015/01/01 12.34"|<range:update lte="2015-01-01 12:34:00">
+updated_on = "2015/01/01 12.34"|<range:update gte="2015-01-01 12:34:00" lt="2015-01-01 12:35:00">
+updated_on ≥ "2015/01/01 12.34"|<range:update gte="2015-01-01 12:34:00">
+updated_on > "2015/01/01 12.34"|<range:update gt="2015-01-01 12:34:00">
+created_at > "2015/01/01 12.34"|<range:creation gt="2015-01-01 12:34:00">
+updated_at > "2015/01/01 12.34"|<range:update gt="2015-01-01 12:34:00">
+
+# Timestamps yyyy/mm/dd hh.mm.ss
+created_on < "2015/01/01 12.34.56"|<range:creation lt="2015-01-01 12:34:56">
+created_on ≤ "2015/01/01 12.34.56"|<range:creation lte="2015-01-01 12:34:56">
+created_on = "2015/01/01 12.34.56"|(<creation> == <value:"2015-01-01 12:34:56">)
+created_on ≥ "2015/01/01 12.34.56"|<range:creation gte="2015-01-01 12:34:56">
+created_on > "2015/01/01 12.34.56"|<range:creation gt="2015-01-01 12:34:56">
+updated_on < "2015/01/01 12.34.56"|<range:update lt="2015-01-01 12:34:56">
+updated_on ≤ "2015/01/01 12.34.56"|<range:update lte="2015-01-01 12:34:56">
+updated_on = "2015/01/01 12.34.56"|(<update> == <value:"2015-01-01 12:34:56">)
+updated_on ≥ "2015/01/01 12.34.56"|<range:update gte="2015-01-01 12:34:56">
+updated_on > "2015/01/01 12.34.56"|<range:update gt="2015-01-01 12:34:56">
+created_at > "2015/01/01 12.34.56"|<range:creation gt="2015-01-01 12:34:56">
+updated_at > "2015/01/01 12.34.56"|<range:update gt="2015-01-01 12:34:56">
+
+# timestamps missing zeros
+created_on = "2015/1/2 1.3.5"|(<creation> == <value:"2015-01-02 01:03:05">)
+
 
 # Flag matcher
 flag.foo:true|<flag:foo set>

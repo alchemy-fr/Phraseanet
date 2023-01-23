@@ -19,8 +19,10 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
@@ -46,6 +48,7 @@ class FeedController extends Controller
     }
 
     public function createFeedEntryAction(Request $request) {
+        /** @var Feed $feed */
         $feed = $this->getFeedRepository()->find($request->request->get('feed_id'));
 
         if (null === $feed) {
@@ -53,6 +56,8 @@ class FeedController extends Controller
         }
 
         $user = $this->getAuthenticatedUser();
+
+        /** @var FeedPublisher $publisher */
         $publisher = $this->getFeedPublisherRepository()->findOneBy([
             'feed' => $feed,
             'user' => $user,
@@ -73,6 +78,10 @@ class FeedController extends Controller
             ->setFeed($feed)
             ->setPublisher($publisher)
             ->setSubtitle($request->request->get('subtitle', ''));
+
+        if ($request->request->get('notify')) {
+            $entry->setNotifyEmailOn(new \DateTime());
+        }
 
         $feed->addEntry($entry);
 
@@ -113,7 +122,37 @@ class FeedController extends Controller
         );
     }
 
-    public function updateEntryAction(Request $request, $id) {
+    public function notifyCountAction(Request $request)
+    {
+        /** @var Feed|null $feed */
+        $feed = $this->getFeedRepository()->find($request->request->get('feed_id'));
+
+        /** @var \User_Query $Query */
+        $Query = $this->app['phraseanet.user-query'];
+
+        $Query->include_phantoms(true)
+            ->include_invite(false)
+            ->include_templates(false)
+            ->email_not_null(true);
+
+        if ($feed !== null && $feed->getCollection($this->app)) {
+            $Query->on_base_ids([$feed->getCollection($this->app)->get_base_id()]);
+        } elseif ($feed == null) {
+            return $this->app->json([
+                'success'   => false,
+                'message'   => $this->app->trans('publication:: no feed selected')
+            ]);
+        }
+
+        return $this->app->json([
+            'success'   => true,
+            'message'   => $this->app->trans('publication:: %count% users to notify', ['%count%' => $Query->execute()->get_total()])
+        ]);
+    }
+
+    public function updateEntryAction(Request $request, $id)
+    {
+        /** @var FeedEntry $entry */
         $entry = $this->getFeedEntryRepository()->find($id);
 
         if (null === $entry) {
@@ -132,6 +171,10 @@ class FeedController extends Controller
             ->setTitle($title)
             ->setSubtitle($request->request->get('subtitle', ''))
         ;
+
+        if ($request->request->get('notify')) {
+            $entry->setNotifyEmailOn(new \DateTime());
+        }
 
         $current_feed_id = $entry->getFeed()->getId();
         $new_feed_id = $request->request->get('feed_id', $current_feed_id);
@@ -164,6 +207,10 @@ class FeedController extends Controller
 
         $manager->persist($entry);
         $manager->flush();
+
+        $this->dispatch(PhraseaEvents::FEED_ENTRY_UPDATE, new FeedEntryEvent(
+            $entry, $request->request->get('notify')
+        ));
 
         return $this->app->json([
             'error'   => false,
@@ -238,8 +285,8 @@ class FeedController extends Controller
             'texte' => '<p>' . $this->app->trans(
                     'publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.'
                 ) . '</p><p>' . $this->app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-                <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI()
-                . '"/></div>',
+                <div class="feed_input_block"><input type="text" readonly="readonly" id="input-select-copy" class="input_select_copy" value="' . $link->getURI()
+                . '"/><button type="button" class="btn-info copy-feed" id="copy-feed">' . $this->app->trans('publications::copy') . '</button></div>',
             'titre' => $this->app->trans('publications::votre rss personnel'),
         ]);
     }
@@ -263,9 +310,11 @@ class FeedController extends Controller
             'texte' => '<p>' . $this->app->trans(
                     'publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.'
                 ) . '</p><p>' . $this->app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-                <div><input type="text" style="width:100%" value="' . $link->getURI() . '"/></div>',
-            'titre' => $this->app->trans('publications::votre rss personnel')
+                <div class="feed_input_block"><input type="text" readonly="readonly" id="input-select-copy" class="input_select_copy" value="' . $link->getURI()
+                . '"/><button type="button" class="btn-info copy-feed" id="copy-feed">' . $this->app->trans('publications::copy') . '</button></div>',
+            'titre' => $this->app->trans('publications::votre rss personnel'),
         ]);
+
     }
 
     public function ensureUserHasPublishRight()

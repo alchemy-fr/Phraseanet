@@ -19,28 +19,63 @@ class FieldToFieldMappingConverter
 
     public function convertField(Field $field, array $locales)
     {
-        if ($field->getType() === FieldMapping::TYPE_DATE) {
-            return new DateFieldMapping($field->getName(), FieldMapping::DATE_FORMAT_CAPTION);
+        $ret = null;
+        switch($field->getType()) {
+            case FieldMapping::TYPE_DATE:
+                $ret = new DateFieldMapping($field->getName(), FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
+                if (! $field->isFacet() && ! $field->isSearchable()) {
+                    $ret->disableIndexing();
+                }
+                else {
+                    // no more need "raw" for sorting (sort arg depends on type)
+                    // $ret->addChild(
+                    //     (new StringFieldMapping('raw'))
+                    //         ->enableRawIndexing());
+                    $ret->addChild(
+                        (new StringFieldMapping('light'))
+                            ->setAnalyzer('general_light')
+                            ->enableTermVectors()
+                    );
+                }
+                break;
+
+            case FieldMapping::TYPE_STRING:
+                $ret = new StringFieldMapping($field->getName());
+                if (! $field->isFacet() && ! $field->isSearchable()) {
+                    $ret->disableIndexing();
+                }
+                else {
+                    $ret->addChild(
+                        (new StringFieldMapping('raw'))
+                            ->enableRawIndexing());
+                    $ret->addAnalyzedChildren($locales);
+                    $ret->enableTermVectors(true);
+                }
+                break;
+
+            case FieldMapping::TYPE_DOUBLE:
+                $ret = new DoubleFieldMapping($field->getName());
+                if (! $field->isFacet() && ! $field->isSearchable()) {
+                    $ret->disableIndexing();
+                }
+                else {
+                    // no more need "raw" for sorting (sort arg depends on type)
+                    // $ret->addChild(
+                    //     (new StringFieldMapping('raw'))
+                    //         ->enableRawIndexing());
+                    $ret->addChild(
+                        (new StringFieldMapping('light'))
+                            ->setAnalyzer('general_light')
+                            ->enableTermVectors()
+                    );
+                }
+                break;
+
+            default:
+                $ret = new FieldMapping($field->getName(), $field->getType());
+                break;
         }
 
-        if ($field->getType() === FieldMapping::TYPE_STRING) {
-            $fieldMapping = new StringFieldMapping($field->getName());
-
-            if (! $field->isFacet() && ! $field->isSearchable()) {
-                $fieldMapping->disableIndexing();
-            } else {
-                $fieldMapping->addChild((new StringFieldMapping('raw'))->enableRawIndexing());
-
-                $child = new CompletionFieldMapping('suggest');
-                $fieldMapping->addChild($child);
-
-                $fieldMapping->addAnalyzedChildren($locales);
-                $fieldMapping->enableTermVectors(true);
-            }
-
-            return $fieldMapping;
-        }
-
-        return new FieldMapping($field->getName(), $field->getType());
+        return $ret;
     }
 }

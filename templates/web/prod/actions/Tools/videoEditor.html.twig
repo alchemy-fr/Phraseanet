@@ -1,0 +1,382 @@
+{% set selectionLength = records|length %}
+{% set isVideo = 'false' %}
+
+{% if selectionLength == 1 %}
+    {% for record in records %}
+        {% set subdefs = record.get_subdefs() %}
+        {% if record.get_type() == 'video' %}
+            {% set isVideo = 'true' %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% set overlapChapters = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'overlapChapters') %}
+
+<div id='prod-tool-box' class="PNB10 video-edit">
+    {# jquery Tabs #}
+    <div id="tool-tabs" class="tabs PNB">
+        {# jquery menu #}
+        <div>
+            <ul>
+                <li>
+                    <a href="#thumbExtractor">
+                        {{ "video tool" | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="#rangeExtractor">
+                        {{ "video range extractor" | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="#subtitleEditor" class="subtitleEditortoggle">
+                        {{ "prod:videoeditor:subtitleTab:: title" | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="#subtitleRequest" class="subtitleEditortoggle">
+                        {{ "prod:videoeditor:subtitleRequestTab:: title" | trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        {% if selectionLength == 1 %}
+            {% for record in records %}
+                {% if record.get_type() == 'video' %}
+                    <div id="thumbExtractor">
+
+                        <div id="thumbExtractor-preview">
+                            <div class="frame_video">
+                                {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
+                                {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+                                {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+                                {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+                                {% set technical_info = record.get_technical_infos %}
+
+                                {#Set the preview Ratio #}
+                                {% set width = technical_info[dataW].value %}
+                                {% set height = technical_info[dataH].value %}
+                                {% set prevRatio = '' %}
+
+                                {% if width and height %}
+                                    {% set ratio =  (width / height)|number_format(2, '.') %}
+                                {% endif %}
+
+                                {#Set the document Ratio #}
+                                {% for subdef in previewHtml5 %}
+
+                                    {% set width = subdef.get_width()  %}
+                                    {% set height = subdef.get_height() %}
+
+                                    {% if width and height %}
+                                        {% if subdef.get_name()=='preview' %}
+                                            {% set prevRatio =  (width / height)|number_format(2, '.') %}
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endfor %}
+                                <video id="thumb_video_A" class="thumb_video fake-video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
+                                    {% for subdef in previewHtml5 %}
+                                        <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                    {% endfor %}
+                                    {{ 'No preview available' | trans }}
+                                </video>
+                                <video id="thumb_video" class="thumb_video real-video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
+                                    {% for subdef in previewHtml5 %}
+                                        <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                    {% endfor %}
+                                    {{ 'No preview available' | trans }}
+                                </video>
+
+                            </div>
+                            <div class="videotools-spinner ui-widget-overlay ui-front hidden" id="videotools-spinner" style="opacity: 0.9">
+                                <img src="/assets/common/images/icons/loading.svg" alt="" id="gif-loader">
+                            </div>
+                            <div id="thumb_camera_button"></div>
+
+                            <div class="vertical-divider"></div>
+
+                            <div class="video-data-container">
+                                <dl class="dl-horizontal">
+                                    <dt>Ratio</dt>
+                                    <dd>{{ ratio }}</dd>
+                                    <dt>Type</dt>
+                                    <dd>{{ record.get_mime() }}</dd>
+                                    {% if record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] is defined %}
+                                        <dt>{{ 'Images par secondes' | trans }}</dt>
+                                        <dd>{{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }}ips
+                                        </dd>
+                                    {% endif %}
+                                    {% if record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] is defined %}
+                                        <dt>{{ 'Codec Audio' | trans }}</dt>
+                                        <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}</dd>
+                                    {% endif %}
+                                    <dt>{{ 'Size' | trans }}</dt>
+                                    <dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
+                                        (null) %}
+                                        {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
+                                        {% if width is not none and height is not none %}
+                                            {{ width ~ " x " ~ height }}
+                                        {% endif %}</dd>
+                                </dl>
+                            </div>
+
+                        </div>
+                        <div class="horizontal-divider"></div>
+                        <div id="thumbExtractor-screenshot">
+                            <p id='thumb_info'>{{ "screenshot video" | trans }}</p>
+
+                            <div id="frame">
+                                <div class="frame_canva">
+                                    <div id="thumb_delete_button"/>
+                                    <div id="thumb_download_button"/>
+                                    <div class="canvas-wrap">
+                                        <canvas id="thumb_canvas"></canvas>
+                                    </div>
+                                    <div id="alt_canvas_container"
+                                         style="position:absolute;overflow:hidden;top:-1200px;visibility: hidden; width:0!important;height:0!important">
+                                        {% for subdef in outputFormats %}
+                                            <canvas data-width="{{ subdef.get_width() }}"
+                                                    data-height="{{ subdef.get_height() }}"
+                                                    data-name="{{ subdef.get_name() }}"
+                                                    class="alt_canvas" id="{{ subdef.get_name() }}" ></canvas>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="grid">
+                            </div>
+
+                            {#<div id="thumb_slider">#}
+                            {#<div id="thumb_wrapper">#}
+                            {#</div>#}
+                            {#</div>#}
+                            <div class="thumb_submit_action">
+                                <input type="hidden" value='{{ record.get_sbas_id() }}' name='sbas_id'>
+                                <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
+                                <button id="thumb_validate_button" class="btn btn-inverse"
+                                        type="button">{{ "validate" | trans }}</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div id="rangeExtractor" class="">
+                        <div class="video-range-editor-container"></div>
+                    </div>
+                    <div id="subtitleEditor" class="subtitleEditor video-subtitle-editor-container">
+                        <input type="hidden" id="defaultStartValue"  value="00:00:00.000">
+                        <input type="hidden" id="defaultEndValue"  value="00:00:02.000">
+                        <div id="default-item" class="default-item hide">
+                            <fieldset class='video-subtitle-item'><span class='number'>0</span>
+                                <div class='item-field start-time' ><label>{{ "prod:videoeditor:subtitletab:: Start time" | trans }}</label><input class='time startTime' type='text' name='startTime' size='12' value="00:00:00.000"/></div>
+                                <div class='item-field end-time'><label>{{ "prod:videoeditor:subtitletab:: End time" | trans }}</label><input class='time endTime' type='text' name='endTime'  size='12'value="00:00:02.000" /></div>
+                                <div class='item-field show-for-time'><label>{{ "prod:videoeditor:subtitletab:: Show for" | trans }}</label><input class='showForTime' readonly type='text' size='12' value="00:00:02.000"/></div>
+                                <div class='item-field caption-text'><textarea class="captionText" name='captionText' placeholder='{{ "prod:videoeditor:subtitletab:: Caption placeholder" | trans }}' rows='2' ></textarea></div>
+                                <div class='remove-item'><i class='fa fa-times-circle'></i></div>
+                            </fieldset>
+                        </div>
+                        <form name="video_subtitle_data" id="video-subtitle-data">
+                            <div class="video-subtitle-top">
+                                <label>{{ "prod:videoeditor:subtitletab:: work on" | trans }}</label>
+                                <select name="meta_struct_id" id="metaStructId">
+                                    {% for videoTextTrackField in videoTextTrackFields %}
+                                        <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
+                                    {% endfor %}
+                                </select>
+
+                                {% for videoTextTrackField in videoTextTrackFields %}
+                                    <input type="hidden" id="caption_{{ videoTextTrackField.meta_struct_id}}" value='{{ videoTextTrackField.value}}' name='databox_id'>
+                                {% endfor %}
+                                <input type="text" id="record-vtt">
+                                <input type="hidden" value='{{ record.get_sbas_id() }}' name='databox_id'>
+                                <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
+                                <input type="hidden" id="no_caption" value='{{ "prod:videoeditor:subtitletab:: No caption message" | trans }}'>
+                            </div>
+                        </form>
+                        <form name="video_subtitle_list" id="video-subtitle-list">
+                            <div class="video-subtitle-bottom">
+                                <div class="video-subtitle-left">
+                                    <div class="video-subtitle-left-inner">
+                                        <div class="fields-wrapper">
+                                        </div>
+                                    </div>
+                                    <div class="video-subtitle-left-button btn-container">
+                                        <button type="button" id="submit-subtitle" class="btn submit-subtitle add-btn pull-left">{{ "prod:videoeditor:subtitletab:: save" | trans }}</button>
+                                        <button type="button" id="copy-subtitle" class="btn copy-subtitle pull-left">{{ "prod:videoeditor:subtitletab:: copy to clipboard" | trans }}</button>
+                                        <button class="add-subtitle-vtt btn pull-right add-btn" tabindex="0" type="button" aria-label="Add VTT" title = {{ "prod:videoeditor:subtitletab:: add caption" | trans }}>
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="video-subtitle-right" style="overflow: hidden;">
+                                    <div class="video-subtitle-wrapper">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id ="subtitleRequest" class="subtitleRequest">
+                        <div class="video-subtitle-bottom">
+                            <div class="video-subtitle-left">
+                                <div class="video-request-left-inner">
+                                    <form  id="video-subtitle-request" class="video-subtitle-request">
+                                       <p class="item">
+                                            <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Provider" | trans }}</label>
+                                            <select name="subtitleProvider" id="subtitle_provider">
+                                                <option value="Ginger">Ginger</option>
+                                            </select>
+                                       </p>
+                                        <p class="item">
+                                            <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Kind" | trans }}</label>
+                                            <select name="subtitle_kindr" id="subtitle_kindr">
+                                                <option value="autosubtitling">{{ "prod:videoeditor:subtitleRequestTab:: Autosubtitling" | trans }}</option>
+                                            </select>
+                                        </p>
+                                        <p class="item">
+                                            <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Source Audio language" | trans }}</label>
+                                            <select name="subtitle_language_source" id="subtitle_language_source">
+                                                {% for videoTextTrackField in videoTextTrackFields %}
+                                                    <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </p>
+                                        <p class="item">
+                                            <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Language destination" | trans }}</label>
+                                            <select name="subtitle_language_destination" id="subtitle_language_destination">
+                                                {% for videoTextTrackField in videoTextTrackFields %}
+                                                    <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </p>
+                                        <br>
+                                        <div class="video-subtitle-center-button btn-container">
+                                            <button type="button" id="submit-subtitle-request" class="btn add-btn submit-subtitle btn-blue">{{ "prod:videoeditor:subtitleRequestTab:: submit" | trans }}</button>
+                                        </div>
+                                        <input type="hidden" value='{{ record.get_sbas_id() }}' name='record_sbas_id'>
+                                        <input type="hidden" value='{{ record.get_record_id() }}' name='record_record_id'>
+                                       <p class="text-center alert-wrapper hide" id="request-status">
+                                            <span class="alert alert-info">{{ "prod:videoeditor:subtitleRequestTab:: Request in process" | trans }}</span>
+                                        </p>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="video-subtitle-right">
+                                <div class="video-subtitle-wrapper">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {# hidden iframe to handle upload #}
+    <iframe
+            id="uploadHdsub"
+            name="uploadHdsub"
+            height="0"
+            width="0"
+            border="0"
+    >
+    </iframe>
+</div>
+<style>
+    .video-subtitle-editor-container .number {
+        float: none;
+    }
+    .video-subtitle-editor-container .editing .number {
+        float: left;
+    }
+</style>
+<script type="text/javascript">
+    var toolsConfig = {
+        selectionLength: {{ selectionLength }},
+        isVideo: '{{ isVideo }}',
+        databaseId: {% if selectionLength == 1 %}{{ record.get_base_id }}{% else %}0{% endif %},
+        databoxId: {% if selectionLength == 1 %}{{ record.get_sbas_id() }}{% else %}0{% endif %},
+        recordId: {% if selectionLength == 1 %}{{ record.get_record_id }}{% else %}0{% endif %},
+        translations: {
+            alertTitle: '{{ "alert" | trans }}',
+            noImgSelected: '{{ "no image selected" | trans }}',
+            processing: '{{ "processing" | trans }}',
+            thumbnailTitle: '{{ 'thumbnail validation' | trans }}',
+            updateTitle: '{{ 'Successful update' | trans }}'
+        },
+        T_fields: {{ JSonFields|raw }},
+        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
+        records: [
+
+            {% for record in records %}
+            {
+                id: {{ record.get_record_id }},
+                type: "{{ record.get_type() }}",
+                {% if record.get_type() == 'video' %}
+                {% if selectionLength == 1 %}
+                {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
+                {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+                {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+                {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+                {% set technical_info = record.get_technical_infos %}
+                {% set width = technical_info[dataW].value %}
+                {% set height = technical_info[dataH].value %}
+
+                {% if width and height %}
+                {% set ratio = (width / height)|number_format(2, '.') %}
+                {% else %}
+                {% set ratio = '' %}
+                {% endif %}
+
+                sources: [
+                    {% for subdef in previewHtml5 %}
+                    {
+                        ratio: '{{ ratio }}',
+                        width: '{{ width }}',
+                        height: '{{ height }}',
+                        framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
+                        type: "{{ subdef.get_mime() }}",
+                        src: "{{ subdef.get_url() }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]
+                {% endif %}
+                {% endif %}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ],
+        preferences: {
+            overlapChapters: {% if overlapChapters != NULL %}{{ overlapChapters }}{% else %}1{% endif %},
+        }
+    }
+
+    $('#submit-subtitle-request').on('click', function (e) {
+        e.preventDefault();
+        console.log("auto-subtitle process");
+        $.ajax({
+            type: 'POST',
+            url: '/prod/tools/auto-subtitle/',
+            dataType: 'json',
+            data: {
+                databox_id: {{ record.getDataboxId }},
+                record_id: {{ record.getRecordId }},
+                subtitle_language_source: $('#subtitle_language_source option:selected').text(),
+                meta_struct_id_source: $('#subtitle_language_source').val(),
+                subtitle_language_destination: $('#subtitle_language_destination option:selected').text(),
+                meta_struct_id_destination: $('#subtitle_language_destination').val()
+            },
+            success: function success(data) {
+                console.log(data);
+                $('#request-status').removeClass('hide');
+            }
+        });
+    });
+
+
+</script>

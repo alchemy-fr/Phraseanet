@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
 
 class TextNode extends AbstractTermNode implements ContextAbleInterface
@@ -39,11 +39,19 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
     public function buildQuery(QueryContext $context)
     {
         $query_builder = function (array $fields) use ($context) {
+            /** @var Field[] $fields */
             // Full text
             $index_fields = [];
-            foreach (ValueChecker::filterByValueCompatibility($fields, $this->text) as $field) {
+            $th_fields = [];
+            foreach ($fields as $field) {
                 foreach ($context->localizeField($field) as $f) {
                     $index_fields[] = $f;
+                }
+                foreach ($context->truncationField($field) as $f) {
+                    $index_fields[] = $f;
+                }
+                if($field->hasConceptInference()) {
+                    $th_fields[] = $field;
                 }
             }
             if (!$index_fields) {
@@ -59,19 +67,18 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
                 ]
             ];
             // Thesaurus
-            $concept_queries = $this->buildConceptQueries($fields);
+            $concept_queries = $this->buildConceptQueries($th_fields);
             foreach ($concept_queries as $concept_query) {
                 $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
             }
             return $query;
         };
 
-        // Unrestricted fields
-        $query = $query_builder($context->getUnrestrictedFields());
-
-        // Private fields
+        $unrestricted_fields = $context->getUnrestrictedFields();
         $private_fields = $context->getPrivateFields();
-        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
+
+        $query = $query_builder($unrestricted_fields);
+        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $unrestricted_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 

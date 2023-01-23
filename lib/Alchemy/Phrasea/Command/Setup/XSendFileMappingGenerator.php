@@ -37,7 +37,7 @@ class XSendFileMappingGenerator extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $extractor = new DataboxPathExtractor($this->container->getApplicationBox());
-        $paths = $extractor->extractPaths();
+        $paths = $extractor->extractPaths('xsendfile');
         foreach ($paths as $path) {
             $this->container['filesystem']->mkdir($path);
         }

@@ -17,6 +17,7 @@ define([
     var AlertView = Backbone.View.extend({
         tagName: "div",
         className: "alert",
+        template: _.template($("#alert_template").html()),
         initialize: function (options) {
             var self = this;
 
@@ -32,11 +33,8 @@ define([
         },
         render: function () {
             var self = this;
-            var template = _.template($("#alert_template").html(), {
-                msg: this.message
-            });
 
-            this.$el.addClass("alert-" + this.alert).html(template).alert();
+            this.$el.addClass("alert-" + this.alert).html(this.template({msg: this.message})).alert();
 
             if (this.delay > 0) {
                 window.setTimeout(function () {

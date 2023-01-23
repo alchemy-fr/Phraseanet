@@ -4,7 +4,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ 'thesaurus:: Lier la branche de thesaurus' | trans }}</title>
 
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
 
         <script type="text/javascript">
             function clkBut(button)
@@ -12,10 +12,23 @@
                 switch(button)
                 {
                     case "submit":
-                        document.forms[0].submit();
+                        $('.link-field-2').submit(
+                            $.ajax({
+                                url     : 'linkfield3.php',
+                                type    : 'POST',
+                                data    : $('.link-field-2').serialize(),
+                                success : function( data ) {
+                                    $("#DLG_LINK_FIELD_1").html('');
+                                    $("#DLG_LINK_FIELD_1").append(data);
+                                },
+                                error   : function( xhr, err ) {
+                                    alert('Error');
+                                }
+                            })
+                        );
                         break;
                     case "cancel":
-                        self.close();
+                        $('.close-dialog').trigger('click');
                         break;
                 }
             }
@@ -23,11 +36,15 @@
             {
                 window.name="LINKFIELD";
             }
+            $( document ).ready(function() {
+                loaded();
+            });
         </script>
     </head>
-    <body onload="loaded();" class="dialog">
+    <body class="dialog">
     <center>
-        <form action="linkfield3.php" method="post" target="LINKFIELD">
+        <form  class="link-field-2" action="linkfield3.php" method="post" target="LINKFIELD">
+            <div class="text-center">
             <input type="hidden" name="piv" value="{{ piv }}">
             <input type="hidden" name="bid" value="{{ bid }}">
             <input type="hidden" name="tid" value="{{ tid }}">
@@ -68,10 +85,11 @@
             {% else %}
                 <div style='position:absolute; top:5px; left:0px; width:100%; text-align:center; color:green'>{{ 'thesaurus:: pas de reindexation' | trans }}</div>
             {% endif %}
-            <br/>
-            <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
-            &nbsp;&nbsp;&nbsp;
-            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');">
+            </div>
+            <div class="thesaurus_confirm_bottom_block">
+                <input type="button" id="cancel_button" class="cancel_btn" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');">
+                <input type="button" id="submit_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
+            </div>
         </form>
     </center>
 </body>

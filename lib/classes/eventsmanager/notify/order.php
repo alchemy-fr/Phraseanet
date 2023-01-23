@@ -41,8 +41,8 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         $ret = [
             'text'  => $this->app->trans('%user% a passe une %opening_link% commande %end_link%', [
-                '%user%' => $sender,
-                '%opening_link%' => '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'.$this->app->trans('Orders manager').'">',
+                '%user%' => htmlentities($sender),
+                '%opening_link%' => '<a href="#" class="order-notif" data-id="'.$order_id.'" title="'.$this->app->trans('Orders manager').'">',
                 '%end_link%' => '</a>',])
             , 'class' => ''
         ];

@@ -4,18 +4,18 @@ var utils = require('../../utils.js');
 
 gulp.task('build-jquery-mobile-css', function(){
     return utils.buildCssGroup([
-        config.paths.vendors + 'jquery-mobile-bower/css/jquery.mobile-1.3.2.css'
+        config.paths.src + 'vendors/jquery-mobile/jquery.mobile-1.4.5.min.css'
     ], 'jquery-mobile', 'vendors/jquery-mobile');
 });
 
 gulp.task('build-jquery-mobile-js', function(){
     return utils.buildJsGroup([
-        config.paths.vendors + 'jquery-mobile-bower/js/jquery.mobile-1.3.2.js'
+        config.paths.src + 'vendors/jquery-mobile/jquery.mobile-1.4.5.min.js'
     ], 'jquery-mobile', 'vendors/jquery-mobile');
 });
 
 gulp.task('build-jquery-mobile', ['build-jquery-mobile-js', 'build-jquery-mobile-css'], function(){
     // copy jquery mobile assets
-    return gulp.src(config.paths.vendors + 'jquery-mobile-bower/css/images/**/*')
+    return gulp.src(config.paths.src + 'vendors/jquery-mobile/images/**/*')
         .pipe(gulp.dest( config.paths.build + 'vendors/jquery-mobile/images'));
 });

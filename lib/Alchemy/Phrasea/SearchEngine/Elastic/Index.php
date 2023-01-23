@@ -83,12 +83,28 @@ class Index
     {
         $this->analysis = [
             'analyzer' => [
+                // used to sort
+                'sort' => [
+                    'type' => 'custom',
+                    'tokenizer' => 'keyword',   // don't tokenize, keep whole value as a string
+                    'filter' => ['lowercase', 'asciifolding']   // asciifolding = remove diacritics
+                ],
                 // General purpose, without removing stop word or stem: improve meaning accuracy
                 'general_light' => [
                     'type' => 'custom',
                     'tokenizer' => 'icu_tokenizer',
                     // TODO Maybe replace nfkc_normalizer + asciifolding with icu_folding
                     'filter' => ['nfkc_normalizer', 'asciifolding']
+                ],
+                'truncation_analyzer' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'truncation_tokenizer',
+                    'filter'    => ['lowercase', 'stop', 'kstem']
+                ],
+                'truncation_analyzer#search' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'truncation_tokenizer',
+                    'filter'    => ['lowercase', 'stop', 'kstem']
                 ],
                 // Lang specific
                 'fr_full' => [
@@ -145,6 +161,12 @@ class Index
                 ]
             ],
             'tokenizer' => [
+                'truncation_tokenizer' => [
+                    "type" => "edgeNGram",
+                    "min_gram" => "2",
+                    "max_gram" => "15",
+                    "token_chars" => [ "letter", "digit", "punctuation", "symbol" ]
+                ],
                 'thesaurus_path' => [
                     'type' => 'path_hierarchy'
                 ]

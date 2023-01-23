@@ -1,5 +1,5 @@
 {% block tab_headers_wrapper %}
-    <ul class="icon-menu ui-tabs-nav ui-helper-reset">
+    <ul class="prod-icon-menu ui-tabs-nav ui-helper-reset">
         {% block tab_headers %}
             {% if GV_thesaurus %}
                 <li class="proposals_WZ">
@@ -17,7 +17,11 @@
                 </li>
             {% endif %}
             <li class="ui-corner-top baskets">
-                <a href="#baskets" class="WZbasketTab">
+                {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
+                {% set hash = expose_activate ? '#baskets_wrapper' : '#baskets' %}
+
+                <a href="{{ hash }}" class="WZbasketTab WZtabs">
+                    <img src="/assets/common/images/icons/workzone32.png" title="{{ 'phraseanet:: baskets' | trans }}"/>
                     <div id="basket_menu_trigger">&#9660;</div>
                 </a>
             </li>

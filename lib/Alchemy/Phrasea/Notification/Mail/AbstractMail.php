@@ -17,6 +17,10 @@ use Alchemy\Phrasea\Notification\ReceiverInterface;
 
 abstract class AbstractMail implements MailInterface
 {
+    const MAIL_SKIN = 'default';
+
+    /** @var string| null */
+    protected $locale = null;
     /** @var Application */
     protected $app;
     /** @var EmitterInterface */
@@ -33,6 +37,8 @@ abstract class AbstractMail implements MailInterface
     protected $expiration;
     /** @var string */
     protected $url;
+    /** @var bool  */
+    protected $hasFooterText = true;
 
     public function __construct(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null)
     {
@@ -59,6 +65,9 @@ abstract class AbstractMail implements MailInterface
             'expiration'        => $this->getExpiration(),
             'buttonUrl'         => $this->getButtonURL(),
             'buttonText'        => $this->getButtonText(),
+            'mailSkin'          => $this->getMailSkin(),
+            'emailLocale'       => $this->getLocale(),
+            'hasFooterText'     => $this->getDisplayFooterText()
         ]);
     }
 
@@ -76,6 +85,26 @@ abstract class AbstractMail implements MailInterface
     public function getPhraseanetURL()
     {
         return $this->app->url('root');
+    }
+
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    public function getDisplayFooterText()
+    {
+        return $this->hasFooterText;
+    }
+
+    public function setDisplayFooterText(bool $hasFooterText)
+    {
+        $this->hasFooterText = !!$hasFooterText;
     }
 
     /**
@@ -164,6 +193,14 @@ abstract class AbstractMail implements MailInterface
     public function setButtonUrl($url)
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailSkin()
+    {
+        return self::MAIL_SKIN;
     }
 
     /**

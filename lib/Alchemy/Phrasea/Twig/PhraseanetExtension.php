@@ -4,10 +4,10 @@ namespace Alchemy\Phrasea\Twig;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Collection\CollectionHelper;
+use Alchemy\Phrasea\Http\StaticFile\StaticMode;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
-use Alchemy\Phrasea\Http\StaticFile\StaticMode;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 
 class PhraseanetExtension extends \Twig_Extension
@@ -24,6 +24,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('sort_collections', array(CollectionHelper::class, 'sort')),
+            new \Twig_SimpleFilter('date_duration', array($this, 'getDuration')),
         );
     }
 
@@ -48,10 +49,26 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
             new \Twig_SimpleFunction('caption_field', array($this, 'getCaptionField')),
             new \Twig_SimpleFunction('caption_field_label', array($this, 'getCaptionFieldLabel')),
+            new \Twig_SimpleFunction('caption_field_gui_visible', array($this, 'getCaptionFieldGuiVisible')),
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
 
             new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
         );
+    }
+
+    public function getGlobals()
+    {
+        return [
+            // change this version when you change JS file to force the navigation to reload js file
+            'assetFileVersion' => 77
+        ];
+
+    }
+
+    public function getDuration(int $interval)
+    {
+        $t = round($interval);
+        return sprintf('%02d h  %02d m  %02d s', ($t/3600),($t/60 %60), $t%60);
     }
 
     /**
@@ -66,11 +83,33 @@ class PhraseanetExtension extends \Twig_Extension
             /** @var \appbox $appbox */
             $appbox = $this->app['phraseanet.appbox'];
             $databox = $appbox->get_databox($record->getDataboxId());
-
             foreach ($databox->get_meta_structure() as $meta) {
                 /** @var \databox_field $meta */
                 if ($meta->get_name() === $fieldName) {
                     return $meta->get_label($this->app['locale']);
+                }
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * get localized field's gui_visible
+     * @param RecordInterface $record
+     * @param $fieldName
+     * @return string - the name gui_visible
+     */
+    public function getCaptionFieldGuiVisible(RecordInterface $record, $fieldName)
+    {
+        if ($record) {
+            /** @var \appbox $appbox */
+            $appbox = $this->app['phraseanet.appbox'];
+            $databox = $appbox->get_databox($record->getDataboxId());
+            foreach ($databox->get_meta_structure() as $meta) {
+                /** @var \databox_field $meta */
+                if ($meta->get_name() === $fieldName) {
+                    return $meta->get_gui_visible($this->app['locale']);
                 }
             }
         }
@@ -89,7 +128,7 @@ class PhraseanetExtension extends \Twig_Extension
             $highlightValue = $highlights[$field];
 
             // if field is multivalued, merge highlighted values with captions ones
-            if (is_array($value)) {
+            if (is_array($value) && count($value) > 1) {
                 $highlightValue = array_merge($highlightValue, array_diff($value, array_map(function($value) {
                     return str_replace(array('[[em]]', '[[/em]]'), array('', ''), $value);
                 }, $highlightValue)));
@@ -122,6 +161,31 @@ class PhraseanetExtension extends \Twig_Extension
         }
 
         return $orders[$databoxId][$orderKey];
+    }
+
+    /**
+     * @param \databox $databox
+     * @return array
+     */
+    private function retrieveDataboxFieldOrderings(\databox $databox)
+    {
+        $publicOrder = [];
+        $businessOrder = [];
+
+        foreach ($databox->get_meta_structure() as $field) {
+            $fieldName = $field->get_name();
+
+            if (!$field->isBusiness()) {
+                $publicOrder[] = $fieldName;
+            }
+
+            $businessOrder[] = $fieldName;
+        };
+
+        return [
+            'public'   => $publicOrder,
+            'business' => $businessOrder,
+        ];
     }
 
     public function getRecordFlags(RecordInterface $record)
@@ -157,24 +221,6 @@ class PhraseanetExtension extends \Twig_Extension
         return $recordStatuses;
     }
 
-    public function isGrantedOnDatabox($databoxId, $rights)
-    {
-        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
-
-            return false;
-        }
-
-        $rights = (array) $rights;
-        foreach ($rights as $right) {
-            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($databoxId, $right)) {
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /**
      * returns true if user is authenticated and has all the passed rights on the base
      * todo : wtf $rights is an array since it's never called with more than 1 right in it ?
@@ -194,6 +240,24 @@ class PhraseanetExtension extends \Twig_Extension
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($rights as $right) {
             if (! $acl->has_right_on_base($baseId, $right)) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function isGrantedOnDatabox($databoxId, $rights)
+    {
+        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
+
+            return false;
+        }
+
+        $rights = (array)$rights;
+        foreach ($rights as $right) {
+            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($databoxId, $right)) {
 
                 return false;
             }
@@ -267,11 +331,6 @@ class PhraseanetExtension extends \Twig_Extension
         return $this->getSubdefUrl($record, 'thumbnail');
     }
 
-    public function getThumbnailGifUrl(RecordInterface $record)
-    {
-        return $this->getSubdefUrl($record, 'thumbnailgif');
-    }
-
     public function getSubdefUrl(RecordInterface $record, $subdefName)
     {
         /** @var StaticMode $staticMode */
@@ -302,6 +361,11 @@ class PhraseanetExtension extends \Twig_Extension
         );
 
         return $path;
+    }
+
+    public function getThumbnailGifUrl(RecordInterface $record)
+    {
+        return $this->getSubdefUrl($record, 'thumbnailgif');
     }
 
     public function getSubdefSize(RecordInterface $record, $subdefName)
@@ -349,30 +413,5 @@ class PhraseanetExtension extends \Twig_Extension
     public function getName()
     {
         return 'phraseanet';
-    }
-
-    /**
-     * @param \databox $databox
-     * @return array
-     */
-    private function retrieveDataboxFieldOrderings(\databox $databox)
-    {
-        $publicOrder = [];
-        $businessOrder = [];
-
-        foreach ($databox->get_meta_structure() as $field) {
-            $fieldName = $field->get_name();
-
-            if (!$field->isBusiness()) {
-                $publicOrder[] = $fieldName;
-            }
-
-            $businessOrder[] = $fieldName;
-        };
-
-        return [
-            'public'   => $publicOrder,
-            'business' => $businessOrder,
-        ];
     }
 }

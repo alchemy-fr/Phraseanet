@@ -777,8 +777,8 @@ class ACLTest extends \PhraseanetTestCase
                 $plusone = new DateTime('+1 day');
                 $this->object->set_limits($base_id, true, $minusone, $plusone);
                 $limits = $this->object->get_limits($base_id);
-                $this->assertEquals($limits['dmin'], $minusone);
                 $this->assertEquals($limits['dmax'], $plusone);
+                $this->assertEquals($limits['dmin'], $minusone);
                 $minustwo = new DateTime('-2 day');
                 $plustwo = new DateTime('-2 day');
                 $this->object->set_limits($base_id, true, $minustwo, $plustwo);

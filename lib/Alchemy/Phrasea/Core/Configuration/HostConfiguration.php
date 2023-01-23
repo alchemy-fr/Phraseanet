@@ -155,6 +155,10 @@ class HostConfiguration implements ConfigurationInterface
             throw new RuntimeException('Configuration is not set up.');
         }
 
+        if ($this->configuration->getNoCompile()) {
+            return $this->configuration->getConfig();
+        }
+
         return $this->cache;
     }
 
@@ -178,6 +182,11 @@ class HostConfiguration implements ConfigurationInterface
         $this->configuration->compileAndWrite();
         $this->cache = $this->configuration->getConfig();
         $this->setHost($this->host);
+    }
+
+    public function setNoCompile(bool $noCompile)
+    {
+        $this->configuration->setNoCompile($noCompile);
     }
 
     private function match($host, $hostname)

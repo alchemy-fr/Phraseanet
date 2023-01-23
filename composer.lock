@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "6d5f8379fbe2b68ebeb143f12a2f1b0d",
-    "content-hash": "1f574a6fdb44dd754dbf9768f490c2ee",
+    "content-hash": "a155d517a61963f9dd96d3f3a2c22d21",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -71,7 +70,7 @@
                 "source": "https://github.com/alchemy-fr/tcpdf-clone/tree/6.0.039",
                 "issues": "https://github.com/alchemy-fr/tcpdf-clone/issues"
             },
-            "time": "2013-10-13 16:11:17"
+            "time": "2013-10-13T16:11:17+00:00"
         },
         {
             "name": "alchemy/binary-driver",
@@ -128,20 +127,20 @@
                 "binary",
                 "driver"
             ],
-            "time": "2016-03-02 13:49:15"
+            "time": "2016-03-02T13:49:15+00:00"
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "0.3.7",
+            "version": "2.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "ce7408c7a47387eed3df2a743577d6e0e25f991f"
+                "reference": "e7c53ac4f0bfedba2cbd4431040cd615703a4c23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/ce7408c7a47387eed3df2a743577d6e0e25f991f",
-                "reference": "ce7408c7a47387eed3df2a743577d6e0e25f991f",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/e7c53ac4f0bfedba2cbd4431040cd615703a4c23",
+                "reference": "e7c53ac4f0bfedba2cbd4431040cd615703a4c23",
                 "shasum": ""
             },
             "require-dev": {
@@ -179,23 +178,23 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/0.3.7",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.13",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2017-05-30 13:18:21"
+            "time": "2021-10-01T13:22:39+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
-            "version": "0.1.2",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/GeonamesServer-PHP-Plugin.git",
-                "reference": "111a38233da7a5503f86e96877e044381698f647"
+                "reference": "d16f1733f7e8e6bdc752e686fa9837d7ec9f4f64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/GeonamesServer-PHP-Plugin/zipball/111a38233da7a5503f86e96877e044381698f647",
-                "reference": "111a38233da7a5503f86e96877e044381698f647",
+                "url": "https://api.github.com/repos/alchemy-fr/GeonamesServer-PHP-Plugin/zipball/d16f1733f7e8e6bdc752e686fa9837d7ec9f4f64",
+                "reference": "d16f1733f7e8e6bdc752e686fa9837d7ec9f4f64",
                 "shasum": ""
             },
             "require": {
@@ -220,7 +219,11 @@
             "keywords": [
                 "geonames"
             ],
-            "time": "2014-02-05 15:29:39"
+            "support": {
+                "issues": "https://github.com/alchemy-fr/GeonamesServer-PHP-Plugin/issues",
+                "source": "https://github.com/alchemy-fr/GeonamesServer-PHP-Plugin/tree/0.1.3"
+            },
+            "time": "2022-11-08T13:54:06+00:00"
         },
         {
             "name": "alchemy/ghostscript",
@@ -272,20 +275,20 @@
                 "ghostscript",
                 "pdf"
             ],
-            "time": "2013-06-25 09:12:58"
+            "time": "2013-06-25T09:12:58+00:00"
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.5",
+            "version": "0.4.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "ee7d1279a024130fc82fde9eabad86a667ed3630"
+                "reference": "0108a4b93d258dff00d154d1c05ddb296a34d621"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/ee7d1279a024130fc82fde9eabad86a667ed3630",
-                "reference": "ee7d1279a024130fc82fde9eabad86a667ed3630",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/0108a4b93d258dff00d154d1c05ddb296a34d621",
+                "reference": "0108a4b93d258dff00d154d1c05ddb296a34d621",
                 "shasum": ""
             },
             "require": {
@@ -294,7 +297,6 @@
                 "monolog/monolog": "~1.0",
                 "php": ">=5.3.0",
                 "php-ffmpeg/php-ffmpeg": "~0.3",
-                "symfony/console": "~2.0",
                 "symfony/http-foundation": "~2.0"
             },
             "replace": {
@@ -302,6 +304,7 @@
             },
             "require-dev": {
                 "jms/serializer": "~0.12.0",
+                "phpunit/phpunit": "^4.0|^5.0",
                 "silex/silex": "~1.0",
                 "symfony/yaml": "~2.0"
             },
@@ -335,20 +338,23 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2016-05-02 15:08:36"
+            "support": {
+                "source": "https://github.com/alchemy-fr/MediaVorus/tree/0.4.11"
+            },
+            "time": "2021-09-29T12:09:06+00:00"
         },
         {
             "name": "alchemy/oauth2php",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/oauth2-php.git",
-                "reference": "cb4fcb73e30ab54e0fb85a65b4d57147f7a0df15"
+                "reference": "801510972240555fa182813851efd96659d37a68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/cb4fcb73e30ab54e0fb85a65b4d57147f7a0df15",
-                "reference": "cb4fcb73e30ab54e0fb85a65b4d57147f7a0df15",
+                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/801510972240555fa182813851efd96659d37a68",
+                "reference": "801510972240555fa182813851efd96659d37a68",
                 "shasum": ""
             },
             "type": "library",
@@ -358,7 +364,7 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2013-07-01 09:46:59"
+            "time": "2019-01-17T14:34:10+00:00"
         },
         {
             "name": "alchemy/phlickr",
@@ -381,33 +387,30 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2014-12-15 14:27:57"
+            "time": "2014-12-15T14:27:57+00:00"
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.0",
+            "version": "0.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95"
+                "reference": "0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/7372ca4e43473328bf06bca810558fbad7bb2f95",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2",
+                "reference": "0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2",
                 "shasum": ""
             },
             "require": {
                 "doctrine/cache": "^1.0",
                 "doctrine/collections": "^1.0",
+                "exiftool/exiftool": "^11",
                 "monolog/monolog": "^1.3",
                 "php": ">=5.5.9",
-                "phpexiftool/exiftool": "10.10",
                 "symfony/console": "^2.1|^3.0",
                 "symfony/process": "^2.1|^3.0"
-            },
-            "replace": {
-                "phpexiftool/phpexiftool": "<0.5.0"
             },
             "require-dev": {
                 "jms/serializer": "~0.10|^1.0",
@@ -454,7 +457,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2017-05-18 19:04:04"
+            "time": "2020-01-17T14:28:33+00:00"
         },
         {
             "name": "alchemy/queue-bundle",
@@ -502,7 +505,7 @@
                 }
             ],
             "description": "Symfony bundle for alchemy/queue-component",
-            "time": "2016-10-04 14:19:39"
+            "time": "2016-10-04T14:19:39+00:00"
         },
         {
             "name": "alchemy/queue-component",
@@ -547,7 +550,7 @@
                 "MIT"
             ],
             "description": "Message queue component",
-            "time": "2016-10-05 10:41:36"
+            "time": "2016-10-05T10:41:36+00:00"
         },
         {
             "name": "alchemy/rest-bundle",
@@ -599,7 +602,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2016-05-16 09:37:34"
+            "time": "2016-05-16T09:37:34+00:00"
         },
         {
             "name": "alchemy/symfony-cors",
@@ -646,7 +649,7 @@
                 }
             ],
             "description": "A library that adds CORS services to Silex/Symfony Applications",
-            "time": "2015-12-17 15:34:43"
+            "time": "2015-12-17T15:34:43+00:00"
         },
         {
             "name": "alchemy/task-manager",
@@ -709,7 +712,7 @@
                 "parallel",
                 "process"
             ],
-            "time": "2016-11-30 13:34:30"
+            "time": "2016-11-30T13:34:30+00:00"
         },
         {
             "name": "alchemy/worker-bundle",
@@ -758,7 +761,7 @@
                 }
             ],
             "description": "Symfony bundle for alchemy/worker-component",
-            "time": "2016-12-06 10:39:58"
+            "time": "2016-12-06T10:39:58+00:00"
         },
         {
             "name": "alchemy/worker-component",
@@ -804,7 +807,7 @@
                 "MIT"
             ],
             "description": "Message queue worker component",
-            "time": "2016-11-14 16:41:16"
+            "time": "2016-11-14T16:41:16+00:00"
         },
         {
             "name": "alchemy/zippy",
@@ -866,7 +869,7 @@
                 "tar",
                 "zip"
             ],
-            "time": "2016-02-15 22:46:40"
+            "time": "2016-02-15T22:46:40+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
@@ -929,7 +932,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-07-25 18:03:20"
+            "time": "2016-07-25T18:03:20+00:00"
         },
         {
             "name": "beberlei/assert",
@@ -984,7 +987,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2017-01-24 15:14:39"
+            "time": "2017-01-24T15:14:39+00:00"
         },
         {
             "name": "behat/transliterator",
@@ -1024,7 +1027,75 @@
                 "slug",
                 "transliterator"
             ],
-            "time": "2015-09-28 16:26:35"
+            "time": "2015-09-28T16:26:35+00:00"
+        },
+        {
+            "name": "box/spout",
+            "version": "v2.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/box/spout.git",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/box/spout/zipball/3681a3421a868ab9a65da156c554f756541f452b",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xmlreader": "*",
+                "ext-zip": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.0"
+            },
+            "suggest": {
+                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
+                "ext-intl": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Box\\Spout\\": "src/Spout"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Adrien Loison",
+                    "email": "adrien@box.com"
+                }
+            ],
+            "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
+            "homepage": "https://www.github.com/box/spout",
+            "keywords": [
+                "OOXML",
+                "csv",
+                "excel",
+                "memory",
+                "odf",
+                "ods",
+                "office",
+                "open",
+                "php",
+                "read",
+                "scale",
+                "spreadsheet",
+                "stream",
+                "write",
+                "xlsx"
+            ],
+            "time": "2017-09-25T19:44:35+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -1088,7 +1159,49 @@
                 "slug",
                 "slugify"
             ],
-            "time": "2016-08-09 20:10:17"
+            "time": "2016-08-09T20:10:17+00:00"
+        },
+        {
+            "name": "czproject/git-php",
+            "version": "v3.17.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/czproject/git-php.git",
+                "reference": "a7b911b81a2fe626f748a4ac8955353c5777bc6c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/czproject/git-php/zipball/a7b911b81a2fe626f748a4ac8955353c5777bc6c",
+                "reference": "a7b911b81a2fe626f748a4ac8955353c5777bc6c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "nette/tester": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Pecha",
+                    "email": "janpecha@email.cz"
+                }
+            ],
+            "description": "Library for work with Git repository in PHP.",
+            "keywords": [
+                "git"
+            ],
+            "time": "2019-02-09T13:11:36+00:00"
         },
         {
             "name": "dailymotion/sdk",
@@ -1121,7 +1234,7 @@
                 "dailymotion",
                 "sdk"
             ],
-            "time": "2015-11-20 11:18:32"
+            "time": "2015-11-20T11:18:32+00:00"
         },
         {
             "name": "data-uri/data-uri",
@@ -1166,7 +1279,7 @@
                 "data-uri",
                 "uri"
             ],
-            "time": "2014-08-22 15:01:57"
+            "time": "2014-08-22T15:01:57+00:00"
         },
         {
             "name": "dflydev/doctrine-orm-service-provider",
@@ -1228,7 +1341,7 @@
                 "pimple",
                 "silex"
             ],
-            "time": "2015-09-07 12:16:54"
+            "time": "2015-09-07T12:16:54+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1296,7 +1409,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2015-08-31 12:32:49"
+            "time": "2015-08-31T12:32:49+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -1308,7 +1421,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/eb152c5100571c7a45470ff2a35095ab3f3b900b",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/b6f544a20f4807e81f7044d31e679ccbb1866dc3",
                 "reference": "b6f544a20f4807e81f7044d31e679ccbb1866dc3",
                 "shasum": ""
             },
@@ -1366,7 +1479,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-10-29 11:16:17"
+            "time": "2016-10-29T11:16:17+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -1432,7 +1545,7 @@
                 "collections",
                 "iterator"
             ],
-            "time": "2015-04-14 22:21:58"
+            "time": "2015-04-14T22:21:58+00:00"
         },
         {
             "name": "doctrine/common",
@@ -1505,7 +1618,7 @@
                 "persistence",
                 "spl"
             ],
-            "time": "2016-11-30 16:50:46"
+            "time": "2016-11-30T16:50:46+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -1576,7 +1689,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2017-01-23 23:17:10"
+            "time": "2017-01-23T23:17:10+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -1643,7 +1756,7 @@
                 "singularize",
                 "string"
             ],
-            "time": "2015-11-06 14:35:42"
+            "time": "2015-11-06T14:35:42+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -1697,7 +1810,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2015-06-14 21:17:01"
+            "time": "2015-06-14T21:17:01+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -1751,7 +1864,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2014-09-09 13:34:57"
+            "time": "2014-09-09T13:34:57+00:00"
         },
         {
             "name": "doctrine/migrations",
@@ -1825,19 +1938,19 @@
                 "database",
                 "migrations"
             ],
-            "time": "2016-12-25 22:54:00"
+            "time": "2016-12-25T22:54:00+00:00"
         },
         {
             "name": "doctrine/orm",
             "version": "v2.5.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/doctrine2.git",
+                "url": "https://github.com/doctrine/orm.git",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "shasum": ""
             },
@@ -1901,7 +2014,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2016-12-18 15:42:34"
+            "time": "2016-12-18T15:42:34+00:00"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -1955,7 +2068,7 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2016-11-30 17:15:05"
+            "time": "2016-11-30T17:15:05+00:00"
         },
         {
             "name": "evenement/evenement",
@@ -1995,54 +2108,75 @@
             "keywords": [
                 "event-dispatcher"
             ],
-            "time": "2012-05-30 15:01:08"
+            "time": "2012-05-30T15:01:08+00:00"
         },
         {
-            "name": "facebook/php-sdk",
-            "version": "v3.2.3",
+            "name": "exiftool/exiftool",
+            "version": "11",
             "source": {
                 "type": "git",
-                "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
-                "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb"
+                "url": "https://github.com/exiftool/exiftool.git",
+                "reference": "11.84"
+            },
+            "type": "library"
+        },
+        {
+            "name": "facebook/graph-sdk",
+            "version": "5.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/php-graph-sdk.git",
+                "reference": "2f9639c15ae043911f40ffe44080b32bac2c5280"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebookarchive/facebook-php-sdk/zipball/6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
-                "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
+                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/2f9639c15ae043911f40ffe44080b32bac2c5280",
+                "reference": "2f9639c15ae043911f40ffe44080b32bac2c5280",
                 "shasum": ""
             },
             "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=5.2.0"
+                "php": "^5.4|^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "3.7.*"
+                "guzzlehttp/guzzle": "~5.0",
+                "mockery/mockery": "~0.8",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client",
+                "paragonie/random_compat": "Provides a better CSPRNG option in PHP 5"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
             "autoload": {
-                "classmap": [
-                    "src"
+                "psr-4": {
+                    "Facebook\\": "src/Facebook/"
+                },
+                "files": [
+                    "src/Facebook/polyfills.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "Apache2"
+                "Facebook Platform"
             ],
             "authors": [
                 {
                     "name": "Facebook",
-                    "homepage": "https://github.com/facebook/facebook-php-sdk/contributors"
+                    "homepage": "https://github.com/facebook/php-graph-sdk/contributors"
                 }
             ],
-            "description": "Facebook PHP SDK",
-            "homepage": "https://github.com/facebook/facebook-php-sdk",
+            "description": "Facebook SDK for PHP",
+            "homepage": "https://github.com/facebook/php-graph-sdk",
             "keywords": [
                 "facebook",
                 "sdk"
             ],
-            "abandoned": "facebook/graph-sdk",
-            "time": "2013-11-19 23:11:14"
+            "time": "2017-08-16T17:28:07+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -2085,7 +2219,7 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
-            "time": "2015-07-22 18:31:08"
+            "time": "2015-07-22T18:31:08+00:00"
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -2163,7 +2297,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2015-02-24 21:41:37"
+            "time": "2015-02-24T21:41:37+00:00"
         },
         {
             "name": "goodby/csv",
@@ -2220,19 +2354,19 @@
                 "export",
                 "import"
             ],
-            "time": "2015-06-29 10:28:19"
+            "time": "2015-06-29T10:28:19+00:00"
         },
         {
             "name": "google/apiclient",
             "version": "v2.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client.git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
                 "reference": "b69b8ac4bf6501793c389d4e013a79d09c85c5f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
                 "reference": "b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
                 "shasum": ""
             },
@@ -2279,19 +2413,19 @@
             "keywords": [
                 "google"
             ],
-            "time": "2017-11-03 01:19:53"
+            "time": "2017-11-03T01:19:53+00:00"
         },
         {
             "name": "google/apiclient-services",
             "version": "v0.36",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client-services.git",
+                "url": "https://github.com/googleapis/google-api-php-client-services.git",
                 "reference": "2fd7d2876fbc0174faddba3241956a1393536159"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client-services/zipball/2fd7d2876fbc0174faddba3241956a1393536159",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/2fd7d2876fbc0174faddba3241956a1393536159",
                 "reference": "2fd7d2876fbc0174faddba3241956a1393536159",
                 "shasum": ""
             },
@@ -2316,19 +2450,19 @@
             "keywords": [
                 "google"
             ],
-            "time": "2017-11-25 00:23:12"
+            "time": "2017-11-25T00:23:12+00:00"
         },
         {
             "name": "google/auth",
             "version": "v1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
                 "reference": "548d27d670f0236dc5258fa4cdde6e7b63464cfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/548d27d670f0236dc5258fa4cdde6e7b63464cfd",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/548d27d670f0236dc5258fa4cdde6e7b63464cfd",
                 "reference": "548d27d670f0236dc5258fa4cdde6e7b63464cfd",
                 "shasum": ""
             },
@@ -2361,7 +2495,7 @@
                 "google",
                 "oauth2"
             ],
-            "time": "2017-10-10 17:01:45"
+            "time": "2017-10-10T17:01:45+00:00"
         },
         {
             "name": "google/recaptcha",
@@ -2406,7 +2540,7 @@
                 "recaptcha",
                 "spam"
             ],
-            "time": "2017-03-09 18:44:34"
+            "time": "2017-03-09T18:44:34+00:00"
         },
         {
             "name": "guzzle/guzzle",
@@ -2502,20 +2636,20 @@
                 "web service"
             ],
             "abandoned": "guzzlehttp/guzzle",
-            "time": "2015-03-18 18:23:50"
+            "time": "2015-03-18T18:23:50+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.3.0",
+            "version": "6.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699"
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f4db5a78a5ea468d4831de7f0bf9d9415e348699",
-                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba",
                 "shasum": ""
             },
             "require": {
@@ -2525,7 +2659,7 @@
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.0 || ^5.0",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
                 "psr/log": "^1.0"
             },
             "suggest": {
@@ -2534,7 +2668,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.2-dev"
+                    "dev-master": "6.3-dev"
                 }
             },
             "autoload": {
@@ -2567,7 +2701,11 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-06-22 18:50:49"
+            "support": {
+                "issues": "https://github.com/guzzle/guzzle/issues",
+                "source": "https://github.com/guzzle/guzzle/tree/master"
+            },
+            "time": "2018-04-22T15:46:56+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -2618,7 +2756,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20 10:07:11"
+            "time": "2016-12-20T10:07:11+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -2683,7 +2821,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20 17:10:46"
+            "time": "2017-03-20T17:10:46+00:00"
         },
         {
             "name": "guzzlehttp/ringphp",
@@ -2734,7 +2872,8 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2015-05-20 03:37:09"
+            "abandoned": true,
+            "time": "2015-05-20T03:37:09+00:00"
         },
         {
             "name": "guzzlehttp/streams",
@@ -2784,7 +2923,8 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-10-12 19:18:40"
+            "abandoned": true,
+            "time": "2014-10-12T19:18:40+00:00"
         },
         {
             "name": "hoa/compiler",
@@ -2864,7 +3004,7 @@
                 "trace",
                 "uniform"
             ],
-            "time": "2015-10-29 21:35:12"
+            "time": "2015-10-29T21:35:12+00:00"
         },
         {
             "name": "hoa/console",
@@ -2936,7 +3076,7 @@
                 "tput",
                 "window"
             ],
-            "time": "2015-07-27 07:52:10"
+            "time": "2015-07-27T07:52:10+00:00"
         },
         {
             "name": "hoa/core",
@@ -3003,7 +3143,8 @@
                 "parameter",
                 "protocol"
             ],
-            "time": "2015-11-09 06:51:06"
+            "abandoned": "hoa/consistency",
+            "time": "2015-11-09T06:51:06+00:00"
         },
         {
             "name": "hoa/dispatcher",
@@ -3063,7 +3204,7 @@
                 "kit",
                 "library"
             ],
-            "time": "2015-11-09 06:52:08"
+            "time": "2015-11-09T06:52:08+00:00"
         },
         {
             "name": "hoa/file",
@@ -3123,7 +3264,7 @@
                 "link",
                 "temporary"
             ],
-            "time": "2015-11-09 06:55:20"
+            "time": "2015-11-09T06:55:20+00:00"
         },
         {
             "name": "hoa/iterator",
@@ -3176,7 +3317,7 @@
                 "iterator",
                 "library"
             ],
-            "time": "2015-10-29 21:37:16"
+            "time": "2015-10-29T21:37:16+00:00"
         },
         {
             "name": "hoa/math",
@@ -3238,7 +3379,7 @@
                 "sampler",
                 "set"
             ],
-            "time": "2015-10-26 15:22:52"
+            "time": "2015-10-26T15:22:52+00:00"
         },
         {
             "name": "hoa/regex",
@@ -3292,7 +3433,7 @@
                 "library",
                 "regex"
             ],
-            "time": "2015-08-13 06:48:47"
+            "time": "2015-08-13T06:48:47+00:00"
         },
         {
             "name": "hoa/router",
@@ -3344,7 +3485,7 @@
                 "library",
                 "router"
             ],
-            "time": "2015-10-21 14:12:51"
+            "time": "2015-10-21T14:12:51+00:00"
         },
         {
             "name": "hoa/stream",
@@ -3402,7 +3543,7 @@
                 "stream",
                 "wrapper"
             ],
-            "time": "2015-10-26 12:21:43"
+            "time": "2015-10-26T12:21:43+00:00"
         },
         {
             "name": "hoa/ustring",
@@ -3461,7 +3602,7 @@
                 "string",
                 "unicode"
             ],
-            "time": "2015-11-09 06:44:33"
+            "time": "2015-11-09T06:44:33+00:00"
         },
         {
             "name": "hoa/visitor",
@@ -3516,7 +3657,7 @@
                 "visit",
                 "visitor"
             ],
-            "time": "2015-08-17 06:30:58"
+            "time": "2015-08-17T06:30:58+00:00"
         },
         {
             "name": "igorw/get-in",
@@ -3561,7 +3702,7 @@
                 "assoc-array",
                 "hash-map"
             ],
-            "time": "2014-12-15 23:03:51"
+            "time": "2014-12-15T23:03:51+00:00"
         },
         {
             "name": "imagine/imagine",
@@ -3620,7 +3761,7 @@
             "support": {
                 "source": "https://github.com/alchemy-fr/Imagine/tree/alchemy-0.6.2"
             },
-            "time": "2015-01-13 18:12:26"
+            "time": "2015-01-13T18:12:26+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -3662,62 +3803,7 @@
                 "hashing",
                 "password"
             ],
-            "time": "2014-11-20 16:49:30"
-        },
-        {
-            "name": "ircmaxell/random-lib",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ircmaxell/RandomLib.git",
-                "reference": "e9e0204f40e49fa4419946c677eccd3fa25b8cf4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/RandomLib/zipball/e9e0204f40e49fa4419946c677eccd3fa25b8cf4",
-                "reference": "e9e0204f40e49fa4419946c677eccd3fa25b8cf4",
-                "shasum": ""
-            },
-            "require": {
-                "ircmaxell/security-lib": "^1.1",
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^1.11",
-                "mikey179/vfsstream": "^1.6",
-                "phpunit/phpunit": "^4.8|^5.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "RandomLib": "lib"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Ferrara",
-                    "email": "ircmaxell@ircmaxell.com",
-                    "homepage": "http://blog.ircmaxell.com"
-                }
-            ],
-            "description": "A Library For Generating Secure Random Numbers",
-            "homepage": "https://github.com/ircmaxell/RandomLib",
-            "keywords": [
-                "cryptography",
-                "random",
-                "random-numbers",
-                "random-strings"
-            ],
-            "time": "2016-09-07 15:52:06"
+            "time": "2014-11-20T16:49:30+00:00"
         },
         {
             "name": "ircmaxell/security-lib",
@@ -3763,7 +3849,7 @@
             ],
             "description": "A Base Security Library",
             "homepage": "https://github.com/ircmaxell/SecurityLib",
-            "time": "2015-03-20 14:31:23"
+            "time": "2015-03-20T14:31:23+00:00"
         },
         {
             "name": "jms/metadata",
@@ -3814,7 +3900,7 @@
                 "xml",
                 "yaml"
             ],
-            "time": "2016-12-05 10:18:33"
+            "time": "2016-12-05T10:18:33+00:00"
         },
         {
             "name": "jms/parser-lib",
@@ -3849,7 +3935,7 @@
                 "Apache2"
             ],
             "description": "A library for easily creating recursive-descent parsers.",
-            "time": "2012-11-18 18:08:43"
+            "time": "2012-11-18T18:08:43+00:00"
         },
         {
             "name": "jms/serializer",
@@ -3919,21 +4005,21 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2014-03-18 08:39:00"
+            "time": "2014-03-18T08:39:00+00:00"
         },
         {
             "name": "jms/translation-bundle",
-            "version": "dev-rebase-2015-10-20",
+            "version": "dev-fix-2021-04-19",
             "target-dir": "JMS/TranslationBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/JMSTranslationBundle.git",
-                "reference": "aff66e65736d9fddbd17cac5a5f0c6fd044c6a92"
+                "reference": "1b857455c9b034fdd6599042dc295cee26925779"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/JMSTranslationBundle/zipball/aff66e65736d9fddbd17cac5a5f0c6fd044c6a92",
-                "reference": "aff66e65736d9fddbd17cac5a5f0c6fd044c6a92",
+                "url": "https://api.github.com/repos/alchemy-fr/JMSTranslationBundle/zipball/1b857455c9b034fdd6599042dc295cee26925779",
+                "reference": "1b857455c9b034fdd6599042dc295cee26925779",
                 "shasum": ""
             },
             "require": {
@@ -3993,9 +4079,9 @@
                 "webinterface"
             ],
             "support": {
-                "source": "https://github.com/alchemy-fr/JMSTranslationBundle/tree/rebase-2015-10-20"
+                "source": "https://github.com/alchemy-fr/JMSTranslationBundle/tree/fix-2021-04-19"
             },
-            "time": "2015-11-04 15:09:44"
+            "time": "2021-04-20T13:09:35+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -4061,7 +4147,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2016-05-10 20:38:51"
+            "time": "2016-05-10T20:38:51+00:00"
         },
         {
             "name": "league/flysystem",
@@ -4144,7 +4230,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-01-30 17:41:17"
+            "time": "2017-01-30T17:41:17+00:00"
         },
         {
             "name": "league/flysystem-aws-s3-v2",
@@ -4191,7 +4277,8 @@
                 }
             ],
             "description": "Flysystem adapter for AWS S3 SDK v2",
-            "time": "2015-10-15 15:55:48"
+            "abandoned": "league/flysystem-aws-s3-v3",
+            "time": "2015-10-15T15:55:48+00:00"
         },
         {
             "name": "league/fractal",
@@ -4252,20 +4339,20 @@
                 "league",
                 "rest"
             ],
-            "time": "2016-12-02 14:55:48"
+            "time": "2016-12-02T14:55:48+00:00"
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.1",
+            "version": "0.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514"
+                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/b82bb891640cb1ce5d5523235047c34c64194514",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/2b9f7697997f7863bbc3d08344c559a1cba519c2",
+                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2",
                 "shasum": ""
             },
             "require": {
@@ -4275,9 +4362,9 @@
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "^2.1.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": ">=0.4.2,<0.6",
+                "php-ffmpeg/php-ffmpeg": "^v0.15",
                 "php-mp4box/php-mp4box": "~0.3.0",
-                "php-unoconv/php-unoconv": "~0.3.0",
+                "php-unoconv/php-unoconv": "~0.3.1",
                 "pimple/pimple": "~1.0",
                 "swftools/swftools": "~0.3.0",
                 "symfony/console": "^2.1|^3.0",
@@ -4326,7 +4413,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2016-03-16 13:11:52"
+            "time": "2020-04-01T08:51:55+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4404,7 +4491,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2016-11-26 00:15:39"
+            "time": "2016-11-26T00:15:39+00:00"
         },
         {
             "name": "mrclay/minify",
@@ -4444,7 +4531,7 @@
             ],
             "description": "Minify is a PHP5 app that helps you follow several rules for client-side performance. It combines multiple CSS or Javascript files, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers",
             "homepage": "http://code.google.com/p/minify/",
-            "time": "2013-07-23 19:58:28"
+            "time": "2013-07-23T19:58:28+00:00"
         },
         {
             "name": "neutron/process-manager",
@@ -4483,7 +4570,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 }
             ],
-            "time": "2014-02-13 20:27:33"
+            "time": "2014-02-13T20:27:33+00:00"
         },
         {
             "name": "neutron/signal-handler",
@@ -4526,7 +4613,7 @@
             "keywords": [
                 "signal"
             ],
-            "time": "2014-01-15 17:24:13"
+            "time": "2014-01-15T17:24:13+00:00"
         },
         {
             "name": "neutron/silex-filesystem-provider",
@@ -4570,7 +4657,7 @@
                 "silex",
                 "temporary-filesystem"
             ],
-            "time": "2012-11-08 21:07:08"
+            "time": "2012-11-08T21:07:08+00:00"
         },
         {
             "name": "neutron/silex-imagine-provider",
@@ -4617,7 +4704,7 @@
                 "imagine",
                 "silex"
             ],
-            "time": "2013-05-03 18:48:51"
+            "time": "2013-05-03T18:48:51+00:00"
         },
         {
             "name": "neutron/temporary-filesystem",
@@ -4657,7 +4744,7 @@
                 }
             ],
             "description": "Symfony filesystem extension to handle temporary files",
-            "time": "2016-03-05 10:22:50"
+            "time": "2016-03-05T10:22:50+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -4702,7 +4789,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2015-09-19 14:15:08"
+            "time": "2015-09-19T14:15:08+00:00"
         },
         {
             "name": "ocramius/proxy-manager",
@@ -4765,19 +4852,19 @@
                 "proxy pattern",
                 "service proxies"
             ],
-            "time": "2015-08-09 04:28:19"
+            "time": "2015-08-09T04:28:19+00:00"
         },
         {
             "name": "pagerfanta/pagerfanta",
             "version": "v1.0.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/whiteoctober/Pagerfanta.git",
+                "url": "https://github.com/BabDev/Pagerfanta.git",
                 "reference": "f846c5e06bb66df659a688ea4734aab49de589d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whiteoctober/Pagerfanta/zipball/f846c5e06bb66df659a688ea4734aab49de589d6",
+                "url": "https://api.github.com/repos/BabDev/Pagerfanta/zipball/f846c5e06bb66df659a688ea4734aab49de589d6",
                 "reference": "f846c5e06bb66df659a688ea4734aab49de589d6",
                 "shasum": ""
             },
@@ -4832,7 +4919,69 @@
                 "paginator",
                 "paging"
             ],
-            "time": "2016-11-28 09:17:04"
+            "time": "2016-11-28T09:17:04+00:00"
+        },
+        {
+            "name": "paragonie/random-lib",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/RandomLib.git",
+                "reference": "b73a1cb8eae7a346824ccee42298046dedbf2415"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/RandomLib/zipball/b73a1cb8eae7a346824ccee42298046dedbf2415",
+                "reference": "b73a1cb8eae7a346824ccee42298046dedbf2415",
+                "shasum": ""
+            },
+            "require": {
+                "ircmaxell/security-lib": "^1.1",
+                "paragonie/random_compat": "^2",
+                "paragonie/sodium_compat": "^1.3",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.11",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^4.8 || >=5.0.0 <5.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "RandomLib": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@ircmaxell.com",
+                    "homepage": "http://blog.ircmaxell.com"
+                },
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "A Library For Generating Secure Random Numbers",
+            "homepage": "https://github.com/ircmaxell/RandomLib",
+            "keywords": [
+                "cryptography",
+                "random",
+                "random-numbers",
+                "random-strings"
+            ],
+            "time": "2017-10-06T23:34:21+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -4880,33 +5029,192 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2016-11-07 23:38:38"
+            "time": "2016-11-07T23:38:38+00:00"
         },
         {
-            "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.5.1",
+            "name": "paragonie/sodium_compat",
+            "version": "v1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/PHP-FFMpeg/PHP-FFMpeg.git",
-                "reference": "c8949fe3df89edd7692368cc110a51a27971f28a"
+                "url": "https://github.com/paragonie/sodium_compat.git",
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/c8949fe3df89edd7692368cc110a51a27971f28a",
-                "reference": "c8949fe3df89edd7692368cc110a51a27971f28a",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/87125d5b265f98c4d1b8d83a1f0726607c229421",
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421",
                 "shasum": ""
             },
             "require": {
-                "alchemy/binary-driver": "~1.5",
-                "doctrine/cache": "~1.0",
-                "evenement/evenement": "~1.0",
-                "neutron/temporary-filesystem": "~2.1, >=2.1.1",
-                "php": ">=5.3.3"
+                "paragonie/random_compat": ">=1",
+                "php": "^5.2.4|^5.3|^5.4|^5.5|^5.6|^7|^8"
             },
             "require-dev": {
-                "phpunit/phpunit": "~3.7",
+                "phpunit/phpunit": "^3|^4|^5"
+            },
+            "suggest": {
+                "ext-libsodium": "PHP < 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security.",
+                "ext-sodium": "PHP >= 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com"
+                },
+                {
+                    "name": "Frank Denis",
+                    "email": "jedisct1@pureftpd.org"
+                }
+            ],
+            "description": "Pure PHP implementation of libsodium; uses the PHP extension if it exists",
+            "keywords": [
+                "Authentication",
+                "BLAKE2b",
+                "ChaCha20",
+                "ChaCha20-Poly1305",
+                "Chapoly",
+                "Curve25519",
+                "Ed25519",
+                "EdDSA",
+                "Edwards-curve Digital Signature Algorithm",
+                "Elliptic Curve Diffie-Hellman",
+                "Poly1305",
+                "Pure-PHP cryptography",
+                "RFC 7748",
+                "RFC 8032",
+                "Salpoly",
+                "Salsa20",
+                "X25519",
+                "XChaCha20-Poly1305",
+                "XSalsa20-Poly1305",
+                "Xchacha20",
+                "Xsalsa20",
+                "aead",
+                "cryptography",
+                "ecdh",
+                "elliptic curve",
+                "elliptic curve cryptography",
+                "encryption",
+                "libsodium",
+                "php",
+                "public-key cryptography",
+                "secret-key cryptography",
+                "side-channel resistant"
+            ],
+            "time": "2019-03-20T17:19:05+00:00"
+        },
+        {
+            "name": "php-amqplib/php-amqplib",
+            "version": "v2.11.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-amqplib/php-amqplib.git",
+                "reference": "6353c5d2d3021a301914bc6566e695c99cfeb742"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/6353c5d2d3021a301914bc6566e695c99cfeb742",
+                "reference": "6353c5d2d3021a301914bc6566e695c99cfeb742",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-sockets": "*",
+                "php": ">=5.6.3",
+                "phpseclib/phpseclib": "^2.0.0"
+            },
+            "conflict": {
+                "php": "7.4.0 - 7.4.1"
+            },
+            "replace": {
+                "videlalvaro/php-amqplib": "self.version"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "nategood/httpful": "^0.2.20",
+                "phpunit/phpunit": "^5.7|^6.5|^7.0",
+                "squizlabs/php_codesniffer": "^2.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.11-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PhpAmqpLib\\": "PhpAmqpLib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alvaro Videla",
+                    "role": "Original Maintainer"
+                },
+                {
+                    "name": "Raúl Araya",
+                    "email": "nubeiro@gmail.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Luke Bakken",
+                    "email": "luke@bakken.io",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Ramūnas Dronga",
+                    "email": "github@ramuno.lt",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
+            "homepage": "https://github.com/php-amqplib/php-amqplib/",
+            "keywords": [
+                "message",
+                "queue",
+                "rabbitmq"
+            ],
+            "time": "2020-05-13T13:56:11+00:00"
+        },
+        {
+            "name": "php-ffmpeg/php-ffmpeg",
+            "version": "v0.15",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-FFMpeg/PHP-FFMpeg.git",
+                "reference": "984dbd046b6d8c285f9e7419fc7645f197513bfa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/984dbd046b6d8c285f9e7419fc7645f197513bfa",
+                "reference": "984dbd046b6d8c285f9e7419fc7645f197513bfa",
+                "shasum": ""
+            },
+            "require": {
+                "alchemy/binary-driver": "^1.5 || ~2.0.0 || ^5.0",
+                "doctrine/cache": "^1.0",
+                "evenement/evenement": "^3.0 || ^2.0 || ^1.0",
+                "neutron/temporary-filesystem": "^2.1.1",
+                "php": "^5.3.9 || ^7.0"
+            },
+            "require-dev": {
                 "sami/sami": "~1.0",
-                "silex/silex": "~1.0"
+                "silex/silex": "~1.0",
+                "symfony/phpunit-bridge": "^5.0.4"
             },
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
@@ -4914,7 +5222,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.5-dev"
+                    "dev-master": "0.7-dev"
                 }
             },
             "autoload": {
@@ -4936,6 +5244,21 @@
                     "name": "Phraseanet Team",
                     "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
+                },
+                {
+                    "name": "Patrik Karisch",
+                    "email": "patrik@karisch.guru",
+                    "homepage": "http://www.karisch.guru"
+                },
+                {
+                    "name": "Romain Biard",
+                    "email": "romain.biard@gmail.com",
+                    "homepage": "https://www.strime.io/"
+                },
+                {
+                    "name": "Jens Hausdorf",
+                    "email": "hello@jens-hausdorf.de",
+                    "homepage": "https://jens-hausdorf.de"
                 }
             ],
             "description": "FFMpeg PHP, an Object Oriented library to communicate with AVconv / ffmpeg",
@@ -4949,7 +5272,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2014-08-26 08:46:56"
+            "time": "2020-03-23T09:32:09+00:00"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -5000,20 +5323,20 @@
                 "gpac",
                 "mp4box"
             ],
-            "time": "2013-06-25 10:13:06"
+            "time": "2013-06-25T10:13:06+00:00"
         },
         {
             "name": "php-unoconv/php-unoconv",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-Unoconv.git",
-                "reference": "6d1e14a7467b5d637741396549529dc4d5f9f355"
+                "reference": "8fa666972f6c13fe9703dfe894cd311a61f89f33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/6d1e14a7467b5d637741396549529dc4d5f9f355",
-                "reference": "6d1e14a7467b5d637741396549529dc4d5f9f355",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/8fa666972f6c13fe9703dfe894cd311a61f89f33",
+                "reference": "8fa666972f6c13fe9703dfe894cd311a61f89f33",
                 "shasum": ""
             },
             "require": {
@@ -5050,7 +5373,7 @@
             "keywords": [
                 "unoconv"
             ],
-            "time": "2013-06-25 10:09:59"
+            "time": "2019-09-16T09:54:30+00:00"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -5102,7 +5425,7 @@
                 "pdf",
                 "xpdf"
             ],
-            "time": "2016-07-04 07:30:16"
+            "time": "2016-07-04T07:30:16+00:00"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -5150,40 +5473,7 @@
                 "sequence",
                 "set"
             ],
-            "time": "2015-05-17 12:39:23"
-        },
-        {
-            "name": "phpexiftool/exiftool",
-            "version": "10.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alchemy-fr/exiftool.git",
-                "reference": "0833cab894c890353192a83011428525a318bedf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/0833cab894c890353192a83011428525a318bedf",
-                "reference": "0833cab894c890353192a83011428525a318bedf",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Perl Licensing"
-            ],
-            "authors": [
-                {
-                    "name": "Phil Harvey",
-                    "email": "phil@owl.phy.queensu.ca",
-                    "homepage": "http://www.sno.phy.queensu.ca/~phil/exiftool/"
-                }
-            ],
-            "description": "Exiftool is a library for reading, writing and editing meta information. This package is not PHP, but required for the main PHP driver : PHP Exiftool",
-            "keywords": [
-                "exiftool",
-                "metadatas"
-            ],
-            "time": "2016-01-25 11:10:14"
+            "time": "2015-05-17T12:39:23+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -5233,7 +5523,7 @@
                 "php",
                 "type"
             ],
-            "time": "2015-07-25 16:39:46"
+            "time": "2015-07-25T16:39:46+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -5325,7 +5615,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2017-10-23 05:04:54"
+            "time": "2017-10-23T05:04:54+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -5371,7 +5661,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2013-11-22 08:30:29"
+            "time": "2013-11-22T08:30:29+00:00"
         },
         {
             "name": "psr/cache",
@@ -5417,7 +5707,7 @@
                 "psr",
                 "psr-6"
             ],
-            "time": "2016-08-06 20:24:11"
+            "time": "2016-08-06T20:24:11+00:00"
         },
         {
             "name": "psr/http-message",
@@ -5467,7 +5757,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06 14:39:51"
+            "time": "2016-08-06T14:39:51+00:00"
         },
         {
             "name": "psr/log",
@@ -5514,7 +5804,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10 12:19:37"
+            "time": "2016-10-10T12:19:37+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -5576,17 +5866,17 @@
             ],
             "authors": [
                 {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                },
+                {
                     "name": "Marijn Huizendveld",
                     "email": "marijn.huizendveld@gmail.com"
                 },
                 {
                     "name": "Thibaud Fabre",
                     "email": "thibaud@aztech.io"
-                },
-                {
-                    "name": "Ben Ramsey",
-                    "email": "ben@benramsey.com",
-                    "homepage": "https://benramsey.com"
                 }
             ],
             "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
@@ -5596,7 +5886,7 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2016-11-22 19:21:44"
+            "time": "2016-11-22T19:21:44+00:00"
         },
         {
             "name": "react/promise",
@@ -5639,138 +5929,7 @@
                 "promise",
                 "promises"
             ],
-            "time": "2016-12-22 14:09:01"
-        },
-        {
-            "name": "roave/security-advisories",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "3db4b0df21d1f527304650e717c66af48981f1c4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/fe89fd2178cabef137b9a76fa91d64925474b956",
-                "reference": "3db4b0df21d1f527304650e717c66af48981f1c4",
-                "shasum": ""
-            },
-            "conflict": {
-                "adodb/adodb-php": "<5.20.6",
-                "amphp/artax": ">=2,<2.0.4|>0.7.1,<1.0.4",
-                "aws/aws-sdk-php": ">=3,<3.2.1",
-                "bugsnag/bugsnag-laravel": ">=2,<2.0.2",
-                "cakephp/cakephp": ">=3,<3.0.15|>=2,<2.4.99|>=2.5,<2.5.99|>=2.6,<2.6.12|>=1.3,<1.3.18|>=2.7,<2.7.6|>=3.1,<3.1.4",
-                "cartalyst/sentry": "<2.1",
-                "codeigniter/framework": "<=3.0.6",
-                "composer/composer": "<=1.0.0-alpha11",
-                "contao-components/mediaelement": ">=2.14.2,<2.21.1",
-                "contao/core": ">=2.11,<3.5.15",
-                "doctrine/annotations": ">=1,<1.2.7",
-                "doctrine/cache": ">=1,<1.3.2|>=1.4,<1.4.2",
-                "doctrine/common": ">=2,<2.4.3|>=2.5,<2.5.1",
-                "doctrine/dbal": ">=2,<2.0.8|>=2.1,<2.1.2",
-                "doctrine/doctrine-bundle": "<1.5.2",
-                "doctrine/doctrine-module": "<=0.7.1",
-                "doctrine/mongodb-odm": ">=1,<1.0.2",
-                "doctrine/mongodb-odm-bundle": ">=2,<3.0.1",
-                "doctrine/orm": ">=2,<2.4.8|>=2.5,<2.5.1",
-                "dompdf/dompdf": ">=0.6,<0.6.2",
-                "drupal/core": ">=8,<8.2.3",
-                "drupal/drupal": ">=8,<8.2.3",
-                "firebase/php-jwt": "<2",
-                "friendsofsymfony/rest-bundle": ">=1.2,<1.2.2",
-                "friendsofsymfony/user-bundle": ">=1.2,<1.3.5",
-                "gregwar/rst": "<1.0.3",
-                "guzzlehttp/guzzle": ">=6,<6.2.1|>=4.0.0-rc2,<4.2.4|>=5,<5.3.1",
-                "illuminate/auth": ">=4,<4.0.99|>=4.1,<4.1.26",
-                "illuminate/database": ">=4,<4.0.99|>=4.1,<4.1.29",
-                "joomla/session": "<1.3.1",
-                "laravel/framework": ">=4,<4.0.99|>=4.1,<4.1.29",
-                "laravel/socialite": ">=1,<1.0.99|>=2,<2.0.10",
-                "magento/magento2ce": ">=2,<2.2",
-                "monolog/monolog": ">=1.8,<1.12",
-                "namshi/jose": "<2.2",
-                "oro/crm": ">=1.7,<1.7.4",
-                "oro/platform": ">=1.7,<1.7.4",
-                "phpmailer/phpmailer": ">=5,<5.2.22",
-                "pusher/pusher-php-server": "<2.2.1",
-                "sabre/dav": ">=1.6,<1.6.99|>=1.7,<1.7.11|>=1.8,<1.8.9",
-                "shopware/shopware": "<4.4|>=5,<5.2.15",
-                "silverstripe/cms": ">=3.1,<3.1.11|>=3,<=3.0.11",
-                "silverstripe/forum": "<=0.6.1|>=0.7,<=0.7.3",
-                "silverstripe/framework": ">=3,<3.3",
-                "silverstripe/userforms": "<3",
-                "simplesamlphp/saml2": "<1.8.1|>=1.9,<1.9.1|>=1.10,<1.10.3|>=2,<2.3.3",
-                "simplesamlphp/simplesamlphp": "<1.14.11",
-                "simplesamlphp/simplesamlphp-module-infocard": "<1.0.1",
-                "socalnick/scn-social-auth": "<1.15.2",
-                "swiftmailer/swiftmailer": ">=4,<5.4.5",
-                "symfony/dependency-injection": ">=2,<2.0.17",
-                "symfony/form": ">=2.3,<2.3.35|>=2.4,<2.6.12|>=2.7,<2.7.7",
-                "symfony/framework-bundle": ">=2,<2.3.18|>=2.4,<2.4.8|>=2.5,<2.5.2",
-                "symfony/http-foundation": ">=2,<2.3.27|>=2.4,<2.5.11|>=2.6,<2.6.6",
-                "symfony/http-kernel": ">=2,<2.3.29|>=2.4,<2.5.12|>=2.6,<2.6.8",
-                "symfony/routing": ">=2,<2.0.19",
-                "symfony/security": ">=2.3,<2.3.37|>=2.4,<2.6.13|>=2.7,<2.7.9|>=2,<2.0.25|>=2.1,<2.1.13|>=2.2,<2.2.9",
-                "symfony/security-core": ">=2.8,<2.8.6|>=3,<3.0.6|>=2.4,<2.6.13|>=2.7,<2.7.9",
-                "symfony/security-http": ">=2.4,<2.7.13|>=2.3,<2.3.41|>=2.8,<2.8.6|>=3,<3.0.6",
-                "symfony/serializer": ">=2,<2.0.11",
-                "symfony/symfony": ">=2,<2.3.41|>=2.4,<2.7.13|>=2.8,<2.8.6|>=3,<3.0.6",
-                "symfony/translation": ">=2,<2.0.17",
-                "symfony/validator": ">=2,<2.0.24|>=2.1,<2.1.12|>=2.2,<2.2.5|>=2.3,<2.3.3",
-                "symfony/web-profiler-bundle": ">=2,<2.3.19|>=2.4,<2.4.9|>=2.5,<2.5.4",
-                "symfony/yaml": ">=2,<2.0.22|>=2.1,<2.1.7",
-                "thelia/backoffice-default-template": ">=2.1,<2.1.2",
-                "thelia/thelia": ">=2.1.0-beta1,<2.1.3|>=2.1,<2.1.2",
-                "twig/twig": "<1.20",
-                "typo3/cms": ">=6.2,<6.2.30|>=8,<8.4.1|>=7,<7.6.13",
-                "typo3/flow": ">=2.3,<2.3.16|>=3,<3.0.10|>=3.1,<3.1.7|>=3.2,<3.2.7|>=3.3,<3.3.5|>=1,<1.0.4|>=1.1,<1.1.1|>=2,<2.0.1",
-                "typo3/neos": ">=1.1,<1.1.3|>=1.2,<1.2.13|>=2,<2.0.4",
-                "willdurand/js-translation-bundle": "<2.1.1",
-                "yiisoft/yii": ">=1.1.14,<1.1.15",
-                "yiisoft/yii2": "<2.0.5",
-                "yiisoft/yii2-bootstrap": "<2.0.4",
-                "yiisoft/yii2-dev": "<2.0.4",
-                "yiisoft/yii2-gii": "<2.0.4",
-                "yiisoft/yii2-jui": "<2.0.4",
-                "zendframework/zend-cache": ">=2.4,<2.4.8|>=2.5,<2.5.3",
-                "zendframework/zend-captcha": ">=2,<2.4.9|>=2.5,<2.5.2",
-                "zendframework/zend-crypt": ">=2,<2.4.9|>=2.5,<2.5.2",
-                "zendframework/zend-db": ">=2,<2.0.99|>=2.1,<2.1.99|>=2.2,<2.2.10|>=2.3,<2.3.5",
-                "zendframework/zend-diactoros": ">=1,<1.0.4",
-                "zendframework/zend-form": ">=2,<2.2.7|>=2.3,<2.3.1",
-                "zendframework/zend-http": ">=2,<2.0.99|>=2.1,<2.1.99|>=2.3,<2.3.8|>=2.4,<2.4.1",
-                "zendframework/zend-json": ">=2.1,<2.1.6|>=2.2,<2.2.6",
-                "zendframework/zend-ldap": ">=2,<2.0.99|>=2.1,<2.1.99|>=2.2,<2.2.8|>=2.3,<2.3.3",
-                "zendframework/zend-mail": ">=2,<2.4.11|>=2.5,<2.7.2",
-                "zendframework/zend-navigation": ">=2,<2.2.7|>=2.3,<2.3.1",
-                "zendframework/zend-session": ">=2,<2.0.99|>=2.1,<2.1.99|>=2.2,<2.2.9|>=2.3,<2.3.4",
-                "zendframework/zend-validator": ">=2.3,<2.3.6",
-                "zendframework/zend-view": ">=2,<2.2.7|>=2.3,<2.3.1",
-                "zendframework/zend-xmlrpc": ">=2.1,<2.1.6|>=2.2,<2.2.6",
-                "zendframework/zendframework": ">=2,<2.4.11|>=2.5,<2.5.1",
-                "zendframework/zendframework1": "<1.12.20",
-                "zendframework/zendopenid": ">=2,<2.0.2",
-                "zendframework/zendxml": ">=1,<1.0.1",
-                "zf-commons/zfc-user": "<1.2.2",
-                "zfcampus/zf-apigility-doctrine": ">=1,<1.0.3",
-                "zfr/zfr-oauth2-server-module": "<0.1.2"
-            },
-            "type": "metapackage",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com",
-                    "role": "maintainer"
-                }
-            ],
-            "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2017-01-24 18:32:04"
+            "time": "2016-12-22T14:09:01+00:00"
         },
         {
             "name": "seld/jsonlint",
@@ -5816,7 +5975,7 @@
                 "parser",
                 "validator"
             ],
-            "time": "2016-11-14 17:59:58"
+            "time": "2016-11-14T17:59:58+00:00"
         },
         {
             "name": "silex/silex",
@@ -5893,7 +6052,8 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2016-01-06 14:59:35"
+            "abandoned": "symfony/flex",
+            "time": "2016-01-06T14:59:35+00:00"
         },
         {
             "name": "silex/web-profiler",
@@ -5938,7 +6098,8 @@
             ],
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
-            "time": "2016-01-10 11:39:13"
+            "abandoned": "symfony/web-profiler-bundle",
+            "time": "2016-01-10T11:39:13+00:00"
         },
         {
             "name": "simple-bus/doctrine-orm-bridge",
@@ -5992,7 +6153,7 @@
                 "doctrine",
                 "event bus"
             ],
-            "time": "2015-04-29 12:27:27"
+            "time": "2015-04-29T12:27:27+00:00"
         },
         {
             "name": "simple-bus/jms-serializer-bridge",
@@ -6041,7 +6202,7 @@
                 "message",
                 "serialization"
             ],
-            "time": "2015-07-29 07:48:42"
+            "time": "2015-07-29T07:48:42+00:00"
         },
         {
             "name": "simple-bus/message-bus",
@@ -6091,7 +6252,7 @@
                 "message",
                 "message bus"
             ],
-            "time": "2016-02-12 08:35:53"
+            "time": "2016-02-12T08:35:53+00:00"
         },
         {
             "name": "simple-bus/serialization",
@@ -6139,7 +6300,7 @@
                 "messages",
                 "serialization"
             ],
-            "time": "2015-05-08 13:34:17"
+            "time": "2015-05-08T13:34:17+00:00"
         },
         {
             "name": "sorien/silex-dbal-profiler",
@@ -6187,7 +6348,8 @@
                 "profiler",
                 "silex"
             ],
-            "time": "2016-10-26 11:08:02"
+            "abandoned": true,
+            "time": "2016-10-26T11:08:02+00:00"
         },
         {
             "name": "sorien/silex-pimple-dumper",
@@ -6229,7 +6391,8 @@
                 "plugin",
                 "silex"
             ],
-            "time": "2015-11-11 07:16:28"
+            "abandoned": true,
+            "time": "2015-11-11T07:16:28+00:00"
         },
         {
             "name": "swftools/swftools",
@@ -6283,20 +6446,20 @@
                 "flash",
                 "swf"
             ],
-            "time": "2013-07-03 13:11:36"
+            "time": "2013-07-03T13:11:36+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.4.5",
+            "version": "v5.4.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "cd142238a339459b10da3d8234220963f392540c"
+                "reference": "181b89f18a90f8925ef805f950d47a7190e9b950"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/cd142238a339459b10da3d8234220963f392540c",
-                "reference": "cd142238a339459b10da3d8234220963f392540c",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/181b89f18a90f8925ef805f950d47a7190e9b950",
+                "reference": "181b89f18a90f8925ef805f950d47a7190e9b950",
                 "shasum": ""
             },
             "require": {
@@ -6337,7 +6500,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2016-12-29 10:02:40"
+            "time": "2016-12-29T10:02:40+00:00"
         },
         {
             "name": "symfony/polyfill-apcu",
@@ -6390,7 +6553,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-intl-icu",
@@ -6448,7 +6611,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -6507,7 +6670,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php54",
@@ -6565,7 +6728,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php55",
@@ -6621,7 +6784,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php56",
@@ -6677,7 +6840,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php70",
@@ -6736,7 +6899,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-util",
@@ -6788,7 +6951,7 @@
                 "polyfill",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/security-acl",
@@ -6849,7 +7012,7 @@
             ],
             "description": "Symfony Security Component - ACL (Access Control List)",
             "homepage": "https://symfony.com",
-            "time": "2015-12-28 09:39:46"
+            "time": "2015-12-28T09:39:46+00:00"
         },
         {
             "name": "symfony/symfony",
@@ -6984,7 +7147,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-01-12 20:27:46"
+            "time": "2017-01-12T20:27:46+00:00"
         },
         {
             "name": "themattharris/tmhoauth",
@@ -7026,7 +7189,7 @@
                 "oauth",
                 "twitter"
             ],
-            "time": "2014-08-06 22:29:35"
+            "time": "2014-08-06T22:29:35+00:00"
         },
         {
             "name": "twig/extensions",
@@ -7078,7 +7241,8 @@
                 "i18n",
                 "text"
             ],
-            "time": "2016-10-25 17:34:14"
+            "abandoned": true,
+            "time": "2016-10-25T17:34:14+00:00"
         },
         {
             "name": "twig/twig",
@@ -7139,7 +7303,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-01-11 19:36:15"
+            "time": "2017-01-11T19:36:15+00:00"
         },
         {
             "name": "vierbergenlars/php-semver",
@@ -7187,19 +7351,19 @@
                 "semver",
                 "versioning"
             ],
-            "time": "2013-09-20 10:41:27"
+            "time": "2013-09-20T10:41:27+00:00"
         },
         {
             "name": "webmozart/assert",
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "2db61e59ff05fe5126d152bd0655c9ea113e550f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/2db61e59ff05fe5126d152bd0655c9ea113e550f",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/2db61e59ff05fe5126d152bd0655c9ea113e550f",
                 "reference": "2db61e59ff05fe5126d152bd0655c9ea113e550f",
                 "shasum": ""
             },
@@ -7237,7 +7401,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2016-11-23 20:04:58"
+            "time": "2016-11-23T20:04:58+00:00"
         },
         {
             "name": "webmozart/json",
@@ -7286,7 +7450,7 @@
                 }
             ],
             "description": "A robust JSON decoder/encoder with support for schema validation.",
-            "time": "2016-01-14 12:11:46"
+            "time": "2016-01-14T12:11:46+00:00"
         },
         {
             "name": "webmozart/path-util",
@@ -7332,7 +7496,7 @@
                 }
             ],
             "description": "A robust cross-platform utility for normalizing, comparing and modifying file paths.",
-            "time": "2015-12-17 08:42:14"
+            "time": "2015-12-17T08:42:14+00:00"
         },
         {
             "name": "willdurand/negotiation",
@@ -7384,7 +7548,7 @@
                 "header",
                 "negotiation"
             ],
-            "time": "2016-10-14 09:17:47"
+            "time": "2016-10-14T09:17:47+00:00"
         },
         {
             "name": "zend/gdata",
@@ -7425,7 +7589,7 @@
                 "gdata",
                 "zend"
             ],
-            "time": "2013-01-30 15:31:21"
+            "time": "2013-01-30T15:31:21+00:00"
         },
         {
             "name": "zendframework/zend-code",
@@ -7477,7 +7641,8 @@
                 "code",
                 "zf2"
             ],
-            "time": "2016-04-20 17:26:42"
+            "abandoned": "laminas/laminas-code",
+            "time": "2016-04-20T17:26:42+00:00"
         },
         {
             "name": "zendframework/zend-eventmanager",
@@ -7531,21 +7696,22 @@
                 "events",
                 "zf2"
             ],
-            "time": "2016-02-18 20:53:00"
+            "abandoned": "laminas/laminas-eventmanager",
+            "time": "2016-02-18T20:53:00+00:00"
         }
     ],
     "packages-dev": [
         {
-            "name": "mikey179/vfsStream",
+            "name": "mikey179/vfsstream",
             "version": "v1.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mikey179/vfsStream.git",
+                "url": "https://github.com/bovigo/vfsStream.git",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "shasum": ""
             },
@@ -7579,77 +7745,7 @@
             ],
             "description": "Virtual file system to mock the real file system in unit tests.",
             "homepage": "http://vfs.bovigo.org/",
-            "time": "2016-07-18 14:02:57"
-        },
-        {
-            "name": "php-amqplib/php-amqplib",
-            "version": "v2.6.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/fa2f0d4410a11008cb36b379177291be7ee9e4f6",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6",
-                "shasum": ""
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "ext-mbstring": "*",
-                "php": ">=5.3.0"
-            },
-            "replace": {
-                "videlalvaro/php-amqplib": "self.version"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8",
-                "scrutinizer/ocular": "^1.1",
-                "squizlabs/php_codesniffer": "^2.5"
-            },
-            "suggest": {
-                "ext-sockets": "Use AMQPSocketConnection"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PhpAmqpLib\\": "PhpAmqpLib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1"
-            ],
-            "authors": [
-                {
-                    "name": "Alvaro Videla",
-                    "role": "Original Maintainer"
-                },
-                {
-                    "name": "John Kelly",
-                    "email": "johnmkelly86@gmail.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Raúl Araya",
-                    "email": "nubeiro@gmail.com",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
-            "homepage": "https://github.com/php-amqplib/php-amqplib/",
-            "keywords": [
-                "message",
-                "queue",
-                "rabbitmq"
-            ],
-            "time": "2016-04-11 14:30:01"
+            "time": "2016-07-18T14:02:57+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -7703,7 +7799,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2015-12-27 11:43:31"
+            "time": "2015-12-27T11:43:31+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -7748,7 +7844,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2016-09-30 07:12:33"
+            "time": "2016-09-30T07:12:33+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -7795,7 +7891,7 @@
                     "email": "me@mikevanriel.com"
                 }
             ],
-            "time": "2016-11-25 06:54:22"
+            "time": "2016-11-25T06:54:22+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -7858,7 +7954,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2016-11-21 14:58:47"
+            "time": "2016-11-21T14:58:47+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -7920,7 +8016,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-06 15:47:00"
+            "time": "2015-10-06T15:47:00+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -7967,7 +8063,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2016-10-03 07:40:28"
+            "time": "2016-10-03T07:40:28+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -8008,7 +8104,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21 13:50:34"
+            "time": "2015-06-21T13:50:34+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -8052,7 +8148,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2016-05-12 18:03:57"
+            "time": "2016-05-12T18:03:57+00:00"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -8101,7 +8197,8 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2016-11-15 14:06:22"
+            "abandoned": true,
+            "time": "2016-11-15T14:06:22+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -8173,7 +8270,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-01-26 16:15:36"
+            "time": "2017-01-26T16:15:36+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -8229,7 +8326,8 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-10-02 06:51:40"
+            "abandoned": true,
+            "time": "2015-10-02T06:51:40+00:00"
         },
         {
             "name": "sebastian/comparator",
@@ -8293,7 +8391,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2017-01-29 09:50:25"
+            "time": "2017-01-29T09:50:25+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -8345,7 +8443,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2015-12-08 07:14:41"
+            "time": "2015-12-08T07:14:41+00:00"
         },
         {
             "name": "sebastian/environment",
@@ -8395,7 +8493,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-08-18 05:49:44"
+            "time": "2016-08-18T05:49:44+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -8462,7 +8560,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2016-06-17 09:04:28"
+            "time": "2016-06-17T09:04:28+00:00"
         },
         {
             "name": "sebastian/global-state",
@@ -8513,7 +8611,7 @@
             "keywords": [
                 "global state"
             ],
-            "time": "2015-10-12 03:26:01"
+            "time": "2015-10-12T03:26:01+00:00"
         },
         {
             "name": "sebastian/recursion-context",
@@ -8566,7 +8664,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2015-11-11 19:50:13"
+            "time": "2015-11-11T19:50:13+00:00"
         },
         {
             "name": "sebastian/version",
@@ -8601,21 +8699,21 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2015-06-21 13:59:46"
+            "time": "2015-06-21T13:59:46+00:00"
         }
     ],
     "aliases": [
         {
-            "alias": "1.6.1",
-            "alias_normalized": "1.6.1.0",
+            "package": "justinrainbow/json-schema",
             "version": "2.0.3.0",
-            "package": "justinrainbow/json-schema"
+            "alias": "1.6.1",
+            "alias_normalized": "1.6.1.0"
         },
         {
-            "alias": "0.13.0",
-            "alias_normalized": "0.13.0.0",
+            "package": "league/fractal",
             "version": "dev-webgalleries",
-            "package": "league/fractal"
+            "alias": "0.13.0",
+            "alias_normalized": "0.13.0.0"
         }
     ],
     "minimum-stability": "stable",
@@ -8626,14 +8724,14 @@
         "jms/translation-bundle": 20,
         "league/fractal": 20,
         "neutron/process-manager": 20,
-        "roave/security-advisories": 20,
         "willdurand/negotiation": 15
     },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.5.9",
+        "php": ">=7.0 <7.1",
         "ext-intl": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
 }

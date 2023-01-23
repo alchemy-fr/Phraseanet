@@ -23,6 +23,18 @@ use Alchemy\Phrasea\Model\Entities\User;
 class UserRepository extends EntityRepository
 {
     /**
+     * Finds an User by its primary key / identifier.
+     *
+     * @inheritdoc
+     *
+     * @return User|null
+     */
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    /**
      * Finds admins.
      *
      * @return User[]
@@ -109,5 +121,16 @@ class UserRepository extends EntityRepository
     public function findTemplateOwner(User $user)
     {
         return $this->findBy(['templateOwner' => $user->getId()]);
+    }
+
+    /**
+     * Finds all templates
+     */
+    public function findTemplate()
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->where('u.templateOwner is NOT NULL');
+            
+        return $qb->getQuery()->getResult();
     }
 }

@@ -1,0 +1,49 @@
+RecordPatch_metadata:
+    type: object
+    properties:
+        field_name:
+            type: string
+        meta_struct_id:
+            $ref: 'common.yaml#/ID'
+        action:
+            type: string
+            enum:
+                - set
+                - add
+                - delete
+                - replace
+        value:
+            # todo : change to string, int, number, array
+            type: string
+
+
+RecordPatch_status:
+    type: object
+    required:
+        - bit
+        - state
+    properties:
+        bit:
+            type: integer
+            minimum: 4
+            maximum: 31
+        state:
+            type: boolean
+RecordPatch:
+    description: 'Metadata, status, collection, etc to be set for a record'
+    type: object
+    properties:
+        metadatas:
+            type: array
+            items:
+                $ref: '#/RecordPatch_metadata'
+        status:
+            type: array
+            items:
+                $ref: '#/RecordPatch_status'
+# -------------------- searchraw ---------------
+
+# -------------------- search ---------------
+
+
+

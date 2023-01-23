@@ -7,18 +7,13 @@
 
       <div style="margin:3px 0">
 
-       {% set appbox = '' %}
-       <div class="history-{{action}}">
+       <div class="history-block history-{{action}}">
         {% if action == 'push' %}
           {% set n_user = done['final']|length %}
-          {% set appbox = '<span class="provenance">' ~ site %}
-          {% set appbox = appbox ~ '</span>' %}
-          {% trans with {'%n_user%' : n_user, '%appbox%' : appbox} %}report::Push vers %n_user% utilisateurs depuis lapplication box %appbox%{% endtrans %}
+          {% trans with {'%n_user%' : n_user } %}report::Push vers %n_user% utilisateurs depuis lapplication box{% endtrans %}
         {% elseif action == 'validate' %}
           {% set n_user = done['final']|length %}
-          {% set appbox = '<span class="provenance">' ~ site %}
-          {% set appbox = appbox ~ '</span>' %}
-          {% trans with {'%n_user%' : n_user, '%appbox%' : appbox} %}report::Demande de validation vers %n_user% utilisateurs depuis lapplication box %appbox%{% endtrans %}
+          {% trans with {'%n_user%' : n_user } %}report::Demande de validation vers %n_user% utilisateurs depuis lapplication box{% endtrans %}
         {% elseif action == 'edit' %}
           {{ 'report::Edition des meta-donnees' | trans }}
         {% elseif action == 'collection' %}
@@ -57,16 +52,15 @@
           <span class="actor">
           {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANREPORT')) %}
             {% if done['user'] and done['user'].getId() != app.getAuthenticatedUser().getId() %}
-              {% set user_infos = done['user'].getDisplayName() %}
+              {% set user_infos = done['user'].getDisplayName() | e %}
               {% trans with {'%user_infos%' : user_infos} %}report:: par %user_infos%{% endtrans %}
             {% endif %}
           {% endif %}
 
           </span>
+           <p style="font-size:10px;text-decoration:italic;">{{ app['date-formatter'].getPrettyString(date(hour)) }}</p>
        </div>
-
-       <div style="font-size:10px;text-decoration:italic;">{{hour}}</div>
-
+      </div>
 
       {% endfor %}
     {% endfor %}

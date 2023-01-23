@@ -16,16 +16,16 @@ define([
     var DcFieldsView = Backbone.View.extend({
         tagName: "div",
         className: "input-append",
+        template: _.template($("#dc_fields_template").html()),
         initialize: function (options) {
             this.field = options.field;
         },
         render: function () {
-            var template = _.template($("#dc_fields_template").html(), {
-                dces_elements: this.collection.toJSON(),
-                field: this.field.toJSON()
-            });
-
-            this.$el.html(template);
+            this.$el.html(this.template({
+                    dces_elements: this.collection.toJSON(),
+                    field: this.field.toJSON()
+                })
+            );
 
             var index = $("#dces-element", this.$el)[0].selectedIndex - 1;
             if (index > 0) {

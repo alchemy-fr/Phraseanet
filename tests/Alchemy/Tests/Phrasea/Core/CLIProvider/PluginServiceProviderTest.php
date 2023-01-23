@@ -81,16 +81,26 @@ class PluginServiceProviderTest extends ServiceProviderTestCase
         }
 
         $app = self::$DI['cli'];
-        $app['conf']->set(['binaries', 'php_binary'], null);
+
+        $bkp = $app['conf']->get(['main', 'binaries']);
+
+        $app['conf']->set(['main', 'binaries', 'php_binary'], null);
         $app->register(new PluginServiceProvider());
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Management\ComposerInstaller', $app['plugins.composer-installer']);
+
+        $app['conf']->set(['main', 'binaries'], $bkp);
     }
 
     public function testInstallerCanDetectPhpConf()
     {
         $app = self::$DI['cli'];
-        $app['conf']->set(['binaries', 'php_binary'], null);
+
+        $bkp = $app['conf']->get(['main', 'binaries']);
+
+        $app['conf']->set(['main', 'binaries', 'php_binary'], null);
         $app->register(new PluginServiceProvider());
         $this->assertInstanceOf('Alchemy\Phrasea\Plugin\Management\ComposerInstaller', $app['plugins.composer-installer']);
+
+        $app['conf']->set(['main', 'binaries'], $bkp);
     }
 }

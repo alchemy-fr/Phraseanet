@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Assert\Assertion;
 
@@ -20,7 +19,7 @@ class ValueChecker
     {
         Assertion::allIsInstanceOf($list, Typed::class);
         $is_numeric = is_numeric($value);
-        $is_valid_date = RecordHelper::validateDate($value);
+        $is_valid_date = (RecordHelper::sanitizeDate($value) !== null);
         $filtered = [];
         foreach ($list as $item) {
             switch ($item->getType()) {
@@ -30,14 +29,14 @@ class ValueChecker
                 case FieldMapping::TYPE_LONG:
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
-                    if ($is_numeric) {
+//                    if ($is_numeric) {
                         $filtered[] = $item;
-                    }
+//                    }
                     break;
                 case FieldMapping::TYPE_DATE:
-                    if ($is_valid_date) {
+//                    if ($is_valid_date) {
                         $filtered[] = $item;
-                    }
+//                    }
                     break;
                 case FieldMapping::TYPE_STRING:
                 default:

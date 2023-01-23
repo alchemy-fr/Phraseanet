@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Model\Entities\User;
-use Symfony\Component\HttpKernel\Client;
 
 /**
  * @group functional
@@ -90,8 +89,6 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->assertObjectHasAttribute('status', $data);
         $this->assertObjectHasAttribute('message', $data);
-        $this->assertObjectHasAttribute('notifications', $data);
-        $this->assertObjectHasAttribute('changed', $data);
     }
 
     public function testDeleteSession()

@@ -12,8 +12,22 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DebuggerSubscriberTest extends \PhraseanetTestCase
 {
+    private $bkp = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->bkp = self::$DI['app']['conf']->get('debugger');
+    }
+
     public function tearDown()
     {
+        if(is_null($this->bkp)) {
+            self::$DI['app']['conf']->remove('debugger');
+        }
+        else {
+            self::$DI['app']['conf']->set('debugger', $this->bkp);
+        }
         if (is_file(__DIR__ . '/Fixtures/configuration-debugger.php')) {
             unlink(__DIR__ . '/Fixtures/configuration-debugger.php');
         }

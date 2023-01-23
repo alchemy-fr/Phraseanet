@@ -1,4 +1,4 @@
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
   {% set can_edit = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
   {% set can_see_business = can_edit %}
@@ -17,8 +17,4 @@
     {% endfor %}
 </div>
 
-{% if record.is_from_reg()  %}
-    {{macro.caption(record, can_see_business)}}
-{% else %}
-    {{macro.caption(record, can_see_business)}}
-{% endif %}
+{{macro_caption.caption(record, can_see_business)}}

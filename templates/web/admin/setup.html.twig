@@ -30,24 +30,37 @@
 </form>
 
 
-
-{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal'}}) }}
+{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal', 'id': 'setupForm'}}) }}
 {{ form_errors(form) }}
 {% for daform in form %}
     {% if daform.vars['label'] != null %}
         <fieldset>
             <legend>{{ daform.vars['label'] }}</legend>
             {% for formdata in daform %}
-                <div class="control-group">
-                    {{ form_errors(formdata) }}
-                    {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
-                    <div class="controls">
-                        {{ form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
-                    </div>
+                {% if formdata.vars['attr'] is defined and formdata.vars['attr']['id'] is defined
+                and formdata.vars['attr']['id'] == 'personalize-logo-container' %}
+                    <div class="control-group">
+                        {{ form_errors(formdata) }}
+                        {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                        <div class="controls">
+                            {% include 'admin/personalisation_logo.html.twig' with {'form': formdata} %}
+                        </div>
 
-                    <div>{{ formdata.vars['help_message'] }}</div>
-                    {{ form_rest(formdata) }}
-                </div>
+                        <div>{{ formdata.vars['help_message'] }}</div>
+                        {{ form_rest(formdata) }}
+                    </div>
+                {% else %}
+                    <div class="control-group">
+                        {{ form_errors(formdata) }}
+                        {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                        <div class="controls">
+                            {{ form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                        </div>
+
+                        <div>{{ formdata.vars['help_message'] }}</div>
+                        {{ form_rest(formdata) }}
+                    </div>
+                {% endif %}
             {% endfor %}
             {{ form_rest(daform) }}
         </fieldset>
@@ -66,7 +79,8 @@
 <div style="clear: both;"></div>
 <div class="well well-large">
     <div style="max-width: 400px;margin: 0 auto 10px;">
-        <input type="submit" class="btn btn-primary btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
+        <input type="submit" id="submitSetupForm" class="btn btn-primary btn-block btn-large"
+               value="{{ 'boutton::valider' | trans }}"/>
     </div>
 </div>
 {{ form_end(form) }}

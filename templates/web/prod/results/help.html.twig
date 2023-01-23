@@ -5,69 +5,36 @@
         <div>{{ results.warning }}</div>
     {% endif %}
 
-    <p>
-      {{ 'Votre recherche ne retourne aucun resultat' | trans }}
-    </p>
+    {#<p>#}
+    {#{{ 'Votre recherche ne retourne aucun resultat' | trans }}#}
+    {#</p>#}
 
 
     <div class="client_help">
-        <h5>{{ 'La recherche s\'effectue grâce à la boîte de dialogue qui se trouve en haut à gauche de l\'écran.' | trans }}
-        {{ 'Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :' | trans }}</h5>
-        <h5 style="border:#CCCCCC 2px solid">{{ '* , ? , ET , OU , SAUF , DANS , DERNIERS , TOUT (ou AND , OR , EXCEPT , LAST , ALL)' | trans }}</h5>
-
-        <h5>{{ 'Caractères de troncature' | trans }}</h5>
-
-        <table>
-            <tr>
-                <td valign="top"><kbd class="ky">{{ 'auto*' | trans }}</kbd></td>
-                <td valign="top"> {{ 'retourne "automobile", "automate", "autoroute", ...' | trans }}</td>
-            </tr>
-            <tr>
-                <td valign="top"><kbd class="ky">{{ 'dé?it' | trans }}</kbd></td>
-                <td valign="top"> {{ 'retourne "délit", "débit", ...' | trans }}</td>
-            </tr>
-        </table>
-
-        <h5>{{ 'Visualiser tous les enregistrements / les derniers enregistrements' | trans }}</h5>
-        <table>
-            <tr>
-                <td valign="top"><kbd class="ky"><b>{{ 'TOUT' | trans }}</b></kbd></td>
-                <td valign="top">{{ 'retourne tous les enregistrements des collections selectionnees' | trans }}</td>
-            </tr>
-            <tr>
-                <td valign="top"><kbd class="ky"><b>{{ 'LAST 20' | trans }}</b></kbd></td>
-                <td valign="top">{{ 'retourne les 20 derniers enregistrements archives dans les collections selectionnees' | trans }}</td>
-            </tr>
-        </table>
-
-        <h5>{{ 'Recherche multicritères' | trans }}</h5>
-        {{ 'Vous pouvez affiner votre recherche avec les opérateurs : ET, OU, SAUF ou DANS' | trans }}<br>
-        <table>
-            <tr>
-                <td valign="top"><kbd class="ky">{{ 'sport' | trans }} <b>ET</b> {{ 'automobile' | trans }}</kbd></td>
-                <td valign="top">{{ 'retourne les documents comprenant les deux mots.' | trans }}</td>
-            </tr>
-            <tr>
-                <td valign="top"><kbd class="ky">{{ 'journal OU jt' | trans }}</kbd></td>
-                <td valign="top">{{ 'retourne les documents comprenant un mot et/ou l\'autre.' | trans }}</td>
-            </tr>
-            <tr>
-                <td valign="top"><kbd class="ky">{{ 'cannes SAUF festival' | trans }}</kbd></td>
-                <td valign="top">{{ 'retourne les documents comprenant cannes sans le mot festival.' | trans }}</td>
-            </tr>
-            <tr>
-                <td valign="top"><kbd class="ky">{{ 'thalassa DANS titre' | trans }}</kbd></td>
-                <td valign="top">{{ 'retourne les documents où le terme est au moins présent dans le titre, en évitant par exemple celles où le terme est uniquement cité dans la légende.' | trans }}</td>
-            </tr>
-        </table>
-
-        <center>
-            <h3 style="background-color:#CCCCCC; color:#000000">{{ 'Attention' | trans }}</h3>
-            <h4> {{ 'pour chercher une phrase contenant un des mots-clé ci-dessus, utilisez les guillemets :' | trans }}</h4>
-            <kbd class='tx'><i>"</i>{{ 'C dans l\'air' | trans }}<i>"</i></kbd>
-            ,  <kbd class='tx'><i>"</i>{{ 'Et Dieu créa la femme' | trans }}<i>"</i></kbd>
-            , <kbd class='tx'><i>"</i>{{ 'bijou en or' | trans }}<i>"</i></kbd>
-            , <kbd class='tx'><i>"</i>{{ 'tout le sport' | trans }}<i>"</i></kbd>
-        </center>
+        <div class="help-section">
+            <h4>{{ 'help::help-section-title: sorry-no-result' | trans }}</h4>
+            <ul>
+                <li><p>{{ 'help::help-section-bullet: check-spelling' | trans }}</p></li>
+                <li><p>{{ 'help::help-section-bullet: search-in-document' | trans }}</p></li>
+                <li><p>{{ 'help::help-section-bullet: remove-advance-search' | trans }}</p></li>
+                <li><p>{{ 'help::help-section-bullet: expand search' | trans }}</p></li>
+            </ul>
+        </div>
+        <div class="help-section">
+            <h4>{{ 'help::help-section-title: search-tips' | trans }}</h4>
+            <ul>
+                <li><p>{{ 'help::help-section-bullet: default-operator-between-terms' | trans }}</p></li>
+                <li><p>{{ 'help::help-section-bullet: use-OR-between-terms' | trans }}</p></li>
+                <li><p>{{ 'help::help-section-bullet: use-EXCEPT-operator' | trans }}</p></li>
+                <li><p>{{ 'help::help-section-bullet: quotation-marks-allow' | trans }}</p></li>
+                <li><p>{{ 'help::help-section-bullet: search-in-a-specific-field' | trans }}</p></li>
+            </ul>
+        </div>
+        <br>
+        <p class="text-center">{{ 'help::help-search: OR' | trans }}</p>
+        <br>
+        <p class="text-center">
+          <span class="btn btn-info btn-lg trigger-reload-search" onclick="jQuery('.reload-search').trigger('click');">{{ 'help::help-search: relaunch search without filter' | trans }}</span>
+        </p>
     </div>
 {% endblock %}

@@ -35,7 +35,7 @@
             <ul class="unstyled">
                 {% for file in lazaretFiles %}
                     <li class="row-fluid wrapper-item well">
-                       {{ _self.lazaretElement(app, file) }}
+                        {{ _self.lazaretElement(app, file) }}
                     </li>
                 {% endfor %}
             </ul>
@@ -48,56 +48,56 @@
 </div>
 
 <script>
-    $('document').ready(function(){
+    $('document').ready(function () {
         $(".btn-group.emptying").hide();
 
         var scope = $('#lazaretBox');
 
         $("#tab-lazaret").scrollTop(0);
 
-        function getLazaretId(el){
+        function getLazaretId(el) {
             return el.closest('div.lazaret-file').find('input[name=lazaret_file]').val();
         }
 
-        function getDestinationId(el){
+        function getDestinationId(el) {
             return el.closest('div.lazaret-file').find('input[name=lazaret_file_destination]').val();
         }
 
-        function startAjax(button){
+        function startAjax(button) {
             button.closest(".btn-group").find('button').prop('disabled', true);
             button.closest(".btn-group").addClass('loading');
         }
 
-        function stopAjax(button){
+        function stopAjax(button) {
             button.closest(".btn-group").find('button').prop('disabled', false);
             button.closest(".btn-group").removeClass('loading');
         }
 
-        function reloadContent(force){
+        function reloadContent(force) {
             var nbItems = scope.find(".wrapper-item").length;
 
-            if( nbItems === 0 || force === true) {
+            if (nbItems === 0 || force === true) {
                 $.ajax({
-                    url:'/prod/lazaret/',
-                    beforeSend: function(){
-                        $("#lazaretBox").empty().append(language.loading );
+                    url: '/prod/lazaret/',
+                    beforeSend: function () {
+                        $("#lazaretBox").empty().append(language.loading);
                     },
-                    success: function(data) {
+                    success: function (data) {
                         scope.empty().append(data);
                     },
-                    error : function() {
+                    error: function () {
                         $("#lazaretBox").empty().append(language.errorAjaxRequest);
                     }
                 });
             }
         }
 
-        $(".records-subititution .diapo", scope)
-                .bind('click', function(e){
-                    $(this).closest('.lazaret-proposals').find('.diapo').removeClass('selected');
-                    $(this).addClass('selected');
-                }
-        );
+        /* $(".records-subititution .diapo", scope)
+                 .bind('click', function(e){
+                     $(this).closest('.lazaret-proposals').find('.diapo').removeClass('selected');
+                     $(this).addClass('selected');
+                 }
+         );*/
 
         $(".records-subititution .captionTips", scope).tooltip();
         $(".records-subititution .infoTips", scope).tooltip();
@@ -106,23 +106,23 @@
         var emptying = false;   // true=emptying, set to false to stop
 
         // stop emptying lazaret
-        $('button.stopempty-lazaret', scope).bind('click', function() {
+        $('button.stopempty-lazaret', scope).bind('click', function () {
             emptying = false;
         });
 
         // empty lazaret
-        $('button.empty-lazaret', scope).bind('click', function(){
+        $('button.empty-lazaret', scope).bind('click', function () {
 
             var that = $(this);
-            
-            if(!confirm("{{ "Empty quarantine will remove all items, are you sure you want to continue ?" | trans }}")) {
+
+            if (!confirm("{{ "Empty quarantine will remove all items, are you sure you want to continue ?" | trans }}")) {
                 return false;
             }
 
             $(".btn-group.empty").hide();
             $(".btn-group.emptying").show();
 
-            var f = function() {
+            var f = function () {
                 var todo = 0;
                 var msg_html = "";
                 $.ajax({
@@ -135,7 +135,7 @@
                     success: function (data) {
                         if (data.success) {
                             todo = data.result.todo;
-                            $("#QUARANTINE_TOOLBAR_EMPTYING_TODO").text(""+todo);
+                            $("#QUARANTINE_TOOLBAR_EMPTYING_TODO").text("" + todo);
                         } else {
                             emptying = false;   // force stop
                             msg_html = _.template($("#alert_error_tpl").html(), {
@@ -150,67 +150,72 @@
                         });
                     }
                 })
-                .done(function(data) {
-                    if(emptying && todo > 0) {
-                        window.setTimeout(f, 500);  // wait between loops
-                    }
-                })
-                .fail(function() {
-                    emptying = false;   // force stop
-                })
-                .always(function(){
-                    if(!emptying || todo <= 0) {
-                        $(".btn-group.emptying").hide();
-                        $(".btn-group.empty").show();
-                        if(msg_html != "") {
-                            $("#QUARANTINE_TOOLBAR_EMPTYING_MSG").html(msg_html);
+                    .done(function (data) {
+                        if (emptying && todo > 0) {
+                            window.setTimeout(f, 500);  // wait between loops
                         }
-                        else {
-                            reloadContent(true);
+                    })
+                    .fail(function () {
+                        emptying = false;   // force stop
+                    })
+                    .always(function () {
+                        if (!emptying || todo <= 0) {
+                            $(".btn-group.emptying").hide();
+                            $(".btn-group.empty").show();
+                            if (msg_html != "") {
+                                $("#QUARANTINE_TOOLBAR_EMPTYING_MSG").html(msg_html);
+                            }
+                            else {
+                                reloadContent(true);
+                            }
                         }
-                    }
-                });
+                    });
             };
 
             // start emptying
             emptying = true;
             f();
         });
-
+        var data;
         //add lazaret file click action
-        $("button.add-lazaret", scope).bind('click', function(){
+        $("button.add-lazaret", scope).bind('click', function () {
             var that = $(this);
             var lazaretId = getLazaretId(that);
             var destinationCollectionId = getDestinationId(that);
+            var container = $(this).closest('.wrapper-item');
+            var form = $(this).closest("form");
+
+            /*fix POST on firefox*/
+            data = form.serializeArray();
+            var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
+            that.closest(".form-backup ").append(allData);
+            that.parent().closest('.wrapper-item').find(".change-record ").remove();
 
             $.ajax({
-                type : 'POST',
-                url: '/prod/lazaret/'+lazaretId+'/force-add/',
+                type: 'POST',
+                url: '/prod/lazaret/' + lazaretId + '/force-add/',
                 dataType: 'json',
-                data : {
-                    bas_id:destinationCollectionId,
-                    keep_attributes: 1
-                },
-                beforeSend: function(){
+                data: data,
+                beforeSend: function () {
                     startAjax(that);
                 },
-                success: function(data){
-                    if(data.success){
-                        that.closest(".wrapper-item").remove();
-                    }else{
+                success: function (data) {
+                    if (data.success) {
+                        container.remove();
+                    } else {
                         var html = _.template($("#alert_error_tpl").html(), {
-                             content:data.message
+                            content: data.message
                         });
                         that.closest(".diapo").append(html);
                     }
                 },
-                error: function(){
-                   var html = _.template($("#alert_error_tpl").html(), {
-                        content:language.errorAjaxRequest
-                   });
-                   that.closest(".diapo").append(html);
+                error: function () {
+                    var html = _.template($("#alert_error_tpl").html(), {
+                        content: language.errorAjaxRequest
+                    });
+                    that.closest(".diapo").append(html);
                 },
-                complete: function(){
+                complete: function () {
                     stopAjax(that);
                     reloadContent();
                 }
@@ -218,42 +223,131 @@
         });
 
         //delete lazaret file click action
-        $("button.delete-lazaret", scope).bind('click', function(){
+        $("button.delete-lazaret", scope).bind('click', function () {
             var that = $(this);
             var lazaretId = getLazaretId(that);
+            var container = $(this).closest('.wrapper-item');
+            var form = $(this).closest("form");
+            data = form.serializeArray();
+            var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
+            that.closest(".form-backup ").append(allData);
+            that.parent().closest('.wrapper-item').find(".change-record ").remove();
 
             $.ajax({
-                type : 'POST',
-                url: '/prod/lazaret/'+lazaretId+'/deny/',
+                type: 'POST',
+                url: '/prod/lazaret/' + lazaretId + '/deny/',
                 dataType: 'json',
-                beforeSend: function(){
+                beforeSend: function () {
                     startAjax(that);
                 },
-                success: function(data){
-                    if(data.success){
-                        that.closest(".wrapper-item").remove();
-                    }else{
-                       var html = _.template($("#alert_error_tpl").html(), {
-                            content:data.message
-                       });
-                       that.closest(".diapo").append(html);
+                success: function (data) {
+                    if (data.success) {
+                        container.remove();
+                    } else {
+                        var html = _.template($("#alert_error_tpl").html(), {
+                            content: data.message
+                        });
+                        that.closest(".diapo").append(html);
                     }
                 },
-                error: function(){
+                error: function () {
                     var html = _.template($("#alert_error_tpl").html(), {
-                        content:language.errorAjaxRequest
+                        content: language.errorAjaxRequest
                     });
                     that.closest(".diapo").append(html);
                 },
-                complete: function(){
+                complete: function () {
                     stopAjax(that);
                     reloadContent();
                 }
             });
         });
 
+
+        //update status list
+        function resetStatus(that) {
+            that.removeClass('selected');
+            var html = that.parent().closest('.wrapper-item').find(".status-backup").html();
+            that.parent().closest('.wrapper-item').find(".status-container").html('');
+            that.parent().closest('.wrapper-item').find(".status-container").append(html);
+        };
+        $(".span12 img, .reset-status").click(function () {
+            var that = $(this).closest('.wrapper-item').find('.lazaret-proposals .diapo');
+            resetStatus(that);
+        });
+        $(".records-subititution .diapo", scope).bind('click', function () {
+            var that = $(this);
+            var diapo = that.closest('.lazaret-proposals').find('.diapo');
+            var container = that.closest('.wrapper-item');
+            diapo.not(this).removeClass('selected');
+            /*Set selected or not to check for sending ajax request*/
+            if (that.hasClass("selected")) {
+                resetStatus(that);
+            } else {
+                that.addClass('selected');
+                var elements = $(".selected", container);
+                var recordId = elements.first().attr("data-record_id");
+                var sBas = elements.first().attr("sbas");
+                $.ajax({
+                    type: 'GET',
+                    url: '/prod/lazaret/' + sBas + '/' + recordId + '/status',
+                    dataType: 'json',
+                    beforeSend: function () {
+                        startAjax(that);
+                    },
+                    success: function (data) {
+                        if (data.status) {
+                            html = '';
+                            for ([key, value] of Object.entries(data.status)) {
+                                if (value.flag == 1) {
+                                    checkValOff = '';
+                                    checkValOn = 'checked=checked';
+                                } else {
+                                    checkValOff = 'checked=checked';
+                                    checkValOn = '';
+                                }
+                                var labelOff = value['labels_off_i18n']["{{ app['locale'] }}"];
+                                var labelOn = value['labels_on_i18n']["{{ app['locale'] }}"];
+                                if (labelOff == null || labelOff == "") {
+                                    labelOff = 'off';
+                                }
+                                if (labelOn == null || labelOn == "") {
+                                    labelOn = 'on';
+                                }
+                                html += '<tr>';
+                                html += '<td class="status-tab-left">';
+                                if (value['img_off'] != null) {
+                                    html += '   <img src="{{ value['img_off'] }}" width="16" height="16" />';
+                                }
+                                ;
+                                html += '<span>' + labelOff + '</span>';
+                                html += '<input type="radio" name="status[' + sBas + '][' + value.bit + ']" value="0" ' + checkValOff + ' />';
+                                html += '</td>';
+                                html += '<td class="status-tab-right">';
+                                html += '<input type="radio" name="status[' + sBas + '][' + value.bit + ']" value="1" ' + checkValOn + ' />';
+                                html += '<span>' + labelOn + '</span>';
+                                if (value['img_on'] != null) {
+                                    html += '<img src="' + value['img_on'] + '" width="16" height="16" />';
+                                }
+                                ;
+                                html += '</td>';
+                                html += '</tr>';
+                            }
+                            ;
+                            that.parent().closest('.wrapper-item').find(".status-container").html('');
+                            that.parent().closest('.wrapper-item').find(".status-container").append(html);
+                        }
+                    },
+                    complete: function () {
+                        stopAjax(that);
+                        reloadContent();
+                    }
+                });
+            }
+        });
+
         //substitute lazaret file click action
-        $("button.subtitute-lazaret", scope).bind('click', function(){
+        $("button.subtitute-lazaret", scope).bind('click', function () {
             var that = $(this);
             var lazaretId = getLazaretId(that);
             var container = $(this).closest('.wrapper-item');
@@ -262,74 +356,82 @@
             var elements = [];
             var nbElement = 0;
 
-            if(nbProposals > 1){ // we got more than one proposals
+
+
+            if (nbProposals > 1) {
                 elements = $(".selected", container);
                 nbElement = elements.length;
-            }else if(nbProposals == 1){
-                elements = container.find(".records-subititution");
-                nbElement = 1
-            }
-            else{
-                return false;
+            } else if (nbProposals == 1) {
+                elements = $(".records-subititution > div", container);
+                } else {
+                    return false;
             }
 
-            if(nbElement === 0){
+            if (nbElement === 0 && nbProposals > 1) {
                 alert(language.selectOneRecord);
+
                 return false;
-            }else if(nbElement > 1){
+            } else if (nbElement > 1) {
                 alert(language.onlyOneRecord);
                 return false;
             }
 
             var recordId = elements.first().attr("data-record_id");
+            var form = $(this).closest("form");
+            $(".record_id").val(recordId);
+
+
+            var form = $(this).closest("form");
+            data = form.serializeArray();
+            var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
+            that.closest(".form-backup ").append(allData);
+            that.parent().closest('.wrapper-item').find(".change-record ").remove();
 
             $.ajax({
-                type : 'POST',
-                url: '/prod/lazaret/'+lazaretId+'/accept/',
+                type: 'POST',
+                url: '/prod/lazaret/' + lazaretId + '/accept/',
                 dataType: 'json',
-                data:{
-                    record_id: recordId
+                data: data,
+                beforeSend: function () {
+                    startAjax(that);
                 },
-                beforeSend: function(){
-                   startAjax(that);
-                },
-                success: function(data){
-                    if(data.success){
-                        that.closest(".wrapper-item").remove();
-                    }else{
+                success: function (data) {
+                    if (data.success) {
+                        container.remove();
+                    } else {
                         var html = _.template($("#alert_error_tpl").html(), {
-                            content:data.message
+                            content: data.message
                         });
                         that.closest(".diapo").append(html);
                     }
                 },
-                error: function(){
+                error: function () {
                     var html = _.template($("#alert_error_tpl").html(), {
-                        content:language.errorAjaxRequest
+                        content: language.errorAjaxRequest
                     });
                     that.closest(".diapo").append(html);
                 },
-                complete: function(){
+                complete: function () {
                     stopAjax(that);
                     reloadContent();
                 }
             });
         });
+        /*Toggle status block*/
+        $(".toggle-status").click(function () {
+            $(this).nextAll('.status-wrapper').first().toggleClass('hidden');
+        });
     });
 </script>
-<style>
-    .lazaret-proposals .diapo {
-        float:none;
-    }
-</style>
 
 {% macro lazaretElement(app, file) %}
     {% import "common/thumbnail.html.twig" as thumb %}
     {% set records = file.getRecordsToSubstitute(app, true) %}
     <div class="lazaret-file span4">
+
         <h5>{{ "Last uploaded version" | trans }}</h5>
         <ul class="thumbnails">
-            <li class="span12" >
+            <li class="span12">
                 <div class="thumbnail">
                     <img src="/prod/lazaret/{{ file.getId() }}/thumbnail/"/>
                     <div class="caption">
@@ -337,7 +439,7 @@
                         <p>{{ "Date" | trans }} : <span class="info">{{ app['date-formatter'].getPrettyString(file.getCreated()) }}</span></p>
                         {% if file.getSession().getUser() is not none %}
                             <p>
-                                {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser().getId() }) ~ '/">' ~ file.getSession().getUser().getDisplayName() ~ '</a>' %}
+                                {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser().getId() }) ~ '/">' ~ file.getSession().getUser().getDisplayName() | e ~ '</a>' %}
                                 {% trans with {'%username%' : username} %}Uploaded by : %username%{% endtrans %}
                             </p>
                         {% endif %}
@@ -348,19 +450,130 @@
                             <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
                         {% endfor %}
                     </div>
-                    <div class="btn-group" style="text-align:center; padding:5px;">
-                        <button class="btn add-lazaret" title="{{ "Add" | trans }}">
-                            <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
-                        </button>
-                        <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
-                            <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
-                        </button>
-                        {% if records|length > 0 %}
-                            <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
-                                <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
-                            </button>
+                    <form  class="change-record" name="change-records-status" action="/" method="POST">
+                        <div class="change-record-wrapper">
+                        {% set collection = file.getCollection(app) %}
+                            <input type="hidden" name="bas_id" value="{{ collection.get_base_id() }}">
+                            <input type="hidden" name="keep_attributes" value="1">
+                            <input class="record_id" type="hidden" name="record_id">
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), constant('\\ACL::CHGSTATUS')) %}
+                                <div class="update-status">
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
+                                        <a href="#" class="reset-status btn">Reset status</a>
+                                        <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
+                                        <div class="status-wrapper hidden">
+                                            <table style="margin: auto">
+                                                <tbody class="status-container">
+                                                {% if file.getStatus(app) is not null  %}
+                                                    {% for bit, status in file.getStatus(app) %}
+                                                        <tr>
+                                                            <td class="status-tab-left">
+                                                                {% if status['img_off'] is not empty %}
+                                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                                <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
+
+                                                            </td>
+                                                            <td class="status-tab-right">
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
+                                                                <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                                {% if status['img_on'] is not empty %}
+                                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                                        <tr>
+                                                            <td class="status-tab-left">
+                                                                {% if status['img_off'] is not empty %}
+                                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                                <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
+
+                                                            </td>
+                                                            <td class="status-tab-right">
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
+                                                                <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                                {% if status['img_on'] is not empty %}
+                                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="btn-group" style="text-align:center; padding:5px;">
+                                <button class="btn add-lazaret" title="{{ "Add" | trans }}">
+                                    <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
+                                </button>
+                                <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
+                                    <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
+                                </button>
+                                {% if records|length > 0 %}
+                                    <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
+                                        <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                    <div class="hidden form-backup"></div>
+                    {# bloc to backup initial value of status list#}
+                    <table class="hidden">
+                        <tbody class="status-backup">
+                        {% if file.getStatus(app) is not null %}
+                            {% for bit, status in file.getStatus(app) %}
+                                <tr>
+                                    <td class="status-tab-left">
+                                        {% if status['img_off'] is not empty %}
+                                            <img src="{{ status['img_off'] }}" width="16" height="16"/>
+                                        {% endif %}
+                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
+
+                                    </td>
+                                    <td class="status-tab-right">
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
+                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                        {% if status['img_on'] is not empty %}
+                                            <img src="{{ status['img_on'] }}" width="16" height="16"/>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                <tr>
+                                    <td class="status-tab-left">
+                                        {% if status['img_off'] is not empty %}
+                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                        {% endif %}
+                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
+
+                                    </td>
+                                    <td class="status-tab-right">
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
+                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                        {% if status['img_on'] is not empty %}
+                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         {% endif %}
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </li>
         </ul>
@@ -373,11 +586,11 @@
     {% if record_count  > 0 %}
         <div class="lazaret-proposals span8">
             <h5>
-            {% if record_count <= 1 %}
-                {% trans %}A record matches the unique identifier :{% endtrans %}
-            {% else %}
-                {% trans with {'%record_count%' : record_count} %}%record_count% records match the unique identifier :{% endtrans %}
-            {% endif %}
+                {% if record_count <= 1 %}
+                    {% trans %}A record matches the unique identifier :{% endtrans %}
+                {% else %}
+                    {% trans with {'%record_count%' : record_count} %}%record_count% records match the unique identifier :{% endtrans %}
+                {% endif %}
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
@@ -387,15 +600,15 @@
                         and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDELETERECORD')) %}
                         <li class="records-subititution span3" style="width:210px">
                             {% include 'prod/results/record.html.twig' with {
-                            'record': record,
-                            'settings': {
-                            'images_size': 169,
-                            'technical_display': '1',
-                            'rollover_thumbnail': 'caption',
-                            'doctype_display': '1',
-                            'handle_dblclick' : false,
-                            'show_context_menu': false
-                            }
+                                'record': record,
+                                'settings': {
+                                    'images_size': 169,
+                                    'technical_display': '1',
+                                    'rollover_thumbnail': 'caption',
+                                    'doctype_display': '1',
+                                    'handle_dblclick' : false,
+                                    'show_context_menu': false
+                                }
                             } %}
                             <div class="caption">
                                 {% for reason in reasons %}
@@ -409,4 +622,31 @@
         </div>
     {% endif %}
 {% endmacro %}
+
+<style>
+    .lazaret-proposals .diapo {
+        float:none;
+    }
+
+    .collection-status {
+        margin: 0 11px 14px;
+        background: #f5f5f5;
+        padding-bottom: 10px;
+        color: #151515;
+    }
+    .collection-status h5 {
+        padding: 10px 10px 0 10px;
+        cursor: pointer;
+        margin-bottom: 0;
+    }
+    .reset-status {
+        display: inline-block;
+        float: right;
+        background: #fff;
+        border: 1px solid;
+        padding: 2px 5px;
+        margin-top: -4px;
+        margin-right: -6px;
+    }
+</style>
 

@@ -1,0 +1,87 @@
+<h1>{{ 'admin:phrasea-service-setting:tab-title:: Page title' | trans }}</h1>
+
+<div class="phraseanet-service-setting-tabs">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="auth"><a aria-controls="auth" href="#auth" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/auth">{{ 'admin:phrasea-service-setting:tab:: Auth' | trans }}</a></li>
+        <li class="expose" role="presentation">
+            <a aria-controls="expose" href="#expose" data-url="/admin/phraseanet-service/expose" role="tab" data-toggle="tab">
+                {{ 'admin:phrasea-service-setting:tab:: Expose' | trans }}
+            </a>
+        </li>
+        <li role="presentation" class="uploader"><a aria-controls="uploader" href="#uploader" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/uploader">{{ 'admin:phrasea-service-setting:tab:: Uploader' | trans }}</a></li>
+        <li role="presentation" class="notify"><a aria-controls="notify" href="#notify" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/notify">{{ 'admin:phrasea-service-setting:tab:: Notify' | trans }}</a></li>
+        <li role="presentation" class="report"><a aria-controls="report" href="#report" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/report">{{ 'admin:phrasea-service-setting:tab:: Report' | trans }}</a></li>
+    </ul>
+
+    <div class="top-bar-shadow"></div>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade" id="auth">
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="expose">
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="uploader">
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="notify">
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="report">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var contentsDownloaded = {};
+    var remoteContent = function(url) {
+        return $.get(url);
+    };
+
+    var tabs = $('.phraseanet-service-setting-tabs a[data-toggle="tab"]');
+
+    tabs.on('click', function(){
+        $(this).tab('show');
+    });
+
+    $('.nav-tabs li').on('show.bs.tab', function (e) {
+        if (contentsDownloaded[e.target.hash] === undefined) {
+            $(e.target.hash).empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+        }
+    });
+
+    $('.nav-tabs').on('shown.bs.tab', function (e) {
+
+        if (contentsDownloaded[e.target.hash] === undefined) {
+            var targetDiv = $(e.target.hash);
+
+            remoteContent($(e.target).attr('data-url')).then(function(response) {
+                targetDiv.empty().html(response);
+                contentsDownloaded[e.target.hash] = true;
+            }, function(error) {
+                console.log(error);
+                targetDiv.empty().html('<i class="icon-fire">{{ 'admin:phraseanet-service Retrieve configuration error'|trans }}</i>');
+            });
+        }
+    });
+
+    var sel = '.phraseanet-service-setting-tabs li.{{ _fragment }} a';
+    $(sel).click();
+
+    $(document).ready(function () {
+        remoteContent("/admin/phraseanet-service/expose").then(function(response) {
+            $('#expose').empty().html(response);
+
+            if ($('input.activate-expose').prop('checked')) {
+                $('#add-new-expose').removeAttr('disabled');
+            }
+
+            if ($('#expose-list .auth-connection').prop('checked')) {
+                $('#expose-list .auth-connection').closest('.expose-block').find('.auth-connection-field').show();
+            } else {
+                $('#expose-list .auth-connection').closest('.expose-block').find('.auth-connection-field').hide();
+            }
+        }, function(error) {
+            console.log(error);
+            $('#expose').empty().html('<i class="icon-fire">{{ 'admin:expose Retrieve configuration error'|trans }}</i>');
+        });
+    });
+
+</script>

@@ -1,0 +1,38 @@
+{% form_theme form 'form_table_layout.html.twig' %}
+{% form_theme form.queues 'bootstrap_3_horizontal_layout.html.twig' %}
+
+
+<h1>{{ 'admin::workermanager:tab:workerconfig: title' |trans }}</h1>
+<p class="alert alert-danger">
+    {{ 'admin::workermanager:tab:workerconfig: warning' |trans }}
+</p>
+
+{{ form_start(form, {'action': path('worker_admin_configuration')}) }}
+
+<table>
+    {% for child in form.queues.children %}
+        <tr>
+            <td colspan="4">
+                <hr/>
+                {{ form_label(child) }}
+                {{ form_errors(child) }}
+            </td>
+        </tr>
+        <tr>
+            {% for child2 in child.children %}
+                <td>
+                {{ form_row(child2) }}
+                </td>
+            {% endfor %}
+            {{ form_widget(child) }}
+        </tr>
+    {% endfor %}
+</table>
+<br/>
+<br/>
+
+{{ form_widget(form) }}
+
+{{ form_end(form) }}
+
+<br/>

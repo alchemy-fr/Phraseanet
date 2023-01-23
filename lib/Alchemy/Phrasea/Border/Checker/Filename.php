@@ -45,8 +45,18 @@ class Filename extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        $boolean = empty(\record_adapter::get_records_by_originalname(
-            $file->getCollection()->get_databox(), $file->getOriginalName(), $this->sensitive, 0, 1
+        $excludedCollIds = [];
+        if (!empty($this->compareIgnoreCollections)) {
+            foreach ($this->compareIgnoreCollections as $collection) {
+                // use only collection in the same databox and retrieve the coll_id
+                if ($collection->get_sbas_id() === $file->getCollection()->get_sbas_id()) {
+                    $excludedCollIds[] = $collection->get_coll_id();
+                }
+            }
+        }
+
+        $boolean = empty(\record_adapter::getRecordsByOriginalnameWithExcludedCollIds(
+            $file->getCollection()->get_databox(), $file->getOriginalName(), $this->sensitive, 0, 1, $excludedCollIds
         ));
 
         return new Response($boolean, $this);

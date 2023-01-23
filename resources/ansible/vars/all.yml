@@ -21,17 +21,27 @@ server:
         - xpdf
         - libav-tools
         - gpac
+        - python
+        - python-urllib3
+        - python3-openssl
+        - python-pyasn1
+        - python-pyasn1-modules
+        - python3-pyasn1
+        - python-pip
     timezone: UTC
     locales:
         - en_GB.UTF-8
         - fr_FR.UTF-8
         - de_DE.UTF-8
         - nl_NL.UTF-8
+
 repositories:
     php: 'ppa:ondrej/php'
-    mariadb: 'deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu'
+    mariadb: 'deb [arch=amd64,arm64,i386,ppc64el] http://mirror.nodesdirect.com/mariadb/repo/10.3/ubuntu'
     elasticsearch: 'ppa:webupd8team/java'
     rabbitmq: 'deb http://www.rabbitmq.com/debian/ testing main'
+    yarn: 'https://dl.yarnpkg.com/debian/'
+
 vagrant_local:
     install: '1'
     vm:
@@ -40,6 +50,8 @@ vagrant_local:
         sharedfolder: ./
         useVagrantCloud: '1'
         syncType: nfs
+        hostname: ''
+        docker_hosts_container: 'db elasticsearch redis rabbitmq'
 nginx:
     install: '1'
     docroot: /vagrant
@@ -54,6 +66,7 @@ mariadb:
     dump: ''
 elasticsearch:
     install: '1'
+    host: '127.0.0.1'
     port: '9200'
     version: '2.3.3'
     plugins:
@@ -61,31 +74,33 @@ elasticsearch:
 php:
     install: '1'
     ppa: php
+    version: '{{ phpversion }}'
     packages:
-        - 'php5.6-cli'
-        - 'php5.6-fpm'
-        - 'php5.6-intl'
-        - 'php5.6-mcrypt'
-        - 'php5.6-enchant'
-        - 'php5.6-gd'
-        - 'php5.6-memcache'
-        - 'php5.6-xml'
-        - 'php5.6-xmlrpc'
-        - 'php5.6-memcached'
-        - 'php5.6-mbstring'
-        - 'php5.6-curl'
-        - 'php5.6-mysql'
-        - 'php5.6-imagick'
-        - 'php5.6-zip'
-        - 'php5.6-sqlite3'
-        - 'php5.6-bcmath'
+        - 'php{{ phpversion }}-cli'
+        - 'php{{ phpversion }}-fpm'
+        - 'php{{ phpversion }}-intl'
+        - 'php{{ phpversion }}-mcrypt'
+        - 'php{{ phpversion }}-enchant'
+        - 'php{{ phpversion }}-gd'
+        - 'php{{ phpversion }}-memcache'
+        - 'php{{ phpversion }}-xml'
+        - 'php{{ phpversion }}-xmlrpc'
+        - 'php{{ phpversion }}-memcached'
+        - 'php{{ phpversion }}-mbstring'
+        - 'php{{ phpversion }}-curl'
+        - 'php{{ phpversion }}-mysql'
+        - 'php{{ phpversion }}-imagick'
+        - 'php{{ phpversion }}-zip'
+        - 'php{{ phpversion }}-sqlite3'
+        - 'php{{ phpversion }}-bcmath'
         - 'php-pear'
-        - 'php5.6-dev'
-        - 'php-zmq'
-        - 'php-amqp'
+        - 'php{{ phpversion }}-dev'
+    pecl_packages:
+        - {name: zmq, package: zmq-beta}
+        - {name: amqp, package: amqp-1.9.3}
 node:
     install: '1'
-    version: '9.4.0' 
+    version: '9.4.0'
 xdebug:
     install: '1'
     idekey: 'PHPSTORM'
