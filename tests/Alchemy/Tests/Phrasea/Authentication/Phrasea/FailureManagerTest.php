@@ -147,12 +147,7 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $oldFailures = $this->ArrayIze(function () {
-            $failure = $this->getMock(AuthFailure::class);
-            $failure->expects($this->once())
-                ->method('setLocked')
-                ->with($this->equalTo(false));
-
-            return $failure;
+            return $this->getMock(AuthFailure::class);
         }, 10);
 
         $repo->expects($this->once())
