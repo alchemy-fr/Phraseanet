@@ -3365,12 +3365,12 @@
       </trans-unit>
       <trans-unit id="5103a4a398146306aa27923e6cce52672060bbd6" resname="Flush All Caches">
         <source>Flush All Caches</source>
-        <target state="needs-translation">Die Caches der Anwendung leeren</target>
+        <target state="translated">Die Caches der Anwendung leeren</target>
         <jms:reference-file line="152">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f6d859db6f9a2d8c84dcf5c840b6b1d55439ad0a" resname="Flush session">
         <source>Flush session</source>
-        <target state="needs-translation">Alle Benutzersitzungen leeren, alle verbundenen Benutzer abmelden</target>
+        <target state="translated">Alle Benutzersitzungen leeren, alle verbundenen Benutzer abmelden</target>
         <jms:reference-file line="156">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bd85a7d22f6cdee554e5b9e865d26dcbb4dafc9" resname="Focal length" approved="yes">
@@ -9101,7 +9101,7 @@
       </trans-unit>
       <trans-unit id="30ab8fbf04e70f76c8af2da82ec244c92137b3e8" resname="admin::userlist: user in grace period only">
         <source>admin::userlist: user in grace period only</source>
-        <target state="new">admin::userlist: user in grace period only</target>
+        <target state="needs-translation">Benutzer, die gelöscht werden sollen</target>
         <jms:reference-file line="53">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="066e4bf19c914aa7b3dce70cb3ba25be17f9970d" resname="admin::userlist: user mail locked only">
@@ -9935,7 +9935,7 @@
       </trans-unit>
       <trans-unit id="a54cbfd43ad8987c0ecbc5e8fa51d7c571369ddc" resname="all redis session flushed">
         <source>all redis session flushed</source>
-        <target state="needs-translation">Alle Benutzersitzungen wurden gelöscht</target>
+        <target state="translated">Alle Benutzersitzungen wurden gelöscht</target>
         <jms:reference-file line="98">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afaee7bf6eca9099dc9356fbc46fb4f1716b8916" resname="an error occured" approved="yes">
@@ -11532,12 +11532,12 @@
       </trans-unit>
       <trans-unit id="12957d5f6be1441309fef99facd9cc5160b525f0" resname="mail:: account deletion confirmation object">
         <source>mail:: account deletion confirmation object</source>
-        <target state="needs-translation">Bestätigung der Löschung Ihres Kontos.</target>
+        <target state="needs-translation">Bestätigung der Löschung Ihres Kontos</target>
         <jms:reference-file line="30">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
         <source>mail:: inactif account</source>
-        <target state="needs-translation">Nachricht über Ihr Konto.</target>
+        <target state="needs-translation">Nachricht über Ihr Konto</target>
         <jms:reference-file line="36">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="de4036d68dc1676d5aede10a8e57f4b1d1b8683c" resname="mail:: inactif account delete account info , account will be deleted on %deleteDate%">
@@ -11552,7 +11552,7 @@
       </trans-unit>
       <trans-unit id="7ea61df220e487d0db115bce9776f79abc43fe23" resname="mail:: inactif account info with login">
         <source>mail:: inactif account info with login</source>
-        <target state="new">mail:: inactif account info with login</target>
+        <target state="needs-translation">Ihr Konto mit dem Login:</target>
         <jms:reference-file line="59">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfbfe9a399e2b459d721aa5d91633bd46473cd70" resname="mail:: inactif account keep account info , connect before %deleteDate%">
@@ -11562,17 +11562,17 @@
       </trans-unit>
       <trans-unit id="7021425d1e6b12b10641fd50e7cf787ff393ce5e" resname="mail:: inactif account on application %application% is inactif since %lastConnection%">
         <source>mail:: inactif account on application %application% is inactif since %lastConnection%</source>
-        <target state="new">mail:: inactif account on application %application% is inactif since %lastConnection%</target>
+        <target state="needs-translation">auf der Anwendung %application% wird nicht mehr verwendet, seit dem %lastConnection%.</target>
         <jms:reference-file line="61">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
         <source>mail:: test email sended</source>
-        <target state="new">mail:: test email sended</target>
+        <target state="needs-translation">Übermittlung einer Test-E-Mail</target>
         <jms:reference-file line="21">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
         <source>mail:: test sended from %application%</source>
-        <target state="new">mail:: test sended from %application%</target>
+        <target state="needs-translation">Test E-Mail gesendet von %application%.</target>
         <jms:reference-file line="29">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
@@ -11587,12 +11587,12 @@
       </trans-unit>
       <trans-unit id="4f98b161b1dd8e4882edcf02529422784042cace" resname="mail::account deletion confirmation no activities since %lastConnection%">
         <source>mail::account deletion confirmation no activities since %lastConnection%</source>
-        <target state="needs-translation">Wir haben keine Aktivität auf Ihrem Konto verzeichnet seit dem %lastConnection% .</target>
+        <target state="needs-translation">Wir haben keine Aktivität auf Ihrem Konto verzeichnet seit dem %lastConnection%.</target>
         <jms:reference-file line="49">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ffdd023c8bd8b6465b789382a92f144ee78372cb" resname="mail::account deletion last relance at  %lastInactivityEmail%">
         <source>mail::account deletion last relance at %lastInactivityEmail%</source>
-        <target state="new">mail::account deletion last relance at  %lastInactivityEmail%</target>
+        <target state="needs-translation">Eine Erinnerung wurde Ihnen am %lastInactivityEmail% ausgesendet.</target>
         <jms:reference-file line="53">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -11751,7 +11751,7 @@
       </trans-unit>
       <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated">
         <source>order-manager::order-item: already-validated</source>
-        <target state="needs-translation">Schon gesendet</target>
+        <target state="translated">Schon gesendet</target>
         <jms:reference-file line="294">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1633622f5312fb56598ca36a584cc877d15ce6b3" resname="order-manager::order-item: by" approved="yes">
@@ -13220,7 +13220,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="1cc196dd03104d49bbc1c15e3c05cca44ca9bec2" resname="prod::push: automatically send user reminder">
         <source>prod::push: automatically send user reminder</source>
-        <target state="needs-translation">Eine automatische Mahnung programmieren, für die Benutzer, die ihre Abstimmungen nicht abgeschlossen haben</target>
+        <target state="translated">Eine automatische Mahnung programmieren, für die Benutzer, die ihre Abstimmungen nicht abgeschlossen haben</target>
         <jms:reference-file line="179">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="238">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -13625,7 +13625,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="17973965f96bc86b5b9dd09879ce96f5d5dbc89a" resname="prod:expose preview">
         <source>prod:expose preview</source>
-        <target state="needs-translation">Vorschauen</target>
+        <target state="translated">Vorschauen</target>
         <jms:reference-file line="23">prod/WorkZone/ExposeList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
