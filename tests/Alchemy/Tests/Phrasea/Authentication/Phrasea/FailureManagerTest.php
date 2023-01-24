@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
@@ -128,6 +129,7 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
+        $this->setExpectedException(RequireCaptchaException::class, "Too many failures, require captcha");
         $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
@@ -156,6 +158,8 @@ class FailureManagerTest extends \PhraseanetTestCase
         $repo->expects($this->once())
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
+
+        $this->setExpectedException(RequireCaptchaException::class, "Too many failures, require captcha");
 
         $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
@@ -203,6 +207,7 @@ class FailureManagerTest extends \PhraseanetTestCase
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
+        $this->setExpectedException(RequireCaptchaException::class, "Too many failures, require captcha");
         $manager = new FailureManager($repo, $em, $recaptcha, 2);
         $manager->checkFailures($username, $request);
     }
@@ -295,11 +300,6 @@ class FailureManagerTest extends \PhraseanetTestCase
             $response->expects($this->once())
                 ->method('isSuccess')
                 ->will($this->returnValue($isValid));
-
-            $recaptcha->expects($this->once())
-                ->method('bind')
-                ->with($this->equalTo($request))
-                ->will($this->returnValue($response));
         }
 
         if (null !== $isSetup) {

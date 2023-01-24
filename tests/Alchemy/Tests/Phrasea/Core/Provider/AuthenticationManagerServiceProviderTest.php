@@ -21,7 +21,6 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Neutron\ReCaptcha\ReCaptcha;
 
 /**
  * @group functional
@@ -197,7 +196,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
      */
     protected function createReCaptchaMock()
     {
-        return $this->getMockBuilder(ReCaptcha::class)
+        return $this->getMockBuilder(\ReCaptcha\ReCaptcha::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
