@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use ReCaptcha\ReCaptcha;
 
 /**
  * @group functional
@@ -31,6 +32,10 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
+        $app = $this->loadApp();
+
+        $app['conf']->set(['registry', 'webservices', 'recaptcha-private-key'], '123');
+
         return [
             [
                 AuthenticationManagerServiceProvider::class,
@@ -129,7 +134,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new RepositoriesServiceProvider());
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['conf']->set(['registry', 'webservices'], ['captchas-enabled' => true]);
+        $app['conf']->set(['registry', 'webservices', 'captchas-enabled'], true);
         $bkp = $app['conf']->get('authentication');
 
         $app['orm.em'] = $this->createEntityManagerMock();
@@ -152,7 +157,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['conf']->set(['registry', 'webservices'], ['captchas-enabled' => false]);
+        $app['conf']->set(['registry', 'webservices', 'captchas-enabled'], false);
         $bkp = $app['conf']->get('authentication');
 
         $app['orm.em'] = $this->createEntityManagerMock();

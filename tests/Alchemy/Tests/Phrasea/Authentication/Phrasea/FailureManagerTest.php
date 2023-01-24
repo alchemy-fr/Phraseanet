@@ -302,12 +302,6 @@ class FailureManagerTest extends \PhraseanetTestCase
                 ->will($this->returnValue($isValid));
         }
 
-        if (null !== $isSetup) {
-            $recaptcha->expects($this->once())
-                ->method('isSetup')
-                ->will($this->returnValue($isSetup));
-        }
-
         return $recaptcha;
     }
 
