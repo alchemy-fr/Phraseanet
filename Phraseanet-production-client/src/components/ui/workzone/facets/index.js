@@ -195,10 +195,11 @@ const workzoneFacets = services => {
         return source;
     }
 
-    function _formatColorText(string, textLimit = 0) {
+    function _formatColorText(string) {
+        var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
         //get color code from text if exist
         var regexp = /^(.*)\[#([0-9a-fA-F]{6})].*$/;
-
 
         var match = string.match(regexp);
         if (match && match[2] != null) {
@@ -208,11 +209,13 @@ const workzoneFacets = services => {
             if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                 textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
             }
+            textWithoutColorCode = $('<div/>').text(textWithoutColorCode).html();   // escape html
             return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
         } else {
             if (textLimit > 0 && string.length > textLimit) {
                 string = string.substring(0, textLimit) + '…';
             }
+            string = $('<div/>').text(string).html();   // escape html
             return string;
         }
     }
