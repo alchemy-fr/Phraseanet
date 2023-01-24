@@ -283,17 +283,17 @@ class FailureManagerTest extends \PhraseanetTestCase
 
     private function getReCaptchaMock($isSetup = true, Request $request = null, $isValid = false)
     {
-        $recaptcha = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
+        $recaptcha = $this->getMockBuilder('ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()
             ->getMock();
 
         if ($request) {
-            $response = $this->getMockBuilder('Neutron\ReCaptcha\Response')
+            $response = $this->getMockBuilder('ReCaptcha\Response')
                 ->disableOriginalConstructor()
                 ->getMock();
 
             $response->expects($this->once())
-                ->method('isValid')
+                ->method('isSuccess')
                 ->will($this->returnValue($isValid));
 
             $recaptcha->expects($this->once())
