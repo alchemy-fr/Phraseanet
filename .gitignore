@@ -83,8 +83,8 @@ npm-debug.log
 env.local
 
 # Exclude alternate helm values
-my_values.yml
-myvalues.yml
+my_values.yaml
+myvalues.yaml
 
 
 # Exclude gitlog files
