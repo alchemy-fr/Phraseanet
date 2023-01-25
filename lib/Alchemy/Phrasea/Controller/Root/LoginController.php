@@ -431,6 +431,14 @@ class LoginController extends Controller
         try {
             if ('POST' === $request->getMethod()) {
                 $form->handleRequest($request);
+                $requestData = $request->request->all();
+
+                if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+                    $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
+
+                    $dataError = new FormError("");
+                    $form->get('captcha')->addError($dataError);
+                }
 
                 if ($form->isValid()) {
                     $data = $form->getData();
