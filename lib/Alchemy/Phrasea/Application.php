@@ -654,12 +654,12 @@ class Application extends SilexApplication
     private function setupRecaptacha()
     {
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
             }
         });
         $this['recaptcha.private-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
             }
         });

@@ -154,7 +154,7 @@ class RegistryFormManipulator
                 'captchas-enabled' => false,
                 'recaptcha-public-key' => '',
                 'recaptcha-private-key' => '',
-                'trials-before-display' => 3,
+                'trials-before-display' => 5,
             ],
             'executables'  => [
                 'h264-streaming-enabled' => false,
