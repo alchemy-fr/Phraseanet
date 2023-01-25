@@ -21,19 +21,18 @@ class PhraseaForgotPasswordForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('email', EmailType::class, [
+        $builder->add('email', EmailType::class, [
             'label' => 'E-mail',
             'required' => true,
             'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Email()
                 ],
-            ])
-            ->add('captcha', 'hidden', [
-                'error_bubbling' => false
-            ])
-        ;
+        ]);
+
+        $builder->add('captcha', 'hidden', [
+            'error_bubbling' => false
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
