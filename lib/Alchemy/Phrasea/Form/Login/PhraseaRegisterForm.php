@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PhraseaRegisterForm extends AbstractType
 {
@@ -128,6 +129,16 @@ class PhraseaRegisterForm extends AbstractType
                 );
             }
         }
+        $builder->add('captcha', 'hidden', [
+            'error_bubbling' => false
+        ]);
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'allow_extra_fields' => true,
+        ]);
     }
 
     public function getName()

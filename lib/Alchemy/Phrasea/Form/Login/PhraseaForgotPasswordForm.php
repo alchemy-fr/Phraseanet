@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Form\Login;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class PhraseaForgotPasswordForm extends AbstractType
@@ -24,9 +25,20 @@ class PhraseaForgotPasswordForm extends AbstractType
             'label' => 'E-mail',
             'required' => true,
             'constraints' => [
-                new Assert\NotBlank(),
-                new Assert\Email()
-            ],
+                    new Assert\NotBlank(),
+                    new Assert\Email()
+                ],
+        ]);
+
+        $builder->add('captcha', 'hidden', [
+            'error_bubbling' => false
+        ]);
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'allow_extra_fields' => true,
         ]);
     }
 
