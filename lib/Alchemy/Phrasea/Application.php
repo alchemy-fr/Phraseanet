@@ -98,7 +98,6 @@ use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use Psr\Log\LoggerInterface;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
@@ -203,7 +202,6 @@ class Application extends SilexApplication
         $this->setupGeonames();
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new RepositoriesServiceProvider());
-        $this->register(new ManipulatorServiceProvider());
         $this->register(new TechnicalDataServiceProvider());
         $this->register(new MediaSubdefServiceProvider());
         $this->register(new CaptionServiceProvider());
@@ -211,16 +209,13 @@ class Application extends SilexApplication
         $this->register(new PhraseaVersionServiceProvider());
 
         $this->register(new RandomGeneratorServiceProvider());
-        $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
         $this->register(new ZippyServiceProvider());
-        $this->setupRecaptacha();
 
         if ($this['configuration.store']->isSetup()) {
             $this->register(new SearchEngineServiceProvider());
             $this->register(new BorderManagerServiceProvider());
         }
-
 
         $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
@@ -261,6 +256,7 @@ class Application extends SilexApplication
         $this->register(new LocaleServiceProvider());
 
         $this->setupEventDispatcher();
+        $this->setupRecaptacha();
 
         $this->register(new DataboxServiceProvider());
         $this->register(new QueueServiceProvider());
@@ -464,7 +460,7 @@ class Application extends SilexApplication
      */
     public function requireCaptcha()
     {
-        if ($this['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+        if ($this['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
             $this['session']->set('require_captcha', true);
         }
 
@@ -658,12 +654,12 @@ class Application extends SilexApplication
     private function setupRecaptacha()
     {
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
             }
         });
         $this['recaptcha.private-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
             }
         });
