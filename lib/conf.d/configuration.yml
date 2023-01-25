@@ -162,7 +162,7 @@ border-manager:
             type: Checker\Extension
             enabled: false
             options:
-                extensions: [jpg, jpeg, bmp, tif, gif, png, pdf, doc, odt, mpg, mpeg, mov, avi, xls, flv, mp3, mp2]
+                extensions: [jpg, jpeg, bmp, tif, gif, png, heic, pdf, doc, docx, xls, xlsx, odt, mpg, mpeg, mov, avi, mp3, mp2, mp4, m4v, m4a, mkv, hevc, aac, aiff, wav]
         -
             type: Checker\Filename
             enabled: false
