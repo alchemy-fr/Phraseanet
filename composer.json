@@ -8,15 +8,15 @@
   "repositories": [
     {
       "type": "package",
-        "package": {
-          "name": "facebook/php-sdk",
-          "version": "3.2.3",
-          "source": {
-            "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
-            "type": "git",
-            "reference": "3.2.3"
-            }
-       }
+      "package": {
+        "name": "facebook/php-sdk",
+        "version": "3.2.3",
+        "source": {
+          "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
+          "type": "git",
+          "reference": "3.2.3"
+        }
+      }
     },
     {
       "type": "package",
@@ -100,7 +100,6 @@
     "monolog/monolog": "~1.3",
     "mrclay/minify": "~2.1.6",
     "neutron/process-manager": "2.0.x-dev@dev",
-    "neutron/recaptcha": "~0.1.0",
     "neutron/silex-filesystem-provider": "~1.0",
     "neutron/silex-imagine-provider": "~0.1.0",
     "neutron/temporary-filesystem": "~2.1",

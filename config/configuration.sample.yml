@@ -161,9 +161,6 @@ border-manager:
 authentication:
     auto-create:
         templates: {  }
-    captcha:
-        enabled: true
-        trials-before-display: 9
     providers:
         facebook:
             enabled: false

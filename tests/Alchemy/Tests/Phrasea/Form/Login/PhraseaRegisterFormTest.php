@@ -52,7 +52,7 @@ class PhraseaRegisterFormTest extends FormTestCase
             )
         );
 
-        $expected = array('email', 'password', 'provider-id', '_token', 'extraParameter','extraParameter2');
+        $expected = array('email', 'password', 'provider-id', 'captcha', '_token', 'extraParameter','extraParameter2');
 
         if (self::$DI['app']->hasTermsOfUse()) {
             $expected[] = 'accept-tou';
@@ -88,7 +88,7 @@ class PhraseaRegisterFormTest extends FormTestCase
             )
         );
 
-        $expected = array('email', 'password', 'provider-id', '_token', 'extraParameter');
+        $expected = array('email', 'password', 'provider-id', 'captcha', '_token', 'extraParameter');
 
         if (self::$DI['app']->hasTermsOfUse()) {
             $expected[] = 'accept-tou';
