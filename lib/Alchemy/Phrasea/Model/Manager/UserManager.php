@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Manager;
 
 use Alchemy\Phrasea\Model\Entities\ApiLog;
+use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
@@ -146,6 +147,7 @@ class UserManager
     private function cleanFtpCredentials(User $user)
     {
         if (null !== $credential = $user->getFtpCredential()) {
+            $user->setFtpCredential(null);
             $this->objectManager->remove($credential);
         }
     }
@@ -163,6 +165,30 @@ class UserManager
        foreach ($elements as $element) {
            $this->objectManager->remove($element);
        }
+    }
+
+    /**
+     * Removes user list.
+     *
+     * @param User $user
+     */
+    private function cleanUsrList(User $user)
+    {
+        $listOwners = $this->objectManager->getRepository('Phraseanet:UsrListOwner')
+            ->findBy(['user' => $user]);
+
+        /** @var UsrListOwner $listOwner */
+        foreach ($listOwners as $listOwner) {
+            $this->objectManager->remove($listOwner->getList());
+            $this->objectManager->remove($listOwner);
+        }
+
+        $listEntries = $this->objectManager->getRepository('Phraseanet:UsrListEntry')
+            ->findBy(['user' => $user]);
+
+        foreach ($listEntries as $listEntry) {
+            $this->objectManager->remove($listEntry);
+        }
     }
 
     /**
@@ -232,6 +258,7 @@ class UserManager
         $this->cleanUserSessions($user);
         $this->cleanOauthApplication($user);
         $this->cleanLazarets($user);
+        $this->cleanUsrList($user);
     }
 
     private function cleanLazarets(User $user)
