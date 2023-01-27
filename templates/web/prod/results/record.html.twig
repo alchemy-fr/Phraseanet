@@ -157,7 +157,7 @@
                                         {% endif %}
 
                                         {# video tools for type = video #}
-                                        {% if record.type == 'video' %}
+                                        {% if record.type == 'video' and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner video-tools-record-action" data-db="{{record.baseId}}" data-record-id="{{record.recordId}}" data-idlst="{{record.id}}" >
                                                     <a title="{{ 'action:: video tools' | trans }}" href="#" class="TOOL_videoeditor_btn" >
