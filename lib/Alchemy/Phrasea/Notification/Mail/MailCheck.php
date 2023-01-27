@@ -11,14 +11,14 @@
 
 namespace Alchemy\Phrasea\Notification\Mail;
 
-class MailTest extends AbstractMail
+class MailCheck extends AbstractMail
 {
     /**
      * {@inheritdoc}
      */
     public function getSubject()
     {
-        return $this->app->trans('mail:: test d\'envoi d\'email');
+        return $this->app->trans("mail:: test email sended", [], 'messages', $this->getLocale());
     }
 
     /**
@@ -26,7 +26,7 @@ class MailTest extends AbstractMail
      */
     public function getMessage()
     {
-        return sprintf("%s\n%s", $this->app->trans('Ce mail est un test d\'envoi de mail depuis %application%', ['%application%' => $this->getPhraseanetTitle()]), $this->message);
+        return $this->app->trans("mail:: test sended from %application%", ['%application%' => $this->getPhraseanetTitle()], 'messages', $this->getLocale());
     }
 
     /**
