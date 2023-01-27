@@ -15,7 +15,9 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use appbox;
+use Doctrine\ORM\EntityManager;
 use RandomLib\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -45,11 +47,21 @@ class Factory
      * @var RandomGenerator
      */
     private $randomGenerator;
+    /**
+     * @var UsrAuthProviderRepository
+     */
+    private $usrAuthProviderRepository;
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
 
     public function __construct(UrlGenerator $generator, SessionInterface $session,
                                 UserManipulator $userManipulator, UserRepository $userRepository,
-                                ACLProvider $ACLProvider, appbox $appbox, RandomGenerator $randomGenerator
+                                ACLProvider $ACLProvider, appbox $appbox, RandomGenerator $randomGenerator,
+                                UsrAuthProviderRepository $usrAuthProviderRepository,
+                                EntityManager $entityManager
     )
     {
         $this->generator = $generator;
@@ -59,6 +71,8 @@ class Factory
         $this->ACLProvider = $ACLProvider;
         $this->appbox = $appbox;
         $this->randomGenerator = $randomGenerator;
+        $this->usrAuthProviderRepository = $usrAuthProviderRepository;
+        $this->entityManager = $entityManager;
     }
 
     public function build(string $id, string $type, bool $display, string $title, array $options = [])
@@ -86,6 +100,8 @@ class Factory
         $o->setACLProvider($this->ACLProvider);
         $o->setAppbox($this->appbox);
         $o->setRandomGenerator($this->randomGenerator);
+        $o->setUsrAuthProviderRepository($this->usrAuthProviderRepository);
+        $o->setEntityManager($this->entityManager);
 
         return $o;
     }

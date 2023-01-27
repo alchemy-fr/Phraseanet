@@ -2,18 +2,18 @@
 
 namespace Alchemy\Tests\Phrasea\Notification\Mail;
 
-use Alchemy\Phrasea\Notification\Mail\MailTest;
+use Alchemy\Phrasea\Notification\Mail\MailCheck;
 
 /**
  * @group functional
  * @group legacy
- * @covers Alchemy\Phrasea\Notification\Mail\MailTest
+ * @covers Alchemy\Phrasea\Notification\Mail\MailCheck
  */
-class MailTestTest extends MailTestCase
+class MailCheckTest extends MailTestCase
 {
     public function getMail()
     {
-        return MailTest::create(
+        return MailCheck::create(
             $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),

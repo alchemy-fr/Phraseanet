@@ -335,7 +335,7 @@ class V1Controller extends Controller
                     'googleAnalyticsId' => $conf->get(['registry', 'general', 'analytics']),
                     'i18nWebService'    => $conf->get(['registry', 'webservices', 'geonames-server']),
                     'recaptacha'        => [
-                        'active'     => $conf->get(['registry', 'webservices', 'captcha-enabled']),
+                        'active'     => $conf->get(['registry', 'webservices', 'captchas-enabled']),
                         'publicKey'  => $conf->get(['registry', 'webservices', 'recaptcha-public-key']),
                         'privateKey' => $conf->get(['registry', 'webservices', 'recaptcha-private-key']),
                     ],

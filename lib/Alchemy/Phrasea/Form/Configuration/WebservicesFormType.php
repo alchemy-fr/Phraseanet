@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class WebservicesFormType extends AbstractType
 {
@@ -49,6 +50,18 @@ class WebservicesFormType extends AbstractType
         ]);
         $builder->add('recaptcha-private-key', TextType::class, [
             'label'       => 'Recaptcha private key',
+        ]);
+        $builder->add('trials-before-display', 'integer', [
+            'label'        => 'Trials before display captcha',
+            'constraints' => array(
+                new Assert\NotBlank(),
+                new Assert\Type('integer'),
+                new Assert\Regex(array(
+                        'pattern' => '/^[0-9]\d*$/',
+                        'message' => 'Please use only positive numbers.'
+                    )
+                ),
+            ),
         ]);
     }
 

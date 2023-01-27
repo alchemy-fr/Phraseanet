@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Manager;
 
 use Alchemy\Phrasea\Model\Entities\ApiLog;
+use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
@@ -51,6 +52,7 @@ class UserManager
     {
         $this->cleanProperties($user);
         $this->cleanRights($user);
+        $this->cleanNotifications($user);
 
         $this->objectManager->persist($user);
 
@@ -83,6 +85,14 @@ class UserManager
     public function getObjectManager()
     {
         return $this->objectManager;
+    }
+
+    private function cleanNotifications(User $user)
+    {
+        $sql = 'DELETE FROM notifications WHERE usr_id = :usr_id';
+        $stmt = $this->appboxConnection->prepare($sql);
+        $stmt->execute([':usr_id' => $user->getId()]);
+        $stmt->closeCursor();
     }
 
     /**
@@ -137,6 +147,7 @@ class UserManager
     private function cleanFtpCredentials(User $user)
     {
         if (null !== $credential = $user->getFtpCredential()) {
+            $user->setFtpCredential(null);
             $this->objectManager->remove($credential);
         }
     }
@@ -154,6 +165,30 @@ class UserManager
        foreach ($elements as $element) {
            $this->objectManager->remove($element);
        }
+    }
+
+    /**
+     * Removes user list.
+     *
+     * @param User $user
+     */
+    private function cleanUsrList(User $user)
+    {
+        $listOwners = $this->objectManager->getRepository('Phraseanet:UsrListOwner')
+            ->findBy(['user' => $user]);
+
+        /** @var UsrListOwner $listOwner */
+        foreach ($listOwners as $listOwner) {
+            $this->objectManager->remove($listOwner->getList());
+            $this->objectManager->remove($listOwner);
+        }
+
+        $listEntries = $this->objectManager->getRepository('Phraseanet:UsrListEntry')
+            ->findBy(['user' => $user]);
+
+        foreach ($listEntries as $listEntry) {
+            $this->objectManager->remove($listEntry);
+        }
     }
 
     /**
@@ -222,10 +257,21 @@ class UserManager
         $this->cleanAuthProvider($user);
         $this->cleanUserSessions($user);
         $this->cleanOauthApplication($user);
+        $this->cleanLazarets($user);
+        $this->cleanUsrList($user);
+    }
+
+    private function cleanLazarets(User $user)
+    {
+        $lazaretSessions = $this->objectManager->getRepository('Phraseanet:LazaretSession')->findBy(['user' => $user]);
+
+        foreach ($lazaretSessions as $lazaretSession) {
+            $this->objectManager->remove($lazaretSession);
+        }
     }
 
     /**
-     * Removes all user's rights.
+     * Removes all user's rights, records right.
      *
      * @param User $user
      */
@@ -234,6 +280,7 @@ class UserManager
         foreach ([
             'DELETE FROM `basusr` WHERE usr_id = :usr_id',
             'DELETE FROM `sbasusr` WHERE usr_id = :usr_id',
+            'DELETE FROM `records_rights` WHERE usr_id = :usr_id',
         ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
             $stmt->execute([':usr_id' => $user->getId()]);

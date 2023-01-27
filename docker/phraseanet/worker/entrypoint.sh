@@ -20,6 +20,8 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
     docker-php-ext-enable xdebug
 fi
 
+./docker/phraseanet/plugins/console init
+
 if [ -f /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then
   if [ ! -d $IMAGEMAGICK_POLICY_TEMPORARY_PATH ]; then
     echo "$IMAGEMAGICK_POLICY_TEMPORARY_PATH does not exist lets create it"
