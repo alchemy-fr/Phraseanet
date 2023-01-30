@@ -47,6 +47,8 @@
             <script type="text/javascript" src="/assets/production/authenticate{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
             {% endblock header_javascript %}
         {% endblock header %}
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+
     </head>
     <body>
         {% block container %}
@@ -103,5 +105,21 @@
         {% endblock analytics %}
 
         {% block scripts %}{% endblock scripts %}
+        <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+        <script>
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#252e39"
+                    },
+                    "button": {
+                        "background": "#14a7d0"
+                    }
+                },
+                "theme": "classic",
+                "position": "bottom-right",
+                "type": "opt-in"
+            });
+        </script>
     </body>
 </html>
