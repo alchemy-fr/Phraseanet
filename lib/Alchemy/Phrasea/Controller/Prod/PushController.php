@@ -657,6 +657,15 @@ class PushController extends Controller
                     'message' => $this->app->trans('Expiration date successfully updated!')
                 ];
             }
+
+            // update records_rights expiration
+            foreach ($basket->getParticipants() as $participant) {
+                $userAcl = $this->getAclForUser($participant->getUser());
+                foreach ($basket->getElements() as $bElement) {
+                    $userAcl->update_expire_grant_hd($bElement->getRecord($this->app), \ACL::GRANT_ACTION_VALIDATE, $request->request->get('date') . " 23:59:59");
+                }
+            }
+
         }
         catch (Exception $e) {
             $ret = [
