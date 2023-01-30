@@ -21,6 +21,20 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
 fi
 
 ./docker/phraseanet/plugins/console init
+rm -Rf cache/*
+
+
+chown -R app:app \
+    cache \
+    config \
+    tmp \
+    logs \
+    www
+
+
+if [ -d "plugins/" ];then
+chown -R app:app plugins;
+fi
 
 if [ -f /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then
   if [ ! -d $IMAGEMAGICK_POLICY_TEMPORARY_PATH ]; then
