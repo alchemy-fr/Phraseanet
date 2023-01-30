@@ -203,6 +203,29 @@ class ACL implements cache_cacheableInterface
         return $this->_rights_sbas;
     }
 
+    public function update_expire_grant_hd(RecordReferenceInterface $record, $action, $expireOn = null)
+    {
+        if (!empty($expireOn)) {
+            try {
+                $expireOn = (new DateTime($expireOn))->format(DATE_ATOM);
+            } catch (\Exception $e) {
+                $expireOn = null;
+            }
+        }
+
+        $sql = "UPDATE records_rights SET `case`=:act, `expire_on`=:expire_on WHERE `usr_id` = :usr_id AND `sbas_id`=:sbas_id AND `record_id`=:record_id AND `document`=1";
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute([
+            ':usr_id'   => $this->user->getId(),
+            ':sbas_id'  => $record->getDataboxId(),
+            ':record_id' => $record->getRecordId(),
+            ':act'      => $action,
+            ':expire_on'=> $expireOn
+        ]);
+
+        return $this;
+    }
+
     /**
      * Check if a hd grant has been received for a record
      *
