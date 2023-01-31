@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Manager;
 
 use Alchemy\Phrasea\Model\Entities\ApiLog;
+use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -179,7 +180,15 @@ class UserManager
 
         /** @var UsrListOwner $listOwner */
         foreach ($listOwners as $listOwner) {
-            $this->objectManager->remove($listOwner->getList());
+            $usrList = $listOwner->getList();
+            $listOwnersAdmin = $this->objectManager->getRepository('Phraseanet:UsrListOwner')
+                ->findBy(['list' => $usrList, 'role' => '3']);
+
+            // there are only one administrator owner and it is the user
+            if (count($listOwnersAdmin) == 1 &&  $listOwnersAdmin[0]->getUser()->getId() === $user->getId()) {
+                $this->objectManager->remove($usrList);
+            }
+
             $this->objectManager->remove($listOwner);
         }
 
