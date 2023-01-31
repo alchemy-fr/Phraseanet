@@ -36,7 +36,10 @@
         {% block javascript %}
             <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui.js"></script>
         {% endblock %}
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+
+        {% if app['conf'].get(['main', 'cookie_consent']) %}
+            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+        {% endif %}
     </head>
     <body class="PNB">
         <div id="mainContainer" class="PNB">
@@ -49,21 +52,23 @@
         {% block bodyJavascript %}{% endblock %}
         {% include 'common/analytics.html.twig' %}
         {% include 'common/matomo_analytics.html.twig' %}
-        <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
-        <script>
-            window.cookieconsent.initialise({
-                "palette": {
-                    "popup": {
-                        "background": "#252e39"
+        {% if app['conf'].get(['main', 'cookie_consent']) %}
+            <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+            <script>
+                window.cookieconsent.initialise({
+                    "palette": {
+                        "popup": {
+                            "background": "#252e39"
+                        },
+                        "button": {
+                            "background": "#14a7d0"
+                        }
                     },
-                    "button": {
-                        "background": "#14a7d0"
-                    }
-                },
-                "theme": "classic",
-                "position": "bottom-right",
-                "type": "opt-in"
-            });
-        </script>
+                    "theme": "classic",
+                    "position": "bottom-right",
+                    "type": "opt-in"
+                });
+            </script>
+        {% endif %}
     </body>
 </html>

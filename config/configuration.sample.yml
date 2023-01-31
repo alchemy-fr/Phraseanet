@@ -7,6 +7,7 @@ main:
     languages: []
     key: ''
     delete-account-require-email-confirmation: true
+    cookie_consent: false
     database:
         host: 127.0.0.1
         port: 3306
