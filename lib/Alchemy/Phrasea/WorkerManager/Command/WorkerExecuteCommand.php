@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\WorkerManager\Command;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessageHandler;
+use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Doctrine\DBAL\Connection;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -108,8 +109,18 @@ class WorkerExecuteCommand extends Command
             try {
                 $channel->wait(null, false, $waitTimeout);
             } catch (AMQPTimeoutException $e) {
+                // we are in wait timeout,
+                // immediately close the rabbit connection to avoid Missed server heartbeat exception after this timeout
                 $serverConnection->connectionClose();
 
+                /** @var ProcessPool $processPool */
+                $processPool = $this->container['alchemy_worker.process_pool'];
+                $processPool->setLogger($this->container['alchemy_worker.logger']);
+
+                // and wait until all process generated are finished
+                $processPool->waitForAllJobProcessFinished();
+
+                // exit with 1
                 return 1;
             }
         }
