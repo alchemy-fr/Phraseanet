@@ -1251,7 +1251,7 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
-    profiles: ["workers", "writeMeatadatas"]
+    profiles: ["workers", "writeMetadatas"]
     restart: on-failure
     depends_on:
     - phraseanet
