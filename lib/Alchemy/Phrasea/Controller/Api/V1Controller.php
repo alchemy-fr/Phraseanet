@@ -34,6 +34,7 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
@@ -724,8 +725,11 @@ class V1Controller extends Controller
 
         $checks = array_map(function (LazaretCheck $checker) use ($manager, $translator) {
             $checkerFQCN = $checker->getCheckClassname();
+            try {
+                return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
+            } catch (RuntimeException $e) {
+            }
 
-            return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
         }, $file->getChecksWhithNameKey());
 
         $recordsMatch = array_map(function ($recordsTab){

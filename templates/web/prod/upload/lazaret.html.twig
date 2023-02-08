@@ -446,9 +446,13 @@
                         <p>{{ "Collection" | trans }} : <span class="info">{{ file.getCollection(app).get_label(app['locale']) }}</span></p>
                     </div>
                     <div class="caption">
-                        {% for check in file.getChecks() %}
+                        {% for check in file.getEligibleChecks(app) %}
                             <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
                         {% endfor %}
+
+                        {% if file.getEligibleChecks(app)|length == 0 and file.getChecks()|length > 0 %}
+                            <p>{{ 'upload:: checkers for this file is disabled in configuration or deleted' | trans }}</p>
+                        {% endif %}
                     </div>
                     <form  class="change-record" name="change-records-status" action="/" method="POST">
                         <div class="change-record-wrapper">

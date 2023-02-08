@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Border\Manager;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -36,7 +37,13 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
         $translator = $this->app['translator'];
 
         $reasons = array_map(function ($checkerFQCN) use ($manager, $translator) {
-            return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
+            try {
+                return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
+            } catch (RuntimeException $e) {
+                // show the name of the checker disabled
+                $t =explode('\\', $checkerFQCN);
+                return $this->app->trans('notifications:: checker %checker% for this file is disabled in configuration or deleted', ['%checker%' => $t[4]]);
+            }
         }, $data['reasons']);
 
         $filename = $data['filename'];
