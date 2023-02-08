@@ -7,6 +7,12 @@ main:
     languages: []
     key: ''
     delete-account-require-email-confirmation: true
+    cookieconsent:
+        axeptio_id: id
+        axeptio_version_fr: local-fr
+        axeptio_version_en: null
+        axeptio_version_de: null
+        axeptio_version_nl: null
     database:
         host: 127.0.0.1
         port: 3306
