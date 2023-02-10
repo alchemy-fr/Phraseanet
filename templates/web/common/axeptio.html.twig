@@ -3,7 +3,7 @@
         window.axeptioSettings = {
             clientId: "{{ app['conf'].get(['main', 'cookieconsent', 'axeptio', 'axeptio_id']) }}",
             {% if app['conf'].get(['main', 'cookieconsent', 'axeptio', 'axeptio_version_' ~ app['locale']]) %}
-            cookiesVersion: "{{ app['conf'].get(['main', 'axeptio', 'cookieconsent', 'axeptio_version_' ~ app['locale']]) }}"
+            cookiesVersion: "{{ app['conf'].get(['main', 'cookieconsent', 'axeptio', 'axeptio_version_' ~ app['locale']]) }}"
             {% endif %}
         };
 
