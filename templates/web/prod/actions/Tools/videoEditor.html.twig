@@ -228,8 +228,8 @@
                                     <form  id="video-subtitle-request" class="video-subtitle-request">
                                        <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Provider" | trans }}</label>
-                                            <select name="subtitleProvider" id="subtitle_provider">
-                                                <option value="Ginger">Ginger</option>
+                                            <select name="subtitle_provider" id="subtitle_provider">
+                                                <option value="autosub">Autosub</option>
                                             </select>
                                        </p>
                                         <p class="item">
@@ -369,7 +369,8 @@
                 subtitle_language_source: $('#subtitle_language_source option:selected').text(),
                 meta_struct_id_source: $('#subtitle_language_source').val(),
                 subtitle_language_destination: $('#subtitle_language_destination option:selected').text(),
-                meta_struct_id_destination: $('#subtitle_language_destination').val()
+                meta_struct_id_destination: $('#subtitle_language_destination').val(),
+                subtitle_provider: $('#subtitle_provider').val()
             },
             success: function success(data) {
                 console.log(data);

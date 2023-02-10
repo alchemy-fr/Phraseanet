@@ -417,10 +417,9 @@ workers:
             ttl_retry: 10000
             ttl_delayed: 5000
 externalservice:
-    ginger:
+    autosub:
         AutoSubtitling:
-            service_base_url: https://base.uri
-            token: 39c6011d
+            google_translate_api_key,: 39c6011d
             transcript_format: text/vtt
             subdef_source: preview
 
