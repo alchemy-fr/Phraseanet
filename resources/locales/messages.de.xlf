@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-02-03T12:28:51Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2023-02-14T14:13:26Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -999,7 +999,7 @@
         <jms:reference-file line="164">Controller/Prod/MoveCollectionController.php</jms:reference-file>
         <jms:reference-file line="257">Controller/Prod/LazaretController.php</jms:reference-file>
         <jms:reference-file line="315">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="200">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="203">Controller/Prod/ToolsController.php</jms:reference-file>
         <jms:reference-file line="219">Controller/Prod/StoryController.php</jms:reference-file>
         <jms:reference-file line="71">Controller/Admin/DataboxesController.php</jms:reference-file>
         <jms:reference-file line="87">Controller/Admin/DataboxController.php</jms:reference-file>
@@ -1843,7 +1843,7 @@
         <source>Codec Audio</source>
         <target state="translated">Audio Codec</target>
         <jms:reference-file line="142">web/common/technical_datas.html.twig</jms:reference-file>
-        <jms:reference-file line="113">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="137">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="672e654e54323537399e2353680dd144c0b9af32" resname="Codec Video" approved="yes">
         <source>Codec Video</source>
@@ -2597,7 +2597,7 @@
       <trans-unit id="9a15cbc825b5979bd5c5fce02ddc283737928496" resname="Document has been successfully substitued" approved="yes">
         <source>Document has been successfully substitued</source>
         <target state="translated">Dokument wurde erfolgreich ersetzt</target>
-        <jms:reference-file line="238">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="241">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cf25d8937160da72080fc8842d6b68764fe829ab" resname="Document refuse par %name%" approved="yes">
         <source>Document refuse par %name%</source>
@@ -3727,7 +3727,7 @@
         <source>Images par secondes</source>
         <target state="translated">Bilder pro Sekunde</target>
         <jms:reference-file line="136">web/common/technical_datas.html.twig</jms:reference-file>
-        <jms:reference-file line="108">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="132">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d39de5885805135b502a3e8920ffb0b1921cb6f" resname="Imagette indisponible" approved="yes">
         <source>Imagette indisponible</source>
@@ -4615,8 +4615,8 @@
       <trans-unit id="3a5aa5b9e5d2494ebc5a37af09018367b4220845" resname="No preview available" approved="yes">
         <source>No preview available</source>
         <target state="translated">Keine Voransicht verfügbar</target>
-        <jms:reference-file line="84">actions/Tools/videoEditor.html.twig</jms:reference-file>
-        <jms:reference-file line="90">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="108">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="114">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="657c9f21a7a4da0e213e67dbee089b281dce3279" resname="No receivers specified" approved="yes">
         <source>No receivers specified</source>
@@ -6216,7 +6216,7 @@
         <target state="translated">Grösse</target>
         <jms:reference-file line="39">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="40">actions/Download/prepare.html.twig</jms:reference-file>
-        <jms:reference-file line="116">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="140">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="000f280b111f7ab59b5f5f4462a40de0553664cc" resname="Slide show" approved="yes">
         <source>Slide show</source>
@@ -6456,7 +6456,7 @@
         <jms:reference-file line="677">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="710">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="818">Controller/Admin/CollectionController.php</jms:reference-file>
-        <jms:reference-file line="310">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="374">actions/Tools/videoEditor.html.twig</jms:reference-file>
         <jms:reference-file line="20">admin/collection/suggested_value.html.twig</jms:reference-file>
         <jms:reference-file line="18">admin/collection/collection.html.twig</jms:reference-file>
         <jms:reference-file line="10">web/admin/databases.html.twig</jms:reference-file>
@@ -6846,7 +6846,7 @@
       <trans-unit id="34c6d5d40f46508994dd884386a0ea63970f2e34" resname="Thumbnail has been successfully substitued" approved="yes">
         <source>Thumbnail has been successfully substitued</source>
         <target state="translated">Vorschau wurde erfolgreich ersetzt</target>
-        <jms:reference-file line="292">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="295">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56972a74c8bd7510e5ca07b4d56bf31fdc495aa5" resname="Thumbnails directory is mounted to be accessible via HTTP, while other files are not." approved="yes">
         <source>Thumbnails directory is mounted to be accessible via HTTP, while other files are not.</source>
@@ -9917,7 +9917,7 @@
         <source>alert</source>
         <target state="translated">Vorsicht</target>
         <jms:reference-file line="272">actions/Tools/index.html.twig</jms:reference-file>
-        <jms:reference-file line="306">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="370">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d87c448044defb778f33158d8ccf94a20531d600" resname="all">
         <source>all</source>
@@ -9937,7 +9937,7 @@
       <trans-unit id="afaee7bf6eca9099dc9356fbc46fb4f1716b8916" resname="an error occured" approved="yes">
         <source>an error occured</source>
         <target state="translated">Ein Fehler ist aufgetreten</target>
-        <jms:reference-file line="321">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="324">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="feab893253be204583342aa21a1c6e355f805969" resname="an error occured : %message%" approved="yes">
         <source>an error occured : %message%</source>
@@ -9962,7 +9962,7 @@
       <trans-unit id="a06a492959ce12b3f0292406ec84177d07ae19b1" resname="audio" approved="yes">
         <source>audio</source>
         <target state="translated">Audio</target>
-        <jms:reference-file line="319">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="318">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="384">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="28">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -10747,7 +10747,7 @@
       <trans-unit id="4f8278c89ad16da05fec4fdfc61fe44798b92720" resname="document" approved="yes">
         <source>document</source>
         <target state="translated">Dokument</target>
-        <jms:reference-file line="311">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="310">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="385">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="468">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="31">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
@@ -11071,15 +11071,15 @@
       <trans-unit id="a64e848c2600a26fdf2c6b8cfafda22229016983" resname="file is not valid" approved="yes">
         <source>file is not valid</source>
         <target state="translated">Datei ist nicht gültig</target>
-        <jms:reference-file line="240">Controller/Prod/ToolsController.php</jms:reference-file>
         <jms:reference-file line="243">Controller/Prod/ToolsController.php</jms:reference-file>
-        <jms:reference-file line="266">Controller/Prod/ToolsController.php</jms:reference-file>
-        <jms:reference-file line="295">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="246">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="269">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="298">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6117e45ab57f8660d866a21ca5e9d2c31dbc1945" resname="flash" approved="yes">
         <source>flash</source>
         <target state="translated">Flash</target>
-        <jms:reference-file line="323">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="322">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="386">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="34">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -11224,7 +11224,7 @@
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
         <source>image</source>
         <target state="translated">Bild</target>
-        <jms:reference-file line="307">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="306">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="382">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="22">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -11659,7 +11659,7 @@
         <source>no image selected</source>
         <target state="translated">Kein Bild wurde ausgewählt</target>
         <jms:reference-file line="273">actions/Tools/index.html.twig</jms:reference-file>
-        <jms:reference-file line="307">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="371">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37031f99ac78580c9f82e04fa237d295ea10ca41" resname="non" approved="yes">
         <source>non</source>
@@ -12884,7 +12884,7 @@
         <source>processing</source>
         <target state="translated">verarbeitend</target>
         <jms:reference-file line="274">actions/Tools/index.html.twig</jms:reference-file>
-        <jms:reference-file line="308">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="372">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f63658cad863dee4a5876278e836472380183ade" resname="prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble" approved="yes">
         <source>prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble</source>
@@ -13511,7 +13511,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>prod::tools: document</source>
         <target state="translated">Dokument</target>
         <jms:reference-file line="46">Controller/Prod/ShareController.php</jms:reference-file>
-        <jms:reference-file line="74">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="77">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e36d93428a247d085ffbb974db21290395643463" resname="prod::videoTools:chapterTitle" approved="yes">
         <source>prod::videoTools:chapterTitle</source>
@@ -14017,92 +14017,92 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: Autosubtitling</source>
         <target state="translated">Automatisierte Untertitelung</target>
-        <jms:reference-file line="238">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="262">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4415c59007c7e89865ff4e7ef0b717b459e6d6cf" resname="prod:videoeditor:subtitleRequestTab:: Request in process" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: Request in process</source>
         <target state="translated">Anfrage in Bearbeitung</target>
-        <jms:reference-file line="264">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="288">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: submit</source>
         <target state="translated">Anfrage einreichen</target>
-        <jms:reference-file line="259">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="283">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: title</source>
         <target state="translated">Automatische Untertitel</target>
-        <jms:reference-file line="38">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="62">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b945e053b5fd4a0f2664bafff257dbfd2fec386c" resname="prod:videoeditor:subtitleRequestTab:label:: Kind" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Kind</source>
         <target state="translated">Typ</target>
-        <jms:reference-file line="236">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="260">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Language destination</source>
         <target state="translated">Zielsprache</target>
-        <jms:reference-file line="250">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="274">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9d2cafba3e0955e48f598fac8a8b257b624977d" resname="prod:videoeditor:subtitleRequestTab:label:: Provider" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Provider</source>
         <target state="translated">Provider</target>
-        <jms:reference-file line="230">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="254">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="92cdd8501cb193bf13ea2f4f58e331668fdc7cfe" resname="prod:videoeditor:subtitleRequestTab:label:: Source Audio language" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Source Audio language</source>
         <target state="translated">Audioquelle Sprache</target>
-        <jms:reference-file line="242">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="266">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title" approved="yes">
         <source>prod:videoeditor:subtitleTab:: title</source>
         <target state="translated">Automatische Untertitelung Anfrage</target>
-        <jms:reference-file line="33">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="57">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder" approved="yes">
         <source>prod:videoeditor:subtitletab:: Caption placeholder</source>
         <target state="translated">Geben Sie einen Untertitel ein</target>
-        <jms:reference-file line="180">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="204">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time" approved="yes">
         <source>prod:videoeditor:subtitletab:: End time</source>
         <target state="translated">Ende</target>
-        <jms:reference-file line="178">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="202">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b12193c53fdd26a57e157dc15823df75ad0756e3" resname="prod:videoeditor:subtitletab:: No caption message" approved="yes">
         <source>prod:videoeditor:subtitletab:: No caption message</source>
         <target state="translated">Keine Untertitel für diese Sprache</target>
-        <jms:reference-file line="199">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="223">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for" approved="yes">
         <source>prod:videoeditor:subtitletab:: Show for</source>
         <target state="translated">Dauer</target>
-        <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="203">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e79e454459e7dc39a4aad9eb7f65014fa6f0a001" resname="prod:videoeditor:subtitletab:: Start time" approved="yes">
         <source>prod:videoeditor:subtitletab:: Start time</source>
         <target state="translated">Start</target>
-        <jms:reference-file line="177">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="201">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption" approved="yes">
         <source>prod:videoeditor:subtitletab:: add caption</source>
         <target state="translated">Untertitel hinzufügen</target>
-        <jms:reference-file line="212">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="236">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5a9ed94e747e90542d014b7486ab3ea865c2861d" resname="prod:videoeditor:subtitletab:: copy to clipboard" approved="yes">
         <source>prod:videoeditor:subtitletab:: copy to clipboard</source>
         <target state="translated">In die Zwischenablage kopieren</target>
-        <jms:reference-file line="211">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="235">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ba9c65917b3cc4daf4c8915a49baf5fbe37ae69" resname="prod:videoeditor:subtitletab:: save" approved="yes">
         <source>prod:videoeditor:subtitletab:: save</source>
         <target state="translated">Speichern</target>
-        <jms:reference-file line="210">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="234">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b6e3888c22d8146b4fe551a4b797ee52583f5c3" resname="prod:videoeditor:subtitletab:: work on" approved="yes">
         <source>prod:videoeditor:subtitletab:: work on</source>
         <target state="translated">Untertitel Sprache auswählen</target>
-        <jms:reference-file line="186">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="210">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="yes">
         <source>prod:videoeditor:subtitletab:message:: error</source>
@@ -14871,8 +14871,8 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="386c42eb4d167d87be7f7f68faf1aafce1be237e" resname="reportage" approved="yes">
         <source>reportage</source>
         <target state="translated">Bericht</target>
-        <jms:reference-file line="299">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
-        <jms:reference-file line="315">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="298">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="314">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4dad4c5a6197e99672c6874d0f98be7cc6e0c2fb" resname="rotation 90 degres anti-horaires" approved="yes">
         <source>rotation 90 degres anti-horaires</source>
@@ -14907,7 +14907,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="584d9f9b8a0c51aa1805a1c0ed427c366d11ea5e" resname="screenshot video" approved="yes">
         <source>screenshot video</source>
         <target state="translated">Video Screenshot</target>
-        <jms:reference-file line="129">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="153">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4" resname="secret">
         <source>secret</source>
@@ -15899,7 +15899,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>thumbnail validation</source>
         <target state="translated">Miniaturansicht Validierung</target>
         <jms:reference-file line="275">actions/Tools/index.html.twig</jms:reference-file>
-        <jms:reference-file line="309">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="373">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7e96ed809b61066d6ea96ba9afc8747a042b361a" resname="tout le monde" approved="yes">
         <source>tout le monde</source>
@@ -15966,7 +15966,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="136">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="176">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="202">actions/Tools/index.html.twig</jms:reference-file>
-        <jms:reference-file line="162">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="186">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c02a2db6d6cdf30d37962e221624cc7661f4b892" resname="validation:: NON" approved="yes">
         <source>validation:: NON</source>
@@ -16022,12 +16022,52 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="51ca3cfa60e4d9ce2c7cd07b0b96fc84c4adb59f" resname="video range extractor" approved="yes">
         <source>video range extractor</source>
         <target state="translated">Kapitelunterteilung</target>
-        <jms:reference-file line="28">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="52">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5f579f302357e60409bbfb73a4caa4700c4d8be5" resname="video tool">
         <source>video tool</source>
         <target state="translated">Video-Tools</target>
-        <jms:reference-file line="23">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="47">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="be2021ca08c39183c45a36e542e54a8973f7f31f" resname="videoeditor:: created">
+        <source>videoeditor:: created</source>
+        <target state="new">videoeditor:: created</target>
+        <jms:reference-file line="296">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e1f140763e1c094d20fa6e6a0913a4970e8a87aa" resname="videoeditor:: destination">
+        <source>videoeditor:: destination</source>
+        <target state="new">videoeditor:: destination</target>
+        <jms:reference-file line="302">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="dc2a595cbb0bc1218cd5ce01eef2bf86ff117a37" resname="videoeditor:: duration">
+        <source>videoeditor:: duration</source>
+        <target state="new">videoeditor:: duration</target>
+        <jms:reference-file line="299">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="501af3867eb6e27a634b883ba2482f1a923d133d" resname="videoeditor:: finished">
+        <source>videoeditor:: finished</source>
+        <target state="new">videoeditor:: finished</target>
+        <jms:reference-file line="298">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="60a9b184798bf2702dfe1abd1fe06fc41ecfb872" resname="videoeditor:: provider">
+        <source>videoeditor:: provider</source>
+        <target state="new">videoeditor:: provider</target>
+        <jms:reference-file line="300">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="87d1efb804d57c82e5942952a2dfa93b9450980a" resname="videoeditor:: source">
+        <source>videoeditor:: source</source>
+        <target state="new">videoeditor:: source</target>
+        <jms:reference-file line="301">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0e9decd9699e8830259dbbe38b05d2badf7d97e4" resname="videoeditor:: started">
+        <source>videoeditor:: started</source>
+        <target state="new">videoeditor:: started</target>
+        <jms:reference-file line="297">actions/Tools/videoEditor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0fcc9c4f5339513cde8d27aa47b8dd81893d899e" resname="videoeditor:: status">
+        <source>videoeditor:: status</source>
+        <target state="new">videoeditor:: status</target>
+        <jms:reference-file line="303">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecbe1590a62c751a6bafe631fc5d05158d0962b4" resname="workzone:datepicker:april" approved="yes">
         <source>workzone:datepicker:april</source>

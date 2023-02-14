@@ -22,9 +22,11 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Record\RecordWasRotated;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DataURI\Parser;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
@@ -510,6 +512,8 @@ class ToolsController extends Controller
         $record = null;
         $JSFields = [];
         $videoTextTrackFields = [];
+        $subtitleJobs = [];
+        $subtitlePayloads = [];
 
         if (count($records) == 1) {
             /** @var \record_adapter $record */
@@ -545,7 +549,22 @@ class ToolsController extends Controller
             if (!$record->isStory()) {
                 $metadatas = true;
             }
+
+            /** @var WorkerRunningJobRepository $repoWorkerRunningJob */
+            $repoWorkerRunningJob = $this->app['repo.worker-running-job'];
+            $subtitleJobs = $repoWorkerRunningJob->findByFilter(
+                [],
+                MessagePublisher::SUBTITLE_TYPE,
+                $record->getDataboxId(),
+                $record->getRecordId(),
+                null
+            );
+
+            foreach ($subtitleJobs as $subtitleJob) {
+                $subtitlePayloads[$subtitleJob['id']] = json_decode($subtitleJob['payload'], true);
+            }
         }
+
         $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/videoEditor.html.twig', [
@@ -554,7 +573,9 @@ class ToolsController extends Controller
             'videoEditorConfig'     => $conf->get(['video-editor']),
             'metadatas'             => $metadatas,
             'JSonFields'            => json_encode($JSFields),
-            'videoTextTrackFields'  => $videoTextTrackFields
+            'videoTextTrackFields'  => $videoTextTrackFields,
+            'subtitleJobs'          => $subtitleJobs,
+            'subtitlePayloads'      => $subtitlePayloads
         ]);
     }
 

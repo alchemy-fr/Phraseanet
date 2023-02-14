@@ -12,6 +12,30 @@
 
 {% set overlapChapters = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'overlapChapters') %}
 
+{% block css %}
+    <style type="text/css">
+        #tools-subtitle {
+            margin: 0 10px;
+            padding: 10px;
+            height: 170px;
+            background-color: #7a7a7a;
+            overflow: scroll;
+            text-align: left;
+        }
+        #tools-subtitle th {
+            border: 1px solid #a5a0a0;
+            padding: 10px;
+        }
+        #tools-subtitle td {
+            border: 1px solid #a5a0a0;
+            padding: 0 10px;
+        }
+        #tools-subtitle table {
+            width: 90%;
+        }
+    </style>
+{% endblock %}
+
 <div id='prod-tool-box' class="PNB10 video-edit">
     {# jquery Tabs #}
     <div id="tool-tabs" class="tabs PNB">
@@ -264,6 +288,46 @@
                                             <span class="alert alert-info">{{ "prod:videoeditor:subtitleRequestTab:: Request in process" | trans }}</span>
                                         </p>
                                     </form>
+
+                                    <div id="tools-subtitle">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>{{ "videoeditor:: created" | trans }}</th>
+                                                    <th>{{ "videoeditor:: started" | trans }}</th>
+                                                    <th>{{ "videoeditor:: finished" | trans }}</th>
+                                                    <th>{{ "videoeditor:: duration" | trans }}</th>
+                                                    <th>{{ "videoeditor:: provider" | trans }}</th>
+                                                    <th>{{ "videoeditor:: source" | trans }}</th>
+                                                    <th>{{ "videoeditor:: destination" | trans }}</th>
+                                                    <th>{{ "videoeditor:: status" | trans }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for subtitleJob in subtitleJobs %}
+                                                    <tr>
+                                                        <td>{{ subtitleJob.published|date('Y-m-d H:i:s') }}</td>
+                                                        <td>{{ subtitleJob.created|date('Y-m-d H:i:s') }}</td>
+                                                        <td>
+                                                            {% if subtitleJob.finished %}
+                                                                {{ subtitleJob.finished|date('Y-m-d H:i:s') }}
+                                                            {% else %}
+                                                                -
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <span {% if subtitleJob.finished is empty%} style="color:#ff8100;" {% endif %}>
+                                                                {{ subtitleJob.duration|date_duration }}
+                                                            </span></td>
+                                                        <td>{{ subtitlePayloads[subtitleJob.id].payload.subtitleProvider }}</td>
+                                                        <td>{{ subtitlePayloads[subtitleJob.id].payload.languageSource }}</td>
+                                                        <td>{{ subtitlePayloads[subtitleJob.id].payload.languageDestination }}</td>
+                                                        <td>{{ subtitleJob.status }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <div class="video-subtitle-right">
