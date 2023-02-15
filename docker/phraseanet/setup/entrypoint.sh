@@ -74,20 +74,20 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet instance name is NOT set to $PHRASEANET_PROJECT_NAME because ENV_SET_PHRASEANET_PROJECT_NAME is set to $ENV_SET_PHRASEANET_PROJECT_NAME "
     fi
 
-    echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Static URL PHRASEANET_BASE_URL"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Static URL PHRASEANET_BASE_URL"
     bin/setup system:config set -q servername $PHRASEANET_BASE_URL
 
-    echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Setting available language in GUI and search"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Setting available language in GUI and search"
     counter=0 
     if [[ -n $PHRASEANET_AVAILABLE_LANGUAGE ]]; then
         for i in $(echo $PHRASEANET_AVAILABLE_LANGUAGE | sed "s/,/ /g")
             do
                 counter=$(( counter+1 ))
                 if [[ $counter -eq 1 ]] ; then
-                    bin/setup system:config set -q languages.available $i
-                    bin/setup system:config add -q languages.available $i
+                    bin/setup system:config set languages.available $i
+                    bin/setup system:config add languages.available $i
                 else
-                    bin/setup system:config add -q languages.available $i
+                    bin/setup system:config add languages.available $i
                 fi
             done
     fi
@@ -101,10 +101,10 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
             do
                 counter=$(( counter+1 ))
                 if [[ $counter -eq 1 ]] ; then
-                    bin/setup system:config set -q trusted-proxies $i
-                    bin/setup system:config add -q trusted-proxies $i
+                    bin/setup system:config set trusted-proxies $i
+                    bin/setup system:config add trusted-proxies $i
                 else
-                    bin/setup system:config add -q trusted-proxies $i
+                    bin/setup system:config add trusted-proxies $i
                 fi
             done
     fi
@@ -116,10 +116,10 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
             do
                 counter=$(( counter+1 ))
                 if [[ $counter -eq 1 ]] ; then
-                    bin/setup system:config set -q debugger.allowed-ips $i
-                    bin/setup system:config add -q debugger.allowed-ips $i
+                    bin/setup system:config set debugger.allowed-ips $i
+                    bin/setup system:config add debugger.allowed-ips $i
                 else
-                    bin/setup system:config add -q debugger.allowed-ips $i
+                    bin/setup system:config add debugger.allowed-ips $i
                 fi
             done
     fi
@@ -127,11 +127,11 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting session type"
 
     if [[ $SESSION_SAVE_HANDLER == file ]]; then
-        bin/setup system:config set -q main.session.type "$SESSION_SAVE_HANDLER"
+        bin/setup system:config set main.session.type "$SESSION_SAVE_HANDLER"
 
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is $SESSION_SAVE_HANDLER"
     else
-        bin/setup system:config set -q main.session.type "native"
+        bin/setup system:config set main.session.type "native"
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native by redis"
     fi
 
@@ -154,26 +154,26 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set -q main.cache.type $PHRASEANET_CACHE_TYPE
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
-    bin/setup system:config set -q main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
-    bin/setup system:config set -q main.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
-    bin/setup system:config set -q main.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
-    bin/setup system:config set -q main.binaries.mp4box_timeout $PHRASEANET_MP4BOX_TIMEOUT
-    bin/setup system:config set -q main.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
-    bin/setup system:config set -q main.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
-    bin/setup system:config set -q main.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
+    bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
+    bin/setup system:config set main.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
+    bin/setup system:config set main.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
+    bin/setup system:config set main.binaries.mp4box_timeout $PHRASEANET_MP4BOX_TIMEOUT
+    bin/setup system:config set main.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
+    bin/setup system:config set main.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
+    bin/setup system:config set main.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
     
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting API "
-    bin/setup system:config set -q registry.api-clients.api-enabled $PHRASEANET_API_ENABLED
-    bin/setup system:config set -q registry.api-clients.api-require-ssl $PHRASEANET_API_SSL
-    bin/setup system:config set -q registry.api-clients.api-auth-token-header-only $PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
+    bin/setup system:config set registry.api-clients.api-enabled $PHRASEANET_API_ENABLED
+    bin/setup system:config set registry.api-clients.api-require-ssl $PHRASEANET_API_SSL
+    bin/setup system:config set registry.api-clients.api-auth-token-header-only $PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
 
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting RABBITMQ"
-    bin/setup system:config set -q workers.queue.worker-queue.host $PHRASEANET_RABBITMQ_HOST
-    bin/setup system:config set -q workers.queue.worker-queue.port $PHRASEANET_RABBITMQ_PORT
-    bin/setup system:config set -q workers.queue.worker-queue.vhost $PHRASEANET_RABBITMQ_VHOST
-    bin/setup system:config set -q workers.queue.worker-queue.ssl $PHRASEANET_RABBITMQ_SSL
-    bin/setup system:config set -q workers.queue.worker-queue.heartbeat $PHRASEANET_RABBITMQ_HEARTBEAT
+    bin/setup system:config set workers.queue.worker-queue.host $PHRASEANET_RABBITMQ_HOST
+    bin/setup system:config set workers.queue.worker-queue.port $PHRASEANET_RABBITMQ_PORT
+    bin/setup system:config set workers.queue.worker-queue.vhost $PHRASEANET_RABBITMQ_VHOST
+    bin/setup system:config set workers.queue.worker-queue.ssl $PHRASEANET_RABBITMQ_SSL
+    bin/setup system:config set workers.queue.worker-queue.heartbeat $PHRASEANET_RABBITMQ_HEARTBEAT
     bin/setup system:config set -q workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
     bin/setup system:config set -q workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
     
