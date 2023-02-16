@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -e
 
 if [ -z "$PHRASEANET_ADMIN_ACCOUNT_EMAIL" ]; then
     echo "PHRASEANET_ADMIN_ACCOUNT_EMAIL, Phraseanet admin account  var is not set."
@@ -36,7 +36,7 @@ sleep 10
 done
 
  # Bus configuration for scheduler & worker
-bin/setup system:config set -q workers.queue.worker-queue.registry alchemy_worker.queue_registry
+bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry
 
 # elasticsearch settings
 
