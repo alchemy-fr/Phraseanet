@@ -68,16 +68,16 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     echo `date +"%Y-%m-%d %H:%M:%S"` " - $FILE exists, start setup ."
     
     if [[ $PHRASEANET_PROJECT_NAME && $ENV_SET_PHRASEANET_PROJECT_NAME == 1 ]]; then
-        bin/setup system:config set registry.general.title "$PHRASEANET_PROJECT_NAME"
+        bin/setup system:config set -q registry.general.title "$PHRASEANET_PROJECT_NAME"
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Title is set to $PHRASEANET_PROJECT_NAME"
     else
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet instance name is NOT set to $PHRASEANET_PROJECT_NAME because ENV_SET_PHRASEANET_PROJECT_NAME is set to $ENV_SET_PHRASEANET_PROJECT_NAME "
     fi
 
-    echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Static URL PHRASEANET_BASE_URL"
-    bin/setup system:config set servername $PHRASEANET_BASE_URL
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Static URL PHRASEANET_BASE_URL"
+    bin/setup system:config set -q servername $PHRASEANET_BASE_URL
 
-    echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Setting available language in GUI and search"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Setting available language in GUI and search"
     counter=0 
     if [[ -n $PHRASEANET_AVAILABLE_LANGUAGE ]]; then
         for i in $(echo $PHRASEANET_AVAILABLE_LANGUAGE | sed "s/,/ /g")
@@ -87,12 +87,12 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
                     bin/setup system:config set languages.available $i
                     bin/setup system:config add languages.available $i
                 else
-                    bin/setup system:config add languages.available $i   
+                    bin/setup system:config add languages.available $i
                 fi
             done
     fi
     
-    bin/setup system:config set languages.default $PHRASEANET_DEFAULT_LANGUAGE
+    bin/setup system:config set -q languages.default $PHRASEANET_DEFAULT_LANGUAGE
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting for Trusted Proxies"
     counter=0 
@@ -104,7 +104,7 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
                     bin/setup system:config set trusted-proxies $i
                     bin/setup system:config add trusted-proxies $i
                 else
-                    bin/setup system:config add trusted-proxies $i   
+                    bin/setup system:config add trusted-proxies $i
                 fi
             done
     fi
@@ -119,7 +119,7 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
                     bin/setup system:config set debugger.allowed-ips $i
                     bin/setup system:config add debugger.allowed-ips $i
                 else
-                    bin/setup system:config add debugger.allowed-ips $i   
+                    bin/setup system:config add debugger.allowed-ips $i
                 fi
             done
     fi
@@ -139,19 +139,19 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
 
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Overwriting Phraseanet Database connexion informations"
 
-    bin/setup system:config set main.database.host $PHRASEANET_DB_HOST
-    bin/setup system:config set main.database.port $PHRASEANET_DB_PORT
-    bin/setup system:config set main.database.user $PHRASEANET_DB_USER
-    bin/setup system:config set main.database.password $PHRASEANET_DB_PASSWORD
-    bin/setup system:config set main.database.dbname $INSTALL_APPBOX
+    bin/setup system:config set -q main.database.host $PHRASEANET_DB_HOST
+    bin/setup system:config set -q main.database.port $PHRASEANET_DB_PORT
+    bin/setup system:config set -q main.database.user $PHRASEANET_DB_USER
+    bin/setup system:config set -q main.database.password $PHRASEANET_DB_PASSWORD
+    bin/setup system:config set -q main.database.dbname $INSTALL_APPBOX
 
     ## Phraseanet application cache setting
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up for Phraseanet cache"
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Cache Type is $PHRASEANET_CACHE_TYPE"
-    bin/setup system:config set main.cache.options.host $PHRASEANET_CACHE_HOST
-    bin/setup system:config set main.cache.options.port $PHRASEANET_CACHE_PORT
-    bin/setup system:config set main.cache.options.namespace $PHRASEANET_HOSTNAME
-    bin/setup system:config set main.cache.type $PHRASEANET_CACHE_TYPE
+    bin/setup system:config set -q main.cache.options.host $PHRASEANET_CACHE_HOST
+    bin/setup system:config set -q main.cache.options.port $PHRASEANET_CACHE_PORT
+    bin/setup system:config set -q main.cache.options.namespace $PHRASEANET_HOSTNAME
+    bin/setup system:config set -q main.cache.type $PHRASEANET_CACHE_TYPE
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
@@ -174,23 +174,23 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set workers.queue.worker-queue.vhost $PHRASEANET_RABBITMQ_VHOST
     bin/setup system:config set workers.queue.worker-queue.ssl $PHRASEANET_RABBITMQ_SSL
     bin/setup system:config set workers.queue.worker-queue.heartbeat $PHRASEANET_RABBITMQ_HEARTBEAT
-    bin/setup system:config set workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
-    bin/setup system:config set workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
+    bin/setup system:config set -q workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
+    bin/setup system:config set -q workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
     
 
 
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting SMTP "
     if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true ]]; then
-        bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
-        bin/setup system:config set registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
-        bin/setup system:config set registry.email.smtp-secure-mode $PHRASEANET_SMTP_SECURE_MODE
-        bin/setup system:config set registry.email.smtp-host $PHRASEANET_SMTP_HOST
-        bin/setup system:config set registry.email.smtp-port $PHRASEANET_SMTP_PORT
-        bin/setup system:config set registry.email.smtp-user $PHRASEANET_SMTP_USER
-        bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
-        bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
-        bin/setup system:config set registry.email.prefix "$PHRASEANET_MAIL_OBJECT_PREFIX"
+        bin/setup system:config set -q registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
+        bin/setup system:config set -q registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
+        bin/setup system:config set -q registry.email.smtp-secure-mode $PHRASEANET_SMTP_SECURE_MODE
+        bin/setup system:config set -q registry.email.smtp-host $PHRASEANET_SMTP_HOST
+        bin/setup system:config set -q registry.email.smtp-port $PHRASEANET_SMTP_PORT
+        bin/setup system:config set -q registry.email.smtp-user $PHRASEANET_SMTP_USER
+        bin/setup system:config set -q registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
+        bin/setup system:config set -q registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
+        bin/setup system:config set -q registry.email.prefix "$PHRASEANET_MAIL_OBJECT_PREFIX"
     fi
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet root account Password sync"
