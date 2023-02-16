@@ -297,7 +297,12 @@ class CleanUsersCommand extends Command
                 $receiver = Receiver::fromUser($user);
                 $mail = MailSuccessAccountInactifDelete::create($this->container, $receiver);
                 $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
-                $mail->setLastInactivityEmail($user->getLastInactivityEmail()->format('Y-m-d'));
+
+                // if --max_relances=0  there is no inactivity email
+                if ($user->getLastInactivityEmail() !== null) {
+                    $mail->setLastInactivityEmail($user->getLastInactivityEmail()->format('Y-m-d'));
+                }
+
                 $mail->setLocale($user->getLocale());
                 $mail->setDisplayFooterText(false);
             }
