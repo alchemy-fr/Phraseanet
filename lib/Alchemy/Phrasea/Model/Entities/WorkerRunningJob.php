@@ -10,6 +10,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     name="WorkerRunningJob",
  *     uniqueConstraints={
  *          @ORM\uniqueConstraint(name="flock", columns={"databox_id", "record_id", "flock"})
+ *      },
+ *     indexes={
+ *          @ORM\index(name="databox_id", columns={"databox_id"}),
+ *          @ORM\index(name="record_id", columns={"record_id"}),
+ *          @ORM\index(name="work", columns={"work"}),
+ *          @ORM\index(name="created", columns={"created"}),
+ *          @ORM\index(name="published", columns={"published"}),
+ *          @ORM\index(name="finished", columns={"finished"}),
+ *          @ORM\index(name="status", columns={"status"})
  *      }
  * )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository")
