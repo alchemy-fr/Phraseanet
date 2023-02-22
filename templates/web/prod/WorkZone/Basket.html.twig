@@ -57,9 +57,9 @@
         {% endif %}
 
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-            <button class="ui-corner-all TOOL_feedback_btn basket_window" data-selection-source="basket">
-                <i class="fa fa-bullhorn vote_sent" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 13px;width:16px; height:16px"></i>
-                <span>{{ 'Feedback' | trans }}</span>
+            <button class="ui-corner-all TOOL_sharebasket_btn basket_window" data-selection-source="basket">
+                <i class="fa fa-share share_sent" style="width: 19px;padding-top: 3px;padding-bottom: 2px;height: 17px;"></i>
+                <span>{{ 'Share' | trans}}</span>
             </button>
         {% endif %}
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
