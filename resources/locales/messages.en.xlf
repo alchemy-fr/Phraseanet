@@ -5262,9 +5262,9 @@
         <target state="translated">Publishers</target>
         <jms:reference-file line="61">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push" approved="yes">
+      <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push" approved="no">
         <source>Push</source>
-        <target state="translated">Push</target>
+        <target state="needs-translation">Push (basket)</target>
         <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="59">eventsmanager/notify/push.php</jms:reference-file>
         <jms:reference-file line="324">prod/WorkZone/Macros.html.twig</jms:reference-file>
@@ -6152,7 +6152,7 @@
       </trans-unit>
       <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share">
         <source>Share</source>
-        <target state="needs-translation">Shared Basket</target>
+        <target state="needs-translation">Share Basket</target>
         <jms:reference-file line="125">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="100">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="62">prod/WorkZone/Basket.html.twig</jms:reference-file>
@@ -8119,7 +8119,7 @@
       </trans-unit>
       <trans-unit id="89e4b70a791813f805ac492f48945a1006aa7dc3" resname="action::share basket">
         <source>action::share basket</source>
-        <target state="translated">Sharing basket</target>
+        <target state="translated">Share the basket</target>
         <jms:reference-file line="192">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="194">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -10007,7 +10007,7 @@
       </trans-unit>
       <trans-unit id="dde632755801bb13f512fc50e5ffff6a6c42dd96" resname="basket:: Shared">
         <source>basket:: Shared</source>
-        <target state="needs-translation">Shared Basket</target>
+        <target state="translated">Shared Basket</target>
         <jms:reference-file line="312">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f89fb316769f870206b98c16e9e68ad04aea54be" resname="basket:: refresh workzone">
