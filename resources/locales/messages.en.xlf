@@ -6152,7 +6152,7 @@
       </trans-unit>
       <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share">
         <source>Share</source>
-        <target state="translated">Shared Basket</target>
+        <target state="needs-translation">Shared Basket</target>
         <jms:reference-file line="125">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="100">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="62">prod/WorkZone/Basket.html.twig</jms:reference-file>
@@ -10007,7 +10007,7 @@
       </trans-unit>
       <trans-unit id="dde632755801bb13f512fc50e5ffff6a6c42dd96" resname="basket:: Shared">
         <source>basket:: Shared</source>
-        <target state="translated">Shared Basket</target>
+        <target state="needs-translation">Shared Basket</target>
         <jms:reference-file line="312">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f89fb316769f870206b98c16e9e68ad04aea54be" resname="basket:: refresh workzone">
@@ -11617,7 +11617,7 @@
       </trans-unit>
       <trans-unit id="74a0d3080e9129b20b131485aa0fb119a41ef659" resname="mail::validation: Share will expire on %expire%">
         <source>mail::validation: Share will expire on %expire%</source>
-        <target state="translated">Basket Shared until %expire%</target>
+        <target state="translated">Basket shared until %expire%</target>
         <jms:reference-file line="105">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="44a07a1c8cc71de0e980dba3aca732b752fa1df5" resname="mars" approved="yes">
@@ -12948,7 +12948,7 @@
       </trans-unit>
       <trans-unit id="3c5f3d8f6be8871509d3c9158d8d098679ec0919" resname="prod::dialog sharebasket title">
         <source>prod::dialog sharebasket title</source>
-        <target state="translated">Shared basket</target>
+        <target state="needs-translation">Shared basket</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
