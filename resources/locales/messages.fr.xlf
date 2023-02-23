@@ -10005,7 +10005,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="dde632755801bb13f512fc50e5ffff6a6c42dd96" resname="basket:: Shared">
         <source>basket:: Shared</source>
-        <target state="translated">Panier Partagé</target>
+        <target state="needs-translation">Panier Partagé</target>
         <jms:reference-file line="312">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f89fb316769f870206b98c16e9e68ad04aea54be" resname="basket:: refresh workzone">
@@ -12946,7 +12946,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="3c5f3d8f6be8871509d3c9158d8d098679ec0919" resname="prod::dialog sharebasket title">
         <source>prod::dialog sharebasket title</source>
-        <target state="translated">Panier Partagé</target>
+        <target state="needs-translation">Panier Partagé</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
