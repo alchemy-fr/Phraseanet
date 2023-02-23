@@ -11432,9 +11432,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="22">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="10">mobile/common/menubar.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51813acc1a667a12d4be8e86f3f2300e369a68cf" resname="login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien" approved="yes">
+      <trans-unit id="51813acc1a667a12d4be8e86f3f2300e369a68cf" resname="login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien" approved="no">
         <source>login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien</source>
-        <target state="translated">Visitez le lien suivant et suivez les instructions pour continuer. Sinon ignorez cet e-mail et il ne se passera rien.</target>
+        <target state="translated">Visitez le lien suivant et suivez les instructions pour continuer. Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</target>
         <jms:reference-file line="50">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfc34348ea6d542311054178a4c8640d80537c4c" resname="login:: connexion" approved="yes">
@@ -11524,7 +11524,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="691853dc231faa9a4867bdc28ac44df0d0031755" resname="mail:: Password renewal for login">
         <source>mail:: Password renewal for login</source>
-        <target state="translated">Vous avez demandé à renouveler votre mot de passe pour le compte</target>
+        <target state="translated">Une demande de mot de passe a été effectuée pour le login</target>
         <jms:reference-file line="48">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="38fd0a873af9038d35706776f1f1744e7d59992a" resname="mail:: account deletion confirmation  hello">
