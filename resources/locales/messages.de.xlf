@@ -11568,12 +11568,12 @@
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
         <source>mail:: test email sended</source>
-        <target state="needs-translation">Übermittlung einer Test-E-Mail</target>
+        <target state="translated">Übermittlung einer Test-E-Mail</target>
         <jms:reference-file line="21">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
         <source>mail:: test sended from %application%</source>
-        <target state="needs-translation">Test E-Mail gesendet von %application%.</target>
+        <target state="translated">Test E-Mail gesendet von %application%.</target>
         <jms:reference-file line="29">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
@@ -13642,7 +13642,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
-        <target state="needs-translation">Veröffentlichung ist deaktiviert</target>
+        <target state="translated">Veröffentlichung ist deaktiviert</target>
         <jms:reference-file line="17">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eab42ad1c7433247468f47601baf4a4470d9cebe" resname="prod:expose: enabled">
