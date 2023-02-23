@@ -4294,7 +4294,7 @@
       </trans-unit>
       <trans-unit id="04c01654ea5535072898fd4842f6227a4b939682" resname="Manual email share: '%title%'">
         <source>Manual email share: '%title%'</source>
-        <target state="translated">Message concernant le panier : '%title%'</target>
+        <target state="needs-translation">Message concernant le panier : '%title%'</target>
         <jms:reference-file line="41">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="yes">
@@ -5061,7 +5061,7 @@
       </trans-unit>
       <trans-unit id="df6704a5070bf5c67985637e5d0c19b75aa4b1c5" resname="Please fill captcha">
         <source>Please fill captcha</source>
-        <target state="needs-translation">saisir la captcha</target>
+        <target state="translated">saisir la captcha</target>
         <jms:reference-file line="194">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="437">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
@@ -6947,7 +6947,7 @@
       </trans-unit>
       <trans-unit id="2a15be8bf0d7a3cae61528f5f70eebac4a07e5ef" resname="Trials before display captcha">
         <source>Trials before display captcha</source>
-        <target state="needs-translation">Nombre d'erreurs avant l'affichage de la captcha</target>
+        <target state="translated">Nombre d'erreurs avant l'affichage de la captcha</target>
         <jms:reference-file line="55">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e764776541fbe428a3566f42ee7956312af98b7" resname="Trier par" approved="yes">
@@ -9103,7 +9103,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="30ab8fbf04e70f76c8af2da82ec244c92137b3e8" resname="admin::userlist: user in grace period only">
         <source>admin::userlist: user in grace period only</source>
-        <target state="needs-translation">Utilisateurs en instance de suppression</target>
+        <target state="translated">Utilisateurs en instance de suppression</target>
         <jms:reference-file line="53">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="066e4bf19c914aa7b3dce70cb3ba25be17f9970d" resname="admin::userlist: user mail locked only">
@@ -11569,12 +11569,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
         <source>mail:: test email sended</source>
-        <target state="needs-translation">Envoi d'un email de test</target>
+        <target state="translated">Envoi d'un email de test</target>
         <jms:reference-file line="21">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
         <source>mail:: test sended from %application%</source>
-        <target state="needs-translation">Email de test émis depuis %application%.</target>
+        <target state="translated">Email de test émis depuis %application%.</target>
         <jms:reference-file line="29">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
@@ -13645,12 +13645,12 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
-        <target state="needs-translation">Publication désactivée</target>
+        <target state="translated">Publication désactivée</target>
         <jms:reference-file line="17">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eab42ad1c7433247468f47601baf4a4470d9cebe" resname="prod:expose: enabled">
         <source>prod:expose: enabled</source>
-        <target state="needs-translation">Publication activée</target>
+        <target state="translated">Publication activée</target>
         <jms:reference-file line="12">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="yes">
