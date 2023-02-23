@@ -13647,12 +13647,12 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
-        <target state="needs-translation">Publication is disabled</target>
+        <target state="translated">Publication is disabled</target>
         <jms:reference-file line="17">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eab42ad1c7433247468f47601baf4a4470d9cebe" resname="prod:expose: enabled">
         <source>prod:expose: enabled</source>
-        <target state="needs-translation">Publication is enabled</target>
+        <target state="translated">Publication is enabled</target>
         <jms:reference-file line="12">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="yes">
