@@ -13205,7 +13205,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="b5f7411d5cf5384ee39d43f87b4601ee825f5e04" resname="prod::order-manager download expire on">
         <source>prod::order-manager download expire on</source>
-        <target state="needs-translation">Téléchargement possible jusqu'au</target>
+        <target state="translated">Téléchargement disponible jusqu'au</target>
         <jms:reference-file line="31">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="yes">
