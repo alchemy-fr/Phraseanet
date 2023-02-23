@@ -2,11 +2,10 @@
 
 use Alchemy\Phrasea\Application;
 
-
-class patch_416PHRAS3602 implements patchInterface
+class patch_416RC3PHRAS3602 implements patchInterface
 {
     /** @var string */
-    private $release = '4.1.6-rc1';
+    private $release = '4.1.6-rc3';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];
@@ -105,6 +104,9 @@ SELECT d.id, d.participant_id, d.basket_element_id, d.agreement, d.note, d.updat
 FROM ValidationDatas d inner join BasketParticipants p on p.id=d.participant_id
 inner join BasketElements e on e.id=d.basket_element_id
 order by d.id asc",
+
+            "UPDATE `Baskets` SET `share_expires`=`vote_expires`
+WHERE `share_expires` IS NULL AND `vote_expires` IS NOT NULL AND `vote_expires` < NOW();"
         ];
 
         foreach($sqls as $sql) {
