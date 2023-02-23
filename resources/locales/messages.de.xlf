@@ -5261,7 +5261,7 @@
       </trans-unit>
       <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push" approved="no">
         <source>Push</source>
-        <target state="needs-translation">Push (Sammelkorb)</target>
+        <target state="needs-translation">Push</target>
         <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="59">eventsmanager/notify/push.php</jms:reference-file>
         <jms:reference-file line="324">prod/WorkZone/Macros.html.twig</jms:reference-file>
@@ -8045,9 +8045,9 @@
         <jms:reference-file line="71">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="64">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17948b21adfde1bf589b2a34a2c8253e2af91913" resname="action : push" approved="yes">
+      <trans-unit id="17948b21adfde1bf589b2a34a2c8253e2af91913" resname="action : push" approved="no">
         <source>action : push</source>
-        <target state="translated">Push</target>
+        <target state="needs-translation">Push (Sammelkorb)</target>
         <jms:reference-file line="106">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="55">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/WorkZone/Story.html.twig</jms:reference-file>
