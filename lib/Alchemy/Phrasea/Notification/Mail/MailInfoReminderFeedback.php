@@ -9,6 +9,8 @@ class MailInfoReminderFeedback extends AbstractMailWithLink
     /** @var string */
     private $title;
 
+    private $isFeedback = true;
+
     /**
      * Sets the title of the validation to remind
      *
@@ -17,6 +19,11 @@ class MailInfoReminderFeedback extends AbstractMailWithLink
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    public function setFeedback(bool $isFeedback)
+    {
+        $this->isFeedback = !! $isFeedback;
     }
 
     /**
@@ -28,7 +35,11 @@ class MailInfoReminderFeedback extends AbstractMailWithLink
             throw new LogicException('You must set an title before calling getSubject');
         }
 
-        return $this->app->trans("Manual feedback Reminder : '%title%'", ['%title%' => $this->title], 'messages', $this->getLocale());
+        if ($this->isFeedback) {
+            return $this->app->trans("Manual feedback Reminder : '%title%'", ['%title%' => $this->title], 'messages', $this->getLocale());
+        } else {
+            return $this->app->trans("Manual email share: '%title%'", ['%title%' => $this->title], 'messages', $this->getLocale());
+        }
     }
 
     /**
@@ -44,7 +55,11 @@ class MailInfoReminderFeedback extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
+        if ($this->isFeedback) {
+            return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
+        } else {
+            return $this->app->trans('mail::share Open with Lightbox', [], 'messages', $this->getLocale());
+        }
     }
 
     /**

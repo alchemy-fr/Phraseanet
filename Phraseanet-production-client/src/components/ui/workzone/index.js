@@ -91,7 +91,14 @@ const workzone = (services) => {
         $container.on('click', '.feedback-reminder', function (event) {
             event.preventDefault();
             let $el = $(event.currentTarget);
-            feedbackReminder(services).openModal($el.data('basket-id'));
+            let options = {};
+            if ($el.parents('.feedback-block').length) {
+                options = {title: localeService.t('feedbackReminderTitle')}
+            } else if ($el.parents('.share-block').length) {
+                options = {title: localeService.t('shareSendEmailTitle')}
+            }
+
+            feedbackReminder(services).openModal($el.data('basket-id'), options);
         });
 
         $container.on('click', '#basket-filter .refresh-basket', function() {
