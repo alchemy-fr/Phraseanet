@@ -5064,7 +5064,7 @@
       </trans-unit>
       <trans-unit id="df6704a5070bf5c67985637e5d0c19b75aa4b1c5" resname="Please fill captcha">
         <source>Please fill captcha</source>
-        <target state="new">Please fill captcha</target>
+        <target state="translated">Please fill captcha</target>
         <jms:reference-file line="194">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="437">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
@@ -6950,7 +6950,7 @@
       </trans-unit>
       <trans-unit id="2a15be8bf0d7a3cae61528f5f70eebac4a07e5ef" resname="Trials before display captcha">
         <source>Trials before display captcha</source>
-        <target state="new">Trials before display captcha</target>
+        <target state="translated">Trials before display captcha</target>
         <jms:reference-file line="55">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e764776541fbe428a3566f42ee7956312af98b7" resname="Trier par" approved="yes">
@@ -9105,7 +9105,7 @@
       </trans-unit>
       <trans-unit id="30ab8fbf04e70f76c8af2da82ec244c92137b3e8" resname="admin::userlist: user in grace period only">
         <source>admin::userlist: user in grace period only</source>
-        <target state="needs-translation">Users in grace period</target>
+        <target state="translated">Users in grace period</target>
         <jms:reference-file line="53">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="066e4bf19c914aa7b3dce70cb3ba25be17f9970d" resname="admin::userlist: user mail locked only">
@@ -11556,27 +11556,27 @@
       </trans-unit>
       <trans-unit id="7ea61df220e487d0db115bce9776f79abc43fe23" resname="mail:: inactif account info with login">
         <source>mail:: inactif account info with login</source>
-        <target state="needs-translation">Your account with the login:</target>
+        <target state="translated">Your account with the login:</target>
         <jms:reference-file line="59">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfbfe9a399e2b459d721aa5d91633bd46473cd70" resname="mail:: inactif account keep account info , connect before %deleteDate%">
         <source>mail:: inactif account keep account info , connect before %deleteDate%</source>
-        <target state="needs-translation">If you wish to keep this account active, you must login by %deleteDate%.</target>
+        <target state="translated">If you wish to keep this account active, you must login by %deleteDate%.</target>
         <jms:reference-file line="66">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7021425d1e6b12b10641fd50e7cf787ff393ce5e" resname="mail:: inactif account on application %application% is inactif since %lastConnection%">
         <source>mail:: inactif account on application %application% is inactif since %lastConnection%</source>
-        <target state="needs-translation">on application %application% has no longer been used since %lastConnection%.</target>
+        <target state="translated">on application %application% has no longer been used since %lastConnection%.</target>
         <jms:reference-file line="61">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
         <source>mail:: test email sended</source>
-        <target state="needs-translation">Sending test email</target>
+        <target state="translated">Sending test email</target>
         <jms:reference-file line="21">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1290dfbfd80ae2442d0a0c1a0732731f9edc864c" resname="mail:: test sended from %application%">
         <source>mail:: test sended from %application%</source>
-        <target state="needs-translation">Test email sent from %application%.</target>
+        <target state="translated">Test email sent from %application%.</target>
         <jms:reference-file line="29">Notification/Mail/MailCheck.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
@@ -11586,17 +11586,17 @@
       </trans-unit>
       <trans-unit id="c6f5d0580d5f9b53e49f83dbf0f22bd62be047ac" resname="mail::account deletion confirmation account deleted">
         <source>mail::account deletion confirmation account deleted</source>
-        <target state="needs-translation">All data associated with your account has now been deleted from the system.</target>
+        <target state="translated">All data associated with your account has now been deleted from the system.</target>
         <jms:reference-file line="57">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4f98b161b1dd8e4882edcf02529422784042cace" resname="mail::account deletion confirmation no activities since %lastConnection%">
         <source>mail::account deletion confirmation no activities since %lastConnection%</source>
-        <target state="needs-translation">No activity has been recorded on your account since %lastConnection%.</target>
+        <target state="translated">No activity has been recorded on your account since %lastConnection%.</target>
         <jms:reference-file line="49">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ffdd023c8bd8b6465b789382a92f144ee78372cb" resname="mail::account deletion last relance at  %lastInactivityEmail%">
         <source>mail::account deletion last relance at %lastInactivityEmail%</source>
-        <target state="needs-translation">A reminder was sent to you on %lastInactivityEmail%.</target>
+        <target state="translated">A reminder was sent to you on %lastInactivityEmail%.</target>
         <jms:reference-file line="53">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -13207,7 +13207,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="b5f7411d5cf5384ee39d43f87b4601ee825f5e04" resname="prod::order-manager download expire on">
         <source>prod::order-manager download expire on</source>
-        <target state="needs-translation">Download available until</target>
+        <target state="translated">Download available until</target>
         <jms:reference-file line="31">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="yes">
@@ -13268,7 +13268,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="18cf3e5d191fc3d8d67cf269ec1d6baeb86838eb" resname="prod::share basket share allows participants to see/comment/act on a common basket">
         <source>prod::share basket share allows participants to see/comment/act on a common basket</source>
-        <target state="needs-translation">A shared Basket allows selected users to access the basket content. An expiration date can be set on the basket. A "Feedback session" can be added on this Basket.</target>
+        <target state="translated">A shared Basket allows selected users to access the basket content. An expiration date can be set on the basket. A "Feedback session" can be added on this Basket.</target>
         <jms:reference-file line="161">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8acffca186630d9321fbcf93e366de12708f1fd2" resname="prod::share feedback expires">
@@ -13283,7 +13283,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="d7e519198d4ee03df505df5832481ee5298a7a9a" resname="prod::share un push permet d'envoyer un lot d'image a des destinataires">
         <source>prod::share un push permet d'envoyer un lot d'image a des destinataires</source>
-        <target state="needs-translation">A “Push” allows you to send a selection of records to users. The “Push” recipients can retrieve this selection as a basket that belongs to them. The download rights delivered by ” Push” will never expire.</target>
+        <target state="translated">A “Push” allows you to send a selection of records to users. The “Push” recipients can retrieve this selection as a basket that belongs to them. The download rights delivered by ” Push” will never expire.</target>
         <jms:reference-file line="159">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b607f0893dbd1c5e6e8b9c435969677f7fe2f30e" resname="prod::share: None of the selected records can be pushed.">
