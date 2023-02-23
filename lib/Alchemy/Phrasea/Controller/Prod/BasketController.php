@@ -124,9 +124,11 @@ class BasketController extends Controller
     {
         if ($basket->isVoteBasket()) {
             $userFrom = $basket->getVoteInitiator();
+            $isFeedback = true;
         } else {
             // get the owner for share
             $userFrom = $basket->getUser();
+            $isFeedback = false;
         }
 
         $expireDate = $basket->getVoteExpires();
@@ -177,6 +179,7 @@ class BasketController extends Controller
             $mail = MailInfoReminderFeedback::create($this->app, $receiver, $emitter, $message);
             $mail->setTitle($basket->getName());
             $mail->setButtonUrl($url);
+            $mail->setFeedback($isFeedback);
 
             if (($locale = $userTo->getLocale()) != null) {
                 $mail->setLocale($locale);
