@@ -63,6 +63,7 @@ class LanguageController
             'removeRecordFeedbackTitle' => $translator->trans('basket:feedback Delete item'),
             'feedbackSaveNotNotify'     => $translator->trans('feedback:: save users and users rights'),
             'feedbackSend'            => $translator->trans('feedback:: send'),
+            'shareSendEmailTitle'     => $translator->trans('prod::workzone:manual send email share title'),
             'feedbackReminderTitle'   => $translator->trans('prod::workzone:manual feedback reminder title'),
             'reminderMessageToCheck'  => $translator->trans('prod::workzone:manual feedback reminder provide a message!'),
             'reminderParticipantToCheck' => $translator->trans('prod::workzone:manual feedback reminder select a participant!'),
