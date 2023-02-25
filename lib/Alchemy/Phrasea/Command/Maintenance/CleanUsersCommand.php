@@ -40,7 +40,7 @@ class CleanUsersCommand extends Command
             ->addOption('inactivity_period', null, InputOption::VALUE_REQUIRED,                             'cleanup older than \<inactivity_period> days')
             ->addOption('usertype',       null, InputOption::VALUE_REQUIRED,                             'can specify type of user to clean, if not set types ghost, basket_owner, basket_participant, story_owner are included')
             ->addOption('grace_duration',       null, InputOption::VALUE_REQUIRED,                             'grace period in days after sending email')
-            ->addOption('max_relances',       null, InputOption::VALUE_REQUIRED,                             'number of email relance, if 0 no emails sended')
+            ->addOption('max_relances',       null, InputOption::VALUE_REQUIRED,                             'number of email reminders, if 0 no email sent, no grace email, no account deletion confirmation email')
             ->addOption('remove_basket', null, InputOption::VALUE_NONE,                                 'remove basket for user')
             ->addOption('dry-run',        null, InputOption::VALUE_NONE,                                 'dry run, list result users')
             ->addOption('show_sql',   null, InputOption::VALUE_NONE,                                 'show sql pre-selecting users')
