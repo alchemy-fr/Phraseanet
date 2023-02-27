@@ -88,7 +88,7 @@ const recordVideoEditorModal = (services, datas, activeTab = false) => {
         }
     };
 
-    return {openModal};
+    return { initialize, openModal };
 };
 
 export default recordVideoEditorModal;

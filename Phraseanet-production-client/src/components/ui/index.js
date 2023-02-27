@@ -32,6 +32,7 @@ const ui = services => {
         removeFromBasket(services).initialize();
         printRecord(services).initialize();
         shareRecord(services).initialize(options);
+        recordVideoEditorModal(services).initialize(options);
         cgu(services).initialize(options);
         preferences(services).initialize(options);
         order(services).initialize(options);
