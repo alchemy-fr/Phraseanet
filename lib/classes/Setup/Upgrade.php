@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\Version\MailChecker;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Dumper;
 
 class Setup_Upgrade
@@ -27,7 +29,7 @@ class Setup_Upgrade
      */
     private $recommendations = [];
 
-    public function __construct(Application $app, $force = false)
+    public function __construct(Application $app, InputInterface $input, OutputInterface $output, $force = false)
     {
         if ($force) {
             $this->remove_lock_file();
@@ -39,9 +41,17 @@ class Setup_Upgrade
 
         $this->app = $app;
 
+        /*
+         * MailChecker does ONLY works on old "usr" table, changed to "User" on 3.?
+         */
         $checker = new MailChecker($app['phraseanet.appbox']);
-        if ($checker->hasWrongEmailUsers()) {
-            throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
+        try {
+            if ($checker->hasWrongEmailUsers()) {
+                throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
+            }
+        }
+        catch (\Exception $e) {
+            $output->writeln(sprintf("<info>MailChecker->hasWrongEmailUsers() failed (no more 'usr' table ?), IGNORED</info>"));
         }
 
         $this->write_lock();

@@ -14,6 +14,8 @@ use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\Database\DatabaseMaintenanceService;
 use Alchemy\Phrasea\Core\Version as PhraseaVersion;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class base implements cache_cacheableInterface
 {
@@ -226,11 +228,14 @@ abstract class base implements cache_cacheableInterface
         }
     }
 
-    protected function upgradeDb($applyPatches)
+    protected function upgradeDb($applyPatches, InputInterface $input, OutputInterface $output)
     {
+        $dry = !!$input->getOption('dry');
+
+        $output->writeln(sprintf("into upgradeDb(applyPatches=%s) for base \"%s\"", $applyPatches?'true':'false', $this->get_dbname()));
         $service = new DatabaseMaintenanceService($this->app, $this->connection);
 
-        return $service->upgradeDatabase($this, $applyPatches);
+        return $service->upgradeDatabase($this, $applyPatches, $input, $output);
     }
 
     /**
@@ -276,10 +281,12 @@ abstract class base implements cache_cacheableInterface
         return $this;
     }
 
-    public function apply_patches($from, $to, $post_process)
+    public function apply_patches($from, $to, $post_process, InputInterface $input, OutputInterface $output)
     {
+        $dry = !!$input->getOption('dry');
+
         $service = new DatabaseMaintenanceService($this->app, $this->connection);
 
-        return $service->applyPatches($this, $from, $to, $post_process);
+        return $service->applyPatches($this, $from, $to, $post_process, $input, $output);
     }
 }

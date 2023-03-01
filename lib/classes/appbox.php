@@ -20,6 +20,8 @@ use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -182,8 +184,10 @@ class appbox extends base
         return self::BASE_TYPE;
     }
 
-    public function forceUpgrade(Setup_Upgrade $upgrader, Application $app)
+    public function forceUpgrade(Setup_Upgrade $upgrader, Application $app, InputInterface $input, OutputInterface $output)
     {
+        $dry = !!$input->getOption('dry');
+
         $from_version = $this->get_version();
 
         $app['phraseanet.cache-service']->flushAll();
@@ -222,8 +226,8 @@ class appbox extends base
 
         // do not apply patches
         // just update old database schema
-        // it is need before applying patches
-        $advices = $this->upgradeDB(false, $app);
+        // it is needed before applying patches
+        $advices = $this->upgradeDB(false, $input, $output);
 
         // update also the doctrine table schema before applying patch
         if ($app['orm.em']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
@@ -233,17 +237,17 @@ class appbox extends base
         }
 
         foreach ($this->get_databoxes() as $s) {
-            $advices = array_merge($advices, $s->upgradeDB(false, $app));
+            $advices = array_merge($advices, $s->upgradeDB(false, $input, $output));
         }
 
         // then apply patches
-        $advices = $this->upgradeDB(true, $app);
+        $advices = $this->upgradeDB(true, $input, $output);
 
         foreach ($this->get_databoxes() as $s) {
-            $advices = array_merge($advices, $s->upgradeDB(true, $app));
+            $advices = array_merge($advices, $s->upgradeDB(true, $input, $output));
         }
 
-        $this->post_upgrade($app);
+        $this->post_upgrade($app, $input, $output);
 
         $app['phraseanet.cache-service']->flushAll();
 
@@ -261,14 +265,31 @@ class appbox extends base
         return $advices;
     }
 
-    protected function post_upgrade(Application $app)
+    protected function post_upgrade(Application $app, InputInterface $input, OutputInterface $output)
     {
-        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true);
-        $this->setVersion($app['phraseanet.version']);
+        $dry = !!$input->getOption('dry');
+
+        $output->writeln(sprintf("into post_upgrade()"));
+        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $input, $output);
+        /** @var Alchemy\Phrasea\Core\Version $phrVersion */
+        $phrVersion = $app['phraseanet.version'];
+        if($dry) {
+            $output->writeln(sprintf("dry : NOT setting version of \"%s\" to %s", $this->get_dbname(), $phrVersion->getNumber()));
+        }
+        else {
+            $output->writeln(sprintf("setting version of \"%s\" to %s", $this->get_dbname(), $phrVersion->getNumber()));
+            $this->setVersion($phrVersion);
+        }
 
         foreach ($this->get_databoxes() as $databox) {
-            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true);
-            $databox->setVersion($app['phraseanet.version']);
+            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true, $input, $output);
+            if($dry) {
+                $output->writeln(sprintf("dry : NOT setting version of \"%s\" to %s", $databox->get_dbname(), $phrVersion->getNumber()));
+            }
+            else {
+                $output->writeln(sprintf("setting version of \"%s\" to %s", $databox->get_dbname(), $phrVersion->getNumber()));
+                $databox->setVersion($app['phraseanet.version']);
+            }
         }
 
         return $this;
