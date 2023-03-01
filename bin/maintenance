@@ -5,7 +5,9 @@ use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Maintenance\CleanNotificationsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanUsersCommand;
 use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Command\Maintenance\CleanLogDocCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanLogDocsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanLogSearchCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanLogViewCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanBasesCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
@@ -48,6 +50,10 @@ $cli->command(new CleanWorkerRunningJobCommand());
 
 $cli->command(new SessionsCommand());
 
-$cli->command(new CleanLogDocCommand());
+$cli->command(new CleanLogDocsCommand());
+
+$cli->command(new CleanLogSearchCommand());
+
+$cli->command(new CleanLogViewCommand());
 
 $cli->run();
