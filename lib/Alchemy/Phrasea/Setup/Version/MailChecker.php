@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Setup\Version;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\DBAL\Driver\Statement;
+use Exception;
 
 /**
  * In version 3.9 the user table have been removed.
@@ -42,23 +43,33 @@ class MailChecker
      * Returns users with duplicated emails
      *
      * @return array An array of User
+     * @throws Exception
      */
     public function getWrongEmailUsers()
     {
-        if (version_compare($this->appbox->get_version(), '3.9', '>=')) {
-            return [];
+        $tests = [
+            "SELECT usr_mail, usr_id, last_conn, usr_login FROM usr WHERE NOT ISNULL(usr_email)",
+            "SELECT email AS usr_mail, id AS usr_id, last_connection AS last_conn, login AS usr_login FROM Users WHERE NOT ISNULL(email)"
+        ];
+
+        $e = null;
+        foreach($tests as $sql) {
+            try {
+                $rs = null;
+                $stmt = $this->appbox->get_connection()->prepare($sql);
+                $stmt->execute();
+                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+                break;
+            }
+            catch (Exception $e) {
+                // no-op
+            }
         }
 
-        $builder = $this->appbox->get_connection()->createQueryBuilder();
-        /** @var Statement $stmt */
-        $stmt = $builder
-            ->select('u.usr_mail', 'u.usr_id', 'u.last_conn', 'u.usr_login')
-            ->from($this->table, 'u')
-            ->where($builder->expr()->isNotNull('u.usr_mail'))
-            ->execute()
-        ;
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        if(is_null($rs)) {
+            throw $e;
+        }
 
         $users = [];
 

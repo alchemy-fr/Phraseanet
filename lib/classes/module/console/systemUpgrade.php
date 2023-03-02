@@ -88,6 +88,7 @@ class module_console_systemUpgrade extends Command
             $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->container->getApplicationBox()->get_version(), $version->getNumber()), true);
 
             try {
+                // Setup_Upgrade will call MailChecker
                 $upgrader = new Setup_Upgrade($this->container, $input, $output, $input->getOption('force'));
             } catch (\Exception_Setup_FixBadEmailAddresses $e) {
                 return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));

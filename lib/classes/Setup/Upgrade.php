@@ -41,17 +41,9 @@ class Setup_Upgrade
 
         $this->app = $app;
 
-        /*
-         * MailChecker does ONLY works on old "usr" table, changed to "User" on 3.?
-         */
         $checker = new MailChecker($app['phraseanet.appbox']);
-        try {
-            if ($checker->hasWrongEmailUsers()) {
-                throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
-            }
-        }
-        catch (\Exception $e) {
-            $output->writeln(sprintf("<info>MailChecker->hasWrongEmailUsers() failed (no more 'usr' table ?), IGNORED</info>"));
+        if ($checker->hasWrongEmailUsers()) {
+            throw new \Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
         }
 
         $this->write_lock();
