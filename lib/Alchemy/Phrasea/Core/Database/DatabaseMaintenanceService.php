@@ -594,7 +594,7 @@ class DatabaseMaintenanceService
 // var_dump($list_patches);
         foreach ($list_patches as $patch) {
 
-            $output->writeln(sprintf(" -> patch \"%s\" (release %s) should be applied", get_class($patch), $patch->get_release()));
+            $output->writeln(sprintf(" - patch \"%s\" (release %s) should be applied", get_class($patch), $patch->get_release()));
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
                 /** @var \Doctrine\DBAL\Migrations\Version $version */
