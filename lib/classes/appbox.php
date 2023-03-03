@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
+use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\PreSchemaUpgradeCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
 use Symfony\Component\Console\Input\InputInterface;
@@ -193,7 +194,9 @@ class appbox extends base
         $app['phraseanet.cache-service']->flushAll();
 
         // Executes stuff before applying patches
-        $app['phraseanet.pre-schema-upgrader']->apply($app);
+        /** @var PreSchemaUpgradeCollection $psu */
+        $psu = $app['phraseanet.pre-schema-upgrader'];
+        $psu->apply($app, $input, $output);
 
         $finder = new Finder();
         $in = [];
