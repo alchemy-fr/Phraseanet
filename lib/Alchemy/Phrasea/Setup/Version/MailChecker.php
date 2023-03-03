@@ -48,7 +48,7 @@ class MailChecker
     public function getWrongEmailUsers()
     {
         $tests = [
-            "SELECT usr_mail, usr_id, last_conn, usr_login FROM usr WHERE NOT ISNULL(usr_email)",
+            "SELECT usr_mail, usr_id, last_conn, usr_login FROM usr WHERE NOT ISNULL(usr_mail)",
             "SELECT email AS usr_mail, id AS usr_id, last_connection AS last_conn, login AS usr_login FROM Users WHERE NOT ISNULL(email)"
         ];
 
