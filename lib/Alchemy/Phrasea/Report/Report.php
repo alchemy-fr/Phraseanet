@@ -105,14 +105,14 @@ abstract class Report
         return $this->format;
     }
 
-    public function render()
+    public function render($absoluteDirectoryPath = null)
     {
         switch($this->format) {
             //case self::FORMAT_XLS:
             case self::FORMAT_CSV:
             case self::FORMAT_ODS:
             case self::FORMAT_XLSX:
-                $this->renderAsExcel();
+                $this->renderAsExcel($absoluteDirectoryPath);
                 break;
             default:
                 // should not happen since format is checked before
@@ -120,7 +120,7 @@ abstract class Report
         }
     }
 
-    private function renderAsExcel()
+    private function renderAsExcel($absoluteDirectoryPath = null)
     {
         switch($this->format) {
             //case self::FORMAT_XLS:
@@ -128,15 +128,28 @@ abstract class Report
             //    header('Content-Type: application/vnd.ms-excel');
             //    break;
             case self::FORMAT_XLSX:
-                $excel = new Excel(Excel::FORMAT_XLSX, $this->getName() . ".xlsx");
+                $filename = $this->getName() . ".xlsx";
+                $excel = new Excel(Excel::FORMAT_XLSX, $filename);
                 break;
             case self::FORMAT_ODS:
-                $excel = new Excel(Excel::FORMAT_ODS, $this->getName() . ".ods");
+                $filename = $this->getName() . ".ods";
+                $excel = new Excel(Excel::FORMAT_ODS, $filename);
                 break;
             case self::FORMAT_CSV:
             default:
-                $excel = new Excel(Excel::FORMAT_CSV, $this->getName() . ".csv");
+                $filename = $this->getName() . ".csv";
+                $excel = new Excel(Excel::FORMAT_CSV, $filename);
                 break;
+        }
+
+        // override the open to browser by the writer
+        if (!empty($absoluteDirectoryPath)) {
+            if (!is_dir($absoluteDirectoryPath)) {
+                @mkdir($absoluteDirectoryPath, 0777, true);
+            }
+            $filePath = \p4string::addEndSlash($absoluteDirectoryPath) . $filename;
+            @touch($filePath);
+            $excel->getWriter()->openToFile($filePath);
         }
 
         $excel->addRow($this->getColumnTitles());
