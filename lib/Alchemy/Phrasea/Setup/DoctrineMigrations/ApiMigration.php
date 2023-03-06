@@ -17,7 +17,7 @@ class ApiMigration extends AbstractMigration
 {
     public function isAlreadyApplied()
     {
-        return $this->tableExists('ApiApplication');
+        return $this->tableExists('ApiApplications');
     }
 
     public function doUpSql(Schema $schema)
