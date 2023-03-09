@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Report;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Out\Module\Excel;
+use Cocur\Slugify\Slugify;
 
 
 abstract class Report
@@ -122,22 +123,23 @@ abstract class Report
 
     private function renderAsExcel($absoluteDirectoryPath = null)
     {
+        $filename = $this->normalizeString($this->getName());
         switch($this->format) {
             //case self::FORMAT_XLS:
             //    $excel = new Excel(Excel::FORMAT_XLS);
             //    header('Content-Type: application/vnd.ms-excel');
             //    break;
             case self::FORMAT_XLSX:
-                $filename = $this->getName() . ".xlsx";
+                $filename .= ".xlsx";
                 $excel = new Excel(Excel::FORMAT_XLSX, $filename);
                 break;
             case self::FORMAT_ODS:
-                $filename = $this->getName() . ".ods";
+                $filename .= ".ods";
                 $excel = new Excel(Excel::FORMAT_ODS, $filename);
                 break;
             case self::FORMAT_CSV:
             default:
-                $filename = $this->getName() . ".csv";
+                $filename .= ".csv";
                 $excel = new Excel(Excel::FORMAT_CSV, $filename);
                 break;
         }
@@ -147,6 +149,7 @@ abstract class Report
             if (!is_dir($absoluteDirectoryPath)) {
                 @mkdir($absoluteDirectoryPath, 0777, true);
             }
+
             $filePath = \p4string::addEndSlash($absoluteDirectoryPath) . $filename;
             @touch($filePath);
             $excel->getWriter()->openToFile($filePath);
@@ -167,4 +170,8 @@ abstract class Report
         $excel->render();
     }
 
+    private function normalizeString($filename)
+    {
+        return (new Slugify())->slugify($filename, '-');
+    }
 }

@@ -4,6 +4,8 @@
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Report\ConnectionsCommand;
+use Alchemy\Phrasea\Command\Report\CountAssetsCommand;
+use Alchemy\Phrasea\Command\Report\CountUsersCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -24,5 +26,7 @@ $cli = new CLI("
 
 
 $cli->command(new ConnectionsCommand());
+$cli->command(new CountAssetsCommand());
+$cli->command(new CountUsersCommand());
 
 $cli->run();
