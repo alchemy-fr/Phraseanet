@@ -9,9 +9,11 @@ use Alchemy\Phrasea\Command\Maintenance\CleanLogDocsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanLogSearchCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanLogViewCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
-use Alchemy\Phrasea\Command\Maintenance\CleanBasesCommand;
-use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanApiLogsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanBasesCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanWebhookLogsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanWorkerRunningJobCommand;
 use Alchemy\Phrasea\Command\Maintenance\SessionsCommand;
 
@@ -55,5 +57,7 @@ $cli->command(new CleanLogDocsCommand());
 $cli->command(new CleanLogSearchCommand());
 
 $cli->command(new CleanLogViewCommand());
+
+$cli->command(new CleanWebhookLogsCommand());
 
 $cli->run();
