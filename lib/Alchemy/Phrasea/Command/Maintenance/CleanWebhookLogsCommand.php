@@ -14,7 +14,7 @@ class CleanWebhookLogsCommand extends Command
         parent::__construct('clean:webhooklog');
 
         $this
-            ->setDescription('clean the webhook log')
+            ->setDescription('BETA - Clean the webhook log')
             ->addOption('older_than', null, InputOption::VALUE_REQUIRED, 'delete older than <OLDER_THAN>')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'dry run, list and count')
             ->addOption('show_sql', null, InputOption::VALUE_NONE, 'show sql pre-selecting WebhookEvents')
