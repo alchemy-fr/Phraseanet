@@ -16,7 +16,7 @@ class ConnectionsCommand extends AbstractReportCommand
         parent::__construct('connections:all');
 
         $this
-            ->setDescription('Get all connections report')
+            ->setDescription('BETA - Get all connections report')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of report connections, if not defined or empty it is for all connections')
 
             ->setHelp(

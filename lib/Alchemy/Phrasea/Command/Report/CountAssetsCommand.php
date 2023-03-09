@@ -23,7 +23,7 @@ class CountAssetsCommand extends AbstractReportCommand
         parent::__construct('count:assets');
 
         $this
-            ->setDescription('Get assets count')
+            ->setDescription('BETA - Get assets count')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of count assets report ')
 
             ->setHelp(

@@ -20,7 +20,7 @@ class CountUsersCommand extends AbstractReportCommand
         parent::__construct('count:users');
 
         $this
-            ->setDescription('Get users count')
+            ->setDescription('BETA - Get users count')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of users count report')
 
             ->setHelp(
