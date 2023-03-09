@@ -141,7 +141,7 @@ class databox_subdef
             $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
         }
         if ($sd->watermark) {
-            $image->setOptionValue(Image::OPTION_WATERMARK, p4field::isyes($sd->watermark));
+            $image->setOptionValue(Image::OPTION_WATERMARK, (string) $sd->watermark);
         }
         if ($sd->watermarktext) {
             $image->setOptionValue(Image::OPTION_WATERMARKTEXT, $sd->watermarktext);
