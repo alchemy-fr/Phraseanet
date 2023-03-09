@@ -11,7 +11,7 @@ class CleanLogViewCommand extends Command
 {
     public function __construct()
     {
-        parent::__construct('clean:log_view');
+        parent::__construct('BETA - Clean:log_view');
 
         $this
             ->setDescription('clean the log_view for all databox (if not specified) or a specific databox_id ')

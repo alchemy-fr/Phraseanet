@@ -11,7 +11,7 @@ class CleanLogSearchCommand extends Command
 {
     public function __construct()
     {
-        parent::__construct('clean:log_search');
+        parent::__construct('BETA - Clean:log_search');
 
         $this
             ->setDescription('clean the log_search for all databox (if not specified) or a specific databox_id ')
