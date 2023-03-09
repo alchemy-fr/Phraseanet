@@ -21,15 +21,16 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
 fi
 
 ./docker/phraseanet/plugins/console init
-rm -Rf cache/*
+
+# rm -Rf cache/*
 
 
-chown -R app:app \
-    cache \
-    config \
-    tmp \
-    logs \
-    www
+#chown -R app:app \
+#    cache \
+#    config \
+#    tmp \
+#    logs \
+#    www
 
 
 if [ -d "plugins/" ];then
