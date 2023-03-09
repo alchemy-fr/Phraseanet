@@ -40,7 +40,7 @@ class patch_400alpha9a implements patchInterface
      */
     public function require_all_upgrades()
     {
-        return false;
+        return true;
     }
 
     /**
