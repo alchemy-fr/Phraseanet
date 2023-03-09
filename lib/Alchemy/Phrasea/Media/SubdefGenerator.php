@@ -23,10 +23,12 @@ use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Text;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
+use databox_subdef;
 use Exception;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Palette\RGB;
 use Imagine\Image\Point;
+use Imagine\Imagick\Imagine;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Exception\FileNotFoundException;
@@ -234,7 +236,7 @@ class SubdefGenerator
         return $this->logger;
     }
 
-    private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
+    private function generateSubdef(\record_adapter $record, databox_subdef $subdef_class, $pathdest)
     {
         $start = microtime(true);
         $destFile = null;
@@ -296,12 +298,17 @@ class SubdefGenerator
                 $image = $subdef_class->getSubdefType();
                 /** @var Boolean $wm */
                 $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
-                if($wm->getValue()) {
+                if($wm->getValue() === 'yes') {     // bc to "text" mode
 
                     // we must watermark the file
                     /** @var Text $wmt */
                     $wmt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
-                    $this->wartermarkImageFile($pathdest, $wmt->getValue());
+                    $this->wartermarkImageFile($pathdest, $wmt->getValue(), null);
+                }
+                else if ($wm->getValue() === 'coll_wm') {
+                    // use collection watermark image
+                    $wm_file = $this->app['root.path'] . '/config/wm/' . $record->getBaseId();
+                    $this->wartermarkImageFile($pathdest, null, $wm_file);
                 }
             }
 
@@ -324,13 +331,16 @@ class SubdefGenerator
         }
     }
 
-    private function wartermarkImageFile(string $filepath, string $watermarkText)
+    /**
+     * @param string $filepath
+     * @param string|null $watermarkText
+     * @param string|null $watermarkImage
+     */
+    private function wartermarkImageFile(string $filepath, $watermarkText, $watermarkImage)
     {
         static $palette;
 
-        if (null === $palette) {
-            $palette = new RGB();
-        }
+        /** @var Imagine $imagine */
         $imagine = $this->getImagine();
 
         $in_image = $imagine->open($filepath);
@@ -338,43 +348,87 @@ class SubdefGenerator
         $in_w = $in_size->getWidth();
         $in_h = $in_size->getHeight();
 
-        $draw = $in_image->draw();
-        $black = $palette->color("000000");
-        $white = $palette->color("FFFFFF");
-        $draw->line(new Point(0, 1), new Point($in_w - 2, $in_h - 1), $black);
-        $draw->line(new Point(1, 0), new Point($in_w - 1, $in_h - 2), $white);
-        $draw->line(new Point(0, $in_h - 2), new Point($in_w - 2, 0), $black);
-        $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
+        $in_image_changed = false;
 
-        if($watermarkText) {
-            $fsize = max(8, (int)(max($in_w, $in_h) / 30));
-            $fonts = [
-                $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $black),
-                $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $white)
-            ];
-            $testbox = $fonts[0]->box($watermarkText, 0);
-            $tx_w = min($in_w, $testbox->getWidth());
-            $tx_h = min($in_h, $testbox->getHeight());
+        if ($watermarkImage !== null && file_exists($watermarkImage)) {
+            $wm_image = $imagine->open($watermarkImage);
+            $wm_size = $wm_image->getSize();
+            $wm_w = $wm_size->getWidth();
+            $wm_h = $wm_size->getHeight();
 
-            $x0 = max(1, ($in_w - $tx_w) >> 1);
-            $y0 = max(1, ($in_h - $tx_h) >> 1);
-            for ($i = 0; $i <= 1; $i++) {
-                $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
-                $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
-                $x = max(1, $in_w - $x - $tx_w);
-                $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
-
-                $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
-                $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
-                $y = max(1, $in_h - $y - $tx_h);
-                $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
+            if (($wm_w / $wm_h) > ($in_w / $in_h)) {
+                $wm_size = $wm_size->widen($in_w);
             }
+            else {
+                $wm_size = $wm_size->heighten($in_h);
+            }
+            $wm_image->resize($wm_size);
+
+            $in_image->paste($wm_image, new Point(($in_w - $wm_size->getWidth()) >> 1, ($in_h - $wm_size->getHeight()) >> 1));
+
+            $in_image_changed = true;
         }
 
-        $in_image->save($filepath);
+        if($watermarkText !== null) {
+            if (null === $palette) {
+                $palette = new RGB();
+            }
+            $imagine = $this->getImagine();
+
+            $in_image = $imagine->open($filepath);
+            $in_size = $in_image->getSize();
+            $in_w = $in_size->getWidth();
+            $in_h = $in_size->getHeight();
+
+            $draw = $in_image->draw();
+            $black = $palette->color("000000");
+            $white = $palette->color("FFFFFF");
+            $draw->line(new Point(0, 1), new Point($in_w - 2, $in_h - 1), $black);
+            $draw->line(new Point(1, 0), new Point($in_w - 1, $in_h - 2), $white);
+            $draw->line(new Point(0, $in_h - 2), new Point($in_w - 2, 0), $black);
+            $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
+
+            if ($watermarkText) {
+                $fsize = max(8, (int)(max($in_w, $in_h) / 30));
+                $fonts = [
+                    $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $black),
+                    $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $white)
+                ];
+                $testbox = $fonts[0]->box($watermarkText, 0);
+                $tx_w = min($in_w, $testbox->getWidth());
+                $tx_h = min($in_h, $testbox->getHeight());
+
+                $x0 = max(1, ($in_w - $tx_w) >> 1);
+                $y0 = max(1, ($in_h - $tx_h) >> 1);
+                for ($i = 0; $i <= 1; $i++) {
+                    $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
+                    $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
+                    $x = max(1, $in_w - $x - $tx_w);
+                    $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
+
+                    $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
+                    $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
+                    $y = max(1, $in_h - $y - $tx_h);
+                    $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
+                }
+            }
+            $in_image_changed = true;
+        }
+
+        if($in_image_changed) {
+            $in_image->save($filepath);
+        }
     }
 
-    public function generateSubdefFromFile($pathSrc, \databox_subdef $subdef_class, $pathdest)
+    /**
+     * Used only by api V3 subdef generator service, which specifies a databox_id, not a collection.
+     * So collection specific setting(s) - watermark image - cannot be applied
+     *
+     * @param $pathSrc
+     * @param databox_subdef $subdef_class
+     * @param $pathdest
+     */
+    public function generateSubdefFromFile($pathSrc, databox_subdef $subdef_class, $pathdest)
     {
         $start = microtime(true);
         $destFile = null;
@@ -428,12 +482,16 @@ class SubdefGenerator
             $image = $subdef_class->getSubdefType();
             /** @var Boolean $wm */
             $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
-            if($wm->getValue()) {
+
+            if($wm->getValue() === 'yes') {     // bc to "text" mode
 
                 // we must watermark the file
                 /** @var Text $wmt */
                 $wmt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
-                $this->wartermarkImageFile($pathdest, $wmt->getValue());
+                $this->wartermarkImageFile($pathdest, $wmt->getValue(), null);
+            }
+            else if ($wm->getValue() === 'coll_wm') {
+                // no collection known here, can't apply
             }
         }
 
