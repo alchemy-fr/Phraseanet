@@ -11,7 +11,6 @@ use Alchemy\Phrasea\Command\Maintenance\CleanLogViewCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanApiLogsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanBasesCommand;
-use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanWebhookLogsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanWorkerRunningJobCommand;
