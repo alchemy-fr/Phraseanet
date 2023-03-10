@@ -33,7 +33,7 @@ class CountAssetsCommand extends AbstractReportCommand
                 . "- <info>'added,year,month' </info> number of added assets per year, month\n"
                 . "- <info>'downloaded,year' </info> number of downloaded per year \n"
                 . "- <info>'downloaded,year,month' </info> number of downloaded per year, month \n"
-                . "- <info>'downloaded,year,month,action' </info> number of downloaded per year, month, action (direct download or by mail) \n"
+                . "- <info>'downloaded,year,month,action' </info> number of downloaded per year, month, action (direct download or by email) \n"
                 . "- <info>'most-downloaded' </info> The 10 most downloaded assets \n"
             );
     }

@@ -107,10 +107,10 @@ class ReportCountAssets extends Report
                 break;
             case 'most-downloaded':
                 $this->name = "Most downloaded assets";
-                $this->columnTitles = ['action', 'year', 'month', 'nb'];
+                $this->columnTitles = ['record_id', 'nb'];
                 $this->sql = "SELECT record_id, COUNT(record_id) AS nb \n"
                     . "FROM log_docs WHERE (action='download' OR action='mail') AND "  . $sqlWhereDate ."\n"
-                    . "GROUP BY record_id ORDER BY nb DESC limit 10";
+                    . "GROUP BY record_id ORDER BY nb DESC limit 20";
 
                 break;
             default:

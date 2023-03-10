@@ -10,7 +10,7 @@ class MailReportConnections extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans("mail:: connections report", [], 'messages', $this->getLocale());
+        return $this->app->trans("mail:: report", [], 'messages', $this->getLocale());
     }
 
     /**
@@ -18,7 +18,7 @@ class MailReportConnections extends AbstractMail
      */
     public function getMessage()
     {
-        return $this->app->trans("mail:: connections report messages", [], 'messages', $this->getLocale());
+        return $this->app->trans("mail:: report messages", [], 'messages', $this->getLocale());
     }
 
     /**

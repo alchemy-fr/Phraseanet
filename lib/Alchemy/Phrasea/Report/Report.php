@@ -106,14 +106,14 @@ abstract class Report
         return $this->format;
     }
 
-    public function render($absoluteDirectoryPath = null)
+    public function render($absoluteDirectoryPath = null, $suffixFileName = null)
     {
         switch($this->format) {
             //case self::FORMAT_XLS:
             case self::FORMAT_CSV:
             case self::FORMAT_ODS:
             case self::FORMAT_XLSX:
-                $this->renderAsExcel($absoluteDirectoryPath);
+                $this->renderAsExcel($absoluteDirectoryPath, $suffixFileName);
                 break;
             default:
                 // should not happen since format is checked before
@@ -121,9 +121,9 @@ abstract class Report
         }
     }
 
-    private function renderAsExcel($absoluteDirectoryPath = null)
+    private function renderAsExcel($absoluteDirectoryPath = null, $suffixFileName = null)
     {
-        $filename = $this->normalizeString($this->getName());
+        $filename = $this->normalizeString($this->getName()) . $suffixFileName;
         switch($this->format) {
             //case self::FORMAT_XLS:
             //    $excel = new Excel(Excel::FORMAT_XLS);

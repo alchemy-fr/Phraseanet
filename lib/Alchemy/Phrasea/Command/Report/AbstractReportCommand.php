@@ -24,6 +24,7 @@ abstract class AbstractReportCommand extends Command
     protected $dmin;
     protected $dmax;
     protected $type;
+    protected $range;
 
     protected $isAppboxConnection = false;
 
@@ -35,7 +36,9 @@ abstract class AbstractReportCommand extends Command
             ->addOption('databox_id', null, InputOption::VALUE_REQUIRED,                             'the application databox')
             ->addOption('email', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY ,'emails to send the report')
             ->addOption('dmin', null, InputOption::VALUE_REQUIRED, 'minimum date yyyy-mm-dd')
-            ->addOption('dmax', null, InputOption::VALUE_REQUIRED, 'maximum date yyyy-mm-dd, until today if not set');
+            ->addOption('dmax', null, InputOption::VALUE_REQUIRED, 'maximum date yyyy-mm-dd, until today if not set')
+            ->addOption('range', null, InputOption::VALUE_REQUIRED, "period range until now eg: <info>'10 days', '2 weeks', '6 months', ' 1 year'</info>")
+        ;
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
@@ -46,6 +49,34 @@ abstract class AbstractReportCommand extends Command
         $this->emails = $input->getOption('email');
         $this->dmin = $input->getOption('dmin');
         $this->dmax = $input->getOption('dmax');
+        $this->range = $input->getOption('range');
+
+        if(!empty($this->range) &&  (!empty($this->dmin) || !empty($this->dmax))) {
+            $output->writeln("<error>do not use '--range' with '--dmin' or '--dmax'</error>");
+
+            return 1;
+        }
+
+        if (!empty($this->range)) {
+            $matches = [];
+            preg_match("/(\d+) (day|week|month|year)s?/i", $this->range, $matches);
+            $n = count($matches);
+
+            if ($n === 3) {
+                try {
+                    $this->dmin = (new \DateTime('-' . $matches[0]))->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // not happen cause don't match if bad format
+                    $output->writeln("<error>invalid value form '--range' option</error>");
+
+                    return 1;
+                }
+            } else {
+                $output->writeln("<error>invalid value form '--range' option</error>");
+
+                return 1;
+            }
+        }
 
         if (empty($this->emails)) {
             $output->writeln("<error>set '--email' option</error>");
@@ -77,15 +108,18 @@ abstract class AbstractReportCommand extends Command
             .'report' . DIRECTORY_SEPARATOR
             . date('Ymd');
 
+        $suffixFileName = "_" . $this->dmin . "_to_";
+        $suffixFileName = !empty($this->dmax) ? $suffixFileName . $this->dmax: $suffixFileName . "now";
+
         if ($this->isAppboxConnection) {
             $absoluteDirectoryPath .= 'appbox';
         } else {
             $absoluteDirectoryPath .= 'Sbas' . $this->sbasId;
         }
 
-        $report->render($absoluteDirectoryPath);
+        $report->render($absoluteDirectoryPath, $suffixFileName);
 
-        $filePath = $absoluteDirectoryPath . DIRECTORY_SEPARATOR . $this->normalizeString($report->getName()) . '.csv';
+        $filePath = $absoluteDirectoryPath . DIRECTORY_SEPARATOR . $this->normalizeString($report->getName()).$suffixFileName . '.csv';
 
         $attachement = new Attachment($filePath);
 
