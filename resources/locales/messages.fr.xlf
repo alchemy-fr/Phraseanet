@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-02-23T11:13:58Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2023-03-13T14:12:59Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -1993,7 +1993,7 @@
       <trans-unit id="34326e71e2592544dedcb84077a6317dc5a5e700" resname="Continuer ?" approved="yes">
         <source>Continuer ?</source>
         <target state="translated">Continuer ?</target>
-        <jms:reference-file line="68">module/console/systemUpgrade.php</jms:reference-file>
+        <jms:reference-file line="80">module/console/systemUpgrade.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b3e4650325644f9572338e69d26f99da0206603" resname="Continuer quand meme" approved="yes">
         <source>Continuer quand meme</source>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -3079,9 +3079,9 @@
       <trans-unit id="7f7bf810a272a035f6da919a27124160567c0b3f" resname="Erreur lors de la tentative ; errreur : %message%" approved="yes">
         <source>Erreur lors de la tentative ; errreur : %message%</source>
         <target state="translated">Erreur lors de la tentative. Le message d'erreur est : %message%</target>
-        <jms:reference-file line="138">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
-        <jms:reference-file line="492">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
-        <jms:reference-file line="506">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
+        <jms:reference-file line="150">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
+        <jms:reference-file line="504">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
+        <jms:reference-file line="518">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd8b889cda696b61ee9c4d197f3d93e93c1ab8e6" resname="Erreur lors de votre authentification" approved="yes">
         <source>Erreur lors de votre authentification</source>
@@ -4023,7 +4023,7 @@
       <trans-unit id="1486ba721fa0e62d17c809eb55964a1c514f6d3f" resname="Le contenu de cet email est confidentiel, ne le divulguez pas." approved="yes">
         <source>Le contenu de cet email est confidentiel, ne le divulguez pas.</source>
         <target state="translated">Le contenu de cet e-mail est confidentiel. Ne le divulguez pas.</target>
-        <jms:reference-file line="127">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="129">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d90d64a516aa1d05e3aa4c5beb4f9e80bf77bb1" resname="Le nom de base de donnee est incorrect" approved="yes">
         <source>Le nom de base de donnee est incorrect</source>
@@ -4343,7 +4343,7 @@
       <trans-unit id="cbcbdf92e7a47c81ec1719f03f00d8e6c5b5f5ef" resname="Message automatique de Phraseanet" approved="yes">
         <source>Message automatique de Phraseanet</source>
         <target state="translated">Message automatique de Phraseanet</target>
-        <jms:reference-file line="139">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="141">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f17a172513ae816fbe5f183f85cd0c465de0860" resname="Mettre a jour" approved="yes">
         <source>Mettre a jour</source>
@@ -5138,7 +5138,7 @@
       <trans-unit id="b7a45fd93ff9471252ff1535c56c82f2f2d93865" resname="Pour gérer l'envoi d'email automatique, connectez-vous à %link%" approved="yes">
         <source>Pour gérer l'envoi d'email automatique, connectez-vous à %link%</source>
         <target state="translated">Pour régler les préférences de réception d'e-mails automatiques, connectez-vous à %link%</target>
-        <jms:reference-file line="145">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="147">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb6a1b19177957adc64d41ef7744e5f3f2f1d220" resname="Preference saved !" approved="yes">
         <source>Preference saved !</source>
@@ -5259,7 +5259,7 @@
         <target state="translated">Editeurs</target>
         <jms:reference-file line="61">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push" approved="no">
+      <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push">
         <source>Push</source>
         <target state="needs-translation">Push</target>
         <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -6821,7 +6821,7 @@
       <trans-unit id="0845a443aa08307788a65ee5e1218a618dfcc9aa" resname="This link is valid until" approved="yes">
         <source>This link is valid until</source>
         <target state="translated">Ce lien est valide jusqu'au</target>
-        <jms:reference-file line="115">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="117">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="58e76d1cc6a26f43783774d888c3a260970f637b" resname="This option disables the selecting of the databases on which a user can register himself, and registration is made on all granted databases." approved="yes">
         <source>This option disables the selecting of the databases on which a user can register himself, and registration is made on all granted databases.</source>
@@ -7941,18 +7941,18 @@
       <trans-unit id="aaf57216976f942ee7fe118918b2b8893bde955f" resname="Your install might need to build some sub-definitions" approved="yes">
         <source>Your install might need to build some sub-definitions</source>
         <target state="translated">Votre installation semble nécessiter la génération de sous-définitions.</target>
-        <jms:reference-file line="258">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="265">lib/classes/appbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b6f5c5c358288767c666137985d6bdb56080372" resname="Your install might need to re-read technical datas" approved="yes">
         <source>Your install might need to re-read technical datas</source>
         <target state="translated">Votre installation nécessite probablement une relecture de données techniques</target>
-        <jms:reference-file line="257">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="264">lib/classes/appbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4ffe44446d1f97cfe20afbf562e4a7fd48c62bdc" resname="Your install requires data migration, please execute the following command" approved="yes">
         <source>Your install requires data migration, please execute the following command</source>
         <target state="translated">Votre installation requiert une mise à jour, veuillez exécuter la commande suivante</target>
-        <jms:reference-file line="251">lib/classes/appbox.php</jms:reference-file>
-        <jms:reference-file line="253">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="258">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="260">lib/classes/appbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b52fed35cf7cfe73dd34f6f347a21b7b6fdcf75f" resname="Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories." approved="yes">
         <source>Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.</source>
@@ -8045,7 +8045,7 @@
         <jms:reference-file line="71">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="64">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17948b21adfde1bf589b2a34a2c8253e2af91913" resname="action : push" approved="no">
+      <trans-unit id="17948b21adfde1bf589b2a34a2c8253e2af91913" resname="action : push">
         <source>action : push</source>
         <target state="needs-translation">Push (Panier)</target>
         <jms:reference-file line="106">web/prod/toolbar.html.twig</jms:reference-file>
@@ -11432,7 +11432,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="22">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="10">mobile/common/menubar.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51813acc1a667a12d4be8e86f3f2300e369a68cf" resname="login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien" approved="no">
+      <trans-unit id="51813acc1a667a12d4be8e86f3f2300e369a68cf" resname="login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien">
         <source>login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien</source>
         <target state="translated">Visitez le lien suivant et suivez les instructions pour continuer. Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</target>
         <jms:reference-file line="50">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
@@ -11566,6 +11566,16 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>mail:: inactif account on application %application% is inactif since %lastConnection%</source>
         <target state="needs-translation">sur l'application %application% est inactif depuis le %lastConnection%.</target>
         <jms:reference-file line="61">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6b515e1d6bd58aa0a748373df36000155da20e78" resname="mail:: report - %instance% - %reportName%">
+        <source>mail:: report - %instance% - %reportName%</source>
+        <target state="new">mail:: report - %instance% - %reportName%</target>
+        <jms:reference-file line="27">Notification/Mail/MailReport.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="394de9d96b631d733d7eac3c3bf5a7e8fe27ce9d" resname="mail:: report messages">
+        <source>mail:: report messages</source>
+        <target state="new">mail:: report messages</target>
+        <jms:reference-file line="39">Notification/Mail/MailReport.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
         <source>mail:: test email sended</source>
@@ -12309,7 +12319,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15402,7 +15412,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>

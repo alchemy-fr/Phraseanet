@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Notification\Attachment;
-use Alchemy\Phrasea\Notification\Mail\MailReportConnections;
+use Alchemy\Phrasea\Notification\Mail\MailReport;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Report\Report;
 use Cocur\Slugify\Slugify;
@@ -109,7 +109,7 @@ abstract class AbstractReportCommand extends Command
             . date('Ymd');
 
         $suffixFileName = "_" . $this->dmin . "_to_";
-        $suffixFileName = !empty($this->dmax) ? $suffixFileName . $this->dmax: $suffixFileName . "now";
+        $suffixFileName = !empty($this->dmax) ? $suffixFileName . $this->dmax: $suffixFileName . (new \DateTime())->format('Y-m-d');
 
         if ($this->isAppboxConnection) {
             $absoluteDirectoryPath .= 'appbox';
@@ -123,9 +123,14 @@ abstract class AbstractReportCommand extends Command
 
         $attachement = new Attachment($filePath);
 
+        $reportName = $report->getName() . str_replace("_", ' ', $suffixFileName);
+
+        $this->getDeliverer()->setPrefix('');
+
         foreach ($this->emails as $email) {
             $receiver = new Receiver('', $email);
-            $mail = MailReportConnections::create($this->container, $receiver);
+            $mail = MailReport::create($this->container, $receiver);
+            $mail->setReportName($reportName);
 
             $this->deliver($mail, false, [$attachement]);
         }
