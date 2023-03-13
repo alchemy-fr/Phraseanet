@@ -299,16 +299,30 @@ class SubdefGenerator
                 /** @var Boolean $wm */
                 $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
                 if($wm->getValue() === 'yes') {     // bc to "text" mode
-
                     // we must watermark the file
-                    /** @var Text $wmt */
-                    $wmt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
-                    $this->wartermarkImageFile($pathdest, $wmt->getValue(), null);
-                }
-                else if ($wm->getValue() === 'coll_wm') {
-                    // use collection watermark image
-                    $wm_file = $this->app['root.path'] . '/config/wm/' . $record->getBaseId();
-                    $this->wartermarkImageFile($pathdest, null, $wm_file);
+                    $wm_text = null;
+                    $wm_image = null;
+
+                    /** @var Text $opt */
+
+                    $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
+                    if($opt && ($t = trim($opt->getValue())) !== '') {
+                        $wm_text = $t;
+                    }
+
+                    $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKRID);
+                    if($opt && ($rid = trim($opt->getValue())) !== '') {
+                        try {
+                            $wm_image = $subdef_class->getDatabox()->get_record($rid)->get_subdef('document')->getRealPath();
+                        }
+                        catch (\Exception $e) {
+                            $this->logger->error(sprintf('Getting wm image (record %d) failed with message %s', $rid, $e->getMessage()));
+                        }
+                    }
+
+                    if(!is_null($wm_text) || !is_null($wm_image)) {
+                        $this->wartermarkImageFile($pathdest, $wm_text, $wm_image);
+                    }
                 }
             }
 
@@ -373,12 +387,6 @@ class SubdefGenerator
             if (null === $palette) {
                 $palette = new RGB();
             }
-            $imagine = $this->getImagine();
-
-            $in_image = $imagine->open($filepath);
-            $in_size = $in_image->getSize();
-            $in_w = $in_size->getWidth();
-            $in_h = $in_size->getHeight();
 
             $draw = $in_image->draw();
             $black = $palette->color("000000");
@@ -421,8 +429,7 @@ class SubdefGenerator
     }
 
     /**
-     * Used only by api V3 subdef generator service, which specifies a databox_id, not a collection.
-     * So collection specific setting(s) - watermark image - cannot be applied
+     * Used only by api V3 subdef generator service
      *
      * @param $pathSrc
      * @param databox_subdef $subdef_class
@@ -484,14 +491,30 @@ class SubdefGenerator
             $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
 
             if($wm->getValue() === 'yes') {     // bc to "text" mode
-
                 // we must watermark the file
-                /** @var Text $wmt */
-                $wmt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
-                $this->wartermarkImageFile($pathdest, $wmt->getValue(), null);
-            }
-            else if ($wm->getValue() === 'coll_wm') {
-                // no collection known here, can't apply
+                $wm_text = null;
+                $wm_image = null;
+
+                /** @var Text $opt */
+
+                $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
+                if($opt && ($t = trim($opt->getValue())) !== '') {
+                    $wm_text = $t;
+                }
+
+                $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKRID);
+                if($opt && ($rid = trim($opt->getValue())) !== '') {
+                    try {
+                        $wm_image = $subdef_class->getDatabox()->get_record($rid)->get_subdef('document')->getRealPath();
+                    }
+                    catch (\Exception $e) {
+                        $this->logger->error(sprintf('Getting wm image (record %d) failed with message %s', $rid, $e->getMessage()));
+                    }
+                }
+
+                if(!is_null($wm_text) || !is_null($wm_image)) {
+                    $this->wartermarkImageFile($pathdest, $wm_text, $wm_image);
+                }
             }
         }
 
