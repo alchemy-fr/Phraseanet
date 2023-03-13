@@ -113,6 +113,12 @@ class databox_subdef
                 break;
         }
     }
+
+    public function getWatermark()
+    {
+        return null;
+    }
+
     /**
      * Build Image Subdef object depending the SimpleXMLElement
      *

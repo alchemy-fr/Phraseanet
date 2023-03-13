@@ -62,6 +62,15 @@
             $("#slidervalue" + section + name + defType + fieldname).val(value);
         }
 
+        function changeWatermark(id){
+            $("input[name='newWm."+id+"']").hide();
+            $("button[name='delWm."+id+"']").show();
+        }
+        function deleteWatermark(id){
+            $("input[name='newWm."+id+"']").val(null).show();
+            $("button[name='delWm."+id+"']").hide();
+        }
+
 
         function populate_values(section, name) {
 
@@ -638,6 +647,38 @@
                                                 </td>
                                             </tr>
                                         {% endfor %}
+
+
+                                        {# watermark #}
+                                        <tr>
+                                            <td>
+                                            <h5>{{ "Watermark" | trans }}</h5>
+                                            {% if subdef.getWatermark() is not empty %}
+                                                <div class="thumbnail">{{ subdef.getWatermark()| raw }}</div>
+
+                                                <button class="btn btn-danger btn-mini">
+                                                    <i class="fa fa-trash-o icon-white" aria-hidden="true"></i>
+                                                    {{ 'boutton::supprimer' | trans }}
+                                                </button>
+
+
+                                            {% else %}
+                                                <span>{{ 'admin::base:subdef: aucun fichier (minilogo, watermark ...)' | trans }}</span>
+                                                <span class="btn btn-success fileinput-button">
+                                                    <input name="newWm.{{ databox.get_sbas_id }}.{{ subdefgroup }}.{{ subdefname }}.{{ subdefType.getType() }}" type="file" accept="image/*" onchange="changeWatermark('{{ databox.get_sbas_id }}.{{ subdefgroup }}.{{ subdefname }}.{{ subdefType.getType() }}')">
+                                                </span>
+                                                <button name="delWm.{{ databox.get_sbas_id }}.{{ subdefgroup }}.{{ subdefname }}.{{ subdefType.getType() }}" class="btn btn-danger btn-mini" onclick="deleteWatermark('{{ databox.get_sbas_id }}.{{ subdefgroup }}.{{ subdefname }}.{{ subdefType.getType() }}');return false;" style="display: none">
+                                                    <i class="fa fa-trash-o icon-white" aria-hidden="true"></i>
+                                                    {{ 'boutton::supprimer' | trans }}
+                                                </button>
+                                            {% endif %}
+                                            </td>
+                                        </tr>
+
+
+
+
+
                                     </table>
                                 </div>
                             {% endfor %}
