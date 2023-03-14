@@ -108,7 +108,7 @@ abstract class AbstractReportCommand extends Command
             .'report' . DIRECTORY_SEPARATOR
             . date('Ymd');
 
-        $suffixFileName = "_" . $this->dmin . "_to_";
+        $suffixFileName = "__" . $this->dmin . "_to_";
         $suffixFileName = !empty($this->dmax) ? $suffixFileName . $this->dmax: $suffixFileName . (new \DateTime())->format('Y-m-d');
 
         if ($this->isAppboxConnection) {
@@ -123,6 +123,7 @@ abstract class AbstractReportCommand extends Command
 
         $attachement = new Attachment($filePath);
 
+        $suffixFileName = str_replace("__", ' - ', $suffixFileName);
         $reportName = $report->getName() . str_replace("_", ' ', $suffixFileName);
 
         $this->getDeliverer()->setPrefix('');
