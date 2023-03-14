@@ -41,7 +41,7 @@ fi
 
 
 ./docker/phraseanet/plugins/console init
-# rm -Rf cache/*
+rm -Rf cache/*
 
 
 #chown -R app:app \
