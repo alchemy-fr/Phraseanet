@@ -70101,8 +70101,8 @@ var searchGeoForm = function searchGeoForm(services) {
         (0, _jquery2.default)('.map-geo-btn').on('click', function (event) {
             event.preventDefault();
             if ((0, _jquery2.default)('#map-zoom-to-setting').val() != '') {
-                savePreferences({ map_zoom: parseFloat((0, _jquery2.default)('#map-zoom-to-setting').val()) });
-                (0, _jquery2.default)('#map-zoom-from-setting').val(parseFloat((0, _jquery2.default)('#map-zoom-to-setting').val()));
+                savePreferences({ map_zoom: parseInt((0, _jquery2.default)('#map-zoom-to-setting').val()) });
+                (0, _jquery2.default)('#map-zoom-from-setting').val(parseInt((0, _jquery2.default)('#map-zoom-to-setting').val()));
             }
             if ((0, _jquery2.default)('#map-position-to-setting').val() != '') {
                 var centerRes = (0, _jquery2.default)('#map-position-to-setting').val();
