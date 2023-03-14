@@ -36,11 +36,11 @@ class CleanUsersCommand extends Command
         parent::__construct('clean:users');
 
         $this
-            ->setDescription('ALPHA - Delete "sleepy" users (not connected since a long time)')
+            ->setDescription('BETA - Delete "sleepy" users (not connected since a long time)')
             ->addOption('inactivity_period', null, InputOption::VALUE_REQUIRED,                             'cleanup older than \<inactivity_period> days')
             ->addOption('usertype',       null, InputOption::VALUE_REQUIRED,                             'can specify type of user to clean, if not set types ghost, basket_owner, basket_participant, story_owner are included')
             ->addOption('grace_duration',       null, InputOption::VALUE_REQUIRED,                             'grace period in days after sending email')
-            ->addOption('max_relances',       null, InputOption::VALUE_REQUIRED,                             'number of email relance')
+            ->addOption('max_relances',       null, InputOption::VALUE_REQUIRED,                             'number of email reminders, if 0 no email sent, no grace email, no account deletion confirmation email')
             ->addOption('remove_basket', null, InputOption::VALUE_NONE,                                 'remove basket for user')
             ->addOption('dry-run',        null, InputOption::VALUE_NONE,                                 'dry run, list result users')
             ->addOption('show_sql',   null, InputOption::VALUE_NONE,                                 'show sql pre-selecting users')
@@ -228,7 +228,7 @@ class CleanUsersCommand extends Command
                                 $this->getBasketManipulator()->removeBaskets($baskets);
                             }
                             // delete user and notify by mail
-                            $this->doDelete($user, $userManipulator, $isValidMail);
+                            $this->doDelete($user, $userManipulator, $isValidMail, $maxRelances);
 
                             $output->write(sprintf("%s : %s / %s (%s)", $row['usr_id'], $row['login'], $row['email'], $row['last_connection']));
 
@@ -290,21 +290,26 @@ class CleanUsersCommand extends Command
         }
     }
 
-    private function doDelete(User $user, UserManipulator $userManipulator, $validMail)
+    private function doDelete(User $user, UserManipulator $userManipulator, $validMail, $maxRelances)
     {
         try {
-            if ($validMail) {
+            if ($validMail && !empty($maxRelances)) {
                 $receiver = Receiver::fromUser($user);
                 $mail = MailSuccessAccountInactifDelete::create($this->container, $receiver);
                 $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
-                $mail->setLastInactivityEmail($user->getLastInactivityEmail()->format('Y-m-d'));
+
+                // if --max_relances=0  there is no inactivity email
+                if ($user->getLastInactivityEmail() !== null) {
+                    $mail->setLastInactivityEmail($user->getLastInactivityEmail()->format('Y-m-d'));
+                }
+
                 $mail->setLocale($user->getLocale());
                 $mail->setDisplayFooterText(false);
             }
 
             $userManipulator->delete($user);
 
-            if ($validMail) {
+            if ($validMail && !empty($maxRelances)) {
                 // return 0 on failure
                 $this->deliver($mail);
             }

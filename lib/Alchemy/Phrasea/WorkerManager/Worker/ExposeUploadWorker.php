@@ -216,17 +216,24 @@ class ExposeUploadWorker implements WorkerInterface
             // phraseanetLocalKey_basedID_record_id
             $assetId = $phraseanetLocalId.'_'.$record->getId();
 
-            $requestBody = [
-                'publication_id' => $payload['publicationId'],
-                'description'    => $description,
-                'asset_id'       => $assetId,
-                'upload' => [
-                    'type' => $record->get_subdef($phraseanetSubdefAsDocument)->get_mime(),
-                    'size' => $record->get_subdef($phraseanetSubdefAsDocument)->get_size(),
-                    'name' => $record->get_subdef($phraseanetSubdefAsDocument)->get_file()
+            if ($record->has_subdef($phraseanetSubdefAsDocument) && $record->get_subdef($phraseanetSubdefAsDocument)->is_physically_present()) {
+                $requestBody = [
+                    'publication_id' => $payload['publicationId'],
+                    'description'    => $description,
+                    'asset_id'       => $assetId,
+                    'upload' => [
+                        'type' => $record->get_subdef($phraseanetSubdefAsDocument)->get_mime(),
+                        'size' => $record->get_subdef($phraseanetSubdefAsDocument)->get_size(),
+                        'name' => $record->get_subdef($phraseanetSubdefAsDocument)->get_file()
 
-                ]
-            ];
+                    ]
+                ];
+            } else {
+                $this->messagePublisher->pushLog(sprintf("subdefinition %s or file as document mapping not found", $phraseanetSubdefAsDocument));
+                $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
+
+                return ;
+            }
 
             if ($lat !== null) {
                 $requestBody['lat'] = $lat;
@@ -289,53 +296,62 @@ class ExposeUploadWorker implements WorkerInterface
                         break;
                 }
 
-                $this->postSubDefinition(
-                    $exposeClient,
-                    $payload['accessToken'],
-                    $assetsResponse['id'],
-                    $record->get_subdef($phraseanetSubdef),
-                    $subdefName,
-                    $isPreview,
-                    $isThumbnail
+                if ($record->has_subdef($phraseanetSubdef) && $record->get_subdef($phraseanetSubdef)->is_physically_present()) {
+                    $this->postSubDefinition(
+                        $exposeClient,
+                        $payload['accessToken'],
+                        $assetsResponse['id'],
+                        $record->get_subdef($phraseanetSubdef),
+                        $subdefName,
+                        $isPreview,
+                        $isThumbnail
 
-                );
+                    );
+                } else {
+                    $this->messagePublisher->pushLog(sprintf("subdefinition %s or file not found, skipped", $phraseanetSubdef));
+                }
             }
 
             $this->messagePublisher->pushLog("Asset ID :". $assetsResponse['id'] ." successfully uploaded! ");
         } catch (\Exception $e) {
-            $workerMessage = "An error occurred when creating asset!: ". $e->getMessage();
+//            $workerMessage = "An error occurred when creating asset!: ". $e->getMessage();
+//
+//            $this->messagePublisher->pushLog($workerMessage);
+//
+//            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+//
+//            $this->repoWorker->reconnect();
+//            $em->beginTransaction();
+//            try {
+//                $workerRunningJob
+//                    ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
+//                    ->setStatus(WorkerRunningJob::ERROR)
+//                ;
+//
+//                $em->persist($workerRunningJob);
+//                $em->flush();
+//                $em->commit();
+//            } catch (\Exception $e) {
+//                $em->rollback();
+//            }
+//
+//            $payload['workerJobId'] = $workerRunningJob->getId();
+//            $fullPayload = [
+//                'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
+//                'payload'       => $payload
+//            ];
+//
+//            $this->messagePublisher->publishRetryMessage(
+//                $fullPayload,
+//                MessagePublisher::EXPOSE_UPLOAD_TYPE,
+//                $count,
+//                $workerMessage
+//            );
 
-            $this->messagePublisher->pushLog($workerMessage);
+            $this->messagePublisher->pushLog("An error occurred when creating asset!: ". $e->getMessage());
+            $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
 
-            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
-
-            $this->repoWorker->reconnect();
-            $em->beginTransaction();
-            try {
-                $workerRunningJob
-                    ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
-                    ->setStatus(WorkerRunningJob::ERROR)
-                ;
-
-                $em->persist($workerRunningJob);
-                $em->flush();
-                $em->commit();
-            } catch (\Exception $e) {
-                $em->rollback();
-            }
-
-            $payload['workerJobId'] = $workerRunningJob->getId();
-            $fullPayload = [
-                'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
-                'payload'       => $payload
-            ];
-
-            $this->messagePublisher->publishRetryMessage(
-                $fullPayload,
-                MessagePublisher::EXPOSE_UPLOAD_TYPE,
-                $count,
-                $workerMessage
-            );
+            return ;
 
             return;
         }

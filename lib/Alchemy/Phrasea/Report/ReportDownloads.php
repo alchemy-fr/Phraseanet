@@ -80,16 +80,16 @@ class ReportDownloads extends Report
         switch ($this->parms['group']) {
             case null:
                 $this->name = "Downloads";
-                $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'subdef'];
+                $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'subdef', 'action'];
                 if($this->parms['anonymize']) {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
@@ -151,7 +151,7 @@ class ReportDownloads extends Report
 
             $subdefsToReport = join(',', $subdefsToReport);
 
-            $filter = "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
+            $filter = "(`action`='download' OR `action`='mail') AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
                     . "  AND `l`.`usrid`>0\n"
                     . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
 
