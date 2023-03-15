@@ -11569,12 +11569,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="6b515e1d6bd58aa0a748373df36000155da20e78" resname="mail:: report - %instance% - %reportName%">
         <source>mail:: report - %instance% - %reportName%</source>
-        <target state="new">mail:: report - %instance% - %reportName%</target>
+        <target state="needs-translation">Report %instance% - %reportName%</target>
         <jms:reference-file line="27">Notification/Mail/MailReport.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="394de9d96b631d733d7eac3c3bf5a7e8fe27ce9d" resname="mail:: report messages">
         <source>mail:: report messages</source>
-        <target state="new">mail:: report messages</target>
+        <target state="needs-translation">Veuillez trouvez ci-joint le rapport en pièce jointe, au format .csv</target>
         <jms:reference-file line="39">Notification/Mail/MailReport.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
