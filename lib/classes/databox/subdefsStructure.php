@@ -107,7 +107,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
             $group = $this->getSubdefGroup($subdefgroup_name);
 
             foreach ($subdefs as $sd) {
-                $group->addSubdef(new databox_subdef($group->getType(), $sd, $this->translator));
+                $group->addSubdef(new databox_subdef($group->getType(), $sd, $this->translator, $this->databox));
             }
         }
     }

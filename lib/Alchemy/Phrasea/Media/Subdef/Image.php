@@ -24,6 +24,7 @@ class Image extends Provider
     const OPTION_ICODEC = 'icodec';
     const OPTION_WATERMARK = 'watermark';
     const OPTION_WATERMARKTEXT = 'watermarktext';
+    const OPTION_WATERMARKRID = 'watermarkrid';
 
     protected $options = [];
 
@@ -37,8 +38,9 @@ class Image extends Provider
         $this->registerOption(new OptionType\Boolean($this->translator->trans('Flatten layers'), self::OPTION_FLATTEN, false));
         $this->registerOption(new OptionType\Range($this->translator->trans('Quality'), self::OPTION_QUALITY, 0, 100, 75));
         $this->registerOption(new OptionType\Enum('Image Codec', self::OPTION_ICODEC, array('jpeg', 'png', 'tiff'), 'jpeg'));
-        $this->registerOption(new OptionType\Boolean($this->translator->trans('Watermark'), self::OPTION_WATERMARK, false));
+        $this->registerOption(new OptionType\EnumButton($this->translator->trans('Watermark'), self::OPTION_WATERMARK, array('no' => 'no', 'yes' => 'yes'), 'no'));
         $this->registerOption(new OptionType\Text($this->translator->trans('Watermark text'), self::OPTION_WATERMARKTEXT, ''));
+        $this->registerOption(new OptionType\Text($this->translator->trans('Watermark Record_id'), self::OPTION_WATERMARKRID, ''));
     }
 
     public function getType()

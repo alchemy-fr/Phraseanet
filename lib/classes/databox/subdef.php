@@ -22,6 +22,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class databox_subdef
 {
+    /** @var databox|null  */
+    private $databox;
+
     /**
      * The class type of the subdef
      * Is null or one of the CLASS_* constants
@@ -67,8 +70,9 @@ class databox_subdef
      *
      * @return databox_subdef
      */
-    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator)
+    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator, databox $databox = null)
     {
+        $this->databox = $databox;
         $this->subdef_group = $type;
         $this->class = (string)$sd->attributes()->class;
         $this->translator = $translator;
@@ -113,6 +117,12 @@ class databox_subdef
                 break;
         }
     }
+
+    public function getDatabox()
+    {
+        return $this->databox;
+    }
+
     /**
      * Build Image Subdef object depending the SimpleXMLElement
      *
@@ -141,10 +151,13 @@ class databox_subdef
             $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
         }
         if ($sd->watermark) {
-            $image->setOptionValue(Image::OPTION_WATERMARK, p4field::isyes($sd->watermark));
+            $image->setOptionValue(Image::OPTION_WATERMARK, (string) $sd->watermark);
         }
         if ($sd->watermarktext) {
             $image->setOptionValue(Image::OPTION_WATERMARKTEXT, $sd->watermarktext);
+        }
+        if ($sd->watermarkrid) {
+            $image->setOptionValue(Image::OPTION_WATERMARKRID, $sd->watermarkrid);
         }
         return $image;
     }
