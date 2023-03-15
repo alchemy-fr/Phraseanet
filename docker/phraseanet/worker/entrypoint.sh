@@ -25,7 +25,7 @@ fi
 # rm -Rf cache/*
 
 chown -R app:app cache
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repositorie"
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on cache/ repository"
 
 #    config \
 #    tmp \
@@ -35,7 +35,7 @@ echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repositorie"
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on plugins/ repositorie"
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on plugins/ repository"
 fi
 
 if [ -f /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then
