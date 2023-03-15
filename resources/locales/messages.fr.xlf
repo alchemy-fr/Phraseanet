@@ -11574,7 +11574,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="394de9d96b631d733d7eac3c3bf5a7e8fe27ce9d" resname="mail:: report messages">
         <source>mail:: report messages</source>
-        <target state="needs-translation">Veuillez trouvez ci-joint le rapport en pièce jointe, au format .csv</target>
+        <target state="needs-translation">Veuillez trouvez en pièce jointe le rapport, au format .csv</target>
         <jms:reference-file line="39">Notification/Mail/MailReport.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
