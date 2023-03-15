@@ -11,7 +11,6 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Embed\Media\Media;
-use Alchemy\Embed\Media\MediaInformation;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Authentication\ACLProvider;
@@ -20,6 +19,7 @@ use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use record_adapter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,7 +90,7 @@ class PermalinkController extends AbstractDelivery
                 'sbas_id'   => $sbas_id,
                 'record_id' => $record_id,
                 'subdef'    => $subdefName,
-                'label'     => str_replace('/', '_', $record->get_title()),
+                'label'     => str_replace('/', '_', $record->get_title(['encode'=> record_adapter::ENCODE_FOR_URI])),
                 'token'     => $token,
             ]
         );
@@ -171,14 +171,14 @@ class PermalinkController extends AbstractDelivery
 
     /**
      * @param Request         $request
-     * @param \record_adapter $record
+     * @param record_adapter  $record
      * @param string          $subdef
      * @param bool            $watermark
      * @param bool            $stamp
      * @param string          $token
      * @return Response
      */
-    private function deliverContentWithCaptionLink(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, $token)
+    private function deliverContentWithCaptionLink(Request $request, record_adapter $record, $subdef, $watermark, $stamp, $token)
     {
         $response = $this->deliverContent($request, $record, $subdef, $watermark, $stamp);
 
@@ -201,7 +201,7 @@ class PermalinkController extends AbstractDelivery
      * @param string   $token
      * @param int      $record_id
      * @param string   $subdef
-     * @return \record_adapter
+     * @return record_adapter
      */
     private function retrieveRecord(\databox $databox, $token, $record_id, $subdef)
     {

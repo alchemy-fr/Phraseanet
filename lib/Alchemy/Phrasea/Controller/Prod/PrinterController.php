@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Alchemy\Phrasea\Out\Module\PDFRecords;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -43,7 +44,7 @@ class PrinterController extends Controller
         $r = RecordsRequest::fromRequest($this->app, $request, false);
 
         if ($r->isSingleStory()) {
-            $pdfTitle = $r->singleStory()->get_title();
+            $pdfTitle = $r->singleStory()->get_title(['encode'=> record_adapter::ENCODE_NONE]);
             $storyId = $r->singleStory()->getId();
         }
 

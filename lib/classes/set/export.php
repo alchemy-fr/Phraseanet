@@ -138,7 +138,7 @@ class set_export extends set_abstract
                             $app,
                             $child_basrec->getDataboxId(),
                             $record_id,
-                            $record->get_title(['removeExtension' => true]) . '_' . $n,
+                            $record->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_NONE]) . '_' . $n,
                             $remain_hd[$base_id]
                         );
                         $this->add_element($current_element);
@@ -467,7 +467,7 @@ class set_export extends set_abstract
             //
             if ($rename_title) {
                 // use the title (may be a concat of fields)
-                $export_name = strip_tags($download_element->get_title(['removeExtension' => true]));
+                $export_name = strip_tags($download_element->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI]));
                 // if the "title" ends up with a "filename-like" field, remove extension
                 if (strtolower(substr($export_name, -strlen($extension)-1)) === '.'.strtolower($extension)) {
                     $export_name = substr($export_name, 0, strlen($export_name)-1-strlen($extension));

@@ -28,6 +28,7 @@ use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DataURI\Parser;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 
 class ToolsController extends Controller
@@ -46,7 +47,7 @@ class ToolsController extends Controller
         $recordAccessibleSubdefs = array();
         $listsubdef= null;
         if (count($records) == 1) {
-            /** @var \record_adapter $record */
+            /** @var record_adapter $record */
             $record = $records->first();
 
             /**Array list of subdefs**/
@@ -94,7 +95,7 @@ class ToolsController extends Controller
         $availableSubdefName = [];
         $countSubdefTodo = [];
 
-        /** @var \record_adapter $rec */
+        /** @var record_adapter $rec */
         foreach ($records as $rec) {
             $databoxSubdefs = $rec->getDatabox()->get_subdef_structure()->getSubdefGroup($rec->getType());
             if ($databoxSubdefs !== null) {
@@ -218,7 +219,7 @@ class ToolsController extends Controller
                         throw new RuntimeException('Error while renaming file');
                     }
 
-                    $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
+                    $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
                     $media = $this->app->getMediaFromUri($tempoFile);
 
@@ -278,7 +279,7 @@ class ToolsController extends Controller
                 throw new RuntimeException('Error while renaming file');
             }
 
-            $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
+            $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
@@ -306,9 +307,9 @@ class ToolsController extends Controller
         $template = 'prod/actions/Tools/confirm.html.twig';
 
         try {
-            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
             $var = [
-                'video_title' => $record->get_title(),
+                'video_title' => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
                 'image'       => $request->request->get('image', ''),
             ];
             $return = [
@@ -328,7 +329,7 @@ class ToolsController extends Controller
     public function applyThumbnailExtractionAction(Request $request)
     {
         try {
-            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
             $subDef = $request->request->get('sub_def');
 
@@ -359,7 +360,7 @@ class ToolsController extends Controller
     public function editRecordSharing(Request $request, $base_id, $record_id)
     {
 
-        $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
+        $record = new record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
         $subdefName = (string)$request->request->get('name');
         $state = $request->request->get('state') == 'true' ? true : false;
 
@@ -422,12 +423,12 @@ class ToolsController extends Controller
     }
 
     /**
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @param string $subDefName
      * @param string $subDefDataUri
      * @throws \DataURI\Exception\InvalidDataException
      */
-    private function substituteMedia(\record_adapter $record, $subDefName, $subDefDataUri)
+    private function substituteMedia(record_adapter $record, $subDefName, $subDefDataUri)
     {
         $dataUri = Parser::parse($subDefDataUri);
 
@@ -456,7 +457,7 @@ class ToolsController extends Controller
      */
     public function saveMetasAction(Request $request)
     {
-        $record = new \record_adapter($this->app,
+        $record = new record_adapter($this->app,
             (int)$request->request->get("databox_id"),
             (int)$request->request->get("record_id"));
 
@@ -482,7 +483,7 @@ class ToolsController extends Controller
 
     public function autoSubtitleAction(Request $request)
     {
-        $record = new \record_adapter($this->app,
+        $record = new record_adapter($this->app,
             (int)$request->request->get("databox_id"),
             (int)$request->request->get("record_id")
         );
@@ -522,7 +523,7 @@ class ToolsController extends Controller
         $videoTextTrackFields = [];
 
         if (count($records) == 1) {
-            /** @var \record_adapter $record */
+            /** @var record_adapter $record */
             $record = $records->first();
             $databox = $record->getDatabox();
 
@@ -568,7 +569,7 @@ class ToolsController extends Controller
         ]);
     }
 
-    private function isPhysicallyPresent(\record_adapter $record, $subdefName)
+    private function isPhysicallyPresent(record_adapter $record, $subdefName)
     {
         try {
             return $record->get_subdef($subdefName)->is_physically_present();

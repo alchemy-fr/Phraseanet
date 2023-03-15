@@ -12,11 +12,12 @@
 namespace Alchemy\Phrasea\Out\Module;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
-use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 use Alchemy\Phrasea\Helper\Record\Printer;
+use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
-use \IntlDateFormatter as DateFormatter;
+use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
+use IntlDateFormatter as DateFormatter;
+use record_adapter;
 
 class PDFRecords extends PDF
 {
@@ -200,7 +201,7 @@ class PDFRecords extends PDF
         $irow = $ipage = 0;
         $icol = -1;
         foreach ($this->records as $rec) {
-            /* @var \record_adapter $rec */
+            /* @var record_adapter $rec */
             if (++$icol >= $NDiapoW) {
                 $icol = 0;
                 if (++$irow >= $NDiapoH) {
@@ -284,7 +285,7 @@ class PDFRecords extends PDF
                     );
                 }
 
-                $downloadLink = $rec->get_title();
+                $downloadLink = $rec->get_title(['encode'=> record_adapter::ENCODE_FOR_URI]);
 
 
                 if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)
@@ -295,7 +296,7 @@ class PDFRecords extends PDF
                     $sd = $rec->get_subdef($this->downloadSubdef);
                     if ($sd->is_physically_present()) {
                         $url = $this->getDownloadUrl($sd);
-                        $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', $url, $rec->get_title());
+                        $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', $url, $rec->get_title(['encode'=> record_adapter::ENCODE_FOR_HTML]));
                     }
                 }
 
@@ -337,7 +338,7 @@ class PDFRecords extends PDF
         $this->pdf->SetLeftMargin($lmargin + 55);
 
         $ndoc = 0;
-        /* @var \record_adapter $rec */
+        /* @var record_adapter $rec */
         foreach ($this->records as $rec) {
             $subdef = null;
 
@@ -393,7 +394,7 @@ class PDFRecords extends PDF
             if ($this->pdf->GetY() > $this->pdf->getPageHeight() - (6 + $finalHeight + 20))
                 $this->pdf->AddPage();
 
-            $title = "record : " . $rec->get_title();
+            $title = "record : " . $rec->get_title(['encode'=> record_adapter::ENCODE_NONE]);
 
             $y = $this->pdf->GetY();
 
@@ -495,9 +496,9 @@ class PDFRecords extends PDF
         $lmargin = $oldMargins['left'];
         $rmargin = $oldMargins['right'];
 
-        /* @var \record_adapter $rec */
+        /* @var record_adapter $rec */
         foreach ($this->records as $rec) {
-            $title = "record : " . $rec->get_title();
+            $title = "record : " . $rec->get_title(['encode'=> record_adapter::ENCODE_NONE]);
 
             $y = $this->pdf->GetY();
             if($this->pdf->getPageHeight() - $y < 30){ // height of the footer is 15
@@ -640,7 +641,7 @@ class PDFRecords extends PDF
         }
 
         foreach ($this->records as $krec => $rec) {
-            /* @var \record_adapter $rec */
+            /* @var record_adapter $rec */
 
             $this->pdf->AddPage();
 
@@ -763,7 +764,7 @@ class PDFRecords extends PDF
             $subdef = null;
 
             if ($rec->has_subdef($this->previewName)) {
-                /* @var \record_adapter $rec */
+                /* @var record_adapter $rec */
                 $subdef = $rec->get_subdef($this->previewName);
             }
 
@@ -938,7 +939,7 @@ class PDFRecords extends PDF
         return;
     }
 
-    private function showRecordInfoBloc(\record_adapter $rec)
+    private function showRecordInfoBloc(record_adapter $rec)
     {
         $r = $g = $b = 0;
         if (!empty($this->fieldTitleColor)) {
@@ -949,7 +950,7 @@ class PDFRecords extends PDF
         $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
         $this->pdf->SetTextColor(0);
         $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
-        $this->pdf->Write(5, $rec->get_title());
+        $this->pdf->Write(5, $rec->get_title(['encode'=> record_adapter::ENCODE_NONE]));
         $this->pdf->Write(6, "\n");
 
         if (!empty($this->fieldTitleColor)) {
@@ -1096,7 +1097,7 @@ class PDFRecords extends PDF
         $infos = pathinfo($subdef->getRealPath());
 
         if ($this->printer->getTitleAsDownloadName()) {
-            $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(['removeExtension' => true]), 0, self::$maxFilenameLength), 'UTF-8');
+            $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI]), 0, self::$maxFilenameLength), 'UTF-8');
         } else {
             $originalName = $subdef->get_record()->get_original_name(true);
             $originalName = empty($originalName) ? $subdef->get_record()->getId() : $originalName;
