@@ -119,7 +119,7 @@ class record_preview extends record_adapter
 
                 $this->container = new record_adapter($app, $sbas_id, $record_id);
                 $this->original_item = $this->container;
-                $this->name = $this->container->get_title();
+                $this->name = $this->container->get_title(['encode'=> record_adapter::ENCODE_NONE]);
                 if ($pos == 0) {
                     $number = 0;
                 } else {
@@ -253,50 +253,65 @@ class record_preview extends record_adapter
         return $this->original_item;
     }
 
-    /**
-     *
-     * @return String
-     */
-    public function get_title(Array $options = [])
+    public function getEnv()
     {
-        if ($this->title) {
-            return $this->title;
-        }
-
-        $this->title = '';
-
-        switch ($this->env) {
-
-            case "RESULT":
-                $this->title = '<span style="color:#27bbe2;">';
-                $this->title .= $this->app->trans('Resultat %number% / %total%', ['%number%' => '<span id="current_result_n">' . $this->formatNumber($this->getNumber() + 1) . '</span>', '%total%' => $this->formatNumber($this->total)]);
-                $this->title .= ' : </span> ' . parent::get_title($options);
-                break;
-            case "BASK":
-                $this->title = '<span style="color:#27bbe2;">';
-                $this->title .= $this->name . ' (' . $this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total) . ') : </span>' . parent::get_title($options);
-
-                break;
-            case "REG":
-                $this->title = '<span style="color:#27bbe2;">';
-                $this->title .= $this->name;
-
-                if ($this->getNumber() != 0) {
-                    $this->title .= sprintf(
-                        ' (%s) : </span> %s',$this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total), parent::get_title($options)
-                    );
-                } else {
-                    $this->title .= '</span>';
-                }
-
-                break;
-            default:
-                $this->title .= parent::get_title($options);
-                break;
-        }
-
-        return $this->title;
+        return $this->env;
     }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    // PHRAS-3800 : html is now done in twig, so getting parent::get_title is fine
+    // --> no more overload
+//    /**
+//     *
+//     * @return String
+//     */
+//    public function old_get_title(Array $options = [])
+//    {
+//        if ($this->title) {
+//            return $this->title;
+//        }
+//
+//        $this->title = '';
+//
+//        switch ($this->env) {
+//
+//            case "RESULT":
+//                $this->title = '<span style="color:#27bbe2;">';
+//                $this->title .= $this->app->trans('Resultat %number% / %total%', ['%number%' => '<span id="current_result_n">' . $this->formatNumber($this->getNumber() + 1) . '</span>', '%total%' => $this->formatNumber($this->total)]);
+//                $this->title .= ' : </span> ' . parent::get_title($options);
+//                break;
+//            case "BASK":
+//                $this->title = '<span style="color:#27bbe2;">';
+//                $this->title .= $this->name . ' (' . $this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total) . ') : </span>' . parent::get_title($options);
+//
+//                break;
+//            case "REG":
+//                $this->title = '<span style="color:#27bbe2;">';
+//                $this->title .= $this->name;
+//
+//                if ($this->getNumber() != 0) {
+//                    $this->title .= sprintf(
+//                        ' (%s) : </span> %s',$this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total), parent::get_title($options)
+//                    );
+//                } else {
+//                    $this->title .= '</span>';
+//                }
+//
+//                break;
+//            default:
+//                $this->title .= parent::get_title($options);
+//                break;
+//        }
+//
+//        return $this->title;
+//    }
 
     /**
      * @return mixed content
@@ -788,7 +803,7 @@ class record_preview extends record_adapter
         return $this->download_popularity;
     }
 
-    private function formatNumber($number)
+    public function formatNumber($number)
     {
         return number_format($number, 0, null, ' ');
     }

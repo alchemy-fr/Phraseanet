@@ -25,8 +25,8 @@ fi
 # rm -Rf cache/*
 
 
-#chown -R app:app \
-#    cache \
+chown -R app:app cache 
+
 #    config \
 #    tmp \
 #    logs \

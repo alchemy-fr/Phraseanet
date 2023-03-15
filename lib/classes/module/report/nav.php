@@ -519,7 +519,7 @@ class module_report_nav extends module_report
             , 'record_id' => $record->getRecordId()
             , 'date'      => $this->app['date-formatter']->getPrettyString($document->get_creation_date())
             , 'type'      => $document->get_mime()
-            , 'titre'     => $record->get_title()
+            , 'titre'     => $record->get_title(['encode'=> record_adapter::ENCODE_FOR_HTML])
             , 'taille'    => $document->get_size()
         ];
 

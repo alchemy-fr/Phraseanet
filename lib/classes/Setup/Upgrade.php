@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\Version\MailChecker;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Dumper;
 
 class Setup_Upgrade
@@ -27,7 +29,7 @@ class Setup_Upgrade
      */
     private $recommendations = [];
 
-    public function __construct(Application $app, $force = false)
+    public function __construct(Application $app, InputInterface $input, OutputInterface $output, $force = false)
     {
         if ($force) {
             $this->remove_lock_file();

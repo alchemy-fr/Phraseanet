@@ -62,7 +62,6 @@
             $("#slidervalue" + section + name + defType + fieldname).val(value);
         }
 
-
         function populate_values(section, name) {
 
             var config = JSON.parse('{{ config |json_encode|raw }}'),
@@ -620,6 +619,13 @@
                                                                        {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
                                                             </label>
                                                             {% endfor %}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM_BUTTON') %}
+                                                        <div style="padding: 5px 0px;">
+                                                            {% for label, pot_value in option.getAvailableValues() %}
+                                                                <input name="{{ varname }}" type="radio" value="{{ pot_value }}"
+                                                                       {% if pot_value == option.getValue() %}checked="checked"{% endif %} /> {{ label }}
+                                                            {% endfor %}
+                                                        </div>
                                                     {% endif %}
                                                 </td>
                                                 <td>

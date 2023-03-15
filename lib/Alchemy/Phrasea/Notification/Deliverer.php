@@ -86,4 +86,9 @@ class Deliverer
 
         return $ret;
     }
+
+    public function setPrefix(string $prefix)
+    {
+        $this->prefix = $prefix;
+    }
 }

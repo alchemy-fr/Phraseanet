@@ -54,9 +54,9 @@ const searchGeoForm = (services) => {
                 event.preventDefault();
                 if($('#map-zoom-to-setting').val()!= '') {
                     savePreferences(
-                        {map_zoom : parseFloat($('#map-zoom-to-setting').val())}
+                        {map_zoom : parseInt($('#map-zoom-to-setting').val())}
                     );
-                    $('#map-zoom-from-setting').val(parseFloat($('#map-zoom-to-setting').val()));
+                    $('#map-zoom-from-setting').val(parseInt($('#map-zoom-to-setting').val()));
                 }
                 if($('#map-position-to-setting').val()!= '') {
                     var centerRes = $('#map-position-to-setting').val();

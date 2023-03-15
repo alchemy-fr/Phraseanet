@@ -899,7 +899,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 
 const projectVersion = __webpack_require__(450).version;
 const _ = __webpack_require__(451);
-const EventEmitter = __webpack_require__(93);
+const EventEmitter = __webpack_require__(92);
 const turfCircle = __webpack_require__(452);
 const turfBbox = __webpack_require__(453);
 const turfBboxPoly = __webpack_require__(454);
@@ -2555,8 +2555,8 @@ module.exports = interceptor;
 
 
 var corslite = __webpack_require__(399),
-    strict = __webpack_require__(82).strict,
-    config = __webpack_require__(86);
+    strict = __webpack_require__(81).strict,
+    config = __webpack_require__(85);
 
 var protocol = /^(https?:)?(?=\/\/(.|api)\.tiles\.mapbox\.com\/)/;
 
@@ -3142,8 +3142,8 @@ module.exports = {
 
 
 var request = __webpack_require__(309),
-    format_url = __webpack_require__(84),
-    util = __webpack_require__(82);
+    format_url = __webpack_require__(83),
+    util = __webpack_require__(81);
 
 module.exports = {
     _loadTileJSON: function(_) {
@@ -13082,8 +13082,8 @@ L.Map.include({
 
 
 var isArray = __webpack_require__(398),
-    util = __webpack_require__(82),
-    format_url = __webpack_require__(84),
+    util = __webpack_require__(81),
+    format_url = __webpack_require__(83),
     feedback = __webpack_require__(317),
     request = __webpack_require__(309);
 
@@ -13230,7 +13230,7 @@ module.exports = function(url, options) {
 "use strict";
 
 
-var util = __webpack_require__(82),
+var util = __webpack_require__(81),
     Mustache = __webpack_require__(336);
 
 var GridControl = L.Control.extend({
@@ -13238,7 +13238,7 @@ var GridControl = L.Control.extend({
     options: {
         pinnable: true,
         follow: false,
-        sanitizer: __webpack_require__(83),
+        sanitizer: __webpack_require__(82),
         touchTeaser: true,
         location: true
     },
@@ -14073,10 +14073,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 "use strict";
 
 
-var util = __webpack_require__(82),
-    format_url = __webpack_require__(84),
+var util = __webpack_require__(81),
+    format_url = __webpack_require__(83),
     request = __webpack_require__(309),
-    marker = __webpack_require__(85),
+    marker = __webpack_require__(84),
     simplestyle = __webpack_require__(338);
 
 // # featureLayer
@@ -14086,7 +14086,7 @@ var util = __webpack_require__(82),
 var FeatureLayer = L.FeatureGroup.extend({
     options: {
         filter: function() { return true; },
-        sanitizer: __webpack_require__(83),
+        sanitizer: __webpack_require__(82),
         style: simplestyle.style,
         popupOptions: { closeButton: false }
     },
@@ -14263,7 +14263,7 @@ var LegendControl = L.Control.extend({
 
     options: {
         position: 'bottomright',
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     initialize: function(options) {
@@ -14333,7 +14333,7 @@ module.exports.legendControl = function(options) {
 "use strict";
 
 
-var format_url = __webpack_require__(84);
+var format_url = __webpack_require__(83);
 
 var ShareControl = L.Control.extend({
     includes: [__webpack_require__(312)],
@@ -14461,14 +14461,14 @@ module.exports.shareControl = function(_, options) {
 "use strict";
 
 
-var util = __webpack_require__(82);
+var util = __webpack_require__(81);
 var formatPattern = /\.((?:png|jpg)\d*)(?=$|\?)/;
 
 var TileLayer = L.TileLayer.extend({
     includes: [__webpack_require__(312)],
 
     options: {
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     // http://mapbox.com/developers/api/#image_quality
@@ -14569,7 +14569,7 @@ module.exports.tileLayer = function(_, options) {
 var InfoControl = L.Control.extend({
     options: {
         position: 'bottomright',
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     initialize: function(options) {
@@ -14688,7 +14688,7 @@ module.exports.infoControl = function(options) {
 "use strict";
 
 
-var util = __webpack_require__(82),
+var util = __webpack_require__(81),
     request = __webpack_require__(309),
     grid = __webpack_require__(401);
 
@@ -16563,9 +16563,9 @@ var geocoderControl = __webpack_require__(397),
     styleLayer = __webpack_require__(403);
 
 L.mapbox = module.exports = {
-    VERSION: __webpack_require__(87).version,
+    VERSION: __webpack_require__(86).version,
     geocoder: __webpack_require__(334),
-    marker: __webpack_require__(85),
+    marker: __webpack_require__(84),
     simplestyle: __webpack_require__(338),
     tileLayer: tileLayer.tileLayer,
     TileLayer: tileLayer.TileLayer,
@@ -16587,8 +16587,8 @@ L.mapbox = module.exports = {
     FeatureLayer: featureLayer.FeatureLayer,
     map: map.map,
     Map: map.Map,
-    config: __webpack_require__(86),
-    sanitize: __webpack_require__(83),
+    config: __webpack_require__(85),
+    sanitize: __webpack_require__(82),
     template: __webpack_require__(336).to_html,
     feedback: __webpack_require__(317)
 };
@@ -16602,7 +16602,7 @@ window.L.Icon.Default.imagePath =
     ((document.location.protocol === 'https:' ||
     document.location.protocol === 'http:') ? '' : 'https:') +
     '//api.tiles.mapbox.com/mapbox.js/' + 'v' +
-    __webpack_require__(87).version + '/images';
+    __webpack_require__(86).version + '/images';
 
 
 /***/ }),
@@ -16613,7 +16613,7 @@ window.L.Icon.Default.imagePath =
 
 
 var geocoder = __webpack_require__(334),
-    util = __webpack_require__(82);
+    util = __webpack_require__(81);
 
 var GeocoderControl = L.Control.extend({
     includes: L.Mixin.Events,
@@ -16958,7 +16958,7 @@ var LMap = L.Map.extend({
         gridControl: {},
         infoControl: false,
         shareControl: false,
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     _tilejson: {},
@@ -17234,14 +17234,14 @@ module.exports.mapboxLogoControl = function(options) {
 "use strict";
 
 
-var util = __webpack_require__(82);
-var format_url = __webpack_require__(84);
+var util = __webpack_require__(81);
+var format_url = __webpack_require__(83);
 var request = __webpack_require__(309);
 
 var StyleLayer = L.TileLayer.extend({
 
     options: {
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     initialize: function(_, options) {
