@@ -152,7 +152,7 @@ class V3ResultHelpers
             'databox_id'             => $record->getDataboxId(),
             'record_id'              => $record->getRecordId(),
             'mime_type'              => $record->getMimeType(),
-            'title'                  => $record->get_title(),
+            'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),
             'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
             'created_on'             => $record->getCreated()->format(DATE_ATOM),

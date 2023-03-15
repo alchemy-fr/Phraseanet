@@ -14,13 +14,14 @@ namespace Alchemy\Phrasea\Feed\Formatter;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Feed\Link\FeedLink;
+use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Feed\RSS\Image as FeedRSSImage;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
-use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use DateTime;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Response;
 
 class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterInterface
@@ -208,7 +209,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
         if (null !== $title_field) {
             $str_title = $title_field->get_serialized_values(' ');
         } else {
-            $str_title = $content->getRecord($app)->get_title();
+            $str_title = $content->getRecord($app)->get_title(['encode'=> record_adapter::ENCODE_FOR_HTML]);
         }
 
         //attach tile node to item node

@@ -10,15 +10,13 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Guzzle\Http\Url;
-use \RandomLib\Generator;
+use RandomLib\Generator;
 
 class media_Permalink_Adapter implements cache_cacheableInterface
 {
@@ -396,7 +394,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         // build a multi-rows insert
         $inserts = '';
         // constant part values
-        $insk = ", 1, NOW(), NOW(), " . $connection->quote(self::cleanLabel($unicode, $record->get_title(['removeExtension' => true])));
+        $insk = ", 1, NOW(), NOW(), " . $connection->quote(self::cleanLabel($unicode, $record->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI])));
         // multiple rows
         foreach($subdef_ids as $subdef_id) {
             // fake subdefs (icons substitution) for thumb/prev are hardcoded.
@@ -487,7 +485,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
                 'token' => $generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS),
                 'label' => self::cleanLabel(
                     $unicode,
-                    $records[$media_subdef->get_record_id()]->get_title(['removeExtension' => true])
+                    $records[$media_subdef->get_record_id()]->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI])
                 ),
             ];
         }

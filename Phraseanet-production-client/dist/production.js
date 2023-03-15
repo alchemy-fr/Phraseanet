@@ -4006,11 +4006,13 @@ var workzoneFacets = function workzoneFacets(services) {
             if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                 textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
             }
+            textWithoutColorCode = (0, _jquery2.default)('<div/>').text(textWithoutColorCode).html(); // escape html
             return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
         } else {
             if (textLimit > 0 && string.length > textLimit) {
                 string = string.substring(0, textLimit) + '…';
             }
+            string = (0, _jquery2.default)('<div/>').text(string).html(); // escape html
             return string;
         }
     }

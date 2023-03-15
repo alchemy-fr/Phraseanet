@@ -32,10 +32,10 @@ use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
-use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
@@ -62,6 +62,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     const CACHE_SHA256 = 'sha256';
     const CACHE_SUBDEFS = 'subdefs';
     const CACHE_GROUPING = 'grouping';
+
+    const ENCODE_NONE = 'encode_none';
+    const ENCODE_FOR_HTML = 'encode_for_html';
+    const ENCODE_FOR_URI = 'encode_for_uri';
 
     /**
      * @param Application $app
@@ -974,7 +978,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getTitle($locale = null, Array $options = [])
     {
         $removeExtension = !!igorw\get_in($options, ['removeExtension'], false);
-
+        $encode = igorw\get_in($options, ['encode'], self::ENCODE_NONE);
         $cache = !$removeExtension;
 
         if ($cache) {
@@ -1002,7 +1006,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $titles = [];
             foreach ($retrieved_fields as $value) {
                 foreach ($value['values'] as $v) {
-                    $titles[] = $v['value'];
+                    $v = $v['value'];
+                    switch ($encode) {
+                        case self::ENCODE_FOR_HTML:
+                            $v = htmlentities($v);
+                            break;
+                        case self::ENCODE_FOR_URI:
+                            $v = urlencode($v);
+                            break;
+                    }
+                    $titles[] = $v;
                 }
             }
             $title = trim(implode(' - ', $titles));
@@ -1010,6 +1023,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         if (trim($title) === '') {
             $title = trim($this->get_original_name($removeExtension));
+            switch ($encode) {
+                case self::ENCODE_FOR_HTML:
+                    $title = htmlentities($title);
+                    break;
+                case self::ENCODE_FOR_URI:
+                    $title = urlencode($title);
+                    break;
+            }
         }
 
         $title = $title != "" ? $title : $this->app->trans('reponses::document sans titre');
