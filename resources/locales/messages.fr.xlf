@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-03-13T14:12:59Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -4294,7 +4294,7 @@
       </trans-unit>
       <trans-unit id="04c01654ea5535072898fd4842f6227a4b939682" resname="Manual email share: '%title%'">
         <source>Manual email share: '%title%'</source>
-        <target state="needs-translation">Message concernant le panier : '%title%'</target>
+        <target state="translated">Message concernant le panier : '%title%'</target>
         <jms:reference-file line="41">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="yes">
@@ -5261,7 +5261,7 @@
       </trans-unit>
       <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push">
         <source>Push</source>
-        <target state="needs-translation">Push</target>
+        <target state="translated">Push</target>
         <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="59">eventsmanager/notify/push.php</jms:reference-file>
         <jms:reference-file line="324">prod/WorkZone/Macros.html.twig</jms:reference-file>
@@ -6149,7 +6149,7 @@
       </trans-unit>
       <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share">
         <source>Share</source>
-        <target state="needs-translation">Partager un panier</target>
+        <target state="translated">Partager un panier</target>
         <jms:reference-file line="125">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="100">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="62">prod/WorkZone/Basket.html.twig</jms:reference-file>
@@ -8047,7 +8047,7 @@
       </trans-unit>
       <trans-unit id="17948b21adfde1bf589b2a34a2c8253e2af91913" resname="action : push">
         <source>action : push</source>
-        <target state="needs-translation">Push (Panier)</target>
+        <target state="translated">Push (Panier)</target>
         <jms:reference-file line="106">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="55">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/WorkZone/Story.html.twig</jms:reference-file>
@@ -12319,7 +12319,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15412,7 +15412,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
