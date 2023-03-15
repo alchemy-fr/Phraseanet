@@ -42,7 +42,7 @@ fi
 
 ./docker/phraseanet/plugins/console init
 
-chown -R app:app cache 
+chown -R app:app cache
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repositorie"
 
 #    config \
