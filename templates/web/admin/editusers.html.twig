@@ -111,7 +111,8 @@
 
 <div>
   {% if main_user is not empty %}
-    <h4>{{ main_user.getDisplayName() ~ ' ( ' ~ main_user.getId() ~' )'}}</h4>
+    {% set lastConnection = main_user.getLastConnection() is not null ? main_user.getLastConnection() | date('Y-m-d  H:i:s') : ' - ' %}
+    <h4>{{ main_user.getDisplayName() ~ ' ( id : ' ~ main_user.getId() ~' )   ' ~  'admin::compte-utilisateur derniere connexion' | trans ~ ' :  ' ~ lastConnection }}</h4>
   {% endif %}
 
   <div class="tabs PNB" style="bottom:40px;">
