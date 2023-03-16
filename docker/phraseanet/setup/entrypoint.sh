@@ -207,19 +207,19 @@ echo `date +"%Y-%m-%d %H:%M:%S"` " - Init plugin install "
 echo `date +"%Y-%m-%d %H:%M:%S"` " - Flushing application cache"
 rm -Rf cache/*
 
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repositorie"
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repository"
 chown -R app:app cache 
 
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on config/ repositorie"
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on config/ repository"
 chown -R app:app config
 
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on tmp/ repositorie"
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on tmp/ repository"
 chown -R app:app tmp
 
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on logs/ repositorie"
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on logs/ repository"
 chown -R app:app logs
 
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/ repositorie"
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/ repository"
 chown -R app:app www
     
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"   
