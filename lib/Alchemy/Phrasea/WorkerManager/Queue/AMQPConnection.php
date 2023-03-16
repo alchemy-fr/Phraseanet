@@ -573,7 +573,7 @@ class AMQPConnection
      * @return array
      * @throws Exception
      */
-    public function getQueuesStatus()
+    public function getQueuesStatus($hideEmptyQ = true)
     {
         $this->getChannel();
         $queuesStatus = [];
@@ -588,6 +588,10 @@ class AMQPConnection
             }
             try {
                 list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($name, true);
+                if ($hideEmptyQ && $messageCount == 0) {
+                    continue;
+                }
+
                 $queuesStatus[$queueName] = [
                     'queueName'     => $queueName,
                     'exists'        => true,
