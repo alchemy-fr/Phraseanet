@@ -1,9 +1,15 @@
 {% if not reload %}
     <h1>{{ 'admin::workermanager:tab:queueMonitor: description' |trans }}</h1>
 
-    <button id="refresh-monitor" class="btn btn-success">
-        {{ 'admin::workermanager:tab:queueMonitor: Refresh list' |trans }}
-    </button>
+    <div>
+        <button id="refresh-monitor" class="btn btn-success">
+            {{ 'admin::workermanager:tab:queueMonitor: Refresh list' |trans }}
+        </button>
+
+        <label class="checkbox inline" style="margin-left: 20px;padding-top: 0px;">
+            <input class="hide-empty-queue" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:queueMonitor: Hide empty queues' |trans }}
+        </label>
+    </div>
 
     <table class="admintable">
         <thead>
@@ -37,14 +43,27 @@
     </table>
 
     <script type="text/javascript">
-        $("#refresh-monitor").on('click', function () {
+        function refreshList() {
+            let hideEmptyQ = 1;
+            if (!$(".hide-empty-queue").is(":checked")) {
+                hideEmptyQ = 0;
+            }
+
             $.ajax({
                 type: "GET",
-                url: "/admin/worker-manager/queue-monitor?reload=1",
+                url: "/admin/worker-manager/queue-monitor?reload=1&hide-empty-queue=" + hideEmptyQ,
                 success: function (data) {
                     $(".queue-list").empty().html(data);
                 }
             });
+        }
+
+        $(".hide-empty-queue").on('click', function () {
+            refreshList();
+        });
+
+        $("#refresh-monitor").on('click', function () {
+            refreshList();
         });
 
         $("#worker-queue-monitor").on('click', '.purge-queue', function() {
