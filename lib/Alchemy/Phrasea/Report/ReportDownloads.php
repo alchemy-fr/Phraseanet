@@ -162,7 +162,7 @@ class ReportDownloads extends Report
                 $filter .= "\n  AND `ld`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
             }
             if($this->parms['dmax']) {
-                $filter .= "\n  AND `ld`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax']);
+                $filter .= "\n  AND `ld`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
             }
         }
         else {

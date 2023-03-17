@@ -61,7 +61,7 @@ class ReportUsers extends Report
         $sqlWhereDate = " created>="  . $this->databox->get_appbox()->get_connection()->quote($this->parms['dmin']);
 
         if ($this->parms['dmax']) {
-            $sqlWhereDate .= " AND created<=" . $this->databox->get_appbox()->get_connection()->quote($this->parms['dmax']);
+            $sqlWhereDate .= " AND created<=" . $this->databox->get_appbox()->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
         }
 
         switch($this->parms['group']) {
