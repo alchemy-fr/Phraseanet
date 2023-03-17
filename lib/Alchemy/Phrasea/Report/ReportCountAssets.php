@@ -61,7 +61,7 @@ class ReportCountAssets extends Report
         $sqlWhereDate = " date>="  . $this->databox->get_connection()->quote($this->parms['dmin']);
 
         if ($this->parms['dmax']) {
-            $sqlWhereDate .= " AND date<=" . $this->databox->get_connection()->quote($this->parms['dmax']);
+            $sqlWhereDate .= " AND date<=" . $this->databox->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
         }
 
         switch($this->parms['group']) {

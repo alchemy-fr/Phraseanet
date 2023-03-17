@@ -120,7 +120,7 @@ class ReportRecords extends Report
                 $this->sqlWhere .= " AND r.moddate >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
             }
             if(!is_null($this->parms['dmax'])) {
-                $this->sqlWhere .= " AND r.moddate <= " . $this->databox->get_connection()->quote($this->parms['dmax']);
+                $this->sqlWhere .= " AND r.moddate <= " . $this->databox->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
             }
         }
         else {

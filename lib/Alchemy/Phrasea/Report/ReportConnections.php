@@ -138,7 +138,7 @@ class ReportConnections extends Report
             $filter .= "\n  AND `log`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
         }
         if($this->parms['dmax']) {
-            $filter .= "\n  AND `log`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax']);
+            $filter .= "\n  AND `log`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
         }
 
         $this->sql = str_replace('{{GlobalFilter}}', $filter, $sql);

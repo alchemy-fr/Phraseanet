@@ -80,16 +80,16 @@ class ReportDownloads extends Report
         switch ($this->parms['group']) {
             case null:
                 $this->name = "Downloads";
-                $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'subdef', 'action'];
+                $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'subdef', 'action', 'destinataire'];
                 if($this->parms['anonymize']) {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
@@ -162,7 +162,7 @@ class ReportDownloads extends Report
                 $filter .= "\n  AND `ld`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
             }
             if($this->parms['dmax']) {
-                $filter .= "\n  AND `ld`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax']);
+                $filter .= "\n  AND `ld`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
             }
         }
         else {
