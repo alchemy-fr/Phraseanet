@@ -111,7 +111,8 @@
 
 <div>
   {% if main_user is not empty %}
-    <h4>{{ main_user.getDisplayName() ~ ' ( ' ~ main_user.getId() ~' )'}}</h4>
+    {% set lastConnection = main_user.getLastConnection() is not null ? main_user.getLastConnection() | date('Y-m-d  H:i:s') : ' - ' %}
+    <h4>{{ main_user.getDisplayName() ~ ' ( id : ' ~ main_user.getId() ~' )   ' ~  'admin::compte-utilisateur derniere connexion' | trans ~ ' :  ' ~ lastConnection }}</h4>
   {% endif %}
 
   <div class="tabs PNB" style="bottom:40px;">
@@ -929,6 +930,25 @@
         $element.removeClass('mixed checked unchecked').addClass(newclass);
       }
 
+      function getPreviousPageAfterEdit() {
+        let previousDatas = JSON.parse('{{ previousParam | json_encode | raw }}');
+        // if there is no previousData.page so it's from connected user
+        if (previousDatas.page === undefined) {
+          $.get("{{ path('admin_connected_users') }}", function (data) {
+            $('#right-ajax').removeClass('loading').html(data);
+          });
+        } else {
+          $.ajax({
+            type: 'POST',
+            url:  "{{ path('admin_users_search') }}",
+            data: previousDatas,
+            success: function (data) {
+              $('#right-ajax').removeClass('loading').empty().html(data);
+            }
+          });
+        }
+      }
+
       $('#users_rights_form div.switch_right').bind('click', function (event) {
         user_click_box(event, $(this));
       });
@@ -948,10 +968,11 @@
             dataType: 'json',
             data: datas,
             success: function (data) {
-              if (!data.error)
-                $('a.zone_editusers').trigger('click');
-              else
+              if (!data.error) {
+                getPreviousPageAfterEdit();
+              } else {
                 alert(data.message);
+              }
             }
           });
         };
@@ -966,12 +987,10 @@
       });
 
       $('#right-ajax .users_rights_cancel').bind('click', function () {
-        var $this = $(this);
         $('#right-ajax').empty().addClass('loading').parent().show();
         $('#right').hide();
-        $.get($this.attr('href'), function (data) {
-          $('#right-ajax').removeClass('loading').html(data);
-        });
+
+        getPreviousPageAfterEdit();
 
         return false;
       });
