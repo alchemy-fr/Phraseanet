@@ -44,11 +44,16 @@ class UserController extends Controller
     {
         $rights = $this->getUserEditHelper($request);
 
+        // use to have the previous page
+        $params  = $request->request->all();
+
         return $this->render('admin/editusers.html.twig',
             array_merge($rights->get_user_records_rights(),
                 $rights->getFeeds(),
                 $rights->getBasketElements(),
-                $rights->get_users_rights())
+                $rights->get_users_rights(),
+                ['previousParam' => $params]
+            )
         );
     }
 
@@ -268,7 +273,10 @@ class UserController extends Controller
 
     public function searchAction(Request $request)
     {
-        return $this->render('admin/users.html.twig', $this->getUserManageHelper($request)->search());
+        // used for back button on user edit
+        $previousSelectedUsers = explode(';', $request->request->get('users'));
+
+        return $this->render('admin/users.html.twig', array_merge($this->getUserManageHelper($request)->search(), ['previousSelectedUsers' => $previousSelectedUsers]));
     }
 
     public function searchExportAction(Request $request)

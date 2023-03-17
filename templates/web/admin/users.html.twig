@@ -172,7 +172,7 @@
             </thead>
             <tbody>
                 {% for usr in users.get_results %}
-                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.getId()}}">
+                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %} {% if usr.getId() in previousSelectedUsers %} selected {% endif %}" id="user_{{usr.getId()}}">
                         <td style="text-align: center;">
                             {% if usr.isTemplate() %}
                                 <img title="{{ 'This is a template' | trans }}" src="/assets/common/images/icons/template.png"/>
@@ -324,6 +324,11 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            {% if previousSelectedUsers|length > 0 %}
+                var previousSelectedUsers = JSON.parse('{{ previousSelectedUsers | json_encode | raw | e('js')}}');
+                p4.users.sel = previousSelectedUsers;
+            {% endif %}
+
             $('.date_value').datepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -631,14 +636,15 @@
                     return false;
                 }
 
+                let withPreviousdatas = $('#users_page_form').serializeArray();
+                withPreviousdatas.push({name : 'users', value : users});
+
                 $('#right-ajax').empty().addClass('loading');
                 p4.users.sel = [];
                 $.ajax({
                     type: 'POST',
                     url: '../admin/users/rights/',
-                    data: {
-                        users: users
-                    },
+                    data: withPreviousdatas,
                     success: function (data) {
                         $('#right-ajax').removeClass('loading').html(data);
                     }
