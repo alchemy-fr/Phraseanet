@@ -21,6 +21,8 @@ class ReportDownloads extends Report
     /** @var  \ACL */
     private $acl;
 
+    private $collIds = null;
+
     /* those vars will be set once by computeVars() */
     private $name = null;
     private $sql = null;
@@ -56,6 +58,13 @@ class ReportDownloads extends Report
     public function setACL($acl)
     {
         $this->acl = $acl;
+
+        return $this;
+    }
+
+    public function setCollIds($collIds)
+    {
+        $this->collIds = $collIds;
 
         return $this;
     }
@@ -133,8 +142,12 @@ class ReportDownloads extends Report
                 break;
         }
 
-        // get acl-filtered coll_id(s) as already sql-quoted
-        $collIds = $this->getCollIds($this->acl, $this->parms['bases']);
+        if (isset($this->acl)) {
+            // get acl-filtered coll_id(s) as already sql-quoted
+            $collIds = $this->getCollIds($this->acl, $this->parms['bases']);
+        } else {
+            $collIds = $this->collIds;
+        }
 
         if(!empty($collIds)) {
 
