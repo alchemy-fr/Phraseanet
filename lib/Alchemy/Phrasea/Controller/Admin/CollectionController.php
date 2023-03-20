@@ -145,7 +145,7 @@ class CollectionController extends Controller
 
             $success = true;
 
-            $msg = 'Empty collection will be do by the worker';
+            $msg = $this->app->trans('Empty collection will be done by the worker');
         } catch(\Exception $e) {
 
         }
