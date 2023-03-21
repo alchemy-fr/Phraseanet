@@ -91,11 +91,13 @@ class Prod extends Helper
                 $id = $fieldMeta->get_id();
                 $name = $fieldMeta->get_name();
                 $type = $fieldMeta->get_type();
+                $label = $fieldMeta->get_label($this->app['locale']);
 
                 $data = array(
                     'sbas' => array($sbasId),
                     'fieldname' => $name,
                     'type' => $type,
+                    'label' => ($name === $label) ? [$label] : [$name . ' - ' .trim($label)],  // add the fieldname in the label
                     'id' => $id
                 );
 
@@ -104,6 +106,13 @@ class Prod extends Helper
                         $dates[$name] = array('sbas' => array());
                     }
                     $dates[$name]['sbas'][] = $sbasId;
+
+                    // add different label for the same field if exist
+                    if (!isset($dates[$name]['label']) ||
+                        (isset($dates[$name]['label']) && !in_array(strtolower($label), array_map('strtolower', $dates[$name]['label'])))
+                    ) {
+                        $dates[$name]['label'][] = trim($label);
+                    }
                 }
 
                 if (array_key_exists($type, $sort)) {  // TYPE_STRING, TYPE_NUMBER or TYPE_DATE
@@ -117,6 +126,11 @@ class Prod extends Helper
 
                 if (isset($fields[$name])) {
                     $fields[$name]['sbas'][] = $sbasId;
+
+                    // add different label for the same field if exist
+                    if (!in_array(strtolower($label), array_map('strtolower', $fields[$name]['label']))) {
+                        $fields[$name]['label'][] = trim($label);
+                    }
                 } else {
                     $fields[$name] = $data;
                 }
