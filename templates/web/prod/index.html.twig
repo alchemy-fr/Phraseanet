@@ -587,7 +587,7 @@
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
                                                                    {# {% if field['type'] != 'date' %}#}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{ field['label'] | join(' - ') }}</option>
                                                                     {#{% endif %}#}
                                                                 {% endfor %}
                                                             </select>
@@ -632,7 +632,7 @@
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
                                                                 <option
-                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
+                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ date['label'] | join(' - ') }}</option>
                                                             {% endfor %}
                                                              <option value="updated_on">{{ 'updated_on' | trans }}</option>
                                                             <option value="created_on">{{ 'created_on' | trans }}</option>
