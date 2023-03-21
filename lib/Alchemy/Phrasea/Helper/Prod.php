@@ -108,9 +108,7 @@ class Prod extends Helper
                     $dates[$name]['sbas'][] = $sbasId;
 
                     // add different label for the same field if exist
-                    if (!isset($dates[$name]['label']) ||
-                        (isset($dates[$name]['label']) && !in_array(strtolower($label), array_map('strtolower', $dates[$name]['label'])))
-                    ) {
+                    if (!isset($dates[$name]['label']) || !in_array(strtolower($label), array_map('strtolower', $dates[$name]['label']))) {
                         $dates[$name]['label'][] = trim($label);
                     }
                 }
