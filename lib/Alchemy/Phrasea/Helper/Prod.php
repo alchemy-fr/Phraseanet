@@ -150,6 +150,20 @@ class Prod extends Helper
             $elasticSort = $searchSet['elasticSort'];
         }
 
+        $allSbasId = array_map(function ($db) {
+            return $db->get_sbas_id();
+        }, $acl->get_granted_sbas());
+
+        // add default field date
+        $dates['updated_on']['sbas'] = $allSbasId;
+        $dates['updated_on']['label'][] = $this->app->trans('updated_on');
+        $dates['created_on']['sbas'] = $allSbasId;
+        $dates['created_on']['label'][] = $this->app->trans('created_on');
+
+        // sort ASC by fieldname
+        ksort($dates, SORT_STRING | SORT_FLAG_CASE);
+        ksort($fields, SORT_STRING | SORT_FLAG_CASE);
+
         $searchData['fields'] = $fields;
         $searchData['dates'] = $dates;
         $searchData['bases'] = $bases;

@@ -68964,11 +68964,38 @@ var search = function search(services) {
 
         (0, _jquery2.default)('.term_select_field').each(function (i, el) {
             if ((0, _jquery2.default)(el).val()) {
+                var operator = '';
+                var value = '';
+
+                switch ((0, _jquery2.default)(el).next().val()) {
+                    case "set":
+                        operator = "=";
+                        value = "_set_";
+
+                        break;
+                    case "unset":
+                        operator = "=";
+                        value = "_unset_";
+
+                        break;
+                    case "=":
+                    case ":":
+                        operator = (0, _jquery2.default)(el).next().val();
+                        value = (0, _jquery2.default)(el).next().next().val();
+
+                        break;
+                    default:
+                        operator = "=";
+                        value = (0, _jquery2.default)(el).next().next().val();
+
+                        break;
+                }
+
                 fields.push({
                     'type': 'TEXT-FIELD',
                     'field': (0, _jquery2.default)(el).val(),
-                    'operator': (0, _jquery2.default)(el).next().val() === ':' ? ":" : "=",
-                    'value': (0, _jquery2.default)(el).next().next().val(),
+                    'operator': operator,
+                    'value': value,
                     "enabled": true
                 });
             }
@@ -69498,6 +69525,15 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
             checkFilters(true);
         });
 
+        (0, _jquery2.default)(document).on('change', 'select.term_select_op', function (event) {
+            var $this = (0, _jquery2.default)(event.currentTarget);
+            if ($this.val() === 'set' || $this.val() === 'unset') {
+                $this.siblings('.term_select_value').prop('disabled', 'disabled');
+            } else {
+                $this.siblings('.term_select_value').prop('disabled', false);
+            }
+        });
+
         (0, _jquery2.default)(document).on('click', '.term_deleter', function (event) {
             event.preventDefault();
             var $this = (0, _jquery2.default)(event.currentTarget);
@@ -69926,8 +69962,10 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
                 f.data('fieldtype', clause.clauses[j].type);
                 (0, _jquery2.default)('option[value="' + clause.clauses[j].field + '"]', f).prop('selected', true);
                 (0, _jquery2.default)('option[value="' + clause.clauses[j].operator + '"]', o).prop('selected', true);
-                o.prop('disabled', false);
-                v.val(clause.clauses[j].value).prop('disabled', false);
+                if (clause.clauses[j].operator === ":" || clause.clauses[j].operator === "=") {
+                    o.prop('disabled', false);
+                    v.val(clause.clauses[j].value).prop('disabled', false);
+                }
             }
         }
 
