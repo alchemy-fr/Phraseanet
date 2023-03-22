@@ -102,6 +102,15 @@ const searchAdvancedForm = (services) => {
             checkFilters(true);
         });
 
+        $(document).on('change', 'select.term_select_op', (event) => {
+            const $this = $(event.currentTarget);
+            if ($this.val() === 'set' || $this.val() === 'unset') {
+                $this.siblings('.term_select_value').prop('disabled', 'disabled');
+            } else {
+                $this.siblings('.term_select_value').prop('disabled', false);
+            }
+        });
+
         $(document).on('click', '.term_deleter', (event) => {
             event.preventDefault();
             let $this = $(event.currentTarget);
@@ -537,8 +546,10 @@ const searchAdvancedForm = (services) => {
                 f.data('fieldtype', clause.clauses[j].type);
                 $('option[value="' + clause.clauses[j].field + '"]', f).prop('selected', true);
                 $('option[value="' + clause.clauses[j].operator + '"]', o).prop('selected', true);
-                o.prop('disabled', false);
-                v.val(clause.clauses[j].value).prop('disabled', false);
+                if (clause.clauses[j].operator === ":" || clause.clauses[j].operator === "=") {
+                    o.prop('disabled', false);
+                    v.val(clause.clauses[j].value).prop('disabled', false);
+                }
             }
         }
 

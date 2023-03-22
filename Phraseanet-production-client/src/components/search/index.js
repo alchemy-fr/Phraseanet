@@ -507,11 +507,38 @@ const search = services => {
 
         $('.term_select_field').each(function (i, el) {
             if ($(el).val()) {
+                let operator = '';
+                let value = '';
+
+                switch ($(el).next().val()) {
+                    case "set":
+                        operator = "=";
+                        value    = "_set_";
+
+                        break;
+                    case "unset":
+                        operator = "=";
+                        value    = "_unset_";
+
+                        break;
+                    case "=":
+                    case ":":
+                        operator = $(el).next().val();
+                        value    = $(el).next().next().val();
+
+                        break;
+                    default:
+                        operator = "=";
+                        value    = $(el).next().next().val();
+
+                        break;
+                }
+
                 fields.push({
                     'type': 'TEXT-FIELD',
                     'field': $(el).val(),
-                    'operator': $(el).next().val() === ':' ? ":" : "=",
-                    'value': $(el).next().next().val(),
+                    'operator': operator,
+                    'value': value,
                     "enabled": true
                 });
             }
