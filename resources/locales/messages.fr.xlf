@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-03-22T13:03:52Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -18,8 +18,7 @@
         <jms:reference-file line="66">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8cfd171c4324fd050876b66b60d6da9f1577ed72" resname="            Resultat %number% / %total%&#10;        ">
-        <source>            Resultat %number% / %total%
-        </source>
+        <source>Resultat %number% / %total%</source>
         <target state="new">            Resultat %number% / %total%
         </target>
         <jms:reference-file line="4">prod/preview/title.html.twig</jms:reference-file>
@@ -202,7 +201,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2541,7 +2540,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -2854,7 +2853,7 @@
       </trans-unit>
       <trans-unit id="2f7298a391821a56f5bfcb9ec1188c523e871c2d" resname="Empty collection will be done by the worker">
         <source>Empty collection will be done by the worker</source>
-        <target state="new">Empty collection will be done by the worker</target>
+        <target state="needs-translation">Le vidage de la collection sera effectué par le worker</target>
         <jms:reference-file line="148">Controller/Admin/CollectionController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="16edbca430dbc855d01b65c634474ae1648e1890" resname="Empty if not used" approved="yes">
@@ -9446,7 +9445,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="9a6b058aaa7ff091baf01a4de45951d78935d9f4" resname="admin::workermanager:tab:queueMonitor: Hide empty queues">
         <source>admin::workermanager:tab:queueMonitor: Hide empty queues</source>
-        <target state="new">admin::workermanager:tab:queueMonitor: Hide empty queues</target>
+        <target state="needs-translation">Masquer les queues vides</target>
         <jms:reference-file line="10">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="yes">
@@ -11462,7 +11461,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="a780a1cdb659e9acb943e4e8d6dbc9bc3be2dbb0" resname="login:: request password mail sent">
         <source>login:: request password mail sent</source>
-        <target state="needs-translation">Votre demande a été prise en compte, vous recevrez un email sous peu.</target>
+        <target state="translated">Votre demande a été prise en compte, vous recevrez un email sous peu.</target>
         <jms:reference-file line="429">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8af68da04218b6188405e5f7422866b5412ec7a8" resname="login::erreur: Erreur d'authentification" approved="yes">
@@ -12337,7 +12336,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12939,12 +12938,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="56f087750e5fcb0d55da1bca91dc46b90e6ccd7e" resname="prod::advancesearch:operator set">
         <source>prod::advancesearch:operator set</source>
-        <target state="new">prod::advancesearch:operator set</target>
+        <target state="needs-translation">renseigné</target>
         <jms:reference-file line="597">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bcd6ceb394c1ce47014f68e07f82e049cc5300e0" resname="prod::advancesearch:operator unset">
         <source>prod::advancesearch:operator unset</source>
-        <target state="new">prod::advancesearch:operator unset</target>
+        <target state="needs-translation">vide</target>
         <jms:reference-file line="598">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="yes">
@@ -15440,7 +15439,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -16009,7 +16008,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="5c5193432f350702a5ed4dc9a8d84b85dab91671" resname="upload:: checkers for this file is disabled in configuration or deleted">
         <source>upload:: checkers for this file is disabled in configuration or deleted</source>
-        <target state="needs-translation">Checker désactivé ou supprimé</target>
+        <target state="translated">Checker désactivé ou supprimé</target>
         <jms:reference-file line="454">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fea0574cc81b5fd40ab0537b0905cc4c3806039" resname="users rights have been reseted" approved="yes">
