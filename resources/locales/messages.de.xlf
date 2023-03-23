@@ -9444,7 +9444,7 @@
       </trans-unit>
       <trans-unit id="9a6b058aaa7ff091baf01a4de45951d78935d9f4" resname="admin::workermanager:tab:queueMonitor: Hide empty queues">
         <source>admin::workermanager:tab:queueMonitor: Hide empty queues</source>
-        <target state="new">admin::workermanager:tab:queueMonitor: Hide empty queues</target>
+        <target state="needs-translation">Leere Warteschlangen ausblenden</target>
         <jms:reference-file line="10">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="yes">
@@ -12937,12 +12937,12 @@
       </trans-unit>
       <trans-unit id="56f087750e5fcb0d55da1bca91dc46b90e6ccd7e" resname="prod::advancesearch:operator set">
         <source>prod::advancesearch:operator set</source>
-        <target state="new">prod::advancesearch:operator set</target>
+        <target state="needs-translation">ausgefüllt</target>
         <jms:reference-file line="597">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bcd6ceb394c1ce47014f68e07f82e049cc5300e0" resname="prod::advancesearch:operator unset">
         <source>prod::advancesearch:operator unset</source>
-        <target state="new">prod::advancesearch:operator unset</target>
+        <target state="needs-translation">leer</target>
         <jms:reference-file line="598">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="yes">
