@@ -71,7 +71,7 @@ class ReportRecords extends Report
             $stmt->closeCursor();
 
             if($row && !is_null($row['from']) && !is_null($row['to'])) {
-                $sql = "SELECT r.record_id, c.asciiname, r.moddate, r.mime, r.type, r.originalname,\n"
+                $sql = "SELECT r.record_id, c.asciiname, r.moddate AS updated_on, r.credate AS created_on, r.mime, r.type, r.originalname,\n"
                     . $this->sqlColSelect . "\n"
                     . "FROM (`record` AS `r` LEFT JOIN `coll` AS `c` USING(`coll_id`)) LEFT JOIN `metadatas` AS `m` USING(`record_id`)\n"
                     . "WHERE " . $this->sqlWhere . "\n"
@@ -101,7 +101,7 @@ class ReportRecords extends Report
 
         // pivot-like query on metadata fields
         $this->sqlColSelect = [];
-        $this->columnTitles = ['record_id', 'collection', 'moddate', 'mime', 'type', 'originalname'];
+        $this->columnTitles = ['record_id', 'collection', 'updated_on', 'created_on', 'mime', 'type', 'originalname'];
         foreach($this->getDatabox()->get_meta_structure() as $field) {
             // skip the fields that can't be reported
             if(!$field->is_report() || (isset($this->acl) && $field->isBusiness() && !$this->acl->can_see_business_fields($this->getDatabox()))) {
