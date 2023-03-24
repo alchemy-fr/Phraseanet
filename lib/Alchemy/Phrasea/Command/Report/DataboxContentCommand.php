@@ -2,47 +2,31 @@
 
 namespace Alchemy\Phrasea\Command\Report;
 
-use Alchemy\Phrasea\Report\Report;
-use Alchemy\Phrasea\Report\ReportDownloads;
+use Alchemy\Phrasea\Report\ReportRecords;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DownloadsCommand extends AbstractReportCommand
+class DataboxContentCommand extends AbstractReportCommand
 {
-    const TYPES = ['user', 'record'];
-
     public function __construct()
     {
-        parent::__construct('downloads:all');
+        parent::__construct('databox:content');
 
         $this
-            ->setDescription('BETA - Get all downloads report')
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of report downloads, if not defined or empty it is for all downloads')
+            ->setDescription('BETA - Get all databox records')
             ->addOption('collection_id', 'c', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'Distant collection ID in the databox, get all available collection if not defined')
+            ->addOption('field', 'f', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'The field name to include in the report, get all available report field if not defined')
 
             ->setHelp(
-                "eg: bin/report downloads:all --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' --type 'user' \n"
-                . "\<TYPE>type of report\n"
-                . "- <info>'' or not defined </info>all downloads\n"
-                . "- <info>'user' </info> downloads by user\n"
-                . "- <info>'record' </info> downloads by record\n"
+                "eg: bin/report databox:content --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' \n"
             );
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getReport(InputInterface $input, OutputInterface $output)
     {
-        $type = $input->getOption('type');
         $collectionIds = $input->getOption('collection_id');
-
-        if (!empty($type) && !in_array($type, self::TYPES)) {
-            $output->writeln("<error>wrong '--type' option (--help for available value)</error>");
-
-            return 1;
-        }
+        $fields = $input->getOption('field');
 
         $databox = $this->findDbOr404($this->sbasId);
         $collIds = [];
@@ -59,17 +43,25 @@ class DownloadsCommand extends AbstractReportCommand
             }
         }
 
+        // if empty get all field available, only field with is_report to true will display after in csv
+        if (empty($fields)) {
+            $fields = array_map(function ($databoxField) {
+                return $databoxField['name'];
+            }, $databox->get_meta_structure()->toArray());
+        }
+
         return
-            (new ReportDownloads(
+            (new ReportRecords(
                 $databox,
                 [
                     'dmin'      => $this->dmin,
                     'dmax'      => $this->dmax,
-                    'group'     => $type,
-                    'anonymize' => $this->container['conf']->get(['registry', 'modules', 'anonymous-report'])
+                    'group'     => '',
+                    'anonymize' => $this->container['conf']->get(['registry', 'modules', 'anonymous-report']),
+                    'meta'      => $fields
+
                 ]
             ))
-                ->setAppKey($this->container['conf']->get(['main', 'key']))
                 ->setCollIds($collIds)
             ;
     }
