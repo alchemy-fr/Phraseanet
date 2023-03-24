@@ -10,13 +10,12 @@
 
 namespace Alchemy\Phrasea\Report;
 
-use Alchemy\Phrasea\Application;
-
-
 class ReportRecords extends Report
 {
     /** @var  \ACL */
     private $acl;
+
+    private $collIds = null;
 
     /* those vars will be set once by computeVars() */
     private $name = null;
@@ -51,6 +50,13 @@ class ReportRecords extends Report
         return $this;
     }
 
+    public function setCollIds($collIds)
+    {
+        $this->collIds = $collIds;
+
+        return $this;
+    }
+
     public function getAllRows($callback)
     {
         $this->computeVars();
@@ -65,7 +71,7 @@ class ReportRecords extends Report
             $stmt->closeCursor();
 
             if($row && !is_null($row['from']) && !is_null($row['to'])) {
-                $sql = "SELECT r.record_id, c.asciiname, r.moddate, r.mime, r.type, r.originalname,\n"
+                $sql = "SELECT r.record_id, c.asciiname, r.moddate AS updated_on, r.credate AS created_on, r.mime, r.type, r.originalname,\n"
                     . $this->sqlColSelect . "\n"
                     . "FROM (`record` AS `r` LEFT JOIN `coll` AS `c` USING(`coll_id`)) LEFT JOIN `metadatas` AS `m` USING(`record_id`)\n"
                     . "WHERE " . $this->sqlWhere . "\n"
@@ -95,10 +101,10 @@ class ReportRecords extends Report
 
         // pivot-like query on metadata fields
         $this->sqlColSelect = [];
-        $this->columnTitles = ['record_id', 'collection', 'moddate', 'mime', 'type', 'originalname'];
+        $this->columnTitles = ['record_id', 'collection', 'updated_on', 'created_on', 'mime', 'type', 'originalname'];
         foreach($this->getDatabox()->get_meta_structure() as $field) {
             // skip the fields that can't be reported
-            if(!$field->is_report() || ($field->isBusiness() && !$this->acl->can_see_business_fields($this->getDatabox()))) {
+            if(!$field->is_report() || (isset($this->acl) && $field->isBusiness() && !$this->acl->can_see_business_fields($this->getDatabox()))) {
                 continue;
             }
             // if a list of meta was provided, just keep those
@@ -112,8 +118,13 @@ class ReportRecords extends Report
 
         $this->sqlColSelect = join(",\n", $this->sqlColSelect);
 
-        // get acl-filtered coll_id(s) as already sql-quoted
-        $collIds = $this->getCollIds($this->acl, $this->parms['base']);
+        if (isset($this->acl)) {
+            // get acl-filtered coll_id(s) as already sql-quoted
+            $collIds = $this->getCollIds($this->acl, $this->parms['base']);
+        } else {
+            $collIds = $this->collIds;
+        }
+
         if(!empty($collIds)) {
             $this->sqlWhere = "`r`.`parent_record_id`=0 AND `r`.`coll_id` IN(" . join(',', $collIds) . ")";
             if(!is_null($this->parms['dmin'])) {
