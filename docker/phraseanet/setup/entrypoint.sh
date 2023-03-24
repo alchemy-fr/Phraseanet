@@ -204,6 +204,10 @@ fi
 echo `date +"%Y-%m-%d %H:%M:%S"` " - Init plugin install "
 ./docker/phraseanet/plugins/console init
 
+if [ -d "plugins/" ];then
+chown -R app:app plugins;
+fi
+
 echo `date +"%Y-%m-%d %H:%M:%S"` " - Flushing application cache"
 rm -Rf cache/*
 
@@ -219,14 +223,17 @@ chown -R app:app tmp
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on logs/ repository"
 chown -R app:app logs
 
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on ftp/ repository"
+chown -R app:app ftp
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on backup/ repository"
+chown -R app:app backup
+
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/ repository"
 chown -R app:app www
     
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"   
 
-if [ -d "plugins/" ];then
-chown -R app:app plugins;
-fi
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet setup entrypoint.sh"
 
