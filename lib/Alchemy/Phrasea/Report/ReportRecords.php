@@ -23,11 +23,16 @@ class ReportRecords extends Report
     private $sqlColSelect = null;
     private $columnTitles = null;
     private $keyName = null;
+    private $permalink = null;
 
 
     public function getColumnTitles()
     {
         $this->computeVars();
+        if (!empty($this->permalink)) {
+            $this->columnTitles[] = 'permalink_' . $this->permalink;
+        }
+
         return $this->columnTitles;
     }
 
@@ -57,6 +62,13 @@ class ReportRecords extends Report
         return $this;
     }
 
+    public function setPermalink($permalink)
+    {
+        $this->permalink = $permalink;
+
+        return $this;
+    }
+
     public function getAllRows($callback)
     {
         $this->computeVars();
@@ -82,6 +94,17 @@ class ReportRecords extends Report
                 $rows = $stmt->fetchAll();
                 $stmt->closeCursor();
                 foreach($rows as $row) {
+                    if (!empty($this->permalink)) {
+                        $record = $this->databox->get_record($row['record_id']);
+                        try {
+                            $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
+                        } catch (\Exception $e) {
+                            // the subdef is not defined
+                            $permalinkUrl = '';
+                        }
+                        $row['permalink_' . $this->permalink] = $permalinkUrl;
+                    }
+
                     $callback($row);
                     $lastRid = $row['record_id'];
                 }

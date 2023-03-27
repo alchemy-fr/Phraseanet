@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\Command\Report;
 
-use Alchemy\Phrasea\Report\Report;
 use Alchemy\Phrasea\Report\ReportDownloads;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,6 +19,7 @@ class DownloadsCommand extends AbstractReportCommand
             ->setDescription('BETA - Get all downloads report')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of report downloads, if not defined or empty it is for all downloads')
             ->addOption('collection_id', 'c', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'Distant collection ID in the databox, get all available collection if not defined')
+            ->addOption('permalink', 'p', InputOption::VALUE_REQUIRED, 'the subdefinition name to retrieve permalink if exist, available only for type record and for all downloads type ""')
 
             ->setHelp(
                 "eg: bin/report downloads:all --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' --type 'user' \n"
@@ -37,9 +37,16 @@ class DownloadsCommand extends AbstractReportCommand
     {
         $type = $input->getOption('type');
         $collectionIds = $input->getOption('collection_id');
+        $permalink = $input->getOption('permalink');
 
         if (!empty($type) && !in_array($type, self::TYPES)) {
             $output->writeln("<error>wrong '--type' option (--help for available value)</error>");
+
+            return 1;
+        }
+
+        if (!empty($permalink) && $type == 'user') {
+            $output->writeln("<error>--permalink is not used with type=user </error>");
 
             return 1;
         }
@@ -71,6 +78,7 @@ class DownloadsCommand extends AbstractReportCommand
             ))
                 ->setAppKey($this->container['conf']->get(['main', 'key']))
                 ->setCollIds($collIds)
+                ->setPermalink($permalink)
             ;
     }
 }

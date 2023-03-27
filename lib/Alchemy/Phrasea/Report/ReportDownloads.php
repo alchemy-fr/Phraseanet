@@ -22,6 +22,7 @@ class ReportDownloads extends Report
     private $acl;
 
     private $collIds = null;
+    private $permalink = null;
 
     /* those vars will be set once by computeVars() */
     private $name = null;
@@ -33,6 +34,11 @@ class ReportDownloads extends Report
     public function getColumnTitles()
     {
         $this->computeVars();
+        // only for group downloads all and download by record
+        if (($this->parms['group'] === null || $this->parms['group'] == 'record') && !empty($this->permalink)) {
+            $this->columnTitles[] = 'permalink_' . $this->permalink;
+        }
+
         return $this->columnTitles;
     }
 
@@ -69,11 +75,30 @@ class ReportDownloads extends Report
         return $this;
     }
 
+    public function setPermalink($permalink)
+    {
+        $this->permalink = $permalink;
+
+        return $this;
+    }
+
     public function getAllRows($callback)
     {
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
         while (($row = $stmt->fetch())) {
+            // only for group downloads all and download by record
+            if (($this->parms['group'] === null || $this->parms['group'] == 'record') && !empty($this->permalink)) {
+                $record = $this->databox->get_record($row['record_id']);
+                try {
+                    $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
+                } catch (\Exception $e) {
+                    // the subdef is not defined
+                    $permalinkUrl = '';
+                }
+                $row['permalink_' . $this->permalink] = $permalinkUrl;
+            }
+
             $callback($row);
         }
         $stmt->closeCursor();
