@@ -89,11 +89,11 @@ class ReportDownloads extends Report
         while (($row = $stmt->fetch())) {
             // only for group downloads all and download by record
             if (($this->parms['group'] === null || $this->parms['group'] == 'record') && !empty($this->permalink)) {
-                $record = $this->databox->get_record($row['record_id']);
                 try {
+                    $record = $this->databox->get_record($row['record_id']);
                     $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
                 } catch (\Exception $e) {
-                    // the subdef is not defined
+                    // the record or subdef is not found
                     $permalinkUrl = '';
                 }
                 $row['permalink_' . $this->permalink] = $permalinkUrl;

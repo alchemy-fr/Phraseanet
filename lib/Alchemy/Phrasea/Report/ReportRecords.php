@@ -95,11 +95,11 @@ class ReportRecords extends Report
                 $stmt->closeCursor();
                 foreach($rows as $row) {
                     if (!empty($this->permalink)) {
-                        $record = $this->databox->get_record($row['record_id']);
                         try {
+                            $record = $this->databox->get_record($row['record_id']);
                             $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
                         } catch (\Exception $e) {
-                            // the subdef is not defined
+                            // the record or subdef is not found
                             $permalinkUrl = '';
                         }
                         $row['permalink_' . $this->permalink] = $permalinkUrl;
