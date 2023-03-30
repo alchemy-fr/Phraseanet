@@ -21,6 +21,8 @@ class DataboxContentCommand extends AbstractReportCommand
 
             ->setHelp(
                 "eg: bin/report databox:content --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' \n"
+                . "\<DMIN> \<DMAX> date filter on the updated_on (moddate of table record)"
+
             );
     }
 
