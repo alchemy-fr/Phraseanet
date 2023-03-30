@@ -101,7 +101,11 @@ class ReportRecords extends Report
                         } catch (\Exception $e) {
                             // the record or subdef is not found
                             $permalinkUrl = '';
+                        } catch (\Throwable $e) {
+                            // there is no permalink created ???
+                            $permalinkUrl = '';
                         }
+
                         $row['permalink_' . $this->permalink] = $permalinkUrl;
                     }
 

@@ -37,7 +37,7 @@ abstract class AbstractReportCommand extends Command
             ->addOption('email', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY ,'emails to send the report')
             ->addOption('dmin', null, InputOption::VALUE_REQUIRED, 'minimum date yyyy-mm-dd')
             ->addOption('dmax', null, InputOption::VALUE_REQUIRED, 'maximum date yyyy-mm-dd, until today if not set')
-            ->addOption('range', null, InputOption::VALUE_REQUIRED, "period range until now eg: <info>'10 days', '2 weeks', '6 months', ' 1 year'</info>")
+            ->addOption('range', null, InputOption::VALUE_REQUIRED, "period range until now eg: <info>'10 days', '2 weeks', '6 months', '2 years'</info>")
         ;
     }
 
