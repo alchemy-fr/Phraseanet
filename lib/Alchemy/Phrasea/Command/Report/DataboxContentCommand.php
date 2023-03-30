@@ -17,9 +17,12 @@ class DataboxContentCommand extends AbstractReportCommand
             ->setDescription('BETA - Get all databox records')
             ->addOption('collection_id', 'c', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'Distant collection ID in the databox, get all available collection if not defined')
             ->addOption('field', 'f', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'The field name to include in the report, get all available report field if not defined')
+            ->addOption('permalink', 'p', InputOption::VALUE_REQUIRED, 'the subdefinition name to retrieve permalink if exist')
 
             ->setHelp(
                 "eg: bin/report databox:content --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' \n"
+                . "\<DMIN> \<DMAX> date filter on the updated_on (moddate of table record)"
+
             );
     }
 
@@ -63,6 +66,7 @@ class DataboxContentCommand extends AbstractReportCommand
                 ]
             ))
                 ->setCollIds($collIds)
+                ->setPermalink($input->getOption('permalink'))
             ;
     }
 }
