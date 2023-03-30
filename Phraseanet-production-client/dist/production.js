@@ -68980,6 +68980,10 @@ var search = function search(services) {
                         break;
                     case "=":
                     case ":":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<":
                         operator = (0, _jquery2.default)(el).next().val();
                         value = (0, _jquery2.default)(el).next().next().val();
 
@@ -69502,6 +69506,16 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
             // if option is selected
             if ($this.val()) {
                 $this.siblings().prop('disabled', false);
+                var operatorEl = $this.siblings(".term_select_op");
+                if ($this.find("option:selected").attr("data-fieldtype") == "number-FIELD") {
+                    operatorEl.find("option.number-operator").show();
+                    operatorEl.find("option.string-operator").hide();
+                    operatorEl.val('='); // set default operator
+                } else {
+                    operatorEl.find("option.number-operator").hide();
+                    operatorEl.find("option.string-operator").show();
+                    operatorEl.val(':'); // set default operator
+                }
 
                 (0, _jquery2.default)('.term_select_multiple option').each(function (index, el) {
                     var $el = (0, _jquery2.default)(el);

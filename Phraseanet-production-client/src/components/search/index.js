@@ -523,6 +523,10 @@ const search = services => {
                         break;
                     case "=":
                     case ":":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<":
                         operator = $(el).next().val();
                         value    = $(el).next().next().val();
 

@@ -592,8 +592,12 @@
                                                                 {% endfor %}
                                                             </select>
                                                             <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
-                                                                <option value=":">{{ 'Contains' | trans }}</option>
+                                                                <option class="string-operator" value=":">{{ 'Contains' | trans }}</option>
                                                                 <option value="=">{{ 'Equals' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value=">=">{{ 'prod::advancesearch:operator greater than or equal' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value="<=">{{ 'prod::advancesearch:operator less than or equal' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value=">">{{ 'prod::advancesearch:operator greater than' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value="<">{{ 'prod::advancesearch:operator less than' | trans }}</option>
                                                                 <option value="set">{{ 'prod::advancesearch:operator set' | trans }}</option>
                                                                 <option value="unset">{{ 'prod::advancesearch:operator unset' | trans }}</option>
                                                             </select>

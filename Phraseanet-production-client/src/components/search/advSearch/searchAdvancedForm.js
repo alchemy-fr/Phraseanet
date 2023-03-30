@@ -79,6 +79,16 @@ const searchAdvancedForm = (services) => {
             // if option is selected
             if ($this.val()) {
                 $this.siblings().prop('disabled', false);
+                let operatorEl = $this.siblings(".term_select_op");
+                if ($this.find("option:selected").attr("data-fieldtype") == "number-FIELD") {
+                    operatorEl.find("option.number-operator").show();
+                    operatorEl.find("option.string-operator").hide();
+                    operatorEl.val('=');// set default operator
+                } else {
+                    operatorEl.find("option.number-operator").hide();
+                    operatorEl.find("option.string-operator").show();
+                    operatorEl.val(':');// set default operator
+                }
 
                 $('.term_select_multiple option').each((index, el) => {
                     let $el = $(el);
