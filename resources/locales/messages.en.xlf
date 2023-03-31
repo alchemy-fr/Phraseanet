@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-03-30T14:46:04Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -201,7 +201,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2543,7 +2543,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -2856,7 +2856,7 @@
       </trans-unit>
       <trans-unit id="2f7298a391821a56f5bfcb9ec1188c523e871c2d" resname="Empty collection will be done by the worker">
         <source>Empty collection will be done by the worker</source>
-        <target state="new">Empty collection will be done by the worker</target>
+        <target state="translated">Empty collection will be done by the worker</target>
         <jms:reference-file line="148">Controller/Admin/CollectionController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="16edbca430dbc855d01b65c634474ae1648e1890" resname="Empty if not used" approved="yes">
@@ -8467,12 +8467,12 @@
       </trans-unit>
       <trans-unit id="601ca230f108e574060c3ba9c92ee9b7e24f2e67" resname="admin::base:text delete a database">
         <source>admin::base:text delete a database</source>
-        <target state="needs-translation">Delete a databox.</target>
+        <target state="translated">Delete a databox.</target>
         <jms:reference-file line="156">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a55aca9c020ca2725e58afc5b6a7b15e5fcb8ef" resname="admin::base:text unmount database">
         <source>admin::base:text unmount database</source>
-        <target state="needs-translation">Unmount a Databox</target>
+        <target state="translated">Unmount a Databox</target>
         <jms:reference-file line="146">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59fb64701fdcfa682495e91bb1e286a9dba77848" resname="admin::colelction::presentation des elements : rien" approved="yes">
@@ -9447,7 +9447,7 @@
       </trans-unit>
       <trans-unit id="9a6b058aaa7ff091baf01a4de45951d78935d9f4" resname="admin::workermanager:tab:queueMonitor: Hide empty queues">
         <source>admin::workermanager:tab:queueMonitor: Hide empty queues</source>
-        <target state="needs-translation">Hide empty queues</target>
+        <target state="translated">Hide empty queues</target>
         <jms:reference-file line="10">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="yes">
@@ -11543,32 +11543,32 @@
       </trans-unit>
       <trans-unit id="691853dc231faa9a4867bdc28ac44df0d0031755" resname="mail:: Password renewal for login">
         <source>mail:: Password renewal for login</source>
-        <target state="needs-translation">A password request has been made for the login</target>
+        <target state="translated">A password request has been made for the login</target>
         <jms:reference-file line="48">Notification/Mail/MailRequestPasswordUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="38fd0a873af9038d35706776f1f1744e7d59992a" resname="mail:: account deletion confirmation  hello">
         <source>mail:: account deletion confirmation hello</source>
-        <target state="needs-translation">Hello,</target>
+        <target state="translated">Hello,</target>
         <jms:reference-file line="47">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="12957d5f6be1441309fef99facd9cc5160b525f0" resname="mail:: account deletion confirmation object">
         <source>mail:: account deletion confirmation object</source>
-        <target state="needs-translation">Confirmation of your account deletion</target>
+        <target state="translated">Confirmation of your account deletion</target>
         <jms:reference-file line="30">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8798f45953d19a36e7a4cfafd17b56ba32c8b58" resname="mail:: inactif account">
         <source>mail:: inactif account</source>
-        <target state="needs-translation">Message about your account</target>
+        <target state="translated">Message about your account</target>
         <jms:reference-file line="36">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="de4036d68dc1676d5aede10a8e57f4b1d1b8683c" resname="mail:: inactif account delete account info , account will be deleted on %deleteDate%">
         <source>mail:: inactif account delete account info , account will be deleted on %deleteDate%</source>
-        <target state="needs-translation">If you do not wish to keep this account, please ignore this email and your account will be automatically deleted on %deleteDate%.</target>
+        <target state="translated">If you do not wish to keep this account, please ignore this email and your account will be automatically deleted on %deleteDate%.</target>
         <jms:reference-file line="70">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f78804fc06032da4c81effba3016f261f2504377" resname="mail:: inactif account hello">
         <source>mail:: inactif account hello</source>
-        <target state="needs-translation">Hello,</target>
+        <target state="translated">Hello,</target>
         <jms:reference-file line="57">Notification/Mail/MailRequestInactifAccount.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ea61df220e487d0db115bce9776f79abc43fe23" resname="mail:: inactif account info with login">
@@ -11593,7 +11593,7 @@
       </trans-unit>
       <trans-unit id="394de9d96b631d733d7eac3c3bf5a7e8fe27ce9d" resname="mail:: report messages">
         <source>mail:: report messages</source>
-        <target state="needs-translation">Please find attached the report in .csv format</target>
+        <target state="translated">Please find attached the report in .csv format</target>
         <jms:reference-file line="39">Notification/Mail/MailReport.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34a58275fed610bdc375f3afb8eb29831ee3679b" resname="mail:: test email sended">
@@ -12338,7 +12338,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12940,22 +12940,22 @@
       </trans-unit>
       <trans-unit id="c0dd81703159bf0027da41a78070b2def3015b42" resname="prod::advancesearch:operator greater than">
         <source>prod::advancesearch:operator greater than</source>
-        <target state="new">prod::advancesearch:operator greater than</target>
+        <target state="needs-translation">greater than</target>
         <jms:reference-file line="599">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba29699f2d1c5df50cc1ee484035157ef71a54c3" resname="prod::advancesearch:operator greater than or equal">
         <source>prod::advancesearch:operator greater than or equal</source>
-        <target state="new">prod::advancesearch:operator greater than or equal</target>
+        <target state="needs-translation">greater than or equals</target>
         <jms:reference-file line="597">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="164e4965f3f4c1f73f00936cdbaef82319e1caae" resname="prod::advancesearch:operator less than">
         <source>prod::advancesearch:operator less than</source>
-        <target state="new">prod::advancesearch:operator less than</target>
+        <target state="needs-translation">less than</target>
         <jms:reference-file line="600">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae1f1c6d07dda5fef03ceb1caeb5e7f0428c6634" resname="prod::advancesearch:operator less than or equal">
         <source>prod::advancesearch:operator less than or equal</source>
-        <target state="new">prod::advancesearch:operator less than or equal</target>
+        <target state="needs-translation">less than or equals</target>
         <jms:reference-file line="598">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="56f087750e5fcb0d55da1bca91dc46b90e6ccd7e" resname="prod::advancesearch:operator set">
@@ -13005,7 +13005,7 @@
       </trans-unit>
       <trans-unit id="3c5f3d8f6be8871509d3c9158d8d098679ec0919" resname="prod::dialog sharebasket title">
         <source>prod::dialog sharebasket title</source>
-        <target state="needs-translation">Shared basket</target>
+        <target state="translated">Shared basket</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
@@ -13315,7 +13315,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="bc70874cd8dab1abd90ff88bc9494492d66f2734" resname="prod::share You contribute to the feedback">
         <source>prod::share You contribute to the feedback</source>
-        <target state="needs-translation">Contribute to the feedback</target>
+        <target state="translated">Contribute to the feedback</target>
         <jms:reference-file line="327">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b586ee2521b172b1a54ee3fee29bff72810be81e" resname="prod::share You require feedback">
@@ -13639,7 +13639,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="29e1aa00eabedc85a7f4a103a77e926f3b7c678e" resname="prod::workzone:manual send email share title">
         <source>prod::workzone:manual send email share title</source>
-        <target state="needs-translation">Send an email</target>
+        <target state="translated">Send an email</target>
         <jms:reference-file line="66">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
@@ -15458,7 +15458,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
