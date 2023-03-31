@@ -69507,14 +69507,21 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
             if ($this.val()) {
                 $this.siblings().prop('disabled', false);
                 var operatorEl = $this.siblings(".term_select_op");
+                var valueEl = $this.siblings(".term_select_value");
+
                 if ($this.find("option:selected").attr("data-fieldtype") == "number-FIELD") {
                     operatorEl.find("option.number-operator").show();
                     operatorEl.find("option.string-operator").hide();
                     operatorEl.val('='); // set default operator
+                    valueEl.attr('type', "number");
+                    valueEl.attr('placeholder', 'Ex: 249');
                 } else {
                     operatorEl.find("option.number-operator").hide();
                     operatorEl.find("option.string-operator").show();
                     operatorEl.val(':'); // set default operator
+                    valueEl.removeAttr('pattern');
+                    valueEl.removeAttr('type');
+                    valueEl.attr('placeholder', 'Ex : Paris, bleu, montagne');
                 }
 
                 (0, _jquery2.default)('.term_select_multiple option').each(function (index, el) {

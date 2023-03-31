@@ -11197,6 +11197,12 @@ TABLE.explain3 TR TD {
   padding-left: 10px;
 }
 
+.advanced_search_dialog_container.ui-dialog input.term_select_value:invalid {
+  border-color: #e9322d !important;
+  color: #b94a48 !important;
+  box-shadow: 0 0 6px #f8b9b7;
+}
+
 .advanced_search_dialog_container.ui-dialog #ADVSRCH_DATE_ZONE select.input-medium {
   height: 24px;
   color: #000;
