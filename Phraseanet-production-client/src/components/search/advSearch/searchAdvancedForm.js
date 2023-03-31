@@ -79,6 +79,23 @@ const searchAdvancedForm = (services) => {
             // if option is selected
             if ($this.val()) {
                 $this.siblings().prop('disabled', false);
+                let operatorEl = $this.siblings(".term_select_op");
+                let valueEl = $this.siblings(".term_select_value");
+
+                if ($this.find("option:selected").attr("data-fieldtype") == "number-FIELD") {
+                    operatorEl.find("option.number-operator").show();
+                    operatorEl.find("option.string-operator").hide();
+                    operatorEl.val('=');// set default operator
+                    valueEl.attr('type', "number");
+                    valueEl.attr('placeholder', 'Ex: 249');
+                } else {
+                    operatorEl.find("option.number-operator").hide();
+                    operatorEl.find("option.string-operator").show();
+                    operatorEl.val(':');// set default operator
+                    valueEl.removeAttr('pattern');
+                    valueEl.removeAttr('type');
+                    valueEl.attr('placeholder', 'Ex : Paris, bleu, montagne');
+                }
 
                 $('.term_select_multiple option').each((index, el) => {
                     let $el = $(el);
