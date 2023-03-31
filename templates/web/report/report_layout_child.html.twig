@@ -90,6 +90,16 @@
                 {% endfor %}
             </div>
             {% endblock form_records %}
+
+            <div class="form2 form_content">
+                <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
+                <label class="checkbox custom_checkbox_label">
+                    <input name="permalink" checked="checked" type="checkbox" value="thumbnail">
+                    <span class="custom_checkbox"></span>
+                    {{ 'report :: include thumbnail Permalink' | trans }}
+                </label>
+            </div>
+
         </form>
 
         <div class="form_submit">
