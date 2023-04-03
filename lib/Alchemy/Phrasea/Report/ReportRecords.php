@@ -96,14 +96,16 @@ class ReportRecords extends Report
                 foreach($rows as $row) {
                     if (!empty($this->permalink)) {
                         try {
+                            $permalinkUrl = '';
                             $record = $this->databox->get_record($row['record_id']);
-                            $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
+                            // if from GUI, check if user has access to subdef in collection
+                            if (!isset($this->acl) || $this->acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
+                                $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
+                            }
                         } catch (\Exception $e) {
                             // the record or subdef is not found
-                            $permalinkUrl = '';
                         } catch (\Throwable $e) {
                             // there is no permalink created ???
-                            $permalinkUrl = '';
                         }
 
                         $row['permalink_' . $this->permalink] = $permalinkUrl;
