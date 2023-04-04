@@ -94,6 +94,7 @@
             <div class="form2 form_content">
                 <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
                 <select name="permalink">
+                        <option value>{{ "report:: choose subdef permalink" }}</option>
                     {% for sbas_id,subdefs in availableSubdefName %}
                         {% for subdefName in subdefs %}
                             <option class="subdeflist subdeflist-{{ sbas_id }}" value="{{ subdefName }}">{{ subdefName }}</option>

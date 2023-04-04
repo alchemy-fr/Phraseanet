@@ -167,7 +167,7 @@ class ReportRecords extends Report
             $this->sqlWhere = "FALSE";
         }
 
-        $this->name = "Databox";
+        $this->name = "export databox content";
     }
 
 }
