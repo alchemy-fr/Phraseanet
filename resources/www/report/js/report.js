@@ -65,6 +65,10 @@ $(document).ready(function () {
             form = $this.closest('form');
         $(".collist", form).hide();
         $(".collist-" + value, form).show();
+
+        // subdef list depends on selected databox
+        $(".subdeflist", form).hide();
+        $(".subdeflist-" + value, form).show();
     });
 
     $('.collist').each(function() {
@@ -74,6 +78,15 @@ $(document).ready(function () {
         ;
         $this.hide();        
         $(".collist-" + i, form).show();
+    });
+
+    $('.subdeflist').each(function() {
+        var $this = $(this),
+            form = $this.closest('form'),
+            i = $this.closest('form').find('.sbas_select').val()
+        ;
+        $this.hide();
+        $(".subdeflist-" + i, form).show();
     });
 
     $('.form2').each(function() {

@@ -108,21 +108,19 @@ abstract class AbstractReportCommand extends Command
             .'report' . DIRECTORY_SEPARATOR
             . date('Ymd');
 
-        $suffixFileName = "__" . $this->dmin . "_to_";
-        $suffixFileName = !empty($this->dmax) ? $suffixFileName . $this->dmax: $suffixFileName . (new \DateTime())->format('Y-m-d');
-
         if ($this->isAppboxConnection) {
             $absoluteDirectoryPath .= 'appbox';
         } else {
             $absoluteDirectoryPath .= 'Sbas' . $this->sbasId;
         }
 
-        $report->render($absoluteDirectoryPath, $suffixFileName);
+        $report->render($absoluteDirectoryPath);
 
-        $filePath = $absoluteDirectoryPath . DIRECTORY_SEPARATOR . $this->normalizeString($report->getName()).$suffixFileName . '.csv';
+        $filePath = $absoluteDirectoryPath . DIRECTORY_SEPARATOR . $report->getFileName() . '.csv';
 
         $attachement = new Attachment($filePath);
 
+        $suffixFileName = $report->getSuffixFileName($this->dmin, $this->dmax);
         $suffixFileName = str_replace("__", ' - ', $suffixFileName);
         $reportName = $report->getName() . str_replace("_", ' ', $suffixFileName);
 
@@ -172,10 +170,5 @@ abstract class AbstractReportCommand extends Command
         }
 
         return false;
-    }
-
-    private function normalizeString($filename)
-    {
-        return (new Slugify())->slugify($filename, '-');
     }
 }

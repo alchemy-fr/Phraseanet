@@ -106,14 +106,14 @@ abstract class Report
         return $this->format;
     }
 
-    public function render($absoluteDirectoryPath = null, $suffixFileName = null)
+    public function render($absoluteDirectoryPath = null)
     {
         switch($this->format) {
             //case self::FORMAT_XLS:
             case self::FORMAT_CSV:
             case self::FORMAT_ODS:
             case self::FORMAT_XLSX:
-                $this->renderAsExcel($absoluteDirectoryPath, $suffixFileName);
+                $this->renderAsExcel($absoluteDirectoryPath);
                 break;
             default:
                 // should not happen since format is checked before
@@ -121,9 +121,22 @@ abstract class Report
         }
     }
 
-    private function renderAsExcel($absoluteDirectoryPath = null, $suffixFileName = null)
+    public function getSuffixFileName($dmin, $dmax)
     {
-        $filename = $this->normalizeString($this->getName()) . $suffixFileName;
+        $suffixFileName = "__" . $dmin . "_to_";
+        $suffixFileName = !empty($dmax) ? $suffixFileName . $dmax: $suffixFileName . (new \DateTime())->format('Y-m-d');
+
+        return $suffixFileName;
+    }
+
+    public function getFileName()
+    {
+        return $this->normalizeString($this->getName()) . $this->getSuffixFileName($this->parms['dmin'], $this->parms['dmax']);
+    }
+
+    private function renderAsExcel($absoluteDirectoryPath = null)
+    {
+        $filename = $this->getFileName();
         switch($this->format) {
             //case self::FORMAT_XLS:
             //    $excel = new Excel(Excel::FORMAT_XLS);

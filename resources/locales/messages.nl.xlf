@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-03-30T14:46:35Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2023-04-04T11:55:16Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -14603,6 +14603,11 @@
         <source>report:: Information sur les utilisateurs correspondant a %critere%</source>
         <target state="new">report:: Information sur les utilisateurs correspondant a %critere%</target>
         <jms:reference-file line="415">module/report/nav.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="54e9e134d28f6fc9c085eb7a8b71212e536174c9" resname="report:: Permalink">
+        <source>report:: Permalink</source>
+        <target state="new">report:: Permalink</target>
+        <jms:reference-file line="95">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d61b0b1a419a5b37db8576e1072307a5503dba79" resname="report:: Phraseanet report">
         <source>report:: Phraseanet report</source>

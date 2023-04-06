@@ -186,6 +186,7 @@ class ProdReportController extends Controller
         );
 
         $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
+        $report->setPermalink($request->get('permalink'));
 
 set_time_limit(600);
         $response = new StreamedResponse();
