@@ -16,7 +16,7 @@ class DataboxActionsCommand extends AbstractReportCommand
         $this
             ->setDescription('BETA - Get all databox actions report')
             ->addOption('collection_id', 'c', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'Distant collection ID in the databox, get all available collection if not defined')
-            ->addOption('permalink', 'p', InputOption::VALUE_REQUIRED, 'the subdefinition name to retrieve permalink if exist, available only for type record and for all downloads type ""')
+            ->addOption('permalink', 'p', InputOption::VALUE_REQUIRED, 'the subdefinition name to retrieve permalink if exist')
             ->addOption('actions', 'a', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'the databox action to get ,if not defined get all actions report')
 
             ->setHelp(
