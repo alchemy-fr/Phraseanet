@@ -70,6 +70,7 @@ class ReportFactory
                     ))
                     ->setAppKey($this->appKey)
                     ->setACL($this->acl)
+                    ->setAsDownloadReport(true)
                     ;
                 break;
 
