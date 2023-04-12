@@ -12,10 +12,9 @@ namespace Alchemy\Phrasea\Report\Controller;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Report\Report;
 use Alchemy\Phrasea\Report\ReportConnections;
-use Alchemy\Phrasea\Report\ReportDownloads;
+use Alchemy\Phrasea\Report\ReportActions;
 use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportRecords;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -129,7 +128,7 @@ class ProdReportController extends Controller
         }
         $this->extension = $extension;
 
-        /** @var ReportDownloads $report */
+        /** @var ReportActions $report */
         $report = $this->reportFactory->createReport(
             ReportFactory::DOWNLOADS,
             $sbasId,

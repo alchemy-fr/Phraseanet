@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Command\Report;
 
-use Alchemy\Phrasea\Report\ReportDownloads;
+use Alchemy\Phrasea\Report\ReportActions;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -67,7 +67,7 @@ class DownloadsCommand extends AbstractReportCommand
         }
 
         return
-            (new ReportDownloads(
+            (new ReportActions(
                 $databox,
                 [
                     'dmin'      => $this->dmin,

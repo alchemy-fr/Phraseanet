@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Report;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 
-class ReportDownloads extends Report
+class ReportActions extends Report
 {
     private $appKey;
 

@@ -49,7 +49,7 @@ class ReportFactory
      * @param null $sbasId
      * @param null $parms
      *
-     * @return ReportConnections | ReportDownloads
+     * @return ReportConnections | ReportActions
      */
     public function createReport($table, $sbasId=null, $parms=null)
     {
@@ -64,7 +64,7 @@ class ReportFactory
                 break;
 
             case self::DOWNLOADS:
-                return (new ReportDownloads(
+                return (new ReportActions(
                         $this->findDbOr404($sbasId),
                         $parms
                     ))
