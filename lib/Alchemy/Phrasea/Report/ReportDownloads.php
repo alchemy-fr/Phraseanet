@@ -22,6 +22,8 @@ class ReportDownloads extends Report
 
     private $collIds = null;
     private $permalink = null;
+    private $sqlColSelect = null;
+    private $sqlFieldSelect = null;
 
     /* those vars will be set once by computeVars() */
     private $name = null;
@@ -36,7 +38,7 @@ class ReportDownloads extends Report
     {
         $this->computeVars();
         // only for group downloads all and download by record
-        if (($this->parms['group'] === null || $this->parms['group'] == 'record') && !empty($this->permalink)) {
+        if ((empty($this->parms['group']) || $this->parms['group'] == 'record') && !empty($this->permalink)) {
             $this->columnTitles[] = 'permalink_' . $this->permalink;
         }
 
@@ -103,11 +105,14 @@ class ReportDownloads extends Report
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
         while (($row = $stmt->fetch())) {
             // only for group downloads all and download by record
-            if (($this->parms['group'] === null || $this->parms['group'] == 'record') && !empty($this->permalink)) {
+            if ((empty($this->parms['group']) || $this->parms['group'] == 'record') && !empty($this->permalink)) {
                 try {
                     $permalinkUrl = '';
                     $record = $this->databox->get_record($row['record_id']);
-                    $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
+                    // if from GUI, check if user has access to subdef in collection
+                    if (!isset($this->acl) || $this->acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
+                        $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
+                    }
                 } catch (\Exception $e) {
                     // the record or subdef is not found
                 } catch (\Throwable $e) {
@@ -133,24 +138,49 @@ class ReportDownloads extends Report
             case null:
                 if ($this->isDownloadReport) {
                     $this->name = "Downloads";
-                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'subdef', 'action', 'destinataire'];
+                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id' ,'coll_name' ,'subdef', 'action', 'destinataire'];
                 } else {
-                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'final', 'action', 'comment'];
+                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id','coll_name' ,'final', 'action', 'comment'];
                 }
+
+                $this->sqlColSelect = [];
+                $this->sqlFiedlSelect = [];
+                foreach($this->getDatabox()->get_meta_structure() as $field) {
+                    // skip the fields that can't be reported
+                    if(!$field->is_report()) {
+                        continue;
+                    }
+
+                    // column names is not important in the result, simply match the 'title' position
+                    $this->columnTitles[] = $field->get_name();
+                    $this->sqlColSelect[] = sprintf("GROUP_CONCAT(IF(`m`.`meta_struct_id`=%s, `m`.`value`, NULL)) AS `f%s`", $field->get_id(), $field->get_id());
+                    $this->sqlFieldSelect[] = sprintf("`F`.`f%s`", $field->get_id());
+                }
+
+                $this->sqlColSelect = join(",\n", $this->sqlColSelect);
+                $this->sqlFieldSelect = join(",\n", $this->sqlFieldSelect);
 
                 if($this->parms['anonymize']) {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
+                        . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
+                        . " LEFT JOIN `coll` AS `c` ON `ld`.`coll_id` = `c`.`coll_id` \n"
+                        . " LEFT JOIN (SELECT `m`.`record_id`, " . $this->sqlColSelect . " FROM `metadatas` AS `m` GROUP BY `m`.`record_id` ) AS `F` ON `ld`.`record_id` = `F`.`record_id` \n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
+                        . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
+                        . " LEFT JOIN `coll` AS `c` ON `ld`.`coll_id` = `c`.`coll_id` \n"
+                        . " LEFT JOIN (SELECT `m`.`record_id`, " . $this->sqlColSelect . " FROM `metadatas` AS `m` GROUP BY `m`.`record_id` ) AS `F` ON `ld`.`record_id` = `F`.`record_id` \n"
                         . " WHERE {{GlobalFilter}}";
                 }
+
                 $this->keyName = 'id';
+
                 break;
             case 'user':
                 $this->name = "Downloads by user";
