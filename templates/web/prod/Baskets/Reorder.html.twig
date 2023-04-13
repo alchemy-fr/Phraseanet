@@ -22,7 +22,7 @@
     </div>
     <div class="elements row-fluid">
     {% for element in basket.getElements() %}
-        <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
+        <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="float:left;height:130px;overflow:hidden;">
             <div class="title" title="{{ element.getRecord(app).get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:hidden;text-align:center;text-overflow: ellipsis; line-height: 15px;">
                 {{ element.getRecord(app).get_title() }}
             </div>
