@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Report;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class ReportActions extends Report
 {
@@ -109,7 +110,10 @@ class ReportActions extends Report
             // only for group downloads all and download by record
             if ((empty($this->parms['group']) || $this->parms['group'] == 'record')) {
                 try {
-                    $row['user'] = $userRepository->find($row['usrid'])->getDisplayName();
+                    /** @var User $user */
+                    $user = $userRepository->find($row['usrid']);
+                    $row['user']  = $user->getDisplayName();
+                    $row['email'] = $user->getEmail();
                 } catch (\Exception $e) {
 
                 }
@@ -148,9 +152,9 @@ class ReportActions extends Report
             case null:
                 if ($this->isDownloadReport) {
                     $this->name = "Downloads";
-                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id' ,'coll_name' ,'subdef', 'action', 'destinataire'];
+                    $this->columnTitles = ['id', 'usrid', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id' ,'coll_name' ,'subdef', 'action', 'destinataire'];
                 } else {
-                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id','coll_name' ,'final', 'action', 'comment'];
+                    $this->columnTitles = ['id', 'usrid', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id','coll_name' ,'final', 'action', 'comment'];
                 }
 
                 $this->sqlColSelect = [];
@@ -171,7 +175,7 @@ class ReportActions extends Report
                 $this->sqlFieldSelect = join(",\n", $this->sqlFieldSelect);
 
                 if($this->parms['anonymize']) {
-                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `email`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
                         . "        `ld`.`date`, `ld`.`record_id`, IF(`r`.`parent_record_id` = 0 , 'record' , 'story') AS `record_type`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
                         . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
@@ -181,7 +185,7 @@ class ReportActions extends Report
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
-                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
+                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, '-' AS `email`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
                         . "        `ld`.`date`, `ld`.`record_id`, IF(`r`.`parent_record_id` = 0 , 'record' , 'story') AS `record_type`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
                         . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
@@ -196,9 +200,9 @@ class ReportActions extends Report
                 break;
             case 'user':
                 $this->name = "Downloads by user";
-                $this->columnTitles = ['usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
+                $this->columnTitles = ['usrid', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
                 if($this->parms['anonymize']) {
-                    $sql = "SELECT `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                    $sql = "SELECT `l`.`usrid`, '-' AS `user`, '-' AS `email`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}\n"
@@ -206,7 +210,7 @@ class ReportActions extends Report
                         . " ORDER BY `nb` DESC";
                 }
                 else {
-                    $sql = "SELECT `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
+                    $sql = "SELECT `l`.`usrid`, `l`.`user`, '-' AS `email`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}\n"
