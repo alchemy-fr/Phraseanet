@@ -27,7 +27,7 @@ class CountAssetsCommand extends AbstractReportCommand
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of count assets report ')
 
             ->setHelp(
-                "eg: bin/report count:assets --databox_id 2 --email 'admin@alchemy.fr' --dmin '2021-12-01' --dmax '2023-01-01' --type 'added,year,month' \n"
+                "eg: bin/report count:assets --databox_id 2 --email 'noreply@mydomaine.com' --dmin '2021-12-01' --dmax '2023-01-01' --type 'added,year,month' \n"
                 . "\<TYPE>type of report\n"
                 . "- <info>'added,year' </info> number of added assets per year\n"
                 . "- <info>'added,year,month' </info> number of added assets per year, month\n"

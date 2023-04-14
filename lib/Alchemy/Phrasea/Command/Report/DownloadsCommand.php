@@ -22,7 +22,7 @@ class DownloadsCommand extends AbstractReportCommand
             ->addOption('permalink', 'p', InputOption::VALUE_REQUIRED, 'the subdefinition name to retrieve permalink if exist, available only for type record and for all downloads type ""')
 
             ->setHelp(
-                "eg: bin/report downloads:all --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' --type 'user' \n"
+                "eg: bin/report downloads:all --databox_id 2 --email 'noreply@mydomaine.com' --dmin '2022-12-01' --dmax '2023-01-01' --type 'user' \n"
                 . "\<TYPE>type of report\n"
                 . "- <info>'' or not defined </info>all downloads\n"
                 . "- <info>'user' </info> downloads by user\n"

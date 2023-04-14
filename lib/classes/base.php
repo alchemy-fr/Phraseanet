@@ -289,4 +289,9 @@ abstract class base implements cache_cacheableInterface
 
         return $service->applyPatches($this, $from, $to, $post_process, $input, $output);
     }
+
+    public function getPhraseApplication()
+    {
+        return $this->app;
+    }
 }

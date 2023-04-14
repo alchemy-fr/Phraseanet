@@ -12,7 +12,6 @@ namespace Alchemy\Phrasea\Report;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-
 class ReportActions extends Report
 {
     private $appKey;
@@ -101,25 +100,36 @@ class ReportActions extends Report
 
     public function getAllRows($callback)
     {
+        $app = $this->getDatabox()->getPhraseApplication();
+        $userRepository = $app['repo.users'];
+
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
         while (($row = $stmt->fetch())) {
             // only for group downloads all and download by record
-            if ((empty($this->parms['group']) || $this->parms['group'] == 'record') && !empty($this->permalink)) {
+            if ((empty($this->parms['group']) || $this->parms['group'] == 'record')) {
                 try {
-                    $permalinkUrl = '';
-                    $record = $this->databox->get_record($row['record_id']);
-                    // if from GUI, check if user has access to subdef in collection
-                    if (!isset($this->acl) || $this->acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
-                        $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
-                    }
+                    $row['user'] = $userRepository->find($row['usrid'])->getDisplayName();
                 } catch (\Exception $e) {
-                    // the record or subdef is not found
-                } catch (\Throwable $e) {
-                    // there is no permalink created ???
+
                 }
 
-                $row['permalink_' . $this->permalink] = $permalinkUrl;
+                if (!empty($this->permalink)) {
+                    try {
+                        $permalinkUrl = '';
+                        $record = $this->databox->get_record($row['record_id']);
+                        // if from GUI, check if user has access to subdef in collection
+                        if (!isset($this->acl) || $this->acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
+                            $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
+                        }
+                    } catch (\Exception $e) {
+                        // the record or subdef is not found
+                    } catch (\Throwable $e) {
+                        // there is no permalink created ???
+                    }
+
+                    $row['permalink_' . $this->permalink] = $permalinkUrl;
+                }
             }
 
             $callback($row);
@@ -138,9 +148,9 @@ class ReportActions extends Report
             case null:
                 if ($this->isDownloadReport) {
                     $this->name = "Downloads";
-                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id' ,'coll_name' ,'subdef', 'action', 'destinataire'];
+                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id' ,'coll_name' ,'subdef', 'action', 'destinataire'];
                 } else {
-                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id','coll_name' ,'final', 'action', 'comment'];
+                    $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id','coll_name' ,'final', 'action', 'comment'];
                 }
 
                 $this->sqlColSelect = [];
@@ -162,19 +172,21 @@ class ReportActions extends Report
 
                 if($this->parms['anonymize']) {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
+                        . "        `ld`.`date`, `ld`.`record_id`, IF(`r`.`parent_record_id` = 0 , 'record' , 'story') AS `record_type`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
                         . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " LEFT JOIN `coll` AS `c` ON `ld`.`coll_id` = `c`.`coll_id` \n"
+                        . " LEFT JOIN `record` AS `r` ON `ld`.`record_id` = `r`.`record_id`"
                         . " LEFT JOIN (SELECT `m`.`record_id`, " . $this->sqlColSelect . " FROM `metadatas` AS `m` GROUP BY `m`.`record_id` ) AS `F` ON `ld`.`record_id` = `F`.`record_id` \n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
+                        . "        `ld`.`date`, `ld`.`record_id`, IF(`r`.`parent_record_id` = 0 , 'record' , 'story') AS `record_type`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
                         . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " LEFT JOIN `coll` AS `c` ON `ld`.`coll_id` = `c`.`coll_id` \n"
+                        . " LEFT JOIN `record` AS `r` ON `ld`.`record_id` = `r`.`record_id`"
                         . " LEFT JOIN (SELECT `m`.`record_id`, " . $this->sqlColSelect . " FROM `metadatas` AS `m` GROUP BY `m`.`record_id` ) AS `F` ON `ld`.`record_id` = `F`.`record_id` \n"
                         . " WHERE {{GlobalFilter}}";
                 }

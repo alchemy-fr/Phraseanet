@@ -20,7 +20,7 @@ class DataboxActionsCommand extends AbstractReportCommand
             ->addOption('actions', 'a', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'the databox action to get ,if not defined get all actions report')
 
             ->setHelp(
-                "eg: bin/report databox:action --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' -a add -a edit \n"
+                "eg: bin/report databox:action --databox_id 2 --email 'noreply@mydomaine.com' --dmin '2022-12-01' --dmax '2023-01-01' -a add -a edit \n"
                 . "\<ACTIONS>one or more databox actions : push ,add ,validate ,edit ,collection ,status ,print ,substit ,publish ,download ,mail ,ftp ,delete"
             );
     }
@@ -33,12 +33,6 @@ class DataboxActionsCommand extends AbstractReportCommand
         $collectionIds = $input->getOption('collection_id');
         $actions = $input->getOption('actions');
         $permalink = $input->getOption('permalink');
-
-        if (!empty($type) && !in_array($type, self::TYPES)) {
-            $output->writeln("<error>wrong '--type' option (--help for available value)</error>");
-
-            return 1;
-        }
 
         $databox = $this->findDbOr404($this->sbasId);
         $collIds = [];
