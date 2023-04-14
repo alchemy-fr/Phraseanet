@@ -10,8 +10,8 @@
 
 namespace Alchemy\Phrasea\Report;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 
 
 class ReportConnections extends Report
@@ -52,9 +52,23 @@ class ReportConnections extends Report
 
     public function getAllRows($callback)
     {
+        $app = $this->getDatabox()->getPhraseApplication();
+        $userRepository = $app['repo.users'];
+
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
         while (($row = $stmt->fetch())) {
+            if ((empty($this->parms['group']) || $this->parms['group'] == 'user')) {
+                try {
+                    /** @var User $user */
+                    $user = $userRepository->find($row['usrid']);
+                    $row['user']  = $user->getDisplayName();
+                    $row['email'] = $user->getEmail();
+                } catch (\Exception $e) {
+
+                }
+            }
+
             $callback($row);
         }
         $stmt->closeCursor();
@@ -70,16 +84,16 @@ class ReportConnections extends Report
         switch($this->parms['group']) {
             case null:
                 $this->name = "Connections";
-                $this->columnTitles = ['id', 'date', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'nav', 'version', 'os', 'res', 'ip', 'user_agent'];
+                $this->columnTitles = ['id', 'date', 'usrid', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'nav', 'version', 'os', 'res', 'ip', 'user_agent'];
                 if($this->parms['anonymize']) {
                     $sql = "SELECT `id`, `date`,\n"
-                        . "        `usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                        . "        `usrid`, '-' AS `user`, '-' AS `email`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
                         . "        `nav`, `version`, `os`, `res`, `ip`, `user_agent` FROM `log`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
                     $sql = "SELECT `id`, `date`,\n"
-                        . "        `usrid`, `user`, `fonction`, `societe`, `activite`, `pays`,\n"
+                        . "        `usrid`, `user`, '-' AS `email`, `fonction`, `societe`, `activite`, `pays`,\n"
                         . "        `nav`, `version`, `os`, `res`, `ip`, `user_agent` FROM `log`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
@@ -87,16 +101,16 @@ class ReportConnections extends Report
                 break;
             case 'user':
                 $this->name = "Connections per user";
-                $this->columnTitles = ['user_id', 'user', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
+                $this->columnTitles = ['user_id', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
                 if($this->parms['anonymize']) {
-                    $sql = "SELECT `usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                    $sql = "SELECT `usrid`, '-' AS `user`, '-' AS `email`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
                         . "        MIN(`date`) AS `dmin`, MAX(`date`) AS `dmax`, SUM(1) AS `nb` FROM `log`\n"
                         . " WHERE {{GlobalFilter}}\n"
                         . " GROUP BY `usrid`\n"
                         . " ORDER BY `nb` DESC";
                 }
                 else {
-                    $sql = "SELECT `usrid`, `user`, `fonction`, `societe`, `activite`, `pays`,\n"
+                    $sql = "SELECT `usrid`, `user`, '-' AS `email`, `fonction`, `societe`, `activite`, `pays`,\n"
                         . "        MIN(`date`) AS `dmin`, MAX(`date`) AS `dmax`, SUM(1) AS `nb` FROM `log`\n"
                         . " WHERE {{GlobalFilter}}\n"
                         . " GROUP BY `usrid`\n"
