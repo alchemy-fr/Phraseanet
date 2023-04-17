@@ -31,7 +31,8 @@ class ProdReportControllerProvider implements ControllerProviderInterface, Servi
                 return (new ProdReportController(
                     $app['report.factory'],
                     $app['conf']->get(['registry', 'modules', 'anonymous-report']),
-                    $app->getAclForUser($app->getAuthenticatedUser())
+                    $app->getAclForUser($app->getAuthenticatedUser()),
+                    $app['phraseanet.appbox']
                 ));
             }
         );
