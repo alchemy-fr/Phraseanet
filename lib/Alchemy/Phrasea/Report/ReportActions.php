@@ -107,33 +107,35 @@ class ReportActions extends Report
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
         while (($row = $stmt->fetch())) {
-            // only for group downloads all and download by record
-            if ((empty($this->parms['group']) || $this->parms['group'] == 'record')) {
+
+            // only for group downloads all and download by user
+            if (empty($this->parms['group']) || $this->parms['group'] == 'user') {
                 try {
                     /** @var User $user */
                     $user = $userRepository->find($row['usrid']);
-                    $row['user']  = $user->getDisplayName();
+                    $row['user'] = $user->getDisplayName();
                     $row['email'] = $user->getEmail();
                 } catch (\Exception $e) {
 
                 }
+            }
 
-                if (!empty($this->permalink)) {
-                    try {
-                        $permalinkUrl = '';
-                        $record = $this->databox->get_record($row['record_id']);
-                        // if from GUI, check if user has access to subdef in collection
-                        if (!isset($this->acl) || $this->acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
-                            $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
-                        }
-                    } catch (\Exception $e) {
-                        // the record or subdef is not found
-                    } catch (\Throwable $e) {
-                        // there is no permalink created ???
+            // only for group downloads all and download by record
+            if ((empty($this->parms['group']) || $this->parms['group'] == 'record') && !empty($this->permalink)) {
+                try {
+                    $permalinkUrl = '';
+                    $record = $this->databox->get_record($row['record_id']);
+                    // if from GUI, check if user has access to subdef in collection
+                    if (!isset($this->acl) || $this->acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
+                        $permalinkUrl = $record->get_subdef($this->permalink)->get_permalink()->get_url()->__toString();
                     }
-
-                    $row['permalink_' . $this->permalink] = $permalinkUrl;
+                } catch (\Exception $e) {
+                    // the record or subdef is not found
+                } catch (\Throwable $e) {
+                    // there is no permalink created ???
                 }
+
+                $row['permalink_' . $this->permalink] = $permalinkUrl;
             }
 
             $callback($row);
