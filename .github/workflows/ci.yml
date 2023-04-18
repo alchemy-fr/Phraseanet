@@ -1,0 +1,36 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+#      - name: Build the Docker image
+#        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: build all image and install
+      - run: |
+          docker-compose build
+          docker-compose up -d
+#  ??
+      - name: into container
+      - run: docker-compose exec -u app phraseanet bash
+      - name: init test
+      - run: |
+          bin/developer ini:setup-tests-dbs -v
+          bin/console searchengine:index:create -v
+          bin/developer phraseanet:regenerate-sqlite -v
+          bin/developer phraseanet:generate-js-fixtures -v
+      - name: test
+      - run: |
+          bin/phpunit  --exclude-group legacy
+          bin/phpunit  --group legacy --exclude-group web
+          bin/phpunit --group web
