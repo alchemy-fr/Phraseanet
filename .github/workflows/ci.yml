@@ -1,14 +1,10 @@
-name: Docker Image CI
+name: testCI
 
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+on: [push]
 
 jobs:
 
-  build:
+  build-test:
 
     runs-on: ubuntu-latest
 
