@@ -2,34 +2,37 @@
 
 namespace Alchemy\Phrasea\Command\Report;
 
-use Alchemy\Phrasea\Report\ReportRecords;
+use Alchemy\Phrasea\Report\ReportActions;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DataboxContentCommand extends AbstractReportCommand
+class DataboxActionsCommand extends AbstractReportCommand
 {
     public function __construct()
     {
-        parent::__construct('databox:content');
+        parent::__construct('databox:action');
 
         $this
-            ->setDescription('BETA - Get all databox records')
+            ->setDescription('BETA - Get all databox actions report')
             ->addOption('collection_id', 'c', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'Distant collection ID in the databox, get all available collection if not defined')
-            ->addOption('field', 'f', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'The field name to include in the report, get all available report field if not defined')
             ->addOption('permalink', 'p', InputOption::VALUE_REQUIRED, 'the subdefinition name to retrieve permalink if exist')
+            ->addOption('actions', 'a', InputOption::VALUE_REQUIRED| InputOption::VALUE_IS_ARRAY, 'the databox action to get ,if not defined get all actions report')
 
             ->setHelp(
-                "eg: bin/report databox:content --databox_id 2 --email 'noreply@mydomaine.com' --dmin '2022-12-01' --dmax '2023-01-01' \n"
-                . "\<DMIN> \<DMAX> date filter on the updated_on (moddate of table record)"
-
+                "eg: bin/report databox:action --databox_id 2 --email 'noreply@mydomaine.com' --dmin '2022-12-01' --dmax '2023-01-01' -a add -a edit \n"
+                . "\<ACTIONS>one or more databox actions : push ,add ,validate ,edit ,collection ,status ,print ,substit ,publish ,download ,mail ,ftp ,delete"
             );
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getReport(InputInterface $input, OutputInterface $output)
     {
         $collectionIds = $input->getOption('collection_id');
-        $fields = $input->getOption('field');
+        $actions = $input->getOption('actions');
+        $permalink = $input->getOption('permalink');
 
         $databox = $this->findDbOr404($this->sbasId);
         $collIds = [];
@@ -46,27 +49,20 @@ class DataboxContentCommand extends AbstractReportCommand
             }
         }
 
-        // if empty get all field available, only field with is_report to true will display after in csv
-        if (empty($fields)) {
-            $fields = array_map(function ($databoxField) {
-                return $databoxField['name'];
-            }, $databox->get_meta_structure()->toArray());
-        }
-
         return
-            (new ReportRecords(
+            (new ReportActions(
                 $databox,
                 [
                     'dmin'      => $this->dmin,
                     'dmax'      => $this->dmax,
-                    'group'     => '',
-                    'anonymize' => $this->container['conf']->get(['registry', 'modules', 'anonymous-report']),
-                    'meta'      => $fields
-
+                    'group'     => null,
+                    'anonymize' => $this->container['conf']->get(['registry', 'modules', 'anonymous-report'])
                 ]
             ))
+                ->setAppKey($this->container['conf']->get(['main', 'key']))
                 ->setCollIds($collIds)
-                ->setPermalink($input->getOption('permalink'))
+                ->setPermalink($permalink)
+                ->setActions($actions)
             ;
     }
 }

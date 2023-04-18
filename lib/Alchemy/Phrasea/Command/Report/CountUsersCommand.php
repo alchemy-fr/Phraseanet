@@ -24,7 +24,7 @@ class CountUsersCommand extends AbstractReportCommand
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of users count report')
 
             ->setHelp(
-                "eg: bin/report count:users --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-01-01' --dmax '2023-01-01' --type 'added,year,month' \n"
+                "eg: bin/report count:users --databox_id 2 --email 'noreply@mydomaine.com' --dmin '2022-01-01' --dmax '2023-01-01' --type 'added,year,month' \n"
                 . "\<TYPE>type users count report\n"
                 . "- <info>'added,year'</info> number of newly added user per year\n"
                 . "- <info>'added,year,month' </info> number of newly added user per year, month\n"

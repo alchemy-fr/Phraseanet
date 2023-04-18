@@ -10,11 +10,10 @@
 
 namespace Alchemy\Phrasea\Report;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\User;
 
-
-class ReportDownloads extends Report
+class ReportActions extends Report
 {
     private $appKey;
 
@@ -31,6 +30,8 @@ class ReportDownloads extends Report
     private $sql = null;
     private $columnTitles = [];
     private $keyName = null;
+    private $actions = [];
+    private $isDownloadReport = false;
 
 
     public function getColumnTitles()
@@ -84,11 +85,41 @@ class ReportDownloads extends Report
         return $this;
     }
 
+    public function setActions(array $actions)
+    {
+        $this->actions = $actions;
+
+        return $this;
+    }
+
+    public function setAsDownloadReport(bool $isDownloadReport)
+    {
+        $this->isDownloadReport = !!$isDownloadReport;
+
+        return $this;
+    }
+
     public function getAllRows($callback)
     {
+        $app = $this->getDatabox()->getPhraseApplication();
+        $userRepository = $app['repo.users'];
+
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
         while (($row = $stmt->fetch())) {
+
+            // only for group downloads all and download by user
+            if (empty($this->parms['group']) || $this->parms['group'] == 'user') {
+                try {
+                    /** @var User $user */
+                    $user = $userRepository->find($row['usrid']);
+                    $row['user'] = $user->getDisplayName();
+                    $row['email'] = $user->getEmail();
+                } catch (\Exception $e) {
+
+                }
+            }
+
             // only for group downloads all and download by record
             if ((empty($this->parms['group']) || $this->parms['group'] == 'record') && !empty($this->permalink)) {
                 try {
@@ -121,8 +152,12 @@ class ReportDownloads extends Report
 
         switch ($this->parms['group']) {
             case null:
-                $this->name = "Downloads";
-                $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'coll_name', 'subdef', 'action', 'destinataire'];
+                if ($this->isDownloadReport) {
+                    $this->name = "Downloads";
+                    $this->columnTitles = ['id', 'usrid', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id' ,'coll_name' ,'subdef', 'action', 'destinataire'];
+                } else {
+                    $this->columnTitles = ['id', 'usrid', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'record_type', 'coll_id','coll_name' ,'final', 'action', 'comment'];
+                }
 
                 $this->sqlColSelect = [];
                 $this->sqlFiedlSelect = [];
@@ -142,20 +177,22 @@ class ReportDownloads extends Report
                 $this->sqlFieldSelect = join(",\n", $this->sqlFieldSelect);
 
                 if($this->parms['anonymize']) {
-                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
+                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `email`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                        . "        `ld`.`date`, `ld`.`record_id`, IF(`r`.`parent_record_id` = 0 , 'record' , 'story') AS `record_type`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
                         . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " LEFT JOIN `coll` AS `c` ON `ld`.`coll_id` = `c`.`coll_id` \n"
+                        . " LEFT JOIN `record` AS `r` ON `ld`.`record_id` = `r`.`record_id`"
                         . " LEFT JOIN (SELECT `m`.`record_id`, " . $this->sqlColSelect . " FROM `metadatas` AS `m` GROUP BY `m`.`record_id` ) AS `F` ON `ld`.`record_id` = `F`.`record_id` \n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
-                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
+                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, '-' AS `email`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
+                        . "        `ld`.`date`, `ld`.`record_id`, IF(`r`.`parent_record_id` = 0 , 'record' , 'story') AS `record_type`, `ld`.`coll_id`, `c`.`asciiname` AS `coll_name`, `ld`.`final`, `ld`.`action`, `ld`.`comment` AS `destinataire`,\n"
                         . $this->sqlFieldSelect . " \n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " LEFT JOIN `coll` AS `c` ON `ld`.`coll_id` = `c`.`coll_id` \n"
+                        . " LEFT JOIN `record` AS `r` ON `ld`.`record_id` = `r`.`record_id`"
                         . " LEFT JOIN (SELECT `m`.`record_id`, " . $this->sqlColSelect . " FROM `metadatas` AS `m` GROUP BY `m`.`record_id` ) AS `F` ON `ld`.`record_id` = `F`.`record_id` \n"
                         . " WHERE {{GlobalFilter}}";
                 }
@@ -165,9 +202,9 @@ class ReportDownloads extends Report
                 break;
             case 'user':
                 $this->name = "Downloads by user";
-                $this->columnTitles = ['usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
+                $this->columnTitles = ['usrid', 'user', 'email', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
                 if($this->parms['anonymize']) {
-                    $sql = "SELECT `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                    $sql = "SELECT `l`.`usrid`, '-' AS `user`, '-' AS `email`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}\n"
@@ -175,7 +212,7 @@ class ReportDownloads extends Report
                         . " ORDER BY `nb` DESC";
                 }
                 else {
-                    $sql = "SELECT `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
+                    $sql = "SELECT `l`.`usrid`, `l`.`user`, '-' AS `email`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}\n"
@@ -208,24 +245,37 @@ class ReportDownloads extends Report
             $collIds = $this->collIds;
         }
 
-        if(!empty($collIds)) {
+        if ($this->isDownloadReport) {
+            $this->actions = ['download', 'mail'];
+        } else {
+            $this->name = "export databox action";
+        }
 
-            // filter subdefs by class
-            $subdefsToReport = ['document' => $this->databox->get_connection()->quote('document')];
-            foreach ($this->getDatabox()->get_subdef_structure() as $subGroup) {
-                foreach ($subGroup->getIterator() as $sub) {
-                    if(in_array($sub->get_class(), ['document', 'preview'])) {
-                        // keep only unique names
-                        $subdefsToReport[$sub->get_name()] = $this->databox->get_connection()->quote($sub->get_name());
-                    }
-                }
+        if(!empty($collIds)) {
+            $filter = "";
+            if (!empty($this->actions)) {
+                $actionFilter = join("' ,'", $this->actions);
+                $filter = "`action` IN('" . $actionFilter . "') AND ";
             }
 
-            $subdefsToReport = join(',', $subdefsToReport);
+            $filter .= " `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
+                . "  AND `l`.`usrid`>0";
 
-            $filter = "(`action`='download' OR `action`='mail') AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
-                    . "  AND `l`.`usrid`>0\n"
-                    . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
+            if ($this->isDownloadReport) {
+                // filter subdefs by class
+                $subdefsToReport = ['document' => $this->databox->get_connection()->quote('document')];
+                foreach ($this->getDatabox()->get_subdef_structure() as $subGroup) {
+                    foreach ($subGroup->getIterator() as $sub) {
+                        if(in_array($sub->get_class(), ['document', 'preview'])) {
+                            // keep only unique names
+                            $subdefsToReport[$sub->get_name()] = $this->databox->get_connection()->quote($sub->get_name());
+                        }
+                    }
+                }
+
+                $subdefsToReport = join(',', $subdefsToReport);
+                $filter .="  AND `ld`.`final` IN(" . $subdefsToReport . ")";
+            }
 
                 // next line : comment to disable "site", to test on an imported dataset from another instance
             $filter .= "\n  AND `l`.`site` =  " . $this->databox->get_connection()->quote($this->appKey);

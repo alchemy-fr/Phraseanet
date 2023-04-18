@@ -20,7 +20,7 @@ class ConnectionsCommand extends AbstractReportCommand
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type of report connections, if not defined or empty it is for all connections')
 
             ->setHelp(
-                "eg: bin/report connections:all --databox_id 2 --email 'admin@alchemy.fr' --dmin '2022-12-01' --dmax '2023-01-01' --type 'os,nav' \n"
+                "eg: bin/report connections:all --databox_id 2 --email 'noreply@mydomaine.com' --dmin '2022-12-01' --dmax '2023-01-01' --type 'os,nav' \n"
                 . "\<TYPE>type of report\n"
                 . "- <info>'' or not defined </info>all connections\n"
                 . "- <info>'user' </info> connections by user\n"

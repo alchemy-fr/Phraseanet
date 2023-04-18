@@ -83,7 +83,7 @@ class ReportRecords extends Report
             $stmt->closeCursor();
 
             if($row && !is_null($row['from']) && !is_null($row['to'])) {
-                $sql = "SELECT r.record_id, c.asciiname, r.credate AS created_on, r.moddate AS updated_on, r.mime, r.type, r.originalname, r.status, r.sha256, r.uuid,\n"
+                $sql = "SELECT r.record_id, IF(r.parent_record_id = 0 , 'record' , 'story') AS record_type, '-' AS story_element, c.asciiname, r.credate AS created_on, r.moddate AS updated_on, r.mime, r.type, r.originalname, r.status, r.sha256, r.uuid,\n"
                     . $this->sqlColSelect . "\n"
                     . "FROM (`record` AS `r` LEFT JOIN `coll` AS `c` USING(`coll_id`)) LEFT JOIN `metadatas` AS `m` USING(`record_id`)\n"
                     . "WHERE " . $this->sqlWhere . "\n"
@@ -111,6 +111,19 @@ class ReportRecords extends Report
                         $row['permalink_' . $this->permalink] = $permalinkUrl;
                     }
 
+                    if ($row['record_type'] == 'story') {
+                        try {
+                            $record = $this->databox->get_record($row['record_id']);
+                            $childrenIds = array_map(function ($r) {
+                                /** @var \record_adapter $r */
+                                return $r->getRecordId();
+                            }, $record->getChildren()->get_elements());
+                                $row['story_element'] = implode(", ", $childrenIds);
+                        } catch (\Exception $e) {
+                        } catch (\Throwable $e) {
+                        }
+                    }
+
                     $callback($row);
                     $lastRid = $row['record_id'];
                 }
@@ -130,7 +143,7 @@ class ReportRecords extends Report
 
         // pivot-like query on metadata fields
         $this->sqlColSelect = [];
-        $this->columnTitles = ['record_id', 'collection', 'created_on', 'updated_on', 'mime', 'type', 'originalname', 'status', 'sha256', 'uuid'];
+        $this->columnTitles = ['record_id', 'record_type', 'story_element', 'collection', 'created_on', 'updated_on', 'mime', 'type', 'originalname', 'status', 'sha256', 'uuid'];
         foreach($this->getDatabox()->get_meta_structure() as $field) {
             // skip the fields that can't be reported
             if(!$field->is_report() || (isset($this->acl) && $field->isBusiness() && !$this->acl->can_see_business_fields($this->getDatabox()))) {
@@ -155,7 +168,7 @@ class ReportRecords extends Report
         }
 
         if(!empty($collIds)) {
-            $this->sqlWhere = "`r`.`parent_record_id`=0 AND `r`.`coll_id` IN(" . join(',', $collIds) . ")";
+            $this->sqlWhere = "`r`.`coll_id` IN(" . join(',', $collIds) . ")";
             if(!is_null($this->parms['dmin'])) {
                 $this->sqlWhere .= " AND r.moddate >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
             }

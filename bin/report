@@ -8,6 +8,7 @@ use Alchemy\Phrasea\Command\Report\CountAssetsCommand;
 use Alchemy\Phrasea\Command\Report\CountUsersCommand;
 use Alchemy\Phrasea\Command\Report\DownloadsCommand;
 use Alchemy\Phrasea\Command\Report\DataboxContentCommand;
+use Alchemy\Phrasea\Command\Report\DataboxActionsCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -32,5 +33,6 @@ $cli->command(new CountAssetsCommand());
 $cli->command(new CountUsersCommand());
 $cli->command(new DownloadsCommand());
 $cli->command(new DataboxContentCommand());
+$cli->command(new DataboxActionsCommand());
 
 $cli->run();
