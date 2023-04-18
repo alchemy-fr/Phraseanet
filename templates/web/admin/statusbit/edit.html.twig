@@ -12,71 +12,6 @@
 <form id="fileupload" class="form-horizontal" target="_self" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
     <div class="row-fluid">
         <div class="span12 well">
-            <span class="label">{{ 'admin::status: case A' | trans }}</span>
-            <div class="row-fluid">
-                <label class="control-label" for="label_off">
-                    {{ 'admin::status: texte a afficher' | trans }}
-                </label>
-                <div class="controls">
-                    <input id="label_off" onkeyup="inputChanged(this);return(false);" name="label_off"
-                           class="input-xlarge" type="text" value="{{ status['labeloff'] }}">
-                </div>
-            </div>
-            <div class="row-fluid">
-                <label class="control-label">
-                </label>
-                <div class="controls">
-                    {% for code, language in app['locales.available'] %}
-                    <div class="span2">
-                        <h6>{{ language }}</h6>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="row-fluid">
-                <label class="control-label">
-                    {{ 'Labels' | trans }}
-                </label>
-                <div class="controls">
-                {% for code, language in app['locales.available'] %}
-                <div class="span2">
-                    <input name="labels_off[{{ code }}]" value="{{ status['labels_off'][code] }}" class="span12" type="text">
-                </div>
-                {% endfor %}
-                </div>
-            </div>
-            <br />
-            <div class="row-fluid">
-                <label class="control-label" for="image_off">
-                    {% trans %}Symbolized by{% endtrans %}
-                </label>
-                <div class="controls clearfix">
-                    <span class="btn btn-success fileinput-button pull-left">
-                        <i class="fa fa-plus icon-white" aria-hidden="true"></i>
-                        <span>{% trans %}Select files...{% endtrans %}</span>
-                        <input type="file" name="image_off" accept="image/jpg, image/png"/>
-                    </span>
-                    <div class='thumbnail pull-left' style='height:20px;width:20px;margin-left:10px;'>
-                        {% if status['img_off'] is defined and status['img_off'] %}
-                            <img src="{{ status['img_off'] }}" />
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <label class="control-label" for="delete_icon_off">
-                    {{ 'admin::status:: aucun symbole' | trans }}
-                </label>
-                <div class="controls">
-                    <label class="checkbox">
-                        <input id="delete_icon_off" name="delete_icon_off" type="checkbox">
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span12 well">
             <span class="label">{{ 'admin::status: case B' | trans }}</span>
             <div class="row-fluid">
                 <label class="control-label" for="label_on">
@@ -141,6 +76,71 @@
         </div>
     </div>
     <div class="row-fluid">
+        <div class="span12 well">
+            <span class="label">{{ 'admin::status: case A' | trans }}</span>
+            <div class="row-fluid">
+                <label class="control-label" for="label_off">
+                    {{ 'admin::status: texte a afficher' | trans }}
+                </label>
+                <div class="controls">
+                    <input id="label_off" onkeyup="inputChanged(this);return(false);" name="label_off"
+                           class="input-xlarge" type="text" value="{{ status['labeloff'] }}">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label">
+                </label>
+                <div class="controls">
+                    {% for code, language in app['locales.available'] %}
+                        <div class="span2">
+                            <h6>{{ language }}</h6>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label">
+                    {{ 'Labels' | trans }}
+                </label>
+                <div class="controls">
+                    {% for code, language in app['locales.available'] %}
+                        <div class="span2">
+                            <input name="labels_off[{{ code }}]" value="{{ status['labels_off'][code] }}" class="span12" type="text">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <br />
+            <div class="row-fluid">
+                <label class="control-label" for="image_off">
+                    {% trans %}Symbolized by{% endtrans %}
+                </label>
+                <div class="controls clearfix">
+                    <span class="btn btn-success fileinput-button pull-left">
+                        <i class="fa fa-plus icon-white" aria-hidden="true"></i>
+                        <span>{% trans %}Select files...{% endtrans %}</span>
+                        <input type="file" name="image_off" accept="image/jpg, image/png"/>
+                    </span>
+                    <div class='thumbnail pull-left' style='height:20px;width:20px;margin-left:10px;'>
+                        {% if status['img_off'] is defined and status['img_off'] %}
+                            <img src="{{ status['img_off'] }}" />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label" for="delete_icon_off">
+                    {{ 'admin::status:: aucun symbole' | trans }}
+                </label>
+                <div class="controls">
+                    <label class="checkbox">
+                        <input id="delete_icon_off" name="delete_icon_off" type="checkbox">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
         <div class="span12">
             <label class="checkbox">
                 <input id="printable" name="printable" type="checkbox" {{ status['printable'] is defined and status['printable'] == '1' ? "checked" : "" }}>
@@ -181,7 +181,7 @@
     }
 
     function isInvalid(string) {
-        var validText = new RegExp(/[!@#$%^&*()]+/);
+        var validText = new RegExp(/[!@#$%^&*()"£><≥≤]+/);
         return validText.test(string);
     }
 
