@@ -19,7 +19,6 @@ jobs:
         run: |
           docker-compose exec -T -e PHRASEANET_BASE_URL=http://127.0.0.1 phraseanet docker/phraseanet/setup/auto-install.sh
           docker-compose exec -T phraseanet bin/developer ini:setup-tests-dbs -v
-          docker-compose exec -T phraseanet bin/console searchengine:index:create -v
           docker-compose exec -T phraseanet bin/developer phraseanet:regenerate-sqlite -v
           docker-compose exec -T phraseanet bin/developer phraseanet:generate-js-fixtures -v
       - name: test
