@@ -20,6 +20,7 @@
                 <div class="controls">
                     <input id="label_on" onkeyup="inputChanged(this);return(false);" name="label_on"
                            class="input-xlarge" type="text" value="{{ status['labelon'] }}">
+                    <span class="alert alert-danger" style="margin-left:20px;padding-top: 5px;padding-right: 15px;padding-left: 15px;">{{ 'admin::status: warning! need indexation if changed' | trans }}</span>
                 </div>
             </div>
             <div class="row-fluid">
@@ -181,7 +182,7 @@
     }
 
     function isInvalid(string) {
-        var validText = new RegExp(/[!@#$%^&*()"£><≥≤]+/);
+        var validText = new RegExp(/[!@#$%^&*()"£><≥≤/+=:;,]+/);
         return validText.test(string);
     }
 
