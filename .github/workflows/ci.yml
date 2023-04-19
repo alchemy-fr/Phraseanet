@@ -18,6 +18,7 @@ jobs:
           docker-compose up -d
       - name: init test
         run: |
+          docker-compose exec -T phraseanet bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=phraseanet --db-template=fr-simple --db-password=phraseanet --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y
           docker-compose exec -T phraseanet bin/developer ini:setup-tests-dbs -v
           docker-compose exec -T phraseanet bin/console searchengine:index:create -v
           docker-compose exec -T phraseanet bin/developer phraseanet:regenerate-sqlite -v
