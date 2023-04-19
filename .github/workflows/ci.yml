@@ -11,9 +11,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+        # test to pull directly
       - name: build all image and install
         run: |
-          docker-compose build
+          docker-compose pull
           docker-compose up -d
 #  ??
       - name: into container
