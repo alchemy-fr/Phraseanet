@@ -1,6 +1,10 @@
 name: testCI
 
-on: [push]
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
 
@@ -14,9 +18,13 @@ jobs:
       - name: build all image and install
         run: |
           docker compose build
-          COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker compose up -d --wait
-      - name: init test
+          docker compose up -d --wait
+      - name: init tools test
         run:
+          docker compose exec -T phraseanet apt update
+          docker compose exec -T phraseanet curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+          docker compose exec -T phraseanet php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer"
+          docker compose exec -T phraseanet composer install --ignore-platform-reqs --no-interaction
           docker compose exec -T -e PHRASEANET_BASE_URL=http://127.0.0.1 phraseanet docker/phraseanet/setup/auto-install.sh
           docker compose exec -T phraseanet bin/developer ini:setup-tests-dbs -v
           docker compose exec -T phraseanet bin/developer phraseanet:regenerate-sqlite -v
