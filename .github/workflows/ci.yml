@@ -18,7 +18,7 @@ jobs:
       - name: build all image and install
         run: |
           docker compose build
-          docker compose up -d --wait
+          docker compose up -d
       - name: init tools test
         run: |
           docker compose exec -T phraseanet apt update
