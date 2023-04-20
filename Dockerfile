@@ -256,7 +256,7 @@ RUN ( \
 
 RUN ./docker/phraseanet/plugins/console install
 
-ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+ENTRYPOINT []
 
 CMD []
 

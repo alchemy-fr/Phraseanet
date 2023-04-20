@@ -14,6 +14,15 @@ jobs:
       - name: build all image and install
         run: |
           docker compose build
-          COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker compose up -d
+          COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker compose up -d --wait
+      - name: init test
+        run:
+          docker compose exec -T -e PHRASEANET_BASE_URL=http://127.0.0.1 phraseanet docker/phraseanet/setup/auto-install.sh
+          docker compose exec -T phraseanet bin/developer ini:setup-tests-dbs -v
+          docker compose exec -T phraseanet bin/developer phraseanet:regenerate-sqlite -v
+          docker compose exec -T phraseanet bin/developer phraseanet:generate-js-fixtures -v
       - name: test
-        run: COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker compose run -T --rm builder bin/ci.sh
+        run: |
+          docker compose exec -T phraseanet vendor/phpunit/phpunit/phpunit  --exclude-group legacy
+          docker compose exec -T phraseanet vendor/phpunit/phpunit/phpunit  --group legacy --exclude-group web
+          docker compose exec -T phraseanet vendor/phpunit/phpunit/phpunit --group web
