@@ -2,9 +2,6 @@
 
 set -e
 
-echo "check install"
-runuser app -c PHRASEANET_BASE_URL=http://127.0.0.1 docker/phraseanet/setup/auto-install.sh
-
 echo "init test"
 bin/developer ini:setup-tests-dbs -v
 bin/developer phraseanet:regenerate-sqlite -v
