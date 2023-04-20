@@ -9,9 +9,9 @@ if [ -d /bootstrap/entrypoint.d ]; then
   unset i
 fi
 
-if [ ! -t 1 ] ; then
-  echo "No tty available."
-  exit 0
-fi
+#if [ ! -t 1 ] ; then
+#  echo "No tty available."
+#  exit 0
+#fi
 
 exec "$@"
