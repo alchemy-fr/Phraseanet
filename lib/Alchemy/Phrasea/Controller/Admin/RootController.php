@@ -251,8 +251,8 @@ class RootController extends Controller
             'searchable' => $request->request->get('searchable') ? '1' : '0',
             'printable'  => $request->request->get('printable') ? '1' : '0',
             'name'       => $request->request->get('name', ''),
-            'labelon'    => htmlentities($request->request->get('label_on', '')),
-            'labeloff'   => htmlentities($request->request->get('label_off', '')),
+            'labelon'    => $request->request->get('label_on', ''),
+            'labeloff'   => $request->request->get('label_off', ''),
             'labels_on'  => $request->request->get('labels_on', []),
             'labels_off' => $request->request->get('labels_off', []),
         ];
