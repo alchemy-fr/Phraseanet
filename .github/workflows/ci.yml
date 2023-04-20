@@ -14,7 +14,7 @@ jobs:
       - name: build all image and install
         run: |
           docker-compose pull
-          docker-compose up -d
+          COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker-compose up -d
       - name: init test
         run: |
           docker-compose exec -T -e PHRASEANET_BASE_URL=http://127.0.0.1 phraseanet docker/phraseanet/setup/auto-install.sh
