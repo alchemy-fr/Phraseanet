@@ -14,6 +14,6 @@ jobs:
       - name: build all image and install
         run: |
           docker compose build
-          COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker compose up -d --wait
+          COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker compose up -d
       - name: test
           run: COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,worker,mailhog,builder,redis-session,setup docker compose run -T --rm builder bin/ci.sh
