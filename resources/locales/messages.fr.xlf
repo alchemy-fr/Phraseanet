@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-04-19T07:49:11Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -201,7 +201,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2540,7 +2540,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -7624,12 +7624,12 @@
       </trans-unit>
       <trans-unit id="9542814516fbb34841eaecd71c1e96132c957f00" resname="Watermark Record_id">
         <source>Watermark Record_id</source>
-        <target state="new">Watermark Record_id</target>
+        <target state="needs-translation">Recordid du filigrane (le recordid doit appartenir à la même Databox)</target>
         <jms:reference-file line="43">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecf870ab34b23495fb940231b71ebe6e952e7cd7" resname="Watermark text">
         <source>Watermark text</source>
-        <target state="translated">Texte du watermark</target>
+        <target state="needs-translation">Texte du filigrane</target>
         <jms:reference-file line="42">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8bfada821419f7b1c35da6470b04b8c1b0c72d91" resname="Weak" approved="yes">
@@ -9034,7 +9034,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="67946647e69c53e19d5b133dfb05ec6e595fe5e6" resname="admin::status: warning! need indexation if changed">
         <source>admin::status: warning! need indexation if changed</source>
-        <target state="new">admin::status: warning! need indexation if changed</target>
+        <target state="needs-translation">Attention ! La modification du nom requiert une indexation complète.</target>
         <jms:reference-file line="24">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="401e657bf81bca8796731b867f9a09fac2d86c9b" resname="admin::status:: aucun symbole" approved="yes">
@@ -12341,7 +12341,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12943,32 +12943,32 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="c0dd81703159bf0027da41a78070b2def3015b42" resname="prod::advancesearch:operator greater than">
         <source>prod::advancesearch:operator greater than</source>
-        <target state="needs-translation">supérieur à</target>
+        <target state="translated">supérieur à</target>
         <jms:reference-file line="599">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba29699f2d1c5df50cc1ee484035157ef71a54c3" resname="prod::advancesearch:operator greater than or equal">
         <source>prod::advancesearch:operator greater than or equal</source>
-        <target state="needs-translation">supérieur à ou égal</target>
+        <target state="translated">supérieur à ou égal</target>
         <jms:reference-file line="597">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="164e4965f3f4c1f73f00936cdbaef82319e1caae" resname="prod::advancesearch:operator less than">
         <source>prod::advancesearch:operator less than</source>
-        <target state="needs-translation">inférieur à</target>
+        <target state="translated">inférieur à</target>
         <jms:reference-file line="600">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae1f1c6d07dda5fef03ceb1caeb5e7f0428c6634" resname="prod::advancesearch:operator less than or equal">
         <source>prod::advancesearch:operator less than or equal</source>
-        <target state="needs-translation">inférieur à ou égal</target>
+        <target state="translated">inférieur à ou égal</target>
         <jms:reference-file line="598">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="56f087750e5fcb0d55da1bca91dc46b90e6ccd7e" resname="prod::advancesearch:operator set">
         <source>prod::advancesearch:operator set</source>
-        <target state="needs-translation">renseigné</target>
+        <target state="translated">renseigné</target>
         <jms:reference-file line="601">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bcd6ceb394c1ce47014f68e07f82e049cc5300e0" resname="prod::advancesearch:operator unset">
         <source>prod::advancesearch:operator unset</source>
-        <target state="needs-translation">vide</target>
+        <target state="translated">vide</target>
         <jms:reference-file line="602">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="yes">
@@ -13395,7 +13395,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="8b603b55c4cd36e33b32b6bff0bcbde435fb0118" resname="prod::share: Users can see others choices">
         <source>prod::share: Users can see others choices</source>
-        <target state="translated">L'utilisateur peut visualiser le choix des autres participants.</target>
+        <target state="needs-translation">L'utilisateur peut visualiser le choix des autres participants.</target>
         <jms:reference-file line="235">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0d1ba00cdeea8b6244ad62ec2d78753dea059168" resname="prod::share: Users contribute to the feedback">
@@ -14614,7 +14614,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="54e9e134d28f6fc9c085eb7a8b71212e536174c9" resname="report:: Permalink">
         <source>report:: Permalink</source>
-        <target state="new">report:: Permalink</target>
+        <target state="needs-translation">Inclure le permalien de :</target>
         <jms:reference-file line="50">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="107">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
@@ -15470,7 +15470,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
