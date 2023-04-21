@@ -12960,17 +12960,17 @@
       </trans-unit>
       <trans-unit id="ae1f1c6d07dda5fef03ceb1caeb5e7f0428c6634" resname="prod::advancesearch:operator less than or equal">
         <source>prod::advancesearch:operator less than or equal</source>
-        <target state="needs-translation">less than or equals</target>
+        <target state="translated">less than or equals</target>
         <jms:reference-file line="598">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="56f087750e5fcb0d55da1bca91dc46b90e6ccd7e" resname="prod::advancesearch:operator set">
         <source>prod::advancesearch:operator set</source>
-        <target state="needs-translation">filled</target>
+        <target state="translated">filled</target>
         <jms:reference-file line="601">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bcd6ceb394c1ce47014f68e07f82e049cc5300e0" resname="prod::advancesearch:operator unset">
         <source>prod::advancesearch:operator unset</source>
-        <target state="needs-translation">empty</target>
+        <target state="translated">empty</target>
         <jms:reference-file line="602">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="yes">
@@ -13397,7 +13397,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="8b603b55c4cd36e33b32b6bff0bcbde435fb0118" resname="prod::share: Users can see others choices">
         <source>prod::share: Users can see others choices</source>
-        <target state="needs-translation">User can see others choices</target>
+        <target state="translated">User can see others choices</target>
         <jms:reference-file line="235">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0d1ba00cdeea8b6244ad62ec2d78753dea059168" resname="prod::share: Users contribute to the feedback">
