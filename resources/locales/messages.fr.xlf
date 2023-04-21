@@ -9034,7 +9034,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="67946647e69c53e19d5b133dfb05ec6e595fe5e6" resname="admin::status: warning! need indexation if changed">
         <source>admin::status: warning! need indexation if changed</source>
-        <target state="needs-translation">Attention ! La modification du nom requiert une indexation complete.</target>
+        <target state="needs-translation">Attention ! La modification du nom requiert une indexation complète.</target>
         <jms:reference-file line="24">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="401e657bf81bca8796731b867f9a09fac2d86c9b" resname="admin::status:: aucun symbole" approved="yes">
