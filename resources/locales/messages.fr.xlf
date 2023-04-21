@@ -7629,7 +7629,7 @@
       </trans-unit>
       <trans-unit id="ecf870ab34b23495fb940231b71ebe6e952e7cd7" resname="Watermark text">
         <source>Watermark text</source>
-        <target state="translated">Texte du watermark</target>
+        <target state="needs-translation">Texte du filigrane</target>
         <jms:reference-file line="42">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8bfada821419f7b1c35da6470b04b8c1b0c72d91" resname="Weak" approved="yes">
