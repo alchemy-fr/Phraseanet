@@ -7627,7 +7627,7 @@
       </trans-unit>
       <trans-unit id="9542814516fbb34841eaecd71c1e96132c957f00" resname="Watermark Record_id">
         <source>Watermark Record_id</source>
-        <target state="needs-translation">Recordid to use for watermark ( need to be in same databox)</target>
+        <target state="needs-translation">Recordid to use for watermark (needs to be in the same databox)</target>
         <jms:reference-file line="43">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecf870ab34b23495fb940231b71ebe6e952e7cd7" resname="Watermark text">
@@ -9036,7 +9036,7 @@
       </trans-unit>
       <trans-unit id="67946647e69c53e19d5b133dfb05ec6e595fe5e6" resname="admin::status: warning! need indexation if changed">
         <source>admin::status: warning! need indexation if changed</source>
-        <target state="needs-translation">warning! require a full indexation if changed</target>
+        <target state="needs-translation">Warning! Requires a full indexation if changed</target>
         <jms:reference-file line="24">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="401e657bf81bca8796731b867f9a09fac2d86c9b" resname="admin::status:: aucun symbole" approved="yes">
