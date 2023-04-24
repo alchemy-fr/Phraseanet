@@ -1253,20 +1253,18 @@ class PSExposeController extends Controller
             } else {
                 $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
 
-                $oauthClient = $proxyConfig->getClientWithOptions([]);
+                $oauthClient = $proxyConfig->getClientWithOptions([
+                    'verify' => $config['verify_ssl'],
+                ]);
 
-                try {
-                    $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
-                        'json' => [
-                            'client_id'     => $config['expose_client_id'],
-                            'client_secret' => $config['expose_client_secret'],
-                            'grant_type'    => 'client_credentials',
-                            'scope'         => 'publish'
-                        ]
-                    ]);
-                } catch(\Exception $e) {
-                    return null;
-                }
+                $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
+                    'json' => [
+                        'client_id'     => $config['expose_client_id'],
+                        'client_secret' => $config['expose_client_secret'],
+                        'grant_type'    => 'client_credentials',
+                        'scope'         => 'publish'
+                    ]
+                ]);
 
                 if ($response->getStatusCode() !== 200) {
                     return null;
