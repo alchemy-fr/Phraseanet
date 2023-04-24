@@ -21,7 +21,6 @@ jobs:
           PHRASEANET_DOCKER_REGISTRY=alchemyfr docker compose up -d
       - name: init tools test
         run: |
-#          docker compose exec -T phraseanet apt update
           docker compose exec -T phraseanet curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
           docker compose exec -T phraseanet php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
           docker compose exec -T phraseanet composer install --ignore-platform-reqs --no-interaction
