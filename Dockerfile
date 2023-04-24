@@ -3,11 +3,12 @@
 # the app images (usefull in dev mode)
 #########################################################################
 
-FROM php:7.0-fpm as phraseanet-system
+FROM php:7.0-fpm-stretch as phraseanet-system
 
 ENV FFMPEG_VERSION=4.2.2
 
-RUN apt-get update \
+RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+    && apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -324,9 +325,10 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 # phrasaseanet adapted simplesaml service provider 
 #########################################################################
 
-FROM php:7.0-fpm as phraseanet-saml-sp
+FROM php:7.0-fpm-stretch as phraseanet-saml-sp
 RUN adduser --uid 1000 --disabled-password app
-RUN apt-get update \
+RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+    && apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
