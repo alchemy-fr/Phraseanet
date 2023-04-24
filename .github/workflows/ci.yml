@@ -17,8 +17,8 @@ jobs:
         uses: actions/checkout@v3
       - name: build all image and install
         run: |
-          PHRASEANET_DOCKER_REGISTRY=alchemyfr docker compose pull
-          PHRASEANET_DOCKER_REGISTRY=alchemyfr docker compose up -d
+          docker compose build
+          docker compose up -d
       - name: init tools test
         run: |
           docker compose exec -T phraseanet curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
