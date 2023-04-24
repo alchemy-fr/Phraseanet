@@ -138,8 +138,8 @@ class Manager
     private function save()
     {
         $date = new \DateTime();
-        $data = $this->compiler->compile($this->registry)
-            . "\n// Last Update on " . $date->format(DATE_ISO8601) . " \n";
+        $data = $this->compiler->compile($this->registry);
+//            . "\n// Last Update on " . $date->format(DATE_ISO8601) . " \n";
 
         file_put_contents($this->file, $data);
     }

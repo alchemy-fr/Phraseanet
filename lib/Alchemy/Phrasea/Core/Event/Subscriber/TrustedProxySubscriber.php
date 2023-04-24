@@ -39,7 +39,8 @@ class TrustedProxySubscriber implements EventSubscriberInterface
             return;
         }
 
-        $proxies = isset($this->configuration['trusted-proxies']) ? $this->configuration['trusted-proxies'] : [];
+        $conf = $this->configuration->getConfig();
+        $proxies = isset($conf['trusted-proxies']) ? $conf['trusted-proxies'] : [];
         Request::setTrustedProxies($proxies);
     }
 }
