@@ -27,7 +27,7 @@ class module_console_aboutLicenseTest extends \PhraseanetTestCase
         $commandTester->execute(['command' => $command->getName()]);
 
         $this->assertEquals(
-            trim(file_get_contents(__DIR__ . '/../../../../LICENSE'))
+            trim(file_get_contents($application['root.path'] . '/LICENSE'))
             , trim($commandTester->getDisplay())
         );
     }
