@@ -491,14 +491,15 @@ class PSExposeController extends Controller
         if ($resPublication->getStatusCode() == 200) {
             $body = json_decode($resPublication->getBody()->getContents(),true);
             $assets = $body['hydra:member'];
-            $totalItems = $body['hydra:totalItems'];
-        }
 
-        $exposeVersion = $config['expose_version'] ?? 'v1';
-        if ('v1' === $exposeVersion) {
-            $assets = array_map(function (array $pubAsset): array {
-                return $pubAsset['asset'];
-            }, $assets);
+            if (!empty($assets) && isset($assets[0]['asset'])) {
+                // expose v1 BC: flatten assets
+                $assets = array_map(function (array $pubAsset): array {
+                    return $pubAsset['asset'];
+                }, $assets);
+            }
+
+            $totalItems = $body['hydra:totalItems'];
         }
 
         return $this->render('prod/WorkZone/ExposePublicationAssets.html.twig', [

@@ -42,17 +42,6 @@ class PSExposeConnectionType extends AbstractType
                     'class' => 'expose-name'
                 ]
             ])
-            ->add('expose_version', ChoiceType::class, [
-                'label' => 'admin:phrasea-service-setting:tab:expose:: Expose version',
-                'required' => true,
-                'attr'  => [
-                    'class' => 'input-xxlarge'
-                ],
-                'choices' => [
-                    'v1' => 'v1',
-                    'v2' => 'v2'
-                ]
-            ])
             ->add('expose_front_uri', TextType::class, [
                 'label' => 'admin:phrasea-service-setting:tab:expose:: Expose Front base uri',
                 'attr'  => [
