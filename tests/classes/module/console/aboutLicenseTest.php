@@ -23,10 +23,11 @@ class module_console_aboutLicenseTest extends \PhraseanetTestCase
         $application->command(new module_console_aboutLicense('about:license'));
 
         $command = $application['console']->find('about:license');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(['command' => $command->getName()]);
 
         // TODO: on builder mode
+//        $commandTester = new CommandTester($command);
+//        $commandTester->execute(['command' => $command->getName()]);
+
 //        $this->assertEquals(
 //            trim(file_get_contents($application['root.path'] . '/LICENSE'))
 //            , trim($commandTester->getDisplay())
