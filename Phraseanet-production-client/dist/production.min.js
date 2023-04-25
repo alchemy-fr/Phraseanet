@@ -9901,8 +9901,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -10936,17 +10934,18 @@ var workzone = function workzone(services) {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
-            var positions = [];
+            var order = [];
 
             (0, _jquery2.default)('.assets_list .chim-wrapper').each(function (i, el) {
-                positions[(0, _jquery2.default)(this).attr('data-pub-asset-id')] = i + 1;
+                order.push((0, _jquery2.default)(this).attr('data-pub-asset-id'));
             });
 
             _jquery2.default.ajax({
                 type: 'POST',
                 url: '/prod/expose/publication/update-assets-order/?exposeName=' + exposeName,
                 data: {
-                    listPositions: JSON.stringify(_extends({}, positions))
+                    order: order,
+                    publicationId: publicationId
                 },
                 dataType: 'json',
                 success: function success(data) {
