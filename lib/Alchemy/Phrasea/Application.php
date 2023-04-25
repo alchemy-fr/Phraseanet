@@ -137,7 +137,7 @@ class Application extends SilexApplication
         'de' => 'Deutsch',
         'en' => 'English',
         'fr' => 'Français',
-        'du' => 'Dutch',
+        'nl' => 'Dutch',
     ];
 
     private static $flashTypes = ['warning', 'info', 'success', 'error'];
