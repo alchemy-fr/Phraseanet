@@ -30,6 +30,6 @@ jobs:
           docker compose exec -T phraseanet bin/developer phraseanet:generate-js-fixtures -v
       - name: test
         run: |
-          docker compose exec -T phraseanet vendor/phpunit/phpunit/phpunit  --exclude-group legacy
-          docker compose exec -T phraseanet vendor/phpunit/phpunit/phpunit  --group legacy --exclude-group web
-          docker compose exec -T phraseanet vendor/phpunit/phpunit/phpunit --group web
+          docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit  --exclude-group legacy
+          docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit  --group legacy --exclude-group web
+          docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit --group web
