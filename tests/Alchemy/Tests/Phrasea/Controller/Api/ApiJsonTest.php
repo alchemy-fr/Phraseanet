@@ -1241,8 +1241,9 @@ class ApiJsonTest extends ApiTestCase
         $this->evaluateRecordsMetadataResponse($content);
 
         foreach ($content['response']['record_metadatas'] as $metadata) {
-            if (!in_array($metadata['meta_id'], array_keys($toupdate)))
+            if (!in_array($metadata['meta_id'], array_keys($toupdate))) {
                 continue;
+            }
             $saved_value = $toupdate[$metadata['meta_structure_id']]['value'];
             $this->assertEquals($saved_value, $metadata['value']);
         }
