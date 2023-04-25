@@ -106,7 +106,7 @@ class recordutils_image
             return $pathOut;
         }
 
-        /** @var Imagine\Imagick\Imagine $imageine */
+        /** @var Imagine\Imagick\Imagine $imagine */
         $imagine = $app['imagine'];
 
         // open the document

@@ -4,7 +4,7 @@ languages:
         - fr
         - en
         - de
-        - nl
+        - du
     default: 'fr'
 main:
     maintenance: false

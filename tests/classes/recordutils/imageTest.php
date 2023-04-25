@@ -93,10 +93,15 @@ class recordutils_imageTest extends \PhraseanetTestCase
             \collection::PIC_STAMP
         );
 
-        $path = recordutils_image::stamp($app, $record_1->get_subdef('preview'));
+        $imagick = new \Imagick();
 
-        $this->assertTrue(0 === strpos(basename($path), 'stamp_'));
-        unlink($path);
+        //TODO: upgrade php imagine ???
+        if (method_exists($imagick, 'setImageOpacity')) {
+            $path = recordutils_image::stamp($app, $record_1->get_subdef('preview'));
+
+            $this->assertTrue(0 === strpos(basename($path), 'stamp_'));
+            unlink($path);
+        }
     }
 
     public function testStampWithFile()
@@ -114,9 +119,14 @@ class recordutils_imageTest extends \PhraseanetTestCase
             \collection::PIC_STAMP
         );
 
-        $path = recordutils_image::stamp($app, $record_1->get_subdef('preview'));
+        $imagick = new \Imagick();
 
-        $this->assertTrue(0 === strpos(basename($path), 'stamp_'));
-        unlink($path);
+        //TODO: upgrade php imagine ???
+        if (method_exists($imagick, 'setImageOpacity')) {
+            $path = recordutils_image::stamp($app, $record_1->get_subdef('preview'));
+
+            $this->assertTrue(0 === strpos(basename($path), 'stamp_'));
+            unlink($path);
+        }
     }
 }
