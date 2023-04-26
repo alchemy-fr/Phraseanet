@@ -1,11 +1,11 @@
 servername: 'http://local.phrasea/'
 languages:
     available:
-        - fr
-        - en
         - de
+        - en
+        - fr
         - nl
-    default: 'fr'
+    default: 'en'
 main:
     maintenance: false
     key: ''
