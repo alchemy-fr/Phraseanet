@@ -1212,11 +1212,13 @@ class ApiJsonTest extends ApiTestCase
                 $meta_id = null;
             }
 
-            $toupdate[$field->get_id()] = [
-                'meta_id'        => $meta_id
-                , 'meta_struct_id' => $field->get_id()
-                , 'value'          => 'podom pom pom ' . $field->get_id()
-            ];
+            if (!$field->is_multi()) {
+                $toupdate[$field->get_id()] = [
+                    'meta_id'        => $meta_id
+                    , 'meta_struct_id' => $field->get_id()
+                    , 'value'          => 'podom pom pom ' . $field->get_id()
+                ];
+            }
         }
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
