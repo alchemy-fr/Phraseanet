@@ -9,6 +9,7 @@ on:
 env:
   PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
   REGISTRY: ghcr.io/${{ github.repository_owner }}
+  CACHE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 jobs:
 
   build-test:
@@ -33,8 +34,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          cache-from: type=gha,scope=phraseanet-setup
-          cache-to: type=gha,mode=max,scope=phraseanet-setup
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-setup:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-setup:build-cache
           target: phraseanet-setup
           tags: ${{ env.REGISTRY }}/phraseanet-setup:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-nginx
@@ -43,8 +44,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          cache-from: type=gha,scope=phraseanet-nginx
-          cache-to: type=gha,mode=max,scope=phraseanet-nginx
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-nginx:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-nginx:build-cache
           target: phraseanet-nginx
           tags: ${{ env.REGISTRY }}/phraseanet-nginx:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-fpm
@@ -53,8 +54,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          cache-from: type=gha,scope=phraseanet-fpm
-          cache-to: type=gha,mode=max,scope=phraseanet-fpm
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-fpm:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-fpm:build-cache
           target: phraseanet-fpm
           tags: ${{ env.REGISTRY }}/phraseanet-fpm:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-worker
@@ -63,8 +64,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          cache-from: type=gha,scope=phraseanet-worker
-          cache-to: type=gha,mode=max,scope=phraseanet-worker
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-worker:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-worker:build-cache
           target: phraseanet-worker
           tags: ${{ env.REGISTRY }}/phraseanet-worker:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-db
@@ -73,17 +74,17 @@ jobs:
           context: ./docker/db
           file: ./docker/db/Dockerfile
           push: true
-          cache-from: type=gha,scope=phraseanet-db
-          cache-to: type=gha,mode=max,scope=phraseanet-db
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-db:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-db:build-cache
           tags: ${{ env.REGISTRY }}/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-elasticsearch
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./docker/elasticsearch
           file: ./docker/elasticsearch/Dockerfile
           push: true
-          cache-from: type=gha,scope=phraseanet-elasticsearch
-          cache-to: type=gha,mode=max,scope=phraseanet-elasticsearch
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-elasticsearch:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-elasticsearch:build-cache
           tags: ${{ env.REGISTRY }}/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: install
         run: |
@@ -98,11 +99,14 @@ jobs:
           docker compose exec -T phraseanet bin/developer ini:setup-tests-dbs -v
           docker compose exec -T phraseanet bin/developer phraseanet:regenerate-sqlite -v
           docker compose exec -T phraseanet bin/developer phraseanet:generate-js-fixtures -v
-      - name: test
+      - name: test exclude-group legacy
         run: |
           docker compose exec -T phraseanet bin/console system:clear-cache
           docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit  --exclude-group legacy
+      - name: test group legacy and exclude-group web
+        run: |
           docker compose exec -T phraseanet bin/console system:clear-cache
           docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit  --group legacy --exclude-group web
+      - name: test group web
           docker compose exec -T phraseanet bin/console system:clear-cache
           docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit --group web
