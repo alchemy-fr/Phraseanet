@@ -108,5 +108,6 @@ jobs:
           docker compose exec -T phraseanet bin/console system:clear-cache
           docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit  --group legacy --exclude-group web
       - name: test group web
+        run: |
           docker compose exec -T phraseanet bin/console system:clear-cache
           docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit --group web
