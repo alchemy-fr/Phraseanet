@@ -7,7 +7,8 @@ on:
     branches: [ "master" ]
 
 env:
-  PHRASEANET_DOCKER_TAG: 4.1.7-rc6
+  PHRASEANET_DOCKER_TAG: ${{ GITHUB_REF_NAME }}
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
 jobs:
 
   build-test:
@@ -17,6 +18,12 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
@@ -30,7 +37,7 @@ jobs:
           cache-from: type=gha,scope=phraseanet-setup
           cache-to: type=gha,mode=max,scope=phraseanet-setup
           target: phraseanet-setup
-          tags: local/phraseanet-setup:${{ env.PHRASEANET_DOCKER_TAG }}
+          tags: ${{ env.REGISTRY }}/phraseanet-setup:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-nginx
         uses: docker/build-push-action@v4
         with:
@@ -41,7 +48,7 @@ jobs:
           cache-from: type=gha,scope=phraseanet-nginx
           cache-to: type=gha,mode=max,scope=phraseanet-nginx
           target: phraseanet-nginx
-          tags: local/phraseanet-nginx:${{ env.PHRASEANET_DOCKER_TAG }}
+          tags: ${{ env.REGISTRY }}/phraseanet-nginx:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-fpm
         uses: docker/build-push-action@v4
         with:
@@ -52,7 +59,7 @@ jobs:
           cache-from: type=gha,scope=phraseanet-fpm
           cache-to: type=gha,mode=max,scope=phraseanet-fpm
           target: phraseanet-fpm
-          tags: local/phraseanet-fpm:${{ env.PHRASEANET_DOCKER_TAG }}
+          tags: ${{ env.REGISTRY }}/phraseanet-fpm:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-worker
         uses: docker/build-push-action@v4
         with:
@@ -63,7 +70,7 @@ jobs:
           cache-from: type=gha,scope=phraseanet-worker
           cache-to: type=gha,mode=max,scope=phraseanet-worker
           target: phraseanet-worker
-          tags: local/phraseanet-worker:${{ env.PHRASEANET_DOCKER_TAG }}
+          tags: ${{ env.REGISTRY }}/phraseanet-worker:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-db
         uses: docker/build-push-action@v4
         with:
@@ -73,7 +80,7 @@ jobs:
           load: true
           cache-from: type=gha,scope=phraseanet-db
           cache-to: type=gha,mode=max,scope=phraseanet-db
-          tags: local/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
+          tags: ${{ env.REGISTRY }}/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-elasticsearch
         uses: docker/build-push-action@v4
         with:
@@ -83,11 +90,11 @@ jobs:
           load: true
           cache-from: type=gha,scope=phraseanet-elasticsearch
           cache-to: type=gha,mode=max,scope=phraseanet-elasticsearch
-          tags: local/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
+          tags: ${{ env.REGISTRY }}/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: install
         run: |
-          docker compose pull
-          docker compose up -d
+          PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose pull
+          PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose up -d
       - name: init tools test
         run: |
           docker compose exec -T phraseanet curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
