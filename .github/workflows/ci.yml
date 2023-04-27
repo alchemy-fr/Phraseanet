@@ -67,15 +67,15 @@ jobs:
           cache-to: type=gha,mode=max,scope=phraseanet-worker
           target: phraseanet-worker
           tags: ${{ env.REGISTRY }}/phraseanet-worker:${{ env.PHRASEANET_DOCKER_TAG }}
-#      - name: build phraseanet-db
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: .
-#          file: ./docker/db/Dockerfile
-#          push: true
-#          cache-from: type=gha,scope=phraseanet-db
-#          cache-to: type=gha,mode=max,scope=phraseanet-db
-#          tags: ${{ env.REGISTRY }}/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
+      - name: build phraseanet-db
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/db/Dockerfile
+          push: true
+          cache-from: type=gha,scope=phraseanet-db
+          cache-to: type=gha,mode=max,scope=phraseanet-db
+          tags: ${{ env.REGISTRY }}/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-elasticsearch
         uses: docker/build-push-action@v4
         with:
