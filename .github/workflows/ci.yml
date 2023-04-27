@@ -27,8 +27,8 @@ jobs:
           file: ./Dockerfile
           push: false
           load: true
-          cache-from: type=gha,scope=test
-          cache-to: type=gha,mode=max,scope=test
+          cache-from: type=gha,scope=phraseanet-setup
+          cache-to: type=gha,mode=max,scope=phraseanet-setup
           target: phraseanet-setup
           tags: local/phraseanet-setup:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-nginx
@@ -38,8 +38,8 @@ jobs:
           file: ./Dockerfile
           push: false
           load: true
-          cache-from: type=gha,scope=test
-          cache-to: type=gha,mode=max,scope=test
+          cache-from: type=gha,scope=phraseanet-nginx
+          cache-to: type=gha,mode=max,scope=phraseanet-nginx
           target: phraseanet-nginx
           tags: local/phraseanet-nginx:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-fpm
@@ -49,8 +49,8 @@ jobs:
           file: ./Dockerfile
           push: false
           load: true
-          cache-from: type=gha,scope=test
-          cache-to: type=gha,mode=max,scope=test
+          cache-from: type=gha,scope=phraseanet-fpm
+          cache-to: type=gha,mode=max,scope=phraseanet-fpm
           target: phraseanet-fpm
           tags: local/phraseanet-fpm:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-worker
@@ -60,8 +60,8 @@ jobs:
           file: ./Dockerfile
           push: false
           load: true
-          cache-from: type=gha,scope=test
-          cache-to: type=gha,mode=max,scope=test
+          cache-from: type=gha,scope=phraseanet-worker
+          cache-to: type=gha,mode=max,scope=phraseanet-worker
           target: phraseanet-worker
           tags: local/phraseanet-worker:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-db
@@ -71,8 +71,8 @@ jobs:
           file: ./docker/db/Dockerfile
           push: false
           load: true
-          cache-from: type=gha,scope=test
-          cache-to: type=gha,mode=max,scope=test
+          cache-from: type=gha,scope=phraseanet-db
+          cache-to: type=gha,mode=max,scope=phraseanet-db
           target: phraseanet-db
           tags: local/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-elasticsearch
@@ -82,8 +82,8 @@ jobs:
           file: ./docker/elasticsearch/Dockerfile
           push: false
           load: true
-          cache-from: type=gha,scope=test
-          cache-to: type=gha,mode=max,scope=test
+          cache-from: type=gha,scope=phraseanet-elasticsearch
+          cache-to: type=gha,mode=max,scope=phraseanet-elasticsearch
           target: phraseanet-elasticsearch
           tags: local/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: install
