@@ -30,7 +30,7 @@ jobs:
           cache-from: type=gha,scope=test
           cache-to: type=gha,mode=max,scope=test
           target: phraseanet-setup
-          tags: local/phraseanet-setup:$PHRASEANET_DOCKER_TAG
+          tags: local/phraseanet-setup:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-nginx
         uses: docker/build-push-action@v4
         with:
@@ -41,7 +41,7 @@ jobs:
           cache-from: type=gha,scope=test
           cache-to: type=gha,mode=max,scope=test
           target: phraseanet-nginx
-          tags: local/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
+          tags: local/phraseanet-nginx:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-fpm
         uses: docker/build-push-action@v4
         with:
@@ -52,7 +52,7 @@ jobs:
           cache-from: type=gha,scope=test
           cache-to: type=gha,mode=max,scope=test
           target: phraseanet-fpm
-          tags: local/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
+          tags: local/phraseanet-fpm:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-worker
         uses: docker/build-push-action@v4
         with:
@@ -63,7 +63,7 @@ jobs:
           cache-from: type=gha,scope=test
           cache-to: type=gha,mode=max,scope=test
           target: phraseanet-worker
-          tags: local/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+          tags: local/phraseanet-worker:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-db
         uses: docker/build-push-action@v4
         with:
@@ -74,7 +74,7 @@ jobs:
           cache-from: type=gha,scope=test
           cache-to: type=gha,mode=max,scope=test
           target: phraseanet-db
-          tags: local/phraseanet-db:$PHRASEANET_DOCKER_TAG
+          tags: local/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-elasticsearch
         uses: docker/build-push-action@v4
         with:
@@ -85,7 +85,7 @@ jobs:
           cache-from: type=gha,scope=test
           cache-to: type=gha,mode=max,scope=test
           target: phraseanet-elasticsearch
-          tags: local/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
+          tags: local/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: install
         run: |
           docker compose pull
