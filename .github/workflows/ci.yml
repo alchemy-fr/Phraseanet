@@ -19,7 +19,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
       - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -93,8 +93,8 @@ jobs:
           tags: ${{ env.REGISTRY }}/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: install
         run: |
-          PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose pull
-          PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose up -d
+          PHRASEANET_DOCKER_REGISTRY=${{ env.REGISTRY }} PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose pull
+          PHRASEANET_DOCKER_REGISTRY=${{ env.REGISTRY }} PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose up -d
       - name: init tools test
         run: |
           docker compose exec -T phraseanet curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
