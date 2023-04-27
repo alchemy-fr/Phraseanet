@@ -73,7 +73,6 @@ jobs:
           load: true
           cache-from: type=gha,scope=phraseanet-db
           cache-to: type=gha,mode=max,scope=phraseanet-db
-          target: phraseanet-db
           tags: local/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: build phraseanet-elasticsearch
         uses: docker/build-push-action@v4
@@ -84,7 +83,6 @@ jobs:
           load: true
           cache-from: type=gha,scope=phraseanet-elasticsearch
           cache-to: type=gha,mode=max,scope=phraseanet-elasticsearch
-          target: phraseanet-elasticsearch
           tags: local/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: install
         run: |
