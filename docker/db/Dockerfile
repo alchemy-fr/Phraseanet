@@ -6,7 +6,7 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/
 
-ADD ./docker/ /
+ADD ./docker /
 
 ENTRYPOINT ["/phraseanet-entrypoint.sh"]
 CMD ["mysqld","--sql_mode="]
