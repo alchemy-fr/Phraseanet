@@ -27,7 +27,7 @@ main:
     search-engine:
         type: elasticsearch
         options:
-            host: 'localhost'
+            host: elasticsearch
             port: 9200
             index: ''
             shards: 3
