@@ -32,7 +32,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: false
+          push: true
           load: true
           cache-from: type=gha,scope=phraseanet-setup
           cache-to: type=gha,mode=max,scope=phraseanet-setup
@@ -43,7 +43,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: false
+          push: true
           load: true
           cache-from: type=gha,scope=phraseanet-nginx
           cache-to: type=gha,mode=max,scope=phraseanet-nginx
@@ -54,7 +54,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: false
+          push: true
           load: true
           cache-from: type=gha,scope=phraseanet-fpm
           cache-to: type=gha,mode=max,scope=phraseanet-fpm
@@ -65,7 +65,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: false
+          push: true
           load: true
           cache-from: type=gha,scope=phraseanet-worker
           cache-to: type=gha,mode=max,scope=phraseanet-worker
@@ -76,7 +76,7 @@ jobs:
         with:
           context: .
           file: ./docker/db/Dockerfile
-          push: false
+          push: true
           load: true
           cache-from: type=gha,scope=phraseanet-db
           cache-to: type=gha,mode=max,scope=phraseanet-db
@@ -86,7 +86,7 @@ jobs:
         with:
           context: .
           file: ./docker/elasticsearch/Dockerfile
-          push: false
+          push: true
           load: true
           cache-from: type=gha,scope=phraseanet-elasticsearch
           cache-to: type=gha,mode=max,scope=phraseanet-elasticsearch
