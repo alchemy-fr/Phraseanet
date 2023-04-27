@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 env:
-  PHRASEANET_DOCKER_TAG: ${{ github.ref_name }}
+  PHRASEANET_DOCKER_TAG: ${{ github.ref }}
   REGISTRY: ghcr.io/${{ github.repository_owner }}
 jobs:
 
