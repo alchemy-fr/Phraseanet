@@ -45,6 +45,22 @@ done
 
 /var/alchemy/Phraseanet/bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry
 
+echo "Setting Elasticsearch configuration"
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_HOST" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.host elasticsearch
+else
+/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.host $PHRASEANET_ELASTICSEARCH_HOST
+fi
+
+if [ -z "$PHRASEANET_ELASTICSEARCH_PORT" ]; then
+/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.port 9200
+else
+/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.port $PHRASEANET_ELASTICSEARCH_PORT
+fi
+
+sleep 5
+
 /var/alchemy/Phraseanet/bin/console searchengine:index -dc --force
 
 /var/alchemy/Phraseanet/bin/developer ini:setup-tests-dbs -v
