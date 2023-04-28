@@ -1242,14 +1242,14 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateRecordsMetadataResponse($content);
 
+        $metaStructure = $record->get_databox()->get_meta_structure();
+
         foreach ($content['response']['record_metadatas'] as $metadata) {
-            // why 17 ??
-            if (!in_array($metadata['meta_structure_id'], array_keys($toupdate)) || $metadata['meta_structure_id'] == 17) {
+            if (!$metaStructure->get_element($metadata['meta_structure_id'])->is_multi() && !in_array($metadata['meta_structure_id'], array_keys($toupdate))) {
                 continue;
             }
             $saved_value = $toupdate[$metadata['meta_structure_id']]['value'];
-            // why 18 ??
-//            $this->assertEquals($saved_value, $metadata['value']);
+            $this->assertEquals($saved_value, $metadata['value']);
         }
     }
 
