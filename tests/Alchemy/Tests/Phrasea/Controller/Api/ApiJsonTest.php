@@ -1245,7 +1245,7 @@ class ApiJsonTest extends ApiTestCase
         $metaStructure = $record->get_databox()->get_meta_structure();
 
         foreach ($content['response']['record_metadatas'] as $metadata) {
-            if (!$metaStructure->get_element($metadata['meta_structure_id'])->is_multi() && !in_array($metadata['meta_structure_id'], array_keys($toupdate))) {
+            if (!$metaStructure->get_element($metadata['meta_structure_id'])->is_multi() || !in_array($metadata['meta_structure_id'], array_keys($toupdate))) {
                 continue;
             }
             $saved_value = $toupdate[$metadata['meta_structure_id']]['value'];
