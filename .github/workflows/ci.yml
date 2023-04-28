@@ -92,13 +92,7 @@ jobs:
           PHRASEANET_DOCKER_REGISTRY=${{ env.REGISTRY }} PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose up -d
       - name: init tools test
         run: |
-          docker compose exec -T phraseanet curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
-          docker compose exec -T phraseanet php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
-          docker compose exec -T phraseanet composer install --ignore-platform-reqs --no-interaction
-          docker compose exec -T -e PHRASEANET_BASE_URL=http://127.0.0.1 phraseanet docker/phraseanet/setup/auto-install.sh
-          docker compose exec -T phraseanet bin/developer ini:setup-tests-dbs -v
-          docker compose exec -T phraseanet bin/developer phraseanet:regenerate-sqlite -v
-          docker compose exec -T phraseanet bin/developer phraseanet:generate-js-fixtures -v
+          docker compose exec -T -e PHRASEANET_BASE_URL=http://127.0.0.1 phraseanet docker/phraseanet/setup/init-test-install.sh
       - name: test exclude-group legacy
         run: |
           docker compose exec -T phraseanet bin/console system:clear-cache
