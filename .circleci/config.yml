@@ -198,9 +198,9 @@ jobs:
 
 workflows:
     version: 2
-    oldfashion:
-        jobs:
-            - build
+#    oldfashion:
+#        jobs:
+#            - build
     newfashion:
         jobs:
             - build_phraseanet-setup:
