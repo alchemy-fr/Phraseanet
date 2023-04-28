@@ -17,8 +17,8 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       image: phraseanet-setup
-      image_registry: ${{ env.REGISTRY }}
-      cache_registry: ${{ env.CACHE_REGISTRY }}
+      image_registry: "$REGISTRY"
+      cache_registry: "$CACHE_REGISTRY"
       context: .
       file: ./Dockerfile
       target: phraseanet-setup
