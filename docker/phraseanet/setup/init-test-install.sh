@@ -48,15 +48,15 @@ done
 echo "Setting Elasticsearch configuration"
 
 if [ -z "$PHRASEANET_ELASTICSEARCH_HOST" ]; then
-/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.host elasticsearch
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host elasticsearch
 else
-/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.host $PHRASEANET_ELASTICSEARCH_HOST
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host $PHRASEANET_ELASTICSEARCH_HOST
 fi
 
 if [ -z "$PHRASEANET_ELASTICSEARCH_PORT" ]; then
-/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.port 9200
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.port 9200
 else
-/var/alchemy/Phraseanet/bin/setup system:config set -s main.search-engine.options.port $PHRASEANET_ELASTICSEARCH_PORT
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.port $PHRASEANET_ELASTICSEARCH_PORT
 fi
 
 sleep 5
