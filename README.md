@@ -96,10 +96,10 @@ Get official support : https://www.alchemy.fr/en/rubrique/services/
 
 ## Prerequisites
 
-- docker-compose >=v1.29.2
-- docker >=v19.03.13
 
-In the stack Docker, Docker-Compose included in this repo starts by default in test mode. 
+- docker >=v20.10.24
+
+In the stack Docker, Docker Compose included in this repo starts by default in test mode. 
 All services are launched in a separate container and except "Phraseanet app" and "workers" containers, 
 it can be replaced by an external service.
 This is especially recommended to use your SGBD (Mariadb or MySql) service for a production use. 
@@ -214,23 +214,19 @@ You can add your `env.local` at the root of this project and define a command fu
 # Usage example:
 #   dc up -d
 #######################################
-dc()
-{
-  local envFilesSearchList=(".env.local" "env.local")
 
-  for i in "${envFilesSearchList[@]}"; do
-    if [[ -f "$i" ]]; then
-      echo -e "\nEnvironment file: \e[107m\e[42m $i \e[0m\n"
-      eval env "$(cat < $i | grep -v '#' | sed -e 's/=\([^\x27"].*[^\x27"]\)/="\1"/g' | tr '\n' ' ' )" docker-compose "$@"
-      return 1
+function dc() {
+  for envFile in {".env.local","env.local"}; do
+    if [ -f ${envFile} ]; then
+      docker compose --env-file=.env --env-file=${envFile} $@
+      return
     fi
   done
 
-  echo -e "\n\e[107m\e[41m No Environment file \e[0m\n"
-  docker-compose "$@"
+  docker compose $@
 }
 ```
-> Note that helper function only works with `"docker-compose"` (and not `"docker compose"`).
+> Note that helper function only works with `"docker compose"` .
 
 ### Phraseanet Docker Images
 
