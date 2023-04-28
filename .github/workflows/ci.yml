@@ -17,8 +17,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       image: phraseanet-setup
-      image_registry: $REGISTRY
-      cache_registry: $CACHE_REGISTRY
       context: .
       file: ./Dockerfile
       target: phraseanet-setup
@@ -28,8 +26,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       image: phraseanet-nginx
-      image_registry: $REGISTRY
-      cache_registry: $CACHE_REGISTRY
       context: .
       file: ./Dockerfile
       target: phraseanet-nginx
@@ -39,8 +35,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       image: phraseanet-fpm
-      image_registry: $REGISTRY
-      cache_registry: $CACHE_REGISTRY
       context: .
       file: ./Dockerfile
       target: phraseanet-fpm
@@ -50,8 +44,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       image: phraseanet-worker
-      image_registry: $REGISTRY
-      cache_registry: $CACHE_REGISTRY
       context: .
       file: ./Dockerfile
       target: phraseanet-worker
@@ -61,8 +53,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       image: phraseanet-db
-      image_registry: $REGISTRY
-      cache_registry: $CACHE_REGISTRY
       context: ./docker/db
       file: ./docker/db/Dockerfile
       target: ''
@@ -72,8 +62,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       image: phraseanet-elasticsearch
-      image_registry: $REGISTRY
-      cache_registry: $CACHE_REGISTRY
       context: ./docker/elasticsearch
       file: ./docker/elasticsearch/Dockerfile
       target: ''

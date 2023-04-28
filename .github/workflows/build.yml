@@ -6,12 +6,6 @@ on:
       image:
         required: true
         type: string
-      image_registry:
-        required: true
-        type: string
-      cache_registry:
-        required: true
-        type: string
       context:
         required: true
         type: string
@@ -24,6 +18,8 @@ on:
 
 env:
   PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
+  CACHE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 
 jobs:
   buid:
@@ -31,10 +27,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: Log into registry ${{ inputs.image_registry }}
+      - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v2
         with:
-          registry: ${{ inputs.image_registry }}
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/setup-qemu-action@v2
@@ -45,7 +41,7 @@ jobs:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
           push: true
-          cache-from: type=registry,ref=${{ inputs.cache_registry }}/${{ inputs.image }}:build-cache
-          cache-to: type=registry,mode=max,ref=${{ inputs.cache_registry }}/${{ inputs.image }}:build-cache
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/${{ inputs.image }}:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/${{ inputs.image }}:build-cache
           target: ${{ inputs.target }}
-          tags: ${{ inputs.image_registry }}/${{ inputs.image }}:${{ env.PHRASEANET_DOCKER_TAG }}
+          tags: ${{ env.REGISTRY }}/${{ inputs.image }}:${{ env.PHRASEANET_DOCKER_TAG }}
