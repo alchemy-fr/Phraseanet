@@ -1,4 +1,4 @@
-name: testCI
+name: CI
 
 on:
   push:
@@ -10,11 +10,86 @@ env:
   PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
   REGISTRY: ghcr.io/${{ github.repository_owner }}
   CACHE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+
 jobs:
+  build-phraseanet-setup:
+    name: 'build phraseanet-setup'
+    uses: ./.github/workflows/build.yml
+    with:
+      image: phraseanet-setup
+      image_registry: ${{ env.REGISTRY }}
+      cache_registry: ${{ env.CACHE_REGISTRY }}
+      context: .
+      file: ./Dockerfile
+      target: phraseanet-setup
 
-  build-test:
+  build-phraseanet-nginx:
+    name: 'build phraseanet-nginx'
+    uses: ./.github/workflows/build.yml
+    with:
+      image: phraseanet-nginx
+      image_registry: ${{ env.REGISTRY }}
+      cache_registry: ${{ env.CACHE_REGISTRY }}
+      context: .
+      file: ./Dockerfile
+      target: phraseanet-nginx
 
+  build-phraseanet-fpm:
+    name: 'build phraseanet-fpm'
+    uses: ./.github/workflows/build.yml
+    with:
+      image: phraseanet-fpm
+      image_registry: ${{ env.REGISTRY }}
+      cache_registry: ${{ env.CACHE_REGISTRY }}
+      context: .
+      file: ./Dockerfile
+      target: phraseanet-fpm
+
+  build-phraseanet-worker:
+    name: 'build phraseanet-worker'
+    uses: ./.github/workflows/build.yml
+    with:
+      image: phraseanet-worker
+      image_registry: ${{ env.REGISTRY }}
+      cache_registry: ${{ env.CACHE_REGISTRY }}
+      context: .
+      file: ./Dockerfile
+      target: phraseanet-worker
+
+  build-phraseanet-db:
+    name: 'build phraseanet-db'
+    uses: ./.github/workflows/build.yml
+    with:
+      image: phraseanet-db
+      image_registry: ${{ env.REGISTRY }}
+      cache_registry: ${{ env.CACHE_REGISTRY }}
+      context: ./docker/db
+      file: ./docker/db/Dockerfile
+      target: ''
+
+  build-phraseanet-elasticsearch:
+    name: 'build phraseanet-elasticsearch'
+    uses: ./.github/workflows/build.yml
+    with:
+      image: phraseanet-elasticsearch
+      image_registry: ${{ env.REGISTRY }}
+      cache_registry: ${{ env.CACHE_REGISTRY }}
+      context: ./docker/elasticsearch
+      file: ./docker/elasticsearch/Dockerfile
+      target: ''
+
+
+  test:
+    name: 'unit test'
     runs-on: ubuntu-latest
+    needs:
+      - build-phraseanet-setup
+      - build-phraseanet-nginx
+      - build-phraseanet-fpm
+      - build-phraseanet-worker
+      - build-phraseanet-db
+      - build-phraseanet-elasticsearch
+
 
     steps:
       - name: checkout
@@ -25,67 +100,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
-      - name: build phraseanet-setup
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-setup:build-cache
-          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-setup:build-cache
-          target: phraseanet-setup
-          tags: ${{ env.REGISTRY }}/phraseanet-setup:${{ env.PHRASEANET_DOCKER_TAG }}
-      - name: build phraseanet-nginx
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-nginx:build-cache
-          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-nginx:build-cache
-          target: phraseanet-nginx
-          tags: ${{ env.REGISTRY }}/phraseanet-nginx:${{ env.PHRASEANET_DOCKER_TAG }}
-      - name: build phraseanet-fpm
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-fpm:build-cache
-          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-fpm:build-cache
-          target: phraseanet-fpm
-          tags: ${{ env.REGISTRY }}/phraseanet-fpm:${{ env.PHRASEANET_DOCKER_TAG }}
-      - name: build phraseanet-worker
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-worker:build-cache
-          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-worker:build-cache
-          target: phraseanet-worker
-          tags: ${{ env.REGISTRY }}/phraseanet-worker:${{ env.PHRASEANET_DOCKER_TAG }}
-      - name: build phraseanet-db
-        uses: docker/build-push-action@v4
-        with:
-          context: ./docker/db
-          file: ./docker/db/Dockerfile
-          push: true
-          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-db:build-cache
-          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-db:build-cache
-          tags: ${{ env.REGISTRY }}/phraseanet-db:${{ env.PHRASEANET_DOCKER_TAG }}
-      - name: build phraseanet-elasticsearch
-        uses: docker/build-push-action@v4
-        with:
-          context: ./docker/elasticsearch
-          file: ./docker/elasticsearch/Dockerfile
-          push: true
-          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/phraseanet-elasticsearch:build-cache
-          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/phraseanet-elasticsearch:build-cache
-          tags: ${{ env.REGISTRY }}/phraseanet-elasticsearch:${{ env.PHRASEANET_DOCKER_TAG }}
       - name: install
         run: |
           PHRASEANET_DOCKER_REGISTRY=${{ env.REGISTRY }} PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose pull
