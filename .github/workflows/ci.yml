@@ -6,7 +6,6 @@ on:
   pull_request:
     branches:
       - master
-      - PHRAS-3826-ci-test
 
 env:
   PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
