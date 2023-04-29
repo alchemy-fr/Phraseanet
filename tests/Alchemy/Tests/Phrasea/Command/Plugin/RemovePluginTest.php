@@ -13,6 +13,7 @@ class RemovePluginTest extends PluginCommandTestCase
     public function testExecute()
     {
         $name = 'test-plugin';
+        @mkdir(self::$DI['cli']['plugin.path']);
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $input->expects($this->once())

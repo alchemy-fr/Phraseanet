@@ -278,7 +278,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
         // Retrieve filename whatever template locale selected
         $values = null;
-        foreach ($record_1->get_caption()->get_fields(['FileName', 'NomDeFichier'], true) as $value) {
+        foreach ($record_1->get_caption()->get_fields(['FileName', 'Filename', 'NomDeFichier'], true) as $value) {
             $values = $value->get_values();
         }
 
@@ -407,7 +407,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
                 $separator = '';
             }
 
-            $multi_imploded = implode(' ' . $separator . ' ', ['test', 'de', 'jeu', 'un']);
+            $multi_imploded = implode(' ' . $separator . ' ', ['un', 'jeu', 'de', 'test']);
 
             if ($meta_el->is_multi()) {
                 $initial_values = [];

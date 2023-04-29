@@ -295,7 +295,12 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
                 if ($odd) {
                     $value = new \PHPExiftool\Driver\Value\Mono(current($data));
-                    $tofetchMeta [$databox_field->get_tag()->getTagname()] = $data;
+
+                    if (!isset($tofetchMeta [$databox_field->get_tag()->getTagname()])) {
+                        $tofetchMeta [$databox_field->get_tag()->getTagname()] = [];
+                    }
+
+                    $tofetchMeta [$databox_field->get_tag()->getTagname()] = array_merge($tofetchMeta [$databox_field->get_tag()->getTagname()], $data);
 
                     $file->addAttribute(new Metadata(new \PHPExiftool\Driver\Metadata\Metadata($databox_field->get_tag(), $value)));
                 } else {

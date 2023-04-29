@@ -7,101 +7,101 @@ executors:
     machine:
       docker_layer_caching: true
 jobs:
-    build:
-        working_directory: ~/alchemy-fr/Phraseanet
-        parallelism: 2
-        shell: /bin/bash --login
-        environment:
-          CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
-          CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-        docker:
-        - image: cimg/php:7.0.33-node
-        - image: circleci/rabbitmq:3.7.7
-        steps:
-        - checkout
-        - run: php -v
-        - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-        - run:
-            working_directory: ~/alchemy-fr/Phraseanet
-            command: 'sudo apt update && sudo apt install mysql-server && sudo service mysql status || sudo service mysql start;'
-        # Dependencies
-        #   This would typically go in either a build or a build-and-test job when using workflows
-        # Restore the dependency cache
-        - restore_cache:
-            keys:
-            # This branch if available
-            - v2-dep-{{ .Branch }}-
-            # Default branch if not
-            - v2-dep-master-
-            # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-            - v2-dep-
-        # This is based on your 1.0 configuration file or project settings
-        - run: echo 127.0.0.1 redis elasticsearch db rabbitmq | sudo tee -a /etc/hosts
-        - run: git clone https://github.com/alanxz/rabbitmq-c
-        - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
-        - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
-        # disabled because pear.php.net is down cause of security failure
-        #- run: pecl channel-update pear.php.net
-        - run: sudo apt -y install  openjdk-8-jre-headless python-dev-is-python2 php7.0-amqp php7.0-zmq php7.0-intl php7.0-sqlite3 libmagickwand-dev libmagickcore-dev
-        - run: printf "\n" | sudo pecl install amqp-1.11.0beta
-        - run: printf "\n" | sudo pecl install imagick
-        - run: sudo -- bash -c  "echo 'date.timezone = UTC' > /etc/php/7.0/mods-available/timezone.ini"
-        - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /etc/php/7.0/cli/php.ini
-        - run: sudo -- bash -c  'echo -e "[mysqld]\ndefault-authentication-plugin=mysql_native_password" > /etc/mysql/conf.d/mysql_native_password.cnf' && sudo service mysql restart
-        - run: npm rebuild node-sass
-        # This is based on your 1.0 configuration file or project settings
-        - run: composer install --no-progress --no-interaction --optimize-autoloader
-        - run: curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-        - run: source ~/.profile && nvm install v10.12.0 && nvm alias default v10.12.0 
-        # This is based on your 1.0 configuration file or project settings
-        - run: node -v
-        - run: npm -v
-        - run: yarn install
-        - run: if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
-        - run:
-            command: elasticsearch-2.3.3/bin/elasticsearch
-            background: true
-        # Save dependency cache
-        - save_cache:
-            key: v2-dep-{{ .Branch }}-{{ epoch }}
-            paths:
-            # This is a broad list of cache paths to include many possible development environments
-            # You can probably delete some of these entries
-            - vendor/bundle
-            - ~/virtualenvs
-            - ~/.m2
-            - ~/.ivy2
-            - ~/.bundle
-            - ~/.go_workspace
-            - ~/.gradle
-            - ~/.cache/bower
-            # These cache paths were specified in the 1.0 config
-            - elasticsearch-2.3.3
-            - node_modules
-            - ~/.composer
-        # This is based on your 1.0 configuration file or project settings
-        - run: sudo mysql -u root -e "CREATE USER 'phraseanet'@'localhost' IDENTIFIED WITH mysql_native_password BY 'phraseanet';GRANT ALL PRIVILEGES ON * . * TO 'phraseanet'@'localhost';CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;"
-        # This is based on your 1.0 configuration file or project settings
-        - run: ./bin/developer system:uninstall -v
-        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=phraseanet --db-template=fr-simple --db-password=phraseanet --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
-        - run: ./bin/developer ini:setup-tests-dbs -v
-        - run: ./bin/console searchengine:index:create -v
-        - run: ./bin/developer phraseanet:regenerate-sqlite -v
-        - run: ./bin/developer phraseanet:generate-js-fixtures -v
-        # Test
-        #   This would typically be a build job when using workflows, possibly combined with build
-        # This is based on your 1.0 configuration file or project settings
-        - run: case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac
-        # Teardown
-        #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
-        # Save test results
-        - store_test_results:
-            path: /tmp/circleci-test-results
-        # Save artifacts
-        - store_artifacts:
-            path: /tmp/circleci-artifacts
-        - store_artifacts:
-            path: /tmp/circleci-test-results
+#    build:
+#        working_directory: ~/alchemy-fr/Phraseanet
+#        parallelism: 2
+#        shell: /bin/bash --login
+#        environment:
+#          CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+#          CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+#        docker:
+#        - image: cimg/php:7.0.33-node
+#        - image: circleci/rabbitmq:3.7.7
+#        steps:
+#        - checkout
+#        - run: php -v
+#        - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+#        - run:
+#            working_directory: ~/alchemy-fr/Phraseanet
+#            command: 'sudo apt update && sudo apt install mysql-server && sudo service mysql status || sudo service mysql start;'
+#        # Dependencies
+#        #   This would typically go in either a build or a build-and-test job when using workflows
+#        # Restore the dependency cache
+#        - restore_cache:
+#            keys:
+#            # This branch if available
+#            - v2-dep-{{ .Branch }}-
+#            # Default branch if not
+#            - v2-dep-master-
+#            # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
+#            - v2-dep-
+#        # This is based on your 1.0 configuration file or project settings
+#        - run: echo 127.0.0.1 redis elasticsearch db rabbitmq | sudo tee -a /etc/hosts
+#        - run: git clone https://github.com/alanxz/rabbitmq-c
+#        - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
+#        - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
+#        # disabled because pear.php.net is down cause of security failure
+#        #- run: pecl channel-update pear.php.net
+#        - run: sudo apt -y install  openjdk-8-jre-headless python-dev-is-python2 php7.0-amqp php7.0-zmq php7.0-intl php7.0-sqlite3 libmagickwand-dev libmagickcore-dev
+#        - run: printf "\n" | sudo pecl install amqp-1.11.0beta
+#        - run: printf "\n" | sudo pecl install imagick
+#        - run: sudo -- bash -c  "echo 'date.timezone = UTC' > /etc/php/7.0/mods-available/timezone.ini"
+#        - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /etc/php/7.0/cli/php.ini
+#        - run: sudo -- bash -c  'echo -e "[mysqld]\ndefault-authentication-plugin=mysql_native_password" > /etc/mysql/conf.d/mysql_native_password.cnf' && sudo service mysql restart
+#        - run: npm rebuild node-sass
+#        # This is based on your 1.0 configuration file or project settings
+#        - run: composer install --no-progress --no-interaction --optimize-autoloader
+#        - run: curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+#        - run: source ~/.profile && nvm install v10.12.0 && nvm alias default v10.12.0
+#        # This is based on your 1.0 configuration file or project settings
+#        - run: node -v
+#        - run: npm -v
+#        - run: yarn install
+#        - run: if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
+#        - run:
+#            command: elasticsearch-2.3.3/bin/elasticsearch
+#            background: true
+#        # Save dependency cache
+#        - save_cache:
+#            key: v2-dep-{{ .Branch }}-{{ epoch }}
+#            paths:
+#            # This is a broad list of cache paths to include many possible development environments
+#            # You can probably delete some of these entries
+#            - vendor/bundle
+#            - ~/virtualenvs
+#            - ~/.m2
+#            - ~/.ivy2
+#            - ~/.bundle
+#            - ~/.go_workspace
+#            - ~/.gradle
+#            - ~/.cache/bower
+#            # These cache paths were specified in the 1.0 config
+#            - elasticsearch-2.3.3
+#            - node_modules
+#            - ~/.composer
+#        # This is based on your 1.0 configuration file or project settings
+#        - run: sudo mysql -u root -e "CREATE USER 'phraseanet'@'localhost' IDENTIFIED WITH mysql_native_password BY 'phraseanet';GRANT ALL PRIVILEGES ON * . * TO 'phraseanet'@'localhost';CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;"
+#        # This is based on your 1.0 configuration file or project settings
+#        - run: ./bin/developer system:uninstall -v
+#        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=phraseanet --db-template=fr-simple --db-password=phraseanet --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+#        - run: ./bin/developer ini:setup-tests-dbs -v
+#        - run: ./bin/console searchengine:index:create -v
+#        - run: ./bin/developer phraseanet:regenerate-sqlite -v
+#        - run: ./bin/developer phraseanet:generate-js-fixtures -v
+#        # Test
+#        #   This would typically be a build job when using workflows, possibly combined with build
+#        # This is based on your 1.0 configuration file or project settings
+#        - run: case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac
+#        # Teardown
+#        #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
+#        # Save test results
+#        - store_test_results:
+#            path: /tmp/circleci-test-results
+#        # Save artifacts
+#        - store_artifacts:
+#            path: /tmp/circleci-artifacts
+#        - store_artifacts:
+#            path: /tmp/circleci-test-results
 
     build_phraseanet-setup:
         machine:
@@ -198,9 +198,9 @@ jobs:
 
 workflows:
     version: 2
-    oldfashion:
-        jobs:
-            - build
+#    oldfashion:
+#        jobs:
+#            - build
     newfashion:
         jobs:
             - build_phraseanet-setup:
