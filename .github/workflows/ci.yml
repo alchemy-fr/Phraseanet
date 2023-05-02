@@ -21,6 +21,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-setup
+    secrets: inherit
 
   build-phraseanet-nginx:
     name: 'build phraseanet-nginx'
@@ -30,6 +31,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-nginx
+    secrets: inherit
 
   build-phraseanet-fpm:
     name: 'build phraseanet-fpm'
@@ -39,6 +41,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-fpm
+    secrets: inherit
 
   build-phraseanet-worker:
     name: 'build phraseanet-worker'
@@ -48,6 +51,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-worker
+    secrets: inherit
 
   build-phraseanet-db:
     name: 'build phraseanet-db'
@@ -57,6 +61,7 @@ jobs:
       context: ./docker/db
       file: ./docker/db/Dockerfile
       target: ''
+    secrets: inherit
 
   build-phraseanet-elasticsearch:
     name: 'build phraseanet-elasticsearch'
@@ -66,6 +71,7 @@ jobs:
       context: ./docker/elasticsearch
       file: ./docker/elasticsearch/Dockerfile
       target: ''
+    secrets: inherit
 
 
   test:
