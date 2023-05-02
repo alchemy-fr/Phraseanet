@@ -89,6 +89,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get tag name
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "PHRASEANET_DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
       - name: install
         run: |
           PHRASEANET_DOCKER_REGISTRY=${{ env.REGISTRY }} PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose pull
