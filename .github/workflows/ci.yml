@@ -2,10 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ "master" , "PHRAS-3826-ci-fix-tag-name"]
-#  pull_request:
-#    branches:
-#      - master
+    branches: [ "master" ]
+  pull_request:
+    branches:
+      - master
 
 env:
   PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
