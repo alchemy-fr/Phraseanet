@@ -8,7 +8,7 @@ on:
       - master
 
 env:
-  PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
+  PHRASEANET_DOCKER_TAG: ${{ github.ref_name }}
   REGISTRY: ghcr.io/${{ github.repository_owner }}
   CACHE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 
