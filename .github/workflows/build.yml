@@ -35,6 +35,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
+      - name: Get tag name
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "PHRASEANET_DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
       - name: build ${{ inputs.image }}
         uses: docker/build-push-action@v4
         with:
