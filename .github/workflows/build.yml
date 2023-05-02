@@ -22,10 +22,6 @@ env:
   CACHE_REGISTRY: ghcr.io/${{ github.repository_owner }}
   AWS_REGION: eu-west-2
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   buid:
     runs-on: ubuntu-latest
