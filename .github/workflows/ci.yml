@@ -21,6 +21,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-setup
+    secrets: inherit
 
   build-phraseanet-nginx:
     name: 'build phraseanet-nginx'
@@ -30,6 +31,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-nginx
+    secrets: inherit
 
   build-phraseanet-fpm:
     name: 'build phraseanet-fpm'
@@ -39,6 +41,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-fpm
+    secrets: inherit
 
   build-phraseanet-worker:
     name: 'build phraseanet-worker'
@@ -48,6 +51,7 @@ jobs:
       context: .
       file: ./Dockerfile
       target: phraseanet-worker
+    secrets: inherit
 
   build-phraseanet-db:
     name: 'build phraseanet-db'
@@ -57,6 +61,7 @@ jobs:
       context: ./docker/db
       file: ./docker/db/Dockerfile
       target: ''
+    secrets: inherit
 
   build-phraseanet-elasticsearch:
     name: 'build phraseanet-elasticsearch'
@@ -66,6 +71,7 @@ jobs:
       context: ./docker/elasticsearch
       file: ./docker/elasticsearch/Dockerfile
       target: ''
+    secrets: inherit
 
 
   test:
@@ -83,31 +89,38 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Get tag name
         if: github.event_name != 'pull_request'
         shell: bash
         run: echo "PHRASEANET_DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+
       - name: install
         run: |
           PHRASEANET_DOCKER_REGISTRY=${{ env.REGISTRY }} PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose pull
           PHRASEANET_DOCKER_REGISTRY=${{ env.REGISTRY }} PHRASEANET_DOCKER_TAG=${{ env.PHRASEANET_DOCKER_TAG }} docker compose up -d
+
       - name: init tools test
         run: |
           docker compose exec -T -e PHRASEANET_BASE_URL=http://127.0.0.1 phraseanet docker/phraseanet/setup/init-test-install.sh
+
       - name: test exclude-group legacy
         run: |
           docker compose exec -T phraseanet bin/console system:clear-cache
           docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit  --exclude-group legacy
+
       - name: test group legacy and exclude-group web
         run: |
           docker compose exec -T phraseanet bin/console system:clear-cache
           docker compose exec -T phraseanet php -d memory_limit=-1 vendor/phpunit/phpunit/phpunit  --group legacy --exclude-group web
+
       - name: test group web
         run: |
           docker compose exec -T phraseanet bin/console system:clear-cache
