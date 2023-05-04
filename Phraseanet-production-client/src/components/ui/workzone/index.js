@@ -1014,17 +1014,18 @@ const workzone = (services) => {
             let publicationId = $(this).attr('data-publication-id');
             let exposeName = $('#expose_list').val();
             let assetsContainer = $(this).parents('.expose_item_deployed');
-            let positions = [];
+            const order = [];
 
             $('.assets_list .chim-wrapper').each(function(i, el){
-                positions[$(this).attr('data-pub-asset-id')] = i + 1;
+                order.push($(this).attr('data-pub-asset-id'));
             });
 
             $.ajax({
                 type: 'POST',
                 url: `/prod/expose/publication/update-assets-order/?exposeName=${exposeName}`,
                 data: {
-                    listPositions: JSON.stringify({ ...positions })
+                    order,
+                    publicationId,
                 },
                 dataType: 'json',
                 success: function (data) {

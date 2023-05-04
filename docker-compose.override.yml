@@ -5,8 +5,11 @@ services:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
-    networks:
-      - internal
+  gateway-traefik:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
   builder:
     build:
       context: .

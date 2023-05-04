@@ -67,7 +67,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
      *       exposes:
      *              expose_test:
      *                  activate_expose: true
-     *                  connection_kind: account
+     *                  connection_kind: password
      *                  expose_front_uri: 'localhost:8080'
      *                  expose_base_uri: 'localhost:8082'
      *                  client_secret: secret
