@@ -201,17 +201,17 @@ workflows:
 #    oldfashion:
 #        jobs:
 #            - build
-    newfashion:
-        jobs:
-            - build_phraseanet-setup:
-                context: "AWS London"
-            - build_phraseanet-fpm:
-                context: "AWS London"
-            - build_phraseanet-worker:
-                context: "AWS London"
-            - build_phraseanet-nginx:
-                context: "AWS London"
-            - build_phraseanet-db:
-                context: "AWS London"
-            - build_phraseanet-elasticsearch:
-                context: "AWS London"
+#    newfashion:
+#        jobs:
+#            - build_phraseanet-setup:
+#                context: "AWS London"
+#            - build_phraseanet-fpm:
+#                context: "AWS London"
+#            - build_phraseanet-worker:
+#                context: "AWS London"
+#            - build_phraseanet-nginx:
+#                context: "AWS London"
+#            - build_phraseanet-db:
+#                context: "AWS London"
+#            - build_phraseanet-elasticsearch:
+#                context: "AWS London"
