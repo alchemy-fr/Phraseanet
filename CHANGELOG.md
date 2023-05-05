@@ -1,5 +1,110 @@
 # CHANGELOG
 
+## 4.1.7
+
+### Update instructions : 
+
+    - If you come from 4.1.6 Nothing special except for the primary datastore backup before performing an update.
+
+    - If you come from earlier version, you needs to manually perform a "drop", "create", "populate" of elasticsearch index.
+
+### Version summary :
+  - General improvement for the report and introducing bin/report for report export automation
+  - Authentication improvement in supporting multiple IDPs. 
+  - Adding log cleaning feature
+
+
+# Release notes - Phraseanet - 4.1.7
+  
+
+### Stack (docker compose, helm)
+
+    we have bump minimal version for docker and docker compose.
+    the dc helper functionality is now compliant with docker compose (see readme).
+
+### New Features & Improvements
+
+```
+PHRAS-3297 Send an email to users once a year to get approval for accounts
+PHRAS-2872 Phraseanet Authentication uses phrasea auth service as idp
+PHRAS-2995 Add phraseanet-service as Oauth service provider for Phraseanet 4.1 
+PHRAS-3694 bin/maintenance clean:users, add more parameters
+PHRAS-3779 Prod  - expose-cli - IDP integration
+PHRAS-3728 Multiple SAML Idp support
+PHRAS-3812 Docker-compose RabbitMQ define hostname and database name 
+PHRAS-3783 Prod - Order manager - Adding Download Expiration date 
+PHRAS-3804 Home - Acceptio Cookies consent provider integration - GDPR
+PHRAS-3823 Report - bin/report a command line report generator
+PHRAS-3828 bin/report and GUI Export databox content
+PHRAS-1718 Bump recaptcha version 
+PHRAS-1974 Autodelete inactive users after a given period
+PHRAS-3813 bin/maintenance clean databox's logs table
+PHRAS-3819 Bin/maintenance clean webhook's log - WebhookEvents 
+PHRAS-3152 Bin/maintenance Cleaner for table "LazaretSessions" 
+PHRAS-3462 Bin/maintenance  clean:apilog  and clean:WorkerRunningJob - applicationbox
+PHRAS-473 Prod - Advanced search - display fields labels and other improvements 
+PHRAS-2759 Report - Adding a feature in Report to display all documents sent by email 
+PHRAS-3318 Authentication : Saml Authentication in docker and kubernetes context
+PHRAS-3596 Prod - Expose client - Filtering Expose publications and other GUI improvements 
+PHRAS-3598 Webhook - Emit improvement  - Count and Log errors - stop to notify endpoint in error. 
+PHRAS-3683 Docker Compose - dc functionality improvement - support space in env value
+PHRAS-3794 Install - elasticsearch configuration - \`populate\_order\`  became \`MODIFICATION\_DATE\` by default 
+PHRAS-3798 bin/setup - system:config set - filtering sensitive credentials on stdout
+PHRAS-3738 Admin - worker - job tab - Adding filter on databox , date, record_id
+PHRAS-3754 Admin - user detail - more tab Record ACL, publications and baskets 
+PHRAS-3761 Admin - worker manager - jobs - running process - computation of current duration
+PHRAS-3793 Shared baskets - Update record_right when a share expires
+PHRAS-3802 Home - forgotten password - change end user message 
+PHRAS-3807 Border manager - lazaret - more default file extension lib/conf.d/configuration.yml  
+PHRAS-3816 Improvement of db index on WorkerRunningJob table
+PHRAS-3821 Docker - Faster start for fpm and worker container
+PHRAS-3822 Prod : Improve Image Watermarking
+PHRAS-3825 Admin - worker manager - queue - add filter "Hide empty queues"
+PHRAS-3826 ci - ci refactoring - migrate to github action
+PHRAS-3827 Admin - users list - keep selection and page  when validate or back in users edit
+PHRAS-3739 Add JQ (php extension) to the stack
+PHRAS-3764 Missing string - Check spelling for the pop up "empty collection"
+PHRAS-3778 Docker - logs output optim for fpm, workers, scheduler, gateway 
+PHRAS-3830 Prod - advanced search - operator for field type number
+PHRAS-3832 Report - download record list - improvement
+PHRAS-3833 Report - export databox action  and others fixes
+PHRAS-3838 Prod - Expose - v2 - flatten assets break
+PHRAS-3765 Oauth2 : allow to pass client custom parameters into session
+```
+
+### Bugs
+
+
+```
+PHRAS-3702 Migration patch error 4.1.6-rc3 to 4.1.6-rc4 bin/setup system:upgrade always fail on basket table
+PHRAS-2948 Quarantine checker - fix checker deactivation
+PHRAS-3273 Prod - mapbox user pref - map\_zoom generates an error when is memorized by mapboxgl and read by mapboxJS
+PHRAS-3569 Prod - video tools - sometimes an ERROR occurs about a record file type 
+PHRAS-3664 Prod - record moving between collections action : no retry on indexation failure
+PHRAS-3757 Phraseanet - Phrasea Uploader - multivalued fields are merge in one value
+PHRAS-3758 Prod - Baskets - Unable to start a feedback from the Action menu
+PHRAS-3782 Preview "train" keyboard navigation crashes on page-1
+PHRAS-3785 Stamp is KO, resulting err500 in download
+PHRAS-3791 SAML AUTHENTICATION : Log out generates an 500 error
+PHRAS-3795 Prod - fix 404 on GET assets/common/css/fonts/icomoon.woff
+PHRAS-3800 Prod - xss injection with filename
+PHRAS-3806 ps-auth : Flushing rights when changing group is not working
+PHRAS-3808 Prod - video tools - Hiding "video tools" menu item when user doesn't have this right
+PHRAS-3811 docker-compose fix typo in writeMetadatas service profiles
+PHRAS-3814 Share basket fix migration patch
+PHRAS-3815 Prod - share basket - wrong object in sent email 
+PHRAS-3818 Prod- Expose cli - several fix 
+PHRAS-3824 xss on preview
+PHRAS-3829 Prod - basket content - Design is broken for screen "set order"
+PHRAS-3831 Admin - submit xml setting return an 500 error
+PHRAS-3836 Admin - status bits name - fix character encoding
+PHRAS-3837 Docker - fix image build - Debian strech in archive 
+PHRAS-3820 Migration - fix migration patch 4.0 to 4.1.7
+PHRAS-3817 Webhook - created subdef - permalink is empty
+PHRAS-3314 Prod - Expose - Publication with huge amount of assets - loading assets is very long - wrong UX
+```
+
+
 ## 4.1.6
 
 ### Update instructions
