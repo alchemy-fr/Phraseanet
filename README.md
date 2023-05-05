@@ -45,7 +45,7 @@ https://www.phraseanet.com/en/download/
 You can also ```git clone``` this repository for dev and/or test. 
 
 
-In each case, Phraseanet includes Dockerfile for building images and Docker-compose deployment.
+In each case, Phraseanet includes Dockerfile for building images and ```Docker compose``` deployment.
 
 
 See below for more information about Prerequisites and how to personalize the stack deployed. 
@@ -57,8 +57,8 @@ In a terminal from the Phraseanet repository launch
 
 
     
-    docker-compose build
-    docker-compose up -d 
+    docker compose build
+    docker compose up -d 
      
 
 After installation process, the default parameters allow you to reach the app on : `http://localhost:8082`
@@ -120,7 +120,7 @@ eg :
 
  - Pma etc...
 
-Refer to .env file and docker-compose files or on documentation for stack compositing.
+Refer to ```.env``` file and ```docker compose``` files or on documentation for stack compositing.
 
 https://docs.phraseanet.com/4.1/en/Admin/EnvironnementVariables.html
 
@@ -154,7 +154,7 @@ Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 ## Stack description and customization
 
-We provide a Dockerfile for build images and docker-compose for deployment 
+We provide a Dockerfile for build images and several ```docker-compose...``` for deployment. 
 
 Use ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` env variables for composing this deployment.
 
@@ -205,10 +205,10 @@ You can add your `env.local` at the root of this project and define a command fu
 
 ```bash
 #######################################
-# Docker-compose helper:
+# Docker compose helper:
 #   Locate first defined environment
 #   file and inject variables found in
-#   docker-compose command.
+#   docker compose command.
 # Arguments:
 #   command (string)
 # Usage example:
@@ -244,7 +244,7 @@ PHRASEANET_DOCKER_REGISTRY=alchemyfr
 ```
 and launch
 
-```docker-compose pull```
+```docker compose pull```
 
 > Pulling images from Docker Hub takes ~ 3 minutes, depending on your bandwith
 
@@ -253,7 +253,7 @@ and launch
 
 launch 
 
-```docker-compose build```
+```docker compose build```
 
 
 > The first build takes ~ 30 minutes on host without any Docker building cache, depending on your bandwith and the host capacity.
@@ -262,7 +262,7 @@ launch
 ### Running the application
 
 
-    docker-compose up -d
+    docker compose up -d
 
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
@@ -315,13 +315,13 @@ COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,workers
 
 You can run it with:
 
-    docker-compose up -d
+    docker compose up -d
 
 The environment is not ready yet: you have to fetch all dependencies.
 
 This can be made easily from the builder container:
 
-    docker-compose run --rm -u app builder make install install_composer_dev
+    docker compose run --rm -u app builder make install install_composer_dev
 
 > Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allows the final image to be light.
 > If you need to use dev tools, ensure you are running the `builder` image!
@@ -332,9 +332,9 @@ This can be made easily from the builder container:
 You can also obtain a shell access in builder container:
 
 ```bash
-docker-compose run --rm builder /bin/bash
+docker compose run --rm builder /bin/bash
 # or
-docker-compose run --rm builder /bin/zsh
+docker compose run --rm builder /bin/zsh
 ```
 
 In this container you will have the same libraries (PHP, Node, composer, ...) that are used to build images.
@@ -366,7 +366,7 @@ You have to set the following env:
 XDEBUG_REMOTE_HOST=host.docker.internal
 ```
 
-> Don't forget to recreate your container (`docker-compose up -d phraseanet`)
+> Don't forget to recreate your container (`docker compose up -d phraseanet`)
 
 ### Build images with plugins
 
@@ -396,7 +396,7 @@ export PHRASEANET_SSH_PRIVATE_KEY=$(openssl rsa -in ~/.ssh/id_rsa -out /tmp/id_r
 #### Running workers
 
 ```bash
-docker-compose -f docker-compose.yml run --rm worker <command>
+docker compose -f docker-compose.yml run --rm worker <command>
 ```
 
 Where `<command>` can be:
