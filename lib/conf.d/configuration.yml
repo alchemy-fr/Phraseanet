@@ -83,7 +83,7 @@ main:
             enabled: true
             level: INFO
     session:
-        type: 'file'
+        type: native
         options: []
         ttl: 86400
     binaries:
