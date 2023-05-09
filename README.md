@@ -1,7 +1,7 @@
 Phraseanet 4.1 - Digital Asset Management application
 =====================================================
 
-[![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master)
+[![CI](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml)
 
 # Main Features :
 
