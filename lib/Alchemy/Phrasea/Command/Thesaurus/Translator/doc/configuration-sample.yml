@@ -1,3 +1,5 @@
+# <phraseanet>/config/translator/configuration.yml
+
 translator:
   jobs:
     #
@@ -22,7 +24,7 @@ translator:
       set_status: 010xxxx
 
     #
-    # second (last) job : translate EN country to FR and DE, add as keywords !
+    # second (last) job : translate EN country to FR and DE, add also as keywords !
     #
     country_EN_to_FR_DE:
       active: true

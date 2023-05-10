@@ -234,7 +234,9 @@ class Job
 
             $metas[$row['meta_struct_id']][$row['meta_id']] = $row['value'];
         }
-        $this->doRecord($currentRid, $metas);  // flush last record
+        if($currentRid !== '?') {
+            $this->doRecord($currentRid, $metas);  // flush last record
+        }
 
         $stmt->closeCursor();
     }
@@ -350,22 +352,50 @@ class Job
 
         if (!$this->globalConfiguration->isDryRun()) {
             $record = $this->getDatabox()->getRecordRepository()->find($record_id);
+            $actions = [];
 
-            // todo : delete meta where id in array_keys($meta_to_delete) ; $meta_to_delete[meta_id] = meta_value
-            $this->output->writeln(sprintf("<info>DELETE : %s</info>", var_export($meta_to_delete, true)));
-
-            // todo : add meta from $meta_to_add ; $meta_to_add[meta_struct_id] = array of values
-            $this->output->writeln(sprintf("<info>ADD : %s</info>", var_export($meta_to_add, true)));
+            $metadatas = [];
+            foreach (array_keys($meta_to_delete) as $id) {
+                $metadatas[] = [
+                    'action' => "delete",
+                    'meta_id' => $id
+                ];
+            }
+           foreach($meta_to_add as $struct_id => $values) {
+                $metadatas[] = [
+                    'action' => "add",
+                    'meta_struct_id' => $struct_id,
+                    'value' => $values
+                ];
+            }
+            if(!empty($metadatas)) {
+                $actions['metadatas'] = $metadatas;
+            }
+            unset($metadatas);
 
             if(!is_null($this->setCollection)) {
-                // todo : move record
-                $this->output->writeln(sprintf("<info>MOVE TO : %s</info>", $this->setCollection->get_name()));
+                $actions['base_id'] = $this->setCollection->get_base_id();
             }
 
             if(!is_null($this->setStatus)) {
-                // todo : change status
-                $this->output->writeln(sprintf("<info>SET STATUS : %s</info>", $this->setStatus));
+                $status = [];
+                foreach(str_split(strrev($this->setStatus), 1) as $bit => $v) {
+                    if($v === '0' || $v === '1') {
+                        $status[] = [
+                            'bit' => $bit,
+                            'state' => $v === '1'
+                        ];
+                    }
+                }
+                if(!empty($status)) {
+                    $actions['status'] = $status;
+                }
             }
+
+            $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
+            // $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+
+            $record->setMetadatasByActions(json_decode($jsActions));
         }
 
     }
