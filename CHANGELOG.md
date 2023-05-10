@@ -100,7 +100,7 @@ PHRAS-3824 xss on preview
 PHRAS-3829 Prod - basket content - Design is broken for screen "set order"
 PHRAS-3831 Admin - submit xml setting return an 500 error
 PHRAS-3836 Admin - status bits name - fix character encoding
-PHRAS-3837 Docker - fix image build - Debian strech
+PHRAS-3837 Docker - fix image build
 PHRAS-3820 Migration - fix migration patch 4.0 to 4.1.7
 PHRAS-3817 Webhook - created subdef - permalink is empty
 PHRAS-3314 Prod - Expose - Publication with huge amount of assets - loading assets is very long - wrong UX
