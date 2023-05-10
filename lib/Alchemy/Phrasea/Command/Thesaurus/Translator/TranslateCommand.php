@@ -44,14 +44,7 @@ class TranslateCommand extends phrCommand
     {
         $this->setName('thesaurus:translate')
             ->setDescription('Translate fields values using thesaurus')
-            ->addOption('from_collection',    null,  InputOption::VALUE_REQUIRED, "", null)
-            ->addOption('if_status',    null,  InputOption::VALUE_REQUIRED, "", null)
-            ->addOption('from_field',    null,  InputOption::VALUE_REQUIRED, "", null)
-            ->addOption('from_lng',    null,  InputOption::VALUE_REQUIRED, "", null)
-            ->addOption('to_field',    null,  InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, "", null)
-            ->addOption('cleanup_source',    null,  InputOption::VALUE_REQUIRED, "", null)
-            ->addOption('cleanup_destination',    null,  InputOption::VALUE_NONE, "", null)
-            ->addOption('to_collection',    null,  InputOption::VALUE_REQUIRED, "", null)
+            ->addOption('dry',    null,  InputOption::VALUE_NONE, "list translations but don't apply.", null)
         ;
     }
 
@@ -76,6 +69,7 @@ class TranslateCommand extends phrCommand
                 $this->container['phraseanet.appbox'],
                 $this->container['unicode'],
                 $this->container['root.path'],
+                $input->getOption('dry'),
                 $output
             );
         }

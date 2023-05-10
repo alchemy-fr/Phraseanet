@@ -22,12 +22,18 @@ Class GlobalConfiguration
     private $databoxes = [];
 
     /**
+     * @var bool
+     */
+    private $dryRun;
+
+    /**
      * @param appbox $appBox
      * @param array $global_conf
      */
-    private function __construct($appBox, Unicode $unicode, $global_conf, OutputInterface $output)
+    private function __construct($appBox, Unicode $unicode, $global_conf, bool $dryRun, OutputInterface $output)
     {
         $this->configuration = $global_conf;
+        $this->dryRun = $dryRun;
 
         // list databoxes and collections to access by id or by name
         $this->databoxes = [];
@@ -59,7 +65,7 @@ Class GlobalConfiguration
      * @return GlobalConfiguration
      * @throws ConfigurationException
      */
-    public static function create(appbox $appBox, Unicode $unicode, string $root, OutputInterface $output): GlobalConfiguration
+    public static function create(appbox $appBox, Unicode $unicode, string $root, bool $dryRun, OutputInterface $output): GlobalConfiguration
     {
         try {
             $config_file = ($config_dir = $root . self::CONFIG_DIR) . self::CONFIG_FILE;
@@ -67,7 +73,7 @@ Class GlobalConfiguration
             @mkdir($config_dir, 0777, true);
 
             $config = Yaml::parse(file_get_contents($config_file));
-            return new self($appBox, $unicode, $config['translator'], $output);
+            return new self($appBox, $unicode, $config['translator'], $dryRun, $output);
         }
         catch (\Exception $e) {
             throw new ConfigurationException(sprintf("missing or bad configuration (%s)", $e->getMessage()));
@@ -98,6 +104,11 @@ Class GlobalConfiguration
         return $this->databoxes[$sbasIdOrName]['collections'][$collIdOrName] ?? null;
     }
 
-
-
+    /**
+     * @return bool
+     */
+    public function isDryRun(): bool
+    {
+        return $this->dryRun;
+    }
 }
