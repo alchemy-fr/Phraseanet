@@ -23,7 +23,7 @@ env:
   AWS_REGION: eu-west-2
 
 jobs:
-  buid:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
