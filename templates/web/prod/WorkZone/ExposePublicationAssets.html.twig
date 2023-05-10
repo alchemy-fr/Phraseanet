@@ -59,6 +59,16 @@
 <div class="chim-wrapper" data-pub-asset-id="{{ asset.id }}">
     <div class="chim-content">
         <div class="CHIM diapo">
+            <div class="copy-embed" style="position: absolute;top: 0;cursor: pointer; z-index:15;" title="{{ 'expose:: copy embeded code' | trans  }}"
+                 >
+                <span class="asset-embed-code" style="display: none;">
+                    <iframe title= "{{ asset.title }}" width="100%" height="100%" src="{{ exposeFrontBasePath ~ 'embed/' ~ asset.id }}"
+                            frameborder="0" allowfullscreen>
+                    </iframe>
+                </span>
+                <i class="fa fa-copy" aria-hidden="true"></i>
+            </div>
+
             <div class="thumb_wrapper">
                 <img
                         data-kind="image" oncontextMenu="return(false);"
@@ -97,4 +107,18 @@
             </button>
         </div>
     </div>
+
+<script type ="text/javascript">
+    $(document).ready(function () {
+        $('.assets_list .copy-embed').on('click', function (event) {
+            let that = $(this);
+            navigator.clipboard.writeText(that.find(".asset-embed-code").html()).then(function() {
+                that.find(".fa-copy").css("color", "#1d7bcd");
+            }, function (err) {
+                console.error('Could not copy link: ', err);
+            });
+        });
+    });
+
+</script>
 {% endif %}

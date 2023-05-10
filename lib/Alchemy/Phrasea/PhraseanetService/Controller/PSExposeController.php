@@ -451,7 +451,7 @@ class PSExposeController extends Controller
     public function getPublicationAssetsAction(PhraseaApplication $app, Request $request)
     {
         $exposeName = $request->get('exposeName');
-        $config = $this->getExposeConfiguration($exposeName);
+        $exposeConfiguration = $this->getExposeConfiguration($exposeName);
         $page = $request->get('page')?:1;
 
         $exposeClient = $this->getExposeClient($exposeName);
@@ -502,6 +502,8 @@ class PSExposeController extends Controller
             $totalItems = $body['hydra:totalItems'];
         }
 
+        $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
+
         return $this->render('prod/WorkZone/ExposePublicationAssets.html.twig', [
             'assets'                => $assets,
             'publicationId'         => $request->get('publicationId'),
@@ -510,7 +512,8 @@ class PSExposeController extends Controller
             'enabled'               => $request->get('enabled'),
             'childrenCount'         => $request->get('childrenCount'),
             'totalItems'            => $totalItems,
-            'page'                  => $page
+            'page'                  => $page,
+            'exposeFrontBasePath'   => $exposeFrontBasePath
         ]);
     }
 
