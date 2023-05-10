@@ -60,12 +60,7 @@
     <div class="chim-content">
         <div class="CHIM diapo">
             <div class="copy-embed" style="position: absolute;top: 0;cursor: pointer; z-index:15;" title="{{ 'expose:: copy embeded code' | trans  }}"
-                 >
-                <span class="asset-embed-code" style="display: none;">
-                    <iframe title= "{{ asset.title }}" width="100%" height="100%" src="{{ exposeFrontBasePath ~ 'embed/' ~ asset.id }}"
-                            frameborder="0" allowfullscreen>
-                    </iframe>
-                </span>
+                 data-title="{{ asset.title }}" data-src="{{ exposeFrontBasePath ~ 'embed/' ~ asset.id }}">
                 <i class="fa fa-copy" aria-hidden="true"></i>
             </div>
 
@@ -112,7 +107,10 @@
     $(document).ready(function () {
         $('.assets_list .copy-embed').on('click', function (event) {
             let that = $(this);
-            navigator.clipboard.writeText(that.find(".asset-embed-code").html()).then(function() {
+            let code = ' <iframe title= "' + that.data('title') + '" width="100%" height="480" src="';
+            code += that.data('src') + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" frameborder="0" allowfullscreen></iframe>';
+
+            navigator.clipboard.writeText(code).then(function() {
                 that.find(".fa-copy").css("color", "#1d7bcd");
             }, function (err) {
                 console.error('Could not copy link: ', err);
