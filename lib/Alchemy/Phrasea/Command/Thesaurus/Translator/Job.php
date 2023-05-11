@@ -97,7 +97,7 @@ class Job
         }
 
         $this->errors = [];
-        foreach (['databox', 'source_field', 'source_lng'] as $mandatory) {
+        foreach (['active', 'databox', 'source_field', 'destination_fields'] as $mandatory) {
             if (!isset($job_conf[$mandatory])) {
                 $this->errors[] = sprintf("Missing mandatory setting (%s).", $mandatory);
             }
@@ -138,7 +138,7 @@ class Job
 
             return;
         }
-        $this->source_field['lng'] = $job_conf['source_lng'];
+        $this->source_field['lng'] = array_key_exists('source_lng', $job_conf) ? $job_conf['source_lng'] : null;
         $this->selectRecordFieldIds[] = $this->source_field['id'];
         $this->xpathTh = $this->databox->get_xpath_thesaurus();
         $this->tbranches = $this->xpathTh->query($this->source_field['tbranch']);
@@ -269,7 +269,9 @@ class Job
             if ($t[1]) {
                 $q .= ' and @k=\'' . \thesaurus::xquery_escape($this->unicode->remove_indexer_chars($t[1])) . '\'';
             }
-            $q .= ' and @lng=\'' . \thesaurus::xquery_escape($this->source_field['lng']) . '\'';
+            if(!is_null($this->source_field['lng'])) {
+                $q .= ' and @lng=\'' . \thesaurus::xquery_escape($this->source_field['lng']) . '\'';
+            }
             $q = '//sy[' . $q . ']/../sy';
             unset($t);
 
@@ -302,13 +304,15 @@ class Job
                         if (($destination_meta_id = array_search($translated_value, $metas[$destination_field_id])) === false) {
                             $translations[$lng] = [
                                 'val' => $translated_value,
+                                'id' => null,
                                 'msg' => sprintf(" --> %s", $this->destination_fields[$lng]['name'])
-                            ];;
+                            ];
                             $meta_to_add[$destination_field_id][] = $translated_value;
                         }
                         else {
                             $translations[$lng] = [
                                 'val' => $translated_value,
+                                'id' => $destination_meta_id,
                                 'msg' => sprintf("already in %s", $this->destination_fields[$lng]['name'])
                             ];
                             unset($meta_to_delete[$destination_meta_id]);
@@ -333,7 +337,17 @@ class Job
                 // complete translation (all target lng)
                 $this->output->writeln(sprintf(" - \"%s\" :", $source_value));
                 if ($this->cleanupSource === self::CLEANUP_SOURCE_IF_TRANSLATED) {
-                    $meta_to_delete[$source_meta_id] = $metas[$source_field_id][$source_meta_id];
+                    // do NOT delete the source term if one translation found it as already present as destination (possible if source=destination)
+                    $used = false;
+                    foreach($translations as $l => $t) {
+                        if($t['id'] === $source_meta_id) {
+                            $used = true;
+                            break;
+                        }
+                    }
+                    if(!$used) {
+                        $meta_to_delete[$source_meta_id] = $metas[$source_field_id][$source_meta_id];
+                    }
                 }
             }
 
@@ -342,7 +356,17 @@ class Job
             }
 
             if ($this->cleanupSource === self::ALWAYS_CLEANUP_SOURCE) {
-                $meta_to_delete[$source_meta_id] = $metas[$source_field_id][$source_meta_id];
+                // do NOT delete the source term if one translation found it as already present as destination (possible if source=destination)
+                $used = false;
+                foreach($translations as $l => $t) {
+                    if($t['id'] === $source_meta_id) {
+                        $used = true;
+                        break;
+                    }
+                }
+                if(!$used) {
+                    $meta_to_delete[$source_meta_id] = $metas[$source_field_id][$source_meta_id];
+                }
             }
 
             unset($lng, $translations, $translation);
@@ -350,52 +374,52 @@ class Job
 
         unset($metas, $source_meta_id, $source_value);
 
+        $actions = [];
+
+        $metadatas = [];
+        foreach ($meta_to_delete as $id => $value) {
+            $metadatas[] = [
+                'action' => "delete",
+                'meta_id' => $id,
+                '_value_' => $value
+            ];
+        }
+        foreach($meta_to_add as $struct_id => $values) {
+            $metadatas[] = [
+                'action' => "add",
+                'meta_struct_id' => $struct_id,
+                'value' => $values
+            ];
+        }
+        if(!empty($metadatas)) {
+            $actions['metadatas'] = $metadatas;
+        }
+        unset($metadatas);
+
+        if(!is_null($this->setCollection)) {
+            $actions['base_id'] = $this->setCollection->get_base_id();
+        }
+
+        if(!is_null($this->setStatus)) {
+            $status = [];
+            foreach(str_split(strrev($this->setStatus), 1) as $bit => $v) {
+                if($v === '0' || $v === '1') {
+                    $status[] = [
+                        'bit' => $bit,
+                        'state' => $v === '1'
+                    ];
+                }
+            }
+            if(!empty($status)) {
+                $actions['status'] = $status;
+            }
+        }
+        $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
+        $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+
         if (!$this->globalConfiguration->isDryRun()) {
             $record = $this->getDatabox()->getRecordRepository()->find($record_id);
-            $actions = [];
-
-            $metadatas = [];
-            foreach (array_keys($meta_to_delete) as $id) {
-                $metadatas[] = [
-                    'action' => "delete",
-                    'meta_id' => $id
-                ];
-            }
-           foreach($meta_to_add as $struct_id => $values) {
-                $metadatas[] = [
-                    'action' => "add",
-                    'meta_struct_id' => $struct_id,
-                    'value' => $values
-                ];
-            }
-            if(!empty($metadatas)) {
-                $actions['metadatas'] = $metadatas;
-            }
-            unset($metadatas);
-
-            if(!is_null($this->setCollection)) {
-                $actions['base_id'] = $this->setCollection->get_base_id();
-            }
-
-            if(!is_null($this->setStatus)) {
-                $status = [];
-                foreach(str_split(strrev($this->setStatus), 1) as $bit => $v) {
-                    if($v === '0' || $v === '1') {
-                        $status[] = [
-                            'bit' => $bit,
-                            'state' => $v === '1'
-                        ];
-                    }
-                }
-                if(!empty($status)) {
-                    $actions['status'] = $status;
-                }
-            }
-
-            $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
-            // $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
-
-            $record->setMetadatasByActions(json_decode($jsActions));
+//            $record->setMetadatasByActions(json_decode($jsActions));
         }
 
     }
