@@ -415,7 +415,9 @@ class Job
             }
         }
         $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
- //       $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+        if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
+            $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+        }
 
         if (!$this->globalConfiguration->isDryRun()) {
             $record = $this->getDatabox()->getRecordRepository()->find($record_id);
