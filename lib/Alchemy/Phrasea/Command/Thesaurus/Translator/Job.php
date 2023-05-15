@@ -415,11 +415,11 @@ class Job
             }
         }
         $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
-        $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+ //       $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
 
         if (!$this->globalConfiguration->isDryRun()) {
             $record = $this->getDatabox()->getRecordRepository()->find($record_id);
-//            $record->setMetadatasByActions(json_decode($jsActions));
+            $record->setMetadatasByActions(json_decode($jsActions));
         }
 
     }
