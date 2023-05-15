@@ -274,7 +274,8 @@ class ExposeUploadWorker implements WorkerInterface
             if (count($mapping) == 0) {
                 $mapping = [
                     'thumbnail'  => 'thumbnail',
-                    'preview'    => 'preview'
+                    'preview'    => 'preview',
+                    'poster'     => 'poster'
                 ];
             }
 
