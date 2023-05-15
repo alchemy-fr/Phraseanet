@@ -280,7 +280,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             // add sub-definition from mapping
             foreach ($mapping as $phraseanetSubdef => $exposeSubdef) {
-                $isThumbnail = $isPreview= false;
+                $isThumbnail = $isPreview = $isPoster = false;
                 switch ($exposeSubdef) {
                     case 'thumbnail':
                         $subdefName = $exposeSubdef;
@@ -289,6 +289,10 @@ class ExposeUploadWorker implements WorkerInterface
                     case 'preview':
                         $subdefName = $exposeSubdef;
                         $isPreview = true;
+                        break;
+                    case 'poster':
+                        $subdefName = $exposeSubdef;
+                        $isPoster = true;
                         break;
                     case 'none':
                     default:
@@ -304,7 +308,8 @@ class ExposeUploadWorker implements WorkerInterface
                         $record->get_subdef($phraseanetSubdef),
                         $subdefName,
                         $isPreview,
-                        $isThumbnail
+                        $isThumbnail,
+                        $isPoster
 
                     );
                 } else {
@@ -379,13 +384,14 @@ class ExposeUploadWorker implements WorkerInterface
         return $clientAnnotationProfile;
     }
 
-    private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false)
+    private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false, $isPoster = false)
     {
         $requestBody = [
-            'asset_id' => $assetId,
-            'name'     => $subdefName,
+            'asset_id'          => $assetId,
+            'name'              => $subdefName,
             'use_as_preview'    => $isPreview,
             'use_as_thumbnail'  => $isThumbnail,
+            'use_as_poster'     => $isPoster,
             'upload' => [
                 'type' => $subdef->get_mime(),
                 'size' => $subdef->get_size(),
