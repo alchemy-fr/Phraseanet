@@ -1259,10 +1259,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
-    public function setMetadatasByActions(stdClass $actions)
+    public function setMetadatasByActions(stdClass $actions, $dry = false, &$return_ops = null)
     {
         // WIP crashes when trying to access an undefined stdClass property ? should return null ?
-        $this->apply_body($actions);
+        if(!is_null($return_ops)) {
+            $return_ops = $this->apply_body($actions, $dry);
+        }
+        else {
+            $this->apply_body($actions, $dry);
+        }
+
         return $this;
     }
 
@@ -1275,29 +1281,46 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @param stdClass $b
+     * @param bool $dry
+     * @return array|array[]
      * @throws Exception
+     * @throws Exception_InvalidArgument
      */
-    private function apply_body(stdClass $b)
+    private function apply_body(stdClass $b, $dry = false)
     {
+        $ops = [];
+
         // do metadatas ops
         if (is_array(@$b->metadatas)) {
-            $this->do_metadatas($b->metadatas);
+            $ops = array_merge($ops, $this->do_metadatas($b->metadatas, $dry));
         }
         // do sb ops
         if (is_array(@$b->status)) {
-            $this->do_status($b->status);
+            $ops = array_merge($ops, $this->do_status($b->status, $dry));
         }
         if(!is_null(@$b->base_id)) {
-            $this->do_collection($b->base_id);
+            $ops = array_merge($ops, $this->do_collection($b->base_id, $dry));
         }
+
+        return $ops;
     }
 
     /**
      * @param $base_id
+     * @param bool $dry
+     * @return array[]
      */
-    private function do_collection($base_id)
+    private function do_collection($base_id, bool $dry = false)
     {
-        $this->move_to_collection(collection::getByCollectionId($this->app, $this->getDatabox(), $base_id));
+        $ops = [[
+            'explain'        => sprintf('changing collection from "%s" to "%s"', $this->getBaseId(), $base_id)
+        ]];
+
+        if(!$dry) {
+            $this->move_to_collection(collection::getByCollectionId($this->app, $this->getDatabox(), $base_id));
+        }
+
+        return $ops;
     }
 
 
@@ -1307,12 +1330,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     //////////////////////////////////
 
     /**
-     * @param $metadatas
-     * @throws Exception
-     *
-     *  nb : use of "silent" @ operator on stdClass member access (equals null in not defined) is more simple than "iseet()" or "empty()"
+     * @param array $metadatas
+     * @param bool $dry
+     * @throws Exception nb : use of "silent" @ operator on stdClass member access (equals null in not defined) is more simple than "iseet()" or "empty()"
+     * @throws Exception_InvalidArgument
      */
-    private function do_metadatas(array $metadatas)
+    private function do_metadatas(array $metadatas, bool $dry = false)
     {
         /** @var databox_field[]  $struct */
         $struct = $this->getDatabox()->get_meta_structure();
@@ -1359,6 +1382,34 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $caption_fields = $this->get_caption()->get_fields($fields_list, true);
 
             $meta_id = isset($_m->meta_id) ? (int)($_m->meta_id) : null;
+
+            // if a meta_id is passed, it MUST match the record AND the field (if specified)
+            // the struct_field and the caption_fields will be restricted to this meta_id
+            if(!is_null($meta_id)) {
+                $caption_fields_tmp = $caption_fields;
+                $caption_fields = [];
+                /** @var caption_field $cf */
+                $cf = null;
+                foreach ($caption_fields_tmp as $k => $cf) {
+                    foreach ($cf->get_values() as $v) {
+                        if($v->getId() == $meta_id) {
+                            // found
+                            $caption_fields[$k] = $cf;
+                            break 2;
+                        }
+                    }
+                }
+
+                if(empty($caption_fields)) {
+                    throw new Exception(sprintf("meta_id (%s) is not a field value of record (%s), or does not match spcified field(s).", $meta_id, $this->getRecordId()));
+                }
+
+                $struct_fields = array_filter($struct_fields, function(databox_field $df) use($cf) { return $df->get_id() == $cf->get_meta_struct_id(); });
+
+                if(empty($struct_fields)) {
+                    throw new Exception(sprintf("meta_id (%s) does not match specified field(s).", $meta_id));
+                }
+            }
 
             if(!($match_method = (string)(@$_m->match_method))) {
                 $match_method = 'ignore_case';
@@ -1411,22 +1462,27 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $metadatas_ops = array_merge($metadatas_ops, $ops);
         }
 
-        $this->set_metadatas($metadatas_ops, true);
+        if(!$dry) {
+            $this->set_metadatas($metadatas_ops, true);
 
-        // order to write meta in file
-        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$this->getRecordId()],  $this->getDataboxId()));
+            // order to write meta in file
+            $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent([$this->getRecordId()], $this->getDataboxId()));
+        }
 
+        return $metadatas_ops;
     }
 
     /**
-     * @param $statuses
+     * @param array $statuses
+     * @param bool $dry
      * @return array
      * @throws Exception
      */
-    private function do_status(array $statuses)
+    private function do_status(array $statuses, bool $dry = false)
     {
-        $datas = strrev($this->getStatus());
+        $old_status = $this->getStatus();
+        $datas = strrev($old_status);
 
         foreach ($statuses as $status) {
             $n = (int)(@$status->bit);
@@ -1441,7 +1497,17 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
-        $this->setStatus(strrev($datas));
+        $datas = strrev($datas);
+
+        $ops =[[
+            'explain'        => sprintf('setStatus:: changing status from "%s" to "%s"', $old_status, $datas)
+        ]];
+
+        if(!$dry) {
+            $this->setStatus($datas);
+        }
+
+        return $ops;
     }
 
     private function match($pattern, $method, $value)
@@ -1470,16 +1536,41 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $ops = [];
 
-        // if one field was multi-valued and no meta_id was set, we must delete all values
+        if(!is_null($meta_id) && count($values) > 1) {
+            throw new Exception(sprintf("set:: setting by meta_id (%s) requires only one value.", $meta_id));
+        }
+
+        // mono w/o meta_id : don't erase, simply set the value with null meta_id (replace)
+        // multi w/o meta_id : delete all values, then set the value with null meta_id (reset & add)
+        // mono w meta_id : check the meta_id match, then set the value with meta_id (replace)
+        // multi w meta_id : check the meta_id exists, then set the value with meta_id (replace)
+
         foreach ($caption_fields as $cf) {
             foreach ($cf->get_values() as $field_value) {
-                if (is_null($meta_id) || $field_value->getId() === (int)$meta_id) {
-                    $ops[] = [
-                        'explain' => sprintf('set:: removing value "%s" from "%s"', $field_value->getValue(), $cf->get_name()),
-                        'meta_struct_id' => $cf->get_meta_struct_id(),
-                        'meta_id'        => $field_value->getId(),
-                        'value'          => ''
-                    ];
+                if (is_null($meta_id)) {    // || $field_value->getId() === (int)$meta_id) {
+                    if($cf->is_multi()) {
+                        $ops[] = [
+                            'explain'        => sprintf('set:: removing value "%s" with meta_id (%s) from "%s"', $field_value->getValue(), $field_value->getId(), $cf->get_name()),
+                            'meta_struct_id' => $cf->get_meta_struct_id(),
+                            'meta_id'        => $field_value->getId(),
+                            'value'          => ''
+                        ];
+                    }
+                }
+                else {
+                    // meta_id passed
+                    // check that the meta_id exists in the caption_field value(s) ?
+                    //   no need, we will trust that overwrite (with meta_id) will fail because
+                    //     caption_fields and struct_fields where filtered before
+                    if(empty($values) && $field_value->getId() === $meta_id) {
+                        // delete the former value
+                        $ops[] = [
+                            'explain'        => sprintf('set:: removing value "%s" with meta_id (%s) from "%s"', $field_value->getValue(), $field_value->getId(), $cf->get_name()),
+                            'meta_struct_id' => $cf->get_meta_struct_id(),
+                            'meta_id'        => $field_value->getId(),
+                            'value'          => ''
+                        ];
+                    }
                 }
             }
         }
@@ -1489,12 +1580,22 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 //  add the non-null value(s)
                 foreach ($values as $value) {
                     if ($value) {
-                        $ops[] = [
-                            'expain'         => sprintf('set:: adding value "%s" to "%s" (multi)', $value, $sf->get_name()),
-                            'meta_struct_id' => $sf->get_id(),
-                            'meta_id'        => $meta_id,  // can be null
-                            'value'          => $value
-                        ];
+                        if(is_null($meta_id)) {
+                            $ops[] = [
+                                'expain'         => sprintf('set:: adding value "%s" to "%s" (multi)', $value, $sf->get_name()),
+                                'meta_struct_id' => $sf->get_id(),
+                                'meta_id'        => null,
+                                'value'          => $value
+                            ];
+                        }
+                        else {
+                            $ops[] = [
+                                'expain'         => sprintf('set:: replacing meta_id (%s) by "%s" to "%s" (multi)', $meta_id, $value, $sf->get_name()),
+                                'meta_struct_id' => $sf->get_id(),
+                                'meta_id'        => $meta_id,  // can be null
+                                'value'          => $value
+                            ];
+                        }
                     }
                 }
             }

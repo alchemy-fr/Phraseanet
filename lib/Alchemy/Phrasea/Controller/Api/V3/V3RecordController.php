@@ -80,6 +80,7 @@ class V3RecordController extends Controller
     public function indexAction_POST(Request $request, $base_id)
     {
         $body = $this->decodeJsonBody($request);
+        $dry = (bool)(@$body->dry);
 
         $collection = collection::getByBaseId($this->app, $base_id);
 
@@ -137,6 +138,8 @@ class V3RecordController extends Controller
                 return Result::createError($request, 403, 'Error while renaming file')->createResponse();
             }
         }
+
+        $setMetadatasByActionOps = [];
 
         if($newPathname) {
             // a file is included
@@ -198,7 +201,7 @@ class V3RecordController extends Controller
             if ($output instanceof record_adapter) {
                 /** @var record_adapter $output */
                 try {
-                    $output->setMetadatasByActions($body);
+                    $output->setMetadatasByActions($body, $dry, $setMetadatasByActionOps);
                 }
                 catch (Exception $e) {
                     return Result::createBadRequest($request, $e->getMessage());
@@ -225,7 +228,7 @@ class V3RecordController extends Controller
             // no file was included, just create a record
             $output = record_adapter::create($collection, $this->app);
             try {
-                $output->setMetadatasByActions($body);
+                $output->setMetadatasByActions($body, $dry, $setMetadatasByActionOps);
                 $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
             }
             catch (Exception $e) {
@@ -258,19 +261,27 @@ class V3RecordController extends Controller
             return Result::createBadRequest($request, 'Bad JSON');
         }
 
+        $dry = (bool)(@$body->dry);
+        $setMetadatasByActionOps = [];
+
         try {
-            $record->setMetadatasByActions($body);
+            $record->setMetadatasByActions($body, $dry, $setMetadatasByActionOps);
         }
         catch (Exception $e) {
             return Result::createBadRequest($request, $e->getMessage());
         }
 
-        // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
+        if(!$dry) {
+            // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
 
-        $ret = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
+            $ret = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
 
-        return Result::create($request, $ret)->createResponse();
+            return Result::create($request, $ret)->createResponse();
+        }
+        else {
+            return Result::create($request, ["dry"=>true, "actions"=>$setMetadatasByActionOps])->createResponse();
+        }
     }
 
 
