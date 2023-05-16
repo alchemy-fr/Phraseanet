@@ -10952,7 +10952,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="adb5098c329919413a3ca4be813a1e267504af65" resname="expose:: copy embeded code">
         <source>expose:: copy embeded code</source>
-        <target state="needs-translation">Copier code d'intégration</target>
+        <target state="needs-translation">Copier le code d'intégration</target>
         <jms:reference-file line="62">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e42e86c5238149fe6892a14b52ffb8baca818d4c" resname="expose:: document">
