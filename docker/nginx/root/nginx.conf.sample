@@ -51,6 +51,9 @@ server {
         fastcgi_pass   backend;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
+#        if (-f /etc/nginx/restrictions) {
+          include        restrictions;
+#        }
     }
 
     location ~ ^/(status|ping)$ {

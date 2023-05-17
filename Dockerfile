@@ -313,6 +313,8 @@ CMD ["/bin/bash", "bin/run-worker.sh"]
 
 FROM nginx:1.17.8-alpine as phraseanet-nginx
 RUN adduser --uid 1000 --disabled-password app
+RUN apk add --update apache2-utils \
+    && rm -rf /var/cache/apk/*
 ADD ./docker/nginx/root /
 COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
 

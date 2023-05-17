@@ -57,4 +57,10 @@ spec:
           value: "1200"
         - name: GATEWAY_FASTCGI_TIMEOUT
           value: "1200"
-          
+        - name: "GATEWAY_ACCESS_ALLOWED_IPS"
+          value: {{ .Values.http.gateway_access_allowed_ips }}
+        - name: "GATEWAY_ACCESS_DISALLOWED_IPS"
+          value: {{ .Values.http.gateway_access_disallowed_ips }}
+        - name: "GATEWAY_ACCESS_USERS"
+          value: {{ .Values.http.gateway_access_users }}
+
