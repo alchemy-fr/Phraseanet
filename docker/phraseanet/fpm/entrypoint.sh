@@ -41,19 +41,19 @@ fi
 
 
 ./docker/phraseanet/plugins/console init
-rm -Rf cache/*
 
+chown -R app:app cache
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repository"
 
-chown -R app:app \
-    cache \
-    config \
-    tmp \
-    logs \
-    www
-    
+#    config \
+#    tmp \
+#    logs \
+#    www
+
 
 if [ -d "plugins/" ];then
-chown -R app:app plugins;
+chown -R app:app plugins
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on plugins/ repository"
 fi
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of fpm entrypoint.sh"

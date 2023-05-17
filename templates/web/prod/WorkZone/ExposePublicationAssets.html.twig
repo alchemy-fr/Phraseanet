@@ -55,19 +55,24 @@
 
 {% endif %}
 
-{% for pubAsset in pubAssets %}
-<div class="chim-wrapper" data-pub-asset-id="{{ pubAsset.id }}">
+{% for asset in assets %}
+<div class="chim-wrapper" data-pub-asset-id="{{ asset.id }}">
     <div class="chim-content">
         <div class="CHIM diapo">
+            <div class="copy-embed" style="position: absolute;top: 0;cursor: pointer; z-index:15;" title="{{ 'expose:: copy embeded code' | trans  }}"
+                 data-title="{{ asset.title }}" data-src="{{ exposeFrontBasePath ~ 'embed/' ~ asset.id }}">
+                <i class="fa fa-copy" aria-hidden="true"></i>
+            </div>
+
             <div class="thumb_wrapper">
                 <img
                         data-kind="image" oncontextMenu="return(false);"
-                        src="{{ pubAsset.asset.thumbUrl|trim }}" data-original="{{ pubAsset.asset.thumbUrl|trim }}" ondragstart="return false;">
+                        src="{{ asset.thumbUrl|trim }}" data-original="{{ asset.thumbUrl|trim }}" ondragstart="return false;">
             </div>
 
             {% if capabilitiesEdit %}
                 <div class="set-cover" style="position: absolute;bottom: 0;cursor: pointer;" title="Set as Cover"
-                     data-publication-id="{{ pubAsset.publication.id }}" data-asset-id="{{ pubAsset.asset.id }}">
+                     data-publication-id="{{ publicationId }}" data-asset-id="{{ asset.id }}">
 
                     <img src="/assets/common/images/icons/icon_story.gif" title="Set as Cover">
                 </div>
@@ -75,7 +80,7 @@
 
             {% if capabilitiesDelete %}
                 <div class="bottom">
-                    <a class="WorkZoneElementRemover removeAsset" data-asset-id="{{ pubAsset.asset.id }}" data-publication-id="{{ pubAsset.publication.id }}">
+                    <a class="WorkZoneElementRemover removeAsset" data-asset-id="{{ asset.id }}" data-publication-id="{{ publicationId }}">
                         <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
                         <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
                     </a>
@@ -97,4 +102,21 @@
             </button>
         </div>
     </div>
+
+<script type ="text/javascript">
+    $(document).ready(function () {
+        $('.assets_list .copy-embed').on('click', function (event) {
+            let that = $(this);
+            let code = ' <iframe title= "' + that.data('title') + '" width="100%" height="480" src="';
+            code += that.data('src') + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" frameborder="0" allowfullscreen></iframe>';
+
+            navigator.clipboard.writeText(code).then(function() {
+                that.find(".fa-copy").css("color", "#1d7bcd");
+            }, function (err) {
+                console.error('Could not copy link: ', err);
+            });
+        });
+    });
+
+</script>
 {% endif %}

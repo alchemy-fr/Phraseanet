@@ -263,10 +263,17 @@ class AdminConfigurationController extends Controller
     public function queueMonitorAction(PhraseaApplication $app, Request $request)
     {
         $reload = ($request->query->get('reload') == 1);
+        $hideEmptyQ = $request->query->get('hide-empty-queue');
+
+        if ($hideEmptyQ === null || $hideEmptyQ == 1) {
+            $hideEmptyQ = true;
+        } else {
+            $hideEmptyQ = false;
+        }
 
         $this->getAMQPConnection()->getChannel();
         $this->getAMQPConnection()->declareExchange();
-        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus();
+        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus($hideEmptyQ);
 
         return $this->render('admin/worker-manager/worker_queue_monitor.html.twig', [
             'queuesStatus' => $queuesStatus,

@@ -51,6 +51,7 @@
 !/bin/developer
 !/bin/setup
 !/bin/maintenance
+!/bin/report
 
 # Exclude composer
 composer.phar

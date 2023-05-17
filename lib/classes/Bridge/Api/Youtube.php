@@ -645,7 +645,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
                 $filesource = new Zend_Gdata_App_MediaFileSource($record->get_hd_file()->getRealPath());
                 $filesource->setContentType($record->get_hd_file()->get_mime());
-                $filesource->setSlug($record->get_title());
+                $filesource->setSlug($record->get_title(['encode'=> record_adapter::ENCODE_FOR_URI]));
 
                 $video_entry->setMediaSource($filesource);
                 $video_entry->setVideoTitle($options['title']);

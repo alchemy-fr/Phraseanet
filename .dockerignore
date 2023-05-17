@@ -19,6 +19,7 @@
 !/bin/developer
 !/bin/setup
 !/bin/maintenance
+!/bin/report
 /cache
 /config/configuration.yml
 /config/configuration-compiled.php

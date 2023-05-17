@@ -28,7 +28,7 @@ class ConnectionFactory
      */
     public function getRedisConnection(array $options = [])
     {
-        $options = array_replace(['host' => 'localhost', 'port' => 6379], $options);
+        $options = array_replace(['host' => 'redis', 'port' => 6379], $options);
         if (null !== $cache = $this->getConnection('redis', $options)) {
             return $cache;
         }

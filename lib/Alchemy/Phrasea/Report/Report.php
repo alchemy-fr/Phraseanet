@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Report;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Out\Module\Excel;
+use Cocur\Slugify\Slugify;
 
 
 abstract class Report
@@ -105,14 +106,14 @@ abstract class Report
         return $this->format;
     }
 
-    public function render()
+    public function render($absoluteDirectoryPath = null)
     {
         switch($this->format) {
             //case self::FORMAT_XLS:
             case self::FORMAT_CSV:
             case self::FORMAT_ODS:
             case self::FORMAT_XLSX:
-                $this->renderAsExcel();
+                $this->renderAsExcel($absoluteDirectoryPath);
                 break;
             default:
                 // should not happen since format is checked before
@@ -120,23 +121,51 @@ abstract class Report
         }
     }
 
-    private function renderAsExcel()
+    public function getSuffixFileName($dmin, $dmax)
     {
+        $suffixFileName = "__" . $dmin . "_to_";
+        $suffixFileName = !empty($dmax) ? $suffixFileName . $dmax: $suffixFileName . (new \DateTime())->format('Y-m-d');
+
+        return $suffixFileName;
+    }
+
+    public function getFileName()
+    {
+        return $this->normalizeString($this->getName()) . $this->getSuffixFileName($this->parms['dmin'], $this->parms['dmax']);
+    }
+
+    private function renderAsExcel($absoluteDirectoryPath = null)
+    {
+        $filename = $this->getFileName();
         switch($this->format) {
             //case self::FORMAT_XLS:
             //    $excel = new Excel(Excel::FORMAT_XLS);
             //    header('Content-Type: application/vnd.ms-excel');
             //    break;
             case self::FORMAT_XLSX:
-                $excel = new Excel(Excel::FORMAT_XLSX, $this->getName() . ".xlsx");
+                $filename .= ".xlsx";
+                $excel = new Excel(Excel::FORMAT_XLSX, $filename);
                 break;
             case self::FORMAT_ODS:
-                $excel = new Excel(Excel::FORMAT_ODS, $this->getName() . ".ods");
+                $filename .= ".ods";
+                $excel = new Excel(Excel::FORMAT_ODS, $filename);
                 break;
             case self::FORMAT_CSV:
             default:
-                $excel = new Excel(Excel::FORMAT_CSV, $this->getName() . ".csv");
+                $filename .= ".csv";
+                $excel = new Excel(Excel::FORMAT_CSV, $filename);
                 break;
+        }
+
+        // override the open to browser by the writer
+        if (!empty($absoluteDirectoryPath)) {
+            if (!is_dir($absoluteDirectoryPath)) {
+                @mkdir($absoluteDirectoryPath, 0777, true);
+            }
+
+            $filePath = \p4string::addEndSlash($absoluteDirectoryPath) . $filename;
+            @touch($filePath);
+            $excel->getWriter()->openToFile($filePath);
         }
 
         $excel->addRow($this->getColumnTitles());
@@ -154,4 +183,8 @@ abstract class Report
         $excel->render();
     }
 
+    private function normalizeString($filename)
+    {
+        return (new Slugify())->slugify($filename, '-');
+    }
 }

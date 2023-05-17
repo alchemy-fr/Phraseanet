@@ -583,17 +583,23 @@
 
                                                     <div class="term_select">
                                                         <div class="term_select_wrapper_template" style="display: none;">
-                                                        <select class="term_select_field" style="vertical-align:middle; width:30%;">
+                                                            <select class="term_select_field" style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
                                                                    {# {% if field['type'] != 'date' %}#}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{ field['label'] | join(' - ') }}</option>
                                                                     {#{% endif %}#}
                                                                 {% endfor %}
                                                             </select>
                                                             <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
-                                                                <option value=":">{{ 'Contains' | trans }}</option>
+                                                                <option class="string-operator" value=":">{{ 'Contains' | trans }}</option>
                                                                 <option value="=">{{ 'Equals' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value=">=">{{ 'prod::advancesearch:operator greater than or equal' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value="<=">{{ 'prod::advancesearch:operator less than or equal' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value=">">{{ 'prod::advancesearch:operator greater than' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value="<">{{ 'prod::advancesearch:operator less than' | trans }}</option>
+                                                                <option value="set">{{ 'prod::advancesearch:operator set' | trans }}</option>
+                                                                <option value="unset">{{ 'prod::advancesearch:operator unset' | trans }}</option>
                                                             </select>
                                                             <input class="term_select_value" disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
                                                             <input class="term_deleter" style="margin-bottom: 4px;">
@@ -632,10 +638,8 @@
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
                                                                 <option
-                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
+                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ date['label'] | join(' - ') }}</option>
                                                             {% endfor %}
-                                                             <option value="updated_on">{{ 'updated_on' | trans }}</option>
-                                                            <option value="created_on">{{ 'created_on' | trans }}</option>
                                                         </select>
                                                     </span>
                                                     <span id="ADVSRCH_DATE_SELECTORS"  style="display: inline-block;height: 26px;line-height: 26px;">

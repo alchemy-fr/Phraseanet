@@ -1,11 +1,11 @@
 servername: 'http://local.phrasea/'
 languages:
     available:
-        - fr
-        - en
         - de
+        - en
+        - fr
         - nl
-    default: 'fr'
+    default: 'en'
 main:
     maintenance: false
     key: ''
@@ -27,7 +27,7 @@ main:
     search-engine:
         type: elasticsearch
         options:
-            host: 'localhost'
+            host: elasticsearch
             port: 9200
             index: ''
             shards: 3
@@ -83,7 +83,7 @@ main:
             enabled: true
             level: INFO
     session:
-        type: 'file'
+        type: native
         options: []
         ttl: 86400
     binaries:

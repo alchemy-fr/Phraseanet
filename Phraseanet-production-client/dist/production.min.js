@@ -4006,11 +4006,13 @@ var workzoneFacets = function workzoneFacets(services) {
             if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                 textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
             }
+            textWithoutColorCode = (0, _jquery2.default)('<div/>').text(textWithoutColorCode).html(); // escape html
             return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
         } else {
             if (textLimit > 0 && string.length > textLimit) {
                 string = string.substring(0, textLimit) + '…';
             }
+            string = (0, _jquery2.default)('<div/>').text(string).html(); // escape html
             return string;
         }
     }
@@ -9899,8 +9901,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -10934,17 +10934,18 @@ var workzone = function workzone(services) {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
-            var positions = [];
+            var order = [];
 
             (0, _jquery2.default)('.assets_list .chim-wrapper').each(function (i, el) {
-                positions[(0, _jquery2.default)(this).attr('data-pub-asset-id')] = i + 1;
+                order.push((0, _jquery2.default)(this).attr('data-pub-asset-id'));
             });
 
             _jquery2.default.ajax({
                 type: 'POST',
                 url: '/prod/expose/publication/update-assets-order/?exposeName=' + exposeName,
                 data: {
-                    listPositions: JSON.stringify(_extends({}, positions))
+                    order: order,
+                    publicationId: publicationId
                 },
                 dataType: 'json',
                 success: function success(data) {
@@ -68962,11 +68963,42 @@ var search = function search(services) {
 
         (0, _jquery2.default)('.term_select_field').each(function (i, el) {
             if ((0, _jquery2.default)(el).val()) {
+                var operator = '';
+                var value = '';
+
+                switch ((0, _jquery2.default)(el).next().val()) {
+                    case "set":
+                        operator = "=";
+                        value = "_set_";
+
+                        break;
+                    case "unset":
+                        operator = "=";
+                        value = "_unset_";
+
+                        break;
+                    case "=":
+                    case ":":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<":
+                        operator = (0, _jquery2.default)(el).next().val();
+                        value = (0, _jquery2.default)(el).next().next().val();
+
+                        break;
+                    default:
+                        operator = "=";
+                        value = (0, _jquery2.default)(el).next().next().val();
+
+                        break;
+                }
+
                 fields.push({
                     'type': 'TEXT-FIELD',
                     'field': (0, _jquery2.default)(el).val(),
-                    'operator': (0, _jquery2.default)(el).next().val() === ':' ? ":" : "=",
-                    'value': (0, _jquery2.default)(el).next().next().val(),
+                    'operator': operator,
+                    'value': value,
                     "enabled": true
                 });
             }
@@ -69473,6 +69505,23 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
             // if option is selected
             if ($this.val()) {
                 $this.siblings().prop('disabled', false);
+                var operatorEl = $this.siblings(".term_select_op");
+                var valueEl = $this.siblings(".term_select_value");
+
+                if ($this.find("option:selected").attr("data-fieldtype") == "number-FIELD") {
+                    operatorEl.find("option.number-operator").show();
+                    operatorEl.find("option.string-operator").hide();
+                    operatorEl.val('='); // set default operator
+                    valueEl.attr('type', "number");
+                    valueEl.attr('placeholder', 'Ex: 249');
+                } else {
+                    operatorEl.find("option.number-operator").hide();
+                    operatorEl.find("option.string-operator").show();
+                    operatorEl.val(':'); // set default operator
+                    valueEl.removeAttr('pattern');
+                    valueEl.removeAttr('type');
+                    valueEl.attr('placeholder', 'Ex : Paris, bleu, montagne');
+                }
 
                 (0, _jquery2.default)('.term_select_multiple option').each(function (index, el) {
                     var $el = (0, _jquery2.default)(el);
@@ -69494,6 +69543,15 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
             }
             $this.blur();
             checkFilters(true);
+        });
+
+        (0, _jquery2.default)(document).on('change', 'select.term_select_op', function (event) {
+            var $this = (0, _jquery2.default)(event.currentTarget);
+            if ($this.val() === 'set' || $this.val() === 'unset') {
+                $this.siblings('.term_select_value').prop('disabled', 'disabled');
+            } else {
+                $this.siblings('.term_select_value').prop('disabled', false);
+            }
         });
 
         (0, _jquery2.default)(document).on('click', '.term_deleter', function (event) {
@@ -69924,8 +69982,10 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
                 f.data('fieldtype', clause.clauses[j].type);
                 (0, _jquery2.default)('option[value="' + clause.clauses[j].field + '"]', f).prop('selected', true);
                 (0, _jquery2.default)('option[value="' + clause.clauses[j].operator + '"]', o).prop('selected', true);
-                o.prop('disabled', false);
-                v.val(clause.clauses[j].value).prop('disabled', false);
+                if (clause.clauses[j].operator === ":" || clause.clauses[j].operator === "=") {
+                    o.prop('disabled', false);
+                    v.val(clause.clauses[j].value).prop('disabled', false);
+                }
             }
         }
 
@@ -70101,8 +70161,8 @@ var searchGeoForm = function searchGeoForm(services) {
         (0, _jquery2.default)('.map-geo-btn').on('click', function (event) {
             event.preventDefault();
             if ((0, _jquery2.default)('#map-zoom-to-setting').val() != '') {
-                savePreferences({ map_zoom: parseFloat((0, _jquery2.default)('#map-zoom-to-setting').val()) });
-                (0, _jquery2.default)('#map-zoom-from-setting').val(parseFloat((0, _jquery2.default)('#map-zoom-to-setting').val()));
+                savePreferences({ map_zoom: parseInt((0, _jquery2.default)('#map-zoom-to-setting').val()) });
+                (0, _jquery2.default)('#map-zoom-from-setting').val(parseInt((0, _jquery2.default)('#map-zoom-to-setting').val()));
             }
             if ((0, _jquery2.default)('#map-position-to-setting').val() != '') {
                 var centerRes = (0, _jquery2.default)('#map-position-to-setting').val();

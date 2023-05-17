@@ -173,7 +173,8 @@ class PSExposeController extends Controller
      */
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
-        if ($request->get('exposeName') == null) {
+        $exposeName = $request->get('exposeName');
+        if ($exposeName == null) {
             return $app->json([
                 'twig' => $this->render("prod/WorkZone/ExposeList.html.twig", [
                     'publications' => [],
@@ -182,10 +183,10 @@ class PSExposeController extends Controller
         }
 
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
+        $exposeConfiguration = $exposeConfiguration[$exposeName];
 
         $session = $this->getSession();
-        $passSessionName = $this->getPassSessionName($request->get('exposeName'));
+        $passSessionName = $this->getPassSessionName($exposeName);
         $providerId = $session->get('auth_provider.id');
 
         if (!$session->has($passSessionName) && $providerId != null) {
@@ -193,7 +194,7 @@ class PSExposeController extends Controller
                 $provider = $this->getAuthenticationProviders()->get($providerId);
                 if ($provider->getType() == 'PsAuth') {
                     $session->set($passSessionName, $provider->getAccessToken());
-                    $session->set($this->getLoginSessionName($request->get('exposeName')), $provider->getUserName());
+                    $session->set($this->getLoginSessionName($exposeName), $provider->getUserName());
                 }
             } catch(\Exception $e) {
             }
@@ -202,12 +203,12 @@ class PSExposeController extends Controller
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
              return $app->json([
                 'twig'  => $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
-                    'exposeName' => $request->get('exposeName')
+                    'exposeName' => $exposeName
                 ])
             ]);
         }
 
-        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
+        $accessToken = $this->getAndSaveToken($exposeName);
 
         if ($exposeConfiguration == null ) {
             return $app->json([
@@ -228,7 +229,7 @@ class PSExposeController extends Controller
 
         try {
             $uri = '/publications?flatten=true&order[createdAt]=desc';
-            if ($request->get('mine')) {
+            if ($request->get('mine') && $exposeConfiguration['connection_kind'] === 'password') {
                 $uri .= '&mine=true';
             }
 
@@ -285,8 +286,8 @@ class PSExposeController extends Controller
 
         return $app->json([
             'twig'          => $exposeListTwig,
-            'exposeName'    => $request->get('exposeName'),
-            'exposeLogin'   => $session->get($this->getLoginSessionName($request->get('exposeName'))),
+            'exposeName'    => $exposeName,
+            'exposeLogin'   => $session->get($this->getLoginSessionName($exposeName)),
             'basePath'      => $basePath
         ]);
     }
@@ -449,9 +450,11 @@ class PSExposeController extends Controller
      */
     public function getPublicationAssetsAction(PhraseaApplication $app, Request $request)
     {
+        $exposeName = $request->get('exposeName');
+        $exposeConfiguration = $this->getExposeConfiguration($exposeName);
         $page = $request->get('page')?:1;
 
-        $exposeClient = $this->getExposeClient($request->get('exposeName'));
+        $exposeClient = $this->getExposeClient($exposeName);
 
         if ($exposeClient == null) {
             return $app->json([
@@ -460,7 +463,7 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
+        $accessToken = $this->getAndSaveToken($exposeName);
 
         try {
             $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
@@ -483,23 +486,34 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $pubAssets = [];
+        $assets = [];
         $totalItems = 0;
         if ($resPublication->getStatusCode() == 200) {
             $body = json_decode($resPublication->getBody()->getContents(),true);
-            $pubAssets = $body['hydra:member'];
+            $assets = $body['hydra:member'];
+
+            if (!empty($assets) && isset($assets[0]['asset'])) {
+                // expose v1 BC: flatten assets
+                $assets = array_map(function (array $pubAsset): array {
+                    return $pubAsset['asset'];
+                }, $assets);
+            }
+
             $totalItems = $body['hydra:totalItems'];
         }
 
-        return $this->render("prod/WorkZone/ExposePublicationAssets.html.twig", [
-            'pubAssets'             => $pubAssets,
+        $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
+
+        return $this->render('prod/WorkZone/ExposePublicationAssets.html.twig', [
+            'assets'                => $assets,
             'publicationId'         => $request->get('publicationId'),
             'capabilitiesDelete'    => $request->get('capabilitiesDelete'),
             'capabilitiesEdit'      => $request->get('capabilitiesEdit'),
             'enabled'               => $request->get('enabled'),
             'childrenCount'         => $request->get('childrenCount'),
             'totalItems'            => $totalItems,
-            'page'                  => $page
+            'page'                  => $page,
+            'exposeFrontBasePath'   => $exposeFrontBasePath
         ]);
     }
 
@@ -684,7 +698,7 @@ class PSExposeController extends Controller
 
     /**
      * Update assets positions
-     * Require params "exposeName" and "listPositions" of the assets
+     * Require params "exposeName", "publicationId" and "order" of the assets
      *
      * @param PhraseaApplication $app
      * @param Request $request
@@ -705,10 +719,15 @@ class PSExposeController extends Controller
 
         try {
             $accessToken = $this->getAndSaveToken($exposeName);
-            $listPositions = json_decode($request->get('listPositions'), true);
-            foreach ($listPositions as $pubAssetId => $pos) {
-                $this->putPublicationAsset($exposeClient, $pubAssetId, $accessToken, ['position' => $pos]);
-            }
+            $exposeClient->post(sprintf('/publications/%s/sort-assets', $request->get('publicationId', [])), [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ],
+                'json' => [
+                    'order' => $request->get('order', []),
+                ],
+            ]);
         } catch (\Exception $e) {
             return $app->json([
                 'success' => false,
@@ -1253,20 +1272,18 @@ class PSExposeController extends Controller
             } else {
                 $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
 
-                $oauthClient = $proxyConfig->getClientWithOptions([]);
+                $oauthClient = $proxyConfig->getClientWithOptions([
+                    'verify' => $config['verify_ssl'],
+                ]);
 
-                try {
-                    $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
-                        'json' => [
-                            'client_id'     => $config['expose_client_id'],
-                            'client_secret' => $config['expose_client_secret'],
-                            'grant_type'    => 'client_credentials',
-                            'scope'         => 'publish'
-                        ]
-                    ]);
-                } catch(\Exception $e) {
-                    return null;
-                }
+                $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
+                    'json' => [
+                        'client_id'     => $config['expose_client_id'],
+                        'client_secret' => $config['expose_client_secret'],
+                        'grant_type'    => 'client_credentials',
+                        'scope'         => 'publish'
+                    ]
+                ]);
 
                 if ($response->getStatusCode() !== 200) {
                     return null;
@@ -1304,17 +1321,6 @@ class PSExposeController extends Controller
                 'Content-Type'  => 'application/json'
             ],
             'json' => $publicationData
-        ]);
-    }
-
-    private function putPublicationAsset(Client $exposeClient, $publicationAssetId, $token, $publicationAssetData)
-    {
-        return $exposeClient->put('/publication-assets/' . $publicationAssetId, [
-            'headers' => [
-                'Authorization' => 'Bearer '. $token,
-                'Content-Type'  => 'application/json'
-            ],
-            'json' => $publicationAssetData
         ]);
     }
 

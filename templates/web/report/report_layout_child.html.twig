@@ -45,6 +45,18 @@
                         <option value="record" id="downloads_record">{{ 'report:: (downloads) record' | trans }}</option>
                 </select>
             </div>
+
+            <div class="form2 form_content">
+                <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
+                <select name="permalink">
+                    <option value>{{ "report:: choose subdef permalink" }}</option>
+                    {% for sbas_id,subdefs in availableSubdefName %}
+                        {% for subdefName in subdefs %}
+                            <option class="subdeflist subdeflist-{{ sbas_id }}" value="{{ subdefName }}">{{ subdefName }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
         </form>
 
         <div class="form_submit">
@@ -90,6 +102,19 @@
                 {% endfor %}
             </div>
             {% endblock form_records %}
+
+            <div class="form2 form_content">
+                <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
+                <select name="permalink">
+                        <option value>{{ "report:: choose subdef permalink" }}</option>
+                    {% for sbas_id,subdefs in availableSubdefName %}
+                        {% for subdefName in subdefs %}
+                            <option class="subdeflist subdeflist-{{ sbas_id }}" value="{{ subdefName }}">{{ subdefName }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+
         </form>
 
         <div class="form_submit">

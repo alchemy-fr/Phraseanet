@@ -1,0 +1,71 @@
+name: Build and push image and image-layer cache
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: true
+        type: string
+      context:
+        required: true
+        type: string
+      file:
+        required: true
+        type: string
+      target:
+        required: true
+        type: string
+
+env:
+  PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
+  DEFAULT_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  CACHE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  AWS_REGION: eu-west-2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Log into GitHub registry ${{ env.DEFAULT_REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.DEFAULT_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+
+      - name: Get tag name
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "PHRASEANET_DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: build ${{ inputs.image }}
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
+          push: true
+          cache-from: type=registry,ref=${{ env.CACHE_REGISTRY }}/${{ inputs.image }}:build-cache
+          cache-to: type=registry,mode=max,ref=${{ env.CACHE_REGISTRY }}/${{ inputs.image }}:build-cache
+          target: ${{ inputs.target }}
+          tags: |
+            ${{ env.DEFAULT_REGISTRY }}/${{ inputs.image }}:${{ env.PHRASEANET_DOCKER_TAG }}
+            ${{ env.ECR_REGISTRY }}/${{ inputs.image }}:${{ env.PHRASEANET_DOCKER_TAG }}

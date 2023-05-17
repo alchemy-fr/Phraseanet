@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Report\Controller;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Report\ReportConnections;
-use Alchemy\Phrasea\Report\ReportDownloads;
+use Alchemy\Phrasea\Report\ReportActions;
 use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportRecords;
 use Alchemy\Phrasea\Report\ReportService;
@@ -97,7 +97,7 @@ class ApiReportController
      */
     public function downloadsAction(Request $request, $sbasId)
     {
-        /** @var ReportDownloads $report */
+        /** @var ReportActions $report */
         $report = $this->reportFactory->createReport(
             ReportFactory::DOWNLOADS,
             $sbasId,

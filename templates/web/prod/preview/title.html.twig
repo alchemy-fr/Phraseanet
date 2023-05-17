@@ -1,0 +1,29 @@
+{# @var \record_preview record  #}
+{% if record.env == "RESULT" %}
+    <span style="color:#27bbe2;">
+        {% trans with {
+            '%number%' : '<span id="current_result_n">' ~ record.formatNumber(record.getNumber() + 1) ~ '</span>',
+            '%total%' : record.formatNumber(record.total)
+            } %}
+            Resultat %number% / %total%
+        {% endtrans %}
+    </span>
+    {{ record.get_title() }}
+{% elseif record.env == "BASK" %}
+    <span style="color:#27bbe2;">
+        {{ record.name }}
+        ({{ record.formatNumber(record.getNumber()) }} / {{ record.formatNumber(record.total) }})
+    </span>
+    {{ record.get_title() }}
+{% elseif record.env == "REG" %}
+    <span style="color:#27bbe2;">
+        {{ record.name }}
+        {% if record.getNumber() != 0 %}
+            ({{ record.formatNumber(record.getNumber()) }} / {{ record.formatNumber(record.total) }})</span>
+            {{ record.get_title() }}
+        {% else %}
+            </span>
+        {% endif %}
+{% else %}
+    {{ record.get_title() }}
+{% endif %}

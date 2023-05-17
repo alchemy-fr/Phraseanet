@@ -21,19 +21,21 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
 fi
 
 ./docker/phraseanet/plugins/console init
-rm -Rf cache/*
 
+# rm -Rf cache/*
 
-chown -R app:app \
-    cache \
-    config \
-    tmp \
-    logs \
-    www
+chown -R app:app cache
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on cache/ repository"
+
+#    config \
+#    tmp \
+#    logs \
+#    www
 
 
 if [ -d "plugins/" ];then
-chown -R app:app plugins;
+chown -R app:app plugins
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on plugins/ repository"
 fi
 
 if [ -f /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then

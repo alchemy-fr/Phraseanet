@@ -25,7 +25,6 @@ use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\StructureChangeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\WebhookUserEventSubscriber;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
@@ -95,6 +94,7 @@ use Alchemy\WorkerProvider\WorkerServiceProvider;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Monolog\Handler\ErrorLogHandler;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -274,15 +274,19 @@ class Application extends SilexApplication
         $this['monolog'] = $this->share(
             $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
 
-                $logger->pushHandler(new ErrorLogHandler(
-                    ErrorLogHandler::SAPI,
-                    Logger::ERROR
-                ));
+                if ($this->getEnvironment() === self::ENV_TEST) {
+                    $logger->pushHandler(new NullHandler());
+                } else {
+                    $logger->pushHandler(new ErrorLogHandler(
+                        ErrorLogHandler::SAPI,
+                        Logger::ERROR
+                    ));
 
-                $logger->pushHandler(new StreamHandler(
-                    fopen('php://stderr', 'w'),
-                    Logger::ERROR
-                ));
+                    $logger->pushHandler(new StreamHandler(
+                        fopen('php://stderr', 'w'),
+                        Logger::ERROR
+                    ));
+                }
 
                 return $logger;
             })

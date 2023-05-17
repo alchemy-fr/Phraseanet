@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Collection of Doctrine schema pre-upgrades
@@ -31,7 +33,7 @@ class PreSchemaUpgradeCollection
      *
      * @param Application $app
      */
-    public function apply(Application $app)
+    public function apply(Application $app, InputInterface $input, OutputInterface $output)
     {
         $applied = [];
 

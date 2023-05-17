@@ -7,7 +7,7 @@ FROM php:7.0-fpm-stretch as phraseanet-system
 
 ENV FFMPEG_VERSION=4.2.2
 
-RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y \
         apt-transport-https \
@@ -327,7 +327,7 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 
 FROM php:7.0-fpm-stretch as phraseanet-saml-sp
 RUN adduser --uid 1000 --disabled-password app
-RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y \
         apt-transport-https \

@@ -201,23 +201,40 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     echo `date +"%Y-%m-%d %H:%M:%S"` " - config/configuration.yml update by Phraseanet entrypoint.sh Finished !"
 fi
 
+echo `date +"%Y-%m-%d %H:%M:%S"` " - Init plugin install "
 ./docker/phraseanet/plugins/console init
-rm -Rf cache/*
-
-
-chown -R app:app \
-    cache \
-    config \
-    tmp \
-    logs \
-    www
-    
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins;
 fi
 
-#chown -R app:app datas && echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished chown on datas by entrypoint" &
+echo `date +"%Y-%m-%d %H:%M:%S"` " - Flushing application cache"
+rm -Rf cache/*
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repository"
+chown -R app:app cache 
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on config/ repository"
+chown -R app:app config
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on tmp/ repository"
+chown -R app:app tmp
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on logs/ repository"
+chown -R app:app logs
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on ftp/ repository"
+chown -R app:app ftp
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on backup/ repository"
+chown -R app:app backup
+
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/ repository"
+chown -R app:app www
+    
+echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"   
+
+
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet setup entrypoint.sh"
 
 if [[ $PHRASEANET_MAINTENANCE = 2 ]];then

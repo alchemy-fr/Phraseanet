@@ -91,11 +91,13 @@ class Prod extends Helper
                 $id = $fieldMeta->get_id();
                 $name = $fieldMeta->get_name();
                 $type = $fieldMeta->get_type();
+                $label = $fieldMeta->get_label($this->app['locale']);
 
                 $data = array(
                     'sbas' => array($sbasId),
                     'fieldname' => $name,
                     'type' => $type,
+                    'label' => ($name === $label) ? [$label] : [$name . ' - ' .trim($label)],  // add the fieldname in the label
                     'id' => $id
                 );
 
@@ -104,6 +106,11 @@ class Prod extends Helper
                         $dates[$name] = array('sbas' => array());
                     }
                     $dates[$name]['sbas'][] = $sbasId;
+
+                    // add different label for the same field if exist
+                    if (!isset($dates[$name]['label']) || !in_array(strtolower($label), array_map('strtolower', $dates[$name]['label']))) {
+                        $dates[$name]['label'][] = trim($label);
+                    }
                 }
 
                 if (array_key_exists($type, $sort)) {  // TYPE_STRING, TYPE_NUMBER or TYPE_DATE
@@ -117,6 +124,11 @@ class Prod extends Helper
 
                 if (isset($fields[$name])) {
                     $fields[$name]['sbas'][] = $sbasId;
+
+                    // add different label for the same field if exist
+                    if (!in_array(strtolower($label), array_map('strtolower', $fields[$name]['label']))) {
+                        $fields[$name]['label'][] = trim($label);
+                    }
                 } else {
                     $fields[$name] = $data;
                 }
@@ -137,6 +149,20 @@ class Prod extends Helper
         if (isset($searchSet['elasticSort'])) {
             $elasticSort = $searchSet['elasticSort'];
         }
+
+        $allSbasId = array_map(function ($db) {
+            return $db->get_sbas_id();
+        }, $acl->get_granted_sbas());
+
+        // add default field date
+        $dates['updated_on']['sbas'] = $allSbasId;
+        $dates['updated_on']['label'][] = $this->app->trans('updated_on');
+        $dates['created_on']['sbas'] = $allSbasId;
+        $dates['created_on']['label'][] = $this->app->trans('created_on');
+
+        // sort ASC by fieldname
+        ksort($dates, SORT_STRING | SORT_FLAG_CASE);
+        ksort($fields, SORT_STRING | SORT_FLAG_CASE);
 
         $searchData['fields'] = $fields;
         $searchData['dates'] = $dates;

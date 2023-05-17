@@ -10,9 +10,11 @@
 
 namespace Alchemy\Phrasea\Model\Serializer;
 
+use record_adapter;
+
 class ESRecordSerializer extends AbstractSerializer
 {
-    public function serialize(\record_adapter $record)
+    public function serialize(record_adapter $record)
     {
         $caption = $business = $status = [];
 
@@ -61,7 +63,7 @@ class ESRecordSerializer extends AbstractSerializer
             'collection_id'          => $record->getCollectionId(),
             'base_id'                => $record->getBaseId(),
             'mime_type'              => $record->getMimeType(),
-            'title'                  => $record->get_title(),
+            'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),
             'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
             'created_on'             => $record->getCreated()->format(DATE_ATOM),
