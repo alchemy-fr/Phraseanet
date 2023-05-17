@@ -57,6 +57,10 @@ spec:
           value: "1200"
         - name: GATEWAY_FASTCGI_TIMEOUT
           value: "1200"
+        - name: PHRASEANET_K8S_NAMESPACE
+          value: {{ .Values.saml.phraseanet_k8s_namespace }}
+        - name: PHRASEANET_TRUSTED_PROXIES
+          value: {{ .Values.app.phraseanet_trusted_proxies }}
         - name: "GATEWAY_ACCESS_ALLOWED_IPS"
           value: {{ .Values.http.gateway_access_allowed_ips }}
         - name: "GATEWAY_ACCESS_DISALLOWED_IPS"
