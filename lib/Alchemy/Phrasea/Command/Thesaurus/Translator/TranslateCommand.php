@@ -43,8 +43,10 @@ class TranslateCommand extends phrCommand
     public function configure()
     {
         $this->setName('thesaurus:translate')
-            ->setDescription('Translate fields values using thesaurus')
+            ->setDescription('(BETA) Translate fields values using thesaurus')
+            ->addOption('report',    null,  InputOption::VALUE_REQUIRED, "Report output format (all|condensed|translated|record)", "all")
             ->addOption('dry',    null,  InputOption::VALUE_NONE, "list translations but don't apply.", null)
+            ->setHelp("--report:\n - all        : list every term.\n - translated : list only translated terms.\n - record     : list only selected record ids.\n - condensed  : count terms occurences.")
         ;
     }
 
@@ -59,6 +61,12 @@ class TranslateCommand extends phrCommand
         $style = new OutputFormatterStyle('black', 'yellow'); // , array('bold'));
         $output->getFormatter()->setStyle('warning', $style);
 
+        // sanitize args
+        if(!in_array($input->getOption('report'), ['all', 'condensed', 'translated', 'record'])) {
+            $output->writeln(sprintf("<error>bad --report value (%s), use all|condensed|translated|record</error>", $input->getOption('report')));
+            return 1;
+        }
+
         $this->input = $input;
         $this->output = $output;
 
@@ -70,6 +78,7 @@ class TranslateCommand extends phrCommand
                 $this->container['unicode'],
                 $this->container['root.path'],
                 $input->getOption('dry'),
+                $input->getOption('report'),
                 $output
             );
         }

@@ -80,6 +80,23 @@ class Job
     private $setStatus = null;  // format 0xx1100xx01xxxx
 
     /**
+     * @var array
+     */
+    private $notTranslated; // for condensed report
+    /**
+     * @var array
+     */
+    private $incompletelyTranslated;        // for condensed report
+    /**
+     * @var array
+     */
+    private $fullyTranslated;      // for condensed report
+    /**
+     * @var int
+     */
+    private $recordsDone;      // for condensed report
+
+    /**
      * @param GlobalConfiguration $globalConfiguration
      * @param array $job_conf
      */
@@ -218,6 +235,11 @@ class Job
         $stmt = $cnx->executeQuery($this->selectRecordsSql, $this->selectRecordParams);
 
         $currentRid = '?';
+        $this->recordsDone = 0;
+        $this->notTranslated = [];
+        $this->incompletelyTranslated = [];
+        $this->fullyTranslated = [];
+
         $metas = $emptyValues = array_map(function () {
             return [];
         }, array_flip($this->selectRecordFieldIds));
@@ -239,11 +261,42 @@ class Job
         }
 
         $stmt->closeCursor();
+
+        // condensed report
+        //
+        if($this->globalConfiguration->getReportFormat() === 'condensed') {
+            $this->output->writeln(sprintf("%d records done.", $this->recordsDone));
+            if(!empty($this->notTranslated)) {
+                ksort($this->notTranslated, SORT_STRING|SORT_FLAG_CASE);
+                $this->output->writeln("Not translated terms:");
+                foreach ($this->notTranslated as $term => $n) {
+                    $this->output->writeln(sprintf(" - \"%s\" (%d times)", $term, $n));
+                }
+            }
+            if(!empty($this->incompletelyTranslated)) {
+                ksort($this->incompletelyTranslated, SORT_STRING|SORT_FLAG_CASE);
+                $this->output->writeln("Incompletely translated terms:");
+                foreach ($this->incompletelyTranslated as $term => $n) {
+                    $this->output->writeln(sprintf(" - \"%s\" (%d times)", $term, $n));
+                }
+            }
+            if(!empty($this->fullyTranslated)) {
+                ksort($this->fullyTranslated, SORT_STRING|SORT_FLAG_CASE);
+                $this->output->writeln("Fully translated terms:");
+                foreach ($this->fullyTranslated as $term => $n) {
+                    $this->output->writeln(sprintf(" - \"%s\" (%d times)", $term, $n));
+                }
+            }
+        }
     }
 
     private function doRecord($record_id, $metas)
     {
-        $this->output->writeln(sprintf("record id: %s", $record_id));
+        $reportFormat = $this->globalConfiguration->getReportFormat();
+
+        if($reportFormat !== 'condensed') {
+            $this->output->writeln(sprintf("record id: %s", $record_id));
+        }
 
         $source_field_id = $this->source_field['id'];
         $meta_to_delete = [];       // key = id, to easily keep unique
@@ -328,14 +381,24 @@ class Job
             // cleanup source
             //
             if (empty($translations)) {
-                $this->output->writeln(sprintf(" - \"%s\" : no translation found.", $source_value));
+                if($reportFormat === 'all') {
+                    $this->output->writeln(sprintf(" - \"%s\" : no translation found.", $source_value));
+                }
+                $this->addToCondensedReport($source_value, $this->notTranslated);
             }
             else if (count($translations) < count($this->destination_fields)) {
-                $this->output->writeln(sprintf(" - \"%s\" : incomplete translation.", $source_value));
+                if(in_array($reportFormat, ['all', 'translated'])) {
+                    $this->output->writeln(sprintf(" - \"%s\" : incomplete translation.", $source_value));
+                }
+                $this->addToCondensedReport($source_value, $this->incompletelyTranslated);
             }
             else {
                 // complete translation (all target lng)
-                $this->output->writeln(sprintf(" - \"%s\" :", $source_value));
+                if(in_array($reportFormat, ['all', 'translated'])) {
+                    $this->output->writeln(sprintf(" - \"%s\" :", $source_value));
+                }
+                $this->addToCondensedReport($source_value, $this->fullyTranslated);
+
                 if ($this->cleanupSource === self::CLEANUP_SOURCE_IF_TRANSLATED) {
                     // do NOT delete the source term if one translation found it as already present as destination (possible if source=destination)
                     $used = false;
@@ -351,8 +414,10 @@ class Job
                 }
             }
 
-            foreach ($translations as $lng => $translation) {
-                $this->output->writeln(sprintf("   - [%s] \"%s\" %s", $lng, $translation['val'], $translation['msg']));
+            if(in_array($reportFormat, ['all', 'translated'])) {
+                foreach ($translations as $lng => $translation) {
+                    $this->output->writeln(sprintf("   - [%s] \"%s\" %s", $lng, $translation['val'], $translation['msg']));
+                }
             }
 
             if ($this->cleanupSource === self::ALWAYS_CLEANUP_SOURCE) {
@@ -414,8 +479,9 @@ class Job
                 $actions['status'] = $status;
             }
         }
+
         $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
-        if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
+        if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
             $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
         }
 
@@ -424,6 +490,18 @@ class Job
             $record->setMetadatasByActions(json_decode($jsActions));
         }
 
+        $this->recordsDone++;
+    }
+
+    private function addToCondensedReport($term, &$where)
+    {
+        if($this->globalConfiguration->getReportFormat() !== 'condensed') {
+            return;
+        }
+        if(!array_key_exists($term, $where)) {
+            $where[$term] = 0;
+        }
+        $where[$term]++;
     }
 
     private function splitTermAndContext($word)

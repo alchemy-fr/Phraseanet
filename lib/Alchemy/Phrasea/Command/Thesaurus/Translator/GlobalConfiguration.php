@@ -25,15 +25,20 @@ Class GlobalConfiguration
      * @var bool
      */
     private $dryRun;
+    /**
+     * @var string
+     */
+    private $reportFormat;
 
     /**
      * @param appbox $appBox
      * @param array $global_conf
      */
-    private function __construct($appBox, Unicode $unicode, $global_conf, bool $dryRun, OutputInterface $output)
+    private function __construct($appBox, Unicode $unicode, $global_conf, bool $dryRun, string $reportFormat, OutputInterface $output)
     {
         $this->configuration = $global_conf;
         $this->dryRun = $dryRun;
+        $this->reportFormat = $reportFormat;
 
         // list databoxes and collections to access by id or by name
         $this->databoxes = [];
@@ -65,7 +70,7 @@ Class GlobalConfiguration
      * @return GlobalConfiguration
      * @throws ConfigurationException
      */
-    public static function create(appbox $appBox, Unicode $unicode, string $root, bool $dryRun, OutputInterface $output): GlobalConfiguration
+    public static function create(appbox $appBox, Unicode $unicode, string $root, bool $dryRun, string $reportFormat, OutputInterface $output): GlobalConfiguration
     {
         try {
             $config_file = ($config_dir = $root . self::CONFIG_DIR) . self::CONFIG_FILE;
@@ -73,7 +78,7 @@ Class GlobalConfiguration
             @mkdir($config_dir, 0777, true);
 
             $config = Yaml::parse(file_get_contents($config_file));
-            return new self($appBox, $unicode, $config['translator'], $dryRun, $output);
+            return new self($appBox, $unicode, $config['translator'], $dryRun, $reportFormat, $output);
         }
         catch (\Exception $e) {
             throw new ConfigurationException(sprintf("missing or bad configuration (%s)", $e->getMessage()));
@@ -110,5 +115,13 @@ Class GlobalConfiguration
     public function isDryRun(): bool
     {
         return $this->dryRun;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReportFormat(): string
+    {
+        return $this->reportFormat;
     }
 }
