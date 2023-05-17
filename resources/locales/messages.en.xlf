@@ -4308,7 +4308,7 @@
       </trans-unit>
       <trans-unit id="04c01654ea5535072898fd4842f6227a4b939682" resname="Manual email share: '%title%'">
         <source>Manual email share: '%title%'</source>
-        <target state="needs-translation">Message about the basket: '%title%'</target>
+        <target state="translated">Message about the basket: '%title%'</target>
         <jms:reference-file line="41">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="yes">
@@ -7627,7 +7627,7 @@
       </trans-unit>
       <trans-unit id="9542814516fbb34841eaecd71c1e96132c957f00" resname="Watermark Record_id">
         <source>Watermark Record_id</source>
-        <target state="needs-translation">Recordid to use for watermark (needs to be in the same databox)</target>
+        <target state="translated">Recordid to use for watermark (needs to be in the same databox)</target>
         <jms:reference-file line="43">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecf870ab34b23495fb940231b71ebe6e952e7cd7" resname="Watermark text">
@@ -9036,7 +9036,7 @@
       </trans-unit>
       <trans-unit id="67946647e69c53e19d5b133dfb05ec6e595fe5e6" resname="admin::status: warning! need indexation if changed">
         <source>admin::status: warning! need indexation if changed</source>
-        <target state="needs-translation">Warning! Requires a full indexation if changed</target>
+        <target state="translated">Warning! Requires a full indexation if changed</target>
         <jms:reference-file line="23">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="401e657bf81bca8796731b867f9a09fac2d86c9b" resname="admin::status:: aucun symbole" approved="yes">
@@ -10970,7 +10970,7 @@
       </trans-unit>
       <trans-unit id="41b7743e7ef4ed879d3f48bb4d65cdbd6794ec24" resname="expose:: poster">
         <source>expose:: poster</source>
-        <target state="needs-translation">poster</target>
+        <target state="needs-translation">Poster (Expose)</target>
         <jms:reference-file line="26">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="50">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
@@ -11604,7 +11604,7 @@
       </trans-unit>
       <trans-unit id="6b515e1d6bd58aa0a748373df36000155da20e78" resname="mail:: report - %instance% - %reportName%">
         <source>mail:: report - %instance% - %reportName%</source>
-        <target state="needs-translation">Report %instance% - %reportName%</target>
+        <target state="translated">Report %instance% - %reportName%</target>
         <jms:reference-file line="27">Notification/Mail/MailReport.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="394de9d96b631d733d7eac3c3bf5a7e8fe27ce9d" resname="mail:: report messages">
@@ -11764,7 +11764,7 @@
       </trans-unit>
       <trans-unit id="9eb221a02fe81dbe0613254c504e75086a6f0bfc" resname="notifications:: checker %checker% for this file is disabled in configuration or deleted">
         <source>notifications:: checker %checker% for this file is disabled in configuration or deleted</source>
-        <target state="needs-translation">The checker %checker% is disabled.</target>
+        <target state="translated">The checker %checker% is disabled.</target>
         <jms:reference-file line="45">eventsmanager/notify/uploadquarantine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cafe5f11d6a3b26e59f28454d0ad90a951c64a6a" resname="nouveau" approved="yes">
@@ -14624,7 +14624,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="54e9e134d28f6fc9c085eb7a8b71212e536174c9" resname="report:: Permalink">
         <source>report:: Permalink</source>
-        <target state="needs-translation">Include the permalink:</target>
+        <target state="translated">Include the permalink:</target>
         <jms:reference-file line="50">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="107">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
