@@ -1490,7 +1490,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 foreach ($values as $value) {
                     if ($value) {
                         $ops[] = [
-                            'expain'         => sprintf('set:: adding value "%s" to "%s" (multi)', $value, $sf->get_name()),
+                            'explain'         => sprintf('set:: adding value "%s" to "%s" (multi)', $value, $sf->get_name()),
                             'meta_struct_id' => $sf->get_id(),
                             'meta_id'        => $meta_id,  // can be null
                             'value'          => $value
@@ -1505,7 +1505,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 }
                 if( ($value = $values[0]) ) {
                     $ops[] = [
-                        'expain' => sprintf('adding value "%s" to "%s" (mono)', $value, $sf->get_name()),
+                        'explain' => sprintf('adding value "%s" to "%s" (mono)', $value, $sf->get_name()),
                         'meta_struct_id' => $sf->get_id(),
                         'meta_id'        => $meta_id,  // probably null,
                         'value'          => $value
@@ -1522,7 +1522,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param string[] $values
      *
      * @return array                            ops to execute
-     * @throws Exception
      */
     private function metadata_add($struct_fields, $values)
     {
@@ -1531,11 +1530,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // now set values to matching struct_fields
         foreach ($struct_fields as $sf) {
             if(!$sf->is_multi()) {
-                throw new Exception(sprintf("can't \"add\" to mono-valued (%s).", $sf->get_name()));
+                // easy support "add" on mono : join values...
+                $values = [ join(' ; ', $values) ];
             }
             foreach ($values as $value) {
                 $ops[] = [
-                    'expain'         => sprintf('add:: adding value "%s" to "%s"', $value, $sf->get_name()),
+                    'explain'         => sprintf('add:: adding value "%s" to "%s"', $value, $sf->get_name()),
                     'meta_struct_id' => $sf->get_id(),
                     'meta_id'        => null,
                     'value'          => $value
@@ -1577,7 +1577,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 }
                 // then add the replacing value
                 $ops[] = [
-                    'expain' => sprintf('rpl::match_all: adding value "%s" to "%s"', $replace_with, $cf->get_name()),
+                    'explain' => sprintf('rpl::match_all: adding value "%s" to "%s"', $replace_with, $cf->get_name()),
                     'meta_struct_id' => $cf->get_meta_struct_id(),
                     'meta_id'        => null,
                     'value'          => $replace_with
@@ -1590,7 +1590,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 foreach ($cf->get_values() as $field_value) {
                     if ($field_value->getId() === $meta_id) {
                         $ops[] = [
-                            'expain' => sprintf('rpl::match_meta_id %s (field "%s") set value "%s"', $field_value->getId(), $cf->get_name(), $replace_with),
+                            'explain' => sprintf('rpl::match_meta_id %s (field "%s") set value "%s"', $field_value->getId(), $cf->get_name(), $replace_with),
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
                             'value'          => $replace_with
@@ -1609,7 +1609,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     }
                     if ($this->match($value, $match_method, $field_value->getValue())) {
                         $ops[] = [
-                            'expain' => sprintf('rpl::match_value "%s" (field "%s") set value "%s"', $field_value->getValue(), $cf->get_name(), $rw),
+                            'explain' => sprintf('rpl::match_value "%s" (field "%s") set value "%s"', $field_value->getValue(), $cf->get_name(), $rw),
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
                             'value'          => $rw
