@@ -4305,7 +4305,7 @@
       </trans-unit>
       <trans-unit id="04c01654ea5535072898fd4842f6227a4b939682" resname="Manual email share: '%title%'">
         <source>Manual email share: '%title%'</source>
-        <target state="needs-translation">Nachricht über den Sammelkorb: '%title%'</target>
+        <target state="translated">Nachricht über den Sammelkorb: '%title%'</target>
         <jms:reference-file line="41">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="yes">
@@ -4859,7 +4859,7 @@
       </trans-unit>
       <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied">
         <source>Order has been denied</source>
-        <target state="needs-translation">Angewandte Auswahl(en).</target>
+        <target state="translated">Angewandte Auswahl(en).</target>
         <jms:reference-file line="217">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/orders/order_item.html.twig</jms:reference-file>
@@ -7624,7 +7624,7 @@
       </trans-unit>
       <trans-unit id="9542814516fbb34841eaecd71c1e96132c957f00" resname="Watermark Record_id">
         <source>Watermark Record_id</source>
-        <target state="needs-translation">Recordid, die für das Wasserzeichen verwendet werden soll (muss sich in derselben Databox befinden)</target>
+        <target state="translated">Recordid, die für das Wasserzeichen verwendet werden soll (muss sich in derselben Databox befinden)</target>
         <jms:reference-file line="43">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecf870ab34b23495fb940231b71ebe6e952e7cd7" resname="Watermark text">
@@ -9033,7 +9033,7 @@
       </trans-unit>
       <trans-unit id="67946647e69c53e19d5b133dfb05ec6e595fe5e6" resname="admin::status: warning! need indexation if changed">
         <source>admin::status: warning! need indexation if changed</source>
-        <target state="needs-translation">Achtung! Benötigt bei Änderungen eine vollständige Indexierung</target>
+        <target state="translated">Achtung! Benötigt bei Änderungen eine vollständige Indexierung</target>
         <jms:reference-file line="23">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="401e657bf81bca8796731b867f9a09fac2d86c9b" resname="admin::status:: aucun symbole" approved="yes">
@@ -10967,7 +10967,7 @@
       </trans-unit>
       <trans-unit id="41b7743e7ef4ed879d3f48bb4d65cdbd6794ec24" resname="expose:: poster">
         <source>expose:: poster</source>
-        <target state="needs-translation">Poster</target>
+        <target state="needs-translation">Poster (Expose)</target>
         <jms:reference-file line="26">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="50">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
@@ -11476,7 +11476,7 @@
       </trans-unit>
       <trans-unit id="a780a1cdb659e9acb943e4e8d6dbc9bc3be2dbb0" resname="login:: request password mail sent">
         <source>login:: request password mail sent</source>
-        <target state="needs-translation">Ihre Anfrage wurde berücksichtigt, Sie werden in Kürze eine E-Mail erhalten.</target>
+        <target state="translated">Ihre Anfrage wurde berücksichtigt, Sie werden in Kürze eine E-Mail erhalten.</target>
         <jms:reference-file line="429">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8af68da04218b6188405e5f7422866b5412ec7a8" resname="login::erreur: Erreur d'authentification" approved="yes">
@@ -11601,7 +11601,7 @@
       </trans-unit>
       <trans-unit id="6b515e1d6bd58aa0a748373df36000155da20e78" resname="mail:: report - %instance% - %reportName%">
         <source>mail:: report - %instance% - %reportName%</source>
-        <target state="needs-translation">Report %instance% - %reportName%</target>
+        <target state="translated">Report %instance% - %reportName%</target>
         <jms:reference-file line="27">Notification/Mail/MailReport.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="394de9d96b631d733d7eac3c3bf5a7e8fe27ce9d" resname="mail:: report messages">
@@ -11636,7 +11636,7 @@
       </trans-unit>
       <trans-unit id="ffdd023c8bd8b6465b789382a92f144ee78372cb" resname="mail::account deletion last relance at  %lastInactivityEmail%">
         <source>mail::account deletion last relance at %lastInactivityEmail%</source>
-        <target state="needs-translation">Eine Erinnerung wurde Ihnen am %lastInactivityEmail% ausgesendet.</target>
+        <target state="translated">Eine Erinnerung wurde Ihnen am %lastInactivityEmail% ausgesendet.</target>
         <jms:reference-file line="53">Notification/Mail/MailSuccessAccountInactifDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
@@ -14090,7 +14090,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="b2299530024db353434b65e6fd2d83fa5e6ce226" resname="prod:share:: you are about to quit a share basket!">
         <source>prod:share:: you are about to quit a share basket!</source>
-        <target state="needs-translation">Sammelkorb Teilen verlassen?</target>
+        <target state="translated">Sammelkorb Teilen verlassen?</target>
         <jms:reference-file line="110">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
@@ -14616,7 +14616,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="54e9e134d28f6fc9c085eb7a8b71212e536174c9" resname="report:: Permalink">
         <source>report:: Permalink</source>
-        <target state="needs-translation">den Permalink einbeziehen:</target>
+        <target state="translated">den Permalink einbeziehen:</target>
         <jms:reference-file line="50">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="107">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
