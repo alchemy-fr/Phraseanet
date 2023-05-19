@@ -29,6 +29,7 @@ services:
     - GATEWAY_SEND_TIMEOUT
     - GATEWAY_PROXY_TIMEOUT
     - GATEWAY_FASTCGI_TIMEOUT
+    - GATEWAY_FASTCGI_HTTPS
     - PHRASEANET_K8S_NAMESPACE
     - PHRASEANET_TRUSTED_PROXIES
     - GATEWAY_ALLOWED_IPS                      
@@ -66,6 +67,7 @@ services:
     - GATEWAY_ALLOWED_IPS
     - GATEWAY_DENIED_IPS
     - GATEWAY_USERS
+    - GATEWAY_FASTCGI_HTTPS
     networks:
       - internal
     labels:

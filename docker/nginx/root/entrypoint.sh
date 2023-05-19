@@ -12,7 +12,16 @@ else
   NEW_RESOLVER=127.0.0.11
 fi
 
-cat /nginx.conf.sample | sed "s/\$MAX_BODY_SIZE/$MAX_BODY_SIZE/g" | sed "s/\$GATEWAY_SEND_TIMEOUT/$GATEWAY_SEND_TIMEOUT/g"  | sed "s/\$GATEWAY_FASTCGI_TIMEOUT/$GATEWAY_FASTCGI_TIMEOUT/g" | sed "s/\$MAX_BODY_SIZE/$MAX_BODY_SIZE/g" | sed "s/\$GATEWAY_PROXY_TIMEOUT/$GATEWAY_PROXY_TIMEOUT/g"  | sed "s/\$NEW_TARGET/$NEW_TARGET/g"  | sed "s/\$NEW_RESOLVER/$NEW_RESOLVER/g" > /etc/nginx/conf.d/default.conf
+if [ ! -z "$GATEWAY_FASTCGI_HTTPS" ]; then
+
+  echo "GATEWAY_FASTCGI_HTTPS is defined : $GATEWAY_FASTCGI_HTTPS"
+  GATEWAY_FASTCGI_HTTPS="fastcgi_param HTTPS $GATEWAY_FASTCGI_HTTPS;"  
+else
+  echo "NO GATEWAY_FASTCGI_HTTPS is defined"
+  GATEWAY_FASTCGI_HTTPS="fastcgi_param HTTPS on;"
+fi
+
+cat /nginx.conf.sample | sed "s/\$MAX_BODY_SIZE/$MAX_BODY_SIZE/g" | sed "s/\$GATEWAY_SEND_TIMEOUT/$GATEWAY_SEND_TIMEOUT/g"  | sed "s/\$GATEWAY_FASTCGI_TIMEOUT/$GATEWAY_FASTCGI_TIMEOUT/g" | sed "s/\$MAX_BODY_SIZE/$MAX_BODY_SIZE/g" | sed "s/\$GATEWAY_PROXY_TIMEOUT/$GATEWAY_PROXY_TIMEOUT/g"  | sed "s/\$NEW_TARGET/$NEW_TARGET/g"  | sed "s/\$NEW_RESOLVER/$NEW_RESOLVER/g" | sed "s/\$GATEWAY_FASTCGI_HTTPS/$GATEWAY_FASTCGI_HTTPS/g" > /etc/nginx/conf.d/default.conf
 cat /fastcgi_timeout.conf  | sed "s/\$GATEWAY_FASTCGI_TIMEOUT/$GATEWAY_FASTCGI_TIMEOUT/g" > /etc/nginx/fastcgi_extended_params
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - Setting for real_ip_from using Trusted Proxies"
