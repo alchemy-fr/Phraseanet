@@ -260,4 +260,25 @@ class ProdOrderController extends BaseOrderController
             'order_id' => $order_id,
         ]);
     }
+
+    public function cancelOrder(Request $request, $order_id)
+    {
+        $order = $this->findOr404($order_id);
+        $oldTodo = $order->getTodo();
+
+        $order->setTodo(0);
+        $order->setCanceledOn(new \DateTime());
+        $order->setCanceledBy($this->getAuthenticatedUser()->getId());
+        $order->setCanceledTodo($oldTodo);
+
+        $manager = $this->getEntityManager();
+        $manager->persist($order);
+        $manager->flush();
+
+        return $this->app->json([
+            'success'  => true,
+            'msg'      => $this->app->trans('Order has been canceled'),
+            'order_id' => $order_id
+        ]);
+    }
 }
