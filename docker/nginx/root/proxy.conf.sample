@@ -13,3 +13,4 @@ proxy_buffering         off;
 proxy_request_buffering off;
 proxy_intercept_errors  on;
 http2_push_preload      on;
+fastcgi_param HTTPS on;

@@ -30,26 +30,26 @@ if [[ ! -z $PHRASEANET_TRUSTED_PROXIES ]]; then
 #    cat proxy.conf.sample | sed "s/\$SET_REAL_IP_FROM/$SET_REAL_IP_FROM/g" > /etc/nginx/conf.d/proxy.conf
 fi
 
-#GATEWAY_ACCESS_ALLOWED_IPS="10.0.0.1,10.0.1.1"
-#GATEWAY_ACCESS_DISALLOWED_IPS="172.1.0.1,172.1.0.2"
-#GATEWAY_ACCESS_USERS="user1(password1),user2(password2)
+#GATEWAY_ALLOWED_IPS="10.0.0.1,10.0.1.1"
+#GATEWAY_DENIED_IPS="172.1.0.1,172.1.0.2"
+#GATEWAY_USERS="user1(password1),user2(password2)
 touch /etc/nginx/restrictions
 touch /etc/nginx/.htpasswd
 
-if [[ ! -z $GATEWAY_ACCESS_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_ACCESS_DISALLOWED_IPS ]] || [[ ! -z $GATEWAY_ACCESS_USERS ]]; then
-    for ip_allowed in $(echo $GATEWAY_ACCESS_ALLOWED_IPS | sed "s/,/ /g")
+if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z $GATEWAY_USERS ]]; then
+    for ip_allowed in $(echo $GATEWAY_ALLOWED_IPS | sed "s/,/ /g")
         do
             echo "allow $ip_allowed;" >> /etc/nginx/restrictions
         done
-    for ip_denied in $(echo $GATEWAY_ACCESS_DISALLOWED_IPS | sed "s/,/ /g")
+    for ip_denied in $(echo $GATEWAY_DENIED_IPS | sed "s/,/ /g")
         do
             echo "deny $ip_denied;" >> /etc/nginx/restrictions
         done
-    if [[ -z $GATEWAY_ACCESS_DISALLOWED_IPS ]]; then
+    if [[ -z $GATEWAY_DENIED_IPS ]] && [[ -z $GATEWAY_USERS ]]; then
             echo "deny all;" >> /etc/nginx/restrictions
     fi
-    if [[ ! -z $GATEWAY_ACCESS_USERS ]]; then
-         for user in $(echo $GATEWAY_ACCESS_USERS | sed "s/,/ /g")
+    if [[ ! -z $GATEWAY_USERS ]]; then
+         for user in $(echo $GATEWAY_USERS | sed "s/,/ /g")
             do
                login=$(echo $user | cut -d ':' -f 1)
                passwd=$(echo $user | cut -d ':' -f 2)

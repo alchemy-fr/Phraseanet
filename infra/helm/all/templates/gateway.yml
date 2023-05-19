@@ -61,10 +61,10 @@ spec:
           value: {{ .Values.saml.phraseanet_k8s_namespace }}
         - name: PHRASEANET_TRUSTED_PROXIES
           value: {{ .Values.app.phraseanet_trusted_proxies }}
-        - name: "GATEWAY_ACCESS_ALLOWED_IPS"
-          value: {{ .Values.http.gateway_access_allowed_ips }}
-        - name: "GATEWAY_ACCESS_DISALLOWED_IPS"
-          value: {{ .Values.http.gateway_access_disallowed_ips }}
-        - name: "GATEWAY_ACCESS_USERS"
-          value: {{ .Values.http.gateway_access_users }}
+        - name: "GATEWAY_ALLOWED_IPS"
+          value: {{ .Values.http.gateway_allowed_ips }}
+        - name: "GATEWAY_DENIED_IPS"
+          value: {{ .Values.http.gateway_denied_ips }}
+        - name: "GATEWAY_USERS"
+          value: {{ .Values.http.gateway_users }}
 

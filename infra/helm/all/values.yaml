@@ -63,9 +63,9 @@ rabbitmq:
 http:
   max_body_size: 2G
   max_input_vars: 12000
-  gateway_access_allowed_ips:
-  gateway_access_disallowed_ips:
-  gateway_access_users:
+  gateway_allowed_ips:
+  gateway_denied_ips:
+  gateway_users:
 
 php:
   opcache_enabled: 1
