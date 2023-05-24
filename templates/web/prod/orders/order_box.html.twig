@@ -168,6 +168,14 @@
                                     <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
                                     <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
                                 </td>
+                                <td>
+                                    {% if order.getTodo() == 0 and order.getCanceledOn() is not empty  %}
+                                        <span class="text_block">{{ 'order-manager:: cancel' | trans }}</span>
+                                        <span class="text_block_bold">
+                                            {{ 'order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated' | trans({'%canceled_on%' : order.getCanceledOn() | date('d/m/Y'), '%canceled_by%' : user_display_name(order.getCanceledBy()), '%n%' : order.getCanceledTodo()}) }}
+                                        </span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     {% else %}
