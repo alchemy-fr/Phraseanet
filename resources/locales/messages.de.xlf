@@ -11795,7 +11795,7 @@
       </trans-unit>
       <trans-unit id="d1fab8140393e87d5f7013f269d6af1906f8ad6c" resname="order-manager:: cancel">
         <source>order-manager:: cancel</source>
-        <target state="needs-translation">Die Bestellung stornieren</target>
+        <target state="needs-translation">Die Bestellung stornieren (endgültig)</target>
         <jms:reference-file line="173">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="118">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
