@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-05-24T12:28:52Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -19,8 +19,7 @@
       </trans-unit>
       <trans-unit id="8cfd171c4324fd050876b66b60d6da9f1577ed72" resname="            Resultat %number% / %total%&#10;        ">
         <source>Resultat %number% / %total%</source>
-        <target state="new">            Resultat %number% / %total%
-        </target>
+        <target state="needs-translation">Result %number% / %total%</target>
         <jms:reference-file line="4">prod/preview/title.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
@@ -201,7 +200,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2543,7 +2542,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="154">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -3310,9 +3309,9 @@
         <target state="translated">File is too large: 64kb max.</target>
         <jms:reference-file line="181">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6efbe33ed8bd57bac1e804871a3ba254abe7903c" resname="File upload has been cancelled" approved="yes">
+      <trans-unit id="6efbe33ed8bd57bac1e804871a3ba254abe7903c" resname="File upload has been cancelled" approved="no">
         <source>File upload has been cancelled</source>
-        <target state="translated">File upload has been cancelled</target>
+        <target state="needs-translation">File upload has been canceled</target>
         <jms:reference-file line="320">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="42c799906c9cd426de410aed576e60615c4c1b73" resname="File upload has been stopped" approved="yes">
@@ -3700,9 +3699,9 @@
         <target state="translated">If set to 0, duration is permanent.</target>
         <jms:reference-file line="43">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="516e5bc94c0583cb8e632e13c36f77e514e0afc3" resname="If you notice any unfamiliar devices or locations, click on button %button% to end the session." approved="yes">
+      <trans-unit id="516e5bc94c0583cb8e632e13c36f77e514e0afc3" resname="If you notice any unfamiliar devices or locations, click on button %button% to end the session." approved="no">
         <source>If you notice any unfamiliar devices or locations, click on button %button% to end the session.</source>
-        <target state="translated">If you notice any unfamiliar devices or locations, click on the button %button% to end the session.</target>
+        <target state="translated">If you notice any unfamiliar devices or locations, click on the "end activity" button to end the session.</target>
         <jms:reference-file line="17">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f91c7b9a3a35352f74a9fb8708e35ddbb36a852b" resname="If you plan to store large files, be sure it will fit in these directories." approved="yes">
@@ -5524,9 +5523,9 @@
         <target state="translated">Reception of %basket_name%</target>
         <jms:reference-file line="49">Notification/Mail/MailInfoPushReceived.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8a7429e2e2311f5a221af1767483f1cc8c5bc5f" resname="Recevoir des notifications lorsqu'on me demande une validation" approved="yes">
+      <trans-unit id="f8a7429e2e2311f5a221af1767483f1cc8c5bc5f" resname="Recevoir des notifications lorsqu'on me demande une validation" approved="no">
         <source>Recevoir des notifications lorsqu'on me demande une validation</source>
-        <target state="translated">Receive Feedback notifications by e-mail</target>
+        <target state="translated">Receive notification of Push, shared and Feedback baskets</target>
         <jms:reference-file line="90">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7858bf48573ba33ca42942bf7c7d8221c6790312" resname="Recevoir des notifications lorsqu'un upload echoue sur un bridge" approved="yes">
@@ -5594,9 +5593,9 @@
         <target state="translated">Record_id</target>
         <jms:reference-file line="5">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="681d04b4edb7b2bebc9f33ef57265bf77494999c" resname="Records Statut" approved="yes">
+      <trans-unit id="681d04b4edb7b2bebc9f33ef57265bf77494999c" resname="Records Statut" approved="no">
         <source>Records Statut</source>
-        <target state="translated">Records statut</target>
+        <target state="translated">Records status</target>
         <jms:reference-file line="18">actions/Property/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1361dc265b8f8d5fbfae5c59f5eb7008345b0a60" resname="Records have been successfuly moved" approved="yes">
@@ -10920,9 +10919,9 @@
         <target state="translated">Title</target>
         <jms:reference-file line="65">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="yes">
+      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="no">
         <source>export:email:: acknowledgement info</source>
-        <target state="translated">The "Acknowledgment" works only if the recipient supports this feature</target>
+        <target state="needs-translation">Acknowledgments only work if the recipient allows this feature</target>
         <jms:reference-file line="201">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas" approved="yes">
@@ -11794,18 +11793,18 @@
       </trans-unit>
       <trans-unit id="893cfa8b26c6174b0f4f8b1379bb39675bf1c620" resname="order-manager:: all document treated">
         <source>order-manager:: all document treated</source>
-        <target state="new">order-manager:: all document treated</target>
+        <target state="needs-translation">All documents have been treated</target>
         <jms:reference-file line="115">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d1fab8140393e87d5f7013f269d6af1906f8ad6c" resname="order-manager:: cancel">
         <source>order-manager:: cancel</source>
-        <target state="new">order-manager:: cancel</target>
+        <target state="needs-translation">Cancel</target>
         <jms:reference-file line="173">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="118">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="640be59e04f162fb27eac61ef2bf1939047d32fc" resname="order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated">
         <source>order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated</source>
-        <target state="new">order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated</target>
+        <target state="needs-translation">Canceled on %canceled_on% by %canceled_by%, with %n% untreated documents</target>
         <jms:reference-file line="175">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="121">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
@@ -12376,7 +12375,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13122,11 +13121,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Valid changes or Cancel</target>
         <jms:reference-file line="399">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="yes">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="no">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="translated">Cancelling editing will lose all edits. 
-- Cancel : to go back to editing 
-- OK : to close and lose edits</target>
+        <target state="translated">Canceling editing will lose all edits. - Cancel : go back to editing - OK : close and lose edits</target>
         <jms:reference-file line="47">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9999b27bac2f63123760f54d7312b7b7133930fc" resname="prod::editing::fields: status" approved="yes">
@@ -14646,7 +14643,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="54e9e134d28f6fc9c085eb7a8b71212e536174c9" resname="report:: Permalink">
         <source>report:: Permalink</source>
-        <target state="translated">Include the permalink:</target>
+        <target state="translated">Include the permalink</target>
         <jms:reference-file line="50">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="107">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
@@ -15289,9 +15286,9 @@ It is possible to place several search areas</target>
         <target state="translated">FTP Pull</target>
         <jms:reference-file line="24">TaskManager/Job/FtpPullJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="45e13d4a98d29746203b8174e32db990b6860b06" resname="task::ftp:File &quot;%file%&quot; (record %record_id%) de la base &quot;%basename%&quot; (Export du Document) : Transfert cancelled (le document n'existe plus)" approved="yes">
+      <trans-unit id="45e13d4a98d29746203b8174e32db990b6860b06" resname="task::ftp:File &quot;%file%&quot; (record %record_id%) de la base &quot;%basename%&quot; (Export du Document) : Transfert cancelled (le document n'existe plus)" approved="no">
         <source>task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n'existe plus)</source>
-        <target state="translated">Transfert cancelled for file "%file%" (record_id "%record_id%" in databox "%basename%"): document no longer exists</target>
+        <target state="translated">Transfert canceled for file "%file%" (record_id "%record_id%" in databox "%basename%"): document no longer exists</target>
         <jms:reference-file line="276">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="256">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
@@ -15502,7 +15499,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
