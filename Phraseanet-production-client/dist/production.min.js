@@ -65950,6 +65950,22 @@ var orderItem = function orderItem(services) {
             //deny_documents(order_id);
         });
 
+        (0, _jquery2.default)('button.cancel_order', $dialog.getDomElement()).bind('click', function (event) {
+            var order_id = (0, _jquery2.default)(this).data('order-id');
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '../prod/order/' + order_id + '/cancel/',
+                success: function success(data) {
+                    var url = '../prod/order/' + order_id + '/';
+
+                    reloadDialog(url);
+                }
+            });
+
+            return false;
+        });
+
         (0, _jquery2.default)('button.reset', $dialog.getDomElement()).bind('click', function () {
             var itemsToBeReset = [];
             (0, _jquery2.default)('.order_list .order_row.selected.waitingForValidation', $dialog.getDomElement()).each(function (i, n) {

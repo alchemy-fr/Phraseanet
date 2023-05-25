@@ -102,6 +102,11 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('prod_order_validate')
             ->assert('order_id', '\d+');
 
+        $controllers->post('/{order_id}/cancel/', 'controller.prod.order:cancelOrder')
+            ->before($ensureOrdersAdmin)
+            ->bind('prod_order_cancel')
+            ->assert('order_id', '\d+');
+
         return $controllers;
     }
 }
