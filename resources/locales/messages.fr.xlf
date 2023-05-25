@@ -19,7 +19,7 @@
       </trans-unit>
       <trans-unit id="8cfd171c4324fd050876b66b60d6da9f1577ed72" resname="            Resultat %number% / %total%&#10;        ">
         <source>Resultat %number% / %total%</source>
-        <target state="needs-translation">Résultat %number% / %total%</target>
+        <target state="translated">Résultat %number% / %total%</target>
         <jms:reference-file line="4">prod/preview/title.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
@@ -10972,7 +10972,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="41b7743e7ef4ed879d3f48bb4d65cdbd6794ec24" resname="expose:: poster">
         <source>expose:: poster</source>
-        <target state="needs-translation">Poster (Expose)</target>
+        <target state="translated">Poster (Expose)</target>
         <jms:reference-file line="26">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="50">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
@@ -11766,7 +11766,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="9eb221a02fe81dbe0613254c504e75086a6f0bfc" resname="notifications:: checker %checker% for this file is disabled in configuration or deleted">
         <source>notifications:: checker %checker% for this file is disabled in configuration or deleted</source>
-        <target state="needs-translation">Le checker %checker% est désactivé.</target>
+        <target state="translated">Le checker %checker% est désactivé.</target>
         <jms:reference-file line="45">eventsmanager/notify/uploadquarantine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cafe5f11d6a3b26e59f28454d0ad90a951c64a6a" resname="nouveau" approved="yes">
@@ -11796,7 +11796,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="d1fab8140393e87d5f7013f269d6af1906f8ad6c" resname="order-manager:: cancel">
         <source>order-manager:: cancel</source>
-        <target state="needs-translation">Annuler</target>
+        <target state="needs-translation">Annuler la commande</target>
         <jms:reference-file line="173">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="118">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
