@@ -1,3 +1,4 @@
+{{- if .Values.rabbitmq.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,13 +21,13 @@ spec:
         terminationMessagePolicy: FallbackToLogsOnError
         env:
         - name: RABBITMQ_DEFAULT_USER
-          value: {{ .Values.rabbitmq.default_user }}
+          value: {{ tpl .Values.rabbitmq.default_user $ | quote }}
         - name: RABBITMQ_DEFAULT_PASS
-          value: {{ .Values.rabbitmq.default_pass }}
+          value: {{ tpl .Values.rabbitmq.default_pass $ | quote }}
         - name: RABBITMQ_NODE_PORT
-          value: {{ .Values.rabbitmq.port | quote }}
+          value: {{ tpl .Values.rabbitmq.port $ | quote }}
         - name: RABBITMQ_DEFAULT_VHOST
-          value: {{ .Values.rabbitmq.default_vhost }}
+          value: {{ tpl .Values.rabbitmq.default_vhost $ | quote }}
         - name: RABBITMQ_HEARTBEAT
           value: {{ .Values.rabbitmq.heartbeat | quote }}
-          
+{{- end }}

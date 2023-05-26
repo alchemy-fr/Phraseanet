@@ -1,19 +1,19 @@
-{{- if eq .Values.app.worker.launch.monoworker true }}
+{{- if eq .Values.app.worker.launch.records true }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: phraseanet-worker-monoworker
+  name: phraseanet-worker-records
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: phraseanet
-      tier: worker
+      tier: worker-records
   template:
     metadata:
       labels:
         app: phraseanet
-        tier: worker
+        tier: worker-records
     spec:
       volumes:
       - name: phraseanet-config
@@ -34,12 +34,6 @@ spec:
         emptyDir:
       - name: phraseanet-cache
         emptyDir:
-      - name: phraseanet-ftp
-        persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc.ftp.name }}
-      - name: phraseanet-backup
-        persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc.backup.name }}
       {{ if .Values.image.pullSecret.enabled }}
       imagePullSecrets:
       - name: {{ .Values.image.pullSecret.name }}
@@ -66,10 +60,6 @@ spec:
           mountPath: "/var/alchemy/Phraseanet/www/custom"
         - name: phraseanet-cache
           mountPath: "/var/alchemy/Phraseanet/cache"
-        - name: phraseanet-ftp
-          mountPath: "/var/alchemy/Phraseanet/ftp"
-        - name: phraseanet-backup
-          mountPath: "/var/alchemy/Phraseanet/backup"
         env:
         - name: STACK_NAME
           value: {{ .Values.app.stack_name | quote }}
@@ -79,38 +69,16 @@ spec:
           value: {{ .Values.app.worker.phraseanet_workers_launch_method | quote }}
         - name: PHRASEANET_WORKER_mainQueue
           value: {{ .Values.app.worker.phraseanet_worker_mainqueue | quote }}
-        - name: PHRASEANET_WORKER_assetsIngest
-          value: {{ .Values.app.worker.phraseanet_worker_assetsingest | quote }}
         - name: PHRASEANET_WORKER_createRecord
           value: {{ .Values.app.worker.phraseanet_worker_createrecord | quote }}
         - name: PHRASEANET_WORKER_deleteRecord
           value: {{ .Values.app.worker.phraseanet_worker_deleterecord | quote }}
         - name: PHRASEANET_WORKER_editRecord
           value: {{ .Values.app.worker.phraseanet_worker_editrecord | quote }}
-        - name: PHRASEANET_WORKER_exportMail
-          value: {{ .Values.app.worker.phraseanet_worker_exportmail | quote }}
-        - name: PHRASEANET_WORKER_exposeUpload
-          value: {{ .Values.app.worker.phraseanet_worker_exposeupload | quote }}
-        - name: PHRASEANET_WORKER_ftp
-          value: {{ .Values.app.worker.phraseanet_worker_ftp | quote }}
         - name:  PHRASEANET_WORKER_populateIndex
           value: {{ .Values.app.worker.phraseanet_worker_populateindex | quote }}
-        - name: PHRASEANET_WORKER_pullAssets
-          value: {{ .Values.app.worker.phraseanet_worker_pullassets | quote }}
-        - name: PHRASEANET_WORKER_recordsActions
-          value: {{ .Values.app.worker.phraseanet_worker_recordsactions| quote }}
-        - name:  PHRASEANET_WORKER_subdefCreation
-          value: {{ .Values.app.worker.phraseanet_worker_subdefcreation | quote }}
-        - name: PHRASEANET_WORKER_subtitle
-          value: {{ .Values.app.worker.phraseanet_worker_subtitle | quote }}
-        - name: PHRASEANET_WORKER_validationReminder
-          value: {{ .Values.app.worker.phraseanet_worker_validationreminder | quote }}
         - name: PHRASEANET_WORKER_webhook
           value: {{ .Values.app.worker.phraseanet_worker_webhook | quote }}
-        - name: PHRASEANET_WORKER_writeMetadatas
-          value: {{ .Values.app.worker.phraseanet_worker_writemetadatas | quote }}
-        - name: PHRASEANET_WORKER_shareBasket
-          value: {{ .Values.app.worker.phraseanet_worker_sharebasket | quote }}
         - name: MAX_BODY_SIZE
           value: {{ .Values.http.max_body_size | quote }}
         - name: MAX_INPUT_VARS

@@ -1,13 +1,13 @@
-
+{{- if .Values.redis.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
   name: redis
 spec:
   ports:
-  - port: 6379
-    targetPort: 6379
+  - port: {{ tpl .Values.redis.port $ }}
+    targetPort: {{ tpl .Values.redis.port $ }}
   selector:
     app: phraseanet
     tier: redis
-
+{{- end }}

@@ -1,4 +1,4 @@
-
+{{- if .Values.elasticsearch.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,9 +21,9 @@ spec:
       - name: elastic-data
         persistentVolumeClaim:
           claimName: {{ .Values.elasticsearch.pvc_name }}
-      {{ if eq .Values.image.imagepullsecrets "true" }}
+      {{ if .Values.image.pullSecret.enabled }}
       imagePullSecrets:
-      - name: {{ .Values.image.secretename }}
+      - name: {{ .Values.image.pullSecret.name }}
       {{ end }}
       containers:
       - name: elasticsearch
@@ -35,3 +35,4 @@ spec:
         volumeMounts:
         - name: elastic-data
           mountPath: "/usr/share/elasticsearch/data"
+{{- end }}

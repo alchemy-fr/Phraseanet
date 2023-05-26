@@ -1,3 +1,4 @@
+{{- if .Values.elasticsearch.enabled }}
 {{- with .Values.elasticsearch }}
 {{- if and .persistence.enabled (not .persistence.existingClaim) }}
 kind: PersistentVolumeClaim
@@ -16,6 +17,7 @@ spec:
   storageClassName: ""
 {{- else }}
   storageClassName: {{ .persistence.storageClass | quote }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

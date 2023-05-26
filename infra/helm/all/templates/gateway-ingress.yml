@@ -5,13 +5,11 @@ metadata:
   labels:
     app: phraseanet-gateway
   name: phraseanet-gateway
-{{- with .Values.ingress.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+  {{- template "phraseanet.ingressAnnotations" . }}
 spec:
   rules:
-  - host: {{ .Values.ingress.host }}
+  {{- range .Values.ingress.hosts }}
+  - host: {{ . }}
     http:
       paths:
       - backend:
@@ -21,8 +19,17 @@ spec:
               number: 80
         path: /
         pathType: Prefix
-  {{- if .Values.ingress.tls }}
+  {{- end }}
+{{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end -}}
+  {{- range .Values.ingress.tls }}
+    - hosts: 
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+    {{- if .secretName }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}
 {{- end }}

@@ -1,4 +1,4 @@
-
+{{- if .Values.elasticsearch.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,3 +11,4 @@ spec:
   selector:
     app: phraseanet
     tier: elasticsearch
+{{- end }}
