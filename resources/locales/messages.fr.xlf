@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-05-24T12:29:07Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -19,8 +19,7 @@
       </trans-unit>
       <trans-unit id="8cfd171c4324fd050876b66b60d6da9f1577ed72" resname="            Resultat %number% / %total%&#10;        ">
         <source>Resultat %number% / %total%</source>
-        <target state="new">            Resultat %number% / %total%
-        </target>
+        <target state="translated">Résultat %number% / %total%</target>
         <jms:reference-file line="4">prod/preview/title.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
@@ -201,7 +200,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2540,7 +2539,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="154">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -4859,7 +4858,7 @@
       </trans-unit>
       <trans-unit id="f331c5bf3f7ec62b3c205495dfb6bd64ef2e9b41" resname="Order has been canceled">
         <source>Order has been canceled</source>
-        <target state="new">Order has been canceled</target>
+        <target state="needs-translation">La commande a été annulée</target>
         <jms:reference-file line="280">Order/Controller/ProdOrderController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied">
@@ -5446,9 +5445,9 @@
         <target state="translated">Rapport de validation</target>
         <jms:reference-file line="80">eventsmanager/notify/validationdone.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17e7c81f42087a2439ab16806eea8693d6bcfff0" resname="Re-initialiser" approved="yes">
+      <trans-unit id="17e7c81f42087a2439ab16806eea8693d6bcfff0" resname="Re-initialiser" approved="no">
         <source>Re-initialiser</source>
-        <target state="translated">Ré-initialiser</target>
+        <target state="translated">Réinitialiser</target>
         <jms:reference-file line="460">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="7">prod/Story/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="8">prod/Baskets/Reorder.html.twig</jms:reference-file>
@@ -5521,9 +5520,9 @@
         <target state="translated">Réception du panier %basket_name%</target>
         <jms:reference-file line="49">Notification/Mail/MailInfoPushReceived.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8a7429e2e2311f5a221af1767483f1cc8c5bc5f" resname="Recevoir des notifications lorsqu'on me demande une validation" approved="yes">
+      <trans-unit id="f8a7429e2e2311f5a221af1767483f1cc8c5bc5f" resname="Recevoir des notifications lorsqu'on me demande une validation" approved="no">
         <source>Recevoir des notifications lorsqu'on me demande une validation</source>
-        <target state="translated">Réception d'un Push ou d'une demande de validation</target>
+        <target state="translated">Réception d'une notification des paniers de Push, de partage et de Feedback</target>
         <jms:reference-file line="90">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7858bf48573ba33ca42942bf7c7d8221c6790312" resname="Recevoir des notifications lorsqu'un upload echoue sur un bridge" approved="yes">
@@ -10918,9 +10917,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Titre</target>
         <jms:reference-file line="65">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="yes">
+      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="no">
         <source>export:email:: acknowledgement info</source>
-        <target state="translated">Les "Accuser Réception" fonctionne que si le destinataire supporte cette fonctionnalité.</target>
+        <target state="needs-translation">Les accusés de réception ne fonctionnent que si le destinataire autorise cette fonctionnalité</target>
         <jms:reference-file line="201">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas" approved="yes">
@@ -10973,7 +10972,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="41b7743e7ef4ed879d3f48bb4d65cdbd6794ec24" resname="expose:: poster">
         <source>expose:: poster</source>
-        <target state="needs-translation">Poster (Expose)</target>
+        <target state="translated">Poster (Expose)</target>
         <jms:reference-file line="26">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="50">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
@@ -11767,7 +11766,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="9eb221a02fe81dbe0613254c504e75086a6f0bfc" resname="notifications:: checker %checker% for this file is disabled in configuration or deleted">
         <source>notifications:: checker %checker% for this file is disabled in configuration or deleted</source>
-        <target state="needs-translation">Le checker %checker% est désactivé.</target>
+        <target state="translated">Le checker %checker% est désactivé.</target>
         <jms:reference-file line="45">eventsmanager/notify/uploadquarantine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cafe5f11d6a3b26e59f28454d0ad90a951c64a6a" resname="nouveau" approved="yes">
@@ -11792,18 +11791,18 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="893cfa8b26c6174b0f4f8b1379bb39675bf1c620" resname="order-manager:: all document treated">
         <source>order-manager:: all document treated</source>
-        <target state="new">order-manager:: all document treated</target>
+        <target state="needs-translation">Tous les documents ont été traités</target>
         <jms:reference-file line="115">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d1fab8140393e87d5f7013f269d6af1906f8ad6c" resname="order-manager:: cancel">
         <source>order-manager:: cancel</source>
-        <target state="new">order-manager:: cancel</target>
+        <target state="needs-translation">Annuler la commande (définitif)</target>
         <jms:reference-file line="173">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="118">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="640be59e04f162fb27eac61ef2bf1939047d32fc" resname="order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated">
         <source>order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated</source>
-        <target state="new">order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated</target>
+        <target state="needs-translation">Annulé le %canceled_on% par %canceled_by%, avec %n% documents non traités</target>
         <jms:reference-file line="175">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="121">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
@@ -12374,7 +12373,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -14647,7 +14646,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="54e9e134d28f6fc9c085eb7a8b71212e536174c9" resname="report:: Permalink">
         <source>report:: Permalink</source>
-        <target state="translated">Inclure le permalien de :</target>
+        <target state="translated">Inclure le permalien</target>
         <jms:reference-file line="50">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="107">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
@@ -15503,7 +15502,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
