@@ -51,6 +51,8 @@ server {
         fastcgi_pass   backend;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
+        $GATEWAY_FASTCGI_HTTPS
+        include        restrictions;
     }
 
     location ~ ^/(status|ping)$ {
