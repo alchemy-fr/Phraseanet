@@ -188,6 +188,22 @@ const orderItem = services => {
             //deny_documents(order_id);
         });
 
+        $('button.cancel_order', $dialog.getDomElement()).bind('click', function (event) {
+            let order_id = $(this).data('order-id');
+
+            $.ajax({
+                type: 'POST',
+                url: '../prod/order/' + order_id + '/cancel/',
+                success: function (data) {
+                    let url =  '../prod/order/' + order_id + '/';
+
+                    reloadDialog(url);
+                }
+            });
+
+            return false;
+        });
+
         $('button.reset', $dialog.getDomElement()).bind('click',function(){
             var itemsToBeReset = [];
             $('.order_list .order_row.selected.waitingForValidation', $dialog.getDomElement()).each(function(i,n){

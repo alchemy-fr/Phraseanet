@@ -8,6 +8,7 @@ use Alchemy\Phrasea\Http\StaticFile\StaticMode;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 
 class PhraseanetExtension extends \Twig_Extension
@@ -53,6 +54,7 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
 
             new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
+            new \Twig_SimpleFunction('user_display_name', array($this, 'getUserDisplayName')),
         );
     }
 
@@ -60,7 +62,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return [
             // change this version when you change JS file to force the navigation to reload js file
-            'assetFileVersion' => 86
+            'assetFileVersion' => 87
         ];
 
     }
@@ -408,6 +410,14 @@ class PhraseanetExtension extends \Twig_Extension
     public function getCheckerFromFQCN($checkerFQCN)
     {
         return $this->app['border-manager']->getCheckerFromFQCN($checkerFQCN);
+    }
+
+    public function getUserDisplayName($userId)
+    {
+        /** @var User $user */
+        $user = $this->app['repo.users']->find($userId);
+
+        return ($user == null) ? '' : $user->getDisplayName();
     }
 
     public function getName()
