@@ -54,9 +54,6 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
         do
             echo "deny $ip_denied;" >> /etc/nginx/restrictions
         done
-    if [[ -z $GATEWAY_DENIED_IPS ]] && [[ -z $GATEWAY_USERS ]]; then
-            echo "deny all;" >> /etc/nginx/restrictions
-    fi
     if [[ ! -z $GATEWAY_USERS ]]; then
          for user in $(echo $GATEWAY_USERS | sed "s/,/ /g")
             do
@@ -66,7 +63,9 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
             done
         cat basic_auth.conf.sample >> /etc/nginx/restrictions  
     fi
-
+    if [[ -z $GATEWAY_DENIED_IPS ]]; then
+            echo "deny all;" >> /etc/nginx/restrictions
+    fi
 fi
 
 
