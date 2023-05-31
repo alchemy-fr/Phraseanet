@@ -63,7 +63,7 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
             done
         cat basic_auth.conf.sample >> /etc/nginx/restrictions  
     fi
-    if [[ -z $GATEWAY_DENIED_IPS ]]; then
+    if [[ -z $GATEWAY_DENIED_IPS ]] && [[ ! -z $GATEWAY_ALLOWED_IPS ]]; then
             echo "deny all;" >> /etc/nginx/restrictions
     fi
 fi
