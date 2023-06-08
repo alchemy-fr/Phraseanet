@@ -24,16 +24,14 @@ It is now possible to define http access restriction based on 3 new environments
 
 see .env for setting example 
 
-  
-
 ### Release notes - Phraseanet - 4.1.8-rc1
+
 
 ### New Features
 
 ```
 PHRAS-3805 Auto-translate keywords using thesaurus
 ```
-
 
 ### Improvements
 
@@ -46,6 +44,7 @@ PHRAS-3846 Admin - database -  add the "field id" in field detail
 
 PHRAS-3848 prod - order manager - cancel an order
 ```
+
 
 ## 4.1.7
 
@@ -61,7 +60,7 @@ PHRAS-3848 prod - order manager - cancel an order
   - Adding log cleaning feature
 
 
-# Release notes - Phraseanet - 4.1.7
+## Release notes - Phraseanet - 4.1.7
   
 
 ### Stack (docker compose, helm)
