@@ -1,6 +1,51 @@
 # CHANGELOG
 
-# CHANGELOG
+
+## 4.1.8-rc1
+
+### Update instructions : 
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary :
+  
+- Auto-translate keywords using thesaurus : this feature is in beta
+   this features translating a field content using the thesaurus content 
+ 
+
+### Stack (docker compose, helm)
+
+It is now possible to define http access restriction based on 3 new environments variables
+
+ - `GATEWAY_ALLOWED_IPS` , limit access to some IP addresses
+ - `GATEWAY_ALLOWED_IPS`,  block access to some IP addresses  
+ - `GATEWAY_USERS` add an http authentication 
+
+see .env for setting example 
+
+  
+
+### Release notes - Phraseanet - 4.1.8-rc1
+
+### New Features
+
+```
+PHRAS-3805 Auto-translate keywords using thesaurus
+```
+
+
+### Improvements
+
+```
+PHRAS-3844 docker - gateway container \(nginx\) -  http access restriction - IP address - user:password 
+
+PHRAS-3845 prod - expose cli - subdef mapping - adding poster 
+
+PHRAS-3846 Admin - database -  add the "field id" in field detail 
+
+PHRAS-3848 prod - order manager - cancel an order
+```
 
 ## 4.1.7
 
