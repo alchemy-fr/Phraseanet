@@ -1330,6 +1330,9 @@ session.save_handler = $SESSION_SAVE_HANDLER
 ; http://php.net/session.save-path
 session.save_path = $SESSION_SAVE_PATH
 
+session.hash_bits_per_character = 6
+session.hash_function = 1
+
 ; Whether to use strict session mode.
 ; Strict session mode does not accept uninitialized session ID and regenerate
 ; session ID if browser sends uninitialized session ID. Strict mode protects
@@ -1374,7 +1377,7 @@ session.cookie_domain =
 
 ; Whether or not to add the httpOnly flag to the cookie, which makes it inaccessible to browser scripting languages such as JavaScript.
 ; http://php.net/session.cookie-httponly
-session.cookie_httponly =
+session.cookie_httponly = 1
 
 ; Handler used to serialize data.  php is the standard serializer of PHP.
 ; http://php.net/session.serialize-handler
