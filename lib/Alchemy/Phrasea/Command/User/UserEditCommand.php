@@ -22,6 +22,9 @@ class UserEditCommand extends Command
             ->addOption('login', null, InputOption::VALUE_REQUIRED, 'the user login need to be unique')
             ->addOption('email', null, InputOption::VALUE_REQUIRED, 'the user email, do not send notification about update change')
             ->addOption('mailLock', null, InputOption::VALUE_REQUIRED, 'lock the email , true/false')
+            ->addOption('lastName', null, InputOption::VALUE_REQUIRED, 'user lastname')
+            ->addOption('firstName', null, InputOption::VALUE_REQUIRED, 'user firstname')
+            ->addOption('companyName', null, InputOption::VALUE_REQUIRED, 'user company name')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
             ->setHelp('');
 
@@ -42,6 +45,9 @@ class UserEditCommand extends Command
         $email      = $input->getOption('email');
         $mailLock   = $input->getOption('mailLock');
         $password   = $input->getOption('password');
+        $lastName   = $input->getOption('lastName');
+        $firstName   = $input->getOption('firstName');
+        $companyName   = $input->getOption('companyName');
         $generatePassword   = $input->getOption('generatepassword');
         $yes        = $input->getOption('yes');
 
@@ -94,6 +100,24 @@ class UserEditCommand extends Command
             } else {
                 $output->writeln('<error>Bad value for mailLock (true/false)</error>');
             }
+        }
+
+        if ($lastName) {
+            $user->setLastName($lastName);
+            $userManipulator->updateUser($user);
+            $output->writeln('<info>User lastname successfully changed !</info>');
+        }
+
+        if ($firstName) {
+            $user->setFirstName($firstName);
+            $userManipulator->updateUser($user);
+            $output->writeln('<info>User firstname successfully changed !</info>');
+        }
+
+        if ($companyName) {
+            $user->setCompany($companyName);
+            $userManipulator->updateUser($user);
+            $output->writeln('<info>User company successfully changed !</info>');
         }
 
         if ($generatePassword) {
