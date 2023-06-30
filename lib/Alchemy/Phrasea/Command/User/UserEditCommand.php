@@ -121,8 +121,8 @@ class UserEditCommand extends Command
         }
 
         if ($generatePassword) {
-            $password = $this->container['random.medium']->generateString(64);
-            $userManipulator->setPassword($user,$password);
+            $pw = $this->container['random.medium']->generateString(64);
+            $userManipulator->setPassword($user, $pw);
             $output->writeln('<info>User password successfully changed !</info>');
 
         }
