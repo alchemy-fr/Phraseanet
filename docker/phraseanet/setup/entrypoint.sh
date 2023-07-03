@@ -195,7 +195,6 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Root account sync"
     if [[ -n ${PHRASEANET_ADMIN_ACCOUNT_ID} && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
-       #bin/console user:password --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
        bin/console user:edit --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --login $PHRASEANET_ADMIN_ACCOUNT_EMAIL --email $PHRASEANET_ADMIN_ACCOUNT_EMAIL --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Root account synced"
     fi
