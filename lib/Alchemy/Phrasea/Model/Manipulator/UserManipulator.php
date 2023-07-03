@@ -237,6 +237,12 @@ class UserManipulator implements ManipulatorInterface
         $this->manager->update($user);
     }
 
+    public function setLogin(User $user, $login)
+    {
+        $this->doSetLogin($user, $login);
+        $this->manager->update($user);
+    }
+
     /**
      * Promotes users.
      *
