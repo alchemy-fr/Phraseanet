@@ -59,6 +59,7 @@ use Alchemy\Phrasea\Command\Thesaurus\Translator\TranslateCommand;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\User\UserApplicationsCommand;
 use Alchemy\Phrasea\Command\User\UserCreateCommand;
+use Alchemy\Phrasea\Command\User\UserEditCommand;
 use Alchemy\Phrasea\Command\User\UserListCommand;
 use Alchemy\Phrasea\Command\User\UserPasswordCommand;
 use Alchemy\Phrasea\Core\Version;
@@ -148,6 +149,8 @@ $cli->command(new MountDataboxCommand('databox:mount'));
 $cli->command(new UserCreateCommand('user:create'));
 
 $cli->command(new UserPasswordCommand('user:password'));
+
+$cli->command(new UserEditCommand());
 
 $cli->command(new UserListCommand('user:list'));
 
