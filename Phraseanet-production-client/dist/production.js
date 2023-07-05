@@ -3882,7 +3882,6 @@ var workzoneFacets = function workzoneFacets(services) {
                 if (match && match[2] != null) {
                     // text looks like a color !
                     var colorCode = '#' + match[2];
-                    // add color circle and remove color code from text;
                     var textWithoutColorCode = text.replace('[' + colorCode + ']', '');
                     if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                         textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
@@ -3890,7 +3889,9 @@ var workzoneFacets = function workzoneFacets(services) {
                     // patch
                     type = "COLOR-AGGREGATE";
                     label = textWithoutColorCode;
+                    textWithoutColorCode = (0, _jquery2.default)('<div/>').text(textWithoutColorCode).html(); // escape html
                     tooltip = _.escape(textWithoutColorCode);
+
                     title = '<span class="color-dot" style="background-color: ' + colorCode + ';"></span> ' + tooltip;
                 } else {
                     // keep text as it is, just cut if too long
@@ -3898,7 +3899,7 @@ var workzoneFacets = function workzoneFacets(services) {
                         text = text.substring(0, textLimit) + '…';
                     }
                     label = text;
-                    /*title = tooltip = _.escape(text);*/
+                    title = (0, _jquery2.default)('<div/>').text(text).html(); // escape html
                 }
 
                 return {
@@ -3952,8 +3953,6 @@ var workzoneFacets = function workzoneFacets(services) {
             treeSource = _shouldMaskNodes(treeSource, hiddenFacetsList);
         }
 
-        treeSource = _parseColors(treeSource);
-
         treeSource = _colorUnsetText(treeSource);
 
         return _getFacetsTree().reload(treeSource).done(function () {
@@ -3979,18 +3978,6 @@ var workzoneFacets = function workzoneFacets(services) {
             });
         });
     };
-
-    function _parseColors(source) {
-        _.forEach(source, function (facet) {
-            if (!_.isUndefined(facet.children) && facet.children.length > 0) {
-                _.forEach(facet.children, function (child) {
-                    var title = child.title;
-                    child.title = _formatColorText(title.toString());
-                });
-            }
-        });
-        return source;
-    }
 
     function _formatColorText(string) {
         var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
