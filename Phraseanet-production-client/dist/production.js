@@ -5521,6 +5521,14 @@ var editRecord = function editRecord(services) {
             success: function success(data) {
                 (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').empty().html(data);
 
+                // if the user have not "edit" right in all selected document
+                if (window.recordEditorConfig.state.T_records.length === 0) {
+                    alert(window.recordEditorConfig.notActionableMsg);
+                    (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 if (window.recordEditorConfig.hasMultipleDatabases === true) {
                     (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
 
