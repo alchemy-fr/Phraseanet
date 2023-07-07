@@ -68,6 +68,7 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
             echo "deny all;" >> /etc/nginx/restrictions
     fi
 fi
-
-
+unset GATEWAY_USERS
+unset GATEWAY_DENIED_IPS
+unset GATEWAY_ALLOWED_IPS
 exec "$@"
