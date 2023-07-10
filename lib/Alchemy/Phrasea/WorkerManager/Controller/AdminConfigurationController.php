@@ -550,68 +550,69 @@ class AdminConfigurationController extends Controller
     -->
     <tasks>
 
-        <comment> keep offline (sb4 = 1) all docs before their "go online" date and after credate (record column) </comment>
-
-        <task active="0" name="stay offline" action="update" databoxId="1">
+        <task active="0" name="Title and Description set" action="update" databoxId="db_databox1">
+            <comment> set sb "caption filled" (sb4=1) when both title an Description are set </comment>
             <from>
-                <date direction="before" field="GO_ONLINE"/>
-                <date direction="after" field="#credate" />
+                <is_set field="Title"/>
+                <is_set field="Description"/>
             </from>
             <to>
-                <status mask="x1xxxx"/>
+                <status mask="1xxxx"/>
             </to>
         </task>
 
-
-        <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
-
-        <task active="0" name="go online" action="update" databoxId="1">
+        <task active="0" name="Title not set" action="update" databoxId="db_databox1">
+            <comment> reset sb "caption filled" (sb4=0) when title is not set </comment>
             <from>
-                <comment> 5, 6, 7 are "public" collections </comment>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="GO_ONLINE"/>
-                <date direction="before" field="TO_ARCHIVE"/>
+                <is_unset field="Title"/>
             </from>
             <to>
-                <status mask="x0xxxx"/>
+                <status mask="0xxxx"/>
+            </to>
+        </task>
+        <task active="0" name="Description not set" action="update" databoxId="db_databox1">
+            <comment> reset sb "caption filled" (sb4=0) when caption is not set </comment>
+            <from>
+                <is_unset field="Description"/>
+            </from>
+            <to>
+                <status mask="0xxxx"/>
             </to>
         </task>
 
-
-        <comment> Warn 10 days before archiving (raise sb5) </comment>
-
-        <task active="0" name="almost the end" action="update" databoxId="1">
+        <task active="0" name="internal goes offline after graceful" action="update" databoxId="db_databox1">
+            <comment> goes private after expiration + 10 days for "source = internal"  </comment>
             <from>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="TO_ARCHIVE" delta="-10"/>
+                <date direction="after" field="ExpireDate" delta="+10 days" />
+                <text field="Source" compare="=" value="internal" />
             </from>
             <to>
-                <status mask="1xxxxx"/>
+                <coll id="Private"/>
             </to>
         </task>
 
-
-        <comment> Move to 'archive' collection </comment>
-
-        <task active="0" name="archivage" action="update" databoxId="1">
+        <task active="0" name="non internal goes offline" action="update" databoxId="db_databox1">
+            <comment> goes private after expiration for "source != internal"  </comment>
             <from>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="TO_ARCHIVE" />
+                <date direction="after" field="ExpireDate" />
+                <text field="Source" compare="!=" value="internal" />
             </from>
             <to>
-                <comment> reset status of archived documents </comment>
-                <status mask="00xxxx"/>
-                <comment> 666 is the "archive" collection </comment>
-                <coll id="666" />
+                <coll id="Private"/>
             </to>
         </task>
 
-
-        <comment> Delete the documents that are in the trash collection unmodified from 3 months </comment>
-
-        <task active="0" name="trash" action="delete" databoxId="1">
+        <task active="0" name="reject too big files " action="trash" databoxId="db_databox1">
+            <comment> trash jpeg files > 10Mo </comment>
             <from>
-                <coll compare="=" id="666"/>
+                <number field="#filesize" compare=">" value="10485760" />
+            </from>
+        </task>
+
+        <task active="0" name="clean trash" action="delete" databoxId="db_databox1">
+            <comment> Delete the records that are in the trash collection, unmodified from 3 months </comment>
+            <from>
+                <coll compare="=" id="_TRASH_"/>
                 <date direction="after" field="#moddate" delta="+90" />
             </from>
         </task>
