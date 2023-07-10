@@ -587,7 +587,13 @@
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
                                                                    {# {% if field['type'] != 'date' %}#}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{ field['label'] | join(' - ') }}</option>
+                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">
+                                                                            {% if field['label'] is empty %}
+                                                                                {{ field['fieldname'] }}
+                                                                            {% else %}
+                                                                                {{ field['label'] | join(' - ') ~ " ( " ~ field['fieldname'] ~ " )"}}
+                                                                            {% endif %}
+                                                                        </option>
                                                                     {#{% endif %}#}
                                                                 {% endfor %}
                                                             </select>
@@ -637,8 +643,13 @@
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
-                                                                <option
-                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ date['label'] | join(' - ') }}</option>
+                                                                <option class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">
+                                                                    {% if date['label'] is empty %}
+                                                                        {{ fieldname }}
+                                                                    {% else %}
+                                                                        {{ date['label'] | join(' - ') ~ " ( " ~ fieldname ~ " )" }}
+                                                                    {% endif %}
+                                                                </option>
                                                             {% endfor %}
                                                         </select>
                                                     </span>
