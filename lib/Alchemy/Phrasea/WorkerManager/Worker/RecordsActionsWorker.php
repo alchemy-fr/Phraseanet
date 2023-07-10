@@ -8,8 +8,10 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use collection;
 use \databox;
 use Doctrine\DBAL\Connection;
+use PDO;
 use \record_adapter;
 
 class RecordsActionsWorker implements WorkerInterface
@@ -21,12 +23,61 @@ class RecordsActionsWorker implements WorkerInterface
     /** @var WorkerRunningJobRepository */
     private $repoWorker;
 
+    /** @var array */
+    private $databoxes;
+
     public function __construct(PhraseaApplication $app)
     {
         $this->app          = $app;
         $this->conf         = $this->app['conf'];
         $this->logger       = $this->app['alchemy_worker.logger'];
         $this->repoWorker   = $app['repo.worker-running-job'];
+
+        // allow to access databox/collections by id or name
+        foreach ($app->getDataboxes() as $databox) {
+            $bid = (string)($databox->get_sbas_id());
+            $this->databoxes[$bid] = [
+                'db' => $databox,
+                'collections' => []
+            ];
+            $this->databoxes[$databox->get_dbname()] = &$this->databoxes[$bid];
+
+            foreach ($databox->get_collections() as $coll) {
+                $cid = (string)($coll->get_coll_id());
+                $this->databoxes[$bid]['collections'][$cid] = $coll;
+                $this->databoxes[$bid]['collections'][$coll->get_name()] = &$this->databoxes[$bid]['collections'][$cid];
+            }
+        }
+    }
+
+    /**
+     * @param $idOrName
+     * @return databox|null
+     */
+    private function getDatabox($dbIdOrName)
+    {
+        $dbIdOrName = (string)$dbIdOrName;
+        if(array_key_exists($dbIdOrName, $this->databoxes)) {
+            return $this->databoxes[$dbIdOrName]['db'];
+        }
+        return null;
+    }
+
+    /**
+     * @param $dbIdOrName
+     * @param $collIdOrName
+     * @return collection|null
+     */
+    private function getCollection($dbIdOrName, $collIdOrName)
+    {
+        $dbIdOrName = (string)$dbIdOrName;
+        if (array_key_exists($dbIdOrName, $this->databoxes)) {
+            $collIdOrName = (string)$collIdOrName;
+            if (array_key_exists($collIdOrName, $this->databoxes[$dbIdOrName]['collections'])) {
+                return $this->databoxes[$dbIdOrName]['collections'][$collIdOrName];
+            }
+        }
+        return null;
     }
 
     public function process(array $payload)
@@ -37,7 +88,8 @@ class RecordsActionsWorker implements WorkerInterface
             $this->logger->error("Can't find the xml setting!");
 
             return 0;
-        } else {
+        }
+        else {
             $em = $this->repoWorker->getEntityManager();
             $em->beginTransaction();
 
@@ -65,9 +117,9 @@ class RecordsActionsWorker implements WorkerInterface
             }
 
             try {
-                $data = $this->getData($this->app, $tasks);
+                $data = $this->getData($tasks);
                 foreach ($data as $record) {
-                    $this->processData($this->app, $record);
+                    $this->processData($record);
                 }
             } catch(\Exception $e) {
                 $this->logger->error('Exception when processing data: ' . $e->getMessage());
@@ -100,14 +152,13 @@ class RecordsActionsWorker implements WorkerInterface
                 $em->flush();
             }
         }
-
     }
 
-    private function getData(Application $app, array $tasks)
+    private function getData(array $tasks)
     {
         $ret = [];
         foreach ($tasks as $sxtask) {
-            $task = $this->calcSQL($app, $sxtask);
+            $task = $this->calcSQL($sxtask);
 
             if (!$task['active'] || !$task['sql']) {
                 continue;
@@ -115,19 +166,27 @@ class RecordsActionsWorker implements WorkerInterface
 
             $this->logger->info(sprintf("playing task '%s' on base '%s'", $task['name'], $task['basename'] ? $task['basename'] : '<unknown>'));
 
-            try {
-                /** @var databox $databox */
-                $databox = $app->findDataboxById($task['databoxId']);
-            } catch (\Exception $e) {
-                $this->logger->error(sprintf("can't connect databoxId %s", $task['databoxId']));
+            $databox = $this->getDatabox($task['databoxId']);
+            if(!$databox) {
+                $this->logger->error(sprintf("unknown databox %s", $task['databoxId']));
                 continue;
+            }
+
+            $to_coll = null;
+            if (($x = trim((string) ($sxtask->to->coll['id']))) !== "") {
+                $coll = $this->getCollection($databox->get_sbas_id(), $x);
+                if(!$coll) {
+                    $this->logger->error(sprintf("unknown collection %s", $x));
+                    continue;
+                }
+                $to_coll = $coll;
             }
 
             $stmt = $databox->get_connection()->prepare($task['sql']['real']['sql']);
             $stmt->execute();
-            while (false !== $row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            while (false !== $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $tmp = [
-                    'databoxId'   => $task['databoxId'],
+                    'databoxId'   => $databox->get_sbas_id(),
                     'record_id' => $row['record_id'],
                     'action'    => $task['action']
                 ];
@@ -136,8 +195,8 @@ class RecordsActionsWorker implements WorkerInterface
                 switch ($task['action']) {
                     case 'UPDATE':
                         // change collection ?
-                        if (($x = (int) ($sxtask->to->coll['id'])) > 0) {
-                            $tmp['coll'] = $x;
+                        if($to_coll) {
+                            $tmp['coll'] = $coll->get_coll_id();
                         }
                         // change sb ?
                         if (($x = $sxtask->to->status['mask'])) {
@@ -163,18 +222,22 @@ class RecordsActionsWorker implements WorkerInterface
         return $ret;
     }
 
-    private function processData(Application $app, $row)
+    private function processData($row)
     {
-        $databox = $app->findDataboxById($row['databoxId']);
+        $databox = $this->getDatabox($row['databoxId']);
+        if(!$databox) {
+            $this->logger->error(sprintf("unknown databox %s", $row['databoxId']));
+            return $this;
+        }
         $rec = $databox->get_record($row['record_id']);
 
         switch ($row['action']) {
             case 'UPDATE':
                 // change collection ?
                 if (array_key_exists('coll', $row)) {
-                    $coll = \collection::getByCollectionId($app, $databox, $row['coll']);
+                    $coll = collection::getByCollectionId($this->app, $databox, $row['coll']);
                     $rec->move_to_collection($coll);
-                    $this->logger->info(sprintf("on databoxId %s move recordId %s to coll %s \n", $row['databoxId'], $row['record_id'], $coll->get_coll_id()));
+                    $this->logger->info(sprintf("on databox %s move recordId %s to coll %s \n", $row['databoxId'], $row['record_id'], $coll->get_coll_id()));
                 }
 
                 // change sb ?
@@ -187,7 +250,7 @@ class RecordsActionsWorker implements WorkerInterface
                     }
                     $status = implode('', $status);
                     $rec->setStatus($status);
-                    $this->logger->info(sprintf("on databoxId %s set recordId %s status to %s \n", $row['databoxId'], $row['record_id'], $status));
+                    $this->logger->info(sprintf("on databox %s set recordId %s status to %s \n", $row['databoxId'], $row['record_id'], $status));
                 }
                 break;
 
@@ -196,18 +259,18 @@ class RecordsActionsWorker implements WorkerInterface
                     /** @var record_adapter $child */
                     foreach ($rec->getChildren() as $child) {
                         $child->delete();
-                        $this->logger->info(sprintf("on databoxId %s delete (grp child) recordId %s \n", $row['databoxId'], $child->getRecordId()));
+                        $this->logger->info(sprintf("on databox %s delete (grp child) recordId %s \n", $row['databoxId'], $child->getRecordId()));
                     }
                 }
                 $rec->delete();
-                $this->logger->info(sprintf("on databoxId %s delete recordId %s \n", $row['databoxId'], $rec->getRecordId()));
+                $this->logger->info(sprintf("on databox %s delete recordId %s \n", $row['databoxId'], $rec->getRecordId()));
                 break;
             case 'TRASH':
                 // move to trash collection if exist
                 $trashCollection = $databox->getTrashCollection();
                 if ($trashCollection != null) {
                     $rec->move_to_collection($trashCollection);
-                    $this->logger->info(sprintf("on databoxId %s move recordId %s to trash.", $row['databoxId'], $row['record_id']));
+                    $this->logger->info(sprintf("on databox %s move recordId %s to trash.", $row['databoxId'], $row['record_id']));
                     // disable permalinks
                     foreach ($rec->get_subdefs() as $subdef) {
                         if ( ($pl = $subdef->get_permalink()) ) {
@@ -222,15 +285,13 @@ class RecordsActionsWorker implements WorkerInterface
         return $this;
     }
 
-    public function calcSQL(Application $app, $sxtask, $playTest = false)
+    public function calcSQL($sxtask, $playTest = false)
     {
-        $databoxId = (int) $sxtask['databoxId'];
-
         $ret = [
             'name'                 => $sxtask['name'] ? (string) $sxtask['name'] : 'sans nom',
             'name_htmlencoded'     => \p4string::MakeString(($sxtask['name'] ? $sxtask['name'] : 'sans nom'), 'html'),
             'active'               => trim($sxtask['active']) === '1',
-            'databoxId'            => $databoxId,
+            'databoxId'            => null,
             'basename'             => '',
             'basename_htmlencoded' => '',
             'action'               => strtoupper($sxtask['action']),
@@ -239,56 +300,79 @@ class RecordsActionsWorker implements WorkerInterface
             'err_htmlencoded'      => '',
         ];
 
+        $databox = $this->getDatabox($sxtask['databoxId']);
+        if(!$databox) {
+            $ret['err'] = sprintf("unknown databox \"%s\"", $sxtask['databoxId']);
+            $ret['err_htmlencoded'] = htmlentities($ret['err']);
+            $this->logger->error($ret['err']);
+            return $ret;
+        }
+
+        $ret['databoxId'] = $databoxId = $databox->get_sbas_id();
+
+        $ret['basename'] = $databox->get_label($this->app['locale']);
+        $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
         try {
-            /** @var databox $dbox */
-            $dbox = $app->findDataboxById($databoxId);
-
-            $ret['basename'] = $dbox->get_label($app['locale']);
-            $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
-            try {
-                switch ($ret['action']) {
-                    case 'UPDATE':
-                        $ret['sql'] = $this->calcUPDATE($app, $databoxId, $sxtask, $playTest);
-                        break;
-                    case 'DELETE':
-                        $ret['sql'] = $this->calcDELETE($app, $databoxId, $sxtask, $playTest);
-                        $ret['deletechildren'] = (int)($sxtask['deletechildren']);
-                        break;
-                    case 'TRASH':
-                        if ($dbox->getTrashCollection() === null) {
-                            $ret['err'] = "trash collection not found on databoxId = ". $databoxId;
-                            $ret['err_htmlencoded'] = htmlentities($ret['err']);
-                        } else {
-                            // there is no to tag, just from tag
-                            // so it's the same as calcDELETE
-                            $ret['sql'] = $this->calcDELETE($app, $databoxId, $sxtask, $playTest);
-                        }
-
-                        break;
-                    default:
-                        $ret['err'] = "bad action '" . $ret['action'] . "'";
+            switch ($ret['action']) {
+                case 'UPDATE':
+                    $ret['sql'] = $this->calcUPDATE($databoxId, $sxtask, $playTest);
+                    break;
+                case 'DELETE':
+                    $ret['sql'] = $this->calcDELETE($databoxId, $sxtask, $playTest);
+                    $ret['deletechildren'] = (int)($sxtask['deletechildren']);
+                    break;
+                case 'TRASH':
+                    if ($databox->getTrashCollection() === null) {
+                        $ret['err'] = "trash collection not found on databox = ". $sxtask['databoxId'];
                         $ret['err_htmlencoded'] = htmlentities($ret['err']);
-                        break;
-                }
-            } catch (\Exception $e) {
-                $ret['err'] = $e->getMessage();
-                $ret['err_htmlencoded'] = htmlentities($e->getMessage());
+                    } else {
+                        // there is no to tag, just from tag
+                        // so it's the same as calcDELETE
+                        $ret['sql'] = $this->calcDELETE($databoxId, $sxtask, $playTest);
+                    }
+                    break;
+                default:
+                    $ret['err'] = "bad action '" . $ret['action'] . "'";
+                    $ret['err_htmlencoded'] = htmlentities($ret['err']);
+                    break;
             }
         } catch (\Exception $e) {
-            $ret['err'] = "bad databoxId '" . $databoxId . "'";
-            $ret['err_htmlencoded'] = htmlentities($ret['err']);
+            $ret['err'] = $e->getMessage();
+            $ret['err_htmlencoded'] = htmlentities($e->getMessage());
         }
 
         return $ret;
     }
 
-    private function calcUPDATE(Application $app, $databoxId, &$sxtask, $playTest)
+    private function calcUPDATE($databoxId, &$sxtask, $playTest)
     {
         $tws = array(); // NEGATION of updates, used to build the 'test' sql
 
         // set coll_id ?
-        if (($x = (int) ($sxtask->to->coll['id'])) > 0) {
-            $tws[] = 'coll_id!=' . $x;
+        $to_coll = null;
+        if (($x = trim((string) ($sxtask->to->coll['id']))) !== "") {
+            $coll = $this->getCollection($databoxId, $x);
+            if(!$coll) {
+                $ret = array(
+                    'real' => array(
+                        'sql' => '',
+                        'sql_htmlencoded' => '',
+                    ),
+                    'test' => array(
+                        'sql' => '',
+                        'sql_htmlencoded' => '',
+                        'result' => null,
+                        'err' => sprintf("unknown collection %s", $x)
+                    )
+                );
+                $this->logger->error(sprintf("unknown collection %s", $x));
+                return $ret;
+            }
+            $to_coll = $coll;
+        }
+
+        if ($to_coll) {
+            $tws[] = 'coll_id!=' . $to_coll->get_coll_id();
         }
 
         // set status ?
@@ -308,7 +392,7 @@ class RecordsActionsWorker implements WorkerInterface
         }
 
         // compute the 'where' clause
-        list($tw, $join, $err) = $this->calcWhere($app, $databoxId, $sxtask);
+        list($tw, $join, $err) = $this->calcWhere($databoxId, $sxtask);
 
         if (!empty($err)) {
             throw(new \Exception($err));
@@ -322,13 +406,13 @@ class RecordsActionsWorker implements WorkerInterface
         }
 
         // build the TEST sql (select)
-        $sql_test = 'SELECT record_id FROM record' . $join;
+        $sql_test = 'SELECT record.record_id FROM record' . $join;
         if (count($tw) > 0) {
             $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
         }
 
         // build the real sql (select)
-        $sql_real = 'SELECT record_id FROM record' . $join;
+        $sql_real = 'SELECT record.record_id FROM record' . $join;
         if (count($tw) > 0) {
             $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
         }
@@ -347,16 +431,16 @@ class RecordsActionsWorker implements WorkerInterface
         );
 
         if ($playTest) {
-            $ret['test']['result'] = $this->playTest($app, $databoxId, $sql_test);
+            $ret['test']['result'] = $this->playTest($databoxId, $sql_test);
         }
 
         return $ret;
     }
 
-    private function calcDELETE(Application $app, $databoxId, &$sxtask, $playTest)
+    private function calcDELETE($databoxId, &$sxtask, $playTest)
     {
         // compute the 'where' clause
-        list($tw, $join, $err) = $this->calcWhere($app, $databoxId, $sxtask);
+        list($tw, $join, $err) = $this->calcWhere($databoxId, $sxtask);
 
         if (!empty($err)) {
             throw(new \Exception($err));
@@ -388,16 +472,16 @@ class RecordsActionsWorker implements WorkerInterface
         ];
 
         if ($playTest) {
-            $ret['test']['result'] = $this->playTest($app, $databoxId, $sql_test);
+            $ret['test']['result'] = $this->playTest($databoxId, $sql_test);
         }
 
         return $ret;
     }
 
-    private function playTest(Application $app, $databoxId, $sql)
+    private function playTest($databoxId, $sql)
     {
         /** @var databox $databox */
-        $databox = $app->findDataboxById($databoxId);
+        $databox = $this->app->findDataboxById($databoxId);
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
@@ -405,7 +489,7 @@ class RecordsActionsWorker implements WorkerInterface
 
         $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
         if ($stmt->execute([])) {
-            while (($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+            while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
                 $result['rids'][] = $row['record_id'];
             }
             $stmt->closeCursor();
@@ -416,11 +500,11 @@ class RecordsActionsWorker implements WorkerInterface
         return $result;
     }
 
-    private function calcWhere(Application $app, $databoxId, &$sxtask)
+    private function calcWhere($databoxId, &$sxtask)
     {
         $err = "";
         /** @var databox $databox */
-        $databox = $app->findDataboxById($databoxId);
+        $databox = $this->app->findDataboxById($databoxId);
         /** @var Connection $connbas */
         $connbas = $databox->get_connection();
 
@@ -450,8 +534,7 @@ class RecordsActionsWorker implements WorkerInterface
                 $ijoin++;
                 $comp = trim($x['compare']);
                 if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
-                    $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ' AND p' . $ijoin . '.value' . $comp
-                        . '' . $connbas->quote($x['value']) . '';
+                    $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ' AND p' . $ijoin . '.value' . $comp . $connbas->quote($x['value']);
 
                     $tw[] = $s;
                     $join .= ' INNER JOIN metadatas AS p' . $ijoin . ' USING(record_id)';
@@ -465,10 +548,116 @@ class RecordsActionsWorker implements WorkerInterface
             }
         }
 
-        // criteria <date direction ="XXX" field="YYY" delta="Z" />
+        // criteria <number field="XXX" compare="OP" value="ZZZ" />
+        foreach ($sxtask->from->number as $x) {
+            $field = $x['field'];
+            $value = (double)($x['value']);
+            switch ($field) {
+                case "#filesize":
+                    $comp = trim($x['compare']);
+                    if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
+                        $ijoin++;
+                        $tw[] = sprintf(
+                            'p%d.name=%s AND p%d.size%s%s',
+                            $ijoin,
+                            $connbas->quote('document'),
+                            $ijoin,
+                            $comp,
+                            $value
+                        );
+                        $join .= sprintf(' INNER JOIN subdef AS p%d USING(record_id)', $ijoin);
+                    } else {
+                        // bad comparison operator
+                        $err .= sprintf("bad comparison operator (%s)\n", $comp);
+                    }
+                    break;
+                default:
+                    $field = $struct->get_element_by_name($x['field']);
+                    if ($field != null) {
+                        $value = (double)($x['value']);
+                        $ijoin++;
+                        $comp = trim($x['compare']);
+                        if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
+                            $ijoin++;
+                            $tw[] = sprintf(
+                                'p%d.meta_struct_id=%s AND CAST(p%d.value AS DECIMAL)%s%s',
+                                $ijoin,
+                                $connbas->quote($field->get_id()),
+                                $ijoin,
+                                $comp,
+                                $value
+                            );
+                            $join .= sprintf(' INNER JOIN metadatas AS p%d USING(record_id)', $ijoin);
+                        } else {
+                            // bad comparison operator
+                            $err .= sprintf("bad comparison operator (%s)\n", $comp);
+                        }
+                    } else {
+                        // unknown field ?
+                        $err .= sprintf("unknown field (%s)\n", $x['field']);
+                    }
+                    break;
+            }
+
+        }
+
+        // criteria <is_set field="XXX" />
+        foreach ($sxtask->from->is_set as $x) {
+            $field = $struct->get_element_by_name($x['field']);
+            if ($field != null) {
+                $ijoin++;
+                $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id())  ;
+                $tw[] = $s;
+                $join .= ' INNER JOIN metadatas AS p' . $ijoin . ' USING(record_id)';
+            } else {
+                // unknown field ?
+                $err .= sprintf("unknown field (%s)\n", $x['field']);
+            }
+        }
+
+        // criteria <is_unset field="XXX" />
+        foreach ($sxtask->from->is_unset as $x) {
+            $field = $struct->get_element_by_name($x['field']);
+            if ($field != null) {
+                $ijoin++;
+                $s = 'ISNULL(p' . $ijoin . '.id)' ;
+                $tw[] = $s;
+                $join .= ' LEFT JOIN metadatas AS p' . $ijoin . ' ON(record.record_id = p'.$ijoin.'.record_id AND p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ')';
+            } else {
+                // unknown field ?
+                $err .= sprintf("unknown field (%s)\n", $x['field']);
+            }
+        }
+
+        // criteria <date direction ="XXX" field="YYY" delta="Z period" />
         foreach ($sxtask->from->date as $x) {
-            $dir = strtoupper($x['direction']);
-            $delta = (int)($x['delta']);
+            $dir = strtoupper(trim($x['direction']));
+            $delta = strtoupper(trim($x['delta']));
+            $unit = "DAY";
+            $matches = [];
+            if($delta === "") {
+                $delta = 0;
+            }
+            else {
+                if (preg_match('/^([-+]?\d+)(\s+(HOUR|DAY|WEEK|MONTH|YEAR)S?)?$/', $delta, $matches) === 1) {
+                    if (count($matches) === 4) {
+                        $delta = (int)($matches[1]);
+                        $unit = $matches[3];
+                    }
+                    else if (count($matches) === 2) {
+                        $delta = (int)($matches[1]);
+                    }
+                    else {
+                        $err .= sprintf("bad delta (%s)\n", $x['delta']);
+                        continue;
+                    }
+                }
+                else {
+                    $err .= sprintf("bad delta (%s)\n", $x['delta']);
+                    continue;
+                }
+            }
+
             switch ($x['field']) {
                 case '#moddate':
                 case '#credate':
@@ -480,9 +669,9 @@ class RecordsActionsWorker implements WorkerInterface
                         $s .= ($dir == 'BEFORE') ? '<' : '>=';
 
                         if ($delta > 0) {
-                            $s .= '(' . $dbField . '+INTERVAL ' . $delta . ' DAY)';
+                            $s .= '(' . $dbField . '+INTERVAL ' . $delta . ' ' . $unit . ')';
                         } elseif ($delta < 0) {
-                            $s .= '(' . $dbField . '-INTERVAL ' . -$delta . ' DAY)';
+                            $s .= '(' . $dbField . '-INTERVAL ' . -$delta . ' ' . $unit . ')';
                         } else {
                             $s .= 'CAST(' . $dbField . ' AS DATETIME)';
                         }
@@ -502,10 +691,11 @@ class RecordsActionsWorker implements WorkerInterface
                             // prevent malformed dates to act
                             $tw[] = '!ISNULL(CAST(p' . $ijoin . '.value AS DATETIME))';
                             $s .= ($dir == 'BEFORE') ? '<' : '>=';
+
                             if ($delta > 0) {
-                                $s .= '(p' . $ijoin . '.value+INTERVAL ' . $delta . ' DAY)';
+                                $s .= '(p' . $ijoin . '.value+INTERVAL ' . $delta . ' ' . $unit . ')';
                             } elseif ($delta < 0) {
-                                $s .= '(p' . $ijoin . '.value-INTERVAL ' . -$delta . ' DAY)';
+                                $s .= '(p' . $ijoin . '.value-INTERVAL ' . -$delta . ' ' . $unit . ')';
                             } else {
                                 $s .= 'CAST(p' . $ijoin . '.value AS DATETIME)';
                             }
@@ -530,23 +720,35 @@ class RecordsActionsWorker implements WorkerInterface
         if (($x = $sxtask->from->coll) ) {
             $tcoll = explode(',', $x['id']);
             foreach ($tcoll as $i => $c) {
-                $tcoll[$i] = (int)$c;
+                $coll = $this->getCollection($databoxId, $c);
+                if(!$coll) {
+                    $err .= sprintf("unknown collection %s", $x['id']);
+                }
+                else {
+                    $tcoll[$i] = $coll->get_coll_id();
+                }
             }
-            if ($x['compare'] == '=') {
-                if (count($tcoll) == 1) {
-                    $tw[] = 'coll_id = ' . $tcoll[0];
-                } else {
-                    $tw[] = 'coll_id IN(' . implode(',', $tcoll) . ')';
+            if(count($tcoll) > 0) {
+                if ($x['compare'] == '=') {
+                    if (count($tcoll) == 1) {
+                        $tw[] = 'coll_id = ' . $tcoll[0];
+                    }
+                    else {
+                        $tw[] = 'coll_id IN(' . implode(',', $tcoll) . ')';
+                    }
                 }
-            } elseif ($x['compare'] == '!=') {
-                if (count($tcoll) == 1) {
-                    $tw[] = 'coll_id != ' . $tcoll[0];
-                } else {
-                    $tw[] = 'coll_id NOT IN(' . implode(',', $tcoll) . ')';
+                elseif ($x['compare'] == '!=') {
+                    if (count($tcoll) == 1) {
+                        $tw[] = 'coll_id != ' . $tcoll[0];
+                    }
+                    else {
+                        $tw[] = 'coll_id NOT IN(' . implode(',', $tcoll) . ')';
+                    }
                 }
-            } else {
-                // bad operator
-                $err .= sprintf("bad comparison operator (%s)\n", $x['compare']);
+                else {
+                    // bad operator
+                    $err .= sprintf("bad comparison operator (%s)\n", $x['compare']);
+                }
             }
         }
 

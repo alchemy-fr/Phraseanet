@@ -509,7 +509,7 @@ class AdminConfigurationController extends Controller
                 $sxml = simplexml_load_string($request->get('xml'));
                 if (isset($sxml->tasks->task)) {
                     foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, true);
+                        $ret['tasks'][] = $job->calcSQL($sxtask, true);
                     }
                 }
                 break;
@@ -518,7 +518,7 @@ class AdminConfigurationController extends Controller
                 $sxml = simplexml_load_string($request->get('xml'));
                 if (isset($sxml->tasks->task)) {
                     foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, false);
+                        $ret['tasks'][] = $job->calcSQL($sxtask, false);
                     }
                 }
                 break;
