@@ -34,6 +34,14 @@
 # Exclude log folder
 /logs
 
+# Exclude backup folder
+/backup
+!/backup/.gitkeep
+
+# Exclude ftp folder
+/ftp
+!/ftp/.gitkeep
+
 # Exclude plugin folder
 /plugins
 # Excluse assets plugin folder
