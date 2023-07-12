@@ -97,7 +97,7 @@ class Prod extends Helper
                     'sbas' => array($sbasId),
                     'fieldname' => $name,
                     'type' => $type,
-                    'label' => ($name === $label) ? [$label] : [$name . ' - ' .trim($label)],  // add the fieldname in the label
+                    'label' => ($name === $label) ? [] : [trim($label)],
                     'id' => $id
                 );
 
@@ -108,7 +108,7 @@ class Prod extends Helper
                     $dates[$name]['sbas'][] = $sbasId;
 
                     // add different label for the same field if exist
-                    if (!isset($dates[$name]['label']) || !in_array(strtolower($label), array_map('strtolower', $dates[$name]['label']))) {
+                    if ($name !== $label && (!isset($dates[$name]['label']) || !in_array(strtolower($label), array_map('strtolower', $dates[$name]['label'])))) {
                         $dates[$name]['label'][] = trim($label);
                     }
                 }
@@ -126,7 +126,7 @@ class Prod extends Helper
                     $fields[$name]['sbas'][] = $sbasId;
 
                     // add different label for the same field if exist
-                    if (!in_array(strtolower($label), array_map('strtolower', $fields[$name]['label']))) {
+                    if ($name !== $label && (!in_array(strtolower($label), array_map('strtolower', $fields[$name]['label'])))) {
                         $fields[$name]['label'][] = trim($label);
                     }
                 } else {
