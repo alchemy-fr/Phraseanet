@@ -17,7 +17,7 @@ use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker\RecordsActionsWorker;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
@@ -550,74 +550,134 @@ class AdminConfigurationController extends Controller
     -->
     <tasks>
 
-        <task active="0" name="Title and Description set" action="update" databoxId="db_databox1">
-            <comment> set sb "caption filled" (sb4=1) when both title an Description are set </comment>
-            <from>
-                <is_set field="Title"/>
-                <is_set field="Description"/>
-            </from>
-            <to>
-                <status mask="1xxxx"/>
-            </to>
-        </task>
+        <!-- SANITY CHECK ON DOCUMENT SIZE workflow
 
-        <task active="0" name="Title not set" action="update" databoxId="db_databox1">
-            <comment> reset sb "caption filled" (sb4=0) when title is not set </comment>
-            <from>
-                <is_unset field="Title"/>
-            </from>
-            <to>
-                <status mask="0xxxx"/>
-            </to>
-        </task>
-        <task active="0" name="Description not set" action="update" databoxId="db_databox1">
-            <comment> reset sb "caption filled" (sb4=0) when caption is not set </comment>
-            <from>
-                <is_unset field="Description"/>
-            </from>
-            <to>
-                <status mask="0xxxx"/>
-            </to>
-        </task>
+        - trash records with documents > 10Mo
+        -->
 
-        <task active="0" name="internal goes offline after graceful" action="update" databoxId="db_databox1">
-            <comment> goes private after expiration + 10 days for "source = internal"  </comment>
-            <from>
-                <date direction="after" field="ExpireDate" delta="+10 days" />
-                <text field="Source" compare="=" value="internal" />
-            </from>
-            <to>
-                <coll id="Private"/>
-            </to>
-        </task>
-
-        <task active="0" name="non internal goes offline" action="update" databoxId="db_databox1">
-            <comment> goes private after expiration for "source != internal"  </comment>
-            <from>
-                <date direction="after" field="ExpireDate" />
-                <text field="Source" compare="!=" value="internal" />
-            </from>
-            <to>
-                <coll id="Private"/>
-            </to>
-        </task>
-
-        <task active="0" name="reject too big files " action="trash" databoxId="db_databox1">
-            <comment> trash jpeg files > 10Mo </comment>
-            <from>
+        <!-- trash jpeg files > 10Mo -->
+        <task active="0" name="reject too big files " action="update" databoxId="db_databox1">
+            <if>
                 <number field="#filesize" compare=">" value="10485760" />
-            </from>
+            </if>
+            <then>
+                <coll id="_TRASH_" />
+            </then>
         </task>
+
+
+
+        <!-- EXPIRATION workflow
+
+        from "test" collection :
+        - records having Source = "internal" will expire after 1 month
+        - other records will expire after 10 days
+        - records go to "Public" collection
+        - we want a "last days" status-bit to be set 2 days before expiration
+        - Expired documents from "Public" collection will go to trash
+        -->
+
+
+        <!-- set the ExpireDate to (create + 1 month) for source="internal, go public -->
+        <task active="0" name="compute expiring date for internal" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="test" />
+                <text field="Source" compare="=" value="internal" />
+                <is_unset field="ExpireDate" />
+            </if>
+            <then>
+                <compute_date direction="after" field="#credate" delta="+1 month" computed="exp" />
+                <set_field field="ExpireDate" value="$exp" />
+                <coll id="Public" />
+            </then>
+        </task>
+
+        <!-- set the ExpireDate to (create + 10 days) for others -->
+        <task active="0" name="compute expiring date for others" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="test" />
+                <text field="Source" compare="!=" value="internal" />
+                <is_unset field="ExpireDate" />
+            </if>
+            <then>
+                <compute_date direction="after" field="#credate" delta="+10 days" computed="exp" />
+                <set_field field="ExpireDate" value="$exp" />
+                <coll id="Public" />
+            </then>
+        </task>
+
+        <!-- if set the "last days" sb 2 days before expiration-->
+        <task active="0" name="will expire in 2 days" action="update" databoxId="db_databox1">
+            <if>
+                <date direction="after" field="ExpireDate" delta="-2 days" />
+            </if>
+            <then>
+                <status mask="1xxxxxx"/>
+            </then>
+        </task>
+
+        <!-- if Public, move to trash after expiration -->
+        <task active="0"  name="expire" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="Public" />
+                <date direction="after" field="ExpireDate" />
+            </if>
+            <then>
+                <coll id="_TRASH_" />
+            </then>
+        </task>
+
+
+
+        <!-- EMPTY TRASH workflow -->
 
         <task active="0" name="clean trash" action="delete" databoxId="db_databox1">
-            <comment> Delete the records that are in the trash collection, unmodified from 3 months </comment>
-            <from>
+            <!-- Delete the records that are in the trash collection, unmodified from 3 months -->
+            <if>
                 <coll compare="=" id="_TRASH_"/>
-                <date direction="after" field="#moddate" delta="+90" />
-            </from>
+                <date direction="after" field="#moddate" delta="+3 months" />
+            </if>
         </task>
-    </tasks>
 
+
+
+        <!-- SANITY CHECK ON FIELDS workflow
+
+        we want a status to show if "Title" and "Description" are filled
+        -->
+
+        <!-- set sb "caption filled" (sb4=1) when both title and Description are set -->
+        <task active="0" name="Title and Description set" action="update" databoxId="db_databox1">
+            <if>
+                <is_set field="Title"/>
+                <is_set field="Description"/>
+            </if>
+            <then>
+                <status mask="1xxxx"/>
+            </then>
+        </task>
+
+        <!-- reset sb "caption filled" (sb4=0) when title is not set -->
+        <task active="0" name="Title not set" action="update" databoxId="db_databox1">
+            <if>
+                <is_unset field="Title"/>
+            </if>
+            <then>
+                <status mask="0xxxx"/>
+            </then>
+        </task>
+
+        <!-- reset sb "caption filled" (sb4=0) when caption is not set -->
+        <task active="0" name="Description not set" action="update" databoxId="db_databox1">
+            <if>
+                <is_unset field="Description"/>
+            </if>
+            <then>
+                <status mask="0xxxx"/>
+            </then>
+        </task>
+
+    </tasks>
 </tasksettings>
 EOF;
     }
