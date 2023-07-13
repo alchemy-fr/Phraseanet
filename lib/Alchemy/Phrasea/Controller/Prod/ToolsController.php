@@ -92,7 +92,7 @@ class ToolsController extends Controller
             }
         }
 
-        $availableSubdefName = [];
+        $availableSubdefLabel = [];
         $countSubdefTodo = [];
 
         /** @var record_adapter $rec */
@@ -101,11 +101,12 @@ class ToolsController extends Controller
             if ($databoxSubdefs !== null) {
                 foreach ($databoxSubdefs as $sub) {
                     if ($sub->isTobuild()) {
-                        $availableSubdefName[] = $sub->get_name();
-                        if (isset($countSubdefTodo[$sub->get_name()])) {
-                            $countSubdefTodo[$sub->get_name()] ++;
+                        $label = trim($sub->get_label($this->app['locale']));
+                        $availableSubdefLabel[] = $label;
+                        if (isset($countSubdefTodo[$label])) {
+                            $countSubdefTodo[$label] ++;
                         } else {
-                            $countSubdefTodo[$sub->get_name()] = 1;
+                            $countSubdefTodo[$label] = 1;
                         }
                     }
                 }
@@ -118,7 +119,7 @@ class ToolsController extends Controller
             'recordSubdefs'     => $recordAccessibleSubdefs,
             'metadatas'         => $metadatas,
             'listsubdef'        => $listsubdef,
-            'availableSubdefName' => array_unique($availableSubdefName),
+            'availableSubdefLabel' => array_unique($availableSubdefLabel),
             'nbRecords'         => count($records),
             'countSubdefTodo'   => $countSubdefTodo
         ]);
@@ -167,10 +168,11 @@ class ToolsController extends Controller
         $return = ['success' => true];
 
         $force = $request->request->get('force_substitution') == '1';
-        $subdefsName = $request->request->get('subdefs', []);
+        $subdefsLabel = $request->request->get('subdefsLabel', []);
 
         $selection = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
 
+        /** @var record_adapter $record */
         foreach ($selection as $record) {
             $substituted = false;
             /** @var  \media_subdef $subdef */
@@ -187,6 +189,18 @@ class ToolsController extends Controller
             }
 
             if (!$substituted || $force) {
+                $subdefsName = [];
+
+                // get subdefinition name from selected subdefinition label
+                $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+                if ($databoxSubdefs !== null) {
+                    foreach ($databoxSubdefs as $sub) {
+                        if (in_array(trim($sub->get_label($this->app['locale'])), $subdefsLabel)) {
+                            $subdefsName[] = $sub->get_name();
+                        }
+                    }
+                }
+
                 $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record, false, $subdefsName));
             }
         }

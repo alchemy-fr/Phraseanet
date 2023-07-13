@@ -83,11 +83,11 @@
                         </label>
                     </div>
 
-                    {% for subdefName in availableSubdefName %}
+                    {% for subdefLabel in availableSubdefLabel %}
                         <div class="well-small">
-                            <label for="recreate_{{ subdefName }}" class="checkbox">
-                                <input class="subdefTodo" type="checkbox" id="recreate_{{ subdefName }}" name="subdefs[]" value="{{ subdefName }}" />
-                                {{ subdefName }} {{ countSubdefTodo[subdefName] }} / {{ nbRecords }}
+                            <label for="recreate_{{ subdefLabel | replace({' ':'_'}) }}" class="checkbox">
+                                <input class="subdefTodo" type="checkbox" id="recreate_{{ subdefLabel | replace({' ':'_'}) }}" name="subdefsLabel[]" value="{{ subdefLabel }}" />
+                                {{ subdefLabel }} {{ countSubdefTodo[subdefLabel] }} / {{ nbRecords }}
                             </label>
                         </div>
                     {% endfor %}
