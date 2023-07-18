@@ -172,9 +172,20 @@
                 , dataType:'json'
                 , type:"POST"
                 , async:true
+                , error: function(data) {
+                    $("#sqla").html(data.statusText);
+                }
                 , success:function(data) {
+                    if(data.error) {
+                        $("#sqla").text(data.error);
+                        return;
+                    }
                     t = "";
                     for (i in data.tasks) {
+                        // o = $("<div></div>")
+                        //     .append($("<span>&nbsp;X&nbsp;</span>"))
+                        // ;
+                        //$("#sqla").append()
                         t += "<div class=\"title\">&nbsp;";
                         if (data.tasks[i].active) {
                             t += "<span class=\"active\">&nbsp;X&nbsp;</span>&nbsp;";

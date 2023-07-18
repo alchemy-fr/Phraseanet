@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
@@ -19,6 +20,7 @@ use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker\RecordsActionsWorker;
 use Doctrine\ORM\OptimisticLockException;
+use Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
@@ -117,7 +119,7 @@ class AdminConfigurationController extends Controller
         if ($timeFilter != null) {
             try {
                 $dateTimeFilter = (new \DateTime())->sub(new \DateInterval($timeFilter));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
             }
         }
 
@@ -502,28 +504,32 @@ class AdminConfigurationController extends Controller
 
     public function recordsActionsFacilityAction(PhraseaApplication $app, Request $request)
     {
-        $ret = ['tasks' => []];
-        $job = new RecordsActionsWorker($app);
-        switch ($request->get('ACT')) {
-            case 'PLAYTEST':
-                $sxml = simplexml_load_string($request->get('xml'));
-                if (isset($sxml->tasks->task)) {
-                    foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($sxtask, true);
+        $ret = [
+            'error' => null,
+            'tasks' => []
+        ];
+        try {
+            $job = new RecordsActionsWorker($app);
+            switch ($request->get('ACT')) {
+                case 'PLAYTEST':
+                case 'CALCTEST':
+                case 'CALCSQL':
+                    $sxml = simplexml_load_string($request->get('xml'));
+                    if ((string)$sxml['version'] !== '2') {
+                        throw new JsonValidationException(sprintf("bad settings version (%s), should be \"2\"", (string)$sxml['version']));
                     }
-                }
-                break;
-            case 'CALCTEST':
-            case 'CALCSQL':
-                $sxml = simplexml_load_string($request->get('xml'));
-                if (isset($sxml->tasks->task)) {
-                    foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($sxtask, false);
+                    if (isset($sxml->tasks->task)) {
+                        foreach ($sxml->tasks->task as $sxtask) {
+                            $ret['tasks'][] = $job->calcSQL($sxtask, $request->get('ACT') === 'PLAYTEST');
+                        }
                     }
-                }
-                break;
-            default:
-                throw new NotFoundHttpException('Route not found.');
+                    break;
+                default:
+                    throw new NotFoundHttpException('Route not found.');
+            }
+        }
+        catch (Exception $e) {
+            $ret['error'] = $e->getMessage();
         }
 
         return $app->json($ret);

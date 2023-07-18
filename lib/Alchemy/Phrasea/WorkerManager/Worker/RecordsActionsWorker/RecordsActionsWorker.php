@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInterface;
 use collection;
@@ -53,6 +54,10 @@ class RecordsActionsWorker implements WorkerInterface
             return 0;
         }
         else {
+            $sxSettings = simplexml_load_string($xmlSettings);
+            if((string)$sxSettings['version'] !== "2") {
+                throw new JsonValidationException(sprintf("bad settings version (%s), should be \"2\"", (string)$sxml['version']));
+            }
             $em = $this->repoWorker->getEntityManager();
             $em->beginTransaction();
 
@@ -73,15 +78,14 @@ class RecordsActionsWorker implements WorkerInterface
                 $em->rollback();
             }
 
-            $settings = simplexml_load_string($xmlSettings);
-            $tasks = array();
-            foreach($settings->tasks->task as $task) {
-                $tasks[] = $task;
+            $sxTasks = array();
+            foreach($sxSettings->tasks->task as $sxTask) {
+                $sxTasks[] = $sxTask;
             }
 
             try {
                 // process will act on db, so we first fetch all...
-                $data = $this->getData($tasks);
+                $data = $this->getData($sxTasks);
                 // ... then process
                 foreach ($data as $record) {
                     $this->processData($record);
@@ -119,12 +123,12 @@ class RecordsActionsWorker implements WorkerInterface
         }
     }
 
-    private function getData(array $tasks)
+    private function getData(array $sxTasks)
     {
         $ret = [];
 
         /** @var SimpleXMLElement $sxtask */
-        foreach ($tasks as $sxtask) {
+        foreach ($sxTasks as $sxtask) {
             $task = $this->calcSQL($sxtask);
 
             if (!$task['active'] || !$task['sql']) {
