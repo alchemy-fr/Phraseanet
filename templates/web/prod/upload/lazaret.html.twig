@@ -273,20 +273,56 @@
             var html = that.parent().closest('.wrapper-item').find(".status-backup").html();
             that.parent().closest('.wrapper-item').find(".status-container").html('');
             that.parent().closest('.wrapper-item').find(".status-container").append(html);
-        };
+        }
+
+
+
+
+        function isRecordSelected(selected) {
+            if(selected) {
+                $('BUTTON.subtitute-lazaret').removeAttr('disabled');
+                $('.copy_meta').show();
+            }
+            else {
+                $('BUTTON.subtitute-lazaret').attr('disabled', "true");
+                $('.copy_meta').hide();
+                checkCopyMeta(false);
+                $("#lazaretBox INPUT[name=copy_meta]").removeAttr("checked");
+            }
+        }
+
+        function checkCopyMeta(checked) {
+            const $b = $("BUTTON.add-lazaret .b_label");
+            if (checked) {
+                console.log("checked");
+                $b.text("checked")
+            }
+            else {
+                console.log("unchecked");
+                $b.text("unchecked")
+            }
+        }
+
+
+
+
         $(".span12 img, .reset-status").click(function () {
             var that = $(this).closest('.wrapper-item').find('.lazaret-proposals .diapo');
             resetStatus(that);
         });
+
         $(".records-subititution .diapo", scope).bind('click', function () {
             var that = $(this);
             var diapo = that.closest('.lazaret-proposals').find('.diapo');
             var container = that.closest('.wrapper-item');
+
             diapo.not(this).removeClass('selected');
             /*Set selected or not to check for sending ajax request*/
             if (that.hasClass("selected")) {
                 resetStatus(that);
-            } else {
+                isRecordSelected(false);
+            }
+            else {
                 that.addClass('selected');
                 var elements = $(".selected", container);
                 var recordId = elements.first().attr("data-record_id");
@@ -336,9 +372,11 @@
                                 html += '</td>';
                                 html += '</tr>';
                             }
-                            ;
+
                             that.parent().closest('.wrapper-item').find(".status-container").html('');
                             that.parent().closest('.wrapper-item').find(".status-container").append(html);
+
+                            isRecordSelected(true);
                         }
                     },
                     complete: function () {
@@ -348,6 +386,12 @@
                 });
             }
         });
+
+        $("INPUT[name=copy_meta]", scope).change(
+            function(event) {
+                checkCopyMeta(event.target.checked);
+            }
+        );
 
         //substitute lazaret file click action
         $("button.subtitute-lazaret", scope).bind('click', function () {
@@ -422,6 +466,7 @@
         });
         /*Toggle status block*/
         $(".toggle-status").click(function () {
+            debugger;
             $(this).nextAll('.status-wrapper').first().toggleClass('hidden');
         });
     });
@@ -467,6 +512,11 @@
                                 <div class="update-status">
                                     <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
                                         <a href="#" class="reset-status btn">Reset status</a>
+
+                                        <h5 class="copy_meta" style="display: none">
+                                        <input type="checkbox" name="copy_meta"/>&nbsp;{{ 'upload:: Copy meta :' | trans }}
+                                        </h5>
+
                                         <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
                                         <div class="status-wrapper hidden">
                                             <table style="margin: auto">
@@ -521,13 +571,14 @@
 
                             <div class="btn-group" style="text-align:center; padding:5px;">
                                 <button class="btn add-lazaret" title="{{ "Add" | trans }}">
-                                    <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
+                                    <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">
+                                    <span class="b_label">{{ "Add" | trans }}</span>
                                 </button>
                                 <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
                                     <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
                                 </button>
                                 {% if records|length > 0 %}
-                                    <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
+                                    <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}" disabled>
                                         <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
                                     </button>
                                 {% endif %}
