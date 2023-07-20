@@ -90,6 +90,7 @@ RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt
     && mkdir /tmp/libjq \
     && git clone https://github.com/stedolan/jq.git /tmp/libjq \
     && cd /tmp/libjq \
+    && git checkout fd9da6647c0fa619f03464fe37a4a10b70147e73 \
     && git submodule update --init \
     && autoreconf -fi \
     && ./configure --with-oniguruma=builtin --disable-maintainer-mode \
