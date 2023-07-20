@@ -453,7 +453,7 @@
 
     var recordEditorConfig = {
         hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
-        databoxId: {% if multipleDataboxes or multipleDataboxes is empty %}0{% else %}{{ databox.get_sbas_id }}{% endif %},
+        databoxId: {% if multipleDataboxes %}0{% else %}{{ databox.get_sbas_id }}{% endif %},
         mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
         notActionable: {{ not_actionable }},
         notActionableMsg: '{{notActionableMsg}}',
