@@ -25,7 +25,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request(
             'POST', $route, [
             'base_id' => $collection->get_base_id(),
-            'name'    => 'test story'
+            'name[1-1]'    => 'test story'
             ]
         );
 
