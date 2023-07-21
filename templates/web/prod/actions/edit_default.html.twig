@@ -427,7 +427,7 @@
 <input type="hidden" id="dialog-edit-no" value="{{ 'prod::edit:confirm: No' | trans }}" />
 
 <script type="text/javascript">
-    {% if multipleDataboxes == 1 or multipleStories == 1 %}
+    {% if multipleDataboxes == 1 or multipleStories == 1 or databox is empty %}
         $(function() {
             $('#EDITWINDOW').hide();
             // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
@@ -452,8 +452,8 @@
     {% endif %}
 
     var recordEditorConfig = {
-        hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
-        databoxId: {% if multipleDataboxes or multipleDataboxes is empty %}0{% else %}{{ databox.get_sbas_id }}{% endif %},
+        hasMultipleDatabases: {% if multipleDataboxes %}true{% else %}false{% endif %},
+        databoxId: {% if multipleDataboxes or databox is empty %}null{% else %}{{ databox.get_sbas_id }}{% endif %},
         mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
         notActionable: {{ not_actionable }},
         notActionableMsg: '{{notActionableMsg}}',
