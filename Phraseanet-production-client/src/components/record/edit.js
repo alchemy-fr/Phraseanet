@@ -54,7 +54,6 @@ const editRecord = (services) => {
 
                 // if the user have not "edit" right in all selected document
                 if (window.recordEditorConfig.state.T_records.length === 0) {
-                    alert(window.recordEditorConfig.notActionableMsg);
                     $('#EDITWINDOW').removeClass('loading').hide();
 
                     return;
