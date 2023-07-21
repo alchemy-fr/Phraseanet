@@ -20000,7 +20000,7 @@ var storyCreate = function storyCreate(services) {
 
 
         var dialogOptions = (0, _lodash2.default)({
-            size: 'Small',
+            size: 'Medium',
             loading: false
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
@@ -20024,6 +20024,7 @@ var storyCreate = function storyCreate(services) {
     var _onDialogReady = function _onDialogReady() {
         var $dialog = _dialog2.default.get(1);
         var $dialogBox = $dialog.getDomElement();
+        var $selectCollection = (0, _jquery2.default)('select[name="base_id"]', $dialogBox);
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).val(searchSelectionSerialized);
 
@@ -20047,6 +20048,29 @@ var storyCreate = function storyCreate(services) {
 
         $dialog.setOption('buttons', buttons);
 
+        if ($selectCollection.val() == '') {
+            (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+            (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+        }
+
+        $selectCollection.change(function () {
+            var that = (0, _jquery2.default)(this);
+            if (that.val() != '') {
+                // first hide all input and show only the corresponding field for the selected db
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                // mark as disabled to no process the hidden field when submit
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                var sbasId = that.find('option:selected').data('sbas');
+                (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+            } else {
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+            }
+        });
+
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
             var that = this;
             if ((0, _jquery2.default)(that).is(":checked")) {
@@ -20057,10 +20081,18 @@ var storyCreate = function storyCreate(services) {
                 if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
                     alert(localeService.t('warning-multiple-databoxes'));
 
-                    (0, _jquery2.default)(that).prop("checked", false);
+                    (0, _jquery2.default)(that).prop('checked', false);
                 }
             } else {
                 (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
+                if ($selectCollection.val() != '') {
+                    (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                    (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                    var sbasId = $selectCollection.find('option:selected').data('sbas');
+                    (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                    (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                    (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+                }
             }
         });
 
@@ -20074,7 +20106,7 @@ var storyCreate = function storyCreate(services) {
                 return;
             }
 
-            if ((0, _jquery2.default)('select[name="base_id"]', $dialogBox).val() == '') {
+            if ($selectCollection.val() == '') {
                 alert(localeService.t('choose-collection'));
                 event.preventDefault();
 
