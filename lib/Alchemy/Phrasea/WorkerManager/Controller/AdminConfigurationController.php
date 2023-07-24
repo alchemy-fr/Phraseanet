@@ -264,6 +264,7 @@ class AdminConfigurationController extends Controller
     {
         $reload = ($request->query->get('reload') == 1);
         $hideEmptyQ = $request->query->get('hide-empty-queue');
+        $consumedQ = $request->query->get('consumed-queue');
 
         if ($hideEmptyQ === null || $hideEmptyQ == 1) {
             $hideEmptyQ = true;
@@ -271,9 +272,15 @@ class AdminConfigurationController extends Controller
             $hideEmptyQ = false;
         }
 
+        if ($consumedQ === null || $consumedQ == 1) {
+            $consumedQ = true;
+        } else {
+            $consumedQ = false;
+        }
+
         $this->getAMQPConnection()->getChannel();
         $this->getAMQPConnection()->declareExchange();
-        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus($hideEmptyQ);
+        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus($hideEmptyQ, $consumedQ);
 
         return $this->render('admin/worker-manager/worker_queue_monitor.html.twig', [
             'queuesStatus' => $queuesStatus,
