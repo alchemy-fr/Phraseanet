@@ -8520,7 +8520,7 @@ module.exports = {
 /* 86 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/home/jyg/workspace/Phraseanet-new/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/jyg/workspace/Phraseanet-new/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 87 */
@@ -19999,7 +19999,7 @@ var storyCreate = function storyCreate(services) {
 
 
         var dialogOptions = (0, _lodash2.default)({
-            size: 'Small',
+            size: 'Medium',
             loading: false
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
@@ -20023,6 +20023,7 @@ var storyCreate = function storyCreate(services) {
     var _onDialogReady = function _onDialogReady() {
         var $dialog = _dialog2.default.get(1);
         var $dialogBox = $dialog.getDomElement();
+        var $selectCollection = (0, _jquery2.default)('select[name="base_id"]', $dialogBox);
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).val(searchSelectionSerialized);
 
@@ -20046,6 +20047,29 @@ var storyCreate = function storyCreate(services) {
 
         $dialog.setOption('buttons', buttons);
 
+        if ($selectCollection.val() == '') {
+            (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+            (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+        }
+
+        $selectCollection.change(function () {
+            var that = (0, _jquery2.default)(this);
+            if (that.val() != '') {
+                // first hide all input and show only the corresponding field for the selected db
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                // mark as disabled to no process the hidden field when submit
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                var sbasId = that.find('option:selected').data('sbas');
+                (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+            } else {
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+            }
+        });
+
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
             var that = this;
             if ((0, _jquery2.default)(that).is(":checked")) {
@@ -20056,10 +20080,18 @@ var storyCreate = function storyCreate(services) {
                 if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
                     alert(localeService.t('warning-multiple-databoxes'));
 
-                    (0, _jquery2.default)(that).prop("checked", false);
+                    (0, _jquery2.default)(that).prop('checked', false);
                 }
             } else {
                 (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
+                if ($selectCollection.val() != '') {
+                    (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                    (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                    var sbasId = $selectCollection.find('option:selected').data('sbas');
+                    (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                    (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                    (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+                }
             }
         });
 
@@ -20073,7 +20105,7 @@ var storyCreate = function storyCreate(services) {
                 return;
             }
 
-            if ((0, _jquery2.default)('select[name="base_id"]', $dialogBox).val() == '') {
+            if ($selectCollection.val() == '') {
                 alert(localeService.t('choose-collection'));
                 event.preventDefault();
 
@@ -52756,7 +52788,7 @@ module.exports = VTTRegion;
 /* 152 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/home/jyg/workspace/Phraseanet-new/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/jyg/workspace/Phraseanet-new/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 153 */
