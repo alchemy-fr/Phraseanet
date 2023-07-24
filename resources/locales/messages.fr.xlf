@@ -6391,7 +6391,7 @@
       </trans-unit>
       <trans-unit id="cbaf445e75d9919e1ec6365d15abd9681e3b1c45" resname="Story name field">
         <source>Story name field</source>
-        <target state="needs-translation">Titre de la story</target>
+        <target state="needs-translation">Titre du reportage</target>
         <jms:reference-file line="25">prod/Story/Create.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="99d3daf4dbe8d07dc3e14c9840c17f17e28c94d9" resname="Story updated" approved="yes">
