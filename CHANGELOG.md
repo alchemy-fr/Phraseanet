@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 4.1.8-rc4
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary
+  
+- bugfix an minor improvement
+
+### Stack (docker compose)
+
+ - Extend csp for geolocalisation
+
+
+ ## What's Changed
+* PHRAS-3877 Fix csp for geonames, mapbox , prod  in https://github.com/alchemy-fr/Phraseanet/pull/4339
+* PHRAS-3878 fix jq to latest working commit by in https://github.com/alchemy-fr/Phraseanet/pull/4340
+* PHRAS-3881_browse-thesaurus-in-editing in https://github.com/alchemy-fr/Phraseanet/pull/4342
+* PHRAS-3876 Prod - Create - Story Title fix in https://github.com/alchemy-fr/Phraseanet/pull/4343
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc3...4.1.8-rc4
+
+
 ## 4.1.8-rc3
 
 ### Update instructions
