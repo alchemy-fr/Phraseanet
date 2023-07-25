@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-07-21T08:28:53Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2023-07-24T15:32:52Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9457,12 +9457,12 @@
       <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count">
         <source>admin::workermanager:tab:queueMonitor: Consumer count</source>
         <target state="new">admin::workermanager:tab:queueMonitor: Consumer count</target>
-        <jms:reference-file line="19">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+        <jms:reference-file line="23">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfea3fab9c34fa90510ec79992638e3ed724ac32" resname="admin::workermanager:tab:queueMonitor: Delete Queue">
         <source>admin::workermanager:tab:queueMonitor: Delete Queue</source>
         <target state="new">admin::workermanager:tab:queueMonitor: Delete Queue</target>
-        <jms:reference-file line="36">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+        <jms:reference-file line="40">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9a6b058aaa7ff091baf01a4de45951d78935d9f4" resname="admin::workermanager:tab:queueMonitor: Hide empty queues">
         <source>admin::workermanager:tab:queueMonitor: Hide empty queues</source>
@@ -9472,17 +9472,22 @@
       <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count">
         <source>admin::workermanager:tab:queueMonitor: Message count</source>
         <target state="new">admin::workermanager:tab:queueMonitor: Message count</target>
-        <jms:reference-file line="18">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+        <jms:reference-file line="22">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="06a4df374fcd16d27a5efb5326fbf3107f65ed20" resname="admin::workermanager:tab:queueMonitor: Purge Queue">
         <source>admin::workermanager:tab:queueMonitor: Purge Queue</source>
         <target state="new">admin::workermanager:tab:queueMonitor: Purge Queue</target>
-        <jms:reference-file line="33">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+        <jms:reference-file line="37">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list">
         <source>admin::workermanager:tab:queueMonitor: Refresh list</source>
         <target state="new">admin::workermanager:tab:queueMonitor: Refresh list</target>
         <jms:reference-file line="6">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="065b49980c674b458ca621631663dfdf35a3f2dc" resname="admin::workermanager:tab:queueMonitor: consumed queues">
+        <source>admin::workermanager:tab:queueMonitor: consumed queues</source>
+        <target state="new">admin::workermanager:tab:queueMonitor: consumed queues</target>
+        <jms:reference-file line="14">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description">
         <source>admin::workermanager:tab:queueMonitor: description</source>
