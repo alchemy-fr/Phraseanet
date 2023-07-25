@@ -3968,7 +3968,7 @@ var workzoneFacets = function workzoneFacets(services) {
                             (0, _jquery2.default)(el).hide();
                         }
                     });
-                    ul.append('<button class="see_more_btn">See more</button>');
+                    ul.append('<button class="see_more_btn">' + localeService.t('seeMore') + '</button>');
                 }
             });
             (0, _jquery2.default)('.see_more_btn').on('click', function () {
@@ -65046,6 +65046,12 @@ var preferences = function preferences(services) {
             appEvents.emit('search.doRefreshState');
         });
 
+        $container.on('change', '.preferences-see-real-field-name', function (event) {
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref('see_real_field_name', $el.prop('checked') ? '1' : '0');
+        });
+
         $container.on('change', '.preferences-options-basket-status', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
             event.preventDefault();
@@ -69672,6 +69678,15 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
         checkFilters(true);
     });
 
+    (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE input.see-real-field-name').change(function () {
+        if ((0, _jquery2.default)(this).prop('checked') === true) {
+            (0, _jquery2.default)(this).data('real-field', 'field_with_real_name');
+        } else {
+            (0, _jquery2.default)(this).data('real-field', 'field_without_real_name');
+        }
+        checkFilters(true);
+    });
+
     var checkFilters = function checkFilters(save) {
         var danger = false;
         var search = {
@@ -69788,9 +69803,11 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
                 // at least one coll checked for this databox
                 // show again the relevant fields in "sort by" select
                 (0, _jquery2.default)('.db_' + sbas_id, fieldsSort).show().prop('disabled', false);
+
+                var realFieldClass = (0, _jquery2.default)('input.preferences-see-real-field-name').data('real-field');
                 // show again the relevant fields in "from fields" select
                 (0, _jquery2.default)('.db_' + sbas_id, fieldsSelect).show().prop('disabled', false);
-                (0, _jquery2.default)('.db_' + sbas_id, fieldsSelectFake).show().prop('disabled', false);
+                (0, _jquery2.default)('.db_' + sbas_id + '.' + realFieldClass, fieldsSelectFake).show().prop('disabled', false);
                 // show the sb
                 (0, _jquery2.default)('#ADVSRCH_SB_ZONE_' + sbas_id, container).show();
                 // show again the relevant fields in "date field" select

@@ -129,6 +129,15 @@ const preferences = services => {
             }
         );
 
+        $container.on('change', '.preferences-see-real-field-name', event => {
+            let $el = $(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref(
+                'see_real_field_name',
+                $el.prop('checked') ? '1' : '0'
+            );
+        });
+
         $container.on('change', '.preferences-options-basket-status', event => {
             let $el = $(event.currentTarget);
             event.preventDefault();

@@ -205,6 +205,15 @@ const searchAdvancedForm = (services) => {
         checkFilters(true);
     });
 
+    $('#ADVSRCH_FIELDS_ZONE input.see-real-field-name').change(function () {
+        if ($(this).prop('checked') === true) {
+            $(this).data('real-field', 'field_with_real_name');
+        } else {
+            $(this).data('real-field', 'field_without_real_name');
+        }
+        checkFilters(true);
+    });
+
     const checkFilters = (save) => {
         var danger = false;
         var search = {
@@ -323,9 +332,11 @@ const searchAdvancedForm = (services) => {
                 // at least one coll checked for this databox
                 // show again the relevant fields in "sort by" select
                 $('.db_' + sbas_id, fieldsSort).show().prop('disabled', false);
+
+                let realFieldClass = $('input.preferences-see-real-field-name').data('real-field');
                 // show again the relevant fields in "from fields" select
                 $('.db_' + sbas_id, fieldsSelect).show().prop('disabled', false);
-                $('.db_' + sbas_id, fieldsSelectFake).show().prop('disabled', false);
+                $('.db_' + sbas_id + '.' + realFieldClass, fieldsSelectFake).show().prop('disabled', false);
                 // show the sb
                 $('#ADVSRCH_SB_ZONE_' + sbas_id, container).show();
                 // show again the relevant fields in "date field" select

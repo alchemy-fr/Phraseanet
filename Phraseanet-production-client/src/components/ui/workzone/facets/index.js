@@ -171,7 +171,7 @@ const workzoneFacets = services => {
                                 $(el).hide();
                             }
                         });
-                        ul.append('<button class="see_more_btn">See more</button>');
+                        ul.append('<button class="see_more_btn">' + localeService.t('seeMore') + '</button>');
                     }
                 });
                 $('.see_more_btn').on('click', function () {
