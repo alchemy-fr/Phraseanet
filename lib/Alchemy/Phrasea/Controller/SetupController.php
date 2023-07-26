@@ -44,7 +44,7 @@ class SetupController extends Controller
     {
         return [
             new BinariesRequirements(),
-            new FilesystemRequirements(),
+            new FilesystemRequirements($this->getConf()),
             new LocalesRequirements(),
             new PhpRequirements(),
             new SystemRequirements(),
