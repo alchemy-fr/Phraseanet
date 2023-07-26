@@ -193,6 +193,7 @@ class LanguageController
             'shareTitle'          => $translator->trans('prod::dialog sharebasket title'),
             'feedbackTitle'       => $translator->trans('prod::dialog feedback title'),
             'listmanagerTitle'    => $translator->trans('prod::dialog listmanager title'),
+            'seeMore'             => $translator->trans('prod::workzone:facet see more'),
         ]);
     }
 }
