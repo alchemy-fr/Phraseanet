@@ -12,6 +12,6 @@ class FilesystemRequirementsTest extends RequirementsTestCase
 {
     protected function provideRequirements()
     {
-        return new FilesystemRequirements;
+        return new FilesystemRequirements($this->app['conf']);
     }
 }
