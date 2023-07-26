@@ -13654,7 +13654,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="20e46f258c5d547ce58701bddf375f8f0f32d803" resname="prod::workzone:facet see more">
         <source>prod::workzone:facet see more</source>
-        <target state="new">prod::workzone:facet see more</target>
+        <target state="needs-translation">More</target>
         <jms:reference-file line="196">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user" approved="yes">
