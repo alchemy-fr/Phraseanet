@@ -340,7 +340,7 @@ const searchAdvancedForm = (services) => {
                 // show the sb
                 $('#ADVSRCH_SB_ZONE_' + sbas_id, container).show();
                 // show again the relevant fields in "date field" select
-                $('.db_' + sbas_id, dateFilterSelect).show().prop('disabled', false);
+                $('.db_' + sbas_id + '.' + realFieldClass, dateFilterSelect).show().prop('disabled', false);
             }
         });
 

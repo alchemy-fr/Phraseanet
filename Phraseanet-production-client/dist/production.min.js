@@ -69811,7 +69811,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
                 // show the sb
                 (0, _jquery2.default)('#ADVSRCH_SB_ZONE_' + sbas_id, container).show();
                 // show again the relevant fields in "date field" select
-                (0, _jquery2.default)('.db_' + sbas_id, dateFilterSelect).show().prop('disabled', false);
+                (0, _jquery2.default)('.db_' + sbas_id + '.' + realFieldClass, dateFilterSelect).show().prop('disabled', false);
             }
         });
 
