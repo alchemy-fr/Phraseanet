@@ -132,6 +132,39 @@ class LazaretController extends Controller
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
 
+        //Check if the chosen record is eligible to the substitution
+        $recordId = $request->request->get('record_id');
+        /** @var LazaretFile $lazaretFile */
+        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
+
+        $metadatasToSet = [];
+        if(!!$request->request->get('copy_meta', false)) {
+
+            $substitutedRecord = null;
+            foreach ($lazaretFile->getRecordsToSubstitute($this->app) as $r) {
+                if ($r->getRecordId() === (int)$recordId) {
+                    $substitutedRecord = $r;
+                    break;
+                }
+            }
+            if (!$substitutedRecord) {
+                $ret['message'] = $this->app->trans('The destination record provided is not allowed');
+
+                return $this->app->json($ret);
+            }
+
+            $fieldsToCopy = [];
+            foreach ($substitutedRecord->getDatabox()->get_meta_structure() as $df) {
+                if(!$df->is_readonly()) {
+                    $fieldsToCopy[] = $df->get_name();
+                }
+            }
+            $metadatas = [];
+            foreach ($substitutedRecord->getCaption($fieldsToCopy) as $k=>$v) {
+                $metadatasToSet[] = ['field_name' => $k, 'value' => $v];
+            }
+        }
+
         $ret = $lazaretManipulator->add($file_id, $keepAttributes, $attributesToKeep);
 
         try{
@@ -140,7 +173,13 @@ class LazaretController extends Controller
             $postStatus = (array) $request->request->get('status');
             // update status
             $this->updateRecordStatus($record, $postStatus);
-        }catch(\Exception $e){
+
+            if(!empty($metadatasToSet)) {
+                $actions = json_decode(json_encode(['metadatas' => $metadatasToSet]));
+                $record->setMetadatasByActions($actions);
+            }
+        }
+        catch(\Exception $e){
             $ret['message'] = $this->app->trans('An error occured when wanting to change status!');
         }
 
@@ -229,16 +268,14 @@ class LazaretController extends Controller
             return $this->app->json($ret);
         }
 
-        $found = false;
 
         //Check if the chosen record is eligible to the substitution
+        $found = false;
         foreach ($lazaretFile->getRecordsToSubstitute($this->app) as $record) {
-            if ($record->getRecordId() !== (int) $recordId) {
-                continue;
+            if ($record->getRecordId() === (int) $recordId) {
+                $found = true;
+                break;
             }
-
-            $found = true;
-            break;
         }
 
         if (!$found) {
