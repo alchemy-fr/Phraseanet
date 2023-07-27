@@ -313,7 +313,7 @@ class PhraseanetExtension extends \Twig_Extension
                 break;
             case 'video':
                 $src = '/assets/common/images/icons/icon_video.png';
-                $title = $this->app['translator']->trans('reportage');
+                $title = $this->app['translator']->trans('video');
                 break;
             case 'audio':
                 $src = '/assets/common/images/icons/icon_audio.png';
