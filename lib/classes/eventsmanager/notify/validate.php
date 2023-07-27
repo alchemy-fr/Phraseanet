@@ -59,7 +59,18 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
             . '" target="_blank">'
             . htmlentities($basket_name) . '</a>';
 
-        $text = $isVoteBasket ? '%user% vous demande de valider %title%' : "notification:: Basket '%title%' shared from %user%";
+        if ($isVoteBasket) {
+            $text = $this->app->trans('%user% vous demande de valider %title%', [
+                '%user%' => htmlentities($sender),
+                '%title%' => $bask_link,
+            ]);
+
+        } else {
+            $text = $this->app->trans("notification:: Basket '%title%' shared from %user%", [
+                '%user%' => htmlentities($sender),
+                '%title%' => $bask_link,
+            ]);
+        }
 
         $ret = [
             'text'  => $this->app->trans($text, [
