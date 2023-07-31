@@ -4,9 +4,7 @@
         {% trans with {
             '%number%' : '<span id="current_result_n">' ~ record.formatNumber(record.getNumber() + 1) ~ '</span>',
             '%total%' : record.formatNumber(record.total)
-            } %}
-            Resultat %number% / %total%
-        {% endtrans %}
+            } %}Resultat %number% / %total%{% endtrans %}
     </span>
     {{ record.get_title() }}
 {% elseif record.env == "BASK" %}

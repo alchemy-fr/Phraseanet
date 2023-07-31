@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-07-26T13:12:45Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2023-07-27T13:58:02Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -16,11 +16,6 @@
         <source>Add</source>
         <target state="translated">                                Add</target>
         <jms:reference-file line="66">admin/fields/templates.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="8cfd171c4324fd050876b66b60d6da9f1577ed72" resname="            Resultat %number% / %total%&#10;        ">
-        <source>Resultat %number% / %total%</source>
-        <target state="translated">Result %number% / %total%</target>
-        <jms:reference-file line="4">prod/preview/title.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
         <source>#3567c6</source>
@@ -349,6 +344,11 @@
         <source>%user% vous a envoye un %before_link% panier %after_link%</source>
         <target state="translated">%user% has sent you a %before_link% basket %after_link%</target>
         <jms:reference-file line="42">eventsmanager/notify/push.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e3f18be0f58ebf1fe310471f7bc5ac6f430b8c3c" resname="%user% vous demande de valider %title%">
+        <source>%user% vous demande de valider %title%</source>
+        <target state="needs-translation">%user% asks you to validate %title%</target>
+        <jms:reference-file line="63">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd8b8aa0c4e8a2a4534fc794850750326e79fae3" resname="%user_count% users have been created." approved="yes">
         <source>%user_count% users have been created.</source>
@@ -5526,7 +5526,7 @@
       <trans-unit id="f8a7429e2e2311f5a221af1767483f1cc8c5bc5f" resname="Recevoir des notifications lorsqu'on me demande une validation">
         <source>Recevoir des notifications lorsqu'on me demande une validation</source>
         <target state="translated">Receive notification of Push, shared and Feedback baskets</target>
-        <jms:reference-file line="90">eventsmanager/notify/validate.php</jms:reference-file>
+        <jms:reference-file line="101">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7858bf48573ba33ca42942bf7c7d8221c6790312" resname="Recevoir des notifications lorsqu'un upload echoue sur un bridge" approved="yes">
         <source>Recevoir des notifications lorsqu'un upload echoue sur un bridge</source>
@@ -5820,6 +5820,11 @@
         <source>Restrictions de telechargement</source>
         <target state="translated">Download quotas</target>
         <jms:reference-file line="49">web/admin/editusers_quotas.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4ec5e7b40886c233252a8be087b822115b17c193" resname="Resultat %number% / %total%">
+        <source>Resultat %number% / %total%</source>
+        <target state="translated">Result %number% / %total%</target>
+        <jms:reference-file line="4">prod/preview/title.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5befb1f9671ba7f46a3b9b1f13d7833ff0dce91" resname="Retour" approved="yes">
         <source>Retour</source>
@@ -7152,8 +7157,8 @@
       <trans-unit id="982f751a2ffee1db2a357a60f880c72f1f19fa25" resname="Unknown user %usr_id%" approved="yes">
         <source>Unknown user %usr_id%</source>
         <target state="translated">Unknown user %usr_id%</target>
-        <jms:reference-file line="164">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
-        <jms:reference-file line="361">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
+        <jms:reference-file line="165">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
+        <jms:reference-file line="362">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="abf9e4b5a3d4601e96a01d234e03e24d68f64e39" resname="Unreachable server" approved="yes">
         <source>Unreachable server</source>
@@ -7347,7 +7352,7 @@
         <source>Validation</source>
         <target state="translated">Feedback</target>
         <jms:reference-file line="20">eventsmanager/notify/validate.php</jms:reference-file>
-        <jms:reference-file line="81">eventsmanager/notify/validate.php</jms:reference-file>
+        <jms:reference-file line="92">eventsmanager/notify/validate.php</jms:reference-file>
         <jms:reference-file line="23">eventsmanager/notify/validationdone.php</jms:reference-file>
         <jms:reference-file line="20">eventsmanager/notify/validationreminder.php</jms:reference-file>
         <jms:reference-file line="79">eventsmanager/notify/validationreminder.php</jms:reference-file>
@@ -9462,7 +9467,7 @@
       <trans-unit id="9a6b058aaa7ff091baf01a4de45951d78935d9f4" resname="admin::workermanager:tab:queueMonitor: Hide empty queues">
         <source>admin::workermanager:tab:queueMonitor: Hide empty queues</source>
         <target state="translated">Hide empty queues</target>
-        <jms:reference-file line="10">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+        <jms:reference-file line="14">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Message count</source>
@@ -9482,7 +9487,7 @@
       <trans-unit id="065b49980c674b458ca621631663dfdf35a3f2dc" resname="admin::workermanager:tab:queueMonitor: consumed queues">
         <source>admin::workermanager:tab:queueMonitor: consumed queues</source>
         <target state="needs-translation">Display only consumed queues</target>
-        <jms:reference-file line="14">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+        <jms:reference-file line="10">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: description</source>
@@ -11741,25 +11746,20 @@
         <jms:reference-file line="92">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="77">web/lightbox/feed.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3088d4b496cba452af114c52c359b374152d89f4" resname="notification:: Basket %name% is shared">
-        <source>notification:: Basket %name% is shared</source>
-        <target state="translated">Basket " %name% " has been shared</target>
-        <jms:reference-file line="398">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
+      <trans-unit id="e7145c7051531d106368fe8c2fea2e69e7d2b0b9" resname="notification:: Basket '%title%' shared from %user%">
+        <source>notification:: Basket '%title%' shared from %user%</source>
+        <target state="needs-translation">The basket '%title%' has been shared from %user%</target>
+        <jms:reference-file line="69">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae23063401f4cdd998c70797419885a0835fe5eb" resname="notification:: Basket WIP">
         <source>notification:: Basket WIP</source>
         <target state="translated">Basket sharing in progress</target>
-        <jms:reference-file line="47">eventsmanager/notify/basketwip.php</jms:reference-file>
+        <jms:reference-file line="55">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a44dfc1b52ebdcd83e5fbf6efa7f230c0a67288" resname="notification:: Receive notification when a basket is WIP">
         <source>notification:: Receive notification when a basket is WIP</source>
         <target state="translated">Receive notifications for shared baskets</target>
-        <jms:reference-file line="56">eventsmanager/notify/basketwip.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="fa77df0b440665c48bc80e73081df4124014aa72" resname="notification:: Sharing basket &quot;%name%&quot;...">
-        <source>notification:: Sharing basket "%name%"...</source>
-        <target state="translated">Sharing basket "%name%"...</target>
-        <jms:reference-file line="104">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
+        <jms:reference-file line="64">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
         <source>notification:: mark all notification as read</source>
@@ -12650,6 +12650,11 @@
         <source>preview::statistiques de visualisation pour le lien</source>
         <target state="translated">View statistics</target>
         <jms:reference-file line="2">prod/preview/popularity.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d1ef242fa9a4b4bb75011ac40d9ad4f3d90f441d" resname="preview::tab geolocalisation">
+        <source>preview::tab geolocalisation</source>
+        <target state="needs-translation">Geolocation</target>
+        <jms:reference-file line="197">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b03b2c44ce1a3c17af6b603d666344f64ebe942" resname="preview::tab:feedback" approved="yes">
         <source>preview::tab:feedback</source>
