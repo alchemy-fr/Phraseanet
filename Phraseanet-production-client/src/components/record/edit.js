@@ -52,6 +52,13 @@ const editRecord = (services) => {
             success: (data) => {
                 $('#EDITWINDOW').removeClass('loading').empty().html(data);
 
+                // if the user have not "edit" right in all selected document
+                if (window.recordEditorConfig.state.T_records.length === 0) {
+                    $('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 if (window.recordEditorConfig.hasMultipleDatabases === true) {
                     $('#EDITWINDOW').removeClass('loading').hide();
 

@@ -1,5 +1,89 @@
 # CHANGELOG
 
+## 4.1.8-rc4
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary
+  
+- bugfix an minor improvement
+
+### Stack (docker compose)
+
+ - Extend csp for geolocalisation
+
+
+ ## What's Changed
+* PHRAS-3877 Fix csp for geonames, mapbox , prod  in https://github.com/alchemy-fr/Phraseanet/pull/4339
+* PHRAS-3878 fix jq to latest working commit by in https://github.com/alchemy-fr/Phraseanet/pull/4340
+* PHRAS-3881_browse-thesaurus-in-editing in https://github.com/alchemy-fr/Phraseanet/pull/4342
+* PHRAS-3876 Prod - Create - Story Title fix in https://github.com/alchemy-fr/Phraseanet/pull/4343
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc3...4.1.8-rc4
+
+
+## 4.1.8-rc3
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary
+  
+- bugfix an minor improvement
+
+### Stack (docker compose)
+
+ - no change
+   
+## What's Changed
+* PHRAS-3859 fix gateway fastcgi https default value in https://github.com/alchemy-fr/Phraseanet/pull/4329
+* PHRAS-3860 bin/console user:edit in https://github.com/alchemy-fr/Phraseanet/pull/4328
+* PHRAS-3855 Prod - Facettes : color html tags in https://github.com/alchemy-fr/Phraseanet/pull/4330
+* PHRAS-3860 Sync phraseanet root account info in https://github.com/alchemy-fr/Phraseanet/pull/4331
+* PHRAS-3409: Prod - Edit : A user that have no right is bloqued when trying to edit in https://github.com/alchemy-fr/Phraseanet/pull/4332
+* PHRAS-3872 prod- printed pdf - title content encoding in https://github.com/alchemy-fr/Phraseanet/pull/4336
+* PHRAS-3873: prod -advance search - field , leave only label and real field name in https://github.com/alchemy-fr/Phraseanet/pull/4335
+* PHRAS-3869: secure locale cookie in https://github.com/alchemy-fr/Phraseanet/pull/4333
+* PHRAS-3874 Prod - tools - subdefinition tab - use subdefintion label in https://github.com/alchemy-fr/Phraseanet/pull/4337
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc2...4.1.8-rc3
+
+
+
+## 4.1.8-rc2
+
+### Update instructions : 
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary :
+  
+- Docker Nginx vhost,  set security headers 
+- and allow secure cookies 
+
+### Stack (docker compose, helm)
+
+It is now possible to use secure cookies with an env variable
+
+ - `COOKIE_SECURE`  true | false , true activates cookie secure when https is setup
+
+see .env
+
+## What's New
+* PHRAS-3859 set security headers and allow secure cookies by in https://github.com/alchemy-fr/Phraseanet/pull/4324
+* PHRAS-3859 increased security with headers by in https://github.com/alchemy-fr/Phraseanet/pull/4325
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc1...4.1.8-rc2
+
 
 ## 4.1.8-rc1
 

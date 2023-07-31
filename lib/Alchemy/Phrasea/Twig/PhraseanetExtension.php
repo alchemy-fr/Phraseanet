@@ -62,7 +62,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return [
             // change this version when you change JS file to force the navigation to reload js file
-            'assetFileVersion' => 87
+            'assetFileVersion' => 92
         ];
 
     }
@@ -313,7 +313,7 @@ class PhraseanetExtension extends \Twig_Extension
                 break;
             case 'video':
                 $src = '/assets/common/images/icons/icon_video.png';
-                $title = $this->app['translator']->trans('reportage');
+                $title = $this->app['translator']->trans('video');
                 break;
             case 'audio':
                 $src = '/assets/common/images/icons/icon_audio.png';

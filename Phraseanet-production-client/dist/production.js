@@ -3882,7 +3882,6 @@ var workzoneFacets = function workzoneFacets(services) {
                 if (match && match[2] != null) {
                     // text looks like a color !
                     var colorCode = '#' + match[2];
-                    // add color circle and remove color code from text;
                     var textWithoutColorCode = text.replace('[' + colorCode + ']', '');
                     if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                         textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
@@ -3890,7 +3889,9 @@ var workzoneFacets = function workzoneFacets(services) {
                     // patch
                     type = "COLOR-AGGREGATE";
                     label = textWithoutColorCode;
+                    textWithoutColorCode = (0, _jquery2.default)('<div/>').text(textWithoutColorCode).html(); // escape html
                     tooltip = _.escape(textWithoutColorCode);
+
                     title = '<span class="color-dot" style="background-color: ' + colorCode + ';"></span> ' + tooltip;
                 } else {
                     // keep text as it is, just cut if too long
@@ -3898,7 +3899,7 @@ var workzoneFacets = function workzoneFacets(services) {
                         text = text.substring(0, textLimit) + '…';
                     }
                     label = text;
-                    /*title = tooltip = _.escape(text);*/
+                    title = (0, _jquery2.default)('<div/>').text(text).html(); // escape html
                 }
 
                 return {
@@ -3952,8 +3953,6 @@ var workzoneFacets = function workzoneFacets(services) {
             treeSource = _shouldMaskNodes(treeSource, hiddenFacetsList);
         }
 
-        treeSource = _parseColors(treeSource);
-
         treeSource = _colorUnsetText(treeSource);
 
         return _getFacetsTree().reload(treeSource).done(function () {
@@ -3969,7 +3968,7 @@ var workzoneFacets = function workzoneFacets(services) {
                             (0, _jquery2.default)(el).hide();
                         }
                     });
-                    ul.append('<button class="see_more_btn">See more</button>');
+                    ul.append('<button class="see_more_btn">' + localeService.t('seeMore') + '</button>');
                 }
             });
             (0, _jquery2.default)('.see_more_btn').on('click', function () {
@@ -3979,18 +3978,6 @@ var workzoneFacets = function workzoneFacets(services) {
             });
         });
     };
-
-    function _parseColors(source) {
-        _.forEach(source, function (facet) {
-            if (!_.isUndefined(facet.children) && facet.children.length > 0) {
-                _.forEach(facet.children, function (child) {
-                    var title = child.title;
-                    child.title = _formatColorText(title.toString());
-                });
-            }
-        });
-        return source;
-    }
 
     function _formatColorText(string) {
         var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -5533,6 +5520,13 @@ var editRecord = function editRecord(services) {
             data: datas,
             success: function success(data) {
                 (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').empty().html(data);
+
+                // if the user have not "edit" right in all selected document
+                if (window.recordEditorConfig.state.T_records.length === 0) {
+                    (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
 
                 if (window.recordEditorConfig.hasMultipleDatabases === true) {
                     (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
@@ -20005,7 +19999,7 @@ var storyCreate = function storyCreate(services) {
 
 
         var dialogOptions = (0, _lodash2.default)({
-            size: 'Small',
+            size: 'Medium',
             loading: false
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
@@ -20029,6 +20023,7 @@ var storyCreate = function storyCreate(services) {
     var _onDialogReady = function _onDialogReady() {
         var $dialog = _dialog2.default.get(1);
         var $dialogBox = $dialog.getDomElement();
+        var $selectCollection = (0, _jquery2.default)('select[name="base_id"]', $dialogBox);
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).val(searchSelectionSerialized);
 
@@ -20052,6 +20047,29 @@ var storyCreate = function storyCreate(services) {
 
         $dialog.setOption('buttons', buttons);
 
+        if ($selectCollection.val() == '') {
+            (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+            (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+        }
+
+        $selectCollection.change(function () {
+            var that = (0, _jquery2.default)(this);
+            if (that.val() != '') {
+                // first hide all input and show only the corresponding field for the selected db
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                // mark as disabled to no process the hidden field when submit
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                var sbasId = that.find('option:selected').data('sbas');
+                (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+            } else {
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+            }
+        });
+
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
             var that = this;
             if ((0, _jquery2.default)(that).is(":checked")) {
@@ -20062,10 +20080,18 @@ var storyCreate = function storyCreate(services) {
                 if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
                     alert(localeService.t('warning-multiple-databoxes'));
 
-                    (0, _jquery2.default)(that).prop("checked", false);
+                    (0, _jquery2.default)(that).prop('checked', false);
                 }
             } else {
                 (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
+                if ($selectCollection.val() != '') {
+                    (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                    (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                    var sbasId = $selectCollection.find('option:selected').data('sbas');
+                    (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                    (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                    (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+                }
             }
         });
 
@@ -20079,7 +20105,7 @@ var storyCreate = function storyCreate(services) {
                 return;
             }
 
-            if ((0, _jquery2.default)('select[name="base_id"]', $dialogBox).val() == '') {
+            if ($selectCollection.val() == '') {
                 alert(localeService.t('choose-collection'));
                 event.preventDefault();
 
@@ -65020,6 +65046,12 @@ var preferences = function preferences(services) {
             appEvents.emit('search.doRefreshState');
         });
 
+        $container.on('change', '.preferences-see-real-field-name', function (event) {
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref('see_real_field_name', $el.prop('checked') ? '1' : '0');
+        });
+
         $container.on('change', '.preferences-options-basket-status', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
             event.preventDefault();
@@ -69646,6 +69678,15 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
         checkFilters(true);
     });
 
+    (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE input.see-real-field-name').change(function () {
+        if ((0, _jquery2.default)(this).prop('checked') === true) {
+            (0, _jquery2.default)(this).data('real-field', 'field_with_real_name');
+        } else {
+            (0, _jquery2.default)(this).data('real-field', 'field_without_real_name');
+        }
+        checkFilters(true);
+    });
+
     var checkFilters = function checkFilters(save) {
         var danger = false;
         var search = {
@@ -69762,13 +69803,15 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
                 // at least one coll checked for this databox
                 // show again the relevant fields in "sort by" select
                 (0, _jquery2.default)('.db_' + sbas_id, fieldsSort).show().prop('disabled', false);
+
+                var realFieldClass = (0, _jquery2.default)('input.preferences-see-real-field-name').data('real-field');
                 // show again the relevant fields in "from fields" select
                 (0, _jquery2.default)('.db_' + sbas_id, fieldsSelect).show().prop('disabled', false);
-                (0, _jquery2.default)('.db_' + sbas_id, fieldsSelectFake).show().prop('disabled', false);
+                (0, _jquery2.default)('.db_' + sbas_id + '.' + realFieldClass, fieldsSelectFake).show().prop('disabled', false);
                 // show the sb
                 (0, _jquery2.default)('#ADVSRCH_SB_ZONE_' + sbas_id, container).show();
                 // show again the relevant fields in "date field" select
-                (0, _jquery2.default)('.db_' + sbas_id, dateFilterSelect).show().prop('disabled', false);
+                (0, _jquery2.default)('.db_' + sbas_id + '.' + realFieldClass, dateFilterSelect).show().prop('disabled', false);
             }
         });
 
@@ -70207,7 +70250,7 @@ var searchGeoForm = function searchGeoForm(services) {
 
     var renderModal = function renderModal() {
         // @TODO cleanup styles
-        return '\n        <div style="overflow:hidden">\n        <div id="' + mapContainerName + '" style="top: 0px; left: 0;    bottom: 42px;    position: absolute;height: auto;width: 100%;overflow: hidden;"></div>\n        <div style="position: absolute;bottom: 0; text-align:center; height: 35px; width: 98%;overflow: hidden;"><button class="submit-geo-search-action btn map-geo-btn" style="font-size: 14px">' + localeService.t('Valider') + '</button></div>\n        </div>';
+        return '\n        <div style="overflow:hidden">\n        <div id="' + mapContainerName + '" style="top: 0px; left: 0;    bottom: 42px;    position: absolute;height: auto;width: 100%;overflow: hidden;"></div>\n        <div style="position: absolute;bottom: 0; text-align:center; height: 35px; width: 98%;overflow: hidden;"><button class="submit-geo-search-action btn map-geo-btn" style="font-size: 14px">' + localeService.t('valider') + '</button></div>\n        </div>';
     };
 
     var updateCircleGeo = function updateCircleGeo(params) {

@@ -30,8 +30,15 @@ class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
      */
     public function datas(array $data, $unread)
     {
+        if (isset($data['message'])) {
+            // to be retro compatible with old data value
+            $text = $data['message'];
+        } else {
+            $text = $this->app->trans($data['translateMessage'], ['%name%' => $data['name']]);
+        }
+
         $ret = [
-            'text'  => $data['message'],
+            'text'  => $text,
             'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 

@@ -7,6 +7,10 @@
         </button>
 
         <label class="checkbox inline" style="margin-left: 20px;padding-top: 0px;">
+            <input class="consumed-queue" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:queueMonitor: consumed queues' |trans }}
+        </label>
+
+        <label class="checkbox inline" style="margin-left: 20px;padding-top: 0px;">
             <input class="hide-empty-queue" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:queueMonitor: Hide empty queues' |trans }}
         </label>
     </div>
@@ -49,9 +53,14 @@
                 hideEmptyQ = 0;
             }
 
+            let consumedQ = 1;
+            if (!$(".consumed-queue").is(":checked")) {
+                consumedQ = 0;
+            }
+
             $.ajax({
                 type: "GET",
-                url: "/admin/worker-manager/queue-monitor?reload=1&hide-empty-queue=" + hideEmptyQ,
+                url: "/admin/worker-manager/queue-monitor?reload=1&hide-empty-queue=" + hideEmptyQ + "&consumed-queue=" + consumedQ,
                 success: function (data) {
                     $(".queue-list").empty().html(data);
                 }
@@ -59,6 +68,10 @@
         }
 
         $(".hide-empty-queue").on('click', function () {
+            refreshList();
+        });
+
+        $(".consumed-queue").on('click', function () {
             refreshList();
         });
 

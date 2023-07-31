@@ -32,11 +32,25 @@ class StoryController extends Controller
         $databoxes = $records->databoxes();
         $collections = $records->collections();
 
+        $storyTitleMetaStructIds = [];
+        foreach ($this->getApplicationBox()->get_databoxes() as $db) {
+            foreach ($db->get_meta_structure() as $metaStruct) {
+                if ($metaStruct->get_thumbtitle() == "1" &&
+                    !$metaStruct->is_readonly() &&
+                    $metaStruct->get_gui_editable() &&
+                    $metaStruct->get_type() == \databox_field::TYPE_STRING
+                ) {
+                    $storyTitleMetaStructIds[$db->get_sbas_id()][] = ['meta_struct_id' => $metaStruct->get_id(), 'label' => $metaStruct->get_label($this->app['locale'])];
+                }
+            }
+        }
+
         return $this->render('prod/Story/Create.html.twig', [
             'isMultipleDataboxes'   => count($databoxes) > 1 ? 1 : 0,
             'isMultipleCollections' => count($collections) > 1 ? 1 : 0,
             'databoxId'             => count($databoxes) == 1 ? current($databoxes)->get_sbas_id() : 0,
-            'collectionId'          => count($collections) == 1 ? current($collections)->get_base_id() : 0
+            'collectionId'          => count($collections) == 1 ? current($collections)->get_base_id() : 0,
+            'storyTitleMetaStructIds'   => $storyTitleMetaStructIds
         ]);
     }
 
@@ -58,6 +72,23 @@ class StoryController extends Controller
 
             $story->appendChild($record);
         }
+
+        $metadatas = [];
+
+        $titleFields = $request->request->get('name');
+
+        foreach ($titleFields as $db_metastructId => $value) {
+            $t = explode('-', $db_metastructId);
+            if ($t[0] == $collection->get_databox()->get_sbas_id()) {
+                $metadatas[] = [
+                    'meta_struct_id' => $t[1],
+                    'meta_id'        => null,
+                    'value'          => $value,
+                ];
+            }
+        }
+
+        $recordAdapter = $story->set_metadatas($metadatas);
 
         $storyWZ = new StoryWZ();
         $storyWZ->setUser($this->getAuthenticatedUser());

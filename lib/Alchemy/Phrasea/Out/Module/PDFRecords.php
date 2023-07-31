@@ -285,7 +285,7 @@ class PDFRecords extends PDF
                     );
                 }
 
-                $downloadLink = $rec->get_title(['encode'=> record_adapter::ENCODE_FOR_URI]);
+                $downloadLink = $rec->get_title(['encode'=> record_adapter::ENCODE_FOR_HTML]);
 
 
                 if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)
