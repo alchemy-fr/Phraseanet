@@ -104,6 +104,7 @@ class Prod extends Helper
                 if ($fieldMeta->get_type() === \databox_field::TYPE_DATE) {
                     if (!array_key_exists($name, $dates)) {
                         $dates[$name] = array('sbas' => array());
+                        $dates[$name]['fieldname'] = $name;
                     }
                     $dates[$name]['sbas'][] = $sbasId;
 
@@ -160,12 +161,13 @@ class Prod extends Helper
         $dates['created_on']['sbas'] = $allSbasId;
         $dates['created_on']['label'][] = $this->app->trans('created_on');
 
-        // sort ASC by fieldname
-        ksort($dates, SORT_STRING | SORT_FLAG_CASE);
-        ksort($fields, SORT_STRING | SORT_FLAG_CASE);
+        $f = $this->getLabels($fields);
+        $d = $this->getLabels($dates);
 
-        $searchData['fields'] = $fields;
-        $searchData['dates'] = $dates;
+        $searchData['fields'] = $f['labelWithoutName'];
+        $searchData['fieldsWithName'] = $f['labelWithName'];
+        $searchData['dates'] = $d['labelWithoutName'];
+        $searchData['datesWithName'] = $d['labelWithName'];
         $searchData['bases'] = $bases;
         $searchData['sort'] = array_map(function($v){ksort($v, SORT_NATURAL);return $v;}, $sort); // sort by name of field
         $searchData['elasticSort'] = $elasticSort;
@@ -176,5 +178,29 @@ class Prod extends Helper
     public function getRandom()
     {
         return md5(time() . mt_rand(100000, 999999));
+    }
+
+    private function getLabels($fields)
+    {
+        $labelWithName = $labelWithoutName = [];
+
+        foreach ($fields as $name => $field) {
+            if (empty($field['label'])) {
+                $labelWithoutName[$name] =  $field;
+                $labelWithName[$name] = $field;
+            } else {
+                $labelWithoutName[implode('  |  ', $field['label'])] =  $field;
+                $labelWithName[implode('  |  ', $field['label']) . ' ( '. $name . ' ) '] = $field;
+            }
+        }
+
+        // sort ASC by label merged
+        ksort($labelWithName, SORT_STRING | SORT_FLAG_CASE);
+        ksort($labelWithoutName, SORT_STRING | SORT_FLAG_CASE);
+
+        return [
+            'labelWithName' => $labelWithName,
+            'labelWithoutName' => $labelWithoutName
+        ];
     }
 }
