@@ -592,24 +592,16 @@
                                                         <div class="term_select_wrapper_template" style="display: none;">
                                                             <select class="term_select_field" style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
-                                                                {% for field_id, field in search_datas['fields'] %}
-                                                                   {# {% if field['type'] != 'date' %}#}
-                                                                        <option class="field_without_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">
-                                                                            {% if field['label'] is empty %}
-                                                                                {{ field['fieldname'] }}
-                                                                            {% else %}
-                                                                                {{ field['label'] | join('  |  ')}}
-                                                                            {% endif %}
-                                                                        </option>
+                                                                {% for label, field in search_datas['fields'] %}
+                                                                    <option class="field_without_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{ field['fieldname'] }}">
+                                                                        {{ label }}
+                                                                    </option>
+                                                                {% endfor %}
 
-                                                                        <option class="field_with_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}" style="display:none;">
-                                                                            {% if field['label'] is empty %}
-                                                                                {{ field['fieldname'] }}
-                                                                            {% else %}
-                                                                                {{ field['label'] | join('  |  ') ~ " ( " ~ field['fieldname'] ~ " )"}}
-                                                                            {% endif %}
-                                                                        </option>
-                                                                    {#{% endif %}#}
+                                                                {% for label, field in search_datas['fieldsWithName'] %}
+                                                                    <option class="field_with_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{ field['fieldname'] }}" style="display:none;">
+                                                                        {{ label }}
+                                                                    </option>
                                                                 {% endfor %}
                                                             </select>
                                                             <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
@@ -657,21 +649,15 @@
                                                         <select name="date_field" class="date-field input-medium check-filters" data-save="true" style="width: 166px;">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
-                                                            {% for fieldname, date in search_datas['dates'] %}
-                                                                <option class="field_without_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">
-                                                                    {% if date['label'] is empty %}
-                                                                        {{ fieldname }}
-                                                                    {% else %}
-                                                                        {{ date['label'] | join('  |  ') }}
-                                                                    {% endif %}
+                                                            {% for label, date in search_datas['dates'] %}
+                                                                <option class="field_without_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ date['fieldname'] }}">
+                                                                    {{ label }}
                                                                 </option>
+                                                            {% endfor %}
 
-                                                                <option class="field_with_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}" style="display:none;">
-                                                                    {% if date['label'] is empty %}
-                                                                        {{ fieldname }}
-                                                                    {% else %}
-                                                                        {{ date['label'] | join('  |  ') ~ " ( " ~ fieldname ~ " )" }}
-                                                                    {% endif %}
+                                                            {% for label, date in search_datas['datesWithName'] %}
+                                                                <option class="field_with_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ date['fieldname'] }}" style="display:none;">
+                                                                    {{ label }}
                                                                 </option>
                                                             {% endfor %}
                                                         </select>
