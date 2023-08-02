@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 4.1.8-rc5
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none
+
+### Version summary
+  
+ - bugfix an minor improvement (todo)
+
+### Stack (docker compose)
+
+ - Extend csp for GA-4 (todo)
+ 
+### What's Changed
+
+(todo)
+
+
+
 ## 4.1.8-rc4
 
 ### Update instructions
@@ -9,7 +30,7 @@
 
 ### Version summary
   
-- bugfix an minor improvement
+- bugfix an minor improvement 
 
 ### Stack (docker compose)
 
