@@ -17,7 +17,20 @@
  
 ### What's Changed
 
-(todo)
+* PHRAS-3882 admin - workers - filter "consumed queue" in https://github.com/alchemy-fr/Phraseanet/pull/4347
+* PHRAS-3884 translation and advanced search field name in https://github.com/alchemy-fr/Phraseanet/pull/4348
+* PHRAS-3416 phraseanet localization in https://github.com/alchemy-fr/Phraseanet/pull/4350
+* PHRAS-3796 bin/setup check:system - download , lazaret, wrong repo is checked in https://github.com/alchemy-fr/Phraseanet/pull/4349
+* PHRAS-3851 Untranslated terms : in Notifications, Detailed View, Map by in https://github.com/alchemy-fr/Phraseanet/pull/4351
+* PHRAS-3416 phraseanet localization in https://github.com/alchemy-fr/Phraseanet/pull/4353
+* PHRAS-3887 google analytics 4 by in https://github.com/alchemy-fr/Phraseanet/pull/4354
+* PHRAS-3884 advanced search sort field by label by in https://github.com/alchemy-fr/Phraseanet/pull/4355
+* PHRAS-3870_record-action-example by in https://github.com/alchemy-fr/Phraseanet/pull/4334
+* PHRAS-3891 CSP policies for matomo cloud  and newrelic by in https://github.com/alchemy-fr/Phraseanet/pull/4358
+* PHRAS-3891 adding CSP in https://github.com/alchemy-fr/Phraseanet/pull/4359
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc4...4.1.8-rc5
 
 
 
