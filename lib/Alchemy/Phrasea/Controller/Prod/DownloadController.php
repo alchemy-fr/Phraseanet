@@ -29,6 +29,10 @@ class DownloadController extends Controller
      */
     public function checkDownload(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExportDownload')) {
+            $this->app->abort(403);
+        }
+
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
         $subdefs = $request->request->get('obj', []);

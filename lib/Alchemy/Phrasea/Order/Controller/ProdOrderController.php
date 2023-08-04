@@ -37,6 +37,10 @@ class ProdOrderController extends BaseOrderController
      */
     public function createOrder(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExportOrder')) {
+            return $this->app->json(['message' => 'invalid export order form'], 403);
+        }
+
         $records = RecordsRequest::fromRequest($this->app, $request, true, [\ACL::CANCMD]);
 
         try {

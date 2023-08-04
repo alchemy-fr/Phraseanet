@@ -62256,6 +62256,7 @@ var deleteRecord = function deleteRecord(services) {
                 $trash_counter = $form.find(".to_trash_count"),
                 $loader = $form.find(".form-action-loader");
             var lst = (0, _jquery2.default)("input[name='lst']", $form).val().split(';');
+            var csrfToken = (0, _jquery2.default)("input[name='prodDeleteRecord_token']", $form).val();
 
             /**
              *  same parameters for every delete call, except the list of (CHUNKSIZE) records
@@ -62265,9 +62266,10 @@ var deleteRecord = function deleteRecord(services) {
                 type: $form.attr("method"),
                 url: $form.attr("action"),
                 data: {
-                    'lst': "" // set in f
+                    lst: '', // set in f
+                    prodDeleteRecord_token: csrfToken
                 },
-                dataType: "json"
+                dataType: 'json'
             };
 
             var runningTasks = 0,
@@ -62293,7 +62295,11 @@ var deleteRecord = function deleteRecord(services) {
                 }
                 // pop & truncate
                 ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
-                _jquery2.default.ajax(ajaxParms).success(function (data) {
+                _jquery2.default.ajax(ajaxParms).error(function (data) {
+                    fCancel();
+                    $dialog.close();
+                    alert('invalid csrf token delete form');
+                }).success(function (data) {
                     // prod feedback only if result ok
                     _jquery2.default.each(data, function (i, n) {
                         var imgt = (0, _jquery2.default)('#IMGT_' + n),
