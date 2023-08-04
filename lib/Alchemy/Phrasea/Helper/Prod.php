@@ -157,8 +157,10 @@ class Prod extends Helper
 
         // add default field date
         $dates['updated_on']['sbas'] = $allSbasId;
+        $dates['updated_on']['fieldname'] = 'updated_on';
         $dates['updated_on']['label'][] = $this->app->trans('updated_on');
         $dates['created_on']['sbas'] = $allSbasId;
+        $dates['created_on']['fieldname'] = 'created_on';
         $dates['created_on']['label'][] = $this->app->trans('created_on');
 
         $f = $this->getLabels($fields);
