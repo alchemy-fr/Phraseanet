@@ -21998,7 +21998,8 @@ var moveRecord = function moveRecord(services) {
             var datas = {
                 lst: (0, _jquery2.default)('input[name="lst"]', $form).val(),
                 base_id: (0, _jquery2.default)('select[name="base_id"]', $form).val(),
-                chg_coll_son: coll_son
+                chg_coll_son: coll_son,
+                prodMoveCollection_token: (0, _jquery2.default)('input[name="prodMoveCollection_token"]', $form).val()
             };
 
             var buttonPanel = $dialog.getDomElement().closest('.ui-dialog').find('.ui-dialog-buttonpane');

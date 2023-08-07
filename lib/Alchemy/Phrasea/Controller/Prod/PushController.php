@@ -215,6 +215,10 @@ class PushController extends Controller
      */
     public function sharebasketAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodShareBasket')) {
+            return $this->app->json(['success' => false, 'message' => 'invalid form']);
+        }
+
         $ret = [
             'success' => false,
             'message' => $this->app->trans('Unable to send the documents')
@@ -816,6 +820,8 @@ class PushController extends Controller
 
         $repository = $this->getUserListRepository();
         $recommendedUsers = $this->getUsersInSelectionExtractor($push->get_elements());
+
+        $this->setSessionFormToken('prodShareBasket');
 
         return $this->render(
             'prod/actions/Push.html.twig',
