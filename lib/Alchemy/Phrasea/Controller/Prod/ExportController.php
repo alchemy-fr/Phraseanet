@@ -168,7 +168,8 @@ class ExportController extends Controller
             (array) $request->request->get('obj'),
             $request->request->get("type") == "title" ? : false,
             $request->request->get('businessfields'),
-            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_ASYNC
+            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_ASYNC,
+            true
         );
 
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
