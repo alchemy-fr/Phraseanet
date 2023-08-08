@@ -127,12 +127,12 @@ class LazaretController extends Controller
         //Check if the chosen record is eligible to the substitution
         $recordId = $request->request->get('record_id');
         /** @var LazaretFile $lazaretFile */
-        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
-
         $metadatasToSet = [];
         if(!!$request->request->get('copy_meta', false)) {
 
             $substitutedRecord = null;
+
+            $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
             foreach ($lazaretFile->getRecordsToSubstitute($this->app) as $r) {
                 if ($r->getRecordId() === (int)$recordId) {
                     $substitutedRecord = $r;
@@ -151,7 +151,6 @@ class LazaretController extends Controller
                     $fieldsToCopy[] = $df->get_name();
                 }
             }
-            $metadatas = [];
             foreach ($substitutedRecord->getCaption($fieldsToCopy) as $k=>$v) {
                 $metadatasToSet[] = ['field_name' => $k, 'value' => $v];
             }
