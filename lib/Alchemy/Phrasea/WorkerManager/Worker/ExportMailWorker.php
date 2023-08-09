@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Core\Event\ExportFailureEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -21,6 +22,7 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 class ExportMailWorker implements WorkerInterface
 {
     use Application\Helper\NotifierAware;
+    use FilesystemAware;
 
     private $app;
 
@@ -63,6 +65,8 @@ class ExportMailWorker implements WorkerInterface
             $em->rollback();
         }
 
+        $filesystem = $this->getFilesystem();
+
         $destMails = unserialize($payload['destinationMails']);
 
         $params = unserialize($payload['params']);
@@ -101,6 +105,40 @@ class ExportMailWorker implements WorkerInterface
                     }
                 }
             }
+        }
+
+        $caption_dir = null;
+        // add the captions files if exist
+        foreach ($list['captions'] as $v_caption) {
+            if (!$caption_dir) {
+                // do this only once
+                $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $payload['emitterUserId'] . '/';
+                $filesystem->mkdir($caption_dir, 0750);
+            }
+
+            $subdefName = $v_caption['subdefName'];
+            $kFile = $v_caption['fileId'];
+
+            $download_element = new \record_exportElement(
+                $this->app,
+                $list['files'][$kFile]['databox_id'],
+                $list['files'][$kFile]['record_id'],
+                $v_caption['elementDirectory'],
+                $v_caption['remain_hd'],
+                $user
+            );
+
+            $file = $list['files'][$kFile]["export_name"]
+                . $list['files'][$kFile]["subdefs"][$subdefName]["ajout"] . '.'
+                . $list['files'][$kFile]["subdefs"][$subdefName]["exportExt"];
+
+            $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), $v_caption['serializeMethod'], $v_caption['businessFields']);
+            file_put_contents($caption_dir . $file, $desc);
+
+            $list['files'][$kFile]["subdefs"][$subdefName]["path"] = $caption_dir;
+            $list['files'][$kFile]["subdefs"][$subdefName]["file"] = $file;
+            $list['files'][$kFile]["subdefs"][$subdefName]["size"] = filesize($caption_dir . $file);
+            $list['files'][$kFile]["subdefs"][$subdefName]['businessfields'] = $v_caption['businessFields'];
         }
 
         $this->repoWorkerJob->reconnect();
