@@ -191,7 +191,8 @@
 
             </div>
         </div>
-    </form>
+    <input type="hidden" name="prodPrint_token" value="{{ app['session'].get('prodPrint_token') }}">
+</form>
 
 <script type="text/javascript">
     $(document).ready(function() {

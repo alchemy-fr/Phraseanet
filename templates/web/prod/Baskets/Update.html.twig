@@ -5,5 +5,6 @@
         <label style="margin:5px 0 0 0;">{{ 'panier:: description' | trans }}</label>
         <textarea style="width:98%;height:120px;" name="description">{{ basket.getDescription() }}</textarea>
         <button type='button' class="btn btn-inverse" style="margin: 5px 40%;">{{ 'boutton::valider' | trans }}</button>
+        <input type="hidden" name="prodBasketRename_token" value="{{ app['session'].get('prodBasketRename_token') }}">
     </form>
 </div>

@@ -397,6 +397,10 @@ class PushController extends Controller
      */
     public function addUserAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodShareAddUser')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid add user form'], 403);
+        }
+
         $result = ['success' => false, 'message' => '', 'user'    => null];
 
         try {
@@ -473,6 +477,8 @@ class PushController extends Controller
     public function getAddUserFormAction(Request $request)
     {
         $params = ['callback' => $request->query->get('callback')];
+
+        $this->setSessionFormToken('prodShareAddUser');
 
         return $this->render('prod/User/Add.html.twig', $params);
     }
