@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a155d517a61963f9dd96d3f3a2c22d21",
+    "content-hash": "eadceda3244b4c8a1890620dbbdd655b",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -3706,16 +3706,16 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "0.6.x-dev",
+            "version": "v0.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Imagine.git",
-                "reference": "6605d13e3b24f335fe80099c193546671158c041"
+                "reference": "94dc35d33d5730d5ad2031c3b17fc9761a29d322"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/6605d13e3b24f335fe80099c193546671158c041",
-                "reference": "6605d13e3b24f335fe80099c193546671158c041",
+                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/94dc35d33d5730d5ad2031c3b17fc9761a29d322",
+                "reference": "94dc35d33d5730d5ad2031c3b17fc9761a29d322",
                 "shasum": ""
             },
             "require": {
@@ -3759,9 +3759,9 @@
                 "image processing"
             ],
             "support": {
-                "source": "https://github.com/alchemy-fr/Imagine/tree/alchemy-0.6.2"
+                "source": "https://github.com/alchemy-fr/Imagine/tree/v0.9.0"
             },
-            "time": "2015-01-13T18:12:26+00:00"
+            "time": "2022-12-01T14:36:05+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -4343,22 +4343,22 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.6",
+            "version": "0.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2"
+                "reference": "5c7277ccdab03dd34dea13bec4ac1f4e5963ac94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/2b9f7697997f7863bbc3d08344c559a1cba519c2",
-                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/5c7277ccdab03dd34dea13bec4ac1f4e5963ac94",
+                "reference": "5c7277ccdab03dd34dea13bec4ac1f4e5963ac94",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
                 "alchemy/mediavorus": "^0.4.4",
-                "imagine/imagine": "^0.6.2",
+                "imagine/imagine": "^0.9.0",
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "^2.1.1",
                 "php": ">=5.3.3",
@@ -4413,7 +4413,11 @@
                 "video",
                 "video processing"
             ],
-            "time": "2020-04-01T08:51:55+00:00"
+            "support": {
+                "issues": "https://github.com/alchemy-fr/Media-Alchemyst/issues",
+                "source": "https://github.com/alchemy-fr/Media-Alchemyst/tree/0.5.7"
+            },
+            "time": "2023-08-07T12:59:05+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8720,7 +8724,6 @@
     "stability-flags": {
         "alchemy/task-manager": 20,
         "doctrine/cache": 20,
-        "imagine/imagine": 20,
         "jms/translation-bundle": 20,
         "league/fractal": 20,
         "neutron/process-manager": 20,
@@ -8733,5 +8736,5 @@
         "ext-intl": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
