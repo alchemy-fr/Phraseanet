@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 4.1.8-rc6
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none
+
+### Version summary
+  
+ - bugfix an minor improvement (todo)
+
+### Stack (docker compose)
+
+ - PHP setting improvement 
+ - FPM setting improvement 
+ 
+### What's Changed
+
+(todo)
+
+
 ## 4.1.8-rc5
 
 ### Update instructions
