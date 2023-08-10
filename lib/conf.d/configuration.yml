@@ -416,6 +416,10 @@ workers:
             max_retry: 3
             ttl_retry: 10000
             ttl_delayed: 5000
+    writeMetadatas:
+        acceptedMimeType:
+            - image/jpeg
+            - image/png
 externalservice:
     ginger:
         AutoSubtitling:
