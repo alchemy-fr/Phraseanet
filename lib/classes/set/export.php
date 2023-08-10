@@ -404,7 +404,7 @@ class set_export extends set_abstract
      * @return array
      * @throws Exception
      */
-    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod, $exportEmail = false)
     {
         if (!is_array($wantedSubdefs)) {
             throw new Exception('No subdefs given');
@@ -416,6 +416,7 @@ class set_export extends set_abstract
 
         $includeBusinessFields = (bool) $includeBusinessFields;
         $files = [];
+        $captions = [];
         $n_files = 0;
         $file_names = [];
         $size = 0;
@@ -672,29 +673,42 @@ class set_export extends set_abstract
                     as $subdefName => $serializeMethod)
             {
                 if (in_array($subdefName, $wantedSubdefs)) {
-                    if (!$caption_dir) {
-                        // do this only once
-                        $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $this->app->getAuthenticatedUser()->getId() . '/';
-                        $filesystem->mkdir($caption_dir, 0750);
+                    if ($exportEmail) {
+                        // for the export mail , add files in the worker not here like direct export
+                        $captions[] = [
+                            'fileId'            => $id,
+                            'subdefName'        => $subdefName,
+                            'businessFields'    => $BF ? '1' : '0',
+                            'serializeMethod'   => $serializeMethod,
+                            'elementDirectory'  => $download_element->get_directory(),
+                            'remain_hd'         => $download_element->get_remain_hd() // need when create exportElement
+                        ];
+                    } else {
+                        if (!$caption_dir) {
+                            // do this only once
+                            $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $this->app->getAuthenticatedUser()->getId() . '/';
+                            $filesystem->mkdir($caption_dir, 0750);
+                        }
+
+                        $file = $files[$id]["export_name"]
+                            . $files[$id]["subdefs"][$subdefName]["ajout"] . '.'
+                            . $files[$id]["subdefs"][$subdefName]["exportExt"];
+
+                        $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), $serializeMethod, $BF);
+                        file_put_contents($caption_dir . $file, $desc);
+
+                        $files[$id]["subdefs"][$subdefName]["path"] = $caption_dir;
+                        $files[$id]["subdefs"][$subdefName]["file"] = $file;
+                        $files[$id]["subdefs"][$subdefName]["size"] = filesize($caption_dir . $file);
+                        $files[$id]["subdefs"][$subdefName]['businessfields'] = $BF ? '1' : '0';
                     }
-
-                    $file = $files[$id]["export_name"]
-                        . $files[$id]["subdefs"][$subdefName]["ajout"] . '.'
-                        . $files[$id]["subdefs"][$subdefName]["exportExt"];
-
-                    $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), $serializeMethod, $BF);
-                    file_put_contents($caption_dir . $file, $desc);
-
-                    $files[$id]["subdefs"][$subdefName]["path"] = $caption_dir;
-                    $files[$id]["subdefs"][$subdefName]["file"] = $file;
-                    $files[$id]["subdefs"][$subdefName]["size"] = filesize($caption_dir . $file);
-                    $files[$id]["subdefs"][$subdefName]['businessfields'] = $BF ? '1' : '0';
                 }
             }
         }
 
         $this->list = [
             'files' => $files,
+            'captions' => $captions,
             'names' => $file_names,
             'size'  => $size,
             'count' => $n_files,

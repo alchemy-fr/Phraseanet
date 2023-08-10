@@ -104,6 +104,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EXPORT_MAIL_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new ExportMailWorker($app))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
         }));
 
