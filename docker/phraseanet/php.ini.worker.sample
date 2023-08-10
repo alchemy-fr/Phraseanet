@@ -401,7 +401,7 @@ max_input_vars = $MAX_INPUT_VARS
 
 ; Maximum amount of memory a script may consume (128MB)
 ; http://php.net/memory-limit
-memory_limit = $FPM_MEMORY_LIMIT
+memory_limit = $PHP_CLI_MEMORY_LIMIT
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Error handling and logging ;
