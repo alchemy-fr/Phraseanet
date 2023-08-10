@@ -10120,6 +10120,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -10206,6 +10210,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error2) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });

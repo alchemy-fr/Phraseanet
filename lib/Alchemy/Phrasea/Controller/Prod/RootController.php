@@ -105,6 +105,7 @@ class RootController extends Controller
         ];
 
         $this->setSessionFormToken('searchForm');
+        $this->setSessionFormToken('prodExposeNew');
 
         return $this->render('prod/index.html.twig', [
             'module_name'          => 'Production',

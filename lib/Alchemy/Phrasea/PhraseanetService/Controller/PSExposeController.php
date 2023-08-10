@@ -25,6 +25,10 @@ class PSExposeController extends Controller
      */
     public function authenticateAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeLogin')) {
+            return $this->app->json(['success' => false , 'error_description' => 'invalid csrf form']);
+        }
+
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->request->get('exposeName')];
 
@@ -201,7 +205,9 @@ class PSExposeController extends Controller
         }
 
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
-             return $app->json([
+            $this->setSessionFormToken('prodExposeLogin');
+
+            return $app->json([
                 'twig'  => $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
                     'exposeName' => $exposeName
                 ])
@@ -351,6 +357,8 @@ class PSExposeController extends Controller
         }
 
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
+
+        $this->setSessionFormToken('prodExposeEdit');
 
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
             'timezone'    => $request->get('timezone'),
@@ -590,6 +598,10 @@ class PSExposeController extends Controller
      */
     public function createPublicationAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeNew')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form']);
+        }
+
         $exposeName = $request->get('exposeName');
         if ( $exposeName == null) {
             return $app->json([
@@ -658,6 +670,10 @@ class PSExposeController extends Controller
      */
     public function updatePublicationAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeEdit')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form']);
+        }
+
         $exposeName = $request->get('exposeName');
         $exposeClient = $this->getExposeClient($exposeName);
         if ($exposeClient == null) {
@@ -942,6 +958,9 @@ class PSExposeController extends Controller
 
     public function getFieldMappingAction(PhraseaApplication $app, Request $request)
     {
+        $this->setSessionFormToken('prodExposeFieldMapping');
+        $this->setSessionFormToken('prodExposeSubdefMapping');
+
         return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
             'exposeName'    => $request->get('exposeName')
         ]);
@@ -955,6 +974,10 @@ class PSExposeController extends Controller
      */
     public function saveFieldMappingAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeFieldMapping')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form'], 403);
+        }
+
         $exposeName = $request->get('exposeName');
         $profile = $request->request->get('profile');
         $sendGeolocField = !empty($request->request->get('sendGeolocField')) ? array_keys($request->request->get('sendGeolocField')): [];
@@ -1031,6 +1054,10 @@ class PSExposeController extends Controller
 
     public function saveSubdefMappingAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeSubdefMapping')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form'], 403);
+        }
+
         $exposeName = $request->get('exposeName');
         $profile = $request->request->get('profile');
         $exposeClient = $this->getExposeClient($exposeName);

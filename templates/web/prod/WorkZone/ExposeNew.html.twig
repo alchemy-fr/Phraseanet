@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-
+                <input type="hidden" name="prodExposeNew_token" value="{{ app['session'].get('prodExposeNew_token') }}">
             </form>
 
 
@@ -373,7 +373,8 @@
                 dataType: 'json',
                 data: {
                     exposeName: $('#expose_list').val(),
-                    publicationData: $('#DIALOG-expose-add').find('#advancedSetting').val()
+                    publicationData: $('#DIALOG-expose-add').find('#advancedSetting').val(),
+                    prodExposeNew_token: $('#publication-json input[name="prodExposeNew_token"]').val()
                 },
                 success: function (data) {
                     if (data.success) {

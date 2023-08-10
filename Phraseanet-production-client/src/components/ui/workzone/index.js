@@ -195,6 +195,10 @@ const workzone = (services) => {
                 data: formData,
                 success: function (data) {
                     $('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function (xhr, status, error) {
+                    let err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -281,6 +285,10 @@ const workzone = (services) => {
                 data: formData,
                 success: function (data) {
                     $('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function (xhr, status, error) {
+                    let err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
 

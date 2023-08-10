@@ -129,7 +129,7 @@ class Controller
 
     public function isCrsfValid(Request $request, $formName)
     {
-        if (!$request->isMethod("POST")) {
+        if (!$request->isMethod("POST") && !$request->isMethod("PUT")) {
             return false;
         }
 
