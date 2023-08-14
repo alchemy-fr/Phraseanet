@@ -420,6 +420,9 @@ workers:
         acceptedMimeType:
             - image/jpeg
             - image/png
+            - application/postscript
+            - application/pdf
+            - image/tiff
 externalservice:
     ginger:
         AutoSubtitling:

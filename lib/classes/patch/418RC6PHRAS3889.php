@@ -69,7 +69,10 @@ class patch_418RC6PHRAS3889 implements patchInterface
         if (!$conf->has(['workers', 'writeMetadatas', 'acceptedMimeType'])) {
             $defaultAcceptedMimeType = [
                 'image/jpeg',
-                'image/png'
+                'image/png',
+                'application/postscript',
+                'application/pdf',
+                'image/tiff'
             ];
 
             $conf->set(['workers', 'writeMetadatas', 'acceptedMimeType'], $defaultAcceptedMimeType);
