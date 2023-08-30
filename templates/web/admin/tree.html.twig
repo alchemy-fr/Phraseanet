@@ -58,6 +58,15 @@
   </li>
   {% endif %}
 
+  {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
+    <li class="auth-failure">
+      <a target="right" href="{{ path('users_display_auth_failure') }}" class="ajax">
+        <img width="16" src="/assets/admin/images/failure.png" />
+        <span>{% trans %}Auth failure{% endtrans %}</span>
+      </a>
+    </li>
+  {% endif %}
+
   {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
   <li class="">
     <a target="right" href="{{ path('admin_feeds_list') }}" class="ajax">
