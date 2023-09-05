@@ -519,10 +519,11 @@ class UserController extends Controller
 
     public function deleteAuthFailureAction(Request $request)
     {
-        $this->app['auth.native.failure-manager']->removeFailureById($request->request->get('failureId'));
+        if ($this->getAuthenticatedUser()->isAdmin()) {
+            $this->app['auth.native.failure-manager']->removeFailureById($request->request->get('failureId'));
+        }
 
-        return $this->render('admin/auth-failure.html.twig', [
-        ]);
+        return $this->render('admin/auth-failure.html.twig', []);
     }
 
     public function submitRegistrationAction(Request $request)
