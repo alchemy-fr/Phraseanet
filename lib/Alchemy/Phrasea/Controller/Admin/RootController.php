@@ -363,16 +363,22 @@ class RootController extends Controller
 
     public function displayInspector(Request $request)
     {
-        return $this->render('admin/inspector/record-index.html.twig');
+        $databoxIds = array_map(function (\databox $databox) {
+            return $databox->get_sbas_id();
+        },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
+
+        return $this->render('admin/inspector/record-index.html.twig', ['databoxIds' => $databoxIds]);
     }
 
     public function getESRecord(Request $request)
     {
         $client = new Client();
         $options = $this->app['conf']->get(['main', 'search-engine', 'options']);
-        $uri = $options['host'] . ":" . $options['port'] . "/" . $options['index'] . "/_search/?q=record_id:". $request->query->get('recordId');
+        $uri = $options['host'] . ":" . $options['port'] . "/" . $options['index'] . "/record/" . $request->query->get('databoxId') . "_" . $request->query->get('recordId');
 
-        return $client->get($uri)->getBody()->getContents();
+        return $client->get($uri, ['http_errors' => false])->getBody()->getContents();
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)

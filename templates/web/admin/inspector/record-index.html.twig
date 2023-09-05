@@ -3,9 +3,16 @@
 </div>
 
 <div>
+    <select id="es-databoxId" style="margin-left: 30px;">
+        <option value="">{{ 'button::choose databox' | trans }}</option>
+        {% for databoxId in databoxIds %}
+            <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+        {% endfor %}
+    </select>
+
     <input id="es-recordId" type="number" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
 
-    <button class="btn btn-success find-record-index">{{ 'admin:: find record' | trans }}</button>
+    <button class="btn btn-success find-record-index" style="margin-left: 30px;">{{ 'admin:: find record' | trans }}</button>
 </div>
 
 <div style="margin-top:30px;">
@@ -18,15 +25,17 @@
     $(document).ready(function() {
         $('.find-record-index').on('click', function() {
             let recordId = $('input#es-recordId').val();
-            if (recordId < 1) {
-                alert("Wrong recordId value !");
+            let databoxId = $('select#es-databoxId').val();
+            if (databoxId == '' || recordId < 1) {
+                alert("Wrong databoxId or recordId value !");
             } else {
                 $.ajax({
                     type: 'GET',
                     url: '/admin/inspector/record/',
                     dataType: 'json',
                     data: {
-                        recordId: $('input#es-recordId').val()
+                        databoxId: databoxId,
+                        recordId: recordId
                     },
                     success: function (data) {
                         $('#right-ajax #admin-es-record-display').empty().html(JSON.stringify(data, null, 2));
