@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
+use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -358,6 +359,20 @@ class RootController extends Controller
         $this->dispatchEvent(RecordStructureEvents::STATUS_BIT_UPDATED, new StatusBitUpdatedEvent($databox, $bit, []));
 
         return $this->app->redirectPath('database_display_statusbit', ['databox_id' => $databox_id, 'success' => 1]);
+    }
+
+    public function displayInspector(Request $request)
+    {
+        return $this->render('admin/inspector/record-index.html.twig');
+    }
+
+    public function getESRecord(Request $request)
+    {
+        $client = new Client();
+        $options = $this->app['conf']->get(['main', 'search-engine', 'options']);
+        $uri = $options['host'] . ":" . $options['port'] . "/" . $options['index'] . "/_search/?q=record_id:". $request->query->get('recordId');
+
+        return $client->get($uri)->getBody()->getContents();
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)

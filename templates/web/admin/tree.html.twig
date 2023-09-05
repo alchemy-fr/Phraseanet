@@ -56,6 +56,12 @@
       <span>{{ 'admin::utilisateurs: demandes en cours' | trans }}</span>
     </a>
   </li>
+  <li class="">
+    <a target="right" href="{{ path('admin_inspector') }}" class="ajax">
+      <img width="16" src="/assets/admin/images/searchengin.svg" />
+      <span>{{ 'admin:: object inspector' | trans }}</span>
+    </a>
+  </li>
   {% endif %}
 
   {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}

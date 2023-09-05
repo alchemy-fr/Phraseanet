@@ -80,6 +80,12 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('bit', '\d+')
             ->bind('database_submit_statusbit');
 
+        $controllers->get('/inspector/', 'controller.admin.root:displayInspector')
+            ->bind('admin_inspector');
+
+        $controllers->get('/inspector/record/', 'controller.admin.root:getESRecord')
+            ->bind('admin_inspector_record');
+
         return $controllers;
     }
 }

@@ -1,0 +1,39 @@
+<div class="page-header">
+    <h1>{{ 'admin:: record index' | trans }}</h1>
+</div>
+
+<div>
+    <input id="es-recordId" type="number" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+
+    <button class="btn btn-success find-record-index">{{ 'admin:: find record' | trans }}</button>
+</div>
+
+<div style="margin-top:30px;">
+    <pre id="admin-es-record-display" style="height: 400px;overflow-y: scroll;width: 60%;margin-left: 30px;">
+
+    </pre>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.find-record-index').on('click', function() {
+            let recordId = $('input#es-recordId').val();
+            if (recordId < 1) {
+                alert("Wrong recordId value !");
+            } else {
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin/inspector/record/',
+                    dataType: 'json',
+                    data: {
+                        recordId: $('input#es-recordId').val()
+                    },
+                    success: function (data) {
+                        $('#right-ajax #admin-es-record-display').empty().html(JSON.stringify(data, null, 2));
+
+                    }
+                });
+            }
+        });
+    });
+</script>
