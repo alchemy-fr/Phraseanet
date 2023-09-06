@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Request;
@@ -375,8 +376,11 @@ class RootController extends Controller
     public function getESRecord(Request $request)
     {
         $client = new Client();
-        $options = $this->app['conf']->get(['main', 'search-engine', 'options']);
-        $uri = $options['host'] . ":" . $options['port'] . "/" . urlencode($options['index']) . "/record/" . urlencode($request->query->get('databoxId')) . "_" . urlencode($request->query->get('recordId'));
+
+        /** @var ElasticsearchOptions $options */
+        $options = $this->app['elasticsearch.options'];
+
+        $uri = $options->getHost() . ":" . $options->getPort() . "/" . urlencode($options->getIndexName()) . "/record/" . urlencode($request->query->get('databoxId')) . "_" . urlencode($request->query->get('recordId'));
 
         return $client->get($uri, ['http_errors' => false])->getBody()->getContents();
     }
