@@ -382,7 +382,20 @@ class RootController extends Controller
 
         $uri = $options->getHost() . ":" . $options->getPort() . "/" . urlencode($options->getIndexName()) . "/record/" . urlencode($request->query->get('databoxId')) . "_" . urlencode($request->query->get('recordId'));
 
-        return $client->get($uri, ['http_errors' => false])->getBody()->getContents();
+        $ret = [
+            'uri' => $uri
+        ];
+        $js = $client->get($uri, ['http_errors' => false])->getBody()->getContents();
+        $arr = json_decode($js,true);
+        if(is_null($arr)) {
+            $ret['result'] = "*** error decoding json ***";
+            $ret['raw'] = $js;
+        }
+        else {
+            $ret['result'] = $arr;
+        }
+
+        return json_encode($ret, JSON_PRETTY_PRINT, 512);
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)
