@@ -113,21 +113,20 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExportFtpBadRequest($params)
     {
-        self::$DI['client']->request('POST', '/prod/export/ftp/', $params);
+        $randomValue = $this->setSessionFormToken('prodExportFTP');
+        self::$DI['client']->request('POST', '/prod/export/ftp/', array_merge($params, ['prodExportFTP_token' => $randomValue]));
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
     public function getMissingArguments()
     {
-        $randomValue = $this->setSessionFormToken('prodExportFTP');
-
         return [
-            [['prodExportFTP_token' => $randomValue]],
-            [['address' => '', 'prodExportFTP_token' => $randomValue]],
-            [['address'  => '', 'login' => '', 'prodExportFTP_token' => $randomValue]],
-            [['address'       => '', 'login'      => '', 'dest_folder' => '', 'prodExportFTP_token' => $randomValue]],
-            [['address'       => '', 'login'      => '', 'dest_folder' => '', 'prefix_folder' => '', 'prodExportFTP_token' => $randomValue]],
+            [[]],
+            [['address' => '']],
+            [['address'  => '', 'login' => '']],
+            [['address'       => '', 'login'      => '', 'dest_folder' => '']],
+            [['address'       => '', 'login'      => '', 'dest_folder' => '', 'prefix_folder' => '']],
         ];
     }
 
