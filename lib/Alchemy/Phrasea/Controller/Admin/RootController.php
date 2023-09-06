@@ -376,7 +376,7 @@ class RootController extends Controller
     {
         $client = new Client();
         $options = $this->app['conf']->get(['main', 'search-engine', 'options']);
-        $uri = $options['host'] . ":" . $options['port'] . "/" . $options['index'] . "/record/" . $request->query->get('databoxId') . "_" . $request->query->get('recordId');
+        $uri = $options['host'] . ":" . $options['port'] . "/" . urlencode($options['index']) . "/record/" . urlencode($request->query->get('databoxId')) . "_" . urlencode($request->query->get('recordId'));
 
         return $client->get($uri, ['http_errors' => false])->getBody()->getContents();
     }
