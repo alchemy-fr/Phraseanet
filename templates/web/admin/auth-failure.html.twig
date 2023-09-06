@@ -1,0 +1,55 @@
+<div class="page-header">
+    <h1>{{ 'admin:: auth failure list' | trans }}</h1>
+</div>
+
+<div id="auth_failure_locked">
+    {% set failuresLocked = app['repo.auth-failures'].findBy({}, {'created': 'desc'}) %}
+    {% if failuresLocked | length > 0 %}
+        <button data-failure-id="0" style="margin-bottom: 30px;" data-message="erase authfailures table" class="btn btn-danger delete-auth-failure">
+            {{ 'admin::users: erase auth failure table' | trans }}
+        </button>
+
+        <table class="admintable">
+            <thead>
+            <tr>
+                <th>{{ 'admin::users: username' | trans }}</th>
+                <th>{{ 'admin::users: ip' | trans }}</th>
+                <th>{{ 'admin::users: locked' | trans }}</th>
+                <th>{{ 'admin::users: creation date' | trans }}</th>
+            </tr>
+            </thead>
+            <tbody >
+            {% for failure in failuresLocked %}
+                <tr>
+                    <td>{{ failure.getUsername() }}</td>
+                    <td>{{ failure.getIp() }}</td>
+                    <td>{{ failure.getLocked()? 'true': 'false' }}</td>
+                    <td>{{ failure.getCreated() | date('Y-m-d H:i:s') }}</td>
+                    <td><button data-failure-id="{{ failure.getId() }}" data-message="delete this auth failure for {{ failure.getUsername() }}" class="btn btn-warning delete-auth-failure">{{ 'admin::users: delete auth failure' | trans }}</button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.delete-auth-failure').on('click', function() {
+            let $this = $(this);
+            if (confirm("Are you sure you want to " + $this.attr('data-message') + " ?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/users/auth-failure/delete/',
+                    data: {
+                        failureId: $this.attr('data-failure-id')
+                    },
+                    success: function (data) {
+                        $('#mainContainer #right-ajax').empty().html(data);
+                    }
+                });
+            }
+        });
+    });
+</script>
