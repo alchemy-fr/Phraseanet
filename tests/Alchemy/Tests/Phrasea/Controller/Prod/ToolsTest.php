@@ -35,9 +35,13 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         $record = self::$DI['record_1'];
 
+        $randomValue = bin2hex(random_bytes(35));
+        self::$DI['app']['session']->set('prodToolsHDSubstitution_token', $randomValue);
+
         $crawler = self::$DI['client']->request('POST', '/prod/tools/hddoc/', [
             'sbas_id' => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
+            'prodToolsHDSubstitution_token' => $randomValue
         ], [
             'newHD' => new UploadedFile(
                $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
@@ -53,10 +57,13 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRouteChangeThumb()
     {
         $record = self::$DI['record_1'];
+        $randomValue = bin2hex(random_bytes(35));
+        self::$DI['app']['session']->set('prodToolsThumbSubstitution_token', $randomValue);
 
         $crawler = self::$DI['client']->request('POST', '/prod/tools/chgthumb/', [
             'sbas_id' => $record->get_sbas_id(),
             'record_id' => $record->get_record_id(),
+            'prodToolsThumbSubstitution_token' => $randomValue
         ], [
             'newThumb' => new UploadedFile(
                $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
