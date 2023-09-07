@@ -8214,7 +8214,7 @@
       </trans-unit>
       <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
         <source>admin:: record index</source>
-        <target state="needs-translation">record index</target>
+        <target state="needs-translation">Record index</target>
         <jms:reference-file line="2">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
@@ -9231,7 +9231,7 @@
       </trans-unit>
       <trans-unit id="e7ab6de2942a61fb7b79f5f4b4e3d95db0fe528f" resname="admin::users: erase auth failure table">
         <source>admin::users: erase auth failure table</source>
-        <target state="needs-translation">Erase all auth failure</target>
+        <target state="needs-translation">Delete all auth failures</target>
         <jms:reference-file line="9">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
