@@ -8204,7 +8204,7 @@
       </trans-unit>
       <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
         <source>admin:: find record</source>
-        <target state="needs-translation">Find</target>
+        <target state="needs-translation">View</target>
         <jms:reference-file line="15">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
