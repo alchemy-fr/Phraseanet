@@ -8204,17 +8204,17 @@
       </trans-unit>
       <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
         <source>admin:: find record</source>
-        <target state="new">admin:: find record</target>
+        <target state="needs-translation">Find</target>
         <jms:reference-file line="15">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
         <source>admin:: object inspector</source>
-        <target state="new">admin:: object inspector</target>
+        <target state="translated">Object inspector</target>
         <jms:reference-file line="71">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
         <source>admin:: record index</source>
-        <target state="new">admin:: record index</target>
+        <target state="needs-translation">record index</target>
         <jms:reference-file line="2">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
@@ -9221,7 +9221,7 @@
       </trans-unit>
       <trans-unit id="c767eb6f0297cbffa3fa9591dc197542c96a8bae" resname="admin::users: delete auth failure">
         <source>admin::users: delete auth failure</source>
-        <target state="new">admin::users: delete auth failure</target>
+        <target state="needs-translation">delete auth failure</target>
         <jms:reference-file line="28">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2d00e6f420c23a8910d8c20a4a938cac197bb8e" resname="admin::users: distance_id">
