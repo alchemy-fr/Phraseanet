@@ -12695,7 +12695,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="d1ef242fa9a4b4bb75011ac40d9ad4f3d90f441d" resname="preview::tab geolocalisation">
         <source>preview::tab geolocalisation</source>
-        <target state="needs-translation">Géolocalisation</target>
+        <target state="translated">Géolocalisation</target>
         <jms:reference-file line="197">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b03b2c44ce1a3c17af6b603d666344f64ebe942" resname="preview::tab:feedback" approved="yes">
@@ -13034,7 +13034,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="976aa528a73da42dd8c4e501a73e3fd44578dad3" resname="prod::advancesearch see real field name">
         <source>prod::advancesearch see real field name</source>
-        <target state="needs-translation">Afficher le nom réel du champ</target>
+        <target state="translated">Afficher le nom réel du champ</target>
         <jms:reference-file line="574">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7281cb97e22455a8cbe85176d394ca1f756717de" resname="prod::advancesearch: Add">
