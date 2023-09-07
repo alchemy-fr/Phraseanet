@@ -8211,7 +8211,7 @@
       </trans-unit>
       <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
         <source>admin:: record index</source>
-        <target state="new">admin:: record index</target>
+        <target state="needs-translation">Datensatz-Index</target>
         <jms:reference-file line="2">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
@@ -9218,7 +9218,7 @@
       </trans-unit>
       <trans-unit id="c767eb6f0297cbffa3fa9591dc197542c96a8bae" resname="admin::users: delete auth failure">
         <source>admin::users: delete auth failure</source>
-        <target state="new">admin::users: delete auth failure</target>
+        <target state="needs-translation">Authentifizierungsfehler löschen</target>
         <jms:reference-file line="28">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2d00e6f420c23a8910d8c20a4a938cac197bb8e" resname="admin::users: distance_id">
@@ -9228,7 +9228,7 @@
       </trans-unit>
       <trans-unit id="e7ab6de2942a61fb7b79f5f4b4e3d95db0fe528f" resname="admin::users: erase auth failure table">
         <source>admin::users: erase auth failure table</source>
-        <target state="new">admin::users: erase auth failure table</target>
+        <target state="needs-translation">Alle Authentifizierungsfehler löschen</target>
         <jms:reference-file line="9">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
