@@ -14,9 +14,11 @@ fi
 
 if [ ! -z "$GATEWAY_FASTCGI_HTTPS" ]; then
   echo "GATEWAY_FASTCGI_HTTPS is defined : $GATEWAY_FASTCGI_HTTPS"
-  GATEWAY_FASTCGI_HTTPS="fastcgi_param HTTPS $GATEWAY_FASTCGI_HTTPS;" 
-  if [ $GATEWAY_FASTCGI_HTTPS == "on" || $GATEWAY_FASTCGI_HTTPS == "1" ]; then
-     GATEWAY_FASTCGI_HTTPS=`echo $GATEWAY_FASTCGI_HTTPS` ";fastcgi_param SERVER_PORT 443;"
+  if [ "$GATEWAY_FASTCGI_HTTPS" = "on" ] || [ "$GATEWAY_FASTCGI_HTTPS" = "1" ];then
+      echo "SETTING SERVER_PORT TO: 443"
+      GATEWAY_FASTCGI_HTTPS="fastcgi_param HTTPS on;fastcgi_param SERVER_PORT 443;"
+  else
+      GATEWAY_FASTCGI_HTTPS="fastcgi_param HTTPS $GATEWAY_FASTCGI_HTTPS;"
   fi
 else
   echo "NO GATEWAY_FASTCGI_HTTPS is defined"
