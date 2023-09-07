@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
-class patch_418RC6PHRAS3889 implements patchInterface
+class patch_418RC6 implements patchInterface
 {
     /** @var string */
     private $release = '4.1.8-rc6';
@@ -66,6 +66,7 @@ class patch_418RC6PHRAS3889 implements patchInterface
         /** @var PropertyAccess $conf */
         $conf = $app['conf'];
 
+        // PHRAS-3889
         if (!$conf->has(['workers', 'writeMetadatas', 'acceptedMimeType'])) {
             $defaultAcceptedMimeType = [
                 'image/jpeg',
@@ -76,6 +77,11 @@ class patch_418RC6PHRAS3889 implements patchInterface
             ];
 
             $conf->set(['workers', 'writeMetadatas', 'acceptedMimeType'], $defaultAcceptedMimeType);
+        }
+
+        // PHRAS-3896
+        if ($conf->get(['main', 'search-engine', 'options', 'populate_order']) != 'RECORD_ID') {
+            $conf->set(['main', 'search-engine', 'options', 'populate_order'], 'RECORD_ID');
         }
     }
 }
