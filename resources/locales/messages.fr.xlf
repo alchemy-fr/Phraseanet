@@ -8201,7 +8201,7 @@
       </trans-unit>
       <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
         <source>admin:: find record</source>
-        <target state="needs-translation">Trouver</target>
+        <target state="needs-translation">Voir</target>
         <jms:reference-file line="15">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
@@ -9256,7 +9256,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="4344a147edb8f171db16fa1916addea8d5ebde19" resname="admin::users: locked">
         <source>admin::users: locked</source>
-        <target state="new">admin::users: locked</target>
+        <target state="needs-translation">locked</target>
         <jms:reference-file line="17">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e76893b673dcca93abf91a13f24e586b7f399823" resname="admin::users: modification date">
