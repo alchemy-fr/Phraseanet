@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2023-09-05T15:25:53Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2544,7 +2544,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="154">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -8177,7 +8177,7 @@
       </trans-unit>
       <trans-unit id="a00a6c0cf7ae6161e321fed393c53ce0630cff54" resname="admin:: auth failure list">
         <source>admin:: auth failure list</source>
-        <target state="new">admin:: auth failure list</target>
+        <target state="needs-translation">Authentifizierungsfehler Liste</target>
         <jms:reference-file line="2">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26486e6d7e272de63a46c52bb7deea3dcd3b55b5" resname="admin:: demandes en cours" approved="yes">
@@ -8201,17 +8201,17 @@
       </trans-unit>
       <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
         <source>admin:: find record</source>
-        <target state="new">admin:: find record</target>
+        <target state="needs-translation">Ansehen</target>
         <jms:reference-file line="15">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
         <source>admin:: object inspector</source>
-        <target state="new">admin:: object inspector</target>
+        <target state="needs-translation">Objektinspektor</target>
         <jms:reference-file line="71">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
         <source>admin:: record index</source>
-        <target state="new">admin:: record index</target>
+        <target state="needs-translation">Datensatz-Index</target>
         <jms:reference-file line="2">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
@@ -9218,7 +9218,7 @@
       </trans-unit>
       <trans-unit id="c767eb6f0297cbffa3fa9591dc197542c96a8bae" resname="admin::users: delete auth failure">
         <source>admin::users: delete auth failure</source>
-        <target state="new">admin::users: delete auth failure</target>
+        <target state="needs-translation">Authentifizierungsfehler löschen</target>
         <jms:reference-file line="28">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2d00e6f420c23a8910d8c20a4a938cac197bb8e" resname="admin::users: distance_id">
@@ -9228,7 +9228,7 @@
       </trans-unit>
       <trans-unit id="e7ab6de2942a61fb7b79f5f4b4e3d95db0fe528f" resname="admin::users: erase auth failure table">
         <source>admin::users: erase auth failure table</source>
-        <target state="new">admin::users: erase auth failure table</target>
+        <target state="needs-translation">Alle Authentifizierungsfehler löschen</target>
         <jms:reference-file line="9">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
@@ -9255,7 +9255,7 @@
       </trans-unit>
       <trans-unit id="4344a147edb8f171db16fa1916addea8d5ebde19" resname="admin::users: locked">
         <source>admin::users: locked</source>
-        <target state="new">admin::users: locked</target>
+        <target state="needs-translation">locked</target>
         <jms:reference-file line="17">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e76893b673dcca93abf91a13f24e586b7f399823" resname="admin::users: modification date">
@@ -12426,7 +12426,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12694,7 +12694,7 @@
       </trans-unit>
       <trans-unit id="d1ef242fa9a4b4bb75011ac40d9ad4f3d90f441d" resname="preview::tab geolocalisation">
         <source>preview::tab geolocalisation</source>
-        <target state="needs-translation">Geolokalisierung</target>
+        <target state="translated">Geolokalisierung</target>
         <jms:reference-file line="197">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b03b2c44ce1a3c17af6b603d666344f64ebe942" resname="preview::tab:feedback">
@@ -13033,7 +13033,7 @@
       </trans-unit>
       <trans-unit id="976aa528a73da42dd8c4e501a73e3fd44578dad3" resname="prod::advancesearch see real field name">
         <source>prod::advancesearch see real field name</source>
-        <target state="needs-translation">Realen Feldname anzeigen</target>
+        <target state="translated">Realen Feldname anzeigen</target>
         <jms:reference-file line="574">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7281cb97e22455a8cbe85176d394ca1f756717de" resname="prod::advancesearch: Add">
@@ -15566,7 +15566,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
