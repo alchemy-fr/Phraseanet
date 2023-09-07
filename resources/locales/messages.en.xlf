@@ -8180,7 +8180,7 @@
       </trans-unit>
       <trans-unit id="a00a6c0cf7ae6161e321fed393c53ce0630cff54" resname="admin:: auth failure list">
         <source>admin:: auth failure list</source>
-        <target state="needs-translation">auth failure list</target>
+        <target state="needs-translation">Authentication failure list</target>
         <jms:reference-file line="2">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26486e6d7e272de63a46c52bb7deea3dcd3b55b5" resname="admin:: demandes en cours" approved="yes">
