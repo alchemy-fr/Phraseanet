@@ -90,6 +90,9 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/feed-entry/', 'controller.admin.users:listFeedEntry');
         $controllers->post('/feed-entry/delete/', 'controller.admin.users:deleteFeedEntry');
         $controllers->get('/records-basket/', 'controller.admin.users:listRecordBasket');
+        $controllers->get('/auth-failure/', 'controller.admin.users:displayAuthFailureAction')
+            ->bind('users_display_auth_failure');
+        $controllers->post('/auth-failure/delete/', 'controller.admin.users:deleteAuthFailureAction');
 
         return $controllers;
     }
