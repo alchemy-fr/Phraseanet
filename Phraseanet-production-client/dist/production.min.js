@@ -68229,6 +68229,8 @@ var uploader = function uploader(services) {
             params.push((0, _jquery2.default)('input', (0, _jquery2.default)('.collection-status:visible', uploaderInstance.getSettingsBox())).serializeArray());
             params.push((0, _jquery2.default)('select', uploaderInstance.getSettingsBox()).serializeArray());
 
+            params.push([{ name: 'prodUpload_token', value: (0, _jquery2.default)('input[name=prodUpload_token]').val() }]);
+
             _jquery2.default.each(params, function (i, p) {
                 _jquery2.default.each(p, function (i, f) {
                     data.formData.push(f);
