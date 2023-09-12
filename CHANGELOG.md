@@ -5,20 +5,29 @@
 ### Update instructions
 
 - Migration patch: no patch to play, just run upgrade for bump version 
-- Elasticsearch index action : none
+- Elasticsearch index action : a "drop", "create", "populate" of elasticsearch index can be useful.
 
 ### Version summary
   
- - bugfix an minor improvement (todo)
+ - Improvement and bugfix
 
 ### Stack (docker compose)
 
  - PHP setting improvement 
  - FPM setting improvement 
  
-### What's Changed
+## What's Changed
+* PHRAS-3893 prod - advanced search - control calendar missing for created_on and updated_on by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4360
+* PHRAS-3785 update composer dependencies for imagine by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4362
+* PHRAS-3252 Prod - Export - The captions are not being sent when doing an export by email by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4363
+* PHRAS-3387 php fpm optimization by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4364
+* PHRAS-3890: Admin - add "auth failure" - display and purge auth failure - only for super U by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4368
+* PHRAS-3903 Admin - object inspector - record index debug tools by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4369
+* PHRAS-3904 Add server port on fastcgi - SAML multi provider support https conf by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4370
+* PHRAS-3889 Worker - metadata write - mime/type whitelist - write metadatas only on whitelisted files by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4366
 
-(todo)
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc5...4.1.8-rc6
 
 
 ## 4.1.8-rc5
