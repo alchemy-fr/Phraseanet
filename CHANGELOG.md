@@ -25,6 +25,7 @@
 * PHRAS-3903 Admin - object inspector - record index debug tools by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4369
 * PHRAS-3904 Add server port on fastcgi - SAML multi provider support https conf by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4370
 * PHRAS-3889 Worker - metadata write - mime/type whitelist - write metadatas only on whitelisted files by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4366
+* PHRAS-3910 fix redis php extension build by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4373
 
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc5...4.1.8-rc6
