@@ -126,7 +126,7 @@ RUN echo "BUILDING PHP PECL EXTENTIONS" \
     && docker-php-ext-install php-ext-jq \
     # --- end of extension jq \
     && pecl install \
-        redis \
+        redis-5.3.7 \
         amqp-1.9.3 \
         zmq-beta \
         imagick-beta \
