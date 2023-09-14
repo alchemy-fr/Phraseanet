@@ -30,7 +30,10 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $response = $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst' => $record->getId()]);
+        $randomValue = $this->setSessionFormToken('prodDeleteRecord');
+
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst' => $record->getId(), 'prodDeleteRecord_token'  => $randomValue]);
+
         $datas = (array) json_decode($response->getContent());
         $this->assertContains($record->getId(), $datas);
         try {
