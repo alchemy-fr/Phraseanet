@@ -26,6 +26,7 @@
                   {{ 'boutton::enregistrer' | trans }}
                 </button>
             </div>
+            <input type="hidden" name="lightbox_token" value="{{ app['session'].get('lightbox_token') }}">
         </form>
     </div>
 </div>

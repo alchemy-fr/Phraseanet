@@ -106,6 +106,7 @@ class RootController extends Controller
 
         $this->setSessionFormToken('searchForm');
         $this->setSessionFormToken('prodExposeNew');
+        $this->setSessionFormToken('prodTabThesaurus');
 
         return $this->render('prod/index.html.twig', [
             'module_name'          => 'Production',

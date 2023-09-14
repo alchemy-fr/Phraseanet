@@ -224,7 +224,7 @@ class RecordController extends Controller
      */
     public function doDeleteRecords(Request $request)
     {
-        if ($this->isCrsfValid($request, 'prodDeleteRecord')) {
+        if (!$this->isCrsfValid($request, 'prodDeleteRecord')) {
             return $this->app->json(['success' => false , 'message' => 'invalid delete form'], 403);
         }
 

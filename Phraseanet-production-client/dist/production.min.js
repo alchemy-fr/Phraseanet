@@ -12248,7 +12248,9 @@ var thesaurusService = function thesaurusService(services) {
                     sbas[i].seeker = _jquery2.default.ajax({
                         url: _zurl,
                         type: 'POST',
-                        data: [],
+                        data: {
+                            prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                        },
                         dataType: 'json',
                         success: function success(j) {
                             var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -12285,7 +12287,9 @@ var thesaurusService = function thesaurusService(services) {
                 sbas[i].seeker = _jquery2.default.ajax({
                     url: zurl,
                     type: 'POST',
-                    data: [],
+                    data: {
+                        prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                    },
                     dataType: 'json',
                     success: function success(j) {
                         var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
