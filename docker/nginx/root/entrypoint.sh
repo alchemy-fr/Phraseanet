@@ -25,6 +25,16 @@ else
   GATEWAY_FASTCGI_HTTPS="fastcgi_param HTTPS on;fastcgi_param SERVER_PORT 443;"
 fi
 
+if [ ! -z "$GATEWAY_CSP" ]; then
+  echo "Content Security policies is defined to : $GATEWAY_CSP"
+  envsubst < "/securitycontentpolicies.sample.conf" > /etc/nginx/conf.d/securitycontentpolicies.conf
+else
+  echo "Content Security policies is defined"
+  export GATEWAY_CSP="default-src 'self' 127.0.0.1 https://apiws.carrick-skills.com:8443 https://apiws.carrick-flow.com:8443 https://fonts.gstatic.com *.tiles.mapbox.com https://api.mapbox.com https://events.mapbox.com *.axept.io *.matomo.cloud *.newrelic.com *.nr-data.net https://www.googletagmanager.com *.google-analytics.com *.phrasea.io https://apiws.carrick-flow.com:8443 https://apiws.carrick-skills.com:8443  https://maxcdn.bootstrapcdn.com data: ; script-src 'unsafe-inline' 'unsafe-eval' 'self' https://www.gstatic.com *.alchemyasp.com *.axept.io *.matomo.cloud *.newrelic.com https://www.googletagmanager.com https://apiws.carrick-flow.com:8443 https://apiws.carrick-skills.com:8443  https://maxcdn.bootstrapcdn.com  data: blob: ; style-src 'self' 'unsafe-inline' https://fonts.gstatic.com https://fonts.googleapis.com https://www.google.com https://www.gstatic.com https://apiws.carrick-flow.com:8443 https://apiws.carrick-skills.com:8443  https://maxcdn.bootstrapcdn.com ; img-src 'self'  data: blob: *.tiles.mapbox.com https://axeptio.imgix.net *.cloudfront.net *.phrasea.io *.amazonaws.com https://apiws.carrick-flow.com:8443 https://apiws.carrick-skills.com:8443  https://maxcdn.bootstrapcdn.com https://www.gnu.org/graphics/ ; object-src 'self'; frame-ancestors 'self'"
+  echo "setting Security policies to : " $GATEWAY_CSP
+  envsubst < "/securitycontentpolicies.sample.conf" > /etc/nginx/conf.d/securitycontentpolicies.conf
+fi
+
 cat /nginx.conf.sample | sed "s/\$MAX_BODY_SIZE/$MAX_BODY_SIZE/g" | sed "s/\$GATEWAY_SEND_TIMEOUT/$GATEWAY_SEND_TIMEOUT/g"  | sed "s/\$GATEWAY_FASTCGI_TIMEOUT/$GATEWAY_FASTCGI_TIMEOUT/g" | sed "s/\$MAX_BODY_SIZE/$MAX_BODY_SIZE/g" | sed "s/\$GATEWAY_PROXY_TIMEOUT/$GATEWAY_PROXY_TIMEOUT/g"  | sed "s/\$NEW_TARGET/$NEW_TARGET/g"  | sed "s/\$NEW_RESOLVER/$NEW_RESOLVER/g" | sed "s/\$GATEWAY_FASTCGI_HTTPS/$GATEWAY_FASTCGI_HTTPS/g" > /etc/nginx/conf.d/default.conf
 cat /fastcgi_timeout.conf  | sed "s/\$GATEWAY_FASTCGI_TIMEOUT/$GATEWAY_FASTCGI_TIMEOUT/g" > /etc/nginx/fastcgi_extended_params
 
