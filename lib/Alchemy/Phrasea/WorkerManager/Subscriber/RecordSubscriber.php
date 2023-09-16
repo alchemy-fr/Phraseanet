@@ -154,6 +154,7 @@ class RecordSubscriber implements EventSubscriberInterface
     {
         $databoxId = $event->getDataboxId();
         $recordIds = $event->getRecordIds();
+        $acceptedMimeTypes = $this->app['conf']->get(['workers', 'writeMetadatas', 'acceptedMimeType'], []);
 
         foreach ($recordIds as $recordId) {
             $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
@@ -173,7 +174,13 @@ class RecordSubscriber implements EventSubscriberInterface
 
             foreach ($mediaSubdefs as $subdef) {
                 // check subdefmetadatarequired  from the subview setup in admin
-                if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+                // check if we want to write meta in this mime type
+                if (in_array(trim($subdef->get_mime()), $acceptedMimeTypes) &&
+                    (
+                        ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
+                        $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
+                    )
+                ) {
                     $payload = [
                         'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                         'payload' => [
@@ -182,7 +189,6 @@ class RecordSubscriber implements EventSubscriberInterface
                             'subdefName'  => $subdef->get_name()
                         ]
                     ];
-
                     if ($subdef->is_physically_present()) {
                         $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
                     }
@@ -273,6 +279,8 @@ class RecordSubscriber implements EventSubscriberInterface
 
         }
         else {
+            $acceptedMimeTypes = $this->app['conf']->get(['workers', 'writeMetadatas', 'acceptedMimeType'], []);
+
             $databoxId = $event->getRecord()->getDataboxId();
             $recordId = $event->getRecord()->getRecordId();
 
@@ -291,7 +299,13 @@ class RecordSubscriber implements EventSubscriberInterface
             }
 
             //  only the required writemetadata from admin > subview setup is to be writing
-            if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+            //  check if we want to write meta in this mime type
+            if (in_array($subdef->get_mime(), $acceptedMimeTypes) &&
+                (
+                    ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
+                    $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
+                )
+            ) {
                 $payload = [
                     'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                     'payload' => [
