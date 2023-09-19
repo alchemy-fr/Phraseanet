@@ -12,7 +12,7 @@ mkdir -p "${APP_DIR}/tmp/locks" \
     && chown -R app:app "${APP_DIR}/tmp/locks"
 
 
-envsubst < "${DOCKER_DIR}/php.ini.sample" > /usr/local/etc/php/php.ini
+envsubst < "${DOCKER_DIR}/php.ini.worker.sample" > /usr/local/etc/php/php.ini
 envsubst < "${DOCKER_DIR}/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
 
 if [ ${XDEBUG_ENABLED} == "1" ]; then

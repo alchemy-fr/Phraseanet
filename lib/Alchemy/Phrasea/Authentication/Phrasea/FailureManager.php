@@ -98,6 +98,31 @@ class FailureManager
         return $this;
     }
 
+    public function removeFailureById($failureId)
+    {
+        // truncate table if failureId == 0
+        if ($failureId == 0) {
+            $connection = $this->em->getConnection();
+            $platform = $connection->getDatabasePlatform();
+            $this->em->beginTransaction();
+            try {
+                $connection->executeUpdate($platform->getTruncateTableSQL('AuthFailures'));
+            }
+            catch (\Exception $e) {
+                $this->em->rollback();
+            }
+        } else {
+            $failure = $this->repository->find($failureId);
+
+            if (empty($failure)) {
+                return;
+            }
+
+            $this->em->remove($failure);
+            $this->em->flush($failure);
+        }
+    }
+
     /**
      * Checks a request for previous failures
      *

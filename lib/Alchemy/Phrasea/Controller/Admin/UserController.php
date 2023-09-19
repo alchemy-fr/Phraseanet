@@ -511,6 +511,21 @@ class UserController extends Controller
         ]);
     }
 
+    public function displayAuthFailureAction(Request $request)
+    {
+        return $this->render('admin/auth-failure.html.twig', [
+        ]);
+    }
+
+    public function deleteAuthFailureAction(Request $request)
+    {
+        if ($this->getAuthenticatedUser()->isAdmin()) {
+            $this->app['auth.native.failure-manager']->removeFailureById($request->request->get('failureId'));
+        }
+
+        return $this->render('admin/auth-failure.html.twig', []);
+    }
+
     public function submitRegistrationAction(Request $request)
     {
         $templates = $this->normalizeTemplateArray($request->request->get('template', []));
