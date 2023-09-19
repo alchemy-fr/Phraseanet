@@ -25,6 +25,7 @@ class Image extends Provider
     const OPTION_WATERMARK = 'watermark';
     const OPTION_WATERMARKTEXT = 'watermarktext';
     const OPTION_WATERMARKRID = 'watermarkrid';
+    const OPTION_BACKGROUNDCOLOR = 'backgroundcolor';
 
     protected $options = [];
 
@@ -41,6 +42,7 @@ class Image extends Provider
         $this->registerOption(new OptionType\EnumButton($this->translator->trans('Watermark'), self::OPTION_WATERMARK, array('no' => 'no', 'yes' => 'yes'), 'no'));
         $this->registerOption(new OptionType\Text($this->translator->trans('Watermark text'), self::OPTION_WATERMARKTEXT, ''));
         $this->registerOption(new OptionType\Text($this->translator->trans('Watermark Record_id'), self::OPTION_WATERMARKRID, ''));
+        $this->registerOption(new OptionType\Text($this->translator->trans('Background Color'), self::OPTION_BACKGROUNDCOLOR, ''));
     }
 
     public function getType()
@@ -69,6 +71,7 @@ class Image extends Provider
         $this->spec->setStrip($this->getOption(self::OPTION_STRIP)->getValue());
         $this->spec->setFlatten($this->getOption(self::OPTION_FLATTEN)->getValue());
         $this->spec->setResolution($resolution, $resolution);
+        $this->spec->setBackgroundColor($this->getOption(self::OPTION_BACKGROUNDCOLOR)->getValue());
 
         return $this->spec;
     }
