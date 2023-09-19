@@ -159,6 +159,9 @@ class databox_subdef
         if ($sd->watermarkrid) {
             $image->setOptionValue(Image::OPTION_WATERMARKRID, $sd->watermarkrid);
         }
+        if ($sd->backgroundcolor) {
+            $image->setOptionValue(Image::OPTION_BACKGROUNDCOLOR, $sd->backgroundcolor);
+        }
         return $image;
     }
     /**
