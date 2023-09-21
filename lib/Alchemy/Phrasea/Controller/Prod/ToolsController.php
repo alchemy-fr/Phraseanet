@@ -44,14 +44,14 @@ class ToolsController extends Controller
 
         $metadatas = false;
         $record = null;
-        $recordAccessibleSubdefs = array();
-        $listsubdef= null;
+        $recordAccessibleSubdefs = [];
+        $listsubdef = null;
         if (count($records) == 1) {
             /** @var record_adapter $record */
             $record = $records->first();
 
             /**Array list of subdefs**/
-            $listsubdef = array_keys($record-> get_subdefs());
+            $listsubdef = array_keys($record->get_subdefs());
             // fetch subdef list:
             $subdefs = $record->get_subdefs();
 
@@ -73,18 +73,19 @@ class ToolsController extends Controller
                             continue;
                         }
                         $label = $this->app->trans('prod::tools: document');
-                    } elseif ($databoxSubdefs !== null && $databoxSubdefs->hasSubdef($subdefName)) {
+                    }
+                    elseif ($databoxSubdefs !== null && $databoxSubdefs->hasSubdef($subdefName)) {
                         if (!$acl->has_access_to_subdef($record, $subdefName)) {
                             continue;
                         }
 
                         $label = $databoxSubdefs->getSubdef($subdefName)->get_label($this->app['locale']);
                     }
-                    $recordAccessibleSubdefs[] = array(
-                        'name' => $subdef->get_name(),
+                    $recordAccessibleSubdefs[] = [
+                        'name'  => $subdef->get_name(),
                         'state' => $permalink->get_is_activated(),
                         'label' => $label,
-                    );
+                    ];
                 }
             }
             if (!$record->isStory()) {
@@ -95,8 +96,13 @@ class ToolsController extends Controller
         $availableSubdefLabel = [];
         $countSubdefTodo = [];
 
+        $substituables = [];
+        if ($this->getConf()->get(['registry', 'modules', 'doc-substitution'])) {
+            $substituables[] = 'document';
+        }
         /** @var record_adapter $rec */
         foreach ($records as $rec) {
+
             $databoxSubdefs = $rec->getDatabox()->get_subdef_structure()->getSubdefGroup($rec->getType());
             if ($databoxSubdefs !== null) {
                 foreach ($databoxSubdefs as $sub) {
@@ -104,24 +110,33 @@ class ToolsController extends Controller
                         $label = trim($sub->get_label($this->app['locale']));
                         $availableSubdefLabel[] = $label;
                         if (isset($countSubdefTodo[$label])) {
-                            $countSubdefTodo[$label] ++;
-                        } else {
+                            $countSubdefTodo[$label]++;
+                        }
+                        else {
                             $countSubdefTodo[$label] = 1;
                         }
+                    }
+                    if ($sub->isSubstituable()) {
+                        $substituables[] = $sub->get_name();
                     }
                 }
             }
         }
 
+        if (count($records) > 1) {
+            $substituables = [];
+        }
+
         return $this->render('prod/actions/Tools/index.html.twig', [
-            'records'           => $records,
-            'record'            => $record,
-            'recordSubdefs'     => $recordAccessibleSubdefs,
-            'metadatas'         => $metadatas,
-            'listsubdef'        => $listsubdef,
+            'records'              => $records,
+            'record'               => $record,
+            'recordSubdefs'        => $recordAccessibleSubdefs,
+            'metadatas'            => $metadatas,
+            'listsubdef'           => $listsubdef,
             'availableSubdefLabel' => array_unique($availableSubdefLabel),
-            'nbRecords'         => count($records),
-            'countSubdefTodo'   => $countSubdefTodo
+            'nbRecords'            => count($records),
+            'countSubdefTodo'      => $countSubdefTodo,
+            'substituables'        => $substituables,
         ]);
     }
 
@@ -152,7 +167,8 @@ class ToolsController extends Controller
 
                 try {
                     $subdef->rotate($rotation, $this->getMediaAlchemyst(), $this->getMediaVorus());
-                } catch (\Exception $e) {
+                }
+                catch (\Exception $e) {
                     // ignore exception
                 }
             }
@@ -239,31 +255,34 @@ class ToolsController extends Controller
 
                     $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
                     $record->insertTechnicalDatas($this->getMediaVorus());
-                    $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader() ->read($media), $record);
+                    $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader()->read($media), $record);
 
                     $this->getDataboxLogger($record->getDatabox())
-                        ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '' );
+                        ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '');
 
-                    if ((int) $request->request->get('ccfilename') === 1) {
+                    if ((int)$request->request->get('ccfilename') === 1) {
                         $record->set_original_name($fileName);
                     }
                     unlink($tempoFile);
                     rmdir($tempoDir);
                     $success = true;
                     $message = $this->app->trans('Document has been successfully substitued');
-                } catch (\Exception $e) {
+                }
+                catch (\Exception $e) {
                     $message = $this->app->trans('file is not valid');
                 }
-            } else {
+            }
+            else {
                 $message = $this->app->trans('file is not valid');
             }
-        } else {
+        }
+        else {
             $this->app->abort(400, 'Missing file parameter');
         }
 
         return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
-            'success'   => $success,
-            'message'   => $message,
+            'success' => $success,
+            'message' => $message,
         ]);
     }
 
@@ -275,10 +294,10 @@ class ToolsController extends Controller
             $this->app->abort(400, 'Missing file parameter');
         }
 
-        if (! $file->isValid()) {
+        if (!$file->isValid()) {
             return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
-                'success'   => false,
-                'message'   => $this->app->trans('file is not valid'),
+                'success' => false,
+                'message' => $this->app->trans('file is not valid'),
             ]);
         }
 
@@ -297,22 +316,23 @@ class ToolsController extends Controller
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
-            $this->getSubDefinitionSubstituer()->substituteSubdef($record, 'thumbnail', $media);
+            $this->getSubDefinitionSubstituer()->substituteSubdef($record, $request->get('subdef'), $media);
             $this->getDataboxLogger($record->getDatabox())
-                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
+                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $request->get('subdef'), '');
 
             unlink($tempoFile);
             rmdir($tempoDir);
             $success = true;
-            $message = $this->app->trans('Thumbnail has been successfully substitued');
-        } catch (\Exception $e) {
+            $message = sprintf($this->app->trans('Subdef "%s" has been successfully substitued'), $request->get('subdef'));
+        }
+        catch (\Exception $e) {
             $success = false;
             $message = $this->app->trans('file is not valid');
         }
 
         return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
-            'success'   => $success,
-            'message'   => $message,
+            'success' => $success,
+            'message' => $message,
         ]);
     }
 
@@ -323,14 +343,15 @@ class ToolsController extends Controller
         try {
             $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
             $var = [
-                'video_title' => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
+                'video_title' => $record->get_title(['encode' => record_adapter::ENCODE_NONE]),
                 'image'       => $request->request->get('image', ''),
             ];
             $return = [
                 'error' => false,
                 'datas' => $this->render($template, $var),
             ];
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $return = [
                 'error' => true,
                 'datas' => $this->app->trans('an error occured'),
@@ -357,7 +378,8 @@ class ToolsController extends Controller
             }
 
             $return = ['success' => true, 'message' => ''];
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $return = ['success' => false, 'message' => $e->getMessage()];
         }
 
@@ -397,7 +419,8 @@ class ToolsController extends Controller
         try {
             $permalink->set_is_activated($state);
             $return = ['success' => true, 'state' => $permalink->get_is_activated()];
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $return = ['success' => false, 'state' => $permalink->get_is_activated()];
         }
 
@@ -453,13 +476,14 @@ class ToolsController extends Controller
 
         $media = $this->app->getMediaFromUri($fileName);
 
-        if($subDefName == 'document') {
+        if ($subDefName == 'document') {
             $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
-        } else {
+        }
+        else {
             $this->getSubDefinitionSubstituer()->substituteSubdef($record, $subDefName, $media);
         }
         $this->getDataboxLogger($record->getDatabox())
-          ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
+            ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
 
         unset($media);
         $this->getFilesystem()->remove($fileName);
@@ -553,7 +577,7 @@ class ToolsController extends Controller
                     '_value' => $record->getCaption([$meta->get_name()]),
                 ];
 
-                if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2 ) {
+                if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2) {
                     $field['label'] = $matches[1];
                     $field['meta_struct_id'] = $meta->get_id();
                     $field['value'] = '';
@@ -574,12 +598,12 @@ class ToolsController extends Controller
         $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/videoEditor.html.twig', [
-            'records'               => $records,
-            'record'                => $record,
-            'videoEditorConfig'     => $conf->get(['video-editor']),
-            'metadatas'             => $metadatas,
-            'JSonFields'            => json_encode($JSFields),
-            'videoTextTrackFields'  => $videoTextTrackFields
+            'records'              => $records,
+            'record'               => $record,
+            'videoEditorConfig'    => $conf->get(['video-editor']),
+            'metadatas'            => $metadatas,
+            'JSonFields'           => json_encode($JSFields),
+            'videoTextTrackFields' => $videoTextTrackFields
         ]);
     }
 
@@ -587,7 +611,8 @@ class ToolsController extends Controller
     {
         try {
             return $record->get_subdef($subdefName)->is_physically_present();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             unset($e);
         }
 

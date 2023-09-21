@@ -62750,6 +62750,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
         (0, _jquery2.default)('.iframe_submiter', $scope).bind('click', function () {
             var form = (0, _jquery2.default)(this).closest('form');
             form.submit();
+            form.find('.resultAction').empty();
             form.find('.load').empty().html(localeService.t('loading') + ' ...');
             (0, _jquery2.default)('#uploadHdsub').contents().find('.content').empty();
             (0, _jquery2.default)('#uploadHdsub').load(function () {
