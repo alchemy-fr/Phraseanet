@@ -667,72 +667,80 @@
 
 {% macro make_expose_bloc(app, WorkZone) %}
     <div id="expose_workzone" class="expose_workzone">
-        <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
-            {% set expose_list = app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
-            {% set providerId = app['session'].get('auth_provider.id') %}
-            {% if providerId is not null %}
-                {% set provider = app['authentication.providers'].get(providerId) %}
-                {% if provider.getType() == 'PsAuth'  %}
-                    {% set auth_base_url = provider.getOptions()['base-url'] | trim('/') %}
-                {% endif %}
-            {% endif %}
-
-            <select id="expose_list" name="expose_list" class="expose_list">
-                <option value="">{{ 'prod:expose:select expose' | trans }}</option>
-                {% for key in expose_list|keys %}
-                    {% if (
-                        (auth_base_url is defined and expose_list[key].auth_base_uri | trim('/') == auth_base_url)
-                        or providerId is empty)
-                        and expose_list[key].activate_expose  %}
-
-                        <option value="{{ key }}">{{ key }}</option>
+        <div class="expose-header">
+            <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
+                {% set expose_list = app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
+                {% set providerId = app['session'].get('auth_provider.id') %}
+                {% if providerId is not null %}
+                    {% set provider = app['authentication.providers'].get(providerId) %}
+                    {% if provider.getType() == 'PsAuth'  %}
+                        {% set auth_base_url = provider.getOptions()['base-url'] | trim('/') %}
                     {% endif %}
-                {% endfor %}
-            </select>
-        </div>
+                {% endif %}
 
-        <div style="padding:10px;">
+                <select id="expose_list" name="expose_list" class="expose_list">
+                    <option value="">{{ 'prod:expose:select expose' | trans }}</option>
+                    {% for key in expose_list|keys %}
+                        {% if (
+                            (auth_base_url is defined and expose_list[key].auth_base_uri | trim('/') == auth_base_url)
+                            or providerId is empty)
+                            and expose_list[key].activate_expose  %}
+
+                            <option value="{{ key }}">{{ key }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="padding:10px;">
             <span class="expose_connected">
             </span>
-            <a href="#" class="pull-right expose_logout_link hidden" style="padding-top: 5px;">
-                <span>{{ 'expose:: logout' | trans }}</span>
-            </a>
+                <a href="#" class="pull-right expose_logout_link hidden" style="padding-top: 5px;">
+                    <span>{{ 'expose:: logout' | trans }}</span>
+                </a>
+            </div>
+
+            <button class="btn btn-secondary btn-sm expose_field_mapping hidden" href="#"
+                    style="margin-left:10px">{{ 'prod:expose field mapping' |trans }}</button>
+
+            <div class="add_expose_block hidden" style="padding:10px;display:flex; align-items: center;">
+                <a id="add_publication" class="add_publication" href="#">
+                    <span>{{ 'prod:expose:Add publication' | trans }}</span>
+                    <img src="/assets/common/images/icons/Basket-New.png"
+                         title="{{ 'prod:expose:Add publication' | trans }}">
+                </a>
+
+                <label class="checkbox" for="expose_editable_only" style="font-size: 12px; margin-left: auto;">
+                    <input type="checkbox" id="expose_editable_only" name="expose_editable_only" value="1">
+                    {{ 'prod:expose Editable only' | trans }}
+                </label>
+
+                <label class="checkbox" for="expose_mine_only" style="font-size: 12px;margin-left: auto;">
+                    <input type="checkbox" id="expose_mine_only" name="expose_mine_only" value="1">
+                    {{ 'prod:expose Mine only' | trans }}
+                </label>
+
+                <button class="btn-success refresh-list"
+                        style="margin-bottom: 5px; margin-left: auto;">{{ 'prod:expose:Refresh' | trans }}
+                </button>
+            </div>
+
+            <div class="expose-pagination hidden" style="margin-left: 10px; margin-bottom: 10px;">
+                <a class="publication-pagination previous-publication" style="cursor:pointer;color:#4990e2;">&#60; {{ 'prod:expose previous' | trans}}</a>
+                <span class="publication-page" style="margin-left: 20px; color:#4990e2;">1</span>
+                <a class="publication-pagination next-publication" style="margin-left: 20px;cursor:pointer;color:#4990e2;"> {{ 'prod:expose next' | trans}} &#62;</a>
+            </div>
         </div>
 
-        <button class="btn btn-secondary btn-sm expose_field_mapping hidden" href="#"
-                style="margin-left:10px">{{ 'prod:expose field mapping' |trans }}</button>
-
-        <div class="add_expose_block hidden" style="padding:10px;display:flex; align-items: center;">
-            <a id="add_publication" class="add_publication" href="#">
-                <span>{{ 'prod:expose:Add publication' | trans }}</span>
-                <img src="/assets/common/images/icons/Basket-New.png"
-                     title="{{ 'prod:expose:Add publication' | trans }}">
-            </a>
-
-            <label class="checkbox" for="expose_editable_only" style="font-size: 12px; margin-left: auto;">
-                <input type="checkbox" id="expose_editable_only" name="expose_editable_only" value="1">
-                {{ 'prod:expose Editable only' | trans }}
-            </label>
-
-            <label class="checkbox" for="expose_mine_only" style="font-size: 12px;margin-left: auto;">
-                <input type="checkbox" id="expose_mine_only" name="expose_mine_only" value="1">
-                {{ 'prod:expose Mine only' | trans }}
-            </label>
-
-            <button class="btn-success refresh-list"
-                    style="margin-bottom: 5px; margin-left: auto;">{{ 'prod:expose:Refresh' | trans }}
-            </button>
-        </div>
-
-        <div class="insidebloc expose_insidebloc">
+        <div class="insidebloc expose_insidebloc" style="overflow-y: auto;">
             <div id="validations-block" class="validations-block publication-list">
             </div>
         </div>
     </div>
-    <div id='DIALOG-expose-edit'>
+    <div id='DIALOG-expose-edit' style="display: none">
         <div class="expose-edit-content" style="min-height: 522px;"></div>
     </div>
-    <div id="DIALOG-field-mapping">
+    <div id="DIALOG-field-mapping" style="display: none">
         <div class="expose-field-content" style="min-height: 300px!important;max-height: 500px!important"></div>
     </div>
 
