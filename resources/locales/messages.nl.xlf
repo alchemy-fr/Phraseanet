@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-09-05T15:26:50Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2023-09-20T07:35:23Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1460,8 +1460,8 @@
         <source>Bad request format, only JSON is allowed</source>
         <target state="translated">Slecht verzoek formaat, enkel JSON is toegestaan</target>
         <jms:reference-file line="190">Controller/Root/AccountController.php</jms:reference-file>
-        <jms:reference-file line="62">Controller/Admin/RootController.php</jms:reference-file>
-        <jms:reference-file line="224">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="63">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="225">Controller/Admin/RootController.php</jms:reference-file>
         <jms:reference-file line="585">Controller/Admin/DataboxController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa0d7d2cb29f1ca72b4108bfaa0bf5686d3910ff" resname="Bad request, please contact an admin" approved="yes">
@@ -3315,7 +3315,7 @@
       <trans-unit id="3491d2e44dd1896af3411bb1a048847c13647feb" resname="File is too big : 64k max" approved="yes">
         <source>File is too big : 64k max</source>
         <target state="translated">File is te groot : 64k max</target>
-        <jms:reference-file line="182">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="183">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6efbe33ed8bd57bac1e804871a3ba254abe7903c" resname="File upload has been cancelled" approved="yes">
         <source>File upload has been cancelled</source>
@@ -4384,7 +4384,7 @@
       <trans-unit id="815d1b7d85075463e14c340ff9897a6c4af09ec3" resname="Missing &quot;structure&quot; parameter">
         <source>Missing "structure" parameter</source>
         <target state="new">Missing "structure" parameter</target>
-        <jms:reference-file line="144">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="145">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9b8f078d07adc678766fb9d2094292080ab3c52" resname="Missing labels parameter" approved="yes">
         <source>Missing labels parameter</source>
@@ -4400,7 +4400,7 @@
       <trans-unit id="0f79e8927b12fa1faaf351996f502775b4642c2d" resname="Missing path parameter" approved="yes">
         <source>Missing path parameter</source>
         <target state="translated">Pad parameter ontbreekt</target>
-        <jms:reference-file line="70">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="71">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9321a86c28d944244ce11115d852e79d190b0bcd" resname="Missing target collection" approved="yes">
         <source>Missing target collection</source>
@@ -4410,7 +4410,7 @@
       <trans-unit id="b0def594904c1cbf973fce8978d282a64d446abb" resname="Missing tests parameter" approved="yes">
         <source>Missing tests parameter</source>
         <target state="translated">Test parameter ontbreekt</target>
-        <jms:reference-file line="66">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="67">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="80e8b9fbe625ab32ace339346a3721fe143f5c20" resname="Missing view name parameter" approved="yes">
         <source>Missing view name parameter</source>
@@ -6272,7 +6272,7 @@
       <trans-unit id="e348765b45777672fff0436326a7637de0c0f6b4" resname="Something wrong happend" approved="yes">
         <source>Something wrong happend</source>
         <target state="translated">Er is iets verkeerd gelopen</target>
-        <jms:reference-file line="191">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="192">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e4139b4c4a2bc0bf820cebbfa3ac7361a1b1e37" resname="Something wrong happened, please try again or contact an admin." approved="yes">
         <source>Something wrong happened, please try again or contact an admin.</source>
@@ -6361,12 +6361,12 @@
       <trans-unit id="31341706bd5a88f758389de7827bbedddf89f5d5" resname="Status icon upload failed : can not write on disk" approved="yes">
         <source>Status icon upload failed : can not write on disk</source>
         <target state="translated">Status icon upload niet gelukt : kan niet naar de schijf schrijven</target>
-        <jms:reference-file line="188">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="189">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="28fc4ae94e7aebff81825a9fbc91ba32ac6ad1ff" resname="Status icon upload failed : upload error" approved="yes">
         <source>Status icon upload failed : upload error</source>
         <target state="translated">Status icon upload niet gelukt : upload fout</target>
-        <jms:reference-file line="185">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="186">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9e253470c876ee6d5c720eb777aeb82d4c26e28f" resname="Stop">
         <source>Stop</source>
@@ -6717,7 +6717,7 @@
       <trans-unit id="1d5dadcdeeecd294a88baf096ba0440053ecf738" resname="The file was moved to the quarantine" approved="yes">
         <source>The file was moved to the quarantine</source>
         <target state="translated">De file werd naar de quarantaine verplaatst</target>
-        <jms:reference-file line="287">Controller/Prod/UploadController.php</jms:reference-file>
+        <jms:reference-file line="283">Controller/Prod/UploadController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1818502d42e14ffcb9c664fd1365fafa969971ff" resname="The following errors have been detected" approved="yes">
         <source>The following errors have been detected</source>
@@ -6733,7 +6733,7 @@
       <trans-unit id="bae1c72ecbe1459751e4a0fee382a305bbf933b7" resname="The record was successfully created" approved="yes">
         <source>The record was successfully created</source>
         <target state="translated">De record werd met succes gemaakt</target>
-        <jms:reference-file line="257">Controller/Prod/UploadController.php</jms:reference-file>
+        <jms:reference-file line="253">Controller/Prod/UploadController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="209817489c23cec8b7a15f6b8ca3e45daf08656d" resname="The records have been properly ordered" approved="yes">
         <source>The records have been properly ordered</source>
@@ -7040,7 +7040,7 @@
       <trans-unit id="d32751443628a0d2c5b31b441c1e2b3001f35dfd" resname="Unable to add file to Phraseanet" approved="yes">
         <source>Unable to add file to Phraseanet</source>
         <target state="translated">Onmogelijk om een bestand aan Phraseanet toe te voegen</target>
-        <jms:reference-file line="299">Controller/Prod/UploadController.php</jms:reference-file>
+        <jms:reference-file line="295">Controller/Prod/UploadController.php</jms:reference-file>
         <jms:reference-file line="196">Controller/Admin/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b233593eb66b5be4da2f44ff527bd641b3a6fc1" resname="Unable to add usr to list" approved="yes">
@@ -7816,7 +7816,7 @@
       <trans-unit id="4faca55769348dcbc9714b19438181057aa2510e" resname="You do not enough rights to update status" approved="yes">
         <source>You do not enough rights to update status</source>
         <target state="translated">U hebt niet voldoende rechten om de status up te date</target>
-        <jms:reference-file line="179">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="180">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="97188aa994ca91d6fd389a9a6d282aff57695836" resname="You do not have access to this basket" approved="yes">
         <source>You do not have access to this basket</source>
@@ -11032,7 +11032,7 @@
       <trans-unit id="acb7a29ab39c659af585e603db684db39488edcd" resname="expose:: logout">
         <source>expose:: logout</source>
         <target state="new">expose:: logout</target>
-        <jms:reference-file line="698">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="699">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="41b7743e7ef4ed879d3f48bb4d65cdbd6794ec24" resname="expose:: poster">
         <source>expose:: poster</source>
@@ -13796,22 +13796,32 @@
       <trans-unit id="75526f787066901506eb4ea14d24053e663cdb55" resname="prod:expose Editable only">
         <source>prod:expose Editable only</source>
         <target state="new">prod:expose Editable only</target>
-        <jms:reference-file line="714">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="715">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0958e6208f4a5eade790de2c2aca7904ab63c8ab" resname="prod:expose Mine only">
         <source>prod:expose Mine only</source>
         <target state="new">prod:expose Mine only</target>
-        <jms:reference-file line="719">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="720">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
         <source>prod:expose field mapping</source>
         <target state="new">prod:expose field mapping</target>
-        <jms:reference-file line="703">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="704">prod/WorkZone/Macros.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0f2a0ac4867805f7f6c861f5e3044b43ce176f1b" resname="prod:expose next">
+        <source>prod:expose next</source>
+        <target state="new">prod:expose next</target>
+        <jms:reference-file line="731">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17973965f96bc86b5b9dd09879ce96f5d5dbc89a" resname="prod:expose preview">
         <source>prod:expose preview</source>
         <target state="new">prod:expose preview</target>
         <jms:reference-file line="23">prod/WorkZone/ExposeList.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7fb41400e2718d1d271d416d2e679a7b64a89e00" resname="prod:expose previous">
+        <source>prod:expose previous</source>
+        <target state="new">prod:expose previous</target>
+        <jms:reference-file line="729">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
@@ -13826,13 +13836,13 @@
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication">
         <source>prod:expose:Add publication</source>
         <target state="new">prod:expose:Add publication</target>
-        <jms:reference-file line="707">prod/WorkZone/Macros.html.twig</jms:reference-file>
-        <jms:reference-file line="709">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="708">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="710">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f37a39537149886c8fd492dfdbdc596f01e09fd" resname="prod:expose:Refresh">
         <source>prod:expose:Refresh</source>
         <target state="new">prod:expose:Refresh</target>
-        <jms:reference-file line="723">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="724">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37a8c50528409fa7c358d659ea11c3eb3252760b" resname="prod:expose:connection:Auth connexion">
         <source>prod:expose:connection:Auth connexion</source>
@@ -14121,7 +14131,7 @@
       <trans-unit id="d92238599ea91a94089177e8ecf239302fae86fe" resname="prod:expose:select expose">
         <source>prod:expose:select expose</source>
         <target state="new">prod:expose:select expose</target>
-        <jms:reference-file line="681">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="682">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e6f012d49cfe36080713edf24ad202a1d4de16d" resname="prod:mapbox Change position">
         <source>prod:mapbox Change position</source>

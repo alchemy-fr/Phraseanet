@@ -7940,6 +7940,16 @@ dans l'onglet thesaurus : arbres, menus contextuels
   border-bottom: 1px solid #076882;
 }
 
+#idFrameC #expose_tabs #expose_tab .expose_workzone {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  right: 2px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 #idFrameC #baskets {
   top: 86px;
   border-top: 1px solid #838383;

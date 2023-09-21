@@ -10058,6 +10058,21 @@ var workzone = function workzone(services) {
             updatePublicationList(exposeName);
         });
 
+        (0, _jquery2.default)('.publication-pagination').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            var pageEl = (0, _jquery2.default)('#expose_workzone .publication-page');
+            var page = pageEl.text();
+
+            if ((0, _jquery2.default)(this).hasClass('previous-publication')) {
+                page = parseInt(page) - 1;
+            } else if ((0, _jquery2.default)(this).hasClass('next-publication')) {
+                page = parseInt(page) + 1;
+            }
+
+            updatePublicationList(exposeName, page);
+        });
+
         (0, _jquery2.default)('#expose_list').on('change', function () {
             (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(this.value);
@@ -10999,10 +11014,11 @@ var workzone = function workzone(services) {
     }
 
     function updatePublicationList(exposeName) {
+        var page = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
         _jquery2.default.ajax({
             type: 'GET',
-            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName + '&page=' + page,
             data: {
                 mine: (0, _jquery2.default)("#expose_mine_only").is(':checked') ? 1 : 0,
                 editable: (0, _jquery2.default)("#expose_editable_only").is(':checked') ? 1 : 0
@@ -11046,11 +11062,35 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').removeClass('hidden');
+                    (0, _jquery2.default)('.expose-pagination').removeClass('hidden');
                 } else {
                     (0, _jquery2.default)('.expose_connected').empty();
                     (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').addClass('hidden');
+                    (0, _jquery2.default)('.expose-pagination').addClass('hidden');
+                }
+
+                if ('previousPage' in data) {
+                    if (data.previousPage) {
+                        (0, _jquery2.default)('#expose_workzone .previous-publication').removeClass('hidden');
+                        (0, _jquery2.default)('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        (0, _jquery2.default)('#expose_workzone .previous-publication').addClass('hidden');
+                    }
+                }
+
+                if ('nextPage' in data) {
+                    if (data.nextPage) {
+                        (0, _jquery2.default)('#expose_workzone .next-publication').removeClass('hidden');
+                        (0, _jquery2.default)('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        (0, _jquery2.default)('#expose_workzone .next-publication').addClass('hidden');
+                    }
+                }
+
+                if ('previousPage' in data && 'nextPage' in data && !data.previousPage && !data.nextPage) {
+                    (0, _jquery2.default)('#expose_workzone .publication-page').addClass('hidden');
                 }
 
                 if ('error' in data) {
@@ -11058,6 +11098,8 @@ var workzone = function workzone(services) {
                 }
             }
         });
+
+        (0, _jquery2.default)('#expose_workzone .publication-page').text(page);
     }
 
     function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {

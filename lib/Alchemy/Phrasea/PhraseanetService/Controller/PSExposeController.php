@@ -178,11 +178,15 @@ class PSExposeController extends Controller
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
         $exposeName = $request->get('exposeName');
+        $page = empty($request->get('page')) ? 1 : $request->get('page');
+
         if ($exposeName == null) {
             return $app->json([
                 'twig' => $this->render("prod/WorkZone/ExposeList.html.twig", [
                     'publications' => [],
-                ])
+                ]),
+                'previousPage'  => false,
+                'nextPage'      => false
             ]);
         }
 
@@ -210,7 +214,9 @@ class PSExposeController extends Controller
             return $app->json([
                 'twig'  => $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
                     'exposeName' => $exposeName
-                ])
+                ]),
+                 'previousPage'  => false,
+                 'nextPage'      => false
             ]);
         }
 
@@ -220,7 +226,9 @@ class PSExposeController extends Controller
             return $app->json([
                 'twig'  =>  $this->render("prod/WorkZone/ExposeList.html.twig", [
                     'publications' => [],
-                ])
+                ]),
+                'previousPage'  => false,
+                'nextPage'      => false
             ]);
         }
 
@@ -234,7 +242,7 @@ class PSExposeController extends Controller
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $uri = '/publications?flatten=true&order[createdAt]=desc';
+            $uri = '/publications?flatten=true&order[createdAt]=desc&page=' . $page;
             if ($request->get('mine') && $exposeConfiguration['connection_kind'] === 'password') {
                 $uri .= '&mine=true';
             }
@@ -256,8 +264,22 @@ class PSExposeController extends Controller
                 if (!isset($body['hydra:member']) || !isset($body['@id'])) {
                     throw new \Exception("index undefined on response body!");
                 }
+
                 $publications = $body['hydra:member'];
-                $basePath = $body['@id'];
+                $basePath     = $body['@id'];
+                $totalItems   = $body['hydra:totalItems'];
+
+                $nbPage = ceil($totalItems / 30);
+                $previousPage = false;
+                $nextPage = false;
+
+                if ($page < $nbPage) {
+                    $nextPage = true;
+                }
+
+                if ($page > 1) {
+                    $previousPage  = true;
+                }
             } else {
                 throw new \Exception("Error with status code : " . $response->getStatusCode());
             }
@@ -294,7 +316,9 @@ class PSExposeController extends Controller
             'twig'          => $exposeListTwig,
             'exposeName'    => $exposeName,
             'exposeLogin'   => $session->get($this->getLoginSessionName($exposeName)),
-            'basePath'      => $basePath
+            'basePath'      => $basePath,
+            'previousPage'  => $previousPage,
+            'nextPage'      => $nextPage
         ]);
     }
 
