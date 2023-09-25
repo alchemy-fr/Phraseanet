@@ -316,14 +316,19 @@ class ToolsController extends Controller
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
-            $this->getSubDefinitionSubstituer()->substituteSubdef($record, $request->get('subdef'), $media);
+            // no BC break before PHRAS-3918 when only "thumbnail" was substituable
+            if(($subdef = $request->get('subdef')) === null) {
+                $subdef = 'thumbnail';
+            }
+
+            $this->getSubDefinitionSubstituer()->substituteSubdef($record, $subdef, $media);
             $this->getDataboxLogger($record->getDatabox())
-                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $request->get('subdef'), '');
+                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subdef, '');
 
             unlink($tempoFile);
             rmdir($tempoDir);
             $success = true;
-            $message = sprintf($this->app->trans('Subdef "%s" has been successfully substitued'), $request->get('subdef'));
+            $message = sprintf($this->app->trans('Subdef "%s" has been successfully substitued'), $subdef);
         }
         catch (\Exception $e) {
             $success = false;
