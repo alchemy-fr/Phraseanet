@@ -706,6 +706,10 @@ class Application extends SilexApplication
                 // tls or ssl
                 $transport->setEncryption($options['encryption']);
 
+                if ($options['encryption'] == 'tls') {
+                    $transport->setStreamOptions(['ssl' =>['tlsv1.2' => true]]);
+                }
+
                 if ($app['conf']->get(['registry', 'email', 'smtp-auth-enabled'])) {
                     $transport->setUsername($options['username']);
                     $transport->setPassword($options['password']);
