@@ -26,7 +26,6 @@ class Image extends Provider
     const OPTION_WATERMARKTEXT = 'watermarktext';
     const OPTION_WATERMARKRID = 'watermarkrid';
     const OPTION_BACKGROUNDCOLOR = 'backgroundcolor';
-    const OPTION_SUBSTITUABLE = 'substituable';
 
     protected $options = [];
 
@@ -44,7 +43,6 @@ class Image extends Provider
         $this->registerOption(new OptionType\Text($this->translator->trans('Watermark text'), self::OPTION_WATERMARKTEXT, ''));
         $this->registerOption(new OptionType\Text($this->translator->trans('Watermark Record_id'), self::OPTION_WATERMARKRID, ''));
         $this->registerOption(new OptionType\Text($this->translator->trans('Background Color'), self::OPTION_BACKGROUNDCOLOR, ''));
-        $this->registerOption(new OptionType\Boolean($this->translator->trans('Substituable'), self::OPTION_SUBSTITUABLE, false));
     }
 
     public function getType()

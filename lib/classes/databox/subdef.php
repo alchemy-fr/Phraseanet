@@ -83,8 +83,8 @@ class databox_subdef
         }
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
-        $this->substituable = p4field::isyes($sd->substituable);
-        $this->orderable = isset($sd->attributes()->orderable) && p4field::isyes($sd->attributes()->orderable);
+        $this->substituable = isset($sd->attributes()->substituable) && p4field::isyes($sd->attributes()->substituable);
+        $this->orderable = !isset($sd->attributes()->orderable) || p4field::isyes($sd->attributes()->orderable);
         $this->tobuild = !isset($sd->attributes()->tobuild) || p4field::isyes($sd->attributes()->tobuild);
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
         $this->preset = $sd->attributes()->presets;
@@ -164,9 +164,6 @@ class databox_subdef
         }
         if ($sd->backgroundcolor) {
             $image->setOptionValue(Image::OPTION_BACKGROUNDCOLOR, $sd->backgroundcolor);
-        }
-        if ($sd->substituable) {
-            $image->setOptionValue(Image::OPTION_SUBSTITUABLE, p4field::isyes($sd->substituable));
         }
         return $image;
     }

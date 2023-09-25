@@ -114,7 +114,6 @@ class SubdefsController extends Controller
                         $options[Image::OPTION_QUALITY] = $config["image"]["definitions"][$preset][Image::OPTION_QUALITY];
                         $options[Image::OPTION_ICODEC] = $config["image"]["definitions"][$preset][Image::OPTION_ICODEC];
                         $options[Image::OPTION_BACKGROUNDCOLOR] = $config["image"]["definitions"][$preset][Image::OPTION_BACKGROUNDCOLOR];
-                        $options[Image::OPTION_SUBSTITUABLE] = $config["image"]["definitions"][$preset][Image::OPTION_SUBSTITUABLE];
                         foreach ($config["image"]["definitions"][$preset][Subdef::OPTION_DEVICE] as $devices) {
                             $options[Subdef::OPTION_DEVICE][] = $devices;
                         }
@@ -186,6 +185,7 @@ class SubdefsController extends Controller
                 $class = $request->request->get($post_sub . '_class');
                 $downloadable = $request->request->get($post_sub . '_downloadable');
                 $orderable = $request->request->get($post_sub . '_orderable');
+                $substituable = $request->request->get($post_sub . '_substituable');
                 $toBuild = $request->request->get($post_sub . '_tobuild');
 
                 $defaults = ['path', 'meta', 'mediatype'];
@@ -212,7 +212,7 @@ class SubdefsController extends Controller
                 }
 
                 $labels = $request->request->get($post_sub . '_label', []);
-                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset, $toBuild);
+                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset, $toBuild, $substituable);
             }
         }
 

@@ -2,7 +2,6 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Databox\SubdefGroup;
 
 class patch_418RC7 implements patchInterface
 {
@@ -61,43 +60,26 @@ class patch_418RC7 implements patchInterface
 
     private $thumbSubstitution = null;
 
-    private function patch_databox(databox $databox, Application $app)
+    public function patch_databox(databox $databox, Application $app)
     {
         /** @var PropertyAccess $conf */
         $conf = $app['conf'];
 
-        if($this->thumbSubstitution === null) {
+        if ($this->thumbSubstitution === null) {
             // first db
             $this->thumbSubstitution = $conf->get(['registry', 'modules', 'thumb-substitution']);
             $conf->remove(['registry', 'modules', 'thumb-substitution']);
         }
 
         if ($this->thumbSubstitution) {
-            $subdefStructure = $databox->get_subdef_structure();
             $dom_struct = $databox->get_dom_structure();
             $dom_xp = $databox->get_xpath_structure();
 
-            /** @var SubdefGroup $sdGroup */
-            foreach ($subdefStructure as $sdGroup) {
-                $group = $sdGroup->getName();
-
-                $nodes = $dom_xp->query('//record/subdefs/subdefgroup[@name="' . $group . '"]/subdef[@name="thumbnail"]');
-                if ($nodes->length > 0) {
-                    $dom_sd = $nodes->item(0);
-
-                    while (true) {
-                        $nodes = $dom_xp->query('substituable', $dom_sd);
-                        if ($nodes->length === 0) {
-                            break;
-                        }
-                        $dom_sd->removeChild($nodes->item(0));
-                    }
-                    $dom_sd->appendChild(
-                        $dom_struct->createElement('substituable')
-                    )->appendChild(
-                        $dom_struct->createTextNode('yes')
-                    );
-                }
+            $nodes = $dom_xp->query('//record/subdefs/subdefgroup/subdef[@name="thumbnail"]');
+            for ($i = 0; $i < $nodes->length; $i++) {
+                /** @var \DOMElement $node */
+                $node = $nodes->item($i);
+                $node->setAttribute('substituable', 'true');
             }
 
             $databox->saveStructure($dom_struct);
