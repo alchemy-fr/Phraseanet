@@ -258,16 +258,11 @@ EOF;
     {
         $xmlTemplate = <<<'EOF'
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<subdef class="thumbnail" name="gifou" downloadable="false">
+<subdef class="thumbnail" name="gifou" downloadable="false" %s>
     <path>/home/datas/noweb/db_alch_phrasea/video/</path>
     <mediatype>image</mediatype>
-    %s
 </subdef>
 EOF;
-
-        if (null !== $configValue) {
-            $configValue = ' orderable="' . $configValue . '"';
-        }
 
         $xml = sprintf($xmlTemplate, $configValue ?: '');
 
@@ -280,9 +275,8 @@ EOF;
     {
         return [
             [false, '', 'No substituable Status set should defaults to true'],
-            [false, '<substituable></substituable>', 'substituable should default to false'],
-            [true, '<substituable>yes</substituable>', 'substituable should be true'],
-            [false, '<substituable>no</substituable>', 'substituable should be false'],
+            [false, 'substituable="false"', 'substituable should default to false'],
+            [true, 'substituable="true"', 'substituable should be true'],
         ];
     }
 
