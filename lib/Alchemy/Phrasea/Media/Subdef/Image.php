@@ -36,7 +36,7 @@ class Image extends Provider
         $this->registerOption(new OptionType\Range($this->translator->trans('Dimension'), self::OPTION_SIZE, 20, 3000, 800));
         $this->registerOption(new OptionType\Range($this->translator->trans('Resolution'), self::OPTION_RESOLUTION, 50, 300, 72));
         $this->registerOption(new OptionType\Boolean($this->translator->trans('Remove ICC Profile'), self::OPTION_STRIP, false));
-        $this->registerOption(new OptionType\Boolean($this->translator->trans('Flatten layers'), self::OPTION_FLATTEN, false));
+        $this->registerOption(new OptionType\Boolean($this->translator->trans('Flatten layers'), self::OPTION_FLATTEN, true));
         $this->registerOption(new OptionType\Range($this->translator->trans('Quality'), self::OPTION_QUALITY, 0, 100, 75));
         $this->registerOption(new OptionType\Enum('Image Codec', self::OPTION_ICODEC, array('jpeg', 'png', 'tiff'), 'jpeg'));
         $this->registerOption(new OptionType\EnumButton($this->translator->trans('Watermark'), self::OPTION_WATERMARK, array('no' => 'no', 'yes' => 'yes'), 'no'));
