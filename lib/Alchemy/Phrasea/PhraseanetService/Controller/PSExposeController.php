@@ -1292,8 +1292,13 @@ class PSExposeController extends Controller
             $accessToken = $session->get($passSessionName);
         } elseif ($config['connection_kind'] == 'client_credentials') {
             if ($session->has($credentialSessionName)) {
-                $accessToken = $session->get($credentialSessionName);
-            } else {
+                $tokenInfo = $session->get($credentialSessionName);
+                if (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+                    $accessToken = $tokenInfo['access_token'];
+                }
+            }
+
+            if (!$accessToken) {
                 $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
 
                 $oauthClient = $proxyConfig->getClientWithOptions([
@@ -1315,9 +1320,12 @@ class PSExposeController extends Controller
 
                 $tokenBody = $response->getBody()->getContents();
 
-                $tokenBody = json_decode($tokenBody,true);
+                $tokenBody = json_decode($tokenBody, true);
 
-                $session->set($credentialSessionName, $tokenBody['access_token']);
+                $session->set($credentialSessionName, [
+                    'access_token' => $tokenBody['access_token'],
+                    'expires_at' => time() + $tokenBody['expires_in'],
+                ]);
 
                 $accessToken = $tokenBody['access_token'];
             }
