@@ -1076,7 +1076,8 @@ const workzone = (services) => {
                 dataType: 'json',
                 data: {
                     exposeName: `${exposeName}`,
-                    publicationData: publicationData
+                    publicationData: publicationData,
+                    prodExposeEdit_token: $(this).find('input[name="prodExposeEdit_token"]').val()
                 },
                 success: function (data) {
                     if (data.success) {

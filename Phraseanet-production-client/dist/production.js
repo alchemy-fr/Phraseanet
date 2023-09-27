@@ -10989,7 +10989,8 @@ var workzone = function workzone(services) {
                 dataType: 'json',
                 data: {
                     exposeName: '' + exposeName,
-                    publicationData: publicationData
+                    publicationData: publicationData,
+                    prodExposeEdit_token: (0, _jquery2.default)(this).find('input[name="prodExposeEdit_token"]').val()
                 },
                 success: function success(data) {
                     if (data.success) {

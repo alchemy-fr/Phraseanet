@@ -302,6 +302,8 @@ class PSExposeController extends Controller
             ]);
         }
 
+        $this->setSessionFormToken('prodExposeEdit');
+
         $exposeListTwig = $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications'          => $publications,
             'exposeFrontBasePath'   => $exposeFrontBasePath
@@ -381,8 +383,6 @@ class PSExposeController extends Controller
         }
 
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
-
-        $this->setSessionFormToken('prodExposeEdit');
 
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
             'timezone'    => $request->get('timezone'),
