@@ -81,6 +81,37 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
             echo "deny all;" >> /etc/nginx/restrictions
     fi
 fi
+
+if [[ ! -z $GLOBAL_REQUEST_LIMIT_ACTIVATE ]]; then
+  echo "limit_req_zone \$binary_remote_addr zone=globaliplimits:$GLOBAL_REQUEST_LIMIT_MEMORY rate=$GLOBAL_REQUEST_LIMIT_RATE;" >> /etc/nginx/restrictions
+  if [[ ! -z $GLOBAL_REQUEST_LIMIT_BURST ]]; then
+    if [ "$GLOBAL_REQUEST_LIMIT_NODELAY" = "on" ] || [ "$GLOBAL_REQUEST_LIMIT_NODELAY" = "1" ];then
+      export GLOBAL_REQUEST_LIMITS = "limit_req zone=globaliplimits burst=$GLOBAL_REQUEST_LIMIT_BURST nodelay;"     
+    else
+      export GLOBAL_REQUEST_LIMITS = "limit_req zone=globaliplimits burst=$GLOBAL_REQUEST_LIMIT_BURST;"
+    fi  
+  else
+    export GLOBAL_REQUEST_LIMITS = "limit_req zone=globaliplimits;" 
+  fi
+fi
+
+
+
+if [[ ! -z $API_REQUEST_LIMIT_ACTIVATE ]]; then
+  echo "limit_req_zone \$binary_remote_addr zone=apiiplimits:$API_REQUEST_LIMIT_MEMORY rate=$API_REQUEST_LIMIT_RATE;" >> /etc/nginx/restrictions
+  if [[ ! -z $API_REQUEST_LIMIT_BURST ]]; then
+    if [ "$API_REQUEST_LIMIT_NODELAY" = "on" ] || [ "$API_REQUEST_LIMIT_NODELAY" = "1" ];then
+      export API_REQUEST_LIMITS = "limit_req zone=apiiplimits burst=$API_REQUEST_LIMIT_BURST nodelay;"
+    else
+      export API_REQUEST_LIMITS = "limit_req zone=apiiplimits burst=$API_REQUEST_LIMIT_BURST;"        
+    fi
+  else
+    export API_REQUEST_LIMITS = "limit_req zone=apiiplimits;"                                  
+  fi
+fi
+
+
+
 unset GATEWAY_USERS
 unset GATEWAY_DENIED_IPS
 unset GATEWAY_ALLOWED_IPS
