@@ -37,7 +37,6 @@ class PSExposeController extends Controller
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
         $clientOptions = [
-            'base_uri'      => $exposeConfiguration['auth_base_uri'],
             'http_errors'   => false,
             'verify'        => $exposeConfiguration['verify_ssl']
         ];
@@ -45,14 +44,7 @@ class PSExposeController extends Controller
         $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $response = $oauthClient->post('/oauth/v2/token', [
-                'json' => [
-                    'client_id'     => $exposeConfiguration['auth_client_id'],
-                    'client_secret' => $exposeConfiguration['auth_client_secret'],
-                    'grant_type'    => 'password',
-                    'username'      =>  $request->request->get('auth-username'),
-                    'password'      =>  $request->request->get('auth-password')      ]
-            ]);
+            $response = $this->getTokenByPassword($oauthClient, $exposeConfiguration, $request->request->get('auth-username'), $request->request->get('auth-password'));
         } catch(\Exception $e) {
             return $this->app->json([
                 'success' => false,
@@ -80,7 +72,14 @@ class PSExposeController extends Controller
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($request->request->get('exposeName'));
 
-        $session->set($passSessionName, $tokenBody['access_token']);
+        $passSessionNameValue = [
+            'access_token' => $tokenBody['access_token'],
+            'expires_at'   => time() + $tokenBody['expires_in'],
+            'refresh_token'=> $tokenBody['refresh_token'],
+            'refresh_expires_at' => time() + $tokenBody['refresh_expires_in']
+        ];
+
+        $session->set($passSessionName, $passSessionNameValue);
 
         $loginSessionName = $this->getLoginSessionName($request->request->get('exposeName'));
         $session->set($loginSessionName, $request->request->get('auth-username'));
@@ -887,9 +886,26 @@ class PSExposeController extends Controller
             ]);
         }
 
+        $config = $this->getExposeConfiguration($exposeName);
+
+        // used to set or refresh token session
         $accessToken = $this->getAndSaveToken($exposeName);
 
-        $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessToken));
+        if (empty($accessToken)) {
+            return $app->json([
+                'success' => false,
+                'message' => "Do not have access token!"
+            ]);
+        }
+
+        $accessTokenInfo = [];
+        if ($config['connection_kind'] == 'password') {
+            $accessTokenInfo = $this->getSession()->get($this->getPassSessionName($exposeName));
+        } elseif($config['connection_kind'] == 'client_credentials') {
+            $accessTokenInfo = $this->getSession()->get($this->getCredentialSessionName($exposeName));
+        }
+
+        $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessTokenInfo));
 
         return $app->json([
             'success' => true,
@@ -1256,7 +1272,13 @@ class PSExposeController extends Controller
     {
         $expose_name = str_replace(' ', '_', $exposeName);
 
-        return 'password_access_token_'.$expose_name;
+        return 'password_access_token_' . $expose_name;
+    }
+
+    private function getCredentialSessionName($exposeName)
+    {
+        $expose_name = str_replace(' ', '_', $exposeName);
+        return 'credential_access_token_' . $expose_name;
     }
 
     /**
@@ -1284,46 +1306,113 @@ class PSExposeController extends Controller
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($exposeName);
 
-        $expose_name = str_replace(' ', '_', $exposeName);
-        $credentialSessionName = 'credential_access_token_'.$expose_name;
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $oauthClient = $proxyConfig->getClientWithOptions([
+            'verify' => $config['verify_ssl'],
+        ]);
+
+        $credentialSessionName = $this->getCredentialSessionName($exposeName);
 
         $accessToken = '';
         if ($config['connection_kind'] == 'password') {
-            $accessToken = $session->get($passSessionName);
-        } elseif ($config['connection_kind'] == 'client_credentials') {
-            if ($session->has($credentialSessionName)) {
-                $accessToken = $session->get($credentialSessionName);
-            } else {
-                $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+            $tokenInfo = $session->get($passSessionName);
 
-                $oauthClient = $proxyConfig->getClientWithOptions([
-                    'verify' => $config['verify_ssl'],
-                ]);
+            if (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+                $accessToken = $tokenInfo['access_token'];
+            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && $tokenInfo['refresh_expires_at'] > time()) {
+                $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
 
-                $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
-                    'json' => [
-                        'client_id'     => $config['expose_client_id'],
-                        'client_secret' => $config['expose_client_secret'],
-                        'grant_type'    => 'client_credentials',
-                        'scope'         => 'publish'
-                    ]
-                ]);
-
-                if ($response->getStatusCode() !== 200) {
+                if ($resToken->getStatusCode() !== 200) {
                     return null;
                 }
 
-                $tokenBody = $response->getBody()->getContents();
+                $refreshtokenBody = $resToken->getBody()->getContents();
 
-                $tokenBody = json_decode($tokenBody,true);
+                $refreshtokenBody = json_decode($refreshtokenBody,true);
 
-                $session->set($credentialSessionName, $tokenBody['access_token']);
+                $passSessionNameValue = [
+                    'access_token' => $refreshtokenBody['access_token'],
+                    'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                    'refresh_token'=> $refreshtokenBody['refresh_token'],
+                    'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
+                ];
 
-                $accessToken = $tokenBody['access_token'];
+                $session->set($passSessionName, $passSessionNameValue);
+
+                $accessToken = $refreshtokenBody['access_token'];
+            } else {
+                $session->remove($passSessionName);
+            }
+
+        } elseif ($config['connection_kind'] == 'client_credentials') {
+            if ($session->has($credentialSessionName)) {
+                $tokenInfoCredential = $session->get($credentialSessionName);
+                if (is_array($tokenInfoCredential) && $tokenInfoCredential['expires_at'] > time()) {
+                    $accessToken = $tokenInfoCredential['access_token'];
+                } else {
+                    $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
+                }
+            } else {
+                $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
             }
         }
 
         return $accessToken;
+    }
+
+    private function getTokenByCredential(Client $oauthClient, array $exposeConfiguration, $credentialSessionName)
+    {
+        $session = $this->getSession();
+
+        $response = $oauthClient->post(\p4string::addEndSlash($exposeConfiguration['oauth_token_uri']) . 'token', [
+            'form_params' => [
+                'client_id'     => $exposeConfiguration['expose_client_id'],
+                'client_secret' => $exposeConfiguration['expose_client_secret'],
+                'grant_type'    => 'client_credentials',
+                'scope'         => 'publish'
+            ]
+        ]);
+
+        if ($response->getStatusCode() !== 200) {
+            return null;
+        }
+
+        $tokenBody = $response->getBody()->getContents();
+
+        $tokenBody = json_decode($tokenBody,true);
+
+        $credentialSessionNameValue = [
+            'access_token' => $tokenBody['access_token'],
+            'expires_at'   => time() + $tokenBody['expires_in'],
+        ];
+        $session->set($credentialSessionName, $credentialSessionNameValue);
+
+        return $tokenBody['access_token'];
+    }
+
+    private function getTokenByPassword(Client $oauthClient, array $exposeConfiguration, $username, $password)
+    {
+        return $oauthClient->post(\p4string::addEndSlash($exposeConfiguration['oauth_token_uri']) .'token', [
+            'form_params' => [
+                'client_id'     => $exposeConfiguration['auth_client_id'],
+                'client_secret' => $exposeConfiguration['auth_client_secret'],
+                'grant_type'    => 'password',
+                'username'      =>  $username,
+                'password'      =>  $password
+            ]
+        ]);
+    }
+
+    private function refreshToken(Client $oauthClient, array $exposeConfiguration, $refreshToken)
+    {
+        return $oauthClient->post(\p4string::addEndSlash($exposeConfiguration['oauth_token_uri']) .'token', [
+            'form_params' => [
+                'client_id'     => $exposeConfiguration['auth_client_id'],
+                'client_secret' => $exposeConfiguration['auth_client_secret'],
+                'grant_type'    => 'refresh_token',
+                'refresh_token' =>  $refreshToken
+            ]
+        ]);
     }
 
     private function postPublication(Client $exposeClient, $token, $publicationData)

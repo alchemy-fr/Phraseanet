@@ -22,6 +22,9 @@ class ExposeUploadWorker implements WorkerInterface
 
     private $app;
 
+    private $exposeConfiguration;
+    private $accessTokenInfo;
+
     public function __construct($app)
     {
         $this->app              = $app;
@@ -84,14 +87,15 @@ class ExposeUploadWorker implements WorkerInterface
         }
 
         try {
-            $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-            $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
+            $this->accessTokenInfo = $payload['accessTokenInfo'];
+            $this->exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+            $this->exposeConfiguration = $this->exposeConfiguration[$payload['exposeName']];
 
             $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
             $clientOptions = [
-                'base_uri'      => $exposeConfiguration['expose_base_uri'],
+                'base_uri'      => $this->exposeConfiguration['expose_base_uri'],
                 'http_errors'   => false,
-                'verify'        => $exposeConfiguration['verify_ssl']
+                'verify'        => $this->exposeConfiguration['verify_ssl']
             ];
 
             // add proxy in each request if defined in configuration
@@ -105,7 +109,7 @@ class ExposeUploadWorker implements WorkerInterface
             $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
 
             // get mapping if exist
-            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $payload['accessToken'], $payload['publicationId']);
+            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $payload['publicationId']);
 
             $exposeFieldMappingName = $phraseanetLocalId . '_field_mapping';
             $fieldMapping = !empty($clientAnnotationProfile[$exposeFieldMappingName]) ? $clientAnnotationProfile[$exposeFieldMappingName] : [];
@@ -247,9 +251,11 @@ class ExposeUploadWorker implements WorkerInterface
                 $requestBody['webVTT'] = $webVTT;
             }
 
+            $token = $this->getToken();
+
             $response = $exposeClient->post('/assets', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $payload['accessToken']
+                    'Authorization' => 'Bearer ' . $token
                 ],
                 'json' => $requestBody
             ]);
@@ -263,7 +269,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             $assetsResponse = json_decode($response->getBody(),true);
 
-            $uploadUrl = $proxyConfig->getClientWithOptions(['verify' => $exposeConfiguration['verify_ssl']]);
+            $uploadUrl = $proxyConfig->getClientWithOptions(['verify' => $this->exposeConfiguration['verify_ssl']]);
             $uploadUrl->put($assetsResponse['uploadURL'], [
                 'headers' => [
                     'Content-Type' => 'application/binary'
@@ -304,7 +310,6 @@ class ExposeUploadWorker implements WorkerInterface
                 if ($record->has_subdef($phraseanetSubdef) && $record->get_subdef($phraseanetSubdef)->is_physically_present()) {
                     $this->postSubDefinition(
                         $exposeClient,
-                        $payload['accessToken'],
                         $assetsResponse['id'],
                         $record->get_subdef($phraseanetSubdef),
                         $subdefName,
@@ -357,8 +362,6 @@ class ExposeUploadWorker implements WorkerInterface
             $this->messagePublisher->pushLog("An error occurred when creating asset!: ". $e->getMessage());
             $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
 
-            return ;
-
             return;
         }
 
@@ -366,8 +369,10 @@ class ExposeUploadWorker implements WorkerInterface
         $this->finishedJob($workerRunningJob, $em);
     }
 
-    private function getClientAnnotationProfile(Client $exposeClient, $accessToken, $publicationId)
+    private function getClientAnnotationProfile(Client $exposeClient, $publicationId)
     {
+        $accessToken = $this->getToken();
+
         $resPublication = $exposeClient->get('/publications/'.$publicationId , [
             'headers' => [
                 'Authorization' => 'Bearer '. $accessToken,
@@ -385,8 +390,10 @@ class ExposeUploadWorker implements WorkerInterface
         return $clientAnnotationProfile;
     }
 
-    private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false, $isPoster = false)
+    private function postSubDefinition(Client $exposeClient, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false, $isPoster = false)
     {
+        $token = $this->getToken();
+
         $requestBody = [
             'asset_id'          => $assetId,
             'name'              => $subdefName,
@@ -403,7 +410,7 @@ class ExposeUploadWorker implements WorkerInterface
 
         $response = $exposeClient->post('/sub-definitions', [
             'headers' => [
-                'Authorization' => 'Bearer ' .$token
+                'Authorization' => 'Bearer ' . $token
             ],
             'json'  => $requestBody
         ]);
@@ -449,5 +456,82 @@ class ExposeUploadWorker implements WorkerInterface
             $this->messagePublisher->pushLog("Error when wanting to update database :" . $e->getMessage());
             $em->rollback();
         }
+    }
+
+    private function getToken()
+    {
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+
+        $clientOptions = [
+            'http_errors' => false,
+            'verify' => $this->exposeConfiguration['verify_ssl']
+        ];
+
+        $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
+
+        if ($this->exposeConfiguration['connection_kind'] == 'password') {
+            if ($this->accessTokenInfo['expires_at'] > time() && $this->accessTokenInfo['refresh_expires_at'] > time()) {
+                return $this->accessTokenInfo['access_token'];
+            } elseif ($this->accessTokenInfo['expires_at'] <= time() && $this->accessTokenInfo['refresh_expires_at'] > time()) {
+                $resToken = $oauthClient->post(\p4string::addEndSlash($this->exposeConfiguration['oauth_token_uri']) . 'token', [
+                    'form_params' => [
+                        'client_id' => $this->exposeConfiguration['auth_client_id'],
+                        'client_secret' => $this->exposeConfiguration['auth_client_secret'],
+                        'grant_type' => 'refresh_token',
+                        'refresh_token' => $this->accessTokenInfo['refresh_token']
+                    ]
+                ]);
+
+                if ($resToken->getStatusCode() !== 200) {
+                    return null;
+                }
+
+                $refreshtokenBody = $resToken->getBody()->getContents();
+
+                $refreshtokenBody = json_decode($refreshtokenBody, true);
+
+                // update the access token information
+                $this->accessTokenInfo = [
+                    'access_token' => $refreshtokenBody['access_token'],
+                    'expires_at' => time() + $refreshtokenBody['expires_in'],
+                    'refresh_token' => $refreshtokenBody['refresh_token'],
+                    'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
+                ];
+
+                return $refreshtokenBody['access_token'];
+            } else {
+                return null;
+            }
+        } elseif ($this->exposeConfiguration['connection_kind'] == 'client_credentials') {
+            if ($this->accessTokenInfo['expires_at'] > time()) {
+                return $this->accessTokenInfo['access_token'];
+            } else {
+                $response = $oauthClient->post(\p4string::addEndSlash($this->exposeConfiguration['oauth_token_uri']) . 'token', [
+                    'form_params' => [
+                        'client_id'     => $this->exposeConfiguration['expose_client_id'],
+                        'client_secret' => $this->exposeConfiguration['expose_client_secret'],
+                        'grant_type'    => 'client_credentials',
+                        'scope'         => 'publish'
+                    ]
+                ]);
+
+                if ($response->getStatusCode() !== 200) {
+                    return null;
+                }
+
+                $refreshtokenBody = $response->getBody()->getContents();
+
+                $refreshtokenBody = json_decode($refreshtokenBody,true);
+
+                // update the access token information
+                $this->accessTokenInfo = [
+                    'access_token' => $refreshtokenBody['access_token'],
+                    'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                ];
+
+                return $refreshtokenBody['access_token'];
+            }
+        }
+
     }
 }

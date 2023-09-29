@@ -682,7 +682,7 @@
                     <option value="">{{ 'prod:expose:select expose' | trans }}</option>
                     {% for key in expose_list|keys %}
                         {% if (
-                            (auth_base_url is defined and expose_list[key].auth_base_uri | trim('/') == auth_base_url)
+                            (auth_base_url is defined and expose_list[key].oauth_token_uri | trim('/') == auth_base_url)
                             or providerId is empty)
                             and expose_list[key].activate_expose  %}
 

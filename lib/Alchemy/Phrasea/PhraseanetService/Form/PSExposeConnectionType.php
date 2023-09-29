@@ -68,11 +68,12 @@ class PSExposeConnectionType extends AbstractType
                     'class' => 'input-xxlarge'
                 ]
             ])
-            ->add('auth_base_uri', TextType::class, [
-                'label'     => 'admin:phrasea-service-setting:tab:expose:: Auth Base Uri ',
+            ->add('oauth_token_uri', TextType::class, [
+                'label'     => 'admin:phrasea-service-setting:tab:expose:: Oauth token Uri ',
                 'required'  => false,
                 'attr'      => [
-                    'class' => 'input-xxlarge'
+                    'class' => 'input-xxlarge',
+                    'placeholder' => 'https://keycloak.phrasea.fr/realms/master/protocol/openid-connect'
                 ]
             ])
             ->add('auth_client_secret', TextType::class, [

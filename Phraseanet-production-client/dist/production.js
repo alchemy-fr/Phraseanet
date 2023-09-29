@@ -11519,11 +11519,13 @@ var workzone = function workzone(services) {
                     },
                     dataType: 'json',
                     success: function success(data) {
-                        setTimeout(function () {
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                        }, 6000);
-
-                        console.log(data.message);
+                        if (data.success) {
+                            setTimeout(function () {
+                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                            }, 6000);
+                        } else {
+                            (0, _jquery2.default)('.refresh-list').trigger('click');
+                        }
                     }
                 });
             }
