@@ -26,6 +26,7 @@ server {
         if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
             return 401;
         }
+        include        apirestrictions;
         rewrite ^(.*)$ /api.php/$1 last;
     }
 
