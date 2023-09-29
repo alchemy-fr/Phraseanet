@@ -470,10 +470,12 @@ class ExposeUploadWorker implements WorkerInterface
         $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         if ($this->exposeConfiguration['connection_kind'] == 'password') {
-            if ($this->accessTokenInfo['expires_at'] > time() && $this->accessTokenInfo['refresh_expires_at'] > time()) {
+            if (!isset($this->accessTokenInfo['expires_at'])) {
+                return $this->accessTokenInfo['access_token'];
+            } elseif ($this->accessTokenInfo['expires_at'] > time() && $this->accessTokenInfo['refresh_expires_at'] > time()) {
                 return $this->accessTokenInfo['access_token'];
             } elseif ($this->accessTokenInfo['expires_at'] <= time() && $this->accessTokenInfo['refresh_expires_at'] > time()) {
-                $resToken = $oauthClient->post(\p4string::addEndSlash($this->exposeConfiguration['oauth_token_uri']) . 'token', [
+                $resToken = $oauthClient->post($this->exposeConfiguration['oauth_token_uri'], [
                     'form_params' => [
                         'client_id' => $this->exposeConfiguration['auth_client_id'],
                         'client_secret' => $this->exposeConfiguration['auth_client_secret'],
@@ -503,10 +505,12 @@ class ExposeUploadWorker implements WorkerInterface
                 return null;
             }
         } elseif ($this->exposeConfiguration['connection_kind'] == 'client_credentials') {
-            if ($this->accessTokenInfo['expires_at'] > time()) {
+            if (!isset($this->accessTokenInfo['expires_at'])) {
+                return $this->accessTokenInfo['access_token'];
+            } elseif ($this->accessTokenInfo['expires_at'] > time()) {
                 return $this->accessTokenInfo['access_token'];
             } else {
-                $response = $oauthClient->post(\p4string::addEndSlash($this->exposeConfiguration['oauth_token_uri']) . 'token', [
+                $response = $oauthClient->post($this->exposeConfiguration['oauth_token_uri'], [
                     'form_params' => [
                         'client_id'     => $this->exposeConfiguration['expose_client_id'],
                         'client_secret' => $this->exposeConfiguration['expose_client_secret'],
@@ -532,6 +536,5 @@ class ExposeUploadWorker implements WorkerInterface
                 return $refreshtokenBody['access_token'];
             }
         }
-
     }
 }

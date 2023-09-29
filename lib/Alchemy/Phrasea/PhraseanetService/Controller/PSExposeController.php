@@ -72,12 +72,18 @@ class PSExposeController extends Controller
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($request->request->get('exposeName'));
 
-        $passSessionNameValue = [
-            'access_token' => $tokenBody['access_token'],
-            'expires_at'   => time() + $tokenBody['expires_in'],
-            'refresh_token'=> $tokenBody['refresh_token'],
-            'refresh_expires_at' => time() + $tokenBody['refresh_expires_in']
-        ];
+        if (isset($tokenBody['refresh_expires_in'])) {
+            $passSessionNameValue = [
+                'access_token' => $tokenBody['access_token'],
+                'expires_at'   => time() + $tokenBody['expires_in'],
+                'refresh_token'=> $tokenBody['refresh_token'],
+                'refresh_expires_at' => time() + $tokenBody['refresh_expires_in']
+            ];
+        } else {
+            $passSessionNameValue = [
+                'access_token' => $tokenBody['access_token'],
+            ];
+        }
 
         $session->set($passSessionName, $passSessionNameValue);
 
@@ -1317,7 +1323,9 @@ class PSExposeController extends Controller
         if ($config['connection_kind'] == 'password') {
             $tokenInfo = $session->get($passSessionName);
 
-            if (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+            if (!isset($tokenInfo['expires_at'])) {
+                $accessToken = $tokenInfo['access_token'];
+            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
                 $accessToken = $tokenInfo['access_token'];
             } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && $tokenInfo['refresh_expires_at'] > time()) {
                 $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
@@ -1330,12 +1338,18 @@ class PSExposeController extends Controller
 
                 $refreshtokenBody = json_decode($refreshtokenBody,true);
 
-                $passSessionNameValue = [
-                    'access_token' => $refreshtokenBody['access_token'],
-                    'expires_at'   => time() + $refreshtokenBody['expires_in'],
-                    'refresh_token'=> $refreshtokenBody['refresh_token'],
-                    'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
-                ];
+                if (isset($refreshtokenBody['refresh_expires_in'])) {
+                    $passSessionNameValue = [
+                        'access_token' => $refreshtokenBody['access_token'],
+                        'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                        'refresh_token'=> $refreshtokenBody['refresh_token'],
+                        'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
+                    ];
+                } else {
+                    $passSessionNameValue = [
+                        'access_token' => $refreshtokenBody['access_token'],
+                    ];
+                }
 
                 $session->set($passSessionName, $passSessionNameValue);
 
@@ -1347,7 +1361,9 @@ class PSExposeController extends Controller
         } elseif ($config['connection_kind'] == 'client_credentials') {
             if ($session->has($credentialSessionName)) {
                 $tokenInfoCredential = $session->get($credentialSessionName);
-                if (is_array($tokenInfoCredential) && $tokenInfoCredential['expires_at'] > time()) {
+                if (!isset($tokenInfoCredential['expires_at'])) {
+                    $accessToken = $tokenInfoCredential['access_token'];
+                } elseif (is_array($tokenInfoCredential) && $tokenInfoCredential['expires_at'] > time()) {
                     $accessToken = $tokenInfoCredential['access_token'];
                 } else {
                     $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
@@ -1364,7 +1380,7 @@ class PSExposeController extends Controller
     {
         $session = $this->getSession();
 
-        $response = $oauthClient->post(\p4string::addEndSlash($exposeConfiguration['oauth_token_uri']) . 'token', [
+        $response = $oauthClient->post($exposeConfiguration['oauth_token_uri'] , [
             'form_params' => [
                 'client_id'     => $exposeConfiguration['expose_client_id'],
                 'client_secret' => $exposeConfiguration['expose_client_secret'],
@@ -1381,10 +1397,17 @@ class PSExposeController extends Controller
 
         $tokenBody = json_decode($tokenBody,true);
 
-        $credentialSessionNameValue = [
-            'access_token' => $tokenBody['access_token'],
-            'expires_at'   => time() + $tokenBody['expires_in'],
-        ];
+        if (isset($tokenBody['expires_in'])) {
+            $credentialSessionNameValue = [
+                'access_token' => $tokenBody['access_token'],
+                'expires_at'   => time() + $tokenBody['expires_in'],
+            ];
+        } else {
+            $credentialSessionNameValue = [
+                'access_token' => $tokenBody['access_token'],
+            ];
+        }
+
         $session->set($credentialSessionName, $credentialSessionNameValue);
 
         return $tokenBody['access_token'];
@@ -1392,7 +1415,7 @@ class PSExposeController extends Controller
 
     private function getTokenByPassword(Client $oauthClient, array $exposeConfiguration, $username, $password)
     {
-        return $oauthClient->post(\p4string::addEndSlash($exposeConfiguration['oauth_token_uri']) .'token', [
+        return $oauthClient->post($exposeConfiguration['oauth_token_uri'], [
             'form_params' => [
                 'client_id'     => $exposeConfiguration['auth_client_id'],
                 'client_secret' => $exposeConfiguration['auth_client_secret'],
@@ -1405,7 +1428,7 @@ class PSExposeController extends Controller
 
     private function refreshToken(Client $oauthClient, array $exposeConfiguration, $refreshToken)
     {
-        return $oauthClient->post(\p4string::addEndSlash($exposeConfiguration['oauth_token_uri']) .'token', [
+        return $oauthClient->post($exposeConfiguration['oauth_token_uri'], [
             'form_params' => [
                 'client_id'     => $exposeConfiguration['auth_client_id'],
                 'client_secret' => $exposeConfiguration['auth_client_secret'],
