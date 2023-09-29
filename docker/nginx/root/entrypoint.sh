@@ -83,6 +83,8 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
     fi
 fi
 
+echo "limit_req_status 429;" > /etc/nginx/conf.d/limits.conf
+
 if [[ ! -z $GLOBAL_REQUEST_LIMIT_ACTIVATE ]] &&  [[ "$GLOBAL_REQUEST_LIMIT_ACTIVATE" = "1" ]]; then
   echo "limit_req_zone \$binary_remote_addr zone=globaliplimits:$GLOBAL_REQUEST_LIMIT_MEMORY rate=$GLOBAL_REQUEST_LIMIT_RATE;" >> /etc/nginx/conf.d/limits.conf
   if [[ ! -z $GLOBAL_REQUEST_LIMIT_BURST ]]; then
