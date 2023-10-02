@@ -44,7 +44,13 @@
         </div>
 
         <div class="control-group auth-field">
-            {{ form_row(form.oauth_token_uri) }}
+            {{ form_label(form.oauth_token_uri) }}
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+                expose v2 : https://api-auth.phrasea.local/oauth/v2/token
+                <br>
+                expose v3 : https://keycloak.phrasea.fr/realms/master/protocol/openid-connect/token
+            </div>
+            {{ form_widget(form.oauth_token_uri) }}
         </div>
 
         <div class="control-group auth-field">

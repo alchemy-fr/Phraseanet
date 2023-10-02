@@ -73,7 +73,6 @@ class PSExposeConnectionType extends AbstractType
                 'required'  => false,
                 'attr'      => [
                     'class' => 'input-xxlarge',
-                    'placeholder' => 'https://keycloak.phrasea.fr/realms/master/protocol/openid-connect/token or https://api-auth.phrasea.local/oauth/v2/token'
                 ]
             ])
             ->add('auth_client_secret', TextType::class, [
