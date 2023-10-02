@@ -42,7 +42,7 @@ class EmailFormType extends AbstractType
         ]);
         $builder->add('smtp-secure-mode', ChoiceType::class, [
             'label'        => 'SMTP encryption',
-            'choices'      => ['none' => 'None', 'ssl' => 'SSL', 'tls' => 'TLS'],
+            'choices'      => ['none' => 'None', 'ssl' => 'SSL', 'tlsv1.1' => 'TLS1.1', 'tlsv1.2' => 'TLS1.2'],
         ]);
         $builder->add('smtp-user', TextType::class, [
             'label'        => 'SMTP user',

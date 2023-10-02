@@ -178,7 +178,7 @@ class RegistryFormManipulator
                 'smtp-auth-enabled' => false,
                 'smtp-host' => null,
                 'smtp-port' => null,
-                'smtp-secure-mode' => 'tls',
+                'smtp-secure-mode' => 'tlsv1.1',
                 'smtp-user' => null,
                 'smtp-password' => isset($config['email']['smtp-password']) ? $config['email']['smtp-password'] : null,
             ],
