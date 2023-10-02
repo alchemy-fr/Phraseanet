@@ -202,7 +202,8 @@ class PSExposeController extends Controller
             try {
                 $provider = $this->getAuthenticationProviders()->get($providerId);
                 if ($provider->getType() == 'PsAuth') {
-                    $session->set($passSessionName, $provider->getAccessToken());
+
+                    $session->set($passSessionName, ['access_token' => $provider->getAccessToken()]);
                     $session->set($this->getLoginSessionName($exposeName), $provider->getUserName());
                 }
             } catch(\Exception $e) {
@@ -1385,7 +1386,7 @@ class PSExposeController extends Controller
                 'client_id'     => $exposeConfiguration['expose_client_id'],
                 'client_secret' => $exposeConfiguration['expose_client_secret'],
                 'grant_type'    => 'client_credentials',
-                'scope'         => 'publish'
+//                'scope'         => 'publish'
             ]
         ]);
 
