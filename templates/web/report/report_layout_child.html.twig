@@ -20,6 +20,7 @@
                         <option value="res" id="connections_res">{{ 'report:: (connexions) res' | trans }}</option>
                 </select>
             </div>
+            <input type="hidden" name="reportConnection_token" value="{{ app['session'].get('reportConnection_token') }}">
             {% endblock form_connexion %}
         </form>
 
@@ -57,6 +58,7 @@
                     {% endfor %}
                 </select>
             </div>
+            <input type="hidden" name="reportDownload_token" value="{{ app['session'].get('reportDownload_token') }}">
         </form>
 
         <div class="form_submit">
@@ -115,6 +117,7 @@
                 </select>
             </div>
 
+            <input type="hidden" name="reportRecord_token" value="{{ app['session'].get('reportRecord_token') }}">
         </form>
 
         <div class="form_submit">

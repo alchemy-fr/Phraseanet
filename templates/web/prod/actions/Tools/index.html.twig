@@ -61,7 +61,7 @@
         </div>
         {# subdef section #}
         <div id="subdefs" class="tabBox">
-            <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
+            <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post" name="prodToolsSubdef">
                 <fieldset style='border:1px solid #999; padding:20px;'>
                     <legend style="margin-bottom: 0px;">&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
                     {% if nbSubdefSubstitute > 0 %}
@@ -107,7 +107,9 @@
                 <div class="confirm_block text-center hide" style="margin-top: 45px;">
                     <span class="alert alert-info">
                         {{ 'prod::tool:recreatesubviews: warning for rebuild sub-definitions' | trans }}
-                    </span></div>
+                    </span>
+                </div>
+                <input type="hidden" name="prodToolsSubdef_token" value="{{ app['session'].get('prodToolsSubdef_token') }}">
             </form>
         </div>
 
@@ -136,6 +138,7 @@
           <button class="action_submiter btn btn-inverse">{{ "validate"|trans }}</button>
           <button class="action_cancel btn btn-inverse">{{ "cancel"|trans }}</button>
         </div>
+          <input type="hidden" name="prodToolsRotate_token" value="{{ app['session'].get('prodToolsRotate_token') }}">
       </form>
     </div>
 
@@ -176,6 +179,7 @@
                       <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
                       <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
                     </div>
+                      <input type="hidden" name="prodToolsHDSubstitution_token" value="{{ app['session'].get('prodToolsHDSubstitution_token') }}">
                   </form>
                   <div class='resultAction'></div>
                 </div>
@@ -202,6 +206,7 @@
                       <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
                       <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
                     </div>
+                    <input type="hidden" name="prodToolsThumbSubstitution_token" value="{{ app['session'].get('prodToolsThumbSubstitution_token') }}">
                   </form>
                   <div class='resultAction'></div>
                 </div>
