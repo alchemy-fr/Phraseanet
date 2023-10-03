@@ -19,6 +19,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     public function testCreateOrder()
     {
         $app = $this->getApplication();
+        $randomValue = $this->setSessionFormToken('prodExportOrder');
 
         $triggered = false;
         $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function () use (&$triggered) {
@@ -27,7 +28,8 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = $this->request('POST', '/prod/order/', [
             'lst'      => $this->getRecord1()->getId(),
-            'deadline' => '+10 minutes'
+            'deadline' => '+10 minutes',
+            'prodExportOrder_token' => $randomValue
         ]);
 
         $this->assertTrue($response->isRedirect(), 'Response should be redirect');
@@ -41,6 +43,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     public function testCreateOrderJson()
     {
         $app = $this->getApplication();
+        $randomValue = $this->setSessionFormToken('prodExportOrder');
 
         $triggered = false;
         $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
@@ -49,7 +52,8 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = $this->XMLHTTPRequest('POST', '/prod/order/', [
             'lst' => $this->getRecord1()->getId(),
-            'deadline' => '+10 minutes'
+            'deadline' => '+10 minutes',
+            'prodExportOrder_token' => $randomValue
         ]);
 
         $this->assertTrue($response->isOk(), 'Invalid response from create order');

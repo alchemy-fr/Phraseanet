@@ -21,6 +21,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use unicode;
 
 class QueryController extends Controller
@@ -121,6 +122,10 @@ class QueryController extends Controller
      */
     public function query(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'searchForm')) {
+            return $this->app->json(['message' => 'invalid search token'], 403);
+        }
+
         $query = (string) $request->request->get('qry');
 
         // since the query comes from a submited form, normalize crlf,cr,lf ...

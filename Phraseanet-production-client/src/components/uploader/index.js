@@ -417,6 +417,8 @@ const uploader = (services) => {
             params.push($('input', $('.collection-status:visible', uploaderInstance.getSettingsBox())).serializeArray());
             params.push($('select', uploaderInstance.getSettingsBox()).serializeArray());
 
+            params.push([{name: 'prodUpload_token', value: $('input[name=prodUpload_token]').val()}]);
+
             $.each(params, function (i, p) {
                 $.each(p, function (i, f) {
                     data.formData.push(f);

@@ -76,6 +76,7 @@ const deleteRecord = (services) => {
             $trash_counter = $form.find(".to_trash_count"),
             $loader = $form.find(".form-action-loader");
         let lst = $("input[name='lst']", $form).val().split(';');
+        let csrfToken = $("input[name='prodDeleteRecord_token']", $form).val();
 
         /**
          *  same parameters for every delete call, except the list of (CHUNKSIZE) records
@@ -85,9 +86,10 @@ const deleteRecord = (services) => {
             type: $form.attr("method"),
             url: $form.attr("action"),
             data: {
-                'lst': ""      // set in f
+                lst: '',      // set in f
+                prodDeleteRecord_token: csrfToken
             },
-            dataType: "json"
+            dataType: 'json'
         };
 
         let runningTasks = 0,   // number of running tasks
@@ -113,6 +115,11 @@ const deleteRecord = (services) => {
             // pop & truncate
             ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
             $.ajax(ajaxParms)
+                .error(function (data) {
+                    fCancel();
+                    $dialog.close();
+                    alert('invalid csrf token delete form');
+                })
                 .success(function (data) {     // prod feedback only if result ok
                     $.each(data, function (i, n) {
                         let imgt = $('#IMGT_' + n),

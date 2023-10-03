@@ -43,5 +43,5 @@
         <input {% if isMultipleDataboxes %} disabled {% endif %} type="checkbox" name="lst" value="" id="new_story_add_sel"/>
         {{ 'Ajouter ma selection courrante' | trans }}
     </label>
-
+    <input type="hidden" name="prodCreateStory_token" value="{{ app['session'].get('prodCreateStory_token') }}">
 </form>

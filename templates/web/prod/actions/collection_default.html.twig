@@ -38,5 +38,6 @@
 
         <input type="hidden" name="act" value="WORK">
         <input type="hidden" name="lst" value="{{ records.serializedList() }}">
+        <input type="hidden" name="prodMoveCollection_token" value="{{ app['session'].get('prodMoveCollection_token') }}">
     </form>
 </div>

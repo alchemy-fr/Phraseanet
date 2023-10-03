@@ -73,10 +73,13 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $randomValue = $this->setSessionFormToken('prodUpload');
+
         $data = DataURI\Data::buildFromFile(__DIR__ . '/../../../../../files/cestlafete.jpg');
         $params = [
-            'base_id' => self::$DI['collection']->get_base_id(),
-            'b64_image' => DataURI\Dumper::dump($data)
+            'base_id'          => self::$DI['collection']->get_base_id(),
+            'b64_image'        => DataURI\Dumper::dump($data),
+            'prodUpload_token' => $randomValue
         ];
 
         $files = [
@@ -122,8 +125,11 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $randomValue = $this->setSessionFormToken('prodUpload');
+
         $params = [
-            'base_id' => self::$DI['collection']->get_base_id()
+            'base_id'           => self::$DI['collection']->get_base_id(),
+            'prodUpload_token'  => $randomValue
         ];
 
         $files = [
@@ -162,8 +168,11 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined');
         $this->mockUserNotificationSettings('eventsmanager_notify_uploadquarantine');
 
+        $randomValue = $this->setSessionFormToken('prodUpload');
+
         $params = [
-            'base_id' => self::$DI['collection']->get_base_id()
+            'base_id'           => self::$DI['collection']->get_base_id(),
+            'prodUpload_token'  => $randomValue
         ];
 
         $files = [
@@ -313,9 +322,12 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUploadForceRecord()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
+        $randomValue = $this->setSessionFormToken('prodUpload');
+
         $params = [
-            'base_id'     => self::$DI['collection']->get_base_id(),
-            'forceAction' => Manager::FORCE_RECORD,
+            'base_id'           => self::$DI['collection']->get_base_id(),
+            'forceAction'       => Manager::FORCE_RECORD,
+            'prodUpload_token'  => $randomValue
         ];
 
         $files = [
@@ -349,10 +361,13 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUploadRecordStatus()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
+        $randomValue = $this->setSessionFormToken('prodUpload');
+
         $params = [
-            'base_id'     => self::$DI['collection']->get_base_id(),
-            'forceAction' => Manager::FORCE_RECORD,
-            'status'      => [ self::$DI['collection']->get_base_id() => [ 4 => 1]],
+            'base_id'           => self::$DI['collection']->get_base_id(),
+            'forceAction'       => Manager::FORCE_RECORD,
+            'status'            => [ self::$DI['collection']->get_base_id() => [ 4 => 1]],
+            'prodUpload_token'  => $randomValue
         ];
 
         $files = [
