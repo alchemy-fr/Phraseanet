@@ -69,7 +69,7 @@ class PSExposeConnectionType extends AbstractType
                 ]
             ])
             ->add('oauth_token_uri', TextType::class, [
-                'label'     => 'admin:phrasea-service-setting:tab:expose:: Oauth token Uri ',
+                'label'     => 'admin:phrasea-service-setting:tab:expose:: OAuth token URI ',
                 'required'  => false,
                 'attr'      => [
                     'class' => 'input-xxlarge',

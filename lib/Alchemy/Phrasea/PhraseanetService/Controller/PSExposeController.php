@@ -82,6 +82,7 @@ class PSExposeController extends Controller
         } else {
             $passSessionNameValue = [
                 'access_token' => $tokenBody['access_token'],
+                'expires_at'   => time() + $tokenBody['expires_in'],
             ];
         }
 
@@ -1324,15 +1325,13 @@ class PSExposeController extends Controller
         if ($config['connection_kind'] == 'password') {
             $tokenInfo = $session->get($passSessionName);
 
-            if (!isset($tokenInfo['expires_at'])) {
-                $accessToken = $tokenInfo['access_token'];
-            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+            if (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
                 $accessToken = $tokenInfo['access_token'];
             } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && $tokenInfo['refresh_expires_at'] > time()) {
                 $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
 
                 if ($resToken->getStatusCode() !== 200) {
-                    return null;
+                    throw new \Exception("Error when get refresh token with status code: " . $resToken->getStatusCode());
                 }
 
                 $refreshtokenBody = $resToken->getBody()->getContents();
@@ -1349,6 +1348,7 @@ class PSExposeController extends Controller
                 } else {
                     $passSessionNameValue = [
                         'access_token' => $refreshtokenBody['access_token'],
+                        'expires_at'   => time() + $refreshtokenBody['expires_in'],
                     ];
                 }
 
@@ -1386,28 +1386,21 @@ class PSExposeController extends Controller
                 'client_id'     => $exposeConfiguration['expose_client_id'],
                 'client_secret' => $exposeConfiguration['expose_client_secret'],
                 'grant_type'    => 'client_credentials',
-//                'scope'         => 'publish'
             ]
         ]);
 
         if ($response->getStatusCode() !== 200) {
-            return null;
+            throw new \Exception("Error when get credential token with status code: " . $resToken->getStatusCode());
         }
 
         $tokenBody = $response->getBody()->getContents();
 
         $tokenBody = json_decode($tokenBody,true);
 
-        if (isset($tokenBody['expires_in'])) {
-            $credentialSessionNameValue = [
-                'access_token' => $tokenBody['access_token'],
-                'expires_at'   => time() + $tokenBody['expires_in'],
-            ];
-        } else {
-            $credentialSessionNameValue = [
-                'access_token' => $tokenBody['access_token'],
-            ];
-        }
+        $credentialSessionNameValue = [
+            'access_token' => $tokenBody['access_token'],
+            'expires_at'   => time() + $tokenBody['expires_in'],
+        ];
 
         $session->set($credentialSessionName, $credentialSessionNameValue);
 
