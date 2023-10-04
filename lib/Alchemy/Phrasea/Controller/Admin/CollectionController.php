@@ -803,7 +803,9 @@ class CollectionController extends Controller
         try {
             if ('' !== trim($prefs)) {
                 $domdoc = new \DOMDocument();
-                if (true === @$domdoc->loadXML($prefs)) {
+                if (true === @$domdoc->loadXML($prefs, LIBXML_NONET | LIBXML_NOBLANKS)) {
+                    $domdoc->formatOutput = true;
+                    $domdoc->saveXML(null, LIBXML_NOEMPTYTAG);
                     $collection->set_prefs($domdoc);
                     $success = true;
                 }
