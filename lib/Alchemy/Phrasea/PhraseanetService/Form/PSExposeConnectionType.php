@@ -2,16 +2,23 @@
 
 namespace Alchemy\Phrasea\PhraseanetService\Form;
 
+use Silex\Application;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 class PSExposeConnectionType extends AbstractType
 {
+    private $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -35,6 +42,14 @@ class PSExposeConnectionType extends AbstractType
                     'client_credentials'    => 'client_credentials',
                     'password'              => 'password'
                 ]
+            ])
+            ->add('auth_provider_name', ChoiceType::class, [
+                'label'    => 'admin:phrasea-service-setting:tab:expose:: auth provider name with type ps-auth',
+                'required' => false,
+                'choice_list' => new ChoiceList(
+                    $this->getEligibleProvider(),
+                    $this->getEligibleProvider()
+                )
             ])
             ->add('expose_name', TextType::class, [
                 'label' =>  'admin:phrasea-service-setting:tab:expose:: Name',
@@ -95,5 +110,15 @@ class PSExposeConnectionType extends AbstractType
     public function getName()
     {
         return 'ps_expose_connection';
+    }
+
+    private function getEligibleProvider()
+    {
+        return array_keys(
+            array_filter($this->app['conf']->get(['authentication', 'providers'], []),
+            function ($provider) {
+                return ($provider['type'] == 'ps-auth' || $provider['type'] == 'PsAuth');
+             })
+        );
     }
 }
