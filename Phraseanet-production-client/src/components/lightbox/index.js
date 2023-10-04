@@ -1036,7 +1036,8 @@ const lightbox = services => {
             url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
             dataType: 'json',
             data: {
-                note: note
+                note: note,
+                lightbox_token: $(button).closest('form').find('input[name=lightbox_token]').val()
             },
             success: function (datas) {
                 _hideNotes(container);

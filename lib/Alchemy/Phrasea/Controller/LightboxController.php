@@ -264,6 +264,8 @@ class LightboxController extends Controller
      */
     private function getValidationTemplate()
     {
+        $this->setSessionFormToken('lightbox');
+
         return 'lightbox/validate.html.twig';
     }
 
@@ -338,6 +340,10 @@ class LightboxController extends Controller
      */
     public function ajaxSetNoteAction(Request $request, $sselcont_id)
     {
+        if (!$this->isCrsfValid($request, 'lightbox')) {
+            return new Response('invalid crsf token form', 403);
+        }
+
         $note = $request->request->get('note');
 
         if (is_null($note)) {

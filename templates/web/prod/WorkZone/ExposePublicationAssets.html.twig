@@ -73,6 +73,7 @@
             {% if capabilitiesEdit %}
                 <div class="set-cover" style="position: absolute;bottom: 0;cursor: pointer;" title="Set as Cover"
                      data-publication-id="{{ publicationId }}" data-asset-id="{{ asset.id }}">
+                    <input name="prodExposeEdit_token" type="hidden" value="{{ app['session'].get('prodExposeEdit_token') }}"/>
 
                     <img src="/assets/common/images/icons/icon_story.gif" title="Set as Cover">
                 </div>

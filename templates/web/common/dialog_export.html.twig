@@ -108,7 +108,7 @@
             <div id="download">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: telechargement' | trans }}</h4>
-                    <form method="post" target="_blank" action="{{ path('check_download') }}" style="text-align: left;">
+                    <form method="post" target="_blank" name="prodExportDownload" action="{{ path('check_download') }}" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         {% for name, values in download.get_display_download() %}
@@ -168,13 +168,14 @@
                             <button type="button" class="download_button btn btn-inverse">{{ 'boutton::telecharger' | trans }}</button>
                             <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                         </div>
+                        <input type="hidden" name="prodExportDownload_token" value="{{ app['session'].get('prodExportDownload_token') }}">
                     </form>
                 </div>
             </div>
             <div id="sendmail">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: envoi par mail' | trans }}</h4>
-                        <form action="{{ path('export_mail') }}" method="post" target="sendmail_target" style="text-align: left;">
+                    <form action="{{ path('export_mail') }}" method="post" name="prodExportEmail" target="sendmail_target" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                             <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px; margin-bottom: 8px;">
@@ -257,6 +258,7 @@
                             <img class="sendmail_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
                             <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                         </div>
+                        <input type="hidden" name="prodExportEmail_token" value="{{ app['session'].get('prodExportEmail_token') }}">
                     </form>
                 </div>
             </div>
@@ -296,7 +298,7 @@
                     {% endif %}
                 {% endfor %}
                 <hr />
-                <form class="form-horizontal">
+                <form class="form-horizontal" name="prodExportOrder">
                     <input type="hidden" name="lst" value="{{lst}}"/>
                     <input type="hidden" name="ssel" value="{{ssttid}}"/>
 
@@ -404,6 +406,7 @@
                         <img class="order_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
                         <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                     </div>
+                    <input type="hidden" name="prodExportOrder_token" value="{{ app['session'].get('prodExportOrder_token') }}">
                 </form>
             </div>
         {% endif %}
@@ -430,7 +433,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <form id="ftp_joined" class="form-horizontal" style="text-align: left;">
+                    <form id="ftp_joined" class="form-horizontal"  name="prodExportFTP" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <div>
@@ -479,6 +482,7 @@
                                 </label>
                             </div>
                         {% endif %}
+                        <input type="hidden" name="prodExportFTP_token" value="{{ app['session'].get('prodExportFTP_token') }}">
                     </form>
                     <div class="buttons_line">
                         <button type="button" class="tryftp_button btn btn-inverse">{{ 'boutton::essayer' | trans }}</button>

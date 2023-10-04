@@ -17,6 +17,7 @@
             <div>
                 <button class="btn btn-primary auth-sign-in">{{ 'prod:expose:connection:Sign in' |trans }}</button>
             </div>
+            <input type="hidden" name="prodExposeLogin_token" value="{{ app['session'].get('prodExposeLogin_token') }}">
         </form>
     </div>
 </div>

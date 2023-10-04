@@ -210,6 +210,10 @@ const workzone = (services) => {
                 data: formData,
                 success: function (data) {
                     $('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function (xhr, status, error) {
+                    let err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -296,6 +300,10 @@ const workzone = (services) => {
                 data: formData,
                 success: function (data) {
                     $('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function (xhr, status, error) {
+                    let err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
 
@@ -1068,7 +1076,8 @@ const workzone = (services) => {
                 dataType: 'json',
                 data: {
                     exposeName: `${exposeName}`,
-                    publicationData: publicationData
+                    publicationData: publicationData,
+                    prodExposeEdit_token: $(this).find('input[name="prodExposeEdit_token"]').val()
                 },
                 success: function (data) {
                     if (data.success) {

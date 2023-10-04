@@ -10135,6 +10135,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -10221,6 +10225,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error2) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -10981,7 +10989,8 @@ var workzone = function workzone(services) {
                 dataType: 'json',
                 data: {
                     exposeName: '' + exposeName,
-                    publicationData: publicationData
+                    publicationData: publicationData,
+                    prodExposeEdit_token: (0, _jquery2.default)(this).find('input[name="prodExposeEdit_token"]').val()
                 },
                 success: function success(data) {
                     if (data.success) {
@@ -12284,7 +12293,9 @@ var thesaurusService = function thesaurusService(services) {
                     sbas[i].seeker = _jquery2.default.ajax({
                         url: _zurl,
                         type: 'POST',
-                        data: [],
+                        data: {
+                            prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                        },
                         dataType: 'json',
                         success: function success(j) {
                             var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -12321,7 +12332,9 @@ var thesaurusService = function thesaurusService(services) {
                 sbas[i].seeker = _jquery2.default.ajax({
                     url: zurl,
                     type: 'POST',
-                    data: [],
+                    data: {
+                        prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                    },
                     dataType: 'json',
                     success: function success(j) {
                         var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -22042,7 +22055,8 @@ var moveRecord = function moveRecord(services) {
             var datas = {
                 lst: (0, _jquery2.default)('input[name="lst"]', $form).val(),
                 base_id: (0, _jquery2.default)('select[name="base_id"]', $form).val(),
-                chg_coll_son: coll_son
+                chg_coll_son: coll_son,
+                prodMoveCollection_token: (0, _jquery2.default)('input[name="prodMoveCollection_token"]', $form).val()
             };
 
             var buttonPanel = $dialog.getDomElement().closest('.ui-dialog').find('.ui-dialog-buttonpane');
@@ -62300,6 +62314,7 @@ var deleteRecord = function deleteRecord(services) {
                 $trash_counter = $form.find(".to_trash_count"),
                 $loader = $form.find(".form-action-loader");
             var lst = (0, _jquery2.default)("input[name='lst']", $form).val().split(';');
+            var csrfToken = (0, _jquery2.default)("input[name='prodDeleteRecord_token']", $form).val();
 
             /**
              *  same parameters for every delete call, except the list of (CHUNKSIZE) records
@@ -62309,9 +62324,10 @@ var deleteRecord = function deleteRecord(services) {
                 type: $form.attr("method"),
                 url: $form.attr("action"),
                 data: {
-                    'lst': "" // set in f
+                    lst: '', // set in f
+                    prodDeleteRecord_token: csrfToken
                 },
-                dataType: "json"
+                dataType: 'json'
             };
 
             var runningTasks = 0,
@@ -62337,7 +62353,11 @@ var deleteRecord = function deleteRecord(services) {
                 }
                 // pop & truncate
                 ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
-                _jquery2.default.ajax(ajaxParms).success(function (data) {
+                _jquery2.default.ajax(ajaxParms).error(function (data) {
+                    fCancel();
+                    $dialog.close();
+                    alert('invalid csrf token delete form');
+                }).success(function (data) {
                     // prod feedback only if result ok
                     _jquery2.default.each(data, function (i, n) {
                         var imgt = (0, _jquery2.default)('#IMGT_' + n),
@@ -68257,6 +68277,8 @@ var uploader = function uploader(services) {
             params.push(data.context.find('input, select').serializeArray());
             params.push((0, _jquery2.default)('input', (0, _jquery2.default)('.collection-status:visible', uploaderInstance.getSettingsBox())).serializeArray());
             params.push((0, _jquery2.default)('select', uploaderInstance.getSettingsBox()).serializeArray());
+
+            params.push([{ name: 'prodUpload_token', value: (0, _jquery2.default)('input[name=prodUpload_token]').val() }]);
 
             _jquery2.default.each(params, function (i, p) {
                 _jquery2.default.each(p, function (i, f) {

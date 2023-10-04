@@ -44,6 +44,11 @@ class ExportController extends Controller
             $request->request->get('story')
         );
 
+        $this->setSessionFormToken('prodExportDownload');
+        $this->setSessionFormToken('prodExportEmail');
+        $this->setSessionFormToken('prodExportFTP');
+        $this->setSessionFormToken('prodExportOrder');
+
         return new Response($this->render('common/dialog_export.html.twig', [
             'download'             => $download,
             'ssttid'               => $request->request->get('ssel'),
@@ -90,6 +95,10 @@ class ExportController extends Controller
      */
     public function exportFtp(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExportFTP')) {
+            return $this->app->json(['message' => 'invalid export ftp form'], 403);
+        }
+
         $download = new \set_exportftp($this->app, $request->request->get('lst'), $request->request->get('ssttid'));
 
         $mandatoryParameters = ['address', 'login', 'obj'];
@@ -153,6 +162,10 @@ class ExportController extends Controller
      */
     public function exportMail(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExportEmail')) {
+            return $this->app->json(['message' => 'invalid export mail form'], 403);
+        }
+
         set_time_limit(0);
         session_write_close();
         ignore_user_abort(true);

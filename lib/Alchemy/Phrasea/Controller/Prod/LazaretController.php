@@ -53,6 +53,8 @@ class LazaretController extends Controller
             $lazaretFiles = $this->getLazaretFileRepository()->findPerPage($baseIds, $offset, $perPage);
         }
 
+        $this->setSessionFormToken('prodLazaret');
+
         return $this->render('prod/upload/lazaret.html.twig', [
             'lazaretFiles' => $lazaretFiles,
             'currentPage'  => $page,
@@ -110,6 +112,12 @@ class LazaretController extends Controller
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
+        if (!$this->isCrsfValid($request, 'prodLazaret')) {
+            $ret['message'] = 'invalid prodLazaret token';
+
+            return $this->app->json($ret, 403);
+        }
+
         //Mandatory parameter
         if (null === $request->request->get('bas_id')) {
             $ret['message'] = $this->app->trans('You must give a destination collection');
@@ -146,8 +154,14 @@ class LazaretController extends Controller
      *
      * @return Response
      */
-    public function denyElement($file_id)
+    public function denyElement(Request $request, $file_id)
     {
+        if (!$this->isCrsfValid($request, 'prodLazaret')) {
+            $ret['message'] = 'invalid prodLazaret token';
+
+            return $this->app->json($ret, 403);
+        }
+
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
 
@@ -192,6 +206,12 @@ class LazaretController extends Controller
     public function acceptElement(Request $request, $file_id)
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
+
+        if (!$this->isCrsfValid($request, 'prodLazaret')) {
+            $ret['message'] = 'invalid prodLazaret token';
+
+            return $this->app->json($ret, 403);
+        }
 
         //Mandatory parameter
         if (null === $recordId = $request->request->get('record_id')) {

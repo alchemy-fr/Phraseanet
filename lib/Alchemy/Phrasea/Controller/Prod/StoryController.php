@@ -45,6 +45,8 @@ class StoryController extends Controller
             }
         }
 
+        $this->setSessionFormToken('prodCreateStory');
+
         return $this->render('prod/Story/Create.html.twig', [
             'isMultipleDataboxes'   => count($databoxes) > 1 ? 1 : 0,
             'isMultipleCollections' => count($collections) > 1 ? 1 : 0,
@@ -56,6 +58,10 @@ class StoryController extends Controller
 
     public function postCreateFormAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodCreateStory')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $collection = \collection::getByBaseId($this->app, $request->request->get('base_id'));
 
         if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), \ACL::CANADDRECORD)) {
@@ -209,6 +215,8 @@ class StoryController extends Controller
             throw new \Exception('This is not a story');
         }
 
+        $this->setSessionFormToken('prodStoryReorder');
+
         return $this->renderResponse('prod/Story/Reorder.html.twig', [
             'story' => $story,
         ]);
@@ -216,6 +224,10 @@ class StoryController extends Controller
 
     public function reorderAction(Request $request, $sbas_id, $record_id)
     {
+        if (!$this->isCrsfValid($request, 'prodStoryReorder')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         try {
             $story = new \record_adapter($this->app, $sbas_id, $record_id);
             $previousDescription = $story->getRecordDescriptionAsArray();

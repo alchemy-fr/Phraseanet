@@ -33,6 +33,8 @@ class PropertyController extends Controller
 
         $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CHGSTATUS]);
 
+        $this->setSessionFormToken('prodPropertyStatus');
+
         $databoxes = $records->databoxes();
         if (count($databoxes) > 1) {
             return new Response($this->render('prod/actions/Property/index.html.twig', [
@@ -103,6 +105,8 @@ class PropertyController extends Controller
             $recordsType[$sbasId][$record->getType()][] = $record;
         }
 
+        $this->setSessionFormToken('prodPropertyType');
+
         return new Response($this->render('prod/actions/Property/type.html.twig', [
             'records'     => $records,
             'recordsType' => $recordsType,
@@ -117,6 +121,10 @@ class PropertyController extends Controller
      */
     public function changeStatus(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodPropertyStatus')) {
+            return $this->app->json(['message' => 'invalid change status form'], 403);
+        }
+
         $applyStatusToChildren = $request->request->get('apply_to_children', []);
         $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CHGSTATUS]);
         $updated = [];
@@ -151,6 +159,10 @@ class PropertyController extends Controller
      */
     public function changeType(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodPropertyType')) {
+            return $this->app->json(['message' => 'invalid change type form'], 403);
+        }
+
         $typeLst = $request->request->get('types', []);
         $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
         $mimeLst = $request->request->get('mimes', []);

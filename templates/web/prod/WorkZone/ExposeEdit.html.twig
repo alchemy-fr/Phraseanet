@@ -175,7 +175,7 @@
                         </div>
                     </div>
                 </div>
-
+                <input type="hidden" name="prodExposeEdit_token" value="{{ app['session'].get('prodExposeEdit_token') }}">
             </form>
 
 
@@ -382,7 +382,8 @@
                     dataType: 'json',
                     data: {
                         exposeName: "{{ exposeName }}",
-                        publicationData: advancedSetting.val()
+                        publicationData: advancedSetting.val(),
+                        prodExposeEdit_token: $('#publication-json input[name="prodExposeEdit_token"]').val()
                     },
                     success: function (data) {
                         if (data.success) {
