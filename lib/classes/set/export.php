@@ -563,18 +563,32 @@ class set_export extends set_abstract
                             'to_watermark' => false
                         ];
 
+                        $stampedPath = null;
+                        if($this->app['conf']->get(['registry', 'actions', 'export-stamp-choice']) !== true || $stampMethod !== self::NO_STAMP ){
+                            // stamp is mandatory, or user did not check "no stamp" : we must apply stamp
+                            if($stampMethod === self::STAMP_SYNC) {
+                                // we prepare a direct download, we must stamp now
+                                $path = \recordutils_image::stamp($this->app, $sd[$subdefName]);
+                                if ($path && file_exists($path)) {
+                                    $stampedPath = $path;
+                                    $tmp_pathfile['path'] = dirname($path);
+                                    $tmp_pathfile['file'] = basename($path);
+                                }
+                            }
+                            else {
+                                // we prepare an email or ftp download : the worker will apply stamp
+                                $tmp_pathfile ['to_stamp'] = true;
+                            }
+                        }
+
                         if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::NOWATERMARK)
                             && !$this->app->getAclForUser($user)->has_preview_grant($download_element)
                             && $sd[$subdefName]->get_type() == media_subdef::TYPE_IMAGE )
                         {
-                            $path = recordutils_image::watermark($this->app, $sd[$subdefName]);
+                            $path = recordutils_image::watermark($this->app, $sd[$subdefName], $stampedPath);
                             if (file_exists($path)) {
-                                $tmp_pathfile = [
-                                    'path' => dirname($path),
-                                    'file' => basename($path),
-                                    'to_stamp' => false,
-                                    'to_watermark' => false
-                                ];
+                                $tmp_pathfile['path'] = dirname($path);
+                                $tmp_pathfile['file'] = basename($path);
                                 $subdef_ok = true;
                             }
                         }
