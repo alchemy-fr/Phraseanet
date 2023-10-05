@@ -155,6 +155,64 @@ class ExportController extends Controller
     }
 
     /**
+     * Async Export
+     *
+     * @param  Request      $request
+     * @return JsonResponse
+     */
+    public function exportAsync(Request $request)
+    {
+        if (!$this->isCrsfValid($request, 'prodExportEmail')) {
+            return $this->app->json(['message' => 'invalid export mail form'], 403);
+        }
+
+        set_time_limit(0);
+        session_write_close();
+        ignore_user_abort(true);
+
+        $lst = $request->request->get('lst', '');
+        $ssttid = $request->request->get('ssttid', '');
+
+        //prepare export
+        $download = new \set_export($this->app, $lst, $ssttid);
+        $list = $download->prepare_export(
+            $this->getAuthenticatedUser(),
+            $this->getFilesystem(),
+            (array) $request->request->get('obj'),
+            $request->request->get("type") == "title" ? : false,
+            $request->request->get('businessfields'),
+            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_ASYNC,
+            true
+        );
+
+        $list['export_name'] = sprintf("%s.zip", $download->getExportName());
+
+        $token = $this->getTokenManipulator()->createEmailExportToken(serialize($list));
+
+            $tokenValue = $token->getValue();
+
+            $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
+
+            $params = [
+                'url'               =>  $url,
+                'textmail'          =>  $request->request->get('textmail'),
+                'reading_confirm'   =>  !!$request->request->get('reading_confirm', false),
+                'ssttid'            =>  $ssttid = $request->request->get('ssttid', ''),
+                'lst'               =>  $lst = $request->request->get('lst', ''),
+            ];
+
+            $this->dispatch(PhraseaEvents::EXPORT_ASYNC_CREATE, new ExportAsyncEvent(
+                $tokenValue,
+                $params
+            ));
+
+        return $this->app->json([
+            'success' => true,
+            'message' => ''
+        ]);
+    }
+
+    /**
      * Export document by mail
      *
      * @param  Request      $request
