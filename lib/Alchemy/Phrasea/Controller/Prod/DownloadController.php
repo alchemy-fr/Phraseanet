@@ -58,6 +58,7 @@ class DownloadController extends Controller
             $this->getAuthenticatedUser(), $ssttid, $lst, $subdefs, $download->getExportName())
         );
 
+        /** @see DoDownloadController::prepareDownload */
         return $this->app->redirectPath('prepare_download', ['token' => $token->getValue()]);
     }
 

@@ -45,6 +45,7 @@ class Download implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->before(new OAuthListener(['exit_not_present' => false]));
         $this->getFirewall($app)->addMandatoryAuthentication($controllers);
 
+        /** @uses DownloadController::checkDownload */
         $controllers->post('/', 'controller.prod.download:checkDownload')
             ->bind('check_download');
 

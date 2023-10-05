@@ -49,15 +49,23 @@ class Export implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->before(new OAuthListener(['exit_not_present' => false]));
         $this->getFirewall($app)->addMandatoryAuthentication($controllers);
 
+        /** @uses ExportController::displayMultiExport */
         $controllers->post('/multi-export/', 'controller.prod.export:displayMultiExport')
             ->bind('export_multi_export');
 
+        /** @uses ExportController::exportMail */
         $controllers->post('/mail/', 'controller.prod.export:exportMail')
             ->bind('export_mail');
 
+        /** @uses ExportController::exportAsync */
+        $controllers->post('/async/', 'controller.prod.export:exportAsync')
+            ->bind('export_async');
+
+        /** @uses ExportController::exportFtp */
         $controllers->post('/ftp/', 'controller.prod.export:exportFtp')
             ->bind('export_ftp');
 
+        /** @uses ExportController::testFtpConnexion */
         $controllers->post('/ftp/test/', 'controller.prod.export:testFtpConnexion')
             ->bind('export_ftp_test');
 
