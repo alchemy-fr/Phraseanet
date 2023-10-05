@@ -353,7 +353,7 @@ RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt
     && docker-php-ext-install -j$(nproc) ldap \
     && docker-php-ext-install zip mbstring pdo_mysql gettext mcrypt \
     && pecl install \
-        redis \
+        redis-5.3.7 \
     && docker-php-ext-enable redis \
     && pecl clear-cache \
     && docker-php-source delete
