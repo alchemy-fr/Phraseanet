@@ -46,16 +46,19 @@ class DoDownload implements ControllerProviderInterface, ServiceProviderInterfac
     {
         $controllers = $this->createCollection($app);
 
+        /** @uses DoDownloadController::prepareDownload */
         $controllers->get('/{token}/prepare/', 'controller.prod.do-download:prepareDownload')
             ->before($app['middleware.token.converter'])
             ->bind('prepare_download')
             ->assert('token', '[a-zA-Z0-9]{8,32}');
 
+        /** @uses DoDownloadController::downloadDocuments */
         $controllers->match('/{token}/get/', 'controller.prod.do-download:downloadDocuments')
             ->before($app['middleware.token.converter'])
             ->bind('document_download')
             ->assert('token', '[a-zA-Z0-9]{8,32}');
 
+        /** @uses DoDownloadController::downloadExecute */
         $controllers->post('/{token}/execute/', 'controller.prod.do-download:downloadExecute')
             ->before($app['middleware.token.converter'])
             ->bind('execute_download')

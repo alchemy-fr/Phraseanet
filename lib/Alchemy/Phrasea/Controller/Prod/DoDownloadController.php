@@ -71,6 +71,7 @@ class DoDownloadController extends Controller
         }
 
         return new Response($this->render(
+            /** @uses templates/web/prod/actions/Download/prepare.html.twig */
             '/prod/actions/Download/prepare.html.twig', [
             'module_name'   => $this->app->trans('Export'),
             'module'        => $this->app->trans('Export'),
