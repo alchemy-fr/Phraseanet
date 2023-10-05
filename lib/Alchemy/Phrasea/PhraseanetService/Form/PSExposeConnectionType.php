@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\PhraseanetService\Form;
 
 use Silex\Application;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -46,8 +47,7 @@ class PSExposeConnectionType extends AbstractType
             ->add('auth_provider_name', ChoiceType::class, [
                 'label'    => 'admin:phrasea-service-setting:tab:expose:: auth provider name with type ps-auth',
                 'required' => false,
-                'choice_list' => new ChoiceList(
-                    $this->getEligibleProvider(),
+                'choice_list' => new ArrayChoiceList(
                     $this->getEligibleProvider()
                 )
             ])
@@ -114,11 +114,13 @@ class PSExposeConnectionType extends AbstractType
 
     private function getEligibleProvider()
     {
-        return array_keys(
+        $values = array_keys(
             array_filter($this->app['conf']->get(['authentication', 'providers'], []),
             function ($provider) {
                 return ($provider['type'] == 'ps-auth' || $provider['type'] == 'PsAuth');
              })
         );
+
+        return array_combine($values, $values);
     }
 }
