@@ -514,8 +514,7 @@ class ExposeUploadWorker implements WorkerInterface
                     'form_params' => [
                         'client_id'     => $this->exposeConfiguration['expose_client_id'],
                         'client_secret' => $this->exposeConfiguration['expose_client_secret'],
-                        'grant_type'    => 'client_credentials',
-                        'scope'         => 'publish'
+                        'grant_type'    => 'client_credentials'
                     ]
                 ]);
 

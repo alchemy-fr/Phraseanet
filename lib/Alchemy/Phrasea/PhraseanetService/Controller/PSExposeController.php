@@ -1351,8 +1351,9 @@ class PSExposeController extends Controller
         $accessToken = '';
         if ($config['connection_kind'] == 'password') {
             $tokenInfo = $session->get($passSessionName);
-
-            if (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+            if (!isset($tokenInfo['expires_at'])) {
+                $accessToken = $tokenInfo['access_token'];
+            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
                 $accessToken = $tokenInfo['access_token'];
             } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && $tokenInfo['refresh_expires_at'] > time()) {
                 $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
@@ -1417,7 +1418,7 @@ class PSExposeController extends Controller
         ]);
 
         if ($response->getStatusCode() !== 200) {
-            throw new \Exception("Error when get credential token with status code: " . $resToken->getStatusCode());
+            throw new \Exception("Error when get credential token with status code: " . $response->getStatusCode());
         }
 
         $tokenBody = $response->getBody()->getContents();
