@@ -670,16 +670,11 @@
         <div class="expose-header">
             <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
                 {% set expose_list = app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
-                {% set providerId = app['session'].get('auth_provider.id') %}
 
                 <select id="expose_list" name="expose_list" class="expose_list">
                     <option value="">{{ 'prod:expose:select expose' | trans }}</option>
                     {% for key in expose_list|keys %}
-                        {% if (
-                            (providerId is not null and expose_list[key].auth_provider_name == providerId)
-                            or providerId is empty)
-                            and expose_list[key].activate_expose  %}
-
+                        {% if expose_list[key].activate_expose  %}
                             <option value="{{ key }}">{{ key }}</option>
                         {% endif %}
                     {% endfor %}
