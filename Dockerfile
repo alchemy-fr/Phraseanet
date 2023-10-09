@@ -325,7 +325,7 @@ CMD ["nginx", "-g", "daemon off;"]
 HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
 
 #########################################################################
-# phrasaseanet adapted simplesaml service provider 
+# phraseanet adapted simplesaml service provider 
 #########################################################################
 
 FROM php:7.0-fpm-stretch as phraseanet-saml-sp
