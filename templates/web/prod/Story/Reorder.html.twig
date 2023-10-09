@@ -18,6 +18,7 @@
             <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.getNumber() }}"/>
         {% endfor %}
         <input type="submit" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}"/>
+        <input type="hidden" name="prodStoryReorder_token" value="{{ app['session'].get('prodStoryReorder_token') }}">
     </form>
 </div>
 <div style="top:45px;overflow:auto;" id="reorder_box" class="row-fluid">

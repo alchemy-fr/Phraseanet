@@ -90,6 +90,11 @@ class RootController extends Controller
 
         $conf = $this->getConf();
 
+        $this->setSessionFormToken('reportConnection');
+        $this->setSessionFormToken('reportDownload');
+        $this->setSessionFormToken('reportRecord');
+
+
         return $this->render('report/report_layout_child.html.twig', [
             'ajax_dash'     => true,
             'dashboard'     => null,

@@ -127,6 +127,11 @@ class ToolsController extends Controller
             $substituables = [];
         }
 
+        $this->setSessionFormToken('prodToolsSubdef');
+        $this->setSessionFormToken('prodToolsRotate');
+        $this->setSessionFormToken('prodToolsHDSubstitution');
+        $this->setSessionFormToken('prodToolsThumbSubstitution');
+
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'              => $records,
             'record'               => $record,
@@ -142,6 +147,10 @@ class ToolsController extends Controller
 
     public function rotateAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsRotate')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid rotate form'], 403);
+        }
+
         $records = RecordsRequest::fromRequest($this->app, $request, false);
         $rotation = (int)$request->request->get('rotation', 90);
         $rotation %= 360;
@@ -181,6 +190,10 @@ class ToolsController extends Controller
 
     public function imageAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsSubdef')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid create subview form'], 403);
+        }
+
         $return = ['success' => true];
 
         $force = $request->request->get('force_substitution') == '1';
@@ -227,6 +240,10 @@ class ToolsController extends Controller
 
     public function hddocAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsHDSubstitution')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid document substitution form'], 403);
+        }
+
         $success = false;
         $message = $this->app->trans('An error occured');
 
@@ -288,6 +305,10 @@ class ToolsController extends Controller
 
     public function changeThumbnailAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsThumbSubstitution')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid thumbnail substitution form'], 403);
+        }
+
         $file = $request->files->get('newThumb');
 
         if (empty($file)) {

@@ -33,6 +33,8 @@ class PrinterTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRoutePrintPdf()
     {
+        $randomValue = $this->setSessionFormToken('prodPrint');
+
         $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
@@ -53,7 +55,8 @@ class PrinterTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($layouts as $layout) {
             self::$DI['client']->request('POST', '/prod/printer/print.pdf', [
                 'lst' => $lst,
-                'lay' => $layout
+                'lay' => $layout,
+                'prodPrint_token' => $randomValue
                 ]
             );
 

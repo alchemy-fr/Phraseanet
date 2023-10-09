@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Report\ReportConnections;
 use Alchemy\Phrasea\Report\ReportActions;
 use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportRecords;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,6 +58,8 @@ class ProdReportController extends Controller
         $this->anonymousReport = $anonymousReport;
         $this->acl             = $acl;
         $this->appbox          = $appbox;
+
+        parent::__construct($appbox->getPhraseApplication());
     }
 
     /**
@@ -77,11 +80,15 @@ class ProdReportController extends Controller
      *
      * @param Request $request
      * @param $sbasId
-     * @return RedirectResponse|StreamedResponse
+     * @return RedirectResponse|StreamedResponse|JsonResponse
      */
     public function connectionsAction(Request $request, $sbasId)
     {
         if ($request->isMethod("POST")) {
+            if (!$this->isCrsfValid($request, 'reportConnection')) {
+                return new JsonResponse(['message' => 'invalid report connection token'], 403);
+            }
+
             if (!($extension = $request->get('format'))) {
                 $extension = 'csv';
             }
@@ -123,11 +130,15 @@ class ProdReportController extends Controller
      *
      * @param Request $request
      * @param $sbasId
-     * @return RedirectResponse|StreamedResponse
+     * @return RedirectResponse|StreamedResponse|JsonResponse
      */
     public function downloadsAction(Request $request, $sbasId)
     {
         if ($request->isMethod("POST")) {
+            if (!$this->isCrsfValid($request, 'reportDownload')) {
+                return new JsonResponse(['message' => 'invalid report download token'], 403);
+            }
+
             if(!($extension = $request->get('format'))) {
                 $extension = 'csv';
             }
@@ -172,11 +183,15 @@ class ProdReportController extends Controller
      *
      * @param Request $request
      * @param $sbasId
-     * @return RedirectResponse|StreamedResponse
+     * @return RedirectResponse|StreamedResponse|JsonResponse
      */
     public function recordsAction(Request $request, $sbasId)
     {
         if ($request->isMethod("POST")) {
+            if (!$this->isCrsfValid($request, 'reportRecord')) {
+                return new JsonResponse(['message' => 'invalid report record token'], 403);
+            }
+
             if (!($extension = $request->get('format'))) {
                 $extension = 'csv';
             }

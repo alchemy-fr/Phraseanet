@@ -1440,6 +1440,10 @@ class ThesaurusXmlHttpController extends Controller
 
     public function searchTermJson(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodTabThesaurus')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form token'], 403);
+        }
+
         $lng = $request->get('lng');
 
         $html = '';

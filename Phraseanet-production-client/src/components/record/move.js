@@ -48,7 +48,8 @@ const moveRecord = (services) => {
             var datas = {
                 lst: $('input[name="lst"]', $form).val(),
                 base_id: $('select[name="base_id"]', $form).val(),
-                chg_coll_son: coll_son
+                chg_coll_son: coll_son,
+                prodMoveCollection_token: $('input[name="prodMoveCollection_token"]', $form).val()
             };
 
             var buttonPanel = $dialog.getDomElement()
