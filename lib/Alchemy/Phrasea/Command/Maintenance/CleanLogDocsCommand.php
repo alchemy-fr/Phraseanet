@@ -17,7 +17,7 @@ class CleanLogDocsCommand extends Command
         parent::__construct('clean:log_docs');
 
         $this
-            ->setDescription('clean the log_docs for all databox (if not specified) or a specific databox_id ')
+            ->setDescription('Beta - clean the log_docs for all databox (if not specified) or a specific databox_id ')
             ->addOption('databox_id', null, InputOption::VALUE_REQUIRED,                             'the databox to clean')
             ->addOption('older_than',       null, InputOption::VALUE_REQUIRED,                             'delete older than <OLDER_THAN>')
             ->addOption('action',       null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,                             'download, mail, ftp, delete (if delete , delete also log entry for all events like push, add , validate, edit, collection, status, print, substit, publish for this record_id)')

@@ -14,7 +14,7 @@ class CleanLogViewCommand extends Command
         parent::__construct('clean:log_view');
 
         $this
-            ->setDescription('clean the log_view for all databox (if not specified) or a specific databox_id ')
+            ->setDescription('Beta - clean the log_view for all databox (if not specified) or a specific databox_id ')
             ->addOption('databox_id',       null, InputOption::VALUE_REQUIRED,                             'the databox to clean')
             ->addOption('older_than',       null, InputOption::VALUE_REQUIRED,                             'delete older than <OLDER_THAN>')
             ->addOption('dry-run',        null, InputOption::VALUE_NONE,                                 'dry run, list and count')
