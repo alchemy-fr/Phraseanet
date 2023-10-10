@@ -11,7 +11,7 @@ class CleanLogViewCommand extends Command
 {
     public function __construct()
     {
-        parent::__construct('BETA - Clean:log_view');
+        parent::__construct('clean:log_view');
 
         $this
             ->setDescription('clean the log_view for all databox (if not specified) or a specific databox_id ')
@@ -77,12 +77,19 @@ class CleanLogViewCommand extends Command
                     $stmt->closeCursor();
 
                     $output->writeln(sprintf("\n \n dry-run , %d log view entry to delete for databox %s", count($rows), $databox->get_dbname()));
+                    // displayed only the 1000 first row to avoid memory leak
+                    $displayedRows = array_slice($rows, 0, 1000);
+                    if (count($rows) > 1000) {
+                        array_push($displayedRows, array_fill_keys(['id', 'date', 'record_id', 'coll_id'], ' ... '));
+                        array_push($displayedRows, array_fill_keys(['id', 'date', 'record_id', 'coll_id'], ' ... '));
+                    }
                     $logEntryTable = $this->getHelperSet()->get('table');
                     $headers = ['id', 'date', 'record_id', 'coll_id'];
                     $logEntryTable
                         ->setHeaders($headers)
-                        ->setRows($rows)
+                        ->setRows($displayedRows)
                         ->render($output);
+
                 } else {
                     $stmt = $databox->get_connection()->executeQuery($sqlDelete);
 

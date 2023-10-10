@@ -14,7 +14,7 @@ class CleanLogDocsCommand extends Command
 
     public function __construct()
     {
-        parent::__construct('BETA - Clean:log_docs');
+        parent::__construct('clean:log_docs');
 
         $this
             ->setDescription('clean the log_docs for all databox (if not specified) or a specific databox_id ')
@@ -112,11 +112,19 @@ class CleanLogDocsCommand extends Command
                     }
 
                     $output->writeln(sprintf("\n \n dry-run , %d log docs entry to delete for databox %s", count($rowsActionDelete), $databox->get_dbname()));
+                    // displayed only the 1000 first row to avoid memory leak
+
+                    $displayedRows = array_slice($rowsActionDelete, 0, 1000);
+                    if (count($rows) > 1000) {
+                        array_push($displayedRows, array_fill_keys(['id', 'log_id', 'date', 'record_id', 'final', 'action'], ' ... '));
+                        array_push($displayedRows, array_fill_keys(['id', 'log_id', 'date', 'record_id', 'final', 'action'], ' ... '));
+                    }
+
                     $logEntryTable = $this->getHelperSet()->get('table');
                     $headers = ['id', 'log_id', 'date', 'record_id', 'final', 'action'];
                     $logEntryTable
                         ->setHeaders($headers)
-                        ->setRows($rowsActionDelete)
+                        ->setRows($displayedRows)
                         ->render($output);
 
                 } else {
