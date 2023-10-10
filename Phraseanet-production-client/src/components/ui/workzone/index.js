@@ -1641,12 +1641,15 @@ const workzone = (services) => {
                     },
                     dataType: 'json',
                     success: function (data) {
-                        setTimeout(function(){
-                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                            }
-                            , 6000);
+                        if (data.success) {
+                            setTimeout(function () {
+                                    getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                                }
+                                , 6000);
+                        } else {
+                            $('.refresh-list').trigger('click');
+                        }
 
-                        console.log(data.message);
                     }
                 });
             }
