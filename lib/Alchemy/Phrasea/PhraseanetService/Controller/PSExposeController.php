@@ -1355,7 +1355,7 @@ class PSExposeController extends Controller
                 $accessToken = $tokenInfo['access_token'];
             } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
                 $accessToken = $tokenInfo['access_token'];
-            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && $tokenInfo['refresh_expires_at'] > time()) {
+            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && isset($tokenInfo['refresh_expires_at']) && $tokenInfo['refresh_expires_at'] > time()) {
                 $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
 
                 if ($resToken->getStatusCode() !== 200) {
