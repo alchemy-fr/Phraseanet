@@ -15,6 +15,7 @@ class MessagePublisher
     const CREATE_RECORD_TYPE   = 'createRecord';
     const DELETE_RECORD_TYPE   = 'deleteRecord';
     const EXPORT_MAIL_TYPE     = 'exportMail';
+    const DOWNLOAD_ASYNC_TYPE  = 'downloadAsync';
     const EXPOSE_UPLOAD_TYPE   = 'exposeUpload';
     const FTP_TYPE             = 'ftp';
     const POPULATE_INDEX_TYPE  = 'populateIndex';

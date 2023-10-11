@@ -7441,6 +7441,7 @@ var exportRecord = function exportRecord(services) {
     var url = configService.get('baseUrl');
     var $container = null;
     var initialize = function initialize() {
+
         $container = (0, _jquery2.default)('body');
         $container.on('click', '.record-export-action', function (event) {
             event.preventDefault();
@@ -7579,6 +7580,86 @@ var exportRecord = function exportRecord(services) {
             $dialog.close();
         });
 
+        // $('#download_async .download_button_async').bind('click', function () {
+        //     if (!check_subdefs($('#download_async'), dataConfig)) {
+        //         return false;
+        //     }
+        //
+        //     if (!check_TOU($('#download_async'), dataConfig)) {
+        //         return false;
+        //     }
+        //
+        //     var total = 0;
+        //     var count = 0;
+        //
+        //     $('input[name="obj[]"]', $('#download_async')).each(function () {
+        //         var total_el = $(
+        //             '#download_async input[name=download_' + $(this).val() + ']'
+        //         );
+        //         var count_el = $(
+        //             '#download_async input[name=count_' + $(this).val() + ']'
+        //         );
+        //         if ($(this).prop('checked')) {
+        //             total += parseInt($(total_el).val(), 10);
+        //             count += parseInt($(count_el).val(), 10);
+        //         }
+        //     });
+        //
+        //     if (count > 1 && total / 1024 / 1024 > dataConfig.maxDownload) {
+        //         if (
+        //             confirm(
+        //                 `${dataConfig.msg.fileTooLarge} \n ${dataConfig.msg
+        //                     .fileTooLargeAlt}`
+        //             )
+        //         ) {
+        //             $(
+        //                 'input[name="obj[]"]:checked',
+        //                 $('#download_async')
+        //             ).each(function (i, n) {
+        //                 $(
+        //                     'input[name="obj[]"][value="' + $(n).val() + '"]',
+        //                     $('#sendmail')
+        //                 ).prop('checked', true);
+        //             });
+        //
+        //             $(document).find('input[name="taglistdestmail"]').tagsinput('add', dataConfig.user.email);
+        //
+        //             var tabs = $('.tabs', $dialog.getDomElement());
+        //             tabs.tabs('option', 'active', 1);
+        //         }
+        //
+        //         return false;
+        //     }
+        //     $('#download_async form').submit();
+
+
+        // // Enable pusher logging - don't include this in production
+        // Pusher.logToConsole = true;
+        // const pusher = new Pusher('07b97d8d50b1f2b3d515', {
+        //     cluster: 'eu'
+        // });
+        // const channel = pusher.subscribe("my-channel");
+        // pusher.connection.bind("state_change", function (states) {
+        //     // states = {previous: 'oldState', current: 'newState'}
+        //     console.log("========== connection changed : ========== ", states);
+        // });
+        // channel.bind("my-event", (data) => {
+        //     // Method to be dispatched on trigger.
+        //     console.log("========== received from pusher : ========== ", data);
+        //     channel.unbind("my-event");
+        //     console.log("========== channel unbinded ========== ");
+        //     channel.disconnect();
+        //     console.log("========== channel disconnected ========== ");
+        //     pusher.unsubscribe("my-channel");
+        //     console.log("========== pusher unsubscribed ========== ");
+        //     pusher.disconnect()
+        //     console.log("========== pusher disconnected ========== ");
+        // });
+
+
+        //     $dialog.close();
+        // });
+
         (0, _jquery2.default)('#order .order_button').bind('click', function () {
             var title = '';
             if (!check_TOU((0, _jquery2.default)('#order'), dataConfig)) {
@@ -7705,31 +7786,7 @@ var exportRecord = function exportRecord(services) {
 
             (0, _jquery2.default)('#sendmail form').submit();
             humane.infoLarge((0, _jquery2.default)('#export-send-mail-notif').val());
-            // $dialog.close();
-
-
-            // Enable pusher logging - don't include this in production
-            _pusherJs2.default.logToConsole = true;
-            var pusher = new _pusherJs2.default('07b97d8d50b1f2b3d515', {
-                cluster: 'eu'
-            });
-            var channel = pusher.subscribe("my-channel");
-            pusher.connection.bind("state_change", function (states) {
-                // states = {previous: 'oldState', current: 'newState'}
-                console.log("========== connection changed : ========== ", states);
-            });
-            channel.bind("my-event", function (data) {
-                // Method to be dispatched on trigger.
-                console.log("========== received from pusher : ========== ", data);
-                channel.unbind("my-event");
-                console.log("========== channel unbinded ========== ");
-                channel.disconnect();
-                console.log("========== channel disconnected ========== ");
-                pusher.unsubscribe("my-channel");
-                console.log("========== pusher unsubscribed ========== ");
-                pusher.disconnect();
-                console.log("========== pusher disconnected ========== ");
-            });
+            $dialog.close();
         });
 
         (0, _jquery2.default)('.datepicker', $dialog.getDomElement()).datepicker({

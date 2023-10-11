@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
+use Alchemy\Phrasea\Core\Event\DownloadAsyncEvent;
 use Alchemy\Phrasea\Core\Event\ExportMailEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\WorkerManager\Event\ExportFtpEvent;
@@ -18,6 +19,20 @@ class ExportSubscriber implements EventSubscriberInterface
     public function __construct(MessagePublisher $messagePublisher)
     {
         $this->messagePublisher = $messagePublisher;
+    }
+
+    public function onDownloadAsyncCreate(DownloadAsyncEvent $event)
+    {
+        $payload = [
+            'message_type' => MessagePublisher::DOWNLOAD_ASYNC_TYPE,
+            'payload' => [
+                'userId'     => $event->getUserId(),
+                'tokenValue' => $event->getTokenValue(),
+                'params'     => serialize($event->getParams())
+            ]
+        ];
+
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::DOWNLOAD_ASYNC_TYPE);
     }
 
     public function onExportMailCreate(ExportMailEvent $event)
@@ -73,6 +88,7 @@ class ExportSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
+            PhraseaEvents::DOWNLOAD_ASYNC_CREATE   => 'onDownloadAsyncCreate',
             PhraseaEvents::EXPORT_MAIL_CREATE   => 'onExportMailCreate',
             WorkerEvents::EXPORT_MAIL_FAILURE   => 'onExportMailFailure',
             WorkerEvents::EXPORT_FTP            => 'onExportFtp'
