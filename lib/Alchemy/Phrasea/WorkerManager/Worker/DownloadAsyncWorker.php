@@ -87,7 +87,7 @@ class DownloadAsyncWorker implements WorkerInterface
         /** @var Token $token */
         $token = $tokenRepository->findValidToken($payload['tokenValue']);
 
-        if($this->conf->get(['downloas_async', 'enabled'], false)) {
+        if($this->conf->get(['download_async', 'enabled'], false)) {
             $options = array(
                 'cluster' => 'eu',
                 'useTLS' => true
@@ -187,6 +187,7 @@ class DownloadAsyncWorker implements WorkerInterface
                     'human_size' => $this->getHumanSize($list['files'][$kFile]["subdefs"][$subdefName]["size"]),
                 ]
             );
+
         }
 
         $this->repoWorkerJob->reconnect();
@@ -213,6 +214,7 @@ class DownloadAsyncWorker implements WorkerInterface
         sleep(1);
 
         $this->push('zip_ready', ['message' => ""]);
+
     }
 
     private function push(string $event, $data)
