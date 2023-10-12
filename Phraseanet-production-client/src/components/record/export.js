@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import dialog from './../../phraseanet-common/components/dialog';
-import  Pusher from 'pusher-js';
 const humane = require('humane-js');
 
 const exportRecord = services => {
