@@ -162,28 +162,6 @@ const exportRecord = services => {
 
                 return false;
             }
-            // // Enable pusher logging - don't include this in production
-            // Pusher.logToConsole = true;
-            // const pusher = new Pusher('07b97d8d50b1f2b3d515', {
-            //     cluster: 'eu'
-            // });
-            // const channel = pusher.subscribe("my-channel");
-            // pusher.connection.bind("state_change", function (states) {
-            //     // states = {previous: 'oldState', current: 'newState'}
-            //     console.log("========== connection changed : ========== ", states);
-            // });
-            // channel.bind("my-event", (data) => {
-            //     // Method to be dispatched on trigger.
-            //     console.log("========== received from pusher : ========== ", data);
-            //     channel.unbind("my-event");
-            //     console.log("========== channel unbinded ========== ");
-            //     channel.disconnect();
-            //     console.log("========== channel disconnected ========== ");
-            //     pusher.unsubscribe("my-channel");
-            //     console.log("========== pusher unsubscribed ========== ");
-            //     pusher.disconnect()
-            //     console.log("========== pusher disconnected ========== ");
-            // });
             $('#download form').submit();
             $dialog.close();
         });
