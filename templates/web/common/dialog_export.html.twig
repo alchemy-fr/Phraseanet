@@ -109,7 +109,7 @@
             <div id="download">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: telechargement' | trans }}</h4>
-                    {% if app['conf'].get(['pusher', 'enabled'], false) %}
+                    {% if app['conf'].get(['download_async', 'enabled'], false) %}
                         {# \Alchemy\Phrasea\Controller\Prod\DownloadController::checkDownloadAsync #}
                         {% set download_path = 'check_download_async' %}
                     {% else %}

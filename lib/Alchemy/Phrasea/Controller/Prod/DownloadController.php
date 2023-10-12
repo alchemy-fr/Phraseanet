@@ -137,7 +137,7 @@ class DownloadController extends Controller
             ]
         ));
 
-        $pusher_auth_key =$this->getConf()->get(['pusher', 'enabled'], false) ? $this->getConf()->get(['pusher', 'auth_key'], '') : null;
+        $pusher_auth_key =$this->getConf()->get(['download_async', 'enabled'], false) ? $this->getConf()->get(['pusher', 'auth_key'], '') : null;
         return new Response($this->render(
         /** @uses templates/web/prod/actions/Download/prepare_async.html.twig */
             '/prod/actions/Download/prepare_async.html.twig', [

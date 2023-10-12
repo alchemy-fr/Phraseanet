@@ -57,10 +57,6 @@ class Export implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/mail/', 'controller.prod.export:exportMail')
             ->bind('export_mail');
 
-        /** @uses ExportController::exportAsync */
-        $controllers->post('/async/', 'controller.prod.export:exportAsync')
-            ->bind('export_async');
-
         /** @uses ExportController::exportFtp */
         $controllers->post('/ftp/', 'controller.prod.export:exportFtp')
             ->bind('export_ftp');
