@@ -87,7 +87,7 @@ class DownloadAsyncWorker implements WorkerInterface
         /** @var Token $token */
         $token = $tokenRepository->findValidToken($payload['tokenValue']);
 
-        if($this->conf->get(['pusher', 'enabled'], false)) {
+        if($this->conf->get(['downloas_async', 'enabled'], false)) {
             $options = array(
                 'cluster' => 'eu',
                 'useTLS' => true
