@@ -421,6 +421,7 @@ class set_export extends set_abstract
         $file_names = [];
         $size = 0;
         $unicode = $this->app['unicode'];
+        $hasCgu = false;
 
         /** @var record_exportElement $download_element */
         foreach ($this->elements as $download_element) {
@@ -435,6 +436,10 @@ class set_export extends set_abstract
                 'export_name'   => '',
                 'subdefs'       => [],
             ];
+
+            if (!$hasCgu && !PDFCgu::isDataboxCguEmpty($this->app, $download_element->getDataboxId())) {
+                $hasCgu = true;
+            }
 
             $BF = false;
 
@@ -712,6 +717,7 @@ class set_export extends set_abstract
             'names' => $file_names,
             'size'  => $size,
             'count' => $n_files,
+            'cgu'   => $hasCgu,
         ];
 
         return $this->list;

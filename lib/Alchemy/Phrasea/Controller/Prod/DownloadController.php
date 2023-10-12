@@ -124,7 +124,7 @@ class DownloadController extends Controller
 
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
 
-        $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
+        $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTDOWNLOAD]);
 
         // ask the worker to build the zip
         $this->dispatch(PhraseaEvents::DOWNLOAD_ASYNC_CREATE, new DownloadAsyncEvent(

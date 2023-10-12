@@ -108,6 +108,8 @@ class DownloadAsyncWorker implements WorkerInterface
 
         $list = unserialize($token->getData());
 
+        $totalSize = 0;
+
         foreach($list['files'] as $k_file => $v_file) {
             foreach($v_file['subdefs'] as $k_subdef => $v_subdef) {
                 if($k_subdef === "document" && $v_subdef['to_stamp']) {
@@ -128,6 +130,7 @@ class DownloadAsyncWorker implements WorkerInterface
                     }
                 }
                 if($list['files'][$k_file]['subdefs'][$k_subdef]['size'] > 0) {
+                    $totalSize += $list['files'][$k_file]['subdefs'][$k_subdef]['size'];
                     $this->push(
                         'file_ok',
                         [
@@ -137,6 +140,8 @@ class DownloadAsyncWorker implements WorkerInterface
                             'subdef'     => $k_subdef,
                             'size'       => $list['files'][$k_file]['subdefs'][$k_subdef]['size'],
                             'human_size' => $this->getHumanSize($list['files'][$k_file]['subdefs'][$k_subdef]['size']),
+                            'total_size' => $totalSize,
+                            'human_total_size' => $this->getHumanSize($totalSize),
                         ]
                     );
                 }
@@ -176,6 +181,7 @@ class DownloadAsyncWorker implements WorkerInterface
             $list['files'][$kFile]["subdefs"][$subdefName]["size"] = filesize($caption_dir . $file);
             $list['files'][$kFile]["subdefs"][$subdefName]['businessfields'] = $v_caption['businessFields'];
 
+            $totalSize += $list['files'][$kFile]["subdefs"][$subdefName]["size"];
             $this->push(
                 'file_ok',
                 [
@@ -185,6 +191,8 @@ class DownloadAsyncWorker implements WorkerInterface
                     'subdef' => $subdefName,
                     'size' => $list['files'][$kFile]["subdefs"][$subdefName]["size"],
                     'human_size' => $this->getHumanSize($list['files'][$kFile]["subdefs"][$subdefName]["size"]),
+                    'total_size' => $totalSize,
+                    'human_total_size' => $this->getHumanSize($totalSize),
                 ]
             );
 
