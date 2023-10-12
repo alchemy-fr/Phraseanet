@@ -107,7 +107,7 @@ class DoDownloadController extends Controller
 
         $exportName = $list['export_name'];
 
-        if ($list['count'] === 1) {
+        if ($list['count'] === 1 && !$list['cgu']) {
             $file = end($list['files']);
             $subdef = end($file['subdefs']);
             $exportName = sprintf('%s%s.%s', $file['export_name'], $subdef['ajout'], $subdef['exportExt']);

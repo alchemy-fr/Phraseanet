@@ -6,6 +6,10 @@
         #mainMenu, .publi_group {
             background-color: #404040;
         }
+
+        LI.file.done {
+            font-weight: bolder;
+        }
     </style>
 {% endblock %}
 
@@ -13,18 +17,16 @@
     <h1 style="text-align:center">{{ "Download of documents" | trans }}</h1>
 
     <div class="well-small">
-       {% if (list['complete'] is not defined or not list['complete']) and list['count'] > 1%}
-            <div class="alert alert-info">
-                {{ "Please wait while your files are being gathered for the download, this operation may take a few minutes." | trans }}
-            </div>
-       {% elseif list['complete'] is defined and list['complete'] %}
-            <div class="alert alert-success">
-                {% set url = path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) %}
-                {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
-                {% set after_link = '</a>' %}
-                {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
-            </div>
-       {% endif %}
+        <div class="alert alert-info">
+            {{ "Please wait while your files are being gathered for the download, this operation may take a few minutes." | trans }}
+            &nbsp;<span id="totalSize">...</span>
+        </div>
+        <div class="alert alert-success" style="display: none">
+            {% set url = path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) %}
+            {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
+            {% set after_link = '</a>' %}
+            {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
+        </div>
     </div>
 
     <div class="well-small">
@@ -37,7 +39,6 @@
                     <th>{{ "Base" | trans }}</th>
                     <th>{{ "Name" | trans }}</th>
                     <th>{{ "Sub definition" | trans }}</th>
-                    <th>{{ "Size" | trans }}</th>
                     <th>{{ "Thumbnail" | trans }}</th>
                 </tr>
             </thead>
@@ -52,13 +53,12 @@
                         {% if file['subdefs'] is iterable and file['subdefs']|length > 0 %}
                             <ul class='unstyled'>
                             {% for sd, subdef in file['subdefs'] %}
-                                <li id="sd_{{ file['databox_id'] }}_{{ file['record_id'] }}_{{ sd }}">{{ subdef['label'] }} <span class="info">...</span></li>
+                                <li class="file" id="sd_{{ file['databox_id'] }}_{{ file['record_id'] }}_{{ sd }}">{{ subdef['label'] }} <span class="info">...</span></li>
                                 {% set size = size + subdef['size'] %}
                             {% endfor %}
                             </ul>
                         {% endif %}
                     </td>
-                    <td>{{ size|formatOctets }}</td>
                     <td style="text-align:center;">
                         {% set record_key = app|sbas_from_bas(file['base_id']) ~'_'~ file['record_id']%}
 
@@ -122,6 +122,8 @@
                 console.log("sel = " + sel);
 
                 $(sel + ' .info').text('(' + data['human_size'] + ')');
+                $(sel).addClass('done');
+                $('#totalSize').text('(' + data['human_total_size'] + ')');
             });
             console.log("========== channel binded to 'file_ok' ========== ");
 
@@ -142,6 +144,9 @@
 
                 $('form[name=download]').submit();
                 console.log("========== download started ========== ");
+                $("div.alert-info").hide();
+                $("div.alert-success").show();
+
             });
             console.log("========== channel binded to 'zip_ready' ========== ");
         });
