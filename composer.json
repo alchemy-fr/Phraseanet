@@ -59,7 +59,7 @@
     "php": ">=7.0 <7.1",
     "ext-intl": "*",
     "alchemy-fr/tcpdf-clone": "~6.0",
-    "alchemy/embed-bundle": "^2.0.7",
+    "alchemy/embed-bundle": "^2.0.14",
     "alchemy/geonames-api-consumer": "~0.1.0",
     "alchemy/mediavorus": "^0.4.4",
     "alchemy/oauth2php": "1.1.0",
