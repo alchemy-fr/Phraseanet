@@ -325,7 +325,7 @@ CMD ["nginx", "-g", "daemon off;"]
 HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
 
 #########################################################################
-# phrasaseanet adapted simplesaml service provider 
+# phraseanet adapted simplesaml service provider 
 #########################################################################
 
 FROM php:7.0-fpm-stretch as phraseanet-saml-sp
@@ -353,7 +353,7 @@ RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt
     && docker-php-ext-install -j$(nproc) ldap \
     && docker-php-ext-install zip mbstring pdo_mysql gettext mcrypt \
     && pecl install \
-        redis \
+        redis-5.3.7 \
     && docker-php-ext-enable redis \
     && pecl clear-cache \
     && docker-php-source delete
