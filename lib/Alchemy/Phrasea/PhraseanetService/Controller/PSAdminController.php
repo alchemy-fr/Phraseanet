@@ -28,7 +28,7 @@ class PSAdminController extends Controller
     {
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service'], null);
 
-        $form = $app->form(new PSExposeConfigurationType(), $exposeConfiguration);
+        $form = $app->form(new PSExposeConfigurationType($this->app), $exposeConfiguration);
 
         $form->handleRequest($request);
 
