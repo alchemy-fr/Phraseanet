@@ -105,11 +105,6 @@
     <script>
 
         $(document).ready(function() {
-            // debugger;
-            setTimeout(run, 1);
-        });
-
-        function run() {
             Pusher.logToConsole = true;
             const pusher        = new Pusher('{{ pusher_auth_key }}', {
                 cluster: 'eu'
@@ -199,7 +194,6 @@
                 },
                 dataType: "json"
             });
-
-        }
+        });
     </script>
 {% endblock %}
