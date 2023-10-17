@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\Event\DownloadAsyncEvent;
 use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,12 +73,12 @@ class DownloadController extends Controller
     }
 
     /**
-     * Download a set of documents
+     * display the downloasAsync page
      *
-     * @param  Request          $request
+     * @param Request $request
      * @return Response
      */
-    public function checkDownloadAsync(Request $request)
+    public function listDownloadAsync(Request $request)
     {
         if (!$this->isCrsfValid($request, 'prodExportDownload')) {
             $this->app->abort(403);
@@ -124,33 +125,59 @@ class DownloadController extends Controller
 
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
 
-        $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTDOWNLOAD]);
-
-        // ask the worker to build the zip
-        $this->dispatch(PhraseaEvents::DOWNLOAD_ASYNC_CREATE, new DownloadAsyncEvent(
-            $this->getAuthenticatedUser()->getId(),
-            $token->getValue(),
-            [
-                'url'               =>  $url,
-                'ssttid'            =>  $ssttid,
-                'lst'               =>  $lst,
-            ]
-        ));
-
         $pusher_auth_key =$this->getConf()->get(['download_async', 'enabled'], false) ? $this->getConf()->get(['pusher', 'auth_key'], '') : null;
         return new Response($this->render(
         /** @uses templates/web/prod/actions/Download/prepare_async.html.twig */
             '/prod/actions/Download/prepare_async.html.twig', [
-            'module_name'   => $this->app->trans('Export'),
-            'module'        => $this->app->trans('Export'),
-            'list'          => $list,
-            'records'       => $records,
-            'token'         => $token,
-            'anonymous'     => $request->query->get('anonymous', false),
-            'type'          => $request->query->get('type', \Session_Logger::EVENT_EXPORTDOWNLOAD),
-            'pusher_auth_key' => $pusher_auth_key
+            'module_name'     => $this->app->trans('Export'),
+            'module'          => $this->app->trans('Export'),
+            'list'            => $list,
+            'records'         => $records,
+            'token'           => $token,
+            'anonymous'       => $request->query->get('anonymous', false),
+            'type'            => $request->query->get('type', \Session_Logger::EVENT_EXPORTDOWNLOAD),
+            'pusher_auth_key' => $pusher_auth_key,
+            'csrfToken'       => $this->getSession()->get('prodExportDownload_token'),
         ]));
+    }
 
+
+    /**
+     * @param Request $request
+     * @return JsonResponse|void
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function startDownloadAsync(Request $request)
+    {
+        if (!$this->isCrsfValid($request, 'prodExportDownload')) {
+            $this->app->abort(403);
+        }
+
+        try {
+            $token = $this->getTokenManipulator()->findValidToken($request->request->get('token', ""));
+
+            if ($token) {
+                // ask the worker to build the zip
+                $this->dispatch(PhraseaEvents::DOWNLOAD_ASYNC_CREATE, new DownloadAsyncEvent(
+                    $token->getUser()->getId(),
+                    $token->getValue(),
+                    [
+                    ]
+                ));
+
+                return new JsonResponse([
+                    'success' => true,
+                    'token'   => $token->getValue()
+                ]);
+            }
+            else {
+                throw new \Exception("invalid or expired token");
+            }
+        }
+        catch(\Exception $e) {
+            // no-op
+            $this->app->abort(403, $e->getMessage());
+        }
     }
 
     /**
@@ -169,4 +196,11 @@ class DownloadController extends Controller
         return $this->app['conf'];
     }
 
+    /**
+     * @return PropertyAccess
+     */
+    protected function getSession()
+    {
+        return $this->app['session'];
+    }
 }

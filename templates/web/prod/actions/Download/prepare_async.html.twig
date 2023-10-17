@@ -27,6 +27,8 @@
             {% set after_link = '</a>' %}
             {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
         </div>
+        <div class="alert alert-error" style="display: none">
+        </div>
     </div>
 
     <div class="well-small">
@@ -103,12 +105,16 @@
     <script>
 
         $(document).ready(function() {
+            // debugger;
+            setTimeout(run, 1);
+        });
 
+        function run() {
             Pusher.logToConsole = true;
             const pusher        = new Pusher('{{ pusher_auth_key }}', {
                 cluster: 'eu'
             });
-            const channel_name = "{{ token.getValue() }}";
+            const channel_name  = "{{ token.getValue() }}";
             const channel       = pusher.subscribe(channel_name);
             pusher.connection.bind("state_change", function (states) {
                 // states = {previous: 'oldState', current: 'newState'}
@@ -126,7 +132,6 @@
                 $('#totalSize').text('(' + data['human_total_size'] + ')');
             });
             console.log("========== channel binded to 'file_ok' ========== ");
-
 
             channel.bind("zip_ready", (data) => {
                 // Method to be dispatched on trigger.
@@ -149,6 +154,52 @@
 
             });
             console.log("========== channel binded to 'zip_ready' ========== ");
-        });
+
+            $.ajax({
+                method: "post",
+                url: "{{ path('start_download_async') }}",
+                data: {
+                    prodExportDownload_token : "{{ csrfToken|e('js') }}",
+                    token: "{{ token.getValue()|e('js') }}"
+                },
+                success: function(data, textStatus, jqXHR) {
+                    console.log("========== start_download_async : ========== ", data);
+                    if (data.success) {
+
+                    }
+                    else {
+                        channel.unbind("file_ok");
+                        console.log("========== channel unbinded of 'file_ok' ========== ");
+                        channel.unbind("zip_ready");
+                        console.log("========== channel unbinded of 'zip_ready' ========== ");
+                        channel.disconnect();
+                        console.log("========== channel disconnected ========== ");
+                        pusher.unsubscribe("my-channel");
+                        console.log("========== pusher unsubscribed ========== ");
+                        pusher.disconnect()
+                        console.log("========== pusher disconnected ========== ");
+                        $("div.alert-info").hide();
+                        $("div.alert-error").show().text(data.message);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("========== start_download_async FAILED : ========== ", errorThrown);
+                    channel.unbind("file_ok");
+                    console.log("========== channel unbinded of 'file_ok' ========== ");
+                    channel.unbind("zip_ready");
+                    console.log("========== channel unbinded of 'zip_ready' ========== ");
+                    channel.disconnect();
+                    console.log("========== channel disconnected ========== ");
+                    pusher.unsubscribe("my-channel");
+                    console.log("========== pusher unsubscribed ========== ");
+                    pusher.disconnect()
+                    console.log("========== pusher disconnected ========== ");
+                    $("div.alert-info").hide();
+                    $("div.alert-error").show().text(textStatus + " " + errorThrown);
+                },
+                dataType: "json"
+            });
+
+        }
     </script>
 {% endblock %}
