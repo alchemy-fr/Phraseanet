@@ -63629,7 +63629,6 @@ var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
             openModal(datas, activeTab);
         });
     };
-    initialize();
 
     toolsStream.subscribe(function (params) {
         switch (params.action) {
