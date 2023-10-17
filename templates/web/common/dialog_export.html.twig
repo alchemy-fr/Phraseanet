@@ -111,7 +111,7 @@
                     <h4>{{ 'export:: telechargement' | trans }}</h4>
                     {% if app['conf'].get(['download_async', 'enabled'], false) %}
                         {# \Alchemy\Phrasea\Controller\Prod\DownloadController::checkDownloadAsync #}
-                        {% set download_path = 'check_download_async' %}
+                        {% set download_path = 'list_download_async' %}
                     {% else %}
                         {# \Alchemy\Phrasea\Controller\Prod\DownloadController::checkDownload #}
                         {% set download_path = 'check_download' %}
