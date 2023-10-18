@@ -192,6 +192,9 @@ class Installer
         $config['servername'] = $serverName;
         $config['main']['key'] = $this->app['random.medium']->generateString(16);
 
+        // generate from the random instance key
+        $config['phraseanet-service']['phraseanet_local_id'] = md5($config['main']['key']);
+
         // define storage config
         $defaultStoragePaths = [
             'subdefs'           => __DIR__ . '/../../../../datas',
