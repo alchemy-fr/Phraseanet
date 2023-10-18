@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\Event\DownloadAsyncEvent;
 use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use set_export;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,14 +95,20 @@ class DownloadController extends Controller
             $this->app->abort(403);
         }
 
-        /** @see \set_export::prepare_export */
+        // "stamp_choice" is a ckbox with value "NO_STAMP" to "remove stamp" on download
+        $stamp_method = set_export::STAMP_ASYNC;    // will not stamp, but flag files to be stamped
+        if($request->request->get('stamp_choice') === set_export::NO_STAMP) {
+            $stamp_method = set_export::NO_STAMP;
+        }
+
         $list = $download->prepare_export(
             $this->getAuthenticatedUser(),
             $this->app['filesystem'],
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields'),
-            \set_export::STAMP_ASYNC,
+            // do not stamp now, worker will do
+            $stamp_method,
             true
         );
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
