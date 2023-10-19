@@ -1,5 +1,9 @@
 <h1>{{ 'admin:phrasea-service-setting:tab-title:: Page title' | trans }}</h1>
 
+<div style="margin-bottom:20px;">
+    <label>phraseanet_local_id: <code style="padding:10px 15px;">{{ app['conf'].get(['phraseanet-service', 'phraseanet_local_id'], '') }}</code></label>
+</div>
+
 <div class="phraseanet-service-setting-tabs">
     <ul class="nav nav-tabs">
         <li role="presentation" class="auth"><a aria-controls="auth" href="#auth" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/auth">{{ 'admin:phrasea-service-setting:tab:: Auth' | trans }}</a></li>
