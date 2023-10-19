@@ -225,6 +225,7 @@ class ExposeUploadWorker implements WorkerInterface
                     'publication_id' => $payload['publicationId'],
                     'description'    => $description,
                     'asset_id'       => $assetId,
+                    'title'          => $record->get_title(),
                     'upload' => [
                         'type' => $record->get_subdef($phraseanetSubdefAsDocument)->get_mime(),
                         'size' => $record->get_subdef($phraseanetSubdefAsDocument)->get_size(),
@@ -472,9 +473,9 @@ class ExposeUploadWorker implements WorkerInterface
         if ($this->exposeConfiguration['connection_kind'] == 'password') {
             if (!isset($this->accessTokenInfo['expires_at'])) {
                 return $this->accessTokenInfo['access_token'];
-            } elseif ($this->accessTokenInfo['expires_at'] > time() && $this->accessTokenInfo['refresh_expires_at'] > time()) {
+            } elseif ($this->accessTokenInfo['expires_at'] > time()) {
                 return $this->accessTokenInfo['access_token'];
-            } elseif ($this->accessTokenInfo['expires_at'] <= time() && $this->accessTokenInfo['refresh_expires_at'] > time()) {
+            } elseif ($this->accessTokenInfo['expires_at'] <= time() && isset($tokenInfo['refresh_expires_at']) && $this->accessTokenInfo['refresh_expires_at'] > time()) {
                 $resToken = $oauthClient->post($this->exposeConfiguration['oauth_token_uri'], [
                     'form_params' => [
                         'client_id' => $this->exposeConfiguration['auth_client_id'],
