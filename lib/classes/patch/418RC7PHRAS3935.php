@@ -67,13 +67,19 @@ class patch_418RC7PHRAS3935 implements patchInterface
         /** @var PropertyAccess $conf */
         $conf = $app['conf'];
 
-        if (!$conf->has(['phraseanet-service', 'phraseanet_local_id'])) {
-            // instance key is already a random value
-            $instanceKey = $conf->get(['main', 'key']);
+        if (!$conf->has(['main', 'instance_id'])) {
+            if ($conf->has(['phraseanet-service', 'phraseanet_local_id'])) {
+                // get phraseanet_local_id if exist
+                $conf->set(['main', 'instance_id'], $conf->get(['phraseanet-service', 'phraseanet_local_id']));
+                $conf->remove(['phraseanet-service', 'phraseanet_local_id']);
+            } else {
+                // instance key is already a random value
+                $instanceKey = $conf->get(['main', 'key']);
 
-            $phraseanetLocalId = md5($instanceKey);
+                $instanceId = md5($instanceKey);
 
-            $conf->set(['phraseanet-service', 'phraseanet_local_id'], $phraseanetLocalId);
+                $conf->set(['main', 'instance_id'], $instanceId);
+            }
         }
     }
 }

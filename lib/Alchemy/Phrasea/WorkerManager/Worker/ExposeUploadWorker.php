@@ -106,12 +106,12 @@ class ExposeUploadWorker implements WorkerInterface
             $helpers = new PhraseanetExtension($this->app);
 
             // the identification of phraseanet instance in expose
-            $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+            $instanceId = $this->app['conf']->get(['main', 'instance_id']);
 
             // get mapping if exist
             $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $payload['publicationId']);
 
-            $exposeFieldMappingName = $phraseanetLocalId . '_field_mapping';
+            $exposeFieldMappingName = $instanceId . '_field_mapping';
             $fieldMapping = !empty($clientAnnotationProfile[$exposeFieldMappingName]) ? $clientAnnotationProfile[$exposeFieldMappingName] : [];
             $fieldListToUpload = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
 
@@ -199,7 +199,7 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
-            $exposeSubdefMappingName = $phraseanetLocalId . '_subdef_mapping';
+            $exposeSubdefMappingName = $instanceId . '_subdef_mapping';
             $actualSubdefMapping = !empty($clientAnnotationProfile[$exposeSubdefMappingName]) ? $clientAnnotationProfile[$exposeSubdefMappingName] : [];
             $documentType = $record->getType();
 
@@ -217,8 +217,8 @@ class ExposeUploadWorker implements WorkerInterface
             unset($mapping[$phraseanetSubdefAsDocument]);
 
             // this is the unique reference for record in phraseanet and assets in expose
-            // phraseanetLocalKey_basedID_record_id
-            $assetId = $phraseanetLocalId.'_'.$record->getId();
+            // instanceId_basedID_record_id
+            $assetId = $instanceId . '_' . $record->getId();
 
             if ($record->has_subdef($phraseanetSubdefAsDocument) && $record->get_subdef($phraseanetSubdefAsDocument)->is_physically_present()) {
                 $requestBody = [
