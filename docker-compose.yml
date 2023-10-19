@@ -717,13 +717,13 @@ services:
       - BLACKFIRE_SERVER_ID
       - BLACKFIRE_SERVER_TOKEN
     volumes:
-      - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
-      - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
-      - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
-      - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
-      - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
-      - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
-      - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
     networks:
       - internal
 
