@@ -681,7 +681,7 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
-    profiles: ["workers", "exportMail"]
+    profiles: ["workers", "downloadAsync"]
     restart: on-failure
     depends_on:
       - phraseanet
@@ -701,7 +701,7 @@ services:
       - LC_NAME=C.UTF-8
       - PHRASEANET_EXPLODE_WORKER
       - PHRASEANET_WORKERS_LAUNCH_METHOD
-      - PHRASEANET_WORKER_exportMail
+      - PHRASEANET_WORKER_downloadAsync
       - IMAGEMAGICK_POLICY_VERSION
       - IMAGEMAGICK_POLICY_WIDTH
       - IMAGEMAGICK_POLICY_HEIGHT

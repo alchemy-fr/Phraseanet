@@ -112,6 +112,8 @@ class DownloadController extends Controller
             true
         );
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
+        $list['include_report'] = $request->request->get('include_report') === 'INCLUDE_REPORT';
+        $list['include_businessfields'] = (bool)$request->request->get('businessfields');
 
         $records = [];
 

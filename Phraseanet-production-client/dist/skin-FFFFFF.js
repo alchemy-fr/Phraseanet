@@ -70,20 +70,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 294);
+/******/ 	return __webpack_require__(__webpack_require__.s = 293);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 294:
+/***/ 293:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(295);
+module.exports = __webpack_require__(294);
 
 
 /***/ }),
 
-/***/ 295:
+/***/ 294:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92,11 +92,11 @@ module.exports = __webpack_require__(295);
 /**
  * Skin entry point (only for webpack generation of css)
  */
-__webpack_require__(296);
+__webpack_require__(295);
 
 /***/ }),
 
-/***/ 296:
+/***/ 295:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -145,6 +145,12 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+                        <div class="well-small">
+                            <label for="include_report" class="checkbox">
+                                <input class="caption" type="checkbox" id="include_report" name="include_report" value="INCLUDE_REPORT" />
+                                {{ 'prod::download: report as spreadsheet' | trans }}
+                            </label>
+                        </div>
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_download" class="checkbox">
@@ -165,7 +171,7 @@
                             </div>
                         {% endif %}
                         {% if app['conf'].get(['registry', 'actions', 'export-stamp-choice']) == true and download.has_stamp_option() == true %}
-                            <div id="download_stamp_choice" class="well-small hide" style="margin-left: 20px;" >
+                            <div id="stamp_choice" class="well-small hide" style="margin-left: 20px;" >
                                 <label for="option_stamp" class="checkbox">
                                     <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice" value="NO_STAMP" />
                                     {{ 'prod::download: delete-marking-stamp' | trans }}
