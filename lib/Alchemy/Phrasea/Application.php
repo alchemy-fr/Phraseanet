@@ -689,13 +689,17 @@ class Application extends SilexApplication
                 $encryption = null;
                 $secureMode = '';
 
-                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tlsv1.1', 'tlsv1.2'])) {
+                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls', 'tlsv1.1', 'tlsv1.2'])) {
                     $secureMode = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
 
                     if ($secureMode == 'ssl') {
                         $encryption = 'ssl';
                     } else {
                         $encryption = 'tls';
+                        if ($secureMode == 'tls') {
+                            // by default use tlsv1.2
+                            $secureMode = 'tlsv1.2';
+                        }
                     }
                 }
 
