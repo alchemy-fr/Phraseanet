@@ -108,7 +108,7 @@ class PSAdminController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::PULL_ASSETS_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::PULL_ASSETS_TYPE)
