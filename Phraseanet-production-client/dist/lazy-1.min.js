@@ -64036,7 +64036,6 @@ var rangeCapture = function rangeCapture(services, datas) {
         }
         options.frameRates = {};
         options.ratios = {};
-        var coverUrl = '';
         var generateSourcesTpl = function generateSourcesTpl(record) {
             var recordSources = [];
             _underscore2.default.each(record.sources, function (s, i) {
@@ -64049,7 +64048,7 @@ var rangeCapture = function rangeCapture(services, datas) {
         };
 
         var sources = generateSourcesTpl(record);
-        $container.append('<video id="embed-video" class="embed-resource video-js vjs-default-skin vjs-big-play-centered" controls\n               preload="none" width="100%" height="100%" poster="' + coverUrl + '" data-setup=\'{"language":"' + localeService.getLocale() + '"}\'>' + sources + ' </video>');
+        $container.append('<video id="embed-video" class="embed-resource video-js vjs-default-skin vjs-big-play-centered" controls\n               preload="none" width="100%" height="100%"  data-setup=\'{"language":"' + localeService.getLocale() + '"}\'>' + sources + ' </video>');
 
         // window.videojs = videojs;
         _video2.default.addLanguage(localeService.getLocale(), localeService.getTranslations());
