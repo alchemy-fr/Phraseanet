@@ -153,9 +153,15 @@ class DownloadAsyncWorker implements WorkerInterface
 
                     // add fields names as first row
                     $max_col = $col = 1;
+
                     $ref = $this->cellRefFromColumnAndRow($col, 1);
                     $ws->setCellValue($ref, "[record_id]");
                     $max_col = $col++;
+
+                    $ref = $this->cellRefFromColumnAndRow($col, 1);
+                    $ws->setCellValue($ref, "[file]");
+                    $max_col = $col++;
+
                     $field_columns = [];
                     foreach ($record->getDatabox()->get_meta_structure() as $field) {
                         if($include_businessfields || !$field->isBusiness()) {
@@ -180,9 +186,14 @@ class DownloadAsyncWorker implements WorkerInterface
 
                 // add a row for the record
                 $ws_ref = &$worksheet_ref_by_db[$databox_id];
-                $ws_ref['worksheet']->setCellValueByColumnAndRow(1, $ws_ref['row'], $record_id);
                 /** @var Worksheet $ws */
                 $ws = $ws_ref['worksheet'];
+
+                $ref = $this->cellRefFromColumnAndRow(1, $ws_ref['row']);
+                $ws->setCellValue($ref, $record_id);
+
+                $ref = $this->cellRefFromColumnAndRow(2, $ws_ref['row']);
+                $ws->setCellValue($ref, $v_file['export_name']);
 
                 $max_lines = 0;
                 foreach ($record->get_caption()->get_fields([], $include_businessfields) as $field) {
@@ -198,7 +209,7 @@ class DownloadAsyncWorker implements WorkerInterface
                     }
                 }
                 // empiric: adjust the "height" of the row (@see https://phpspreadsheet.readthedocs.io/en/latest/topics/recipes/)
-                $h = min(409, 14.5 * $max_lines);
+                $h = 14.5 * min(100, $max_lines) ;
                 $ws->getRowDimension($ws_ref['row'])->setRowHeight($h);
 
                 $ws_ref['max_row'] = $ws_ref['row'];
@@ -320,7 +331,7 @@ class DownloadAsyncWorker implements WorkerInterface
                 ],
             ];
 
-            foreach($worksheet_ref_by_db as $databox_id => $ws_ref) {
+            foreach($worksheet_ref_by_db as $databox_id => &$ws_ref) {
                 /** @var Worksheet $ws */
                 $ws = $ws_ref['worksheet'];
                 $range = "A1:" . $this->cellRefFromColumnAndRow($ws_ref['max_col'], 1);
@@ -328,7 +339,7 @@ class DownloadAsyncWorker implements WorkerInterface
                 $range = "A2:" . $this->cellRefFromColumnAndRow($ws_ref['max_col'], $ws_ref['max_row']);
                 $ws->getStyle($range)->applyFromArray($style_values);
                 for($col=1; $col<=$ws_ref['max_col']; $col++) {
-                    $range = $this->cellRefFromColumnAndRow($col);
+                    $range = $this->cellRefFromColumnAndRow($col);  // no row in range = whole column (ex. "A")
                     $ws->getColumnDimension($range)->setAutoSize(true);
                 }
             };

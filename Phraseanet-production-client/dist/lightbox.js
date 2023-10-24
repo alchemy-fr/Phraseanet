@@ -17,13 +17,13 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 
 /***/ }),
 
-/***/ 254:
+/***/ 253:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 
-var _bootstrap = __webpack_require__(255);
+var _bootstrap = __webpack_require__(254);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -63,7 +63,7 @@ module.exports = lightboxApplication;
 
 /***/ }),
 
-/***/ 255:
+/***/ 254:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87,7 +87,7 @@ var _locale = __webpack_require__(20);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _config = __webpack_require__(256);
+var _config = __webpack_require__(255);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -95,7 +95,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _index = __webpack_require__(257);
+var _index = __webpack_require__(256);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -190,7 +190,7 @@ exports.default = bootstrap;
 
 /***/ }),
 
-/***/ 256:
+/***/ 255:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -209,7 +209,7 @@ exports.default = defaultConfig;
 
 /***/ }),
 
-/***/ 257:
+/***/ 256:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -227,7 +227,7 @@ var _utils = __webpack_require__(57);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _download = __webpack_require__(258);
+var _download = __webpack_require__(257);
 
 var _download2 = _interopRequireDefault(_download);
 
@@ -1194,7 +1194,7 @@ exports.default = lightbox;
 
 /***/ }),
 
-/***/ 258:
+/***/ 257:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1449,11 +1449,9 @@ var download = function download(services) {
             (0, _jquery2.default)('body').find('.humane-libnotify-info').html(data);
             setTimeout(hideHumane, 3000);
         }
-
         function hideHumane() {
             (0, _jquery2.default)('body').find('.humane').remove();
         }
-
         (0, _jquery2.default)('#sendmail .sendmail_button').bind('click', function () {
             if (!validEmail((0, _jquery2.default)('input[name="taglistdestmail"]', (0, _jquery2.default)('#sendmail')).val(), dataConfig)) {
                 return false;
@@ -1487,11 +1485,10 @@ var download = function download(services) {
             return false;
         });
 
-        (0, _jquery2.default)('input.caption', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
-
+        (0, _jquery2.default)('input[name="obj[]"]', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
             var $form = (0, _jquery2.default)(this).closest('form');
 
-            if ((0, _jquery2.default)('input.caption:checked', $form).length > 0) {
+            if ((0, _jquery2.default)('input.caption[name="obj[]"]:checked', $form).length > 0) {
                 (0, _jquery2.default)('div.businessfields', $form).show();
             } else {
                 (0, _jquery2.default)('div.businessfields', $form).hide();
@@ -1611,15 +1608,12 @@ var download = function download(services) {
         });
     }*/
 
-    return {
-        initialize: initialize,
-        openModal: openModal
-    };
+    return { initialize: initialize, openModal: openModal };
 };
 
 exports.default = download;
 
 /***/ })
 
-},[254]);
+},[253]);
 });
