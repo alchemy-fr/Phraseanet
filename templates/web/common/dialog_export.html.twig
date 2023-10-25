@@ -108,6 +108,7 @@
             <div id="download">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: telechargement' | trans }}</h4>
+                    {# @controller Alchemy\Phrasea\Controller\Prod\DownloadController:checkDownload #}
                     <form method="post" target="_blank" name="prodExportDownload" action="{{ path('check_download') }}" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
@@ -156,10 +157,10 @@
                                 </label>
                             </div>
                         {% endif %}
-                        {% if app['conf'].get(['registry', 'actions', 'export-stamp-choice']) == true and download.has_stamp_option() == true %}
+                        {% if removeable_stamp and download.has_stamp_option() == true %}
                             <div id="download_stamp_choice" class="well-small hide" style="margin-left: 20px;" >
                                 <label for="option_stamp" class="checkbox">
-                                    <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice" value="NO_STAMP" />
+                                    <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
                                     {{ 'prod::download: delete-marking-stamp' | trans }}
                                 </label>
                             </div>

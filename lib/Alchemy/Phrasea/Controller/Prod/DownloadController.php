@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,11 +46,13 @@ class DownloadController extends Controller
 
         $list = $download->prepare_export(
             $this->getAuthenticatedUser(),
-            $this->app['filesystem'],
+            $this->getFilesystem(),
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields'),
-            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_SYNC
+            \set_export::STAMP_SYNC,
+            $request->request->get('stamp_choice') === "REMOVE_STAMP",
+            false
         );
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
@@ -67,5 +70,12 @@ class DownloadController extends Controller
     private function getTokenManipulator()
     {
         return $this->app['manipulator.token'];
+    }
+    /**
+     * @return PhraseanetFilesystem
+     */
+    private function getFilesystem()
+    {
+        return $this->app['filesystem'];
     }
 }
