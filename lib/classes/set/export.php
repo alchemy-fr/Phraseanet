@@ -458,8 +458,8 @@ class set_export extends set_abstract
         // remove stamp on this collection
         $stamp_by_base = [];     // unset: no stamp ; false: stamp not "unstampable" ; true: stamp "unstampable"
 
-        $colls_manageable = array_keys($this->getAclForUser($user)->get_granted_base([ACL::COLL_MANAGE]));
-        $dbox_manageable = array_keys($this->getAclForUser($user)->get_granted_sbas([ACL::BAS_MANAGE]));
+        $colls_manageable = array_keys($this->getAclForUser($user)->get_granted_base([ACL::COLL_MANAGE]) ?? []);
+        $dbox_manageable = array_keys($this->getAclForUser($user)->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
 
         /** @var record_exportElement $download_element */
         foreach ($this->elements as $download_element) {
