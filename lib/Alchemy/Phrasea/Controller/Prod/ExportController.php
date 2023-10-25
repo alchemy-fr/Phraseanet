@@ -61,8 +61,8 @@ class ExportController extends Controller
         $removeable_stamp = false;          // true if at least one coll is "unstampable"
         $removeable_stamp_by_base = [];     // unset: no stamp ; false: stamp not "unstampable" ; true: stamp "unstampable"
 
-        $colls_manageable = array_keys($this->getAclForConnectedUser()->get_granted_base([ACL::COLL_MANAGE]));
-        $dbox_manageable = array_keys($this->getAclForConnectedUser()->get_granted_sbas([ACL::BAS_MANAGE]));
+        $colls_manageable = array_keys($this->getAclForConnectedUser()->get_granted_base([ACL::COLL_MANAGE]) ?? []);
+        $dbox_manageable = array_keys($this->getAclForConnectedUser()->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
 
         foreach($download->get_elements() as $recordAdapter) {
             // check collection only once
