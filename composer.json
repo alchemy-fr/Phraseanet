@@ -147,7 +147,9 @@
       "": "lib/classes"
     }
   },
-  "include-path": ["vendor/zend/gdata/library"],
+  "include-path": [
+    "vendor/zend/gdata/library"
+  ],
   "extra": {
     "branch-alias": {
       "dev-master": "4.1.x-dev"
