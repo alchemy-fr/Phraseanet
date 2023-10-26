@@ -4391,6 +4391,10 @@ var sharebasketModal = function sharebasketModal(services, datas) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return true;
@@ -5543,8 +5547,11 @@ var editRecord = function editRecord(services) {
                 (0, _jquery2.default)('#tooltip').hide();
                 return;
             },
-            error: function error(XHR, textStatus, errorThrown) {
-                if (XHR.status === 0) {
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
+                if (data.status === 0) {
                     return false;
                 }
             }
@@ -7486,6 +7493,11 @@ var exportRecord = function exportRecord(services) {
                     guestModal.setContent(window.exportConfig.msg.modalContent);
                 } else {
                     _onExportReady($dialog, window.exportConfig);
+                }
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
                 }
             }
         });
@@ -19941,6 +19953,10 @@ var basketCreate = function basketCreate(services) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -20073,6 +20089,11 @@ var storyCreate = function storyCreate(services) {
                 _onDialogReady();
 
                 return;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     };
@@ -20280,6 +20301,10 @@ var basketUpdate = function basketUpdate(services) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -62758,6 +62783,10 @@ var recordToolsModal = function recordToolsModal(services, datas) {
             $dialog.setOption('contextArgs', datas);
             _onModalReady(data, window.toolsConfig, activeTab);
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
