@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Controller\Api\V3;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use Alchemy\Phrasea\Controller\Api\InstanceIdAware;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
@@ -51,6 +52,7 @@ class V3SearchController extends Controller
 {
     use JsonBodyAware;
     use DispatcherAware;
+    use InstanceIdAware;
 
     /**
      * Search for results
@@ -65,7 +67,7 @@ class V3SearchController extends Controller
 
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $storyTransformer = new V3StoryTransformer($recordTransformer);
         $compositeTransformer = new V3SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
         $searchTransformer = new V3SearchResultTransformer($compositeTransformer);

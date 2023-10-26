@@ -41,10 +41,16 @@ class RecordTransformer extends TransformerAbstract
      */
     private $technicalDataTransformer;
 
-    public function __construct(SubdefTransformer $subdefTransformer, TechnicalDataTransformer $technicalDataTransformer)
+    /**
+     * @var callable
+     */
+    private $resourceIdResolver;
+
+    public function __construct(SubdefTransformer $subdefTransformer, TechnicalDataTransformer $technicalDataTransformer, callable $resourceIdResolver)
     {
         $this->subdefTransformer = $subdefTransformer;
         $this->technicalDataTransformer = $technicalDataTransformer;
+        $this->resourceIdResolver = $resourceIdResolver;
     }
 
     public function transform($recordView)
@@ -55,6 +61,7 @@ class RecordTransformer extends TransformerAbstract
         return [
             'databox_id' => $record->getDataboxId(),
             'record_id' => $record->getRecordId(),
+            'resource_id' => ($this->resourceIdResolver)($record),
             'mime_type' => $record->getMimeType(),
             'title' => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name' => $record->get_original_name(),
@@ -159,5 +166,13 @@ class RecordTransformer extends TransformerAbstract
                 'value' => $field->get_serialized_values(';'),
             ];
         });
+    }
+
+    /**
+     * @return callable
+     */
+    public function getResourceIdResolver(): callable
+    {
+        return $this->resourceIdResolver;
     }
 }

@@ -25,13 +25,13 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
     public function register(Application $app)
     {
-        $app['controller.api.v3.resulthelpers'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.api.v3.resulthelpers'] = $app->share(function (PhraseaApplication $app) use($instanceId) {
             return (new V3ResultHelpers(
                 $app['conf'],
                 $app['media_accessor.subdef_url_generator'],
                 $app['authentication'],
-                $app['url_generator']
-            ));
+                $app['url_generator']))
+                ->setInstanceId($app['conf']);
         });
         $app['controller.api.v3.subdefs_service'] = $app->share(function (PhraseaApplication $app) {
             return (new V3SubdefsServiceController($app))
@@ -45,8 +45,10 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
                 ->setDispatcher($app['dispatcher'])
                 ;
         });
-        $app['controller.api.v3.search'] = $app->share(function (PhraseaApplication $app) {
-            return (new V3SearchController($app));
+        $app['controller.api.v3.search'] = $app->share(function (PhraseaApplication $app) use($instanceId) {
+            return (new V3SearchController($app))
+                ->setInstanceId($app['conf'])
+                ;
         });
         $app['controller.api.v3.searchraw'] = $app->share(function (PhraseaApplication $app) {
             return (new V3SearchRawController($app));
