@@ -1617,7 +1617,6 @@ function setPref(name, value) {
         },
         dataType: 'json',
         timeout: _jquery2.default.data[prefName] = false,
-        error: _jquery2.default.data[prefName] = false,
         success: function success(data) {
             if (data.success) {
                 humane.info(data.message);
@@ -1626,6 +1625,12 @@ function setPref(name, value) {
             }
             _jquery2.default.data[prefName] = false;
             return data;
+        },
+        error: function error(data) {
+            _jquery2.default.data[prefName] = false;
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         }
     });
     return _jquery2.default.data[prefName];
@@ -3503,6 +3508,10 @@ var publication = function publication(services) {
         _jquery2.default.post(url + 'prod/feeds/requestavailable/', options, function (data) {
 
             return openModal(data);
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return;
@@ -7920,6 +7929,11 @@ var printRecord = function printRecord(services) {
             success: function success(data) {
                 (0, _jquery2.default)('#DIALOG').removeClass('loading').empty().append(data);
                 return;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     }
@@ -10473,6 +10487,11 @@ var workzone = function workzone(services) {
                 },
                 success: function success(data) {
                     return;
+                },
+                error: function error(data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href); // refresh will redirect to login
+                    }
                 }
             });
         });
@@ -11108,6 +11127,11 @@ var workzone = function workzone(services) {
 
                 if ('error' in data) {
                     (0, _jquery2.default)('.publication-list').empty().html(data.error);
+                }
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
                 }
             }
         });
@@ -17928,6 +17952,11 @@ var deleteBasket = function deleteBasket(services) {
                 }
 
                 return false;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     };
@@ -19878,6 +19907,11 @@ var archiveBasket = function archiveBasket(services) {
                     alert(data.message);
                 }
                 return;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     }
@@ -20728,7 +20762,12 @@ var basketReorderContent = function basketReorderContent(services) {
         return _jquery2.default.get(url + 'prod/baskets/' + basketId + '/reorder/', function (data) {
             $dialog.setContent(data);
             _onDialogReady();
+
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -21006,7 +21045,12 @@ var storyReorderContent = function storyReorderContent(services) {
         return _jquery2.default.get(url + 'prod/story/' + dbId + '/' + recordId + '/reorder/', function (data) {
             $dialog.setContent(data);
             _onDialogReady();
+
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -22108,7 +22152,12 @@ var moveRecord = function moveRecord(services) {
         return _jquery2.default.ajax({
             type: 'POST',
             url: url + 'prod/records/movecollection/',
-            data: datas
+            data: datas,
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
+            }
         });
     };
 
@@ -62288,6 +62337,11 @@ var deleteRecord = function deleteRecord(services) {
                 //reset top position of dialog
                 $dialog.getDomElement().offsetParent().css('top', ((0, _jquery2.default)(window).height() - $dialog.getDomElement()[0].clientHeight) / 2);
                 _onDialogReady();
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
@@ -62491,6 +62545,11 @@ var propertyRecord = function propertyRecord(services) {
             success: function success(data) {
                 $dialog.setContent(data);
                 _onPropertyReady($dialog);
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
@@ -62649,6 +62708,10 @@ var pushbasketModal = function pushbasketModal(services, datas) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return true;
@@ -62708,6 +62771,10 @@ var recordPublishModal = function recordPublishModal(services, datas) {
         _jquery2.default.post(url + 'prod/feeds/requestavailable/', datas, function (data) {
 
             return (0, _publication2.default)(services).openModal(data);
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return true;
@@ -65193,6 +65260,11 @@ var preferences = function preferences(services) {
                     (0, _jquery2.default)('body').removeClass().addClass('PNB ' + color);
                     /* console.log('saved:' + color);*/
                     return;
+                },
+                error: function error(data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href); // refresh will redirect to login
+                    }
                 }
             });
         });
