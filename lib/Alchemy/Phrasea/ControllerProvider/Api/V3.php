@@ -25,7 +25,7 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
     public function register(Application $app)
     {
-        $app['controller.api.v3.resulthelpers'] = $app->share(function (PhraseaApplication $app) use($instanceId) {
+        $app['controller.api.v3.resulthelpers'] = $app->share(function (PhraseaApplication $app) {
             return (new V3ResultHelpers(
                 $app['conf'],
                 $app['media_accessor.subdef_url_generator'],

@@ -33,7 +33,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
     public function register(Application $app)
     {
-        $app['controller.api.v1'] = $app->share(function (PhraseaApplication $app) use($instanceId) {
+        $app['controller.api.v1'] = $app->share(function (PhraseaApplication $app) {
             return (new V1Controller($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
