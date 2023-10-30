@@ -7715,10 +7715,10 @@ var exportRecord = function exportRecord(services) {
             return false;
         });
 
-        (0, _jquery2.default)('input[name="obj[]"]', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
+        (0, _jquery2.default)('input.caption', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
             var $form = (0, _jquery2.default)(this).closest('form');
 
-            if ((0, _jquery2.default)('input.caption[name="obj[]"]:checked', $form).length > 0) {
+            if ((0, _jquery2.default)('input.caption:checked', $form).length > 0) {
                 (0, _jquery2.default)('div.businessfields', $form).show();
             } else {
                 (0, _jquery2.default)('div.businessfields', $form).hide();
@@ -7819,7 +7819,10 @@ var exportRecord = function exportRecord(services) {
         return true;
     }
 
-    return { initialize: initialize, openModal: openModal };
+    return {
+        initialize: initialize,
+        openModal: openModal
+    };
 };
 
 exports.default = exportRecord;
