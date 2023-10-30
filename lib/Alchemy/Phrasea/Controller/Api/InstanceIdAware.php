@@ -15,7 +15,7 @@ trait InstanceIdAware
     public function setInstanceId(PropertyAccess $conf)
     {
         $this->instanceId = $conf->get(
-            ['phraseanet-service', 'phraseanet_local_id'],
+            ['main', 'instance_id'],
             md5($conf->get(['main', 'key'], ''))
         );
 
