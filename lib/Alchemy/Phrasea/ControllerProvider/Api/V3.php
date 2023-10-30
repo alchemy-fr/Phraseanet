@@ -45,7 +45,7 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
                 ->setDispatcher($app['dispatcher'])
                 ;
         });
-        $app['controller.api.v3.search'] = $app->share(function (PhraseaApplication $app) use($instanceId) {
+        $app['controller.api.v3.search'] = $app->share(function (PhraseaApplication $app) {
             return (new V3SearchController($app))
                 ->setInstanceId($app['conf'])
                 ;
