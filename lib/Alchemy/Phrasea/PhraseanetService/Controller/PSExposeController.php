@@ -1195,9 +1195,9 @@ class PSExposeController extends Controller
      */
     private function getExposeMappingName($mappingContext)
     {
-        $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+        $instanceId = $this->app['conf']->get(['main', 'instance_id']);
 
-        return $phraseanetLocalId.'_'. $mappingContext . '_mapping';
+        return $instanceId . '_' . $mappingContext . '_mapping';
     }
 
     /**
