@@ -1,18 +1,23 @@
 import $ from 'jquery';
 import dialog from './../../phraseanet-common/components/dialog';
+
 const humane = require('humane-js');
 
 const exportRecord = services => {
-    const { configService, localeService, appEvents } = services;
-    const url = configService.get('baseUrl');
-    let $container = null;
+    const {
+              configService,
+              localeService,
+              appEvents
+          }          = services;
+    const url        = configService.get('baseUrl');
+    let $container   = null;
     const initialize = () => {
         $container = $('body');
         $container.on('click', '.record-export-action', function (event) {
             event.preventDefault();
-            let $el = $(event.currentTarget);
-            let key = '';
-            let kind = $el.data('kind');
+            let $el       = $(event.currentTarget);
+            let key       = '';
+            let kind      = $el.data('kind');
             let idContent = $el.data('id');
 
             switch (kind) {
@@ -33,29 +38,30 @@ const exportRecord = services => {
 
     function doExport(datas) {
         var $dialog = dialog.create(services, {
-            size: 'Medium',
+            size:  'Medium',
             title: localeService.t('export')
         });
 
         $.ajax({
-            method: 'POST',
-            url: `${url}prod/export/multi-export/`,
-            data: datas,
+            method:  'POST',
+            url:     `${url}prod/export/multi-export/`,
+            data:    datas,
             success: function (data) {
                 $dialog.setContent(data);
                 if (window.exportConfig.isGuest) {
                     dialog.get(1).close();
                     let guestModal = dialog.create(
                         {
-                            size: '500x100',
+                            size:          '500x100',
                             closeOnEscape: true,
-                            closeButton: false,
-                            title: window.exportConfig.msg.modalTile
+                            closeButton:   false,
+                            title:         window.exportConfig.msg.modalTile
                         },
                         2
                     );
                     guestModal.setContent(window.exportConfig.msg.modalContent);
-                } else {
+                }
+                else {
                     _onExportReady($dialog, window.exportConfig);
                 }
             }
@@ -83,7 +89,8 @@ const exportRecord = services => {
                         .bind('change', function () {
                             if ($(this).prop('checked')) {
                                 $(this).next().prop('disabled', false);
-                            } else {
+                            }
+                            else {
                                 $(this).next().prop('disabled', true);
                             }
                         });
@@ -93,11 +100,11 @@ const exportRecord = services => {
 
         $('a.TOUview').bind('click', function (event) {
             event.preventDefault();
-            let $el = $(event.currentTarget);
+            let $el     = $(event.currentTarget);
             var options = {
-                size: 'Medium',
+                size:        'Medium',
                 closeButton: true,
-                title: dataConfig.msg.termOfUseTitle
+                title:       dataConfig.msg.termOfUseTitle
             };
 
             let termOfuseDialog = dialog.create(services, options, 2);
@@ -190,14 +197,15 @@ const exportRecord = services => {
 
                     if (!data.error) {
                         title = dataConfig.msg.success;
-                    } else {
+                    }
+                    else {
                         title = dataConfig.msg.warning;
                     }
 
                     var options = {
-                        size: 'Alert',
+                        size:        'Alert',
                         closeButton: true,
-                        title: title
+                        title:       title
                     };
 
                     dialog.create(services, options, 2).setContent(data.msg);
@@ -205,7 +213,8 @@ const exportRecord = services => {
                     if (!data.error) {
                         humane.info(data.msg);
                         $dialog.close();
-                    } else {
+                    }
+                    else {
                         humane.error(data.msg);
                     }
 
@@ -244,14 +253,15 @@ const exportRecord = services => {
                     if (data.success) {
                         humane.info(data.message);
                         $dialog.close();
-                    } else {
+                    }
+                    else {
                         var alert = dialog.create(
                             services,
                             {
-                                size: 'Alert',
+                                size:          'Alert',
                                 closeOnEscape: true,
-                                closeButton: true,
-                                title: dataConfig.msg.warning
+                                closeButton:   true,
+                                title:         dataConfig.msg.warning
                             },
                             2
                         );
@@ -278,11 +288,11 @@ const exportRecord = services => {
                     $('#ftp .tryftp_button_loader').css('visibility', 'hidden');
 
                     var options = {
-                        size: 'Alert',
+                        size:        'Alert',
                         closeButton: true,
-                        title: data.success
-                            ? dataConfig.msg.success
-                            : dataConfig.msg.warning
+                        title:       data.success
+                                         ? dataConfig.msg.success
+                                         : dataConfig.msg.warning
                     };
 
                     dialog
@@ -297,7 +307,7 @@ const exportRecord = services => {
         });
 
         $('#sendmail .sendmail_button').bind('click', function () {
-            if(!validEmail($('input[name="taglistdestmail"]', $('#sendmail')).val(), dataConfig)) {
+            if (!validEmail($('input[name="taglistdestmail"]', $('#sendmail')).val(), dataConfig)) {
                 return false;
             }
 
@@ -320,32 +330,30 @@ const exportRecord = services => {
             $dialog.close();
         });
 
-        $('.datepicker', $dialog.getDomElement()).datepicker({
-            changeYear: true,
-            changeMonth: true,
-            dateFormat: 'yy-mm-dd'
-        });
+        $('.datepicker', $dialog.getDomElement())
+            .datepicker({
+                changeYear:  true,
+                changeMonth: true,
+                dateFormat:  'yy-mm-dd'
+            });
 
-        $(
-            'a.undisposable_link',
-            $dialog.getDomElement()
-        ).bind('click', function () {
-            $(this).parent().parent().find('.undisposable').slideToggle();
-            return false;
-        });
+        $('a.undisposable_link', $dialog.getDomElement())
+            .bind('click', function () {
+                $(this).parent().parent().find('.undisposable').slideToggle();
+                return false;
+            });
 
-        $(
-            'input[name="obj[]"]',
-            $('#download, #sendmail, #ftp')
-        ).bind('change', function () {
-            var $form = $(this).closest('form');
+        $('input.caption', $('#download, #sendmail, #ftp'))
+            .bind('change', function () {
+                var $form = $(this).closest('form');
 
-            if ($('input.caption[name="obj[]"]:checked', $form).length > 0) {
-                $('div.businessfields', $form).show();
-            } else {
-                $('div.businessfields', $form).hide();
-            }
-        });
+                if ($('input.caption:checked', $form).length > 0) {
+                    $('div.businessfields', $form).show();
+                }
+                else {
+                    $('div.businessfields', $form).hide();
+                }
+            });
     };
 
     function validateEmail(email) {
@@ -357,16 +365,16 @@ const exportRecord = services => {
         //split emailList by ; , or whitespace and filter empty element
         let emails = emailList.split(/[ ,;]+/).filter(Boolean);
         let alert;
-        for(let i=0; i < emails.length; i++) {
+        for (let i = 0; i < emails.length; i++) {
             if (!validateEmail(emails[i])) {
 
                 alert = dialog.create(
                     services,
                     {
-                        size: 'Alert',
+                        size:          'Alert',
                         closeOnEscape: true,
-                        closeButton: true,
-                        title: dataConfig.msg.warning
+                        closeButton:   true,
+                        title:         dataConfig.msg.warning
                     },
                     2
                 );
@@ -381,16 +389,16 @@ const exportRecord = services => {
 
     function check_TOU(container, dataConfig) {
         let checkbox = $('input[name="TOU_accept"]', $(container));
-        let go = checkbox.length === 0 || checkbox.prop('checked');
+        let go       = checkbox.length === 0 || checkbox.prop('checked');
         let alert;
         if (!go) {
             alert = dialog.create(
                 services,
                 {
-                    size: 'Small',
+                    size:          'Small',
                     closeOnEscape: true,
-                    closeButton: true,
-                    title: dataConfig.msg.warning
+                    closeButton:   true,
+                    title:         dataConfig.msg.warning
                 },
                 2
             );
@@ -403,7 +411,7 @@ const exportRecord = services => {
     }
 
     function check_subdefs(container, dataConfig) {
-        let go = false;
+        let go       = false;
         let required = false;
         let alert;
 
@@ -417,7 +425,8 @@ const exportRecord = services => {
             if ($.trim($(n).val()) === '') {
                 required = true;
                 $(n).addClass('error');
-            } else {
+            }
+            else {
                 $(n).removeClass('error');
             }
         });
@@ -426,10 +435,10 @@ const exportRecord = services => {
             alert = dialog.create(
                 services,
                 {
-                    size: 'Alert',
+                    size:          'Alert',
                     closeOnEscape: true,
-                    closeButton: true,
-                    title: dataConfig.msg.warning
+                    closeButton:   true,
+                    title:         dataConfig.msg.warning
                 },
                 2
             );
@@ -442,10 +451,10 @@ const exportRecord = services => {
             alert = dialog.create(
                 services,
                 {
-                    size: 'Alert',
+                    size:          'Alert',
                     closeOnEscape: true,
-                    closeButton: true,
-                    title: dataConfig.msg.warning
+                    closeButton:   true,
+                    title:         dataConfig.msg.warning
                 },
                 2
             );
@@ -458,7 +467,10 @@ const exportRecord = services => {
         return true;
     }
 
-    return { initialize, openModal };
+    return {
+        initialize,
+        openModal
+    };
 };
 
 export default exportRecord;

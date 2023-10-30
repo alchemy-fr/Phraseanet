@@ -177,6 +177,11 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set -q workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
     bin/setup system:config set -q workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
     
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting DOWNLOAD_ASYNC & PUSHER"
+    bin/setup system:config set download_async.enabled $PHRASEANET_DOWNLOAD_ASYNC
+    bin/setup system:config set pusher.auth_key $PUSHER_AUTH_KEY
+    bin/setup system:config set pusher.secret $PUSHER_SECRET
+    bin/setup system:config set pusher.app_id $PUSHER_APP_ID
 
 
 
