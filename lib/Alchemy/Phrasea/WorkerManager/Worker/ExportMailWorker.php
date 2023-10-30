@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\WorkerManager\Event\ExportMailFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Pusher\Pusher;
 
 class ExportMailWorker implements WorkerInterface
 {
@@ -227,6 +228,19 @@ class ExportMailWorker implements WorkerInterface
             $em->flush();
         }
 
+        sleep(30);
+        $options = array(
+            'cluster' => 'eu',
+            'useTLS' => true
+        );
+        $pusher = new Pusher(
+            '07b97d8d50b1f2b3d515',
+            'c441cc58dbf1f51f3e0c',
+            '1682224',
+            $options
+        );
+        $data['message'] = 'hello world';
+        $pusher->trigger('my-channel', 'my-event', $data);
     }
 
     /**

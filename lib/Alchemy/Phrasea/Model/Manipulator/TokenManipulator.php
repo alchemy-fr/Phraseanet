@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\NonUniqueResultException;
 use RandomLib\Generator;
 use RuntimeException;
 
@@ -95,6 +96,17 @@ class TokenManipulator implements ManipulatorInterface
 
         return $token;
     }
+
+    /**
+     * @param string $tokenValue
+     * @return Token
+     * @throws NonUniqueResultException
+     */
+    public function findValidToken(string $tokenValue)
+    {
+        return $this->repository->findValidToken($tokenValue);
+    }
+
 
     /**
      * @param Basket $basket

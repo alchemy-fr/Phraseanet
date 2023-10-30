@@ -244,6 +244,12 @@ registration-fields:
     -
         name: geonameid
         required: true
+download_async:
+  enabled: true
+pusher:
+  auth_key: 'pusher-auth_key'
+  secret: 'pusher-secret'
+  app_id: 'pusher-app_id'
 xsendfile:
     enabled: false
     type: nginx
