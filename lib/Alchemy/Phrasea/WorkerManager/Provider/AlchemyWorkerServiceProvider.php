@@ -9,6 +9,7 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\AssetsIngestWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\DeleteRecordWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\DownloadAsyncWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\EditRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExportMailWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExposeUploadWorker;
@@ -104,6 +105,12 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EXPORT_MAIL_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new ExportMailWorker($app))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DOWNLOAD_ASYNC_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return (new DownloadAsyncWorker($app, $app['conf']))
                 ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
         }));

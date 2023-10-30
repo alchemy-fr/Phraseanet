@@ -421,6 +421,7 @@ class set_export extends set_abstract
         $file_names = [];
         $size = 0;
         $unicode = $this->app['unicode'];
+        $hasCgu = false;
 
         /** @var record_exportElement $download_element */
         foreach ($this->elements as $download_element) {
@@ -435,6 +436,10 @@ class set_export extends set_abstract
                 'export_name'   => '',
                 'subdefs'       => [],
             ];
+
+            if (!$hasCgu && !PDFCgu::isDataboxCguEmpty($this->app, $download_element->getDataboxId())) {
+                $hasCgu = true;
+            }
 
             $BF = false;
 
@@ -467,7 +472,7 @@ class set_export extends set_abstract
             // build the export_name
             //
             if ($rename_title) {
-                // use the title (may be a concat of fields)
+                // use the title (can be a concat of fields)
                 $export_name = strip_tags($download_element->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI]));
                 // if the "title" ends up with a "filename-like" field, remove extension
                 if (strtolower(substr($export_name, -strlen($extension)-1)) === '.'.strtolower($extension)) {
@@ -694,7 +699,7 @@ class set_export extends set_abstract
                             . $files[$id]["subdefs"][$subdefName]["ajout"] . '.'
                             . $files[$id]["subdefs"][$subdefName]["exportExt"];
 
-                        $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), $serializeMethod, $BF);
+                        $desc = $this->getCaptionSerializer()->serialize($download_element->get_caption(), $serializeMethod, $BF);
                         file_put_contents($caption_dir . $file, $desc);
 
                         $files[$id]["subdefs"][$subdefName]["path"] = $caption_dir;
@@ -712,6 +717,7 @@ class set_export extends set_abstract
             'names' => $file_names,
             'size'  => $size,
             'count' => $n_files,
+            'cgu'   => $hasCgu,
         ];
 
         return $this->list;
@@ -745,7 +751,9 @@ class set_export extends set_abstract
 
         // group recordId per databoxId
         foreach ($files as $file) {
-            $recordIdsPerDatabox[$file['databox_id']][] = $file['record_id'];
+            if(array_key_exists('databox_id', $file)) {
+                $recordIdsPerDatabox[$file['databox_id']][] = $file['record_id'];
+            }
         }
 
         foreach ($files as $record) {
@@ -766,7 +774,7 @@ class set_export extends set_abstract
                             $toRemove[] = $path;
                         }
 
-                        if (!in_array($record['databox_id'], $databoxIds)) {
+                        if (array_key_exists('databox_id', $record) && !in_array($record['databox_id'], $databoxIds)) {
                             // add also the databox cgu in the zip
                             $databoxIds[] = $record['databox_id'];
 
@@ -827,6 +835,10 @@ class set_export extends set_abstract
         ]) ? $type : Session_Logger::EVENT_EXPORTDOWNLOAD;
 
         foreach ($files as $record) {
+            if(!array_key_exists('base_id', $record)) {
+                // a "non-record" file, like xlsx report
+                continue;
+            }
             foreach ($record["subdefs"] as $o => $obj) {
                 $sbas_id = phrasea::sbasFromBas($app, $record['base_id']);
 
@@ -893,5 +905,13 @@ class set_export extends set_abstract
         }
 
         return false;
+    }
+
+    /**
+     * @return CaptionSerializer
+     */
+    private function getCaptionSerializer()
+    {
+        return $this->app['serializer.caption'];
     }
 }
