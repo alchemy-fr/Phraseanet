@@ -35,15 +35,6 @@ class PSAdminController extends Controller
         if ($form->isValid()) {
             $app['conf']->set(['phraseanet-service', 'expose-service'], $form->getData());
 
-            // generate a uniq key between phraseanet service and the phraseanet instance if not exist
-            if(!$app['conf']->has(['phraseanet-service', 'phraseanet_local_id'])) {
-                $instanceKey = $this->app['conf']->get(['main', 'key']);
-
-                $phraseanetLocalId = md5($instanceKey);
-
-                $app['conf']->set(['phraseanet-service', 'phraseanet_local_id'], $phraseanetLocalId);
-            }
-
             return $app->redirectPath('ps_admin', ['_fragment'=>'expose']);
         }
 
