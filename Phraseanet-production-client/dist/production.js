@@ -7715,10 +7715,10 @@ var exportRecord = function exportRecord(services) {
             return false;
         });
 
-        (0, _jquery2.default)('input[name="obj[]"]', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
+        (0, _jquery2.default)('input.caption', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
             var $form = (0, _jquery2.default)(this).closest('form');
 
-            if ((0, _jquery2.default)('input.caption[name="obj[]"]:checked', $form).length > 0) {
+            if ((0, _jquery2.default)('input.caption:checked', $form).length > 0) {
                 (0, _jquery2.default)('div.businessfields', $form).show();
             } else {
                 (0, _jquery2.default)('div.businessfields', $form).hide();
@@ -7819,7 +7819,10 @@ var exportRecord = function exportRecord(services) {
         return true;
     }
 
-    return { initialize: initialize, openModal: openModal };
+    return {
+        initialize: initialize,
+        openModal: openModal
+    };
 };
 
 exports.default = exportRecord;
@@ -64613,7 +64616,7 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
             // if(isNaN(hours) && isNaN(minutes) && isNaN(seconds) && isNaN(milliseconds) ) {
-            return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+            return hours + ":" + minutes + ":" + seconds + "." + ('000' + milliseconds).slice(-3);
             //}
         }
 
@@ -64650,11 +64653,14 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     var captionText = "WEBVTT - with cue identifier\n\n";
                     while (i <= countSubtitle * 3) {
                         j = j + 1;
-                        captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        // save only wich with value not empty
+                        if (allData[i + 2].value.length != 0) {
+                            captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        }
+
                         i = i + 3;
                         if (i == countSubtitle * 3 - 3) {
                             (0, _jquery2.default)('#record-vtt').val(captionText);
-                            console.log(captionText);
                             if (btn == 'save') {
                                 //send data
                                 _jquery2.default.ajax({
@@ -64759,7 +64765,6 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     ResValue = fieldvalue.split("WEBVTT - with cue identifier\n\n");
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
-                    console.log(captionValue);
                     for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
@@ -64861,7 +64866,6 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
             try {
                 var requestData = (0, _jquery2.default)('#video-subtitle-request').serializeArray();
                 requestData = JSON.parse(JSON.stringify(requestData));
-                console.log(requestData);
             } catch (err) {
                 return;
             }

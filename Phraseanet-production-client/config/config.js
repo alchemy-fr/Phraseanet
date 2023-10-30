@@ -13,5 +13,5 @@ module.exports = {
     setupDir: _root + 'tests/setup/node.js',
     karmaConf: _root + 'config/karma.conf.js',
     // change this version when you change JS file for lazy loading
-    assetFileVersion: 95
+    assetFileVersion: 97
 };

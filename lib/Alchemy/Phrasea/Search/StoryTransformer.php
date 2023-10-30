@@ -53,6 +53,7 @@ class StoryTransformer extends TransformerAbstract
             '@entity@' => 'http://api.phraseanet.com/api/objects/story',
             'databox_id' => $story->getDataboxId(),
             'story_id' => $story->getRecordId(),
+            'resource_id' => ($this->recordTransformer->getResourceIdResolver())($story),
             'cover_record_id' => $story->getCoverRecordId(),
             'updated_on' => NullableDateTime::format($story->getUpdated()),
             'created_on' => NullableDateTime::format($story->getUpdated()),
