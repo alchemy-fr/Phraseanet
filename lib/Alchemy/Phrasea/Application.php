@@ -687,9 +687,20 @@ class Application extends SilexApplication
                 );
 
                 $encryption = null;
+                $secureMode = '';
 
-                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls'])) {
-                    $encryption = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
+                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls', 'tlsv1.1', 'tlsv1.2'])) {
+                    $secureMode = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
+
+                    if ($secureMode == 'ssl') {
+                        $encryption = 'ssl';
+                    } else {
+                        $encryption = 'tls';
+                        if ($secureMode == 'tls') {
+                            // by default use tlsv1.2
+                            $secureMode = 'tlsv1.2';
+                        }
+                    }
                 }
 
                 $options = $app['swiftmailer.options'] = array_replace([
@@ -705,6 +716,10 @@ class Application extends SilexApplication
                 $transport->setPort($options['port']);
                 // tls or ssl
                 $transport->setEncryption($options['encryption']);
+
+                if ($options['encryption'] == 'tls') {
+                    $transport->setStreamOptions(['ssl' =>[$secureMode => true]]);
+                }
 
                 if ($app['conf']->get(['registry', 'email', 'smtp-auth-enabled'])) {
                     $transport->setUsername($options['username']);
