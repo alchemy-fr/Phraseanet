@@ -69,6 +69,11 @@ class AMQPConnection
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
+        MessagePublisher::DOWNLOAD_ASYNC_TYPE         => [
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+        ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
             'with'            => self::WITH_RETRY,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
