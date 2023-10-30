@@ -113,6 +113,7 @@ class V1Controller extends Controller
     use DispatcherAware;
     use FilesystemAware;
     use JsonBodyAware;
+    use InstanceIdAware;
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
@@ -1216,7 +1217,7 @@ class V1Controller extends Controller
     {
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
         $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
         $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
@@ -1275,7 +1276,7 @@ class V1Controller extends Controller
     {
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
 
         $transformerResolver = new SearchResultTransformerResolver([
@@ -1667,6 +1668,7 @@ class V1Controller extends Controller
         $data = [
             'databox_id'             => $record->getDataboxId(),
             'record_id'              => $record->getRecordId(),
+            'resource_id'            => ($this->getResourceIdResolver())($record),
             'mime_type'              => $record->getMimeType(),
             'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),
@@ -1721,17 +1723,18 @@ class V1Controller extends Controller
         };
 
         return [
-            '@entity@'      => self::OBJECT_TYPE_STORY,
-            'databox_id'    => $story->getDataboxId(),
-            'story_id'      => $story->getRecordId(),
+            '@entity@'        => self::OBJECT_TYPE_STORY,
+            'databox_id'      => $story->getDataboxId(),
+            'story_id'        => $story->getRecordId(),
+            'resource_id'     => ($this->getResourceIdResolver())($story),
             'cover_record_id' => $story->getCoverRecordId(),
-            'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
-            'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => $story->getCollectionId(),
-            'base_id'       => $story->getBaseId(),
-            'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
-            'uuid'          => $story->getUuid(),
-            'metadatas'     => [
+            'updated_on'      => $story->getUpdated()->format(DATE_ATOM),
+            'created_on'      => $story->getCreated()->format(DATE_ATOM),
+            'collection_id'   => $story->getCollectionId(),
+            'base_id'         => $story->getBaseId(),
+            'thumbnail'       => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
+            'uuid'            => $story->getUuid(),
+            'metadatas'       => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
                 'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),
                 'dc:coverage'    => $format($caption, \databox_Field_DCESAbstract::Coverage),
@@ -1749,7 +1752,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
+            'records'         => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
         ];
     }
 
