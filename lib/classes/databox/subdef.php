@@ -43,6 +43,8 @@ class databox_subdef
      */
     private $requiresMetadataUpdate;
     protected $downloadable;
+    protected $orderable;
+    protected $substituable;
     protected $tobuild;
     protected $translator;
     protected static $mediaTypeToSubdefTypes = [
@@ -67,8 +69,8 @@ class databox_subdef
      *
      * @param SubdefType $type
      * @param SimpleXMLElement $sd
-     *
-     * @return databox_subdef
+     * @param TranslatorInterface $translator
+     * @param databox|null $databox
      */
     public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator, databox $databox = null)
     {
@@ -81,8 +83,9 @@ class databox_subdef
         }
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
-        $this->orderable = isset($sd->attributes()->orderable) ? p4field::isyes($sd->attributes()->orderable) : true;
-        $this->tobuild = isset($sd->attributes()->tobuild) ? p4field::isyes($sd->attributes()->tobuild) : true;
+        $this->substituable = isset($sd->attributes()->substituable) && p4field::isyes($sd->attributes()->substituable);
+        $this->orderable = !isset($sd->attributes()->orderable) || p4field::isyes($sd->attributes()->orderable);
+        $this->tobuild = !isset($sd->attributes()->tobuild) || p4field::isyes($sd->attributes()->tobuild);
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
         $this->preset = $sd->attributes()->presets;
         $this->requiresMetadataUpdate = p4field::isyes((string)$sd->meta);
@@ -368,13 +371,19 @@ class databox_subdef
     }
 
     /**
-     * boolean
-     *
      * @return bool
      */
     public function isTobuild()
     {
         return $this->tobuild;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubstituable()
+    {
+        return $this->substituable;
     }
 
     /**

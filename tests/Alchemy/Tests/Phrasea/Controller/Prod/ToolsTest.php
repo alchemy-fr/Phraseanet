@@ -73,6 +73,6 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
         $message = trim($crawler->filterXPath('//div')->text());
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(self::$DI['app']['translator']->trans('Thumbnail has been successfully substitued'), $message);
+        $this->assertEquals(sprintf(self::$DI['app']['translator']->trans('Subdef "%s" has been successfully substitued'), 'thumbnail'), $message);
     }
 }

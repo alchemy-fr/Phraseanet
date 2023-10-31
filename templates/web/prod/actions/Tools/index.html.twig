@@ -4,23 +4,23 @@
 {% set nbSubdefSubstitute = 0 %}
 
 {% for record in records %}
-  {% set subdefs = record.get_subdefs() %}
-  {% if subdefs|length > 0 %}
-    {% for key, subdef in subdefs if subdef.is_substituted() %}
-      {% if key == 'document' %}
-        {% set nbHdSubstitute = nbHdSubstitute + 1 %}
-      {% else %}
-        {% set nbSubdefSubstitute = nbSubdefSubstitute + 1 %}
-      {% endif%}
+    {% set subdefs = record.get_subdefs() %}
+    {% if subdefs|length > 0 %}
+        {% for key, subdef in subdefs if subdef.is_substituted() %}
+            {% if key == 'document' %}
+                {% set nbHdSubstitute = nbHdSubstitute + 1 %}
+            {% else %}
+                {% set nbSubdefSubstitute = nbSubdefSubstitute + 1 %}
+            {% endif %}
 
-    {% endfor %}
-  {% endif %}
+        {% endfor %}
+    {% endif %}
 {% endfor %}
 
 <div id='prod-tool-box' class="PNB10">
 
     {# jquery Tabs #}
-    <div id="tool-tabs"  class="tabs tool-modal-wrapper">
+    <div id="tool-tabs" class="tabs tool-modal-wrapper">
         {# jquery menu #}
         <div>
             <ul>
@@ -34,7 +34,7 @@
                         {{ "image tool" | trans }}
                     </a>
                 </li>
-                {% if selectionLength == 1 and (app['conf'].get(['registry', 'modules', 'doc-substitution']) or app['conf'].get(['registry', 'modules', 'thumb-substitution'])) %}
+                {% if substituables|length > 0 %}
                     <li>
                         <a href="#substitution">
                             {{ "substitution" | trans }}
@@ -48,7 +48,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% if selectionLength == 1%}
+                {% if selectionLength == 1 %}
                     {% if recordSubdefs %}
                         <li>
                             <a href="#tools-sharing">
@@ -63,13 +63,14 @@
         <div id="subdefs" class="tabBox">
             <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post" name="prodToolsSubdef">
                 <fieldset style='border:1px solid #999; padding:20px;'>
-                    <legend style="margin-bottom: 0px;">&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
+                    <legend style="margin-bottom: 0px;">&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;
+                    </legend>
                     {% if nbSubdefSubstitute > 0 %}
-                        <div style="color:#A00;">
+                        <div style="color:#FF0000;">
                             {{ "Attention, certain documents ont des sous-definitions substituees" | trans }}
                         </div>
                         <label for="FTS" class="checkbox">
-                            <input type="checkbox" name="force_substitution" value="1" id="FTS" />
+                            <input type="checkbox" name="force_substitution" value="1" id="FTS"/>
                             {{ "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" | trans }}
                         </label>
                         <br/>
@@ -79,14 +80,16 @@
 
                     <div class="well-small">
                         <label for="recreate_all" class="checkbox">
-                            <input class="subdefTodo" id="recreate_all" type="checkbox"  value="0"> {{ 'All' | trans }}
+                            <input class="subdefTodo" id="recreate_all" type="checkbox" value="0"> {{ 'All' | trans }}
                         </label>
                     </div>
 
                     {% for subdefLabel in availableSubdefLabel %}
                         <div class="well-small">
                             <label for="recreate_{{ subdefLabel | replace({' ':'_'}) }}" class="checkbox">
-                                <input class="subdefTodo" type="checkbox" id="recreate_{{ subdefLabel | replace({' ':'_'}) }}" name="subdefsLabel[]" value="{{ subdefLabel }}" />
+                                <input class="subdefTodo" type="checkbox"
+                                       id="recreate_{{ subdefLabel | replace({' ':'_'}) }}" name="subdefsLabel[]"
+                                       value="{{ subdefLabel }}"/>
                                 {{ subdefLabel }} {{ countSubdefTodo[subdefLabel] }} / {{ nbRecords }}
                             </label>
                         </div>
@@ -97,8 +100,8 @@
                             {{ 'Are you sure you want to rebuild the sub-definitions of selected records?' | trans }}
                         </p>
                     </div>
-                    <input type="hidden" name="ACT" value="SEND" />
-                    <input type="hidden" name="lst" value="{{records.serializedList()}}" />
+                    <input type="hidden" name="ACT" value="SEND"/>
+                    <input type="hidden" name="lst" value="{{ records.serializedList() }}"/>
                 </fieldset>
                 <div style='text-align:right;padding-top:10px;'>
                     <button class="action_submiter btn btn-inverse" type="button">{{ "validate" | trans }}</button>
@@ -113,126 +116,108 @@
             </form>
         </div>
 
-    <div id="image" class="tabBox">
-      <div class="text-info">
-          <i class="fa fa-info-circle" aria-hidden="true"></i> {% trans %}Changes for rotation will be applied only on
-          the sub-definitions of "image" type.{% endtrans %}
-      </div>
-      <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
-        <fieldset style='border:1px solid #999;padding:20px;'>
-          <legend>&nbsp;<b>{{ "image rotation" | trans  }}</b>&nbsp;</legend>
-            <label for="ROTA_90" class="radio">
-                <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
-                {{ "rotation 90 degres horaire" | trans }}
-            </label>
-            <br />
-            <label for="ROTA_C90" class="radio">
-                <input type="radio" name="rotation" id="ROTA_C90" value="-90">
-                {{ "rotation 90 degres anti-horaires" | trans }}
-            </label>
-            <input type="hidden" name="lst" value="{{records.serializedList()}}" />
-            <input type="hidden" name="element" value="" />
-            <input type="hidden" name="cchd" value="" />
-        </fieldset>
-        <div style='text-align:right;padding-top:10px;'>
-          <button class="action_submiter btn btn-inverse">{{ "validate"|trans }}</button>
-          <button class="action_cancel btn btn-inverse">{{ "cancel"|trans }}</button>
-        </div>
-          <input type="hidden" name="prodToolsRotate_token" value="{{ app['session'].get('prodToolsRotate_token') }}">
+        <div id="image" class="tabBox">
+            <div class="text-info">
+                <i class="fa fa-info-circle"
+                   aria-hidden="true"></i> {% trans %}Changes for rotation will be applied only on
+                    the sub-definitions of "image" type.{% endtrans %}
+            </div>
+            <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
+                <fieldset style='border:1px solid #999;padding:20px;'>
+                    <legend>&nbsp;<b>{{ "image rotation" | trans }}</b>&nbsp;</legend>
+                    <label for="ROTA_90" class="radio">
+                        <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
+                        {{ "rotation 90 degres horaire" | trans }}
+                    </label>
+                    <br/>
+                    <label for="ROTA_C90" class="radio">
+                        <input type="radio" name="rotation" id="ROTA_C90" value="-90">
+                        {{ "rotation 90 degres anti-horaires" | trans }}
+                    </label>
+                    <input type="hidden" name="lst" value="{{ records.serializedList() }}"/>
+                    <input type="hidden" name="element" value=""/>
+                    <input type="hidden" name="cchd" value=""/>
+                </fieldset>
+                <div style='text-align:right;padding-top:10px;'>
+                    <button class="action_submiter btn btn-inverse">{{ "validate"|trans }}</button>
+                    <button class="action_cancel btn btn-inverse">{{ "cancel"|trans }}</button>
+                </div>
+            <input type="hidden" name="prodToolsRotate_token" value="{{ app['session'].get('prodToolsRotate_token') }}">
       </form>
-    </div>
-
-    {# hd sub section #}
-    {% if selectionLength == 1 and (app['conf'].get(['registry', 'modules', 'doc-substitution']) or app['conf'].get(['registry', 'modules', 'thumb-substitution'])) %}
-      {% for record in records %}
-        <div id="substitution" class="tabBox">
-
-         {% if "unknown" == record.get_type() %}
-             <i class="fa fa-exclamation-triangle icon-white"
-                aria-hidden="true"></i>{{ "Substitution is not possible for this kind of record" | trans }}
-         {% else %}
-            {% if app['conf'].get(['registry', 'modules', 'doc-substitution']) %}
-                <div id="substitution-hd">
-                  <form
-                    name ="formchgHD"
-                    action="{{ path('prod_tools_hd_substitution') }}"
-                    enctype="multipart/form-data"
-                    method="post"
-                    target="uploadHdsub">
-
-                    <fieldset style='border:1px solid #999;padding:20px;'>
-                      <legend>&nbsp;<b>{{ "substitution HD" | trans }}</b>&nbsp;</legend>
-                      <div>
-                        <input id='new-hd-file' name="newHD" type="file"/>
-                        <br />
-                        <label for="CCFNALP" class="checkbox">
-                            <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
-                            {{ "mettre a jour le nom original de fichier apres substitution" | trans }}
-                        </label>
-                        <input type="hidden" name="ACT" value="SEND" />
-                        <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
-                        <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
-                        <div class="load"></div>
-                      </div>
-                    </fieldset>
-                    <div style='text-align:right;padding-top:10px;'>
-                      <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
-                      <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
-                    </div>
-                      <input type="hidden" name="prodToolsHDSubstitution_token" value="{{ app['session'].get('prodToolsHDSubstitution_token') }}">
-                  </form>
-                  <div class='resultAction'></div>
-                </div>
-              {% endif %}
-
-              {% if app['conf'].get(['registry', 'modules', 'thumb-substitution']) %}
-                <div id="substitution-sd">
-                  <form
-                    name="formchgHD"
-                    action="{{ path('prod_tools_thumbnail_substitution') }}"
-                    enctype="multipart/form-data"
-                    method="post"
-                    target="uploadHdsub">
-                    <fieldset style='border:1px solid #999;padding:20px;'>
-                      <legend>&nbsp;<b>{{ "substitution SD" | trans }}</b>&nbsp;</legend>
-                      <div>
-                        <input id='new-sd-file' name="newThumb" type="file" />
-                        <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
-                        <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
-                        <div class="load"></div>
-                      </div>
-                    </fieldset>
-                    <div style='text-align:right;padding-top:10px;'>
-                      <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
-                      <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
-                    </div>
-                    <input type="hidden" name="prodToolsThumbSubstitution_token" value="{{ app['session'].get('prodToolsThumbSubstitution_token') }}">
-                  </form>
-                  <div class='resultAction'></div>
-                </div>
-              {% endif %}
-         {% endif %}
         </div>
-      {% endfor %}
-    {% endif %}
 
-    {# exiftool section #}
-    {% if metadatas %}
-        <div id="exiftool"  class="tabBox">
-            <div class="metadatas-top-block">
-                <select id="select-meta-subdef" name="metaSubdef" class="input-medium check-filters">
-                    <option value="" disabled >{{"prod::tool:select subdef" | trans}}</option>
-                    {% if listsubdef is defined and listsubdef is not null %}
-                        {% for subdef in listsubdef %}
-                        <option value= "{{ subdef }}" {{ subdef== 'document'? 'selected' : 'false' }}>{{ subdef }}</option>
+        {# substitution section #}
+        {% if substituables|length > 0 %}       {# substituables is empty if multiple records #}
+            {% for record in records %}
+                <div id="substitution" class="tabBox">
+
+                    {% if "unknown" == record.get_type() %}
+                        <i class="fa fa-exclamation-triangle icon-white"
+                           aria-hidden="true"></i>{{ "Substitution is not possible for this kind of record" | trans }}
+                    {% else %}
+                        {% for substituable in substituables %}
+                            {% set d = (substituable == "document") ? true : false %}
+                            <div id="substitution-hd">
+                                <form
+                                        name="formchgHD"
+                                        action="{{ path(d ? 'prod_tools_hd_substitution' : 'prod_tools_thumbnail_substitution') }}"
+                                        enctype="multipart/form-data"
+                                        method="post"
+                                        target="uploadHdsub">
+
+                                    <fieldset style='border:1px solid #999;padding:20px;'>
+                                        <legend>&nbsp;
+                                            <b>{% trans with {'%sd%' : substituable} %}substitution of %sd%{% endtrans %}</b>&nbsp
+                                        </legend>
+                                        <div>
+                                            {% if d %}
+                                                <input id='new-hd-file' name="newHD" type="file"/>
+                                                <br/>
+                                                <label for="CCFNALP" class="checkbox">
+                                                    <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
+                                                    {{ "mettre a jour le nom original de fichier apres substitution" | trans }}
+                                                </label>
+                                                <input type="hidden" name="prodToolsHDSubstitution_token" value="{{ app['session'].get('prodToolsHDSubstitution_token') }}">
+                                            {% else %}
+                                                <input id='new-sd-file' name="newThumb" type="file"/>
+                                                <input type="hidden" name="prodToolsThumbSubstitution_token" value="{{ app['session'].get('prodToolsThumbSubstitution_token') }}">
+                                            {% endif %}
+                                            <input type="hidden" name="subdef" value="{{ substituable|e }}"/>
+                                            <input type="hidden" name="sbas_id" value="{{ record.get_sbas_id() }}"/>
+                                            <input type="hidden" name="record_id" value="{{ record.get_record_id() }}"/>
+                                            <div class="load"></div>
+                                            <div class='resultAction'></div>
+                                        </div>
+                                    </fieldset>
+                                    <div style='text-align:right;padding-top:10px;'>
+                                        <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
+                                        <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
+                                    </div>
+                                </form>
+                            </div>
                         {% endfor %}
                     {% endif %}
-                </select>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {# exiftool section #}
+        {% if metadatas %}
+            <div id="exiftool" class="tabBox">
+                <div class="metadatas-top-block">
+                    <select id="select-meta-subdef" name="metaSubdef" class="input-medium check-filters">
+                        <option value="" disabled>{{ "prod::tool:select subdef" | trans }}</option>
+                        {% if listsubdef is defined and listsubdef is not null %}
+                            {% for subdef in listsubdef %}
+                                <option value="{{ subdef }}" {{ subdef== 'document'? 'selected' : 'false' }}>{{ subdef }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div id="metadata-load" style="height: 100%"></div>
+                <div id="metadata-content"></div>
             </div>
-            <div id="metadata-load" style="height: 100%"></div>
-            <div id="metadata-content"></div>
-        </div>
-    {% endif %}
+        {% endif %}
         {% if selectionLength == 1 and recordSubdefs is not empty %}
             <div id="tools-sharing" class="tabBox">
                 <div class="well-large">
@@ -242,44 +227,45 @@
                                 <span class="status-marker {{ subdef.state ? 'status-active' : 'status-inactive' }}"></span>{{ subdef.label }}
                             </div>
                             <div class="span6 text-right">
-                                    <button type="button" class="tools-sharing-btn stateChange_button btn btn-inverse text-right"
-                                            data-name="{{ subdef.name }}" data-state="{{ subdef.state }}">
-                                        {% if subdef.state %}
-                                            {{- "Disable document type sharing"|trans -}}
-                                        {% else %}
-                                            {{- "Enable document type sharing"|trans -}}
-                                        {% endif %}
-                                    </button>
+                                <button type="button"
+                                        class="tools-sharing-btn stateChange_button btn btn-inverse text-right"
+                                        data-name="{{ subdef.name }}" data-state="{{ subdef.state }}">
+                                    {% if subdef.state %}
+                                        {{- "Disable document type sharing"|trans -}}
+                                    {% else %}
+                                        {{- "Enable document type sharing"|trans -}}
+                                    {% endif %}
+                                </button>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         {% endif %}
-  </div>
+    </div>
 
-  {# hidden iframe to handle upload #}
-  <iframe
-    id="uploadHdsub"
-    name="uploadHdsub"
-    height="0"
-    width="0"
-    border="0"
+    {# hidden iframe to handle upload #}
+    <iframe
+            id="uploadHdsub"
+            name="uploadHdsub"
+            height="0"
+            width="0"
+            border="0"
     >
-  </iframe>
+    </iframe>
 </div>
 
 <script type="text/javascript">
     var toolsConfig = {
         selectionLength: {{ selectionLength }},
-        databaseId: {% if selectionLength == 1%}{{record.get_base_id}}{% else %}0{% endif %},
+        databaseId:   {% if selectionLength == 1 %}{{ record.get_base_id }}{% else %}0{% endif %},
         translations: {
-            alertTitle: '{{ "alert" | trans }}',
-            noImgSelected: '{{ "no image selected" | trans }}',
-            processing: '{{ "processing" | trans }}',
+            alertTitle:     '{{ "alert" | trans }}',
+            noImgSelected:  '{{ "no image selected" | trans }}',
+            processing:     '{{ "processing" | trans }}',
             thumbnailTitle: '{{ 'thumbnail validation' | trans }}',
         },
-        records: [
+        records:      [
 
             {% for record in records %}
             {
@@ -297,9 +283,9 @@
                 {% set height = technical_info[dataH].value %}
 
                 {% if width and height %}
-                    {% set ratio = (width / height)|number_format(2, '.') %}
+                {% set ratio = (width / height)|number_format(2, '.') %}
                 {% else %}
-                    {% set ratio = '' %}
+                {% set ratio = '' %}
                 {% endif %}
 
                 sources: [
@@ -307,8 +293,8 @@
                     {
                         ratio: '{{ ratio }}',
                         framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
-                        type: "{{ subdef.get_mime() }}",
-                        src: "{{ subdef.get_url() }}"
+                        type:  "{{ subdef.get_mime() }}",
+                        src:   "{{ subdef.get_url() }}"
                     }{% if not loop.last %},{% endif %}
                     {% endfor %}
                 ]
@@ -321,38 +307,38 @@
     };
 
 
-    function loadMetadataTab (url) {
+    function loadMetadataTab(url) {
         $.ajax({
-            "url": url,
-            "type": "GET",
+            "url":      url,
+            "type":     "GET",
             beforeSend: function () {
                 $('#metadata-content').empty();
                 $('#metadata-load').removeClass('hidden').addClass('loading');
             },
-            success: function (data) {
+            success:    function (data) {
                 $('#metadata-load').removeClass('loading').addClass('hidden');
                 $('#metadata-content').append(data);
             }
         });
     }
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         {% if record is not null %}
-            /**load default Subdef info **/
-            loadMetadataTab( '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'  }) }}');
+        /**load default Subdef info **/
+        loadMetadataTab('{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'  }) }}');
 
-            /**load selected Subdef info **/
-            $('#select-meta-subdef').on('change', function (e) {
-                var selectedSubdef = $(this).children('option:selected');
-                if (selectedSubdef.val() !== "") {
-                   var url = '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'subdefName'  }) }}';
-                   url = url.replace("subdefName", selectedSubdef.val() );
-                   loadMetadataTab(url);
-                }
-            });
+        /**load selected Subdef info **/
+        $('#select-meta-subdef').on('change', function (e) {
+            var selectedSubdef = $(this).children('option:selected');
+            if (selectedSubdef.val() !== "") {
+                var url = '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'subdefName'  }) }}';
+                url     = url.replace("subdefName", selectedSubdef.val());
+                loadMetadataTab(url);
+            }
+        });
         {% endif %}
-        $('.tool-modal-wrapper .tabBox').height($('#prod-tool-box').height() - 61 );
-        $('#exiftool').height($('#prod-tool-box').height() - 55 );
+        $('.tool-modal-wrapper .tabBox').height($('#prod-tool-box').height() - 61);
+        $('#exiftool').height($('#prod-tool-box').height() - 55);
 
     });
 
