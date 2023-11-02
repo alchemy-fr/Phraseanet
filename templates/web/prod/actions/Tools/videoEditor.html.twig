@@ -248,11 +248,9 @@
                                         </p>
                                         <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Language destination" | trans }}</label>
-                                            <select name="subtitle_language_destination" id="subtitle_language_destination">
-                                                {% for videoTextTrackField in videoTextTrackFields %}
-                                                    <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
-                                                {% endfor %}
-                                            </select>
+                                            {% for videoTextTrackField in videoTextTrackFields %}
+                                                <label style="display:inline-block; margin-right: 10px;"><input style="margin-top: 0px; margin-right: 5px;" type="checkbox" name="subtitle_language_destination" data-label="{{ videoTextTrackField.label}}" value="{{ videoTextTrackField.meta_struct_id}}" />{{ videoTextTrackField.label}}</label>
+                                            {% endfor %}
                                         </p>
                                         <br>
                                         <div class="video-subtitle-center-button btn-container">
@@ -359,6 +357,15 @@
     $('#submit-subtitle-request').on('click', function (e) {
         e.preventDefault();
         console.log("auto-subtitle process");
+
+        var destination = {};
+        $.each($('input[name=subtitle_language_destination]'), function(k, input){
+            let inputEl = $(input);
+            if (inputEl.prop('checked')) {
+                destination[inputEl.data('label')] = inputEl.val();
+            }
+        });
+
         $.ajax({
             type: 'POST',
             url: '/prod/tools/auto-subtitle/',
@@ -368,8 +375,7 @@
                 record_id: {{ record.getRecordId }},
                 subtitle_language_source: $('#subtitle_language_source option:selected').text(),
                 meta_struct_id_source: $('#subtitle_language_source').val(),
-                subtitle_language_destination: $('#subtitle_language_destination option:selected').text(),
-                meta_struct_id_destination: $('#subtitle_language_destination').val()
+                subtitle_destination: JSON.stringify(destination),
             },
             success: function success(data) {
                 console.log(data);

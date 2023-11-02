@@ -552,25 +552,14 @@ class ToolsController extends Controller
             (int)$request->request->get("record_id")
         );
 
-        $permalinkUrl = '';
-        $conf = $this->getConf();
-
-        // if subdef_source not set, by default use the preview permalink
-        $subdefSource = $conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'subdef_source']) ?: 'preview';
-
-        if ($this->isPhysicallyPresent($record, $subdefSource) && ($previewLink = $record->get_subdef($subdefSource)->get_permalink()) != null) {
-            $permalinkUrl = $previewLink->get_url()->__toString();
-        }
 
         $this->dispatch(
             PhraseaEvents::RECORD_AUTO_SUBTITLE,
             new RecordAutoSubtitleEvent(
                 $record,
-                $permalinkUrl,
                 $request->request->get("subtitle_language_source"),
                 $request->request->get("meta_struct_id_source"),
-                $request->request->get("subtitle_language_destination"),
-                $request->request->get("meta_struct_id_destination")
+                json_decode($request->request->get("subtitle_destination"), true)
             )
         );
 
