@@ -11,11 +11,16 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Core\Event\DownloadAsyncEvent;
 use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use set_export;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DownloadController extends Controller
 {
@@ -29,6 +34,10 @@ class DownloadController extends Controller
      */
     public function checkDownload(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExportDownload')) {
+            $this->app->abort(403);
+        }
+
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
         $subdefs = $request->request->get('obj', []);
@@ -50,11 +59,134 @@ class DownloadController extends Controller
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
+
         $this->getDispatcher()->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent(
-            $this->getAuthenticatedUser(), $ssttid, $lst, $subdefs, $download->getExportName())
+                $this->getAuthenticatedUser(),
+                $ssttid,
+                $lst,
+                $subdefs,
+                $download->getExportName()
+            )
         );
 
+        /** @see DoDownloadController::prepareDownload */
         return $this->app->redirectPath('prepare_download', ['token' => $token->getValue()]);
+    }
+
+    /**
+     * display the downloasAsync page
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function listDownloadAsync(Request $request)
+    {
+        if (!$this->isCrsfValid($request, 'prodExportDownload')) {
+            $this->app->abort(403);
+        }
+
+        $lst = $request->request->get('lst');
+        $ssttid = $request->request->get('ssttid', '');
+        $subdefs = $request->request->get('obj', []);
+
+        $download = new \set_export($this->app, $lst, $ssttid);
+
+        if (0 === $download->get_total_download()) {
+            $this->app->abort(403);
+        }
+
+        // "stamp_choice" is a ckbox with value "NO_STAMP" to "remove stamp" on download
+        $stamp_method = set_export::STAMP_ASYNC;    // will not stamp, but flag files to be stamped
+        if($request->request->get('stamp_choice') === set_export::NO_STAMP) {
+            $stamp_method = set_export::NO_STAMP;
+        }
+
+        $list = $download->prepare_export(
+            $this->getAuthenticatedUser(),
+            $this->app['filesystem'],
+            $subdefs,
+            $request->request->get('type') === 'title' ? true : false,
+            $request->request->get('businessfields'),
+            // do not stamp now, worker will do
+            $stamp_method,
+            true
+        );
+        $list['export_name'] = sprintf('%s.zip', $download->getExportName());
+        $list['include_report'] = $request->request->get('include_report') === 'INCLUDE_REPORT';
+        $list['include_businessfields'] = (bool)$request->request->get('businessfields');
+
+        $records = [];
+
+        foreach ($list['files'] as $file) {
+            if (!is_array($file) || !isset($file['base_id']) || !isset($file['record_id'])) {
+                continue;
+            }
+            $sbasId = \phrasea::sbasFromBas($this->app, $file['base_id']);
+
+            try {
+                $record = new \record_adapter($this->app, $sbasId, $file['record_id']);
+            } catch (\Exception $e) {
+                continue;
+            }
+
+            $records[sprintf('%s_%s', $sbasId, $file['record_id'])] = $record;
+        }
+
+        $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
+
+        $pusher_auth_key =$this->getConf()->get(['download_async', 'enabled'], false) ? $this->getConf()->get(['pusher', 'auth_key'], '') : null;
+        return new Response($this->render(
+        /** @uses templates/web/prod/actions/Download/prepare_async.html.twig */
+            '/prod/actions/Download/prepare_async.html.twig', [
+            'module_name'     => $this->app->trans('Export'),
+            'module'          => $this->app->trans('Export'),
+            'list'            => $list,
+            'records'         => $records,
+            'token'           => $token,
+            'anonymous'       => $request->query->get('anonymous', false),
+            'type'            => $request->query->get('type', \Session_Logger::EVENT_EXPORTDOWNLOAD),
+            'pusher_auth_key' => $pusher_auth_key,
+            'csrfToken'       => $this->getSession()->get('prodExportDownload_token'),
+        ]));
+    }
+
+
+    /**
+     * @param Request $request
+     * @return JsonResponse|void
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function startDownloadAsync(Request $request)
+    {
+        if (!$this->isCrsfValid($request, 'prodExportDownload')) {
+            $this->app->abort(403);
+        }
+
+        try {
+            $token = $this->getTokenManipulator()->findValidToken($request->request->get('token', ""));
+
+            if ($token) {
+                // ask the worker to build the zip
+                $this->dispatch(PhraseaEvents::DOWNLOAD_ASYNC_CREATE, new DownloadAsyncEvent(
+                    $token->getUser()->getId(),
+                    $token->getValue(),
+                    [
+                    ]
+                ));
+
+                return new JsonResponse([
+                    'success' => true,
+                    'token'   => $token->getValue()
+                ]);
+            }
+            else {
+                throw new \Exception("invalid or expired token");
+            }
+        }
+        catch(\Exception $e) {
+            // no-op
+            $this->app->abort(403, $e->getMessage());
+        }
     }
 
     /**
@@ -63,5 +195,21 @@ class DownloadController extends Controller
     private function getTokenManipulator()
     {
         return $this->app['manipulator.token'];
+    }
+
+    /**
+     * @return PropertyAccess
+     */
+    protected function getConf()
+    {
+        return $this->app['conf'];
+    }
+
+    /**
+     * @return PropertyAccess
+     */
+    protected function getSession()
+    {
+        return $this->app['session'];
     }
 }

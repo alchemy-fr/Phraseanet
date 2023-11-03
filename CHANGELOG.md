@@ -1,30 +1,85 @@
 # CHANGELOG
 
+## 4.1.8-rc7
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file, (backup it is  recommended).
+  - Doctrine migration for updating databases scheme, (backup it is  recommended). 
+ 
+`bin/setup system:upgrade`, run by setup container with docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Matomo Media metrics integration.
+ - Phrasea Expose client improvements. 
+ - CSRF Security fix.
+ - Substitution is now available for all sub definitions.
+ - SMTP, TLS 1.0 deprecation, TLS is now the version by default in version 1.2.
+ - When image contains transparency, background color can be forced to a specific color.
+  
+### Stack (docker compose)
+    
+   -  It is not possible to define Custom CSP
+
+### What's Changed
+
+* PHRAS-3914 Lightbox - mobile fix matomo url by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4377
+* PHRAS-3892 set content security policies (csp) as env vars by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4375
+* PHRAS-3852_tiff-background-color by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4376
+* PHRAS-3909 : Prod - Expose cli - load more publications - add pagination by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4379
+* PHRAS-3416 phraseanet-localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4380
+* PHRAS-3913 Prod - Shared Baskets - validation - Need to apply rights twice by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4378
+* PHRAS-3857 Check CSRF token on Prod and Admin forms by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4361
+* PHRAS-3061 Admin - subview definition - missmatch error between value set in form and slider limit by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4389
+* PHRAS-3894 : bin/maintenance clean: - Removing BETA prefix and Memory leak by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4391
+* PHRAS-3921 prod - expose-cli - became compatible with Phrasea V3 keycloak and fix by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4384
+* PHRAS-3929  Compose Set redis version For SAML container by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4390
+* PHRAS-3930 matomo media tracking by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4393
+* PHRAS-3921 expose-cli oauth token uri compatibility v2 v3 and asset title set  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4392
+* PHRAS-3933 prod - 403 "invalide search token" - after "video tools" openning by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4394
+* PHRAS-3922 show the button stop on phraseanet service pull process and feedback reminder by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4397
+* PHRAS-3928_download_async by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4386
+* PHRAS-3939 : fix order create basket by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4401
+* PHRAS-3900 Check TLS version use for email SMTP sending - TLS 1.0 of 1.1 deprecation by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4382
+* PHRAS-3931_phraseanet_local_id_in_api by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4400
+* PHRAS-3934 fix videotools subtitle timeline by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4398
+* PHRAS-3935 :  phraseanet_local_id became instance_id by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4396
+* PHRAS-3918_subdef-substituable-setting by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4381
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc6...4.1.8-rc7
+
 ## 4.1.8-rc6
 
 ### Update instructions
 
-- Migration patch: no patch to play, just run upgrade for bump version 
-- Elasticsearch index action : a "drop", "create", "populate" of elasticsearch index can be useful.
+- Migration patch: yes, so primary datastore require a backup before performing an update
+- Elasticsearch index action : a "drop", "create", "populate" of elasticsearch index can be usefull.
 
 ### Version summary
   
- - Improvement and bugfix
+ - bugfix an minor improvement (todo)
 
 ### Stack (docker compose)
 
  - PHP setting improvement 
  - FPM setting improvement 
  
-## What's Changed
+### What's Changed
+
 * PHRAS-3893 prod - advanced search - control calendar missing for created_on and updated_on by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4360
 * PHRAS-3785 update composer dependencies for imagine by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4362
 * PHRAS-3252 Prod - Export - The captions are not being sent when doing an export by email by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4363
 * PHRAS-3387 php fpm optimization by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4364
 * PHRAS-3890: Admin - add "auth failure" - display and purge auth failure - only for super U by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4368
 * PHRAS-3903 Admin - object inspector - record index debug tools by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4369
-* PHRAS-3904 Add server port on fastcgi - SAML multi provider support https conf by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4370
+* PHRAS-3904 Add server port on fastcgi https conf by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4370
+* PHRAS-3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4371
+* PHRAS-3826 add mask password argument by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4372
 * PHRAS-3889 Worker - metadata write - mime/type whitelist - write metadatas only on whitelisted files by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4366
+* PHRAS-3901 release version 4.1.8-rc6 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4365
 * PHRAS-3910 fix redis php extension build by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4373
 
 

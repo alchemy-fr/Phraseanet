@@ -38,7 +38,9 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
                 ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
-                ->setJsonBodyHelper(new LazyLocator($app, 'json.body_helper'));
+                ->setJsonBodyHelper(new LazyLocator($app, 'json.body_helper'))
+                ->setInstanceId($app['conf'])
+                ;
         });
     }
 
@@ -186,6 +188,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->assert('databox_id', '\d+')
             ->assert('record_id', '\d+');
 
+        /** @uses \Alchemy\Phrasea\Controller\Api\V1Controller::getRecordAction */
         $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v1:getRecordAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
@@ -238,6 +241,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->assert('record_id', '\d+');
         $controllers->get('/stories/{any_id}/{anyother_id}/embed/', 'controller.api.v1:getBadRequestAction');
 
+        /** @uses \Alchemy\Phrasea\Controller\Api\V1Controller::getStoryAction */
         $controllers->get('/stories/{databox_id}/{record_id}/', 'controller.api.v1:getStoryAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')

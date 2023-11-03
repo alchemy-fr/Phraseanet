@@ -44,10 +44,12 @@ class Subdefs implements ControllerProviderInterface, ServiceProviderInterface
                 ->requireRightOnSbas($request->attributes->get('sbas_id'), \ACL::BAS_MODIFY_STRUCT);
         });
 
+        /** @uses SubdefsController::indexAction */
         $controllers->get('/{sbas_id}/', 'controller.admin.subdefs:indexAction')
             ->bind('admin_subdefs_subdef')
             ->assert('sbas_id', '\d+');
 
+        /** @uses SubdefsController::changeSubdefsAction */
         $controllers->post('/{sbas_id}/', 'controller.admin.subdefs:changeSubdefsAction')
             ->bind('admin_subdefs_subdef_update')
             ->assert('sbas_id', '\d+');

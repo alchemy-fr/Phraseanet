@@ -7715,10 +7715,10 @@ var exportRecord = function exportRecord(services) {
             return false;
         });
 
-        (0, _jquery2.default)('input[name="obj[]"]', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
+        (0, _jquery2.default)('input.caption', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
             var $form = (0, _jquery2.default)(this).closest('form');
 
-            if ((0, _jquery2.default)('input.caption[name="obj[]"]:checked', $form).length > 0) {
+            if ((0, _jquery2.default)('input.caption:checked', $form).length > 0) {
                 (0, _jquery2.default)('div.businessfields', $form).show();
             } else {
                 (0, _jquery2.default)('div.businessfields', $form).hide();
@@ -7819,7 +7819,10 @@ var exportRecord = function exportRecord(services) {
         return true;
     }
 
-    return { initialize: initialize, openModal: openModal };
+    return {
+        initialize: initialize,
+        openModal: openModal
+    };
 };
 
 exports.default = exportRecord;
@@ -10058,6 +10061,21 @@ var workzone = function workzone(services) {
             updatePublicationList(exposeName);
         });
 
+        (0, _jquery2.default)('.publication-pagination').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            var pageEl = (0, _jquery2.default)('#expose_workzone .publication-page');
+            var page = pageEl.text();
+
+            if ((0, _jquery2.default)(this).hasClass('previous-publication')) {
+                page = parseInt(page) - 1;
+            } else if ((0, _jquery2.default)(this).hasClass('next-publication')) {
+                page = parseInt(page) + 1;
+            }
+
+            updatePublicationList(exposeName, page);
+        });
+
         (0, _jquery2.default)('#expose_list').on('change', function () {
             (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(this.value);
@@ -10120,6 +10138,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -10206,6 +10228,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error2) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -10966,7 +10992,8 @@ var workzone = function workzone(services) {
                 dataType: 'json',
                 data: {
                     exposeName: '' + exposeName,
-                    publicationData: publicationData
+                    publicationData: publicationData,
+                    prodExposeEdit_token: (0, _jquery2.default)(this).find('input[name="prodExposeEdit_token"]').val()
                 },
                 success: function success(data) {
                     if (data.success) {
@@ -10991,10 +11018,11 @@ var workzone = function workzone(services) {
     }
 
     function updatePublicationList(exposeName) {
+        var page = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
         _jquery2.default.ajax({
             type: 'GET',
-            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName + '&page=' + page,
             data: {
                 mine: (0, _jquery2.default)("#expose_mine_only").is(':checked') ? 1 : 0,
                 editable: (0, _jquery2.default)("#expose_editable_only").is(':checked') ? 1 : 0
@@ -11038,11 +11066,35 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').removeClass('hidden');
+                    (0, _jquery2.default)('.expose-pagination').removeClass('hidden');
                 } else {
                     (0, _jquery2.default)('.expose_connected').empty();
                     (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').addClass('hidden');
+                    (0, _jquery2.default)('.expose-pagination').addClass('hidden');
+                }
+
+                if ('previousPage' in data) {
+                    if (data.previousPage) {
+                        (0, _jquery2.default)('#expose_workzone .previous-publication').removeClass('hidden');
+                        (0, _jquery2.default)('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        (0, _jquery2.default)('#expose_workzone .previous-publication').addClass('hidden');
+                    }
+                }
+
+                if ('nextPage' in data) {
+                    if (data.nextPage) {
+                        (0, _jquery2.default)('#expose_workzone .next-publication').removeClass('hidden');
+                        (0, _jquery2.default)('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        (0, _jquery2.default)('#expose_workzone .next-publication').addClass('hidden');
+                    }
+                }
+
+                if ('previousPage' in data && 'nextPage' in data && !data.previousPage && !data.nextPage) {
+                    (0, _jquery2.default)('#expose_workzone .publication-page').addClass('hidden');
                 }
 
                 if ('error' in data) {
@@ -11050,6 +11102,8 @@ var workzone = function workzone(services) {
                 }
             }
         });
+
+        (0, _jquery2.default)('#expose_workzone .publication-page').text(page);
     }
 
     function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
@@ -11477,11 +11531,13 @@ var workzone = function workzone(services) {
                     },
                     dataType: 'json',
                     success: function success(data) {
-                        setTimeout(function () {
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                        }, 6000);
-
-                        console.log(data.message);
+                        if (data.success) {
+                            setTimeout(function () {
+                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                            }, 6000);
+                        } else {
+                            (0, _jquery2.default)('.refresh-list').trigger('click');
+                        }
                     }
                 });
             }
@@ -12240,7 +12296,9 @@ var thesaurusService = function thesaurusService(services) {
                     sbas[i].seeker = _jquery2.default.ajax({
                         url: _zurl,
                         type: 'POST',
-                        data: [],
+                        data: {
+                            prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                        },
                         dataType: 'json',
                         success: function success(j) {
                             var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -12277,7 +12335,9 @@ var thesaurusService = function thesaurusService(services) {
                 sbas[i].seeker = _jquery2.default.ajax({
                     url: zurl,
                     type: 'POST',
-                    data: [],
+                    data: {
+                        prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                    },
                     dataType: 'json',
                     success: function success(j) {
                         var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -21998,7 +22058,8 @@ var moveRecord = function moveRecord(services) {
             var datas = {
                 lst: (0, _jquery2.default)('input[name="lst"]', $form).val(),
                 base_id: (0, _jquery2.default)('select[name="base_id"]', $form).val(),
-                chg_coll_son: coll_son
+                chg_coll_son: coll_son,
+                prodMoveCollection_token: (0, _jquery2.default)('input[name="prodMoveCollection_token"]', $form).val()
             };
 
             var buttonPanel = $dialog.getDomElement().closest('.ui-dialog').find('.ui-dialog-buttonpane');
@@ -62256,6 +62317,7 @@ var deleteRecord = function deleteRecord(services) {
                 $trash_counter = $form.find(".to_trash_count"),
                 $loader = $form.find(".form-action-loader");
             var lst = (0, _jquery2.default)("input[name='lst']", $form).val().split(';');
+            var csrfToken = (0, _jquery2.default)("input[name='prodDeleteRecord_token']", $form).val();
 
             /**
              *  same parameters for every delete call, except the list of (CHUNKSIZE) records
@@ -62265,9 +62327,10 @@ var deleteRecord = function deleteRecord(services) {
                 type: $form.attr("method"),
                 url: $form.attr("action"),
                 data: {
-                    'lst': "" // set in f
+                    lst: '', // set in f
+                    prodDeleteRecord_token: csrfToken
                 },
-                dataType: "json"
+                dataType: 'json'
             };
 
             var runningTasks = 0,
@@ -62293,7 +62356,11 @@ var deleteRecord = function deleteRecord(services) {
                 }
                 // pop & truncate
                 ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
-                _jquery2.default.ajax(ajaxParms).success(function (data) {
+                _jquery2.default.ajax(ajaxParms).error(function (data) {
+                    fCancel();
+                    $dialog.close();
+                    alert('invalid csrf token delete form');
+                }).success(function (data) {
                     // prod feedback only if result ok
                     _jquery2.default.each(data, function (i, n) {
                         var imgt = (0, _jquery2.default)('#IMGT_' + n),
@@ -62708,6 +62775,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
         (0, _jquery2.default)('.iframe_submiter', $scope).bind('click', function () {
             var form = (0, _jquery2.default)(this).closest('form');
             form.submit();
+            form.find('.resultAction').empty();
             form.find('.load').empty().html(localeService.t('loading') + ' ...');
             (0, _jquery2.default)('#uploadHdsub').contents().find('.content').empty();
             (0, _jquery2.default)('#uploadHdsub').load(function () {
@@ -63565,7 +63633,6 @@ var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
             openModal(datas, activeTab);
         });
     };
-    initialize();
 
     toolsStream.subscribe(function (params) {
         switch (params.action) {
@@ -64549,7 +64616,7 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
             // if(isNaN(hours) && isNaN(minutes) && isNaN(seconds) && isNaN(milliseconds) ) {
-            return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+            return hours + ":" + minutes + ":" + seconds + "." + ('000' + milliseconds).slice(-3);
             //}
         }
 
@@ -64586,11 +64653,14 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     var captionText = "WEBVTT - with cue identifier\n\n";
                     while (i <= countSubtitle * 3) {
                         j = j + 1;
-                        captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        // save only wich with value not empty
+                        if (allData[i + 2].value.length != 0) {
+                            captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        }
+
                         i = i + 3;
                         if (i == countSubtitle * 3 - 3) {
                             (0, _jquery2.default)('#record-vtt').val(captionText);
-                            console.log(captionText);
                             if (btn == 'save') {
                                 //send data
                                 _jquery2.default.ajax({
@@ -64695,7 +64765,6 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     ResValue = fieldvalue.split("WEBVTT - with cue identifier\n\n");
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
-                    console.log(captionValue);
                     for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
@@ -64797,7 +64866,6 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
             try {
                 var requestData = (0, _jquery2.default)('#video-subtitle-request').serializeArray();
                 requestData = JSON.parse(JSON.stringify(requestData));
-                console.log(requestData);
             } catch (err) {
                 return;
             }
@@ -68213,6 +68281,8 @@ var uploader = function uploader(services) {
             params.push(data.context.find('input, select').serializeArray());
             params.push((0, _jquery2.default)('input', (0, _jquery2.default)('.collection-status:visible', uploaderInstance.getSettingsBox())).serializeArray());
             params.push((0, _jquery2.default)('select', uploaderInstance.getSettingsBox()).serializeArray());
+
+            params.push([{ name: 'prodUpload_token', value: (0, _jquery2.default)('input[name=prodUpload_token]').val() }]);
 
             _jquery2.default.each(params, function (i, p) {
                 _jquery2.default.each(p, function (i, f) {

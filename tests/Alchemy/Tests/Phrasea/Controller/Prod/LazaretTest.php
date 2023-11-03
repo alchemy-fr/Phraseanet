@@ -170,10 +170,14 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('flush');
 
         self::$DI['app']['orm.em'] = $em;
+
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
             'bas_id'          => $lazaretFile->getBaseId(),
             'keep_attributes' => 1,
-            'attributes'      => [1, 2, 3, 4] //Check only the four first attributes
+            'attributes'      => [1, 2, 3, 4], //Check only the four first attributes
+            'prodLazaret_token'  => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -309,10 +313,13 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $id = 1;
 
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         //Ommit base_id mandatory param
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
             'keep_attributes' => 1,
-            'attributes'      => [1, 2, 3, 4] //Check only the four first attributes
+            'attributes'      => [1, 2, 3, 4], //Check only the four first attributes
+            'prodLazaret_token'  => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -326,10 +333,13 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAddElementException()
     {
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         self::$DI['client']->request('POST', '/prod/lazaret/99999/force-add/', [
             'bas_id'          => 1,
             'keep_attributes' => 1,
-            'attributes'      => [1, 2, 3, 4] //Check only the four first attributes
+            'attributes'      => [1, 2, 3, 4], //Check only the four first attributes
+            'prodLazaret_token'  => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -344,10 +354,11 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDenyElement()
     {
         $lazaretFile = self::$DI['lazaret_1'];
+        $randomValue = $this->setSessionFormToken('prodLazaret');
 
         $route = sprintf('/prod/lazaret/%s/deny/', $lazaretFile->getId());
 
-        self::$DI['client']->request('POST', $route);
+        self::$DI['client']->request('POST', $route, ['prodLazaret_token'  => $randomValue]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -390,9 +401,11 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDenyElementException()
     {
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         $route = sprintf('/prod/lazaret/%s/deny/', '99999');
 
-        self::$DI['client']->request('POST', $route);
+        self::$DI['client']->request('POST', $route, ['prodLazaret_token'  => $randomValue]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -480,8 +493,12 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         });
 
         self::$DI['app']['orm.em'] = $em;
+
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', [
-            'record_id' => self::$DI['record_1']->get_record_id()
+            'record_id'         => self::$DI['record_1']->get_record_id(),
+            'prodLazaret_token' => $randomValue
         ]);
         $this->assertTrue($called);
 
@@ -518,8 +535,11 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
         $id = 1;
 
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', [
-            'record_id' => self::$DI['record_1']->get_record_id()
+            'record_id'         => self::$DI['record_1']->get_record_id(),
+            'prodLazaret_token' => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -533,9 +553,11 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAcceptElementException()
     {
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         $route = sprintf('/prod/lazaret/%s/accept/', '99999');
 
-        self::$DI['client']->request('POST', $route, ['record_id' => 1]);
+        self::$DI['client']->request('POST', $route, ['record_id' => 1, 'prodLazaret_token' => $randomValue]);
 
         $response = self::$DI['client']->getResponse();
 
@@ -550,8 +572,10 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $id = 1;
 
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         //Ommit record_id mandatory param
-        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/');
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', ['prodLazaret_token' => $randomValue]);
 
         $response = self::$DI['client']->getResponse();
 

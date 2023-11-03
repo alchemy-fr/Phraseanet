@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-
+                <input type="hidden" name="prodExposeNew_token" value="{{ app['session'].get('prodExposeNew_token') }}">
             </form>
 
 
@@ -320,7 +320,7 @@
             delete datavalueMinus['expiresAt'];
 
             $('#DIALOG-expose-add').find('#advancedSetting').val(JSON.stringify(datavalueMinus, undefined, 4));
-            console.log(JSON.stringify(datavalueMinus, undefined, 4));
+            // console.log(JSON.stringify(datavalueMinus, undefined, 4));
 
         }
 
@@ -334,8 +334,8 @@
                 }
             }
             try {
-                $("#pub-success").addClass("hidden");
-                $("#pub-error").addClass("hidden");
+                $("#DIALOG-expose-add #pub-success").addClass("hidden");
+                $("#DIALOG-expose-add #pub-error").addClass("hidden");
                 // JSON.parse($(this).val());
                 jQuery.parseJSON(JSON.stringify($(this).val()));
             } catch (err) {
@@ -373,11 +373,12 @@
                 dataType: 'json',
                 data: {
                     exposeName: $('#expose_list').val(),
-                    publicationData: $('#DIALOG-expose-add').find('#advancedSetting').val()
+                    publicationData: $('#DIALOG-expose-add').find('#advancedSetting').val(),
+                    prodExposeNew_token: $('#publication-json input[name="prodExposeNew_token"]').val()
                 },
                 success: function (data) {
                     if (data.success) {
-                        $("#pub-success").removeClass("hidden").html(data.message + ": " + data.link);
+                        $("#DIALOG-expose-add #pub-success").removeClass("hidden").html(data.message + ": " + data.link);
                         document.getElementById("publication-data-form").reset();
                         setTimeout(function(){
                                 $('#DIALOG-expose-add').dialog('close');
@@ -385,7 +386,7 @@
                             , 2000
                         );
                     } else {
-                        $("#pub-error").removeClass("hidden").text(data.message);
+                        $("#DIALOG-expose-add #pub-error").removeClass("hidden").text(data.message);
                     }
                 }
             });

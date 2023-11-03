@@ -14,12 +14,14 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Phrasea\Media\Type\Type;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Gif;
+use unicode;
 
 class SubdefsController extends Controller
 {
@@ -44,7 +46,7 @@ class SubdefsController extends Controller
      * @param Request $request
      * @param int     $sbas_id
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     function changeSubdefsAction(Request $request, $sbas_id) {
         $delete_subdef = $request->request->get('delete_subdef');
@@ -84,7 +86,7 @@ class SubdefsController extends Controller
             $subdefs = $databox->get_subdef_structure();
 
             $group = $add_subdef['group'];
-            /** @var \unicode $unicode */
+            /** @var unicode $unicode */
             $unicode = $this->app['unicode'];
             $name = $unicode->remove_nonazAZ09($add_subdef['name'], false);
             $class = $add_subdef['class'];
@@ -111,6 +113,7 @@ class SubdefsController extends Controller
                         $options[Image::OPTION_FLATTEN] = $config["image"]["definitions"][$preset][Image::OPTION_FLATTEN];
                         $options[Image::OPTION_QUALITY] = $config["image"]["definitions"][$preset][Image::OPTION_QUALITY];
                         $options[Image::OPTION_ICODEC] = $config["image"]["definitions"][$preset][Image::OPTION_ICODEC];
+                        $options[Image::OPTION_BACKGROUNDCOLOR] = $config["image"]["definitions"][$preset][Image::OPTION_BACKGROUNDCOLOR];
                         foreach ($config["image"]["definitions"][$preset][Subdef::OPTION_DEVICE] as $devices) {
                             $options[Subdef::OPTION_DEVICE][] = $devices;
                         }
@@ -182,6 +185,7 @@ class SubdefsController extends Controller
                 $class = $request->request->get($post_sub . '_class');
                 $downloadable = $request->request->get($post_sub . '_downloadable');
                 $orderable = $request->request->get($post_sub . '_orderable');
+                $substituable = $request->request->get($post_sub . '_substituable');
                 $toBuild = $request->request->get($post_sub . '_tobuild');
 
                 $defaults = ['path', 'meta', 'mediatype'];
@@ -208,7 +212,7 @@ class SubdefsController extends Controller
                 }
 
                 $labels = $request->request->get($post_sub . '_label', []);
-                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset, $toBuild);
+                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset, $toBuild, $substituable);
             }
         }
 

@@ -25,6 +25,10 @@ class PSExposeController extends Controller
      */
     public function authenticateAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeLogin')) {
+            return $this->app->json(['success' => false , 'error_description' => 'invalid csrf form']);
+        }
+
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->request->get('exposeName')];
 
@@ -37,7 +41,6 @@ class PSExposeController extends Controller
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
         $clientOptions = [
-            'base_uri'      => $exposeConfiguration['auth_base_uri'],
             'http_errors'   => false,
             'verify'        => $exposeConfiguration['verify_ssl']
         ];
@@ -45,14 +48,7 @@ class PSExposeController extends Controller
         $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $response = $oauthClient->post('/oauth/v2/token', [
-                'json' => [
-                    'client_id'     => $exposeConfiguration['auth_client_id'],
-                    'client_secret' => $exposeConfiguration['auth_client_secret'],
-                    'grant_type'    => 'password',
-                    'username'      =>  $request->request->get('auth-username'),
-                    'password'      =>  $request->request->get('auth-password')      ]
-            ]);
+            $response = $this->getTokenByPassword($oauthClient, $exposeConfiguration, $request->request->get('auth-username'), $request->request->get('auth-password'));
         } catch(\Exception $e) {
             return $this->app->json([
                 'success' => false,
@@ -80,7 +76,21 @@ class PSExposeController extends Controller
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($request->request->get('exposeName'));
 
-        $session->set($passSessionName, $tokenBody['access_token']);
+        if (isset($tokenBody['refresh_expires_in'])) {
+            $passSessionNameValue = [
+                'access_token' => $tokenBody['access_token'],
+                'expires_at'   => time() + $tokenBody['expires_in'],
+                'refresh_token'=> $tokenBody['refresh_token'],
+                'refresh_expires_at' => time() + $tokenBody['refresh_expires_in']
+            ];
+        } else {
+            $passSessionNameValue = [
+                'access_token' => $tokenBody['access_token'],
+                'expires_at'   => time() + $tokenBody['expires_in'],
+            ];
+        }
+
+        $session->set($passSessionName, $passSessionNameValue);
 
         $loginSessionName = $this->getLoginSessionName($request->request->get('exposeName'));
         $session->set($loginSessionName, $request->request->get('auth-username'));
@@ -174,11 +184,15 @@ class PSExposeController extends Controller
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
         $exposeName = $request->get('exposeName');
+        $page = empty($request->get('page')) ? 1 : $request->get('page');
+
         if ($exposeName == null) {
             return $app->json([
                 'twig' => $this->render("prod/WorkZone/ExposeList.html.twig", [
                     'publications' => [],
-                ])
+                ]),
+                'previousPage'  => false,
+                'nextPage'      => false
             ]);
         }
 
@@ -192,8 +206,9 @@ class PSExposeController extends Controller
         if (!$session->has($passSessionName) && $providerId != null) {
             try {
                 $provider = $this->getAuthenticationProviders()->get($providerId);
-                if ($provider->getType() == 'PsAuth') {
-                    $session->set($passSessionName, $provider->getAccessToken());
+                if ($provider->getType() == 'PsAuth' && $exposeConfiguration['auth_provider_name'] == $providerId) {
+
+                    $session->set($passSessionName, ['access_token' => $provider->getAccessToken()]);
                     $session->set($this->getLoginSessionName($exposeName), $provider->getUserName());
                 }
             } catch(\Exception $e) {
@@ -201,10 +216,14 @@ class PSExposeController extends Controller
         }
 
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
-             return $app->json([
+            $this->setSessionFormToken('prodExposeLogin');
+
+            return $app->json([
                 'twig'  => $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
                     'exposeName' => $exposeName
-                ])
+                ]),
+                 'previousPage'  => false,
+                 'nextPage'      => false
             ]);
         }
 
@@ -214,7 +233,9 @@ class PSExposeController extends Controller
             return $app->json([
                 'twig'  =>  $this->render("prod/WorkZone/ExposeList.html.twig", [
                     'publications' => [],
-                ])
+                ]),
+                'previousPage'  => false,
+                'nextPage'      => false
             ]);
         }
 
@@ -228,7 +249,7 @@ class PSExposeController extends Controller
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $uri = '/publications?flatten=true&order[createdAt]=desc';
+            $uri = '/publications?flatten=true&order[createdAt]=desc&page=' . $page;
             if ($request->get('mine') && $exposeConfiguration['connection_kind'] === 'password') {
                 $uri .= '&mine=true';
             }
@@ -250,8 +271,22 @@ class PSExposeController extends Controller
                 if (!isset($body['hydra:member']) || !isset($body['@id'])) {
                     throw new \Exception("index undefined on response body!");
                 }
+
                 $publications = $body['hydra:member'];
-                $basePath = $body['@id'];
+                $basePath     = $body['@id'];
+                $totalItems   = $body['hydra:totalItems'];
+
+                $nbPage = ceil($totalItems / 30);
+                $previousPage = false;
+                $nextPage = false;
+
+                if ($page < $nbPage) {
+                    $nextPage = true;
+                }
+
+                if ($page > 1) {
+                    $previousPage  = true;
+                }
             } else {
                 throw new \Exception("Error with status code : " . $response->getStatusCode());
             }
@@ -274,6 +309,8 @@ class PSExposeController extends Controller
             ]);
         }
 
+        $this->setSessionFormToken('prodExposeEdit');
+
         $exposeListTwig = $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications'          => $publications,
             'exposeFrontBasePath'   => $exposeFrontBasePath
@@ -288,7 +325,9 @@ class PSExposeController extends Controller
             'twig'          => $exposeListTwig,
             'exposeName'    => $exposeName,
             'exposeLogin'   => $session->get($this->getLoginSessionName($exposeName)),
-            'basePath'      => $basePath
+            'basePath'      => $basePath,
+            'previousPage'  => $previousPage,
+            'nextPage'      => $nextPage
         ]);
     }
 
@@ -590,6 +629,10 @@ class PSExposeController extends Controller
      */
     public function createPublicationAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeNew')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form']);
+        }
+
         $exposeName = $request->get('exposeName');
         if ( $exposeName == null) {
             return $app->json([
@@ -658,6 +701,10 @@ class PSExposeController extends Controller
      */
     public function updatePublicationAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeEdit')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form']);
+        }
+
         $exposeName = $request->get('exposeName');
         $exposeClient = $this->getExposeClient($exposeName);
         if ($exposeClient == null) {
@@ -863,9 +910,26 @@ class PSExposeController extends Controller
             ]);
         }
 
+        $config = $this->getExposeConfiguration($exposeName);
+
+        // used to set or refresh token session
         $accessToken = $this->getAndSaveToken($exposeName);
 
-        $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessToken));
+        if (empty($accessToken)) {
+            return $app->json([
+                'success' => false,
+                'message' => "Do not have access token!"
+            ]);
+        }
+
+        $accessTokenInfo = [];
+        if ($config['connection_kind'] == 'password') {
+            $accessTokenInfo = $this->getSession()->get($this->getPassSessionName($exposeName));
+        } elseif($config['connection_kind'] == 'client_credentials') {
+            $accessTokenInfo = $this->getSession()->get($this->getCredentialSessionName($exposeName));
+        }
+
+        $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessTokenInfo));
 
         return $app->json([
             'success' => true,
@@ -942,6 +1006,9 @@ class PSExposeController extends Controller
 
     public function getFieldMappingAction(PhraseaApplication $app, Request $request)
     {
+        $this->setSessionFormToken('prodExposeFieldMapping');
+        $this->setSessionFormToken('prodExposeSubdefMapping');
+
         return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
             'exposeName'    => $request->get('exposeName')
         ]);
@@ -955,6 +1022,10 @@ class PSExposeController extends Controller
      */
     public function saveFieldMappingAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeFieldMapping')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form'], 403);
+        }
+
         $exposeName = $request->get('exposeName');
         $profile = $request->request->get('profile');
         $sendGeolocField = !empty($request->request->get('sendGeolocField')) ? array_keys($request->request->get('sendGeolocField')): [];
@@ -1031,6 +1102,10 @@ class PSExposeController extends Controller
 
     public function saveSubdefMappingAction(PhraseaApplication $app, Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExposeSubdefMapping')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid crsf token form'], 403);
+        }
+
         $exposeName = $request->get('exposeName');
         $profile = $request->request->get('profile');
         $exposeClient = $this->getExposeClient($exposeName);
@@ -1120,9 +1195,9 @@ class PSExposeController extends Controller
      */
     private function getExposeMappingName($mappingContext)
     {
-        $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+        $instanceId = $this->app['conf']->get(['main', 'instance_id']);
 
-        return $phraseanetLocalId.'_'. $mappingContext . '_mapping';
+        return $instanceId . '_' . $mappingContext . '_mapping';
     }
 
     /**
@@ -1232,7 +1307,13 @@ class PSExposeController extends Controller
     {
         $expose_name = str_replace(' ', '_', $exposeName);
 
-        return 'password_access_token_'.$expose_name;
+        return 'password_access_token_' . $expose_name;
+    }
+
+    private function getCredentialSessionName($exposeName)
+    {
+        $expose_name = str_replace(' ', '_', $exposeName);
+        return 'credential_access_token_' . $expose_name;
     }
 
     /**
@@ -1260,46 +1341,123 @@ class PSExposeController extends Controller
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($exposeName);
 
-        $expose_name = str_replace(' ', '_', $exposeName);
-        $credentialSessionName = 'credential_access_token_'.$expose_name;
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $oauthClient = $proxyConfig->getClientWithOptions([
+            'verify' => $config['verify_ssl'],
+        ]);
+
+        $credentialSessionName = $this->getCredentialSessionName($exposeName);
 
         $accessToken = '';
         if ($config['connection_kind'] == 'password') {
-            $accessToken = $session->get($passSessionName);
-        } elseif ($config['connection_kind'] == 'client_credentials') {
-            if ($session->has($credentialSessionName)) {
-                $accessToken = $session->get($credentialSessionName);
-            } else {
-                $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+            $tokenInfo = $session->get($passSessionName);
+            if (!isset($tokenInfo['expires_at'])) {
+                $accessToken = $tokenInfo['access_token'];
+            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+                $accessToken = $tokenInfo['access_token'];
+            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && isset($tokenInfo['refresh_expires_at']) && $tokenInfo['refresh_expires_at'] > time()) {
+                $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
 
-                $oauthClient = $proxyConfig->getClientWithOptions([
-                    'verify' => $config['verify_ssl'],
-                ]);
-
-                $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
-                    'json' => [
-                        'client_id'     => $config['expose_client_id'],
-                        'client_secret' => $config['expose_client_secret'],
-                        'grant_type'    => 'client_credentials',
-                        'scope'         => 'publish'
-                    ]
-                ]);
-
-                if ($response->getStatusCode() !== 200) {
-                    return null;
+                if ($resToken->getStatusCode() !== 200) {
+                    throw new \Exception("Error when get refresh token with status code: " . $resToken->getStatusCode());
                 }
 
-                $tokenBody = $response->getBody()->getContents();
+                $refreshtokenBody = $resToken->getBody()->getContents();
 
-                $tokenBody = json_decode($tokenBody,true);
+                $refreshtokenBody = json_decode($refreshtokenBody,true);
 
-                $session->set($credentialSessionName, $tokenBody['access_token']);
+                if (isset($refreshtokenBody['refresh_expires_in'])) {
+                    $passSessionNameValue = [
+                        'access_token' => $refreshtokenBody['access_token'],
+                        'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                        'refresh_token'=> $refreshtokenBody['refresh_token'],
+                        'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
+                    ];
+                } else {
+                    $passSessionNameValue = [
+                        'access_token' => $refreshtokenBody['access_token'],
+                        'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                    ];
+                }
 
-                $accessToken = $tokenBody['access_token'];
+                $session->set($passSessionName, $passSessionNameValue);
+
+                $accessToken = $refreshtokenBody['access_token'];
+            } else {
+                $session->remove($passSessionName);
+            }
+
+        } elseif ($config['connection_kind'] == 'client_credentials') {
+            if ($session->has($credentialSessionName)) {
+                $tokenInfoCredential = $session->get($credentialSessionName);
+                if (!isset($tokenInfoCredential['expires_at'])) {
+                    $accessToken = $tokenInfoCredential['access_token'];
+                } elseif (is_array($tokenInfoCredential) && $tokenInfoCredential['expires_at'] > time()) {
+                    $accessToken = $tokenInfoCredential['access_token'];
+                } else {
+                    $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
+                }
+            } else {
+                $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
             }
         }
 
         return $accessToken;
+    }
+
+    private function getTokenByCredential(Client $oauthClient, array $exposeConfiguration, $credentialSessionName)
+    {
+        $session = $this->getSession();
+
+        $response = $oauthClient->post($exposeConfiguration['oauth_token_uri'] , [
+            'form_params' => [
+                'client_id'     => $exposeConfiguration['expose_client_id'],
+                'client_secret' => $exposeConfiguration['expose_client_secret'],
+                'grant_type'    => 'client_credentials',
+            ]
+        ]);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception("Error when get credential token with status code: " . $response->getStatusCode());
+        }
+
+        $tokenBody = $response->getBody()->getContents();
+
+        $tokenBody = json_decode($tokenBody,true);
+
+        $credentialSessionNameValue = [
+            'access_token' => $tokenBody['access_token'],
+            'expires_at'   => time() + $tokenBody['expires_in'],
+        ];
+
+        $session->set($credentialSessionName, $credentialSessionNameValue);
+
+        return $tokenBody['access_token'];
+    }
+
+    private function getTokenByPassword(Client $oauthClient, array $exposeConfiguration, $username, $password)
+    {
+        return $oauthClient->post($exposeConfiguration['oauth_token_uri'], [
+            'form_params' => [
+                'client_id'     => $exposeConfiguration['auth_client_id'],
+                'client_secret' => $exposeConfiguration['auth_client_secret'],
+                'grant_type'    => 'password',
+                'username'      =>  $username,
+                'password'      =>  $password
+            ]
+        ]);
+    }
+
+    private function refreshToken(Client $oauthClient, array $exposeConfiguration, $refreshToken)
+    {
+        return $oauthClient->post($exposeConfiguration['oauth_token_uri'], [
+            'form_params' => [
+                'client_id'     => $exposeConfiguration['auth_client_id'],
+                'client_secret' => $exposeConfiguration['auth_client_secret'],
+                'grant_type'    => 'refresh_token',
+                'refresh_token' =>  $refreshToken
+            ]
+        ]);
     }
 
     private function postPublication(Client $exposeClient, $token, $publicationData)

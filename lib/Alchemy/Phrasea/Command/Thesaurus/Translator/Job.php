@@ -480,16 +480,17 @@ class Job
             }
         }
 
-        $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
-        if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
-            $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+        if(count($actions) > 0) {
+            $jsActions = json_encode($actions, JSON_PRETTY_PRINT);
+            if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+                $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+            }
+    
+            if (!$this->globalConfiguration->isDryRun()) {
+                $record = $this->getDatabox()->getRecordRepository()->find($record_id);
+                $record->setMetadatasByActions(json_decode($jsActions));
+            }
         }
-
-        if (!$this->globalConfiguration->isDryRun()) {
-            $record = $this->getDatabox()->getRecordRepository()->find($record_id);
-            $record->setMetadatasByActions(json_decode($jsActions));
-        }
-
         $this->recordsDone++;
     }
 

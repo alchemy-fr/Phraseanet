@@ -37,6 +37,10 @@ class ProdOrderController extends BaseOrderController
      */
     public function createOrder(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExportOrder')) {
+            return $this->app->json(['message' => 'invalid export order form'], 403);
+        }
+
         $records = RecordsRequest::fromRequest($this->app, $request, true, [\ACL::CANCMD]);
 
         try {
@@ -145,6 +149,8 @@ class ProdOrderController extends BaseOrderController
     {
         $order = $this->findOr404($order_id);
         $grantedBaseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
+
+        $this->setSessionFormToken('prodCreateBasket');
 
         return $this->render('prod/orders/order_item.html.twig', [
             'order'             => $order,

@@ -77,6 +77,12 @@ class PullAssetsWorker implements WorkerInterface
                 }
             }
 
+            if ($res->getStatusCode() !== 200) {
+                $this->messagePublisher->pushLog("An error occurred when fetching commit: status-code " . $res->getStatusCode());
+
+                return;
+            }
+
             $body = $res->getBody()->getContents();
             $body = json_decode($body,true);
             $commits = $body['hydra:member'];

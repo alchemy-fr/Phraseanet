@@ -203,6 +203,10 @@ class BasketController extends Controller
 
     public function createBasket(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodCreateBasket')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $basket = new Basket();
 
         $basket->setName($request->request->get('name', ''));
@@ -271,6 +275,10 @@ class BasketController extends Controller
 
     public function updateBasket(Request $request, Basket $basket)
     {
+        if (!$this->isCrsfValid($request, 'prodBasketRename')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $success = false;
 
         try {
@@ -305,16 +313,24 @@ class BasketController extends Controller
 
     public function displayUpdateForm(Basket $basket)
     {
+        $this->setSessionFormToken('prodBasketRename');
+
         return $this->render('prod/Baskets/Update.html.twig', ['basket' => $basket]);
     }
 
     public function displayReorderForm(Basket $basket)
     {
+        $this->setSessionFormToken('prodBasketReorder');
+
         return $this->render('prod/Baskets/Reorder.html.twig', ['basket' => $basket]);
     }
 
     public function reorder(Request $request, Basket $basket)
     {
+        if (!$this->isCrsfValid($request, 'prodBasketReorder')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $ret = ['success' => false, 'message' => $this->app->trans('An error occured')];
         try {
             $order = $request->request->get('element');
@@ -417,6 +433,8 @@ class BasketController extends Controller
 
     public function displayCreateForm()
     {
+        $this->setSessionFormToken('prodCreateBasket');
+
         return $this->render('prod/Baskets/Create.html.twig');
     }
 

@@ -48,6 +48,8 @@ class PrinterController extends Controller
             $storyId = $r->singleStory()->getId();
         }
 
+        $this->setSessionFormToken('prodPrint');
+
         return $this->render('prod/actions/printer_default.html.twig', [
             'printer' => $printer,
             'message' => '',
@@ -59,6 +61,10 @@ class PrinterController extends Controller
 
     public function printAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodPrint')) {
+            $this->app->abort(403);
+        }
+
         $printer = new RecordHelper\Printer($this->app, $request);
         $printer->setThumbnailName($request->request->get('thumbnail-chosen'));
         $printer->setPreviewName($request->request->get('preview-chosen'));

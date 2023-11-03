@@ -8,6 +8,10 @@
         </div>
 
         <div class="expose-config-block">
+            <div class="control-group">
+                {{ form_row(form.expose_name) }}
+            </div>
+
             <div class="control-group alert alert-info">
                 {{ form_widget(form.activate_expose) }}
                 {{ form_label(form.activate_expose) }}
@@ -18,8 +22,9 @@
             </div>
         </div>
 
-        <div class="control-group">
-            {{ form_row(form.expose_name) }}
+        <div class="control-group auth-field" style="margin-bottom: 20px;">
+            {{ form_label(form.auth_provider_name) }}
+            {{ form_widget(form.auth_provider_name) }}
         </div>
 
         <div class="control-group" style="margin-bottom: 20px;">
@@ -43,8 +48,14 @@
             {{ form_row(form.expose_client_id) }}
         </div>
 
-        <div class="control-group auth-field">
-            {{ form_row(form.auth_base_uri) }}
+        <div class="control-group">
+            {{ form_label(form.oauth_token_uri) }}
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+                expose v2 : https://api-auth.phrasea.local/oauth/v2/token
+                <br>
+                expose v3 : https://api-expose.ps-test.phrasea.fr/oauth/v2/token
+            </div>
+            {{ form_widget(form.oauth_token_uri) }}
         </div>
 
         <div class="control-group auth-field">
@@ -54,27 +65,6 @@
         <div class="control-group auth-field">
             {{ form_row(form.auth_client_id) }}
         </div>
-
-        <div class="control-group auth-connection-field">
-            <div>
-                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</span><input
-                        type="button" class="btn btn-primary"
-                        value="{{ 'admin:phrasea-service-setting:tab:expose:: Add mapping' | trans }}"></div>
-        </div>
-
-        <div class="control-group auth-connection-field">
-            <div>
-                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</span><input
-                        type="button" class="btn btn-primary"
-                        value="{{ 'admin:phrasea-service-setting:tab:expose:: Add user' | trans }}"></div>
-        </div>
-
-        <div class="expose-save-btn">
-            <p><input type="button" class="btn btn-primary btn-grey test-connection"
-                      value="{{ 'admin:phrasea-service-setting:tab:expose:: connection test' | trans }}">
-            </p>
-        </div>
-
     </div>
 {% endmacro %}
 
@@ -99,7 +89,7 @@
     </div>
 </div>
 
-<div id="expose-list"  data-prototype="{{ _self.widget_prototype(form.exposes.vars.prototype)|e('html_attr') }}" style="height:800px;overflow-y:auto;">
+<div id="expose-list"  data-prototype="{{ _self.widget_prototype(form.exposes.vars.prototype)|e('html_attr') }}" style="overflow-y:auto;">
     {% for expose_connection in form.exposes %}
         {{ _self.widget_prototype(expose_connection) }}
     {% endfor %}
@@ -129,6 +119,7 @@
             collectionHolder.append(newExpose);
             $("#expose-list" ).accordion('refresh');
             $( "h3:last" ).trigger( "click" );
+            displayField($( "h3:last" ).next('.expose-block').find('.auth-connection'));
         });
 
         $('#expose-list').on('click', '.delete-expose', function () {
@@ -146,7 +137,8 @@
             $("#expose-list" ).accordion(
                 { event: "click",
                     active: false,
-                    collapsible: true
+                    collapsible: true,
+                    heightStyle: "content"
                 }
             );
 
@@ -162,12 +154,12 @@
 
             switch (connectionKind.val()) {
                 case 'password':
-                    exposeFields.addClass('hidden');
-                    authFields.removeClass('hidden');
+                    exposeFields.hide();
+                    authFields.show();
                     break;
                 case 'client_credentials':
-                    authFields.addClass('hidden');
-                    exposeFields.removeClass('hidden');
+                    authFields.hide();
+                    exposeFields.show();
                     break;
             }
         }

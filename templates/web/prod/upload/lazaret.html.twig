@@ -259,6 +259,9 @@
                 type: 'POST',
                 url: '/prod/lazaret/' + lazaretId + '/deny/',
                 dataType: 'json',
+                data: {
+                    'prodLazaret_token' : form.find('input[name=prodLazaret_token]').val()
+                },
                 beforeSend: function () {
                     startAjax(that);
                 },
@@ -600,6 +603,7 @@
                                 {% endif %}
                             </div>
                         </div>
+                        <input type="hidden" name="prodLazaret_token" value="{{ app['session'].get('prodLazaret_token') }}">
                     </form>
                     <div class="hidden form-backup"></div>
                     {# bloc to backup initial value of status list#}

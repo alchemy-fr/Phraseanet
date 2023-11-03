@@ -1,0 +1,199 @@
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% block stylesheet %}
+    <style type="text/css">
+
+        #mainMenu, .publi_group {
+            background-color: #404040;
+        }
+
+        LI.file.done {
+            font-weight: bolder;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">{{ "Download of documents" | trans }}</h1>
+
+    <div class="well-small">
+        <div class="alert alert-info">
+            {{ "Please wait while your files are being gathered for the download, this operation may take a few minutes." | trans }}
+            &nbsp;<span id="totalSize">...</span>
+        </div>
+        <div class="alert alert-success" style="display: none">
+            {% set url = path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) %}
+            {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
+            {% set after_link = '</a>' %}
+            {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
+        </div>
+        <div class="alert alert-error" style="display: none">
+        </div>
+    </div>
+
+    <div class="well-small">
+        <table class="table table-bordered table-condensed">
+            <caption>
+                <h3>{{ "The file contains the following elements" | trans }}</h3>
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{ "Base" | trans }}</th>
+                    <th>{{ "Name" | trans }}</th>
+                    <th>{{ "Sub definition" | trans }}</th>
+                    <th>{{ "Thumbnail" | trans }}</th>
+                </tr>
+            </thead>
+
+            {% set total_size = 0 %}
+            {% for file in list["files"] %}
+                {% set size = 0 %}
+                <tr valign="middle">
+                    <td>{{ app|sbas_from_bas(file['base_id'])|sbas_labels(app) }} {{ file['base_id']|bas_labels(app) }}</td>
+                    <td>{{ file['original_name'] }}</td>
+                    <td>
+                        {% if file['subdefs'] is iterable and file['subdefs']|length > 0 %}
+                            <ul class='unstyled'>
+                            {% for sd, subdef in file['subdefs'] %}
+                                <li class="file" id="sd_{{ file['databox_id'] }}_{{ file['record_id'] }}_{{ sd }}">{{ subdef['label'] }} <span class="info">...</span></li>
+                                {% set size = size + subdef['size'] %}
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center;">
+                        {% set record_key = app|sbas_from_bas(file['base_id']) ~'_'~ file['record_id']%}
+
+                        {% if record_key in records|keys %}
+                            {% set record  = attribute(records, record_key) %}
+                            {% set thumbnail = record.get_thumbnail() %}
+                            {% if thumbnail.isLandscape() %}
+                                {% set w = 140 %}
+                                {% if thumbnail.get_height() > 0 and thumbnail.get_width() > 0 %}
+                                    {% set h = (w / (thumbnail.get_width() / thumbnail.get_height()))|round %}
+                                {% else %}
+                                    {% set h = 140 %}
+                                {% endif %}
+                            {% else %}
+                                {% set h = 105 %}
+                                {% if thumbnail.get_height() > 0 %}
+                                    {% set w = (h * (thumbnail.get_width() / thumbnail.get_height()))|round %}
+                                {% else %}
+                                    {% set w = 105 %}
+                                {% endif %}
+                            {% endif %}
+
+                            <img width="{{ w ~ 'px' }}" height="{{ h ~ 'px' }}" src="{{ thumbnail.get_url() }}" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% set total_size = total_size + size %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <div style="display:none">
+        <form name="download" action="{{ path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}" method="post" target="file_frame">
+            {% if anonymous %}
+                <input type="hidden" name="anonymous" value="1" />
+            {% endif%}
+        </form>
+        <iframe name="file_frame"></iframe>
+    </div>
+
+    <script src="/assets/vendors/pusher-js/pusher.js"></script>
+    <script>
+
+        $(document).ready(function() {
+            Pusher.logToConsole = true;
+            const pusher        = new Pusher('{{ pusher_auth_key }}', {
+                cluster: 'eu'
+            });
+            const channel_name  = "{{ token.getValue() }}";
+            const channel       = pusher.subscribe(channel_name);
+            pusher.connection.bind("state_change", function (states) {
+                // states = {previous: 'oldState', current: 'newState'}
+                console.log("========== connection changed : ========== ", states);
+            });
+            channel.bind("file_ok", (data) => {
+                // Method to be dispatched on trigger.
+                console.log("========== received from 'file_ok' : ========== ", data);
+
+                const sel = '#sd_' + data['databox_id'] + '_' + data['record_id'] + '_' + data['subdef'];
+                console.log("sel = " + sel);
+
+                $(sel + ' .info').text('(' + data['human_size'] + ')');
+                $(sel).addClass('done');
+                $('#totalSize').text('(' + data['human_total_size'] + ')');
+            });
+            console.log("========== channel binded to 'file_ok' ========== ");
+
+            channel.bind("zip_ready", (data) => {
+                // Method to be dispatched on trigger.
+                console.log("========== received from zip_ready : ========== ", data);
+                channel.unbind("file_ok");
+                console.log("========== channel unbinded of 'file_ok' ========== ");
+                channel.unbind("zip_ready");
+                console.log("========== channel unbinded of 'zip_ready' ========== ");
+                channel.disconnect();
+                console.log("========== channel disconnected ========== ");
+                pusher.unsubscribe("my-channel");
+                console.log("========== pusher unsubscribed ========== ");
+                pusher.disconnect()
+                console.log("========== pusher disconnected ========== ");
+
+                $('form[name=download]').submit();
+                console.log("========== download started ========== ");
+                $("div.alert-info").hide();
+                $("div.alert-success").show();
+
+            });
+            console.log("========== channel binded to 'zip_ready' ========== ");
+
+            $.ajax({
+                method: "post",
+                url: "{{ path('start_download_async') }}",
+                data: {
+                    prodExportDownload_token : "{{ csrfToken|e('js') }}",
+                    token: "{{ token.getValue()|e('js') }}"
+                },
+                success: function(data, textStatus, jqXHR) {
+                    console.log("========== start_download_async : ========== ", data);
+                    if (data.success) {
+
+                    }
+                    else {
+                        channel.unbind("file_ok");
+                        console.log("========== channel unbinded of 'file_ok' ========== ");
+                        channel.unbind("zip_ready");
+                        console.log("========== channel unbinded of 'zip_ready' ========== ");
+                        channel.disconnect();
+                        console.log("========== channel disconnected ========== ");
+                        pusher.unsubscribe("my-channel");
+                        console.log("========== pusher unsubscribed ========== ");
+                        pusher.disconnect()
+                        console.log("========== pusher disconnected ========== ");
+                        $("div.alert-info").hide();
+                        $("div.alert-error").show().text(data.message);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("========== start_download_async FAILED : ========== ", errorThrown);
+                    channel.unbind("file_ok");
+                    console.log("========== channel unbinded of 'file_ok' ========== ");
+                    channel.unbind("zip_ready");
+                    console.log("========== channel unbinded of 'zip_ready' ========== ");
+                    channel.disconnect();
+                    console.log("========== channel disconnected ========== ");
+                    pusher.unsubscribe("my-channel");
+                    console.log("========== pusher unsubscribed ========== ");
+                    pusher.disconnect()
+                    console.log("========== pusher disconnected ========== ");
+                    $("div.alert-info").hide();
+                    $("div.alert-error").show().text(textStatus + " " + errorThrown);
+                },
+                dataType: "json"
+            });
+        });
+    </script>
+{% endblock %}

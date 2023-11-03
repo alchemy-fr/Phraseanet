@@ -431,7 +431,7 @@ class AdminConfigurationController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::VALIDATION_REMINDER_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::VALIDATION_REMINDER_TYPE)
@@ -493,7 +493,7 @@ class AdminConfigurationController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::RECORDS_ACTIONS_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::RECORDS_ACTIONS_TYPE)
@@ -600,7 +600,7 @@ class AdminConfigurationController extends Controller
             </if>
             <then>
                 <compute_date direction="after" field="#credate" delta="+1 month" computed="exp" />
-                <set_field field="ExpireDate" value="$exp" />
+                <set_field field="ExpireDate" value="" />
                 <coll id="Public" />
             </then>
         </task>
@@ -614,7 +614,7 @@ class AdminConfigurationController extends Controller
             </if>
             <then>
                 <compute_date direction="after" field="#credate" delta="+10 days" computed="exp" />
-                <set_field field="ExpireDate" value="$exp" />
+                <set_field field="ExpireDate" value="" />
                 <coll id="Public" />
             </then>
         </task>
