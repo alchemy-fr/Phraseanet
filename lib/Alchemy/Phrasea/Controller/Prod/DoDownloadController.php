@@ -71,6 +71,7 @@ class DoDownloadController extends Controller
         }
 
         return new Response($this->render(
+            /** @uses templates/web/prod/actions/Download/prepare.html.twig */
             '/prod/actions/Download/prepare.html.twig', [
             'module_name'   => $this->app->trans('Export'),
             'module'        => $this->app->trans('Export'),
@@ -106,7 +107,7 @@ class DoDownloadController extends Controller
 
         $exportName = $list['export_name'];
 
-        if ($list['count'] === 1) {
+        if ($list['count'] === 1 && !$list['cgu']) {
             $file = end($list['files']);
             $subdef = end($file['subdefs']);
             $exportName = sprintf('%s%s.%s', $file['export_name'], $subdef['ajout'], $subdef['exportExt']);

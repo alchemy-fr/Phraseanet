@@ -250,6 +250,37 @@ EOF;
     }
 
     /**
+     * @param bool $expected
+     * @param null|string $configValue
+     * @dataProvider providesSubstituableStatuses
+     */
+    public function testSubstituableStatus($expected, $configValue, $message)
+    {
+        $xmlTemplate = <<<'EOF'
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<subdef class="thumbnail" name="gifou" downloadable="false" %s>
+    <path>/home/datas/noweb/db_alch_phrasea/video/</path>
+    <mediatype>image</mediatype>
+</subdef>
+EOF;
+
+        $xml = sprintf($xmlTemplate, $configValue ?: '');
+
+        $sut = new databox_subdef(new Type\Image(), simplexml_load_string($xml), $this->translator);
+
+        $this->assertSame($expected, $sut->isSubstituable(), $message);
+    }
+
+    public function providesSubstituableStatuses()
+    {
+        return [
+            [false, '', 'No substituable Status set should defaults to true'],
+            [false, 'substituable="false"', 'substituable should default to false'],
+            [true, 'substituable="true"', 'substituable should be true'],
+        ];
+    }
+
+    /**
      * @return PHPUnit_Framework_MockObject_MockObject|TranslatorInterface
      */
     private function getTranslatorMock()
