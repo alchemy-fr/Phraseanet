@@ -558,7 +558,6 @@ class ToolsController extends Controller
             new RecordAutoSubtitleEvent(
                 $record,
                 $request->request->get("subtitle_language_source"),
-                $request->request->get("meta_struct_id_source"),
                 json_decode($request->request->get("subtitle_destination"), true)
             )
         );
@@ -618,7 +617,8 @@ class ToolsController extends Controller
             'videoEditorConfig'    => $conf->get(['video-editor']),
             'metadatas'            => $metadatas,
             'JSonFields'           => json_encode($JSFields),
-            'videoTextTrackFields' => $videoTextTrackFields
+            'videoTextTrackFields' => $videoTextTrackFields,
+            'languages'            => $this->languageList()
         ]);
     }
 
@@ -632,5 +632,43 @@ class ToolsController extends Controller
         }
 
         return false;
+    }
+
+    private function languageList()
+    {
+        return [
+            'af-ZA' => 'af-ZA Afrikaans (South Africa)', 'am-ET' => 'am-ET Amharic (Ethiopia)',
+            'ar-DZ' => 'ar-DZ Arabic (Algeria)', 'ar-BH' => 'ar-BH Arabic (Bahrain)',
+            'ar-EG' => 'ar-EG Arabic (Egypt)', 'ar-IQ' => 'ar-IQ Arabic (Iraq)',
+            'ar-IL' => 'ar-IL Arabic (Israel)', 'ar-YE' => 'ar-YE Arabic (Yemen)',
+            'eu-ES' => 'eu-ES Basque (Spain)', 'bn-BD' => 'bn-BD Bengali (Bangladesh)',
+            'bn-IN' => 'bn-IN Bengali (India)', 'bg-BG' => 'bg-BG Bulgarian (Bulgaria)',
+            'ca-ES' => 'ca-ES Catalan (Spain)', 'yue-Hant-HK' => 'yue-Hant-HK Chinese, Cantonese (Traditional, Hong Kong)',
+            'cmn-Hans-CN' => 'cmn-Hans-CN Chinese, Mandarin (Simplified, China)', 'hr-HR' => 'hr-HR Croatian (Croatia)',
+            'cs-CZ' => 'cs-CZ Czech (Czech Republic)', 'da-DK' => 'da-DK Danish (Denmark)',
+            'nl-NL' => 'nl-NL Dutch (Netherlands)', 'nl-BE' => 'nl-BE Dutch (Belgium)',
+            'en-AU' => 'en-AU English (Australia)', 'en-CA' => 'en-CA English (Canada)',
+            'en-GB' => 'en-GB English (United Kingdom)', 'en-US' => 'en-US	English (United States)',
+            'fr-CA' => 'fr-CA French (Canada)', 'fr-FR' => 'fr-FR French (France)',
+            'fr-BE' => 'fr-BE French (Belgium)', 'fr-CH' => 'fr-CH French (Switzerland)',
+            'ka-GE' => 'ka-GE Georgian (Georgia)', 'de-DE' => 'de-DE German (Germany)',
+            'el-GR' => 'el-GR Greek (Greece)', 'he-IL' => 'he-IL Hebrew (Israel)',
+            'hi-IN' => 'hi-IN Hindi (India)', 'hu-HU' => 'hu-HU Hungarian (Hungary)',
+            'is-IS' => 'is-IS Icelandic (Iceland)', 'id-ID' => 'id-ID Indonesian (Indonesia)',
+            'it-IT' => 'it-IT Italian (Italy)', 'ja-JP' => 'ja-JP Japanese (Japan)',
+            'ko-KR' => 'ko-KR Korean (South Korea)', 'lo-LA' => 'lo-LA Lao (Laos)',
+            'lt-LT' => 'lt-LT Lithuanian (Lithuania)', 'ms-MY' => 'ms-MY Malay (Malaysia)',
+            'ne-NP' => 'ne-NP Nepali (Nepal)', 'nb-NO' => 'nb-NO Norwegian Bokmål (Norway)',
+            'pl-PL' => 'pl-PL Polish (Poland)', 'pt-BR' => 'pt-BR Portuguese (Brazil)',
+            'pt-PT' => 'pt-PT Portuguese (Portugal)', 'ro-RO' => 'ro-RO	Romanian (Romania)',
+            'ru-RU' => 'ru-RU Russian (Russia)', 'sr-RS' => 'sr-RS Serbian (Serbia)',
+            'sk-SK' => 'sk-SK Slovak (Slovakia)', 'sl-SI' => 'sl-SI	Slovenian (Slovenia)',
+            'es-ES' => 'es-ES Spanish (Spain)', 'sv-SE' => 'sv-SE Swedish (Sweden)',
+            'th-TH' => 'th-TH Thai (Thailand)', 'tr-TR' => 'tr-TR Turkish (Turkey)',
+            'uk-UA' => 'uk-UA Ukrainian (Ukraine)', 'vi-VN' => 'vi-VN Vietnamese (Vietnam)',
+            'et-EE' => 'et-EE Estonian (Estonia)', 'mn-MN' => 'mn-MN Mongolian (Mongolia)',
+            'uz-UZ' => 'uz-UZ Uzbek (Uzbekistan)'
+
+        ];
     }
 }

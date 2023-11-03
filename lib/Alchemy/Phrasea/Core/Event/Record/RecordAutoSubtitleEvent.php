@@ -14,25 +14,18 @@ class RecordAutoSubtitleEvent extends RecordEvent
     public function __construct(
         RecordInterface $record,
         $languageSource,
-        $metaStructureIdSource,
         $languageDestination
     )
     {
         parent::__construct($record);
 
         $this->languageSource               = $languageSource;
-        $this->metaStructureIdSource        = $metaStructureIdSource;
         $this->languageDestination          = $languageDestination;
     }
 
     public function getLanguageSource()
     {
         return $this->languageSource;
-    }
-
-    public function getMetaStructureIdSource()
-    {
-        return $this->metaStructureIdSource;
     }
 
     public function getLanguageDestination()

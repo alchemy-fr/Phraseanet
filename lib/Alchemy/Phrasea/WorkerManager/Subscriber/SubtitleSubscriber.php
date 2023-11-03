@@ -32,7 +32,6 @@ class SubtitleSubscriber implements EventSubscriberInterface
                 "databoxId"                     => $event->getRecord()->getDataboxId(),
                 "recordId"                      => $event->getRecord()->getRecordId(),
                 "languageSource"                => $event->getLanguageSource(),
-                "metaStructureIdSource"         => $event->getMetaStructureIdSource(),
                 "languageDestination"           => $event->getLanguageDestination(),
                 "type"                          => MessagePublisher::SUBTITLE_TYPE  // used to specify the final Q to publish message
             ];

@@ -96,8 +96,6 @@ class SubtitleWorker implements WorkerInterface
             $this->extension = 'vtt';
         }
 
-        $languageSource         = $this->getLanguageFormat($payload['languageSource']);
-
         $record = $this->getApplicationBox()->get_databox($payload['databoxId'])->get_record($payload['recordId']);
 
         // if subdef_source not set, by default use the preview permalink
@@ -145,20 +143,28 @@ class SubtitleWorker implements WorkerInterface
 
         // create a transcription
 
-        $responseTranscription = $this->happyscribeClient->post('https://www.happyscribe.com/api/v1/transcriptions', [
-            'headers' => [
-                'Authorization' => 'Bearer '. $this->happyscribeToken
-            ],
-            'json' => [
-                'transcription' => [
-                    'name'              => $record->get_title(),
-                    'is_subtitle'       => true,
-                    'language'          => $languageSource,
-                    'organization_id'   => $organizationId,
-                    'tmp_url'           => $tmpUrl
+        try {
+            $responseTranscription = $this->happyscribeClient->post('https://www.happyscribe.com/api/v1/transcriptions', [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $this->happyscribeToken
+                ],
+                'json' => [
+                    'transcription' => [
+                        'name'              => $record->get_title(),
+                        'is_subtitle'       => true,
+                        'language'          => $payload['languageSource'],
+                        'organization_id'   => $organizationId,
+                        'tmp_url'           => $tmpUrl
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error("error when creating transcript : " . $e->getMessage());
+            $this->jobFinished();
+
+            return 0;
+        }
 
         if ($responseTranscription->getStatusCode() !== 200) {
             $this->logger->error("error when creating transcript,response status : ". $responseTranscription->getStatusCode());
@@ -212,7 +218,7 @@ class SubtitleWorker implements WorkerInterface
         foreach ($payload['languageDestination'] as $language =>  $metaStructureIdDestination) {
             $languageDestination = strtolower($language);
 
-            if (strtolower($payload['languageSource']) == $languageDestination) {
+            if ($this->getTargetLanguageByCode($payload['languageSource']) == $languageDestination) {
                 $metadatas[] = [
                     'meta_struct_id' => (int)$metaStructureIdDestination,
                     'meta_id'        => '',
@@ -244,9 +250,9 @@ class SubtitleWorker implements WorkerInterface
 
         // delete transcription
 
-        foreach ($this->transcriptionsId as $transcriptionId) {
-            $this->deleteTranscription($transcriptionId);
-        }
+//        foreach ($this->transcriptionsId as $transcriptionId) {
+//            $this->deleteTranscription($transcriptionId);
+//        }
 
         $this->jobFinished();
 
@@ -274,19 +280,6 @@ class SubtitleWorker implements WorkerInterface
 
             $em->persist($this->workerRunningJob);
             $em->flush();
-        }
-    }
-
-    private function getLanguageFormat($language)
-    {
-        switch ($language) {
-            case 'En':
-                return 'en-GB';
-            case 'De':
-                return 'de-DE';
-            case 'Fr':
-            default:
-                return 'fr-FR';
         }
     }
 
@@ -384,23 +377,29 @@ class SubtitleWorker implements WorkerInterface
 
         $transcriptContent = file_get_contents($subtitleTranscriptTemporaryFile);
 
-        $transcriptContent = preg_replace('/WEBVTT/', 'WEBVTT - with cue identifier', $transcriptContent, 1);
-
         return $transcriptContent;
     }
 
     private function translate($sourceTranscriptionId, $targetLanguage)
     {
         // translate
-        $resTranslate = $this->happyscribeClient->post('https://www.happyscribe.com/api/v1/task/transcription_translation', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->happyscribeToken
-            ],
-            'json' => [
-                'source_transcription_id' => $sourceTranscriptionId,
-                'target_language'         => strtolower($targetLanguage)
-            ]
-        ]);
+        try {
+            $resTranslate = $this->happyscribeClient->post('https://www.happyscribe.com/api/v1/task/transcription_translation', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->happyscribeToken
+                ],
+                'json' => [
+                    'source_transcription_id' => $sourceTranscriptionId,
+                    'target_language'         => strtolower($targetLanguage)
+                ]
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error("error when translate : ". $e->getMessage());
+            $this->jobFinished();
+
+            return 0;
+        }
+
 
         if ($resTranslate->getStatusCode() !== 200) {
             $this->logger->error("error when translate, response status : ". $resTranslate->getStatusCode());
@@ -469,5 +468,12 @@ class SubtitleWorker implements WorkerInterface
                 'Authorization' => 'Bearer ' . $this->happyscribeToken
             ]
         ]);
+    }
+
+    private function getTargetLanguageByCode($code)
+    {
+        $t = explode('-', $code);
+
+        return $t[0];
     }
 }

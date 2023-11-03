@@ -229,7 +229,7 @@
                                        <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Provider" | trans }}</label>
                                             <select name="subtitleProvider" id="subtitle_provider">
-                                                <option value="Ginger">Ginger</option>
+                                                <option value="Ginger">Happyscribe (beta)</option>
                                             </select>
                                        </p>
                                         <p class="item">
@@ -241,8 +241,8 @@
                                         <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Source Audio language" | trans }}</label>
                                             <select name="subtitle_language_source" id="subtitle_language_source">
-                                                {% for videoTextTrackField in videoTextTrackFields %}
-                                                    <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
+                                                {% for code,language in languages | sort %}
+                                                    <option value="{{ code }}" {% if code == 'fr-FR' %} selected {% endif %}>{{ language }}</option>
                                                 {% endfor %}
                                             </select>
                                         </p>
@@ -373,8 +373,7 @@
             data: {
                 databox_id: {{ record.getDataboxId }},
                 record_id: {{ record.getRecordId }},
-                subtitle_language_source: $('#subtitle_language_source option:selected').text(),
-                meta_struct_id_source: $('#subtitle_language_source').val(),
+                subtitle_language_source: $('#subtitle_language_source').val(),
                 subtitle_destination: JSON.stringify(destination),
             },
             success: function success(data) {
