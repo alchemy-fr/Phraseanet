@@ -139,7 +139,8 @@ class DownloadAsyncWorker implements WorkerInterface
                 }
                 if(!array_key_exists($databox_id, $worksheet_ref_by_db)) {
                     // Create a new worksheet with db name
-                    $ws = new Worksheet($spreadsheet, $this->app->getApplicationBox()->get_databox($databox_id)->get_dbname());
+                    $tab_name = substr($this->app->getApplicationBox()->get_databox($databox_id)->get_dbname(), 0, 31);
+                    $ws = new Worksheet($spreadsheet, $tab_name);
                     $spreadsheet->addSheet($ws);
                     if(count($worksheet_ref_by_db) === 0) {
                         // we just added the first ws, we can delete the "default" one
