@@ -370,6 +370,7 @@ class DownloadAsyncWorker implements WorkerInterface
                     ]
                 ]
             ];
+            $list['count']++;
 
             $totalSize += $list['files']['report']["subdefs"]['report']["size"];
         }
