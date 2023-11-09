@@ -94,22 +94,7 @@ class TranslateCommand extends phrCommand
          */
         foreach ($this->config->getJobs() as $jobName => $job) {
             $output->writeln("");
-            $output->writeln(sprintf("======== Playing job %s ========", $jobName));
-
-            if(!$job->isValid()) {
-                $output->writeln("<warning>Configuration error(s)... :</warning>");
-                foreach ($job->getErrors() as $err) {
-                    $output->writeln(sprintf(" - %s", $err));
-                }
-                $output->writeln("<warning>...Job ignored</warning>");
-
-                continue;
-            }
-
-            if(!$job->isActive()) {
-                $output->writeln(sprintf("job is inactive, skipped."));
-                continue;
-            }
+            $output->writeln(sprintf("Playing job \"%s\"", $jobName));
 
             $job->run();
         }
