@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 258);
+/******/ 	return __webpack_require__(__webpack_require__.s = 311);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -82,2986 +82,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 
 /***/ }),
 
-/***/ 10:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["e"] = makeString;
-/* harmony export (immutable) */ __webpack_exports__["a"] = copy;
-/* harmony export (immutable) */ __webpack_exports__["h"] = setPath;
-/* harmony export (immutable) */ __webpack_exports__["f"] = pushPath;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getPath;
-/* harmony export (immutable) */ __webpack_exports__["b"] = deepExtend;
-/* harmony export (immutable) */ __webpack_exports__["g"] = regexEscape;
-/* harmony export (immutable) */ __webpack_exports__["c"] = escape;
-function makeString(object) {
-  if (object == null) return '';
-  /* eslint prefer-template: 0 */
-  return '' + object;
-}
-
-function copy(a, s, t) {
-  a.forEach(function (m) {
-    if (s[m]) t[m] = s[m];
-  });
-}
-
-function getLastOfPath(object, path, Empty) {
-  function cleanKey(key) {
-    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
-  }
-
-  function canNotTraverseDeeper() {
-    return !object || typeof object === 'string';
-  }
-
-  var stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
-  while (stack.length > 1) {
-    if (canNotTraverseDeeper()) return {};
-
-    var key = cleanKey(stack.shift());
-    if (!object[key] && Empty) object[key] = new Empty();
-    object = object[key];
-  }
-
-  if (canNotTraverseDeeper()) return {};
-  return {
-    obj: object,
-    k: cleanKey(stack.shift())
-  };
-}
-
-function setPath(object, path, newValue) {
-  var _getLastOfPath = getLastOfPath(object, path, Object),
-      obj = _getLastOfPath.obj,
-      k = _getLastOfPath.k;
-
-  obj[k] = newValue;
-}
-
-function pushPath(object, path, newValue, concat) {
-  var _getLastOfPath2 = getLastOfPath(object, path, Object),
-      obj = _getLastOfPath2.obj,
-      k = _getLastOfPath2.k;
-
-  obj[k] = obj[k] || [];
-  if (concat) obj[k] = obj[k].concat(newValue);
-  if (!concat) obj[k].push(newValue);
-}
-
-function getPath(object, path) {
-  var _getLastOfPath3 = getLastOfPath(object, path),
-      obj = _getLastOfPath3.obj,
-      k = _getLastOfPath3.k;
-
-  if (!obj) return undefined;
-  return obj[k];
-}
-
-function deepExtend(target, source, overwrite) {
-  /* eslint no-restricted-syntax: 0 */
-  for (var prop in source) {
-    if (prop in target) {
-      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
-      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
-        if (overwrite) target[prop] = source[prop];
-      } else {
-        deepExtend(target[prop], source[prop], overwrite);
-      }
-    } else {
-      target[prop] = source[prop];
-    }
-  }
-  return target;
-}
-
-function regexEscape(str) {
-  /* eslint no-useless-escape: 0 */
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-}
-
-/* eslint-disable */
-var _entityMap = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': '&quot;',
-  "'": '&#39;',
-  "/": '&#x2F;'
-};
-/* eslint-enable */
-
-function escape(data) {
-  if (typeof data === 'string') {
-    return data.replace(/[&<>"'\/]/g, function (s) {
-      return _entityMap[s];
-    });
-  }
-
-  return data;
-}
-
-/***/ }),
-
-/***/ 12:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-  processors: {},
-
-  addPostProcessor: function addPostProcessor(module) {
-    this.processors[module.name] = module;
-  },
-  handle: function handle(processors, value, key, options, translator) {
-    var _this = this;
-
-    processors.forEach(function (processor) {
-      if (_this.processors[processor]) value = _this.processors[processor].process(value, key, options, translator);
-    });
-
-    return value;
-  }
-});
-
-/***/ }),
-
-/***/ 13:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = convertAPIOptions;
-/* harmony export (immutable) */ __webpack_exports__["c"] = convertJSONOptions;
-/* harmony export (immutable) */ __webpack_exports__["d"] = convertTOptions;
-/* harmony export (immutable) */ __webpack_exports__["a"] = appendBackwardsAPI;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
-/* eslint no-param-reassign: 0 */
-
-
-function convertInterpolation(options) {
-
-  options.interpolation = {
-    unescapeSuffix: 'HTML'
-  };
-
-  options.interpolation.prefix = options.interpolationPrefix || '__';
-  options.interpolation.suffix = options.interpolationSuffix || '__';
-  options.interpolation.escapeValue = options.escapeInterpolation || false;
-
-  options.interpolation.nestingPrefix = options.reusePrefix || '$t(';
-  options.interpolation.nestingSuffix = options.reuseSuffix || ')';
-
-  return options;
-}
-
-function convertAPIOptions(options) {
-  if (options.resStore) options.resources = options.resStore;
-
-  if (options.ns && options.ns.defaultNs) {
-    options.defaultNS = options.ns.defaultNs;
-    options.ns = options.ns.namespaces;
-  } else {
-    options.defaultNS = options.ns || 'translation';
-  }
-
-  if (options.fallbackToDefaultNS && options.defaultNS) options.fallbackNS = options.defaultNS;
-
-  options.saveMissing = options.sendMissing;
-  options.saveMissingTo = options.sendMissingTo || 'current';
-  options.returnNull = !options.fallbackOnNull;
-  options.returnEmptyString = !options.fallbackOnEmpty;
-  options.returnObjects = options.returnObjectTrees;
-  options.joinArrays = '\n';
-
-  options.returnedObjectHandler = options.objectTreeKeyHandler;
-  options.parseMissingKeyHandler = options.parseMissingKey;
-  options.appendNamespaceToMissingKey = true;
-
-  options.nsSeparator = options.nsseparator || ':';
-  options.keySeparator = options.keyseparator || '.';
-
-  if (options.shortcutFunction === 'sprintf') {
-    options.overloadTranslationOptionHandler = function handle(args) {
-      var values = [];
-
-      for (var i = 1; i < args.length; i++) {
-        values.push(args[i]);
-      }
-
-      return {
-        postProcess: 'sprintf',
-        sprintf: values
-      };
-    };
-  }
-
-  options.whitelist = options.lngWhitelist;
-  options.preload = options.preload;
-  if (options.load === 'current') options.load = 'currentOnly';
-  if (options.load === 'unspecific') options.load = 'languageOnly';
-
-  // backend
-  options.backend = options.backend || {};
-  options.backend.loadPath = options.resGetPath || 'locales/__lng__/__ns__.json';
-  options.backend.addPath = options.resPostPath || 'locales/add/__lng__/__ns__';
-  options.backend.allowMultiLoading = options.dynamicLoad;
-
-  // cache
-  options.cache = options.cache || {};
-  options.cache.prefix = 'res_';
-  options.cache.expirationTime = 7 * 24 * 60 * 60 * 1000;
-  options.cache.enabled = options.useLocalStorage;
-
-  options = convertInterpolation(options);
-  if (options.defaultVariables) options.interpolation.defaultVariables = options.defaultVariables;
-
-  // COMPATIBILITY: deprecation
-  // if (options.getAsync === false) throw deprecation error
-
-  return options;
-}
-
-function convertJSONOptions(options) {
-  options = convertInterpolation(options);
-  options.joinArrays = '\n';
-
-  return options;
-}
-
-function convertTOptions(options) {
-  if (options.interpolationPrefix || options.interpolationSuffix || options.escapeInterpolation !== undefined) {
-    options = convertInterpolation(options);
-  }
-
-  options.nsSeparator = options.nsseparator;
-  options.keySeparator = options.keyseparator;
-
-  options.returnObjects = options.returnObjectTrees;
-
-  return options;
-}
-
-function appendBackwardsAPI(i18n) {
-  i18n.lng = function () {
-    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.lng() can be replaced by i18next.language for detected language or i18next.languages for languages ordered by translation lookup.');
-    return i18n.services.languageUtils.toResolveHierarchy(i18n.language)[0];
-  };
-
-  i18n.preload = function (lngs, cb) {
-    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.preload() can be replaced with i18next.loadLanguages()');
-    i18n.loadLanguages(lngs, cb);
-  };
-
-  i18n.setLng = function (lng, options, callback) {
-    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.setLng() can be replaced with i18next.changeLanguage() or i18next.getFixedT() to get a translation function with fixed language or namespace.');
-    if (typeof options === 'function') {
-      callback = options;
-      options = {};
-    }
-    if (!options) options = {};
-
-    if (options.fixLng === true) {
-      if (callback) return callback(null, i18n.getFixedT(lng));
-    }
-
-    return i18n.changeLanguage(lng, callback);
-  };
-
-  i18n.addPostProcessor = function (name, fc) {
-    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.addPostProcessor() can be replaced by i18next.use({ type: \'postProcessor\', name: \'name\', process: fc })');
-    i18n.use({
-      type: 'postProcessor',
-      name: name,
-      process: fc
-    });
-  };
-}
-
-/***/ }),
-
-/***/ 14:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(jQuery) {
-
-// @TODO enable lints
-/* eslint-disable max-len*/
-/* eslint-disable object-shorthand*/
-/* eslint-disable dot-notation*/
-/* eslint-disable vars-on-top*/
-/* eslint-disable prefer-template*/
-/* eslint-disable prefer-const*/
-/* eslint-disable spaced-comment*/
-/* eslint-disable curly*/
-/* eslint-disable object-curly-spacing*/
-/* eslint-disable spaced-comment*/
-/* eslint-disable prefer-arrow-callback*/
-/* eslint-disable one-var*/
-/* eslint-disable space-in-parens*/
-/* eslint-disable camelcase*/
-/* eslint-disable no-undef*/
-/* eslint-disable quote-props*/
-/* eslint-disable no-shadow*/
-/* eslint-disable no-param-reassign*/
-/* eslint-disable no-unused-expressions*/
-/* eslint-disable no-shadow*/
-/* eslint-disable no-implied-eval*/
-/* eslint-disable brace-style*/
-/* eslint-disable no-unused-vars*/
-/* eslint-disable brace-style*/
-/* eslint-disable no-lonely-if*/
-/* eslint-disable no-inline-comments*/
-/* eslint-disable default-case*/
-/* eslint-disable one-var*/
-/* eslint-disable semi*/
-var pym = __webpack_require__(17);
-/*
- * jQuery Tooltip plugin 1.3
- *
- * http://bassistance.de/jquery-plugins/jquery-plugin-tooltip/
- * http://docs.jquery.com/Plugins/Tooltip
- *
- * Copyright (c) 2006 - 2008 J�rn Zaefferer
- *
- * $Id: jquery.tooltip.js 5741 2008-06-21 15:22:16Z joern.zaefferer $
- *
- * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
- */
-(function ($) {
-    $(document).bind('keydown', function (event) {
-        if ($.tooltip === undefined) return;
-
-        if (event.keyCode === 27 && $.tooltip.blocked === true) {
-            unfixTooltip();
-        }
-    });
-
-    var activeThumbnailFrame = void 0;
-    // the tooltip element
-    var helper = {},
-
-    // the title of the current element, used for restoring
-    title = void 0,
-
-    // timeout id for delayed tooltips
-    tID = void 0,
-
-    // flag for mouse tracking
-    track = false;
-
-    $.tooltip = {
-        blocked: false,
-        ajaxTimeout: false,
-        ajaxRequest: false,
-        ajaxEvent: false,
-        current: null,
-        visible: false,
-        defaults: {
-            delay: 700,
-            fixable: false,
-            fixableIndex: 100,
-            fade: false, // DO NOT SET TO TRUE ! (makes some random blinks/loops)
-            showURL: true,
-            outside: true,
-            isBrowsable: false,
-            extraClass: '',
-            top: 15,
-            left: 15,
-            id: 'tooltip'
-        },
-        block: function block() {
-            $.tooltip.blocked = !$.tooltip.blocked;
-        },
-
-        delayAjax: function delayAjax(a, b, c) {
-            var datas = {};
-            $.tooltip.ajaxRequest = $.ajax({
-                url: $.tooltip.current.tooltipSrc,
-                type: 'post',
-                data: datas,
-                success: function success(data) {
-                    title = data;
-                    positioning($.tooltip.ajaxEvent);
-                },
-                error: function error() {
-                    return;
-                }
-            });
-        }
-    };
-
-    $.fn.extend({
-        tooltip: function tooltip(settings) {
-            settings = $.extend({}, $.tooltip.defaults, settings);
-            createHelper(settings);
-            return this.each(function () {
-                $.data(this, 'tooltip', settings);
-                // copy tooltip into its own expando and remove the title
-                this.tooltipText = $(this).attr('title');
-                this.tooltipSrc = $(this).attr('tooltipsrc');
-
-                this.ajaxLoad = $.trim(this.tooltipText) === '' && this.tooltipSrc !== '';
-
-                this.ajaxTimeout;
-
-                this.orEl = $(this);
-                $(this).removeAttr('title');
-                // also remove alt attribute to prevent default tooltip in IE
-                this.alt = '';
-            }).mouseover(save).mouseout(hide).mouseleave(function () {
-                if (settings.isBrowsable) {
-                    $.tooltip.currentHover = false;
-                    // close caption container after a small delay
-                    // (safe travel delay of the mouse between thumbnail and caption / allow user to cross
-                    // boundaries without unexpected closing of the catpion)
-                    setTimeout(function () {
-                        hide();
-                    }, 500);
-                }
-            }).mousedown(fix);
-        },
-        hideWhenEmpty: function hideWhenEmpty() {
-            return this.each(function () {
-                $(this)[$(this).html() ? 'show' : 'hide']();
-            });
-        },
-        url: function url() {
-            return this.attr('href') || this.attr('src');
-        }
-    });
-
-    function createHelper(settings) {
-        // there can be only one tooltip helper
-        if (helper.parent) return;
-        // create the helper, h3 for title, div for url
-        helper.parent = $('<div id="' + settings.id + '"><div class="body"></div></div>')
-        // add to document
-        .appendTo(document.body)
-        // hide it at first
-        .hide();
-
-        // apply bgiframe if available
-        if ($.fn.bgiframe) helper.parent.bgiframe();
-
-        // save references to title and url elements
-        helper.title = $('h3', helper.parent);
-        helper.body = $('div.body', helper.parent);
-        helper.url = $('div.url', helper.parent);
-    }
-
-    function settings(element) {
-        return $.data(element, 'tooltip');
-    }
-
-    // main event handler to start showing tooltips
-    function handle(event) {
-        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) {
-            return;
-        }
-
-        // DONT UN-COMMENT ; fix blinking
-        // show helper, either with timeout or on instant
-        // if (settings(this).delay) {
-        //     tID = setTimeout(visible, settings(this).delay);
-        // }
-        // else {
-        visible();
-        // }
-        show();
-
-        // if selected, update the helper position when the mouse moves
-        track = !!settings(this).track;
-        $(document.body).bind('mousemove', update);
-
-        // update at least once
-        update(event);
-    }
-
-    // save elements title before the tooltip is displayed
-    function save(event) {
-        // if this is the current source, or it has no title (occurs with click event), stop
-        if (event.stopPropagation) event.stopPropagation();
-
-        event.cancelBubble = true;
-
-        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) {
-            return;
-        }
-
-        // save current
-        $.tooltip.current = this;
-        title = this.tooltipText;
-
-        // if element has href or src, add and show it, otherwise hide it
-        if (settings(this).showURL && $(this).url()) {
-            helper.url.html($(this).url().replace('http://', '')).show();
-        } else {
-            helper.url.hide();
-        }
-        // add an optional class for this tip
-        helper.parent.removeClass();
-        helper.parent.addClass(settings(this).extraClass);
-        if (this.ajaxLoad) {
-            // @TODO debounce instead of timeout
-            clearTimeout($.tooltip.ajaxTimeout);
-            $.tooltip.ajaxTimeout = setTimeout($.tooltip.delayAjax, 300);
-            $.tooltip.ajaxEvent = event;
-        } else {
-            title = '<div class="popover" style="display:block;position:relative;">' + '<div class="arrow"></div>' + '<div class="popover-inner" style="width:auto;">' + '<div class="popover-content">' + title + '</div>' + '</div>' + '</div>';
-
-            positioning.apply(this, arguments);
-        }
-        return;
-    }
-
-    function positioning(event) {
-        helper.body.html(title);
-        helper.body.show();
-        var $this = $.tooltip.current;
-        var tooltipSettings = settings($this) ? settings($this) : {};
-        var fixedPosition = $.tooltip.blocked;
-        if (tooltipSettings.outside) {
-            var width = 'auto';
-            var height = 'auto';
-            var tooltipId = tooltipSettings.id;
-            var $defaultTips = $('#' + tooltipId);
-            var customId = 'phraseanet-embed-tooltip-frame';
-            $defaultTips.find('#phraseanet-embed-frame').attr('id', customId);
-
-            var $audioTips = $('#' + tooltipId + ' .audioTips');
-            var $imgTips = $('#' + tooltipId + ' .imgTips');
-            var $videoTips = $('#' + tooltipId + ' .videoTips');
-            var $documentTips = $('#' + tooltipId + ' .documentTips');
-            var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
-
-            // get image or video original dimensions
-            var recordWidth = 400;
-            var recordHeight = 0;
-            var tooltipVerticalOffset = 75;
-            var tooltipHorizontalOffset = 35;
-            var maxWidthAllowed = 1024;
-            var maxHeightAllowed = 768;
-            var tooltipWidth = 0;
-            var tooltipHeight = 0;
-            var viewportDimensions = viewport();
-            var left = 0;
-            var top = 0;
-            var recordWidthOffset = 0;
-            var recordHeightOffset = 0;
-            var topOffset = 0;
-            var leftOffset = 0;
-            var rightOffset = 0;
-            var bottomOffset = 0;
-            var $selector = $defaultTips;
-
-            if ($imgTips[0] && shouldResize) {
-                recordWidth = parseInt($imgTips[0].style.width, 10);
-                recordHeight = parseInt($imgTips[0].style.height, 10);
-                $imgTips.css({ display: 'block', margin: '0 auto' });
-                $selector = $imgTips;
-            } else if ($documentTips[0] && shouldResize) {
-                var recordUrl = $documentTips.data('src');
-                recordWidth = $documentTips.data('original-width') > 400 ? $documentTips.data('original-width') : 400;
-                recordHeight = $documentTips.data('original-width') > 400 ? $documentTips.data('original-height') : 600;
-                $documentTips.css({ display: 'block', margin: '0 auto' });
-                $selector = $documentTips;
-                activeThumbnailFrame = new pym.Parent(customId, recordUrl);
-                activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
-            } else if ($audioTips[0] && shouldResize) {
-                var _recordUrl = $audioTips.data('src');
-                recordWidth = 240;
-                recordHeight = 240;
-                $audioTips.css({ display: 'block', margin: '0 auto' });
-                $selector = $audioTips;
-                activeThumbnailFrame = new pym.Parent(customId, _recordUrl);
-                activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
-            } else if ($videoTips[0] && shouldResize) {
-                var _recordUrl2 = $videoTips.data('src');
-                recordWidth = $videoTips.data('original-width');
-                recordHeight = $videoTips.data('original-height');
-                // limit video to maxWidth:
-                /*if( recordWidth > 720 ) {
-                 let limitRatio = recordWidth/recordHeight;
-                 recordWidth = 720;
-                 recordHeight = recordWidth / limitRatio;
-                 }*/
-                $videoTips.css({ display: 'block', margin: '0 auto' });
-                $selector = $videoTips;
-                activeThumbnailFrame = new pym.Parent(customId, _recordUrl2);
-                activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
-                //activeThumbnailFrame.iframe.setAttribute('height', '100%');
-            } else {
-                // handle captions
-                if ($selector.find('.popover').length > 0) {
-                    recordWidth = parseInt($selector.find('.popover')[0].style.width, 10) || recordWidth;
-                }
-                var contentHeight = $selector.height();
-                shouldResize = false;
-                tooltipVerticalOffset = 13;
-                recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
-                $selector.css({ height: 'auto' });
-            }
-
-            tooltipWidth = recordWidth + tooltipHorizontalOffset;
-            tooltipHeight = recordHeight + tooltipVerticalOffset;
-
-            var rescale = function rescale(containerWidth, containerHeight, resourceWidth, resourceHeight, maxWidthAllowed, maxHeightAllowed, $selector) {
-                var resourceRatio = resourceHeight / resourceWidth;
-                var resizeW = resourceWidth;
-                var resizeH = resourceHeight;
-
-                if (resourceWidth > resourceHeight) {
-                    // if width still too large:
-                    if (resizeW > containerWidth) {
-                        resizeW = containerWidth;
-                        resizeH = containerWidth * resourceRatio;
-                    }
-
-                    if (resizeH > containerHeight) {
-                        resizeW = containerHeight / resourceRatio;
-                        resizeH = containerHeight;
-                    }
-                } else {
-                    if (resizeH > containerHeight) {
-                        resizeW = containerHeight / resourceRatio;
-                        resizeH = containerHeight;
-                    }
-                }
-
-                if (maxWidthAllowed !== undefined && maxHeightAllowed !== undefined) {
-                    if (resizeW > maxWidthAllowed || resizeH > maxHeightAllowed) {
-                        return rescale(maxWidthAllowed, maxHeightAllowed, resourceWidth, resourceHeight);
-                    }
-                }
-
-                if ($selector !== undefined) {
-                    $selector.css({
-                        width: Math.floor(resizeW),
-                        height: Math.floor(resizeH)
-                    });
-                }
-
-                return {
-                    width: Math.floor(resizeW),
-                    height: Math.floor(resizeH)
-                };
-            };
-
-            if (event) {
-                var $origEventTarget = $(event.target);
-
-                // previewTips
-
-                // since event target can have different positionning, try to get common closest parent:
-                var $eventTarget = $origEventTarget.closest('.diapo');
-
-                if ($eventTarget.length > 0) {
-                    // tooltip from records answer
-                    recordWidthOffset = $eventTarget.width() - 2; // remove width with margin/2
-                    recordHeightOffset = $eventTarget.height() + 2; // remove height with margin/2
-                    // change offsets:
-                    topOffset = 14;
-                    leftOffset = 1;
-                    rightOffset = 2;
-                    bottomOffset = -15;
-                } else {
-                    // tooltip from workzone (basket)
-                    tooltipVerticalOffset = 0;
-                    tooltipHorizontalOffset = 0;
-                    topOffset = 50;
-                    // the origEventTarget is only the title, locate the container block
-                    $eventTarget = $origEventTarget.closest('.SSTT');
-                    if ($eventTarget.length === 0) {
-                        // fallback on original target if nothing found:
-                        $eventTarget = $origEventTarget;
-                    }
-                }
-
-                var recordPosition = $eventTarget.offset();
-
-                var totalViewportWidth = viewportDimensions.x;
-                var totalViewportHeight = viewportDimensions.y;
-
-                //for basket
-                if (recordPosition.left < 30) {
-                    leftOffset = $('.insidebloc').width();
-                }
-
-                var leftAvailableSpace = recordPosition.left + leftOffset;
-                var topAvailableSpace = recordPosition.top + topOffset;
-                var rightAvailableSpace = totalViewportWidth - leftAvailableSpace - recordWidthOffset - rightOffset;
-                var bottomAvailableSpace = totalViewportHeight - topAvailableSpace - recordHeightOffset;
-
-                var shouldBeOnTop = false;
-                var availableHeight = bottomAvailableSpace;
-                var tooltipSize = {
-                    width: tooltipWidth,
-                    height: tooltipHeight
-                };
-                var position = 'top';
-
-                if (topAvailableSpace > bottomAvailableSpace) {
-                    shouldBeOnTop = true;
-                    availableHeight = topAvailableSpace;
-                }
-
-                if (leftAvailableSpace > rightAvailableSpace) {
-                    position = 'left';
-                } else {
-                    position = 'right';
-                }
-
-                // prefer bottom position if tooltip is a small caption:
-                if (bottomAvailableSpace > leftAvailableSpace && bottomAvailableSpace > rightAvailableSpace) {
-                    position = 'bottom';
-                } else if (shouldBeOnTop && availableHeight > leftAvailableSpace && availableHeight > rightAvailableSpace) {
-                    position = 'top';
-                }
-
-                if (fixedPosition === true) {
-                    leftAvailableSpace = totalViewportWidth;
-                    topAvailableSpace = totalViewportHeight;
-                    position = 'top';
-                }
-
-                switch (position) {
-                    case 'top':
-                        tooltipSize = rescale(totalViewportWidth, topAvailableSpace, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
-                        tooltipWidth = tooltipSize.width;
-                        tooltipHeight = tooltipSize.height;
-                        left = leftAvailableSpace - tooltipSize.width / 2 + recordWidthOffset / 2;
-                        top = topAvailableSpace - tooltipSize.height;
-                        break;
-                    case 'bottom':
-                        tooltipSize = rescale(totalViewportWidth, bottomAvailableSpace, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
-                        tooltipWidth = tooltipSize.width;
-                        tooltipHeight = tooltipSize.height;
-                        left = leftAvailableSpace - tooltipSize.width / 2 + recordWidthOffset / 2;
-                        top = totalViewportHeight - bottomAvailableSpace + bottomOffset;
-                        break;
-                    case 'left':
-                        tooltipSize = rescale(leftAvailableSpace, totalViewportHeight, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
-
-                        tooltipWidth = tooltipSize.width;
-                        tooltipHeight = tooltipSize.height;
-                        left = leftAvailableSpace - tooltipSize.width;
-                        break;
-                    case 'right':
-                        tooltipSize = rescale(rightAvailableSpace, totalViewportHeight, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
-                        tooltipWidth = tooltipSize.width;
-                        tooltipHeight = tooltipSize.height;
-                        left = leftAvailableSpace + recordWidthOffset + rightOffset;
-                        break;
-                }
-
-                // tooltipHeight = tooltipHeight + 18;
-                // tooltipWidth = tooltipWidth + 28;
-                if (fixedPosition === true) {
-                    left = totalViewportWidth / 2 - tooltipWidth / 2;
-                    top = totalViewportHeight / 2 - tooltipHeight / 2;
-                } else {
-                    // try to vertical center, relative to source:
-                    if (position === 'left' || position === 'right') {
-                        var verticalSpace = topAvailableSpace + recordHeightOffset / 2 + tooltipHeight / 2;
-                        if (verticalSpace < totalViewportHeight) {
-                            // tooltip can be aligned vertically
-                            top = topAvailableSpace + recordHeightOffset / 2 - tooltipHeight / 2;
-                        } else {
-                            top = totalViewportHeight - tooltipHeight;
-                        }
-                        top = top < 0 ? 0 : top;
-                    }
-
-                    // try to horizontal center, relative to source:
-                    if (position === 'top' || position === 'bottom') {
-                        // push to left
-                        // push to right
-                        var takeLeftSpace = tooltipWidth / 2 + leftAvailableSpace;
-                        var takeRightSpace = tooltipWidth / 2 + rightAvailableSpace;
-                        // if centering on top or bottom and tooltip is offcanvas
-                        if (takeLeftSpace > totalViewportWidth || takeRightSpace > totalViewportWidth) {
-                            if (leftAvailableSpace > totalViewportWidth / 2) {
-                                // push at left
-                                left = 0;
-                            } else {
-                                // push at right
-                                left = totalViewportWidth - tooltipWidth;
-                            }
-                        } else {
-                            // center
-                            left = leftAvailableSpace - tooltipWidth / 2 + recordWidthOffset / 2;
-                        }
-                    }
-                }
-
-                var resizeProperties = {
-                    left: left,
-                    top: top
-                };
-
-                if (shouldResize) {
-                    // rescale $selector css:
-                    rescale(tooltipWidth - tooltipHorizontalOffset, tooltipHeight - tooltipVerticalOffset, recordWidth, recordHeight, maxWidthAllowed, maxHeightAllowed, $selector);
-                    // reset non used css properties:
-                    resizeProperties['max-width'] = '';
-                    resizeProperties['min-width'] = '';
-                } else {
-                    // ensure tooltip width match with left position
-                    resizeProperties['max-width'] = Math.round(tooltipWidth);
-                    resizeProperties['min-width'] = Math.round(tooltipWidth);
-                }
-
-                resizeProperties['width'] = shouldResize ? Math.round(tooltipWidth) : 'auto';
-                resizeProperties['height'] = shouldResize ? Math.round(tooltipHeight) : 'auto';
-
-                helper.parent.css(resizeProperties);
-            }
-        }
-        handle.apply($this, arguments);
-        return;
-    }
-
-    // delete timeout and show helper
-    function show() {
-        tID = null;
-        var isBrowsable = false;
-        if ($.tooltip.current !== null) {
-            isBrowsable = settings($.tooltip.current).isBrowsable;
-        }
-
-        if (settings($.tooltip.current).fade) {
-            if (helper.parent.is(':animated')) {
-                helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);
-            } else {
-                helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
-            }
-        } else {
-            helper.parent.show();
-        }
-
-        $(helper.parent[0]).unbind('mouseenter').unbind('mouseleave').mouseenter(function () {
-            if (isBrowsable) {
-                $.tooltip.currentHover = true;
-            }
-        }).mouseleave(function () {
-            if (isBrowsable) {
-                // if tooltip has scrollable content or selectionnable text - should be closed on mouseleave:
-                $.tooltip.currentHover = false;
-                helper.parent.hide();
-            }
-        });
-
-        update();
-    }
-
-    function fix(event) {
-        if (!$.tooltip.current) {
-            return;
-        }
-        if (!$(this).hasClass('captionTips') || !event.altKey) {
-            if (!settings(this).fixable) {
-                hide(event);
-                return;
-            }
-        }
-        event.cancelBubble = true;
-        if (event.stopPropagation) event.stopPropagation();
-        showOverlay('_tooltip', 'body', unfixTooltip, settings(this).fixableIndex);
-        $('#tooltip .tooltip_closer').show().bind('click', unfixTooltip);
-        $.tooltip.blocked = true;
-        positioning.apply(this, arguments);
-    }
-
-    function visible() {
-        $.tooltip.visible = true;
-        helper.parent.css({
-            visibility: 'visible'
-        });
-    }
-
-    /**
-     * callback for mousemove
-     * updates the helper position
-     * removes itself when no current element
-     */
-    function update(event) {
-        if ($.tooltip.blocked) return;
-
-        if (event && event.target.tagName === 'OPTION') {
-            return;
-        }
-
-        // stop updating when tracking is disabled and the tooltip is visible
-        if (!track && helper.parent.is(':visible')) {
-            $(document.body).unbind('mousemove', update);
-            $.tooltip.currentHover = true;
-        }
-
-        // if no current element is available, remove this listener
-        if ($.tooltip.current === null) {
-            $(document.body).unbind('mousemove', update);
-            $.tooltip.currentHover = false;
-            return;
-        }
-
-        // remove position helper classes
-        helper.parent.removeClass('viewport-right').removeClass('viewport-bottom');
-
-        if (!settings($.tooltip.current).outside) {
-            var left = helper.parent[0].offsetLeft;
-            var top = helper.parent[0].offsetTop;
-            helper.parent.width('auto');
-            helper.parent.height('auto');
-            if (event) {
-                // position the helper 15 pixel to bottom right, starting from mouse position
-                left = event.pageX + settings($.tooltip.current).left;
-                top = event.pageY + settings($.tooltip.current).top;
-                var right = 'auto';
-                if (settings($.tooltip.current).positionLeft) {
-                    right = $(window).width() - left;
-                    left = 'auto';
-                }
-                helper.parent.css({
-                    left: left,
-                    right: right,
-                    top: top
-                });
-            }
-
-            var v = viewport(),
-                h = helper.parent[0];
-            // check horizontal position
-            if (v.x + v.cx < h.offsetLeft + h.offsetWidth) {
-                left -= h.offsetWidth + 20 + settings($.tooltip.current).left;
-                helper.parent.css({
-                    left: left + 'px'
-                }).addClass('viewport-right');
-            }
-            // check vertical position
-            if (v.y + v.cy < h.offsetTop + h.offsetHeight) {
-                top -= h.offsetHeight + 20 + settings($.tooltip.current).top;
-                helper.parent.css({
-                    top: top + 'px'
-                }).addClass('viewport-bottom');
-            }
-        }
-    }
-
-    function viewport() {
-        return {
-            x: $(window).width(),
-            y: $(window).height(),
-
-            cx: 0,
-            cy: 0
-        };
-    }
-
-    // hide helper and restore added classes and the title
-    function hide(event) {
-
-        var isBrowsable = false;
-        if ($.tooltip.current !== null) {
-            isBrowsable = settings($.tooltip.current).isBrowsable;
-        }
-        if ($.tooltip.currentHover && isBrowsable) {
-            return;
-        }
-
-        if ($.tooltip.blocked || !$.tooltip.current) return;
-
-        $(helper.parent[0]).unbind('mouseenter').unbind('mouseleave');
-
-        // clear timeout if possible
-        if (tID) clearTimeout(tID);
-        // no more current element
-        $.tooltip.visible = false;
-        var tsettings = settings($.tooltip.current);
-        clearTimeout($.tooltip.ajaxTimeout);
-        if ($.tooltip.ajaxRequest && $.tooltip.ajaxRequest.abort) {
-            $.tooltip.ajaxRequest.abort();
-        }
-
-        helper.body.empty();
-        $.tooltip.current = null;
-        function complete() {
-            helper.parent.removeClass(tsettings.extraClass).hide().css('opacity', '');
-        }
-
-        if (tsettings.fade) {
-            if (helper.parent.is(':animated')) {
-                helper.parent.stop().fadeTo(tsettings.fade, 0, complete);
-            } else {
-                helper.parent.stop().fadeOut(tsettings.fade, complete);
-            }
-        } else {
-            complete();
-        }
-    }
-
-    function unfixTooltip() {
-        $.tooltip.blocked = false;
-        $.tooltip.visible = false;
-        $.tooltip.current = null;
-        $('#tooltip').hide();
-        $('#tooltip .tooltip_closer').hide();
-        hideOverlay('_tooltip');
-    }
-
-    var showOverlay = function showOverlay(n, appendto, callback, zIndex) {
-        var div = 'OVERLAY';
-        if (typeof n !== 'undefined') div += n;
-        if ($('#' + div).length === 0) {
-            if (typeof appendto === 'undefined') appendto = 'body';
-            $(appendto).append('<div id="' + div + '" style="display:none;">&nbsp;</div>');
-        }
-
-        var css = {
-            display: 'block',
-            opacity: 0,
-            right: 0,
-            bottom: 0,
-            position: 'absolute',
-            top: 0,
-            zIndex: zIndex,
-            left: 0
-        };
-
-        if (parseInt(zIndex, 10) > 0) css['zIndex'] = parseInt(zIndex, 10);
-
-        if (typeof callback !== 'function') callback = function callback() {};
-        $('#' + div).css(css).addClass('overlay').fadeTo(500, 0.7).bind('click', function () {
-            callback();
-        });
-        if (navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/)) {
-            $('select').css({
-                visibility: 'hidden'
-            });
-        }
-    };
-
-    var hideOverlay = function hideOverlay(n) {
-        if (navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/)) {
-            $('select').css({
-                visibility: 'visible'
-            });
-        }
-        var div = 'OVERLAY';
-        if (typeof n !== 'undefined') div += n;
-        $('#' + div).hide().remove();
-    };
-
-    return {
-        unfixTooltip: unfixTooltip
-    };
-})(jQuery);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-
-/***/ 15:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _rx = __webpack_require__(8);
-
-var Rx = _interopRequireWildcard(_rx);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-var hasOwnProp = {}.hasOwnProperty;
-
-function createName(name) {
-    return '$' + name;
-}
-
-var Emitter = function Emitter() {
-    this.subjects = {};
-};
-
-Emitter.prototype.emit = function (name, data) {
-    var fnName = createName(name);
-    this.subjects[fnName] || (this.subjects[fnName] = new Rx.Subject());
-    this.subjects[fnName].onNext(data);
-
-    return this.subjects[fnName];
-};
-
-Emitter.prototype.listen = function (name, handler) {
-    var fnName = createName(name);
-    this.subjects[fnName] || (this.subjects[fnName] = new Rx.Subject());
-    return this.subjects[fnName].subscribe(handler);
-};
-Emitter.prototype.listenAll = function (group, name, handler) {
-    for (var prop in group) {
-        var fnName = createName(prop);
-        this.subjects[fnName] || (this.subjects[fnName] = new Rx.Subject());
-        this.subjects[fnName].subscribe(group[prop]);
-    }
-};
-
-Emitter.prototype.disposeOf = function (startWith) {
-    var search = new RegExp('^\\$' + startWith);
-    var subjects = this.subjects;
-    for (var prop in subjects) {
-        if (hasOwnProp.call(subjects, prop)) {
-            if (search.test(prop)) {
-                subjects[prop].dispose();
-            }
-        }
-    }
-
-    this.subjects = {};
-};
-Emitter.prototype.dispose = function () {
-    var subjects = this.subjects;
-    for (var prop in subjects) {
-        if (hasOwnProp.call(subjects, prop)) {
-            subjects[prop].dispose();
-        }
-    }
-
-    this.subjects = {};
-};
-exports.default = Emitter;
-
-/***/ }),
-
-/***/ 16:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _applicationConfigService = __webpack_require__(18);
-
-var _applicationConfigService2 = _interopRequireDefault(_applicationConfigService);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var instance = null;
-
-var ConfigService = function (_ApplicationConfigSer) {
-    _inherits(ConfigService, _ApplicationConfigSer);
-
-    function ConfigService(configuration) {
-        var _ret;
-
-        _classCallCheck(this, ConfigService);
-
-        var _this = _possibleConstructorReturn(this, (ConfigService.__proto__ || Object.getPrototypeOf(ConfigService)).call(this, configuration));
-
-        if (!instance) {
-
-            instance = _this;
-        }
-
-        return _ret = instance, _possibleConstructorReturn(_this, _ret);
-    }
-
-    return ConfigService;
-}(_applicationConfigService2.default);
-
-exports.default = ConfigService;
-
-/***/ }),
-
-/***/ 17:
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! pym.js - v1.3.2 - 2018-02-13 */
-/*
-* Pym.js is library that resizes an iframe based on the width of the parent and the resulting height of the child.
-* Check out the docs at http://blog.apps.npr.org/pym.js/ or the readme at README.md for usage.
-*/
-
-/** @module pym */
-(function(factory) {
-    if (true) {
-        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    }
-    else if (typeof module !== 'undefined' && module.exports) {
-        module.exports = factory();
-    } else {
-        window.pym = factory.call(this);
-    }
-})(function() {
-    var MESSAGE_DELIMITER = 'xPYMx';
-
-    var lib = {};
-
-    /**
-    * Create and dispatch a custom pym event
-    *
-    * @method _raiseCustomEvent
-    * @inner
-    *
-    * @param {String} eventName
-    */
-   var _raiseCustomEvent = function(eventName) {
-     var event = document.createEvent('Event');
-     event.initEvent('pym:' + eventName, true, true);
-     document.dispatchEvent(event);
-   };
-
-    /**
-    * Generic function for parsing URL params.
-    * Via http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-    *
-    * @method _getParameterByName
-    * @inner
-    *
-    * @param {String} name The name of the paramter to get from the URL.
-    */
-    var _getParameterByName = function(name) {
-        var regex = new RegExp("[\\?&]" + name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]') + '=([^&#]*)');
-        var results = regex.exec(location.search);
-
-        if (results === null) {
-            return '';
-        }
-
-        return decodeURIComponent(results[1].replace(/\+/g, " "));
-    };
-
-    /**
-     * Check the message to make sure it comes from an acceptable xdomain.
-     * Defaults to '*' but can be overriden in config.
-     *
-     * @method _isSafeMessage
-     * @inner
-     *
-     * @param {Event} e The message event.
-     * @param {Object} settings Configuration.
-     */
-    var _isSafeMessage = function(e, settings) {
-        if (settings.xdomain !== '*') {
-            // If origin doesn't match our xdomain, return.
-            if (!e.origin.match(new RegExp(settings.xdomain + '$'))) { return; }
-        }
-
-        // Ignore events that do not carry string data #151
-        if (typeof e.data !== 'string') { return; }
-
-        return true;
-    };
-
-    var _isSafeUrl = function(url) {
-        // Adapted from angular 2 url sanitizer
-        var SAFE_URL_PATTERN = /^(?:(?:https?|mailto|ftp):|[^&:/?#]*(?:[/?#]|$))/gi;
-        if (!url.match(SAFE_URL_PATTERN)) { return; }
-        
-        return true;
-    };
-
-    /**
-     * Construct a message to send between frames.
-     *
-     * NB: We use string-building here because JSON message passing is
-     * not supported in all browsers.
-     *
-     * @method _makeMessage
-     * @inner
-     *
-     * @param {String} id The unique id of the message recipient.
-     * @param {String} messageType The type of message to send.
-     * @param {String} message The message to send.
-     */
-    var _makeMessage = function(id, messageType, message) {
-        var bits = ['pym', id, messageType, message];
-
-        return bits.join(MESSAGE_DELIMITER);
-    };
-
-    /**
-     * Construct a regex to validate and parse messages.
-     *
-     * @method _makeMessageRegex
-     * @inner
-     *
-     * @param {String} id The unique id of the message recipient.
-     */
-    var _makeMessageRegex = function(id) {
-        var bits = ['pym', id, '(\\S+)', '(.*)'];
-
-        return new RegExp('^' + bits.join(MESSAGE_DELIMITER) + '$');
-    };
-
-    /**
-    * Underscore implementation of getNow
-    *
-    * @method _getNow
-    * @inner
-    *
-    */
-    var _getNow = Date.now || function() {
-        return new Date().getTime();
-    };
-
-    /**
-    * Underscore implementation of throttle
-    *
-    * @method _throttle
-    * @inner
-    *
-    * @param {function} func Throttled function
-    * @param {number} wait Throttle wait time
-    * @param {object} options Throttle settings
-    */
-
-    var _throttle = function(func, wait, options) {
-        var context, args, result;
-        var timeout = null;
-        var previous = 0;
-        if (!options) {options = {};}
-        var later = function() {
-            previous = options.leading === false ? 0 : _getNow();
-            timeout = null;
-            result = func.apply(context, args);
-            if (!timeout) {context = args = null;}
-        };
-        return function() {
-            var now = _getNow();
-            if (!previous && options.leading === false) {previous = now;}
-            var remaining = wait - (now - previous);
-            context = this;
-            args = arguments;
-            if (remaining <= 0 || remaining > wait) {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                }
-                previous = now;
-                result = func.apply(context, args);
-                if (!timeout) {context = args = null;}
-            } else if (!timeout && options.trailing !== false) {
-                timeout = setTimeout(later, remaining);
-            }
-            return result;
-        };
-    };
-
-    /**
-     * Clean autoInit Instances: those that point to contentless iframes
-     * @method _cleanAutoInitInstances
-     * @inner
-     */
-    var _cleanAutoInitInstances = function() {
-        var length = lib.autoInitInstances.length;
-
-        // Loop backwards to avoid index issues
-        for (var idx = length - 1; idx >= 0; idx--) {
-            var instance = lib.autoInitInstances[idx];
-            // If instance has been removed or is contentless then remove it
-            if (instance.el.getElementsByTagName('iframe').length &&
-                instance.el.getElementsByTagName('iframe')[0].contentWindow) {
-                continue;
-            }
-            else {
-                // Remove the reference to the removed or orphan instance
-                lib.autoInitInstances.splice(idx,1);
-            }
-        }
-    };
-
-    /**
-     * Store auto initialized Pym instances for further reference
-     * @name module:pym#autoInitInstances
-     * @type Array
-     * @default []
-     */
-    lib.autoInitInstances = [];
-
-    /**
-     * Initialize Pym for elements on page that have data-pym attributes.
-     * Expose autoinit in case we need to call it from the outside
-     * @instance
-     * @method autoInit
-     * @param {Boolean} doNotRaiseEvents flag to avoid sending custom events
-     */
-    lib.autoInit = function(doNotRaiseEvents) {
-        var elements = document.querySelectorAll('[data-pym-src]:not([data-pym-auto-initialized])');
-        var length = elements.length;
-
-        // Clean stored instances in case needed
-        _cleanAutoInitInstances();
-        for (var idx = 0; idx < length; ++idx) {
-            var element = elements[idx];
-            /*
-            * Mark automatically-initialized elements so they are not
-            * re-initialized if the user includes pym.js more than once in the
-            * same document.
-            */
-            element.setAttribute('data-pym-auto-initialized', '');
-
-            // Ensure elements have an id
-            if (element.id === '') {
-                element.id = 'pym-' + idx + "-" + Math.random().toString(36).substr(2,5);
-            }
-
-            var src = element.getAttribute('data-pym-src');
-
-            // List of data attributes to configure the component
-            // structure: {'attribute name': 'type'}
-            var settings = {'xdomain': 'string', 'title': 'string', 'name': 'string', 'id': 'string',
-                            'sandbox': 'string', 'allowfullscreen': 'boolean',
-                            'parenturlparam': 'string', 'parenturlvalue': 'string',
-                            'optionalparams': 'boolean', 'trackscroll': 'boolean',
-                            'scrollwait': 'number'};
-
-            var config = {};
-
-            for (var attribute in settings) {
-                // via https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute#Notes
-               if (element.getAttribute('data-pym-'+attribute) !== null) {
-                  switch (settings[attribute]) {
-                    case 'boolean':
-                       config[attribute] = !(element.getAttribute('data-pym-'+attribute) === 'false'); // jshint ignore:line
-                       break;
-                    case 'string':
-                       config[attribute] = element.getAttribute('data-pym-'+attribute);
-                       break;
-                    case 'number':
-                        var n = Number(element.getAttribute('data-pym-'+attribute));
-                        if (!isNaN(n)) {
-                            config[attribute] = n;
-                        }
-                        break;
-                    default:
-                       console.err('unrecognized attribute type');
-                  }
-               }
-            }
-
-            // Store references to autoinitialized pym instances
-            var parent = new lib.Parent(element.id, src, config);
-            lib.autoInitInstances.push(parent);
-        }
-
-        // Fire customEvent
-        if (!doNotRaiseEvents) {
-            _raiseCustomEvent("pym-initialized");
-        }
-        // Return stored autoinitalized pym instances
-        return lib.autoInitInstances;
-    };
-
-    /**
-     * The Parent half of a response iframe.
-     *
-     * @memberof module:pym
-     * @class Parent
-     * @param {String} id The id of the div into which the iframe will be rendered. sets {@link module:pym.Parent~id}
-     * @param {String} url The url of the iframe source. sets {@link module:pym.Parent~url}
-     * @param {Object} [config] Configuration for the parent instance. sets {@link module:pym.Parent~settings}
-     * @param {string} [config.xdomain='*'] - xdomain to validate messages received
-     * @param {string} [config.title] - if passed it will be assigned to the iframe title attribute
-     * @param {string} [config.name] - if passed it will be assigned to the iframe name attribute
-     * @param {string} [config.id] - if passed it will be assigned to the iframe id attribute
-     * @param {boolean} [config.allowfullscreen] - if passed and different than false it will be assigned to the iframe allowfullscreen attribute
-     * @param {string} [config.sandbox] - if passed it will be assigned to the iframe sandbox attribute (we do not validate the syntax so be careful!!)
-     * @param {string} [config.parenturlparam] - if passed it will be override the default parentUrl query string parameter name passed to the iframe src
-     * @param {string} [config.parenturlvalue] - if passed it will be override the default parentUrl query string parameter value passed to the iframe src
-     * @param {string} [config.optionalparams] - if passed and different than false it will strip the querystring params parentUrl and parentTitle passed to the iframe src
-     * @param {boolean} [config.trackscroll] - if passed it will activate scroll tracking on the parent
-     * @param {number} [config.scrollwait] - if passed it will set the throttle wait in order to fire scroll messaging. Defaults to 100 ms.
-     * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe iFrame}
-     */
-    lib.Parent = function(id, url, config) {
-        /**
-         * The id of the container element
-         *
-         * @memberof module:pym.Parent
-         * @member {string} id
-         * @inner
-         */
-        this.id = id;
-        /**
-         * The url that will be set as the iframe's src
-         *
-         * @memberof module:pym.Parent
-         * @member {String} url
-         * @inner
-         */
-        this.url = url;
-
-        /**
-         * The container DOM object
-         *
-         * @memberof module:pym.Parent
-         * @member {HTMLElement} el
-         * @inner
-         */
-        this.el = document.getElementById(id);
-        /**
-         * The contained child iframe
-         *
-         * @memberof module:pym.Parent
-         * @member {HTMLElement} iframe
-         * @inner
-         * @default null
-         */
-        this.iframe = null;
-        /**
-         * The parent instance settings, updated by the values passed in the config object
-         *
-         * @memberof module:pym.Parent
-         * @member {Object} settings
-         * @inner
-         */
-        this.settings = {
-            xdomain: '*',
-            optionalparams: true,
-            parenturlparam: 'parentUrl',
-            parenturlvalue: window.location.href,
-            trackscroll: false,
-            scrollwait: 100,
-        };
-        /**
-         * RegularExpression to validate the received messages
-         *
-         * @memberof module:pym.Parent
-         * @member {String} messageRegex
-         * @inner
-         */
-        this.messageRegex = _makeMessageRegex(this.id);
-        /**
-         * Stores the registered messageHandlers for each messageType
-         *
-         * @memberof module:pym.Parent
-         * @member {Object} messageHandlers
-         * @inner
-         */
-        this.messageHandlers = {};
-
-        // ensure a config object
-        config = (config || {});
-
-        /**
-         * Construct the iframe.
-         *
-         * @memberof module:pym.Parent
-         * @method _constructIframe
-         * @inner
-         */
-        this._constructIframe = function() {
-            // Calculate the width of this element.
-            var width = this.el.offsetWidth.toString();
-
-            // Create an iframe element attached to the document.
-            this.iframe = document.createElement('iframe');
-
-            // Save fragment id
-            var hash = '';
-            var hashIndex = this.url.indexOf('#');
-
-            if (hashIndex > -1) {
-                hash = this.url.substring(hashIndex, this.url.length);
-                this.url = this.url.substring(0, hashIndex);
-            }
-
-            // If the URL contains querystring bits, use them.
-            // Otherwise, just create a set of valid params.
-            if (this.url.indexOf('?') < 0) {
-                this.url += '?';
-            } else {
-                this.url += '&';
-            }
-
-            // Append the initial width as a querystring parameter
-            // and optional params if configured to do so
-            this.iframe.src = this.url + 'initialWidth=' + width +
-                                         '&childId=' + this.id;
-
-            if (this.settings.optionalparams) {
-                this.iframe.src += '&parentTitle=' + encodeURIComponent(document.title);
-                this.iframe.src += '&'+ this.settings.parenturlparam + '=' + encodeURIComponent(this.settings.parenturlvalue);
-            }
-            this.iframe.src +=hash;
-
-            // Set some attributes to this proto-iframe.
-            this.iframe.setAttribute('width', '100%');
-            this.iframe.setAttribute('scrolling', 'no');
-            this.iframe.setAttribute('marginheight', '0');
-            this.iframe.setAttribute('frameborder', '0');
-
-            if (this.settings.title) {
-                this.iframe.setAttribute('title', this.settings.title);
-            }
-
-            if (this.settings.allowfullscreen !== undefined && this.settings.allowfullscreen !== false) {
-                this.iframe.setAttribute('allowfullscreen','');
-            }
-
-            if (this.settings.sandbox !== undefined && typeof this.settings.sandbox === 'string') {
-                this.iframe.setAttribute('sandbox', this.settings.sandbox);
-            }
-
-            if (this.settings.id) {
-                if (!document.getElementById(this.settings.id)) {
-                    this.iframe.setAttribute('id', this.settings.id);
-                }
-            }
-
-            if (this.settings.name) {
-                this.iframe.setAttribute('name', this.settings.name);
-            }
-
-            // Replace the child content if needed
-            // (some CMSs might strip out empty elements)
-            while(this.el.firstChild) { this.el.removeChild(this.el.firstChild); }
-            // Append the iframe to our element.
-            this.el.appendChild(this.iframe);
-
-            // Add an event listener that will handle redrawing the child on resize.
-            window.addEventListener('resize', this._onResize);
-
-            // Add an event listener that will send the child the viewport.
-            if (this.settings.trackscroll) {
-                window.addEventListener('scroll', this._throttleOnScroll);
-            }
-        };
-
-        /**
-         * Send width on resize.
-         *
-         * @memberof module:pym.Parent
-         * @method _onResize
-         * @inner
-         */
-        this._onResize = function() {
-            this.sendWidth();
-            if (this.settings.trackscroll) {
-                this.sendViewportAndIFramePosition();
-            }
-        }.bind(this);
-
-        /**
-         * Send viewport and iframe info on scroll.
-         *
-         * @memberof module:pym.Parent
-         * @method _onScroll
-         * @inner
-         */
-        this._onScroll = function() {
-            this.sendViewportAndIFramePosition();
-        }.bind(this);
-
-        /**
-         * Fire all event handlers for a given message type.
-         *
-         * @memberof module:pym.Parent
-         * @method _fire
-         * @inner
-         *
-         * @param {String} messageType The type of message.
-         * @param {String} message The message data.
-         */
-        this._fire = function(messageType, message) {
-            if (messageType in this.messageHandlers) {
-                for (var i = 0; i < this.messageHandlers[messageType].length; i++) {
-                   this.messageHandlers[messageType][i].call(this, message);
-                }
-            }
-        };
-
-        /**
-         * Remove this parent from the page and unbind it's event handlers.
-         *
-         * @memberof module:pym.Parent
-         * @method remove
-         * @instance
-         */
-        this.remove = function() {
-            window.removeEventListener('message', this._processMessage);
-            window.removeEventListener('resize', this._onResize);
-
-            this.el.removeChild(this.iframe);
-            // _cleanAutoInitInstances in case this parent was autoInitialized
-            _cleanAutoInitInstances();
-        };
-
-        /**
-         * Process a new message from the child.
-         *
-         * @memberof module:pym.Parent
-         * @method _processMessage
-         * @inner
-         *
-         * @param {Event} e A message event.
-         */
-        this._processMessage = function(e) {
-            // First, punt if this isn't from an acceptable xdomain.
-            if (!_isSafeMessage(e, this.settings)) {
-                return;
-            }
-
-            // Discard object messages, we only care about strings
-            if (typeof e.data !== 'string') {
-                return;
-            }
-
-            // Grab the message from the child and parse it.
-            var match = e.data.match(this.messageRegex);
-
-            // If there's no match or too many matches in the message, punt.
-            if (!match || match.length !== 3) {
-                return false;
-            }
-
-            var messageType = match[1];
-            var message = match[2];
-
-            this._fire(messageType, message);
-        }.bind(this);
-
-        /**
-         * Resize iframe in response to new height message from child.
-         *
-         * @memberof module:pym.Parent
-         * @method _onHeightMessage
-         * @inner
-         *
-         * @param {String} message The new height.
-         */
-        this._onHeightMessage = function(message) {
-            /*
-             * Handle parent height message from child.
-             */
-            var height = parseInt(message);
-
-            this.iframe.setAttribute('height', height + 'px');
-        };
-
-        /**
-         * Navigate parent to a new url.
-         *
-         * @memberof module:pym.Parent
-         * @method _onNavigateToMessage
-         * @inner
-         *
-         * @param {String} message The url to navigate to.
-         */
-        this._onNavigateToMessage = function(message) {
-            /*
-             * Handle parent scroll message from child.
-             */
-             if (!_isSafeUrl(message)) {return;}
-            document.location.href = message;
-        };
-
-        /**
-         * Scroll parent to a given child position.
-         *
-         * @memberof module:pym.Parent
-         * @method _onScrollToChildPosMessage
-         * @inner
-         *
-         * @param {String} message The offset inside the child page.
-         */
-        this._onScrollToChildPosMessage = function(message) {
-            // Get the child container position using getBoundingClientRect + pageYOffset
-            // via https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-            var iframePos = document.getElementById(this.id).getBoundingClientRect().top + window.pageYOffset;
-
-            var totalOffset = iframePos + parseInt(message);
-            window.scrollTo(0, totalOffset);
-        };
-
-        /**
-         * Bind a callback to a given messageType from the child.
-         *
-         * Reserved message names are: "height", "scrollTo" and "navigateTo".
-         *
-         * @memberof module:pym.Parent
-         * @method onMessage
-         * @instance
-         *
-         * @param {String} messageType The type of message being listened for.
-         * @param {module:pym.Parent~onMessageCallback} callback The callback to invoke when a message of the given type is received.
-         */
-        this.onMessage = function(messageType, callback) {
-            if (!(messageType in this.messageHandlers)) {
-                this.messageHandlers[messageType] = [];
-            }
-
-            this.messageHandlers[messageType].push(callback);
-        };
-
-        /**
-         * @callback module:pym.Parent~onMessageCallback
-         * @param {String} message The message data.
-         */
-
-        /**
-         * Send a message to the the child.
-         *
-         * @memberof module:pym.Parent
-         * @method sendMessage
-         * @instance
-         *
-         * @param {String} messageType The type of message to send.
-         * @param {String} message The message data to send.
-         */
-        this.sendMessage = function(messageType, message) {
-            // When used alongside with pjax some references are lost
-            if (this.el.getElementsByTagName('iframe').length) {
-                if (this.el.getElementsByTagName('iframe')[0].contentWindow) {
-                    this.el.getElementsByTagName('iframe')[0].contentWindow
-                        .postMessage(_makeMessage(this.id, messageType, message), '*');
-                }
-                else {
-                    // Contentless child detected remove listeners and iframe
-                    this.remove();
-                }
-            }
-        };
-
-        /**
-         * Transmit the current iframe width to the child.
-         *
-         * You shouldn't need to call this directly.
-         *
-         * @memberof module:pym.Parent
-         * @method sendWidth
-         * @instance
-         */
-        this.sendWidth = function() {
-            var width = this.el.offsetWidth.toString();
-            this.sendMessage('width', width);
-        };
-
-        /**
-         * Transmit the current viewport and iframe position to the child.
-         * Sends viewport width, viewport height
-         * and iframe bounding rect top-left-bottom-right
-         * all separated by spaces
-         *
-         * You shouldn't need to call this directly.
-         *
-         * @memberof module:pym.Parent
-         * @method sendViewportAndIFramePosition
-         * @instance
-         */
-        this.sendViewportAndIFramePosition = function() {
-            var iframeRect = this.iframe.getBoundingClientRect();
-            var vWidth   = window.innerWidth || document.documentElement.clientWidth;
-            var vHeight  = window.innerHeight || document.documentElement.clientHeight;
-            var payload = vWidth + ' ' + vHeight;
-            payload += ' ' + iframeRect.top + ' ' + iframeRect.left;
-            payload += ' ' + iframeRect.bottom + ' ' + iframeRect.right;
-            this.sendMessage('viewport-iframe-position', payload);
-        };
-
-        // Add any overrides to settings coming from config.
-        for (var key in config) {
-            this.settings[key] = config[key];
-        }
-
-        /**
-         * Throttled scroll function.
-         *
-         * @memberof module:pym.Parent
-         * @method _throttleOnScroll
-         * @inner
-         */
-        this._throttleOnScroll = _throttle(this._onScroll.bind(this), this.settings.scrollwait);
-
-        // Bind required message handlers
-        this.onMessage('height', this._onHeightMessage);
-        this.onMessage('navigateTo', this._onNavigateToMessage);
-        this.onMessage('scrollToChildPos', this._onScrollToChildPosMessage);
-        this.onMessage('parentPositionInfo', this.sendViewportAndIFramePosition);
-
-        // Add a listener for processing messages from the child.
-        window.addEventListener('message', this._processMessage, false);
-
-        // Construct the iframe in the container element.
-        this._constructIframe();
-
-        return this;
-    };
-
-    /**
-     * The Child half of a responsive iframe.
-     *
-     * @memberof module:pym
-     * @class Child
-     * @param {Object} [config] Configuration for the child instance. sets {@link module:pym.Child~settings}
-     * @param {function} [config.renderCallback=null] Callback invoked after receiving a resize event from the parent, sets {@link module:pym.Child#settings.renderCallback}
-     * @param {string} [config.xdomain='*'] - xdomain to validate messages received
-     * @param {number} [config.polling=0] - polling frequency in milliseconds to send height to parent
-     * @param {number} [config.id] - parent container id used when navigating the child iframe to a new page but we want to keep it responsive.
-     * @param {string} [config.parenturlparam] - if passed it will be override the default parentUrl query string parameter name expected on the iframe src
-     */
-    lib.Child = function(config) {
-        /**
-         * The initial width of the parent page
-         *
-         * @memberof module:pym.Child
-         * @member {string} parentWidth
-         * @inner
-         */
-        this.parentWidth = null;
-        /**
-         * The id of the parent container
-         *
-         * @memberof module:pym.Child
-         * @member {String} id
-         * @inner
-         */
-        this.id = null;
-        /**
-         * The title of the parent page from document.title.
-         *
-         * @memberof module:pym.Child
-         * @member {String} parentTitle
-         * @inner
-         */
-        this.parentTitle = null;
-        /**
-         * The URL of the parent page from window.location.href.
-         *
-         * @memberof module:pym.Child
-         * @member {String} parentUrl
-         * @inner
-         */
-        this.parentUrl = null;
-        /**
-         * The settings for the child instance. Can be overriden by passing a config object to the child constructor
-         * i.e.: var pymChild = new pym.Child({renderCallback: render, xdomain: "\\*\.npr\.org"})
-         *
-         * @memberof module:pym.Child.settings
-         * @member {Object} settings - default settings for the child instance
-         * @inner
-         */
-        this.settings = {
-            renderCallback: null,
-            xdomain: '*',
-            polling: 0,
-            parenturlparam: 'parentUrl'
-        };
-
-        /**
-         * The timerId in order to be able to stop when polling is enabled
-         *
-         * @memberof module:pym.Child
-         * @member {String} timerId
-         * @inner
-         */
-        this.timerId = null;
-        /**
-         * RegularExpression to validate the received messages
-         *
-         * @memberof module:pym.Child
-         * @member {String} messageRegex
-         * @inner
-         */
-        this.messageRegex = null;
-        /**
-         * Stores the registered messageHandlers for each messageType
-         *
-         * @memberof module:pym.Child
-         * @member {Object} messageHandlers
-         * @inner
-         */
-        this.messageHandlers = {};
-
-        // Ensure a config object
-        config = (config || {});
-
-        /**
-         * Bind a callback to a given messageType from the child.
-         *
-         * Reserved message names are: "width".
-         *
-         * @memberof module:pym.Child
-         * @method onMessage
-         * @instance
-         *
-         * @param {String} messageType The type of message being listened for.
-         * @param {module:pym.Child~onMessageCallback} callback The callback to invoke when a message of the given type is received.
-         */
-        this.onMessage = function(messageType, callback) {
-
-            if (!(messageType in this.messageHandlers)) {
-                this.messageHandlers[messageType] = [];
-            }
-
-            this.messageHandlers[messageType].push(callback);
-        };
-
-        /**
-         * @callback module:pym.Child~onMessageCallback
-         * @param {String} message The message data.
-         */
-
-
-        /**
-         * Fire all event handlers for a given message type.
-         *
-         * @memberof module:pym.Child
-         * @method _fire
-         * @inner
-         *
-         * @param {String} messageType The type of message.
-         * @param {String} message The message data.
-         */
-        this._fire = function(messageType, message) {
-            /*
-             * Fire all event handlers for a given message type.
-             */
-            if (messageType in this.messageHandlers) {
-                for (var i = 0; i < this.messageHandlers[messageType].length; i++) {
-                   this.messageHandlers[messageType][i].call(this, message);
-                }
-            }
-        };
-
-        /**
-         * Process a new message from the parent.
-         *
-         * @memberof module:pym.Child
-         * @method _processMessage
-         * @inner
-         *
-         * @param {Event} e A message event.
-         */
-        this._processMessage = function(e) {
-            /*
-            * Process a new message from parent frame.
-            */
-            // First, punt if this isn't from an acceptable xdomain.
-            if (!_isSafeMessage(e, this.settings)) {
-                return;
-            }
-
-            // Discard object messages, we only care about strings
-            if (typeof e.data !== 'string') {
-                return;
-            }
-
-            // Get the message from the parent.
-            var match = e.data.match(this.messageRegex);
-
-            // If there's no match or it's a bad format, punt.
-            if (!match || match.length !== 3) { return; }
-
-            var messageType = match[1];
-            var message = match[2];
-
-            this._fire(messageType, message);
-        }.bind(this);
-
-        /**
-         * Resize iframe in response to new width message from parent.
-         *
-         * @memberof module:pym.Child
-         * @method _onWidthMessage
-         * @inner
-         *
-         * @param {String} message The new width.
-         */
-        this._onWidthMessage = function(message) {
-            /*
-             * Handle width message from the child.
-             */
-            var width = parseInt(message);
-
-            // Change the width if it's different.
-            if (width !== this.parentWidth) {
-                this.parentWidth = width;
-
-                // Call the callback function if it exists.
-                if (this.settings.renderCallback) {
-                    this.settings.renderCallback(width);
-                }
-
-                // Send the height back to the parent.
-                this.sendHeight();
-            }
-        };
-
-        /**
-         * Send a message to the the Parent.
-         *
-         * @memberof module:pym.Child
-         * @method sendMessage
-         * @instance
-         *
-         * @param {String} messageType The type of message to send.
-         * @param {String} message The message data to send.
-         */
-        this.sendMessage = function(messageType, message) {
-            /*
-             * Send a message to the parent.
-             */
-            window.parent.postMessage(_makeMessage(this.id, messageType, message), '*');
-        };
-
-        /**
-         * Transmit the current iframe height to the parent.
-         *
-         * Call this directly in cases where you manually alter the height of the iframe contents.
-         *
-         * @memberof module:pym.Child
-         * @method sendHeight
-         * @instance
-         */
-        this.sendHeight = function() {
-            // Get the child's height.
-            var height = document.getElementsByTagName('body')[0].offsetHeight.toString();
-
-            // Send the height to the parent.
-            this.sendMessage('height', height);
-
-            return height;
-        }.bind(this);
-
-        /**
-         * Ask parent to send the current viewport and iframe position information
-         *
-         * @memberof module:pym.Child
-         * @method sendHeight
-         * @instance
-         */
-        this.getParentPositionInfo = function() {
-            // Send the height to the parent.
-            this.sendMessage('parentPositionInfo');
-        };
-
-        /**
-         * Scroll parent to a given element id.
-         *
-         * @memberof module:pym.Child
-         * @method scrollParentTo
-         * @instance
-         *
-         * @param {String} hash The id of the element to scroll to.
-         */
-        this.scrollParentTo = function(hash) {
-            this.sendMessage('navigateTo', '#' + hash);
-        };
-
-        /**
-         * Navigate parent to a given url.
-         *
-         * @memberof module:pym.Child
-         * @method navigateParentTo
-         * @instance
-         *
-         * @param {String} url The url to navigate to.
-         */
-        this.navigateParentTo = function(url) {
-            this.sendMessage('navigateTo', url);
-        };
-
-        /**
-         * Scroll parent to a given child element id.
-         *
-         * @memberof module:pym.Child
-         * @method scrollParentToChildEl
-         * @instance
-         *
-         * @param {String} id The id of the child element to scroll to.
-         */
-        this.scrollParentToChildEl = function(id) {
-            // Get the child element position using getBoundingClientRect + pageYOffset
-            // via https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-            var topPos = document.getElementById(id).getBoundingClientRect().top + window.pageYOffset;
-            this.scrollParentToChildPos(topPos);
-        };
-
-        /**
-         * Scroll parent to a particular child offset.
-         *
-         * @memberof module:pym.Child
-         * @method scrollParentToChildPos
-         * @instance
-         *
-         * @param {Number} pos The offset of the child element to scroll to.
-         */
-        this.scrollParentToChildPos = function(pos) {
-            this.sendMessage('scrollToChildPos', pos.toString());
-        };
-
-        /**
-         * Mark Whether the child is embedded or not
-         * executes a callback in case it was passed to the config
-         *
-         * @memberof module:pym.Child
-         * @method _markWhetherEmbedded
-         * @inner
-         *
-         * @param {module:pym.Child~onMarkedEmbeddedStatus} The callback to execute after determining whether embedded or not.
-         */
-        var _markWhetherEmbedded = function(onMarkedEmbeddedStatus) {
-          var htmlElement = document.getElementsByTagName('html')[0],
-              newClassForHtml,
-              originalHtmlClasses = htmlElement.className;
-          try {
-            if(window.self !== window.top) {
-              newClassForHtml = "embedded";
-            }else{
-              newClassForHtml = "not-embedded";
-            }
-          }catch(e) {
-            newClassForHtml = "embedded";
-          }
-          if(originalHtmlClasses.indexOf(newClassForHtml) < 0) {
-            htmlElement.className = originalHtmlClasses ? originalHtmlClasses + ' ' + newClassForHtml : newClassForHtml;
-            if(onMarkedEmbeddedStatus){
-              onMarkedEmbeddedStatus(newClassForHtml);
-            }
-            _raiseCustomEvent("marked-embedded");
-          }
-        };
-
-        /**
-         * @callback module:pym.Child~onMarkedEmbeddedStatus
-         * @param {String} classname "embedded" or "not-embedded".
-         */
-
-        /**
-         * Unbind child event handlers and timers.
-         *
-         * @memberof module:pym.Child
-         * @method remove
-         * @instance
-         */
-        this.remove = function() {
-            window.removeEventListener('message', this._processMessage);
-            if (this.timerId) {
-                clearInterval(this.timerId);
-            }
-        };
-
-        // Initialize settings with overrides.
-        for (var key in config) {
-            this.settings[key] = config[key];
-        }
-
-        // Identify what ID the parent knows this child as.
-        this.id = _getParameterByName('childId') || config.id;
-        this.messageRegex = new RegExp('^pym' + MESSAGE_DELIMITER + this.id + MESSAGE_DELIMITER + '(\\S+)' + MESSAGE_DELIMITER + '(.*)$');
-
-        // Get the initial width from a URL parameter.
-        var width = parseInt(_getParameterByName('initialWidth'));
-
-        // Get the url of the parent frame
-        this.parentUrl = _getParameterByName(this.settings.parenturlparam);
-
-        // Get the title of the parent frame
-        this.parentTitle = _getParameterByName('parentTitle');
-
-        // Bind the required message handlers
-        this.onMessage('width', this._onWidthMessage);
-
-        // Set up a listener to handle any incoming messages.
-        window.addEventListener('message', this._processMessage, false);
-
-        // If there's a callback function, call it.
-        if (this.settings.renderCallback) {
-            this.settings.renderCallback(width);
-        }
-
-        // Send the initial height to the parent.
-        this.sendHeight();
-
-        // If we're configured to poll, create a setInterval to handle that.
-        if (this.settings.polling) {
-            this.timerId = window.setInterval(this.sendHeight, this.settings.polling);
-        }
-
-        _markWhetherEmbedded(config.onMarkedEmbeddedStatus);
-
-        return this;
-    };
-
-    // Initialize elements with pym data attributes
-    // if we are not in server configuration
-    if(typeof document !== "undefined") {
-        lib.autoInit(true);
-    }
-
-    return lib;
-});
-
-
-
-/***/ }),
-
-/***/ 18:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _underscore = __webpack_require__(2);
-
-var _ = _interopRequireWildcard(_underscore);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var instance = null;
-
-var ApplicationConfigService = function () {
-    function ApplicationConfigService(config) {
-        _classCallCheck(this, ApplicationConfigService);
-
-        // if( !instance ) {
-        //     instance = this;
-        // }
-        this.configuration = config;
-        // return instance;
-    }
-
-    _createClass(ApplicationConfigService, [{
-        key: 'get',
-        value: function get(configKey) {
-            if (configKey !== undefined) {
-                var foundValue = this._findKeyValue(configKey || this.configuration);
-                switch (typeof foundValue === 'undefined' ? 'undefined' : _typeof(foundValue)) {
-                    case 'string':
-                        return foundValue;
-                    default:
-                        return foundValue ? foundValue : null;
-
-                }
-            }
-
-            return this.configuration;
-        }
-    }, {
-        key: 'set',
-        value: function set(configKey, value) {
-            if (configKey !== undefined) {
-                if (_typeof(this.configuration[configKey]) === 'object') {
-                    // merge
-                    this.configuration[configKey] = _.extend({}, this.configuration[configKey], value);
-                } else {
-                    this.configuration[configKey] = value;
-                }
-            }
-        }
-
-        // @TODO cast
-
-    }, {
-        key: '_findKeyValue',
-        value: function _findKeyValue(configName) {
-            if (!configName) {
-                return undefined;
-            }
-
-            var isStr = _.isString(configName);
-            var name = isStr ? configName : configName.name;
-            var path = configName.indexOf('.') > 0 ? true : false;
-
-            if (path) {
-                return this._search(this.configuration, name);
-            }
-            var state = this.configuration[name];
-            if (state && (isStr || !isStr && state === configName)) {
-                return state;
-            } else if (isStr) {
-                return state;
-            }
-            return undefined;
-        }
-
-        // @TODO cast
-
-    }, {
-        key: '_search',
-        value: function _search(obj, path) {
-            if (_.isNumber(path)) {
-                path = [path];
-            }
-            if (_.isEmpty(path)) {
-                return obj;
-            }
-            if (_.isEmpty(obj)) {
-                return null;
-            }
-            if (_.isString(path)) {
-                return this._search(obj, path.split('.'));
-            }
-
-            var currentPath = path[0];
-
-            if (path.length === 1) {
-                if (obj[currentPath] === void 0) {
-                    return null;
-                }
-                return obj[currentPath];
-            }
-
-            return this._search(obj[currentPath], path.slice(1));
-        }
-    }]);
-
-    return ApplicationConfigService;
-}();
-
-exports.default = ApplicationConfigService;
-
-/***/ }),
-
-/***/ 19:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(jQuery) {
-
-// @TODO enable lints
-/* eslint-disable max-len*/
-/* eslint-disable object-shorthand*/
-/* eslint-disable dot-notation*/
-/* eslint-disable vars-on-top*/
-/* eslint-disable prefer-template*/
-/* eslint-disable prefer-const*/
-/* eslint-disable spaced-comment*/
-/* eslint-disable curly*/
-/* eslint-disable object-curly-spacing*/
-/* eslint-disable spaced-comment*/
-/* eslint-disable prefer-arrow-callback*/
-/* eslint-disable one-var*/
-/* eslint-disable space-in-parens*/
-/* eslint-disable camelcase*/
-/* eslint-disable no-undef*/
-/* eslint-disable quote-props*/
-/* eslint-disable no-shadow*/
-/* eslint-disable no-param-reassign*/
-/* eslint-disable no-unused-expressions*/
-/* eslint-disable no-shadow*/
-/* eslint-disable no-implied-eval*/
-/* eslint-disable brace-style*/
-/* eslint-disable no-unused-vars*/
-/* eslint-disable brace-style*/
-/* eslint-disable no-lonely-if*/
-/* eslint-disable no-inline-comments*/
-/* eslint-disable default-case*/
-/* eslint-disable one-var*/
-/* eslint-disable semi*/
-/* eslint-disable no-throw-literal*/
-/* eslint-disable no-sequences*/
-/* eslint-disable consistent-this*/
-/* eslint-disable no-dupe-keys*/
-/* eslint-disable semi*/
-/* eslint-disable no-loop-func*/
-/* eslint-disable space-after-keywords*/
-/* eslint-disable no-var*/
-/* eslint-disable quotes*/
-
-/**
- * Copyright (c)2005-2009 Matt Kruse (javascripttoolbox.com)
- *
- * Dual licensed under the MIT and GPL licenses.
- * This basically means you can use this code however you want for
- * free, but don't claim to have written it yourself!
- * Donations always accepted: http://www.JavascriptToolbox.com/donate/
- *
- * Please do not link to the .js files on javascripttoolbox.com from
- * your site. Copy the files locally to your server instead.
- *
- */
-/**
- * jquery.contextmenu.js
- * jQuery Plugin for Context Menus
- * http://www.JavascriptToolbox.com/lib/contextmenu/
- *
- * Copyright (c) 2008 Matt Kruse (javascripttoolbox.com)
- * Dual licensed under the MIT and GPL licenses.
- *
- * @version 1.0
- * @history 1.0 2008-10-20 Initial Release
- * @todo slideUp doesn't work in IE - because of iframe?
- * @todo Hide all other menus when contextmenu is shown?
- * @todo More themes
- * @todo Nested context menus
- */
-
-(function ($) {
-    $.contextMenu = {
-        // props add by Alchemy
-        _showEvent: null, // the original event the caused the menu to show (useful to find the original element clicked)
-        _div: null,
-        //
-        openEvt: "contextmenu", // ouverture sur right-click
-        closeTimer: null, // fermer le menu apres 100ms de mouseout
-
-        shadow: true,
-        dropDown: false,
-        shadowOffset: 0,
-        shadowOffsetX: 5,
-        shadowOffsetY: 5,
-        shadowWidthAdjust: -3,
-        shadowHeightAdjust: -3,
-        shadowOpacity: 0.2,
-        shadowClass: 'context-menu-shadow',
-        shadowColor: 'black',
-
-        offsetX: 0,
-        offsetY: 0,
-        appendTo: 'body',
-        direction: 'down',
-        constrainToScreen: true,
-
-        showTransition: 'show',
-        hideTransition: 'hide',
-        showSpeed: '',
-        hideSpeed: '',
-        showCallback: null,
-        hideCallback: null,
-
-        className: 'context-menu',
-        itemClassName: 'context-menu-item',
-        itemHoverClassName: 'context-menu-item-hover',
-        disabledItemClassName: 'context-menu-item-disabled',
-        disabledItemHoverClassName: 'context-menu-item-disabled-hover',
-        separatorClassName: 'context-menu-separator',
-        innerDivClassName: 'context-menu-item-inner',
-        themePrefix: 'context-menu-theme-',
-        theme: 'default',
-
-        separator: 'context-menu-separator', // A specific key to identify a separator
-        target: null, // The target of the context click, to be populated when triggered
-        menu: null, // The jQuery object containing the HTML object that is the menu itself
-        shadowObj: null, // Shadow object
-        bgiframe: null, // The iframe object for IE6
-        shown: false, // Currently being shown?
-        useIframe: /*@cc_on @*/ /*@if (@_win32) true, @else @*/false, /*@end @*/ // This is a better check than looking at userAgent!
-
-        _originalPlace: null,
-        _hovered: false,
-
-        _hover_in: function _hover_in(cm) {
-            if (cm.closeTimer) {
-                clearTimeout(cm.closeTimer);
-                cm.closeTimer = null;
-            }
-        },
-
-        _hover_out: function _hover_out(cm, tms) {
-            cm.closeTimer = setTimeout(function () {
-                cm.hide();
-            }, tms);
-        },
-
-        // Create the menu instance
-        create: function create(menu, opts) {
-            var cmenu = $.extend({}, this, opts); // Clone all default properties to created object
-
-            // If a selector has been passed in, then use that as the menu
-            if (typeof menu === "string") {
-                cmenu.menu = $(menu);
-                cmenu._originalPlace = cmenu.menu.parent();
-                cmenu.menu.hover(function () {
-                    cmenu._hover_in(cmenu);
-                }, function () {
-                    cmenu._hover_out(cmenu, 500);
-                });
-            }
-            // If a function has been passed in, call it each time the menu is shown to create the menu
-            else if (typeof menu === "function") {
-                    cmenu.menuFunction = menu;
-                }
-                // Otherwise parse the Array passed in
-                else {
-                        cmenu.menu = cmenu.createMenu(menu, cmenu);
-                    }
-            if (cmenu.menu) {
-                cmenu.menu.css({ display: 'none' });
-                $(cmenu.appendTo).append(cmenu.menu);
-            }
-
-            // Create the shadow object if shadow is enabled
-            if (cmenu.shadow) {
-                cmenu.createShadow(cmenu); // Extracted to method for extensibility
-                if (cmenu.shadowOffset) {
-                    cmenu.shadowOffsetX = cmenu.shadowOffsetY = cmenu.shadowOffset;
-                }
-            }
-            $('body').bind(cmenu.openEvt, function () {
-                cmenu.hide();
-            }); // If right-clicked somewhere else in the document, hide this menu
-
-            cmenu.onCreated(cmenu);
-            return cmenu;
-        },
-
-        // Create an iframe object to go behind the menu
-        createIframe: function createIframe() {
-            return $('<iframe tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
-        },
-
-        // Accept an Array representing a menu structure and turn it into HTML
-        createMenu: function createMenu(menu, cmenu) {
-            var className = cmenu.className;
-            $.each(cmenu.theme.split(","), function (i, n) {
-                className += ' ' + cmenu.themePrefix + n;
-            });
-            var $t = $('<table style=""></table>').click(function () {
-                cmenu.hide();
-                return false;
-            }); // We wrap a table around it so width can be flexible
-            var $tr = $('<tr></tr>');
-            var $td = $('<td></td>');
-            var $div = cmenu._div = $('<div class="' + className + '"></div>');
-
-            cmenu._div.hover(function () {
-                cmenu._hover_in(cmenu);
-            }, function () {
-                cmenu._hover_out(cmenu, 500);
-            });
-
-            // Each menu item is specified as either:
-            //     title:function
-            // or  title: { property:value ... }
-            /*
-             for (var i=0; i<menu.length; i++) {
-             var m = menu[i];
-             if (m==$.contextMenu.separator) {
-             $div.append(cmenu.createSeparator());
-             }
-             else {
-             for (var opt in menu[i]) {
-             $div.append(cmenu.createMenuItem(opt,menu[i][opt])); // Extracted to method for extensibility
-             }
-             }
-             }
-             */
-            for (var i = 0; i < menu.length; i++) {
-                var m = menu[i];
-                if (m === $.contextMenu.separator) {
-                    $div.append(cmenu.createSeparator());
-                } else {
-                    $div.append(cmenu.createMenuItem(m)); // Extracted to method for extensibility
-                }
-            }
-            if (cmenu.useIframe) {
-                $td.append(cmenu.createIframe());
-            }
-            $t.append($tr.append($td.append($div)));
-
-            return $t;
-        },
-
-        // Create an individual menu item
-        createMenuItem: function createMenuItem(obj) {
-            var cmenu = this;
-            var label = obj.label;
-            if (typeof obj === "function") {
-                obj = { onclick: obj };
-            } // If passed a simple function, turn it into a property of an object
-            // Default properties, extended in case properties are passed
-            var o = $.extend({
-                onclick: function onclick() {},
-                className: '',
-                hoverClassName: cmenu.itemHoverClassName,
-                icon: '',
-                disabled: false,
-                title: '',
-                hoverItem: cmenu.hoverItem,
-                hoverItemOut: cmenu.hoverItemOut
-            }, obj);
-            // If an icon is specified, hard-code the background-image style. Themes that don't show images should take this into account in their CSS
-            var iconStyle = o.icon ? 'background-image:url(' + o.icon + ');' : '';
-            var $div = $('<div class="' + cmenu.itemClassName + ' ' + o.className + (o.disabled ? ' ' + cmenu.disabledItemClassName : '') + '" title="' + o.title + '"></div>')
-            // If the item is disabled, don't do anything when it is clicked
-            .click(function (e) {
-                if (cmenu.isItemDisabled(this)) {
-                    return false;
-                } else {
-                    return o.onclick.call(cmenu.target, this, cmenu, e, label);
-                }
-            })
-            // Change the class of the item when hovered over
-            .hover(function () {
-                o.hoverItem.call(this, cmenu.isItemDisabled(this) ? cmenu.disabledItemHoverClassName : o.hoverClassName);
-            }, function () {
-                o.hoverItemOut.call(this, cmenu.isItemDisabled(this) ? cmenu.disabledItemHoverClassName : o.hoverClassName);
-            });
-            var $idiv = $('<div class="' + cmenu.innerDivClassName + '" style="' + iconStyle + '">' + label + '</div>');
-            $div.append($idiv);
-
-            return $div;
-        },
-
-        // Create a separator row
-        createSeparator: function createSeparator() {
-            return $('<div class="' + this.separatorClassName + '"></div>');
-        },
-
-        // Determine if an individual item is currently disabled. This is called each time the item is hovered or clicked because the disabled status may change at any time
-        isItemDisabled: function isItemDisabled(item) {
-            return $(item).is('.' + this.disabledItemClassName);
-        },
-
-        // Functions to fire on hover. Extracted to methods for extensibility
-        hoverItem: function hoverItem(c) {
-            $(this).addClass(c);
-        },
-        hoverItemOut: function hoverItemOut(c) {
-            $(this).removeClass(c);
-        },
-
-        // Create the shadow object
-        createShadow: function createShadow(cmenu) {
-            cmenu.shadowObj = $('<div class="' + cmenu.shadowClass + '"></div>').css({
-                display: 'none',
-                position: "absolute",
-                zIndex: 9998,
-                opacity: cmenu.shadowOpacity,
-                backgroundColor: cmenu.shadowColor
-            });
-            $(cmenu.appendTo).append(cmenu.shadowObj);
-        },
-
-        // Display the shadow object, given the position of the menu itself
-        showShadow: function showShadow(x, y, e) {
-            var cmenu = this;
-            if (cmenu.shadow) {
-                cmenu.shadowObj.css({
-                    width: cmenu.menu.width() + cmenu.shadowWidthAdjust + "px",
-                    height: cmenu.menu.height() + cmenu.shadowHeightAdjust + "px",
-                    top: y + cmenu.shadowOffsetY + "px",
-                    left: x + cmenu.shadowOffsetX + "px"
-                }).addClass(cmenu.shadowClass)[cmenu.showTransition](cmenu.showSpeed);
-            }
-        },
-
-        // A hook to call before the menu is shown, in case special processing needs to be done.
-        // Return false to cancel the default show operation
-        beforeShow: function beforeShow() {
-            return true;
-        },
-
-        onCreated: function onCreated(cmenu) {},
-
-        // Show the context menu
-        show: function show(t, e) {
-            var cmenu = this;
-            var x = e.pageX,
-                y = e.pageY;
-
-            if (cmenu._div) {
-                cmenu._div.css('height', 'auto').css('overflow-y', 'auto');
-            }
-
-            cmenu.target = t; // Preserve the object that triggered this context menu so menu item click methods can see it
-            cmenu._showEvent = e; // Preserve the event that triggered this context menu so menu item click methods can see it
-            if (cmenu.beforeShow() !== false) {
-                var $t = $(t);
-                $t.off("mouseleave").on("mouseleave", function () {
-                    cmenu._hover_out(cmenu, 100);
-                });
-
-                // If the menu content is a function, call it to populate the menu each time it is displayed
-                if (cmenu.menuFunction) {
-                    if (cmenu.menu) {
-                        if (cmenu._originalPlace) {
-                            cmenu._originalPlace.append(cmenu.menu);
-                        } else {
-                            $(cmenu.menu).remove();
-                        }
-                    }
-                    var r = cmenu.menuFunction(cmenu, t);
-                    if (Array.isArray(r)) {
-                        cmenu.menu = cmenu.createMenu(r, cmenu);
-                    } else {
-                        cmenu.menu = r;
-                    }
-                    cmenu.menu.css({ display: 'none' });
-                    $(cmenu.appendTo).append(cmenu.menu);
-                }
-                var $c = cmenu.menu;
-                x += cmenu.offsetX;
-                y += cmenu.offsetY;
-                var pos = cmenu.getPosition(x, y, cmenu, e); // Extracted to method for extensibility
-                cmenu.showShadow(pos.x, pos.y, e);
-                // Resize the iframe if needed
-                if (cmenu.useIframe) {
-                    $c.find('iframe').css({
-                        width: $c.width() + cmenu.shadowOffsetX + cmenu.shadowWidthAdjust,
-                        height: $c.height() + cmenu.shadowOffsetY + cmenu.shadowHeightAdjust
-                    });
-                }
-                if (cmenu.dropDown) {
-                    $c.css('visibility', 'hidden').show();
-
-                    var bodySize = { x: $(window).width(), y: $(window).height() };
-
-                    if ($t.offset().top + $t.outerHeight() + $c.height() > bodySize.y) {
-                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
-                            top: $t.offset().top - $c.outerHeight() + "px",
-                            left: $t.offset().left - $c.outerWidth() + "px",
-                            position: "absolute",
-                            zIndex: 9999
-                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
-                            cmenu.showCallback.call(cmenu);
-                        } : null);else $c.css({
-                            top: $t.offset().top - $c.outerHeight() + "px",
-                            left: $t.offset().left + "px",
-                            position: "absolute",
-                            zIndex: 9999
-                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
-                            cmenu.showCallback.call(cmenu);
-                        } : null);
-                    } else {
-
-                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
-                            top: $t.offset().top + $t.outerHeight() + "px",
-                            left: $t.offset().left - $c.outerWidth() + "px",
-                            position: "absolute",
-                            zIndex: 9999
-                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
-                            cmenu.showCallback.call(cmenu);
-                        } : null);else $c.css({
-                            top: $t.offset().top + $t.outerHeight() + "px",
-                            left: $t.offset().left + "px",
-                            position: "absolute",
-                            zIndex: 9999
-                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
-                            cmenu.showCallback.call(cmenu);
-                        } : null);
-                    }
-                    $c.css('visibility', 'visible');
-                } else {
-                    $c.css({
-                        top: pos.y + "px",
-                        left: pos.x + "px",
-                        position: "absolute",
-                        zIndex: 9999
-                    })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
-                        cmenu.showCallback.call(cmenu);
-                    } : null);
-                }
-                cmenu.shown = true;
-                $(document).one('click', null, function () {
-                    cmenu.hide();
-                }); // Handle a single click to the document to hide the menu
-            }
-        },
-
-        // Find the position where the menu should appear, given an x,y of the click event
-        getPosition: function getPosition(clickX, clickY, cmenu, e) {
-            var x = clickX + cmenu.offsetX;
-            var y = clickY + cmenu.offsetY;
-            var h = $(cmenu.menu).height();
-            var w = $(cmenu.menu).width();
-            var dir = cmenu.direction;
-            if (cmenu.constrainToScreen) {
-                var $w = $(window);
-                var wh = $w.height();
-                var ww = $w.width();
-                var st = $w.scrollTop();
-                var maxTop = y - st - 5;
-                var maxBottom = wh + st - y - 5;
-                if (h > maxBottom) {
-                    if (h > maxTop) {
-                        if (maxTop > maxBottom) {
-                            // scrollable en haut
-                            h = maxTop;
-                            cmenu._div.css('height', h + 'px').css('overflow-y', 'scroll');
-                            y -= h;
-                        } else {
-                            // scrollable en bas
-                            h = maxBottom;
-                            cmenu._div.css('height', h + 'px').css('overflow-y', 'scroll');
-                        }
-                    } else {
-                        // menu ok en haut
-                        y -= h;
-                    }
-                } else {
-                    // menu ok en bas
-                }
-
-                var maxRight = x + w - $w.scrollLeft();
-                if (maxRight > ww) {
-                    x -= maxRight - ww;
-                }
-            }
-            return { 'x': x, 'y': y };
-        },
-
-        // Hide the menu, of course
-        hide: function hide() {
-            var cmenu = this;
-            if (cmenu.shown) {
-                if (cmenu.iframe) {
-                    $(cmenu.iframe).hide();
-                }
-                if (cmenu.menu) {
-                    cmenu.menu[cmenu.hideTransition](cmenu.hideSpeed, cmenu.hideCallback ? function () {
-                        cmenu.hideCallback.call(cmenu);
-                    } : null);
-                }
-                if (cmenu.shadow) {
-                    cmenu.shadowObj[cmenu.hideTransition](cmenu.hideSpeed);
-                }
-            }
-            cmenu.shown = false;
-        }
-    };
-
-    // This actually adds the .contextMenu() function to the jQuery namespace
-    $.fn.contextMenu = function (menu, options) {
-        var cmenu = $.contextMenu.create(menu, options);
-        return this.each(function () {
-            $(this).bind(cmenu.openEvt, function (e) {
-                if (cmenu.menu.is(':visible')) cmenu.hide();else {
-                    $('body').trigger(cmenu.openEvt);
-                    cmenu.show(this, e);
-                }
-                return false;
-            }).bind('mouseover', function () {
-                return false;
-            });
-        });
-    };
-})(jQuery);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-
-/***/ 2:
+/***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.9.1
@@ -4758,11 +1779,2990 @@ exports.default = ApplicationConfigService;
   }
 }());
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(9)(module)))
+
+/***/ }),
+
+/***/ 10:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["e"] = makeString;
+/* harmony export (immutable) */ __webpack_exports__["a"] = copy;
+/* harmony export (immutable) */ __webpack_exports__["h"] = setPath;
+/* harmony export (immutable) */ __webpack_exports__["f"] = pushPath;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getPath;
+/* harmony export (immutable) */ __webpack_exports__["b"] = deepExtend;
+/* harmony export (immutable) */ __webpack_exports__["g"] = regexEscape;
+/* harmony export (immutable) */ __webpack_exports__["c"] = escape;
+function makeString(object) {
+  if (object == null) return '';
+  /* eslint prefer-template: 0 */
+  return '' + object;
+}
+
+function copy(a, s, t) {
+  a.forEach(function (m) {
+    if (s[m]) t[m] = s[m];
+  });
+}
+
+function getLastOfPath(object, path, Empty) {
+  function cleanKey(key) {
+    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
+  }
+
+  function canNotTraverseDeeper() {
+    return !object || typeof object === 'string';
+  }
+
+  var stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
+  while (stack.length > 1) {
+    if (canNotTraverseDeeper()) return {};
+
+    var key = cleanKey(stack.shift());
+    if (!object[key] && Empty) object[key] = new Empty();
+    object = object[key];
+  }
+
+  if (canNotTraverseDeeper()) return {};
+  return {
+    obj: object,
+    k: cleanKey(stack.shift())
+  };
+}
+
+function setPath(object, path, newValue) {
+  var _getLastOfPath = getLastOfPath(object, path, Object),
+      obj = _getLastOfPath.obj,
+      k = _getLastOfPath.k;
+
+  obj[k] = newValue;
+}
+
+function pushPath(object, path, newValue, concat) {
+  var _getLastOfPath2 = getLastOfPath(object, path, Object),
+      obj = _getLastOfPath2.obj,
+      k = _getLastOfPath2.k;
+
+  obj[k] = obj[k] || [];
+  if (concat) obj[k] = obj[k].concat(newValue);
+  if (!concat) obj[k].push(newValue);
+}
+
+function getPath(object, path) {
+  var _getLastOfPath3 = getLastOfPath(object, path),
+      obj = _getLastOfPath3.obj,
+      k = _getLastOfPath3.k;
+
+  if (!obj) return undefined;
+  return obj[k];
+}
+
+function deepExtend(target, source, overwrite) {
+  /* eslint no-restricted-syntax: 0 */
+  for (var prop in source) {
+    if (prop in target) {
+      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
+      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
+        if (overwrite) target[prop] = source[prop];
+      } else {
+        deepExtend(target[prop], source[prop], overwrite);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+
+function regexEscape(str) {
+  /* eslint no-useless-escape: 0 */
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+}
+
+/* eslint-disable */
+var _entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
+};
+/* eslint-enable */
+
+function escape(data) {
+  if (typeof data === 'string') {
+    return data.replace(/[&<>"'\/]/g, function (s) {
+      return _entityMap[s];
+    });
+  }
+
+  return data;
+}
+
+/***/ }),
+
+/***/ 13:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+  processors: {},
+
+  addPostProcessor: function addPostProcessor(module) {
+    this.processors[module.name] = module;
+  },
+  handle: function handle(processors, value, key, options, translator) {
+    var _this = this;
+
+    processors.forEach(function (processor) {
+      if (_this.processors[processor]) value = _this.processors[processor].process(value, key, options, translator);
+    });
+
+    return value;
+  }
+});
+
+/***/ }),
+
+/***/ 14:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = convertAPIOptions;
+/* harmony export (immutable) */ __webpack_exports__["c"] = convertJSONOptions;
+/* harmony export (immutable) */ __webpack_exports__["d"] = convertTOptions;
+/* harmony export (immutable) */ __webpack_exports__["a"] = appendBackwardsAPI;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
+/* eslint no-param-reassign: 0 */
+
+
+function convertInterpolation(options) {
+
+  options.interpolation = {
+    unescapeSuffix: 'HTML'
+  };
+
+  options.interpolation.prefix = options.interpolationPrefix || '__';
+  options.interpolation.suffix = options.interpolationSuffix || '__';
+  options.interpolation.escapeValue = options.escapeInterpolation || false;
+
+  options.interpolation.nestingPrefix = options.reusePrefix || '$t(';
+  options.interpolation.nestingSuffix = options.reuseSuffix || ')';
+
+  return options;
+}
+
+function convertAPIOptions(options) {
+  if (options.resStore) options.resources = options.resStore;
+
+  if (options.ns && options.ns.defaultNs) {
+    options.defaultNS = options.ns.defaultNs;
+    options.ns = options.ns.namespaces;
+  } else {
+    options.defaultNS = options.ns || 'translation';
+  }
+
+  if (options.fallbackToDefaultNS && options.defaultNS) options.fallbackNS = options.defaultNS;
+
+  options.saveMissing = options.sendMissing;
+  options.saveMissingTo = options.sendMissingTo || 'current';
+  options.returnNull = !options.fallbackOnNull;
+  options.returnEmptyString = !options.fallbackOnEmpty;
+  options.returnObjects = options.returnObjectTrees;
+  options.joinArrays = '\n';
+
+  options.returnedObjectHandler = options.objectTreeKeyHandler;
+  options.parseMissingKeyHandler = options.parseMissingKey;
+  options.appendNamespaceToMissingKey = true;
+
+  options.nsSeparator = options.nsseparator || ':';
+  options.keySeparator = options.keyseparator || '.';
+
+  if (options.shortcutFunction === 'sprintf') {
+    options.overloadTranslationOptionHandler = function handle(args) {
+      var values = [];
+
+      for (var i = 1; i < args.length; i++) {
+        values.push(args[i]);
+      }
+
+      return {
+        postProcess: 'sprintf',
+        sprintf: values
+      };
+    };
+  }
+
+  options.whitelist = options.lngWhitelist;
+  options.preload = options.preload;
+  if (options.load === 'current') options.load = 'currentOnly';
+  if (options.load === 'unspecific') options.load = 'languageOnly';
+
+  // backend
+  options.backend = options.backend || {};
+  options.backend.loadPath = options.resGetPath || 'locales/__lng__/__ns__.json';
+  options.backend.addPath = options.resPostPath || 'locales/add/__lng__/__ns__';
+  options.backend.allowMultiLoading = options.dynamicLoad;
+
+  // cache
+  options.cache = options.cache || {};
+  options.cache.prefix = 'res_';
+  options.cache.expirationTime = 7 * 24 * 60 * 60 * 1000;
+  options.cache.enabled = options.useLocalStorage;
+
+  options = convertInterpolation(options);
+  if (options.defaultVariables) options.interpolation.defaultVariables = options.defaultVariables;
+
+  // COMPATIBILITY: deprecation
+  // if (options.getAsync === false) throw deprecation error
+
+  return options;
+}
+
+function convertJSONOptions(options) {
+  options = convertInterpolation(options);
+  options.joinArrays = '\n';
+
+  return options;
+}
+
+function convertTOptions(options) {
+  if (options.interpolationPrefix || options.interpolationSuffix || options.escapeInterpolation !== undefined) {
+    options = convertInterpolation(options);
+  }
+
+  options.nsSeparator = options.nsseparator;
+  options.keySeparator = options.keyseparator;
+
+  options.returnObjects = options.returnObjectTrees;
+
+  return options;
+}
+
+function appendBackwardsAPI(i18n) {
+  i18n.lng = function () {
+    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.lng() can be replaced by i18next.language for detected language or i18next.languages for languages ordered by translation lookup.');
+    return i18n.services.languageUtils.toResolveHierarchy(i18n.language)[0];
+  };
+
+  i18n.preload = function (lngs, cb) {
+    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.preload() can be replaced with i18next.loadLanguages()');
+    i18n.loadLanguages(lngs, cb);
+  };
+
+  i18n.setLng = function (lng, options, callback) {
+    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.setLng() can be replaced with i18next.changeLanguage() or i18next.getFixedT() to get a translation function with fixed language or namespace.');
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
+    if (!options) options = {};
+
+    if (options.fixLng === true) {
+      if (callback) return callback(null, i18n.getFixedT(lng));
+    }
+
+    return i18n.changeLanguage(lng, callback);
+  };
+
+  i18n.addPostProcessor = function (name, fc) {
+    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].deprecate('i18next.addPostProcessor() can be replaced by i18next.use({ type: \'postProcessor\', name: \'name\', process: fc })');
+    i18n.use({
+      type: 'postProcessor',
+      name: name,
+      process: fc
+    });
+  };
+}
+
+/***/ }),
+
+/***/ 15:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(jQuery) {
+
+// @TODO enable lints
+/* eslint-disable max-len*/
+/* eslint-disable object-shorthand*/
+/* eslint-disable dot-notation*/
+/* eslint-disable vars-on-top*/
+/* eslint-disable prefer-template*/
+/* eslint-disable prefer-const*/
+/* eslint-disable spaced-comment*/
+/* eslint-disable curly*/
+/* eslint-disable object-curly-spacing*/
+/* eslint-disable spaced-comment*/
+/* eslint-disable prefer-arrow-callback*/
+/* eslint-disable one-var*/
+/* eslint-disable space-in-parens*/
+/* eslint-disable camelcase*/
+/* eslint-disable no-undef*/
+/* eslint-disable quote-props*/
+/* eslint-disable no-shadow*/
+/* eslint-disable no-param-reassign*/
+/* eslint-disable no-unused-expressions*/
+/* eslint-disable no-shadow*/
+/* eslint-disable no-implied-eval*/
+/* eslint-disable brace-style*/
+/* eslint-disable no-unused-vars*/
+/* eslint-disable brace-style*/
+/* eslint-disable no-lonely-if*/
+/* eslint-disable no-inline-comments*/
+/* eslint-disable default-case*/
+/* eslint-disable one-var*/
+/* eslint-disable semi*/
+var pym = __webpack_require__(18);
+/*
+ * jQuery Tooltip plugin 1.3
+ *
+ * http://bassistance.de/jquery-plugins/jquery-plugin-tooltip/
+ * http://docs.jquery.com/Plugins/Tooltip
+ *
+ * Copyright (c) 2006 - 2008 J�rn Zaefferer
+ *
+ * $Id: jquery.tooltip.js 5741 2008-06-21 15:22:16Z joern.zaefferer $
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ */
+(function ($) {
+    $(document).bind('keydown', function (event) {
+        if ($.tooltip === undefined) return;
+
+        if (event.keyCode === 27 && $.tooltip.blocked === true) {
+            unfixTooltip();
+        }
+    });
+
+    var activeThumbnailFrame = void 0;
+    // the tooltip element
+    var helper = {},
+
+    // the title of the current element, used for restoring
+    title = void 0,
+
+    // timeout id for delayed tooltips
+    tID = void 0,
+
+    // flag for mouse tracking
+    track = false;
+
+    $.tooltip = {
+        blocked: false,
+        ajaxTimeout: false,
+        ajaxRequest: false,
+        ajaxEvent: false,
+        current: null,
+        visible: false,
+        defaults: {
+            delay: 700,
+            fixable: false,
+            fixableIndex: 100,
+            fade: false, // DO NOT SET TO TRUE ! (makes some random blinks/loops)
+            showURL: true,
+            outside: true,
+            isBrowsable: false,
+            extraClass: '',
+            top: 15,
+            left: 15,
+            id: 'tooltip'
+        },
+        block: function block() {
+            $.tooltip.blocked = !$.tooltip.blocked;
+        },
+
+        delayAjax: function delayAjax(a, b, c) {
+            var datas = {};
+            $.tooltip.ajaxRequest = $.ajax({
+                url: $.tooltip.current.tooltipSrc,
+                type: 'post',
+                data: datas,
+                success: function success(data) {
+                    title = data;
+                    positioning($.tooltip.ajaxEvent);
+                },
+                error: function error() {
+                    return;
+                }
+            });
+        }
+    };
+
+    $.fn.extend({
+        tooltip: function tooltip(settings) {
+            settings = $.extend({}, $.tooltip.defaults, settings);
+            createHelper(settings);
+            return this.each(function () {
+                $.data(this, 'tooltip', settings);
+                // copy tooltip into its own expando and remove the title
+                this.tooltipText = $(this).attr('title');
+                this.tooltipSrc = $(this).attr('tooltipsrc');
+
+                this.ajaxLoad = $.trim(this.tooltipText) === '' && this.tooltipSrc !== '';
+
+                this.ajaxTimeout;
+
+                this.orEl = $(this);
+                $(this).removeAttr('title');
+                // also remove alt attribute to prevent default tooltip in IE
+                this.alt = '';
+            }).mouseover(save).mouseout(hide).mouseleave(function () {
+                if (settings.isBrowsable) {
+                    $.tooltip.currentHover = false;
+                    // close caption container after a small delay
+                    // (safe travel delay of the mouse between thumbnail and caption / allow user to cross
+                    // boundaries without unexpected closing of the catpion)
+                    setTimeout(function () {
+                        hide();
+                    }, 500);
+                }
+            }).mousedown(fix);
+        },
+        hideWhenEmpty: function hideWhenEmpty() {
+            return this.each(function () {
+                $(this)[$(this).html() ? 'show' : 'hide']();
+            });
+        },
+        url: function url() {
+            return this.attr('href') || this.attr('src');
+        }
+    });
+
+    function createHelper(settings) {
+        // there can be only one tooltip helper
+        if (helper.parent) return;
+        // create the helper, h3 for title, div for url
+        helper.parent = $('<div id="' + settings.id + '"><div class="body"></div></div>')
+        // add to document
+        .appendTo(document.body)
+        // hide it at first
+        .hide();
+
+        // apply bgiframe if available
+        if ($.fn.bgiframe) helper.parent.bgiframe();
+
+        // save references to title and url elements
+        helper.title = $('h3', helper.parent);
+        helper.body = $('div.body', helper.parent);
+        helper.url = $('div.url', helper.parent);
+    }
+
+    function settings(element) {
+        return $.data(element, 'tooltip');
+    }
+
+    // main event handler to start showing tooltips
+    function handle(event) {
+        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) {
+            return;
+        }
+
+        // DONT UN-COMMENT ; fix blinking
+        // show helper, either with timeout or on instant
+        // if (settings(this).delay) {
+        //     tID = setTimeout(visible, settings(this).delay);
+        // }
+        // else {
+        visible();
+        // }
+        show();
+
+        // if selected, update the helper position when the mouse moves
+        track = !!settings(this).track;
+        $(document.body).bind('mousemove', update);
+
+        // update at least once
+        update(event);
+    }
+
+    // save elements title before the tooltip is displayed
+    function save(event) {
+        // if this is the current source, or it has no title (occurs with click event), stop
+        if (event.stopPropagation) event.stopPropagation();
+
+        event.cancelBubble = true;
+
+        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) {
+            return;
+        }
+
+        // save current
+        $.tooltip.current = this;
+        title = this.tooltipText;
+
+        // if element has href or src, add and show it, otherwise hide it
+        if (settings(this).showURL && $(this).url()) {
+            helper.url.html($(this).url().replace('http://', '')).show();
+        } else {
+            helper.url.hide();
+        }
+        // add an optional class for this tip
+        helper.parent.removeClass();
+        helper.parent.addClass(settings(this).extraClass);
+        if (this.ajaxLoad) {
+            // @TODO debounce instead of timeout
+            clearTimeout($.tooltip.ajaxTimeout);
+            $.tooltip.ajaxTimeout = setTimeout($.tooltip.delayAjax, 300);
+            $.tooltip.ajaxEvent = event;
+        } else {
+            title = '<div class="popover" style="display:block;position:relative;">' + '<div class="arrow"></div>' + '<div class="popover-inner" style="width:auto;">' + '<div class="popover-content">' + title + '</div>' + '</div>' + '</div>';
+
+            positioning.apply(this, arguments);
+        }
+        return;
+    }
+
+    function positioning(event) {
+        helper.body.html(title);
+        helper.body.show();
+        var $this = $.tooltip.current;
+        var tooltipSettings = settings($this) ? settings($this) : {};
+        var fixedPosition = $.tooltip.blocked;
+        if (tooltipSettings.outside) {
+            var width = 'auto';
+            var height = 'auto';
+            var tooltipId = tooltipSettings.id;
+            var $defaultTips = $('#' + tooltipId);
+            var customId = 'phraseanet-embed-tooltip-frame';
+            $defaultTips.find('#phraseanet-embed-frame').attr('id', customId);
+
+            var $audioTips = $('#' + tooltipId + ' .audioTips');
+            var $imgTips = $('#' + tooltipId + ' .imgTips');
+            var $videoTips = $('#' + tooltipId + ' .videoTips');
+            var $documentTips = $('#' + tooltipId + ' .documentTips');
+            var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
+
+            // get image or video original dimensions
+            var recordWidth = 400;
+            var recordHeight = 0;
+            var tooltipVerticalOffset = 75;
+            var tooltipHorizontalOffset = 35;
+            var maxWidthAllowed = 1024;
+            var maxHeightAllowed = 768;
+            var tooltipWidth = 0;
+            var tooltipHeight = 0;
+            var viewportDimensions = viewport();
+            var left = 0;
+            var top = 0;
+            var recordWidthOffset = 0;
+            var recordHeightOffset = 0;
+            var topOffset = 0;
+            var leftOffset = 0;
+            var rightOffset = 0;
+            var bottomOffset = 0;
+            var $selector = $defaultTips;
+
+            if ($imgTips[0] && shouldResize) {
+                recordWidth = parseInt($imgTips[0].style.width, 10);
+                recordHeight = parseInt($imgTips[0].style.height, 10);
+                $imgTips.css({ display: 'block', margin: '0 auto' });
+                $selector = $imgTips;
+            } else if ($documentTips[0] && shouldResize) {
+                var recordUrl = $documentTips.data('src');
+                recordWidth = $documentTips.data('original-width') > 400 ? $documentTips.data('original-width') : 400;
+                recordHeight = $documentTips.data('original-width') > 400 ? $documentTips.data('original-height') : 600;
+                $documentTips.css({ display: 'block', margin: '0 auto' });
+                $selector = $documentTips;
+                activeThumbnailFrame = new pym.Parent(customId, recordUrl);
+                activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
+            } else if ($audioTips[0] && shouldResize) {
+                var _recordUrl = $audioTips.data('src');
+                recordWidth = 240;
+                recordHeight = 240;
+                $audioTips.css({ display: 'block', margin: '0 auto' });
+                $selector = $audioTips;
+                activeThumbnailFrame = new pym.Parent(customId, _recordUrl);
+                activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
+            } else if ($videoTips[0] && shouldResize) {
+                var _recordUrl2 = $videoTips.data('src');
+                recordWidth = $videoTips.data('original-width');
+                recordHeight = $videoTips.data('original-height');
+                // limit video to maxWidth:
+                /*if( recordWidth > 720 ) {
+                 let limitRatio = recordWidth/recordHeight;
+                 recordWidth = 720;
+                 recordHeight = recordWidth / limitRatio;
+                 }*/
+                $videoTips.css({ display: 'block', margin: '0 auto' });
+                $selector = $videoTips;
+                activeThumbnailFrame = new pym.Parent(customId, _recordUrl2);
+                activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
+                //activeThumbnailFrame.iframe.setAttribute('height', '100%');
+            } else {
+                // handle captions
+                if ($selector.find('.popover').length > 0) {
+                    recordWidth = parseInt($selector.find('.popover')[0].style.width, 10) || recordWidth;
+                }
+                var contentHeight = $selector.height();
+                shouldResize = false;
+                tooltipVerticalOffset = 13;
+                recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
+                $selector.css({ height: 'auto' });
+            }
+
+            tooltipWidth = recordWidth + tooltipHorizontalOffset;
+            tooltipHeight = recordHeight + tooltipVerticalOffset;
+
+            var rescale = function rescale(containerWidth, containerHeight, resourceWidth, resourceHeight, maxWidthAllowed, maxHeightAllowed, $selector) {
+                var resourceRatio = resourceHeight / resourceWidth;
+                var resizeW = resourceWidth;
+                var resizeH = resourceHeight;
+
+                if (resourceWidth > resourceHeight) {
+                    // if width still too large:
+                    if (resizeW > containerWidth) {
+                        resizeW = containerWidth;
+                        resizeH = containerWidth * resourceRatio;
+                    }
+
+                    if (resizeH > containerHeight) {
+                        resizeW = containerHeight / resourceRatio;
+                        resizeH = containerHeight;
+                    }
+                } else {
+                    if (resizeH > containerHeight) {
+                        resizeW = containerHeight / resourceRatio;
+                        resizeH = containerHeight;
+                    }
+                }
+
+                if (maxWidthAllowed !== undefined && maxHeightAllowed !== undefined) {
+                    if (resizeW > maxWidthAllowed || resizeH > maxHeightAllowed) {
+                        return rescale(maxWidthAllowed, maxHeightAllowed, resourceWidth, resourceHeight);
+                    }
+                }
+
+                if ($selector !== undefined) {
+                    $selector.css({
+                        width: Math.floor(resizeW),
+                        height: Math.floor(resizeH)
+                    });
+                }
+
+                return {
+                    width: Math.floor(resizeW),
+                    height: Math.floor(resizeH)
+                };
+            };
+
+            if (event) {
+                var $origEventTarget = $(event.target);
+
+                // previewTips
+
+                // since event target can have different positionning, try to get common closest parent:
+                var $eventTarget = $origEventTarget.closest('.diapo');
+
+                if ($eventTarget.length > 0) {
+                    // tooltip from records answer
+                    recordWidthOffset = $eventTarget.width() - 2; // remove width with margin/2
+                    recordHeightOffset = $eventTarget.height() + 2; // remove height with margin/2
+                    // change offsets:
+                    topOffset = 14;
+                    leftOffset = 1;
+                    rightOffset = 2;
+                    bottomOffset = -15;
+                } else {
+                    // tooltip from workzone (basket)
+                    tooltipVerticalOffset = 0;
+                    tooltipHorizontalOffset = 0;
+                    topOffset = 50;
+                    // the origEventTarget is only the title, locate the container block
+                    $eventTarget = $origEventTarget.closest('.SSTT');
+                    if ($eventTarget.length === 0) {
+                        // fallback on original target if nothing found:
+                        $eventTarget = $origEventTarget;
+                    }
+                }
+
+                var recordPosition = $eventTarget.offset();
+
+                var totalViewportWidth = viewportDimensions.x;
+                var totalViewportHeight = viewportDimensions.y;
+
+                //for basket
+                if (recordPosition.left < 30) {
+                    leftOffset = $('.insidebloc').width();
+                }
+
+                var leftAvailableSpace = recordPosition.left + leftOffset;
+                var topAvailableSpace = recordPosition.top + topOffset;
+                var rightAvailableSpace = totalViewportWidth - leftAvailableSpace - recordWidthOffset - rightOffset;
+                var bottomAvailableSpace = totalViewportHeight - topAvailableSpace - recordHeightOffset;
+
+                var shouldBeOnTop = false;
+                var availableHeight = bottomAvailableSpace;
+                var tooltipSize = {
+                    width: tooltipWidth,
+                    height: tooltipHeight
+                };
+                var position = 'top';
+
+                if (topAvailableSpace > bottomAvailableSpace) {
+                    shouldBeOnTop = true;
+                    availableHeight = topAvailableSpace;
+                }
+
+                if (leftAvailableSpace > rightAvailableSpace) {
+                    position = 'left';
+                } else {
+                    position = 'right';
+                }
+
+                // prefer bottom position if tooltip is a small caption:
+                if (bottomAvailableSpace > leftAvailableSpace && bottomAvailableSpace > rightAvailableSpace) {
+                    position = 'bottom';
+                } else if (shouldBeOnTop && availableHeight > leftAvailableSpace && availableHeight > rightAvailableSpace) {
+                    position = 'top';
+                }
+
+                if (fixedPosition === true) {
+                    leftAvailableSpace = totalViewportWidth;
+                    topAvailableSpace = totalViewportHeight;
+                    position = 'top';
+                }
+
+                switch (position) {
+                    case 'top':
+                        tooltipSize = rescale(totalViewportWidth, topAvailableSpace, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace - tooltipSize.width / 2 + recordWidthOffset / 2;
+                        top = topAvailableSpace - tooltipSize.height;
+                        break;
+                    case 'bottom':
+                        tooltipSize = rescale(totalViewportWidth, bottomAvailableSpace, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace - tooltipSize.width / 2 + recordWidthOffset / 2;
+                        top = totalViewportHeight - bottomAvailableSpace + bottomOffset;
+                        break;
+                    case 'left':
+                        tooltipSize = rescale(leftAvailableSpace, totalViewportHeight, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace - tooltipSize.width;
+                        break;
+                    case 'right':
+                        tooltipSize = rescale(rightAvailableSpace, totalViewportHeight, tooltipWidth, tooltipHeight, maxWidthAllowed, maxHeightAllowed);
+                        tooltipWidth = tooltipSize.width;
+                        tooltipHeight = tooltipSize.height;
+                        left = leftAvailableSpace + recordWidthOffset + rightOffset;
+                        break;
+                }
+
+                // tooltipHeight = tooltipHeight + 18;
+                // tooltipWidth = tooltipWidth + 28;
+                if (fixedPosition === true) {
+                    left = totalViewportWidth / 2 - tooltipWidth / 2;
+                    top = totalViewportHeight / 2 - tooltipHeight / 2;
+                } else {
+                    // try to vertical center, relative to source:
+                    if (position === 'left' || position === 'right') {
+                        var verticalSpace = topAvailableSpace + recordHeightOffset / 2 + tooltipHeight / 2;
+                        if (verticalSpace < totalViewportHeight) {
+                            // tooltip can be aligned vertically
+                            top = topAvailableSpace + recordHeightOffset / 2 - tooltipHeight / 2;
+                        } else {
+                            top = totalViewportHeight - tooltipHeight;
+                        }
+                        top = top < 0 ? 0 : top;
+                    }
+
+                    // try to horizontal center, relative to source:
+                    if (position === 'top' || position === 'bottom') {
+                        // push to left
+                        // push to right
+                        var takeLeftSpace = tooltipWidth / 2 + leftAvailableSpace;
+                        var takeRightSpace = tooltipWidth / 2 + rightAvailableSpace;
+                        // if centering on top or bottom and tooltip is offcanvas
+                        if (takeLeftSpace > totalViewportWidth || takeRightSpace > totalViewportWidth) {
+                            if (leftAvailableSpace > totalViewportWidth / 2) {
+                                // push at left
+                                left = 0;
+                            } else {
+                                // push at right
+                                left = totalViewportWidth - tooltipWidth;
+                            }
+                        } else {
+                            // center
+                            left = leftAvailableSpace - tooltipWidth / 2 + recordWidthOffset / 2;
+                        }
+                    }
+                }
+
+                var resizeProperties = {
+                    left: left,
+                    top: top
+                };
+
+                if (shouldResize) {
+                    // rescale $selector css:
+                    rescale(tooltipWidth - tooltipHorizontalOffset, tooltipHeight - tooltipVerticalOffset, recordWidth, recordHeight, maxWidthAllowed, maxHeightAllowed, $selector);
+                    // reset non used css properties:
+                    resizeProperties['max-width'] = '';
+                    resizeProperties['min-width'] = '';
+                } else {
+                    // ensure tooltip width match with left position
+                    resizeProperties['max-width'] = Math.round(tooltipWidth);
+                    resizeProperties['min-width'] = Math.round(tooltipWidth);
+                }
+
+                resizeProperties['width'] = shouldResize ? Math.round(tooltipWidth) : 'auto';
+                resizeProperties['height'] = shouldResize ? Math.round(tooltipHeight) : 'auto';
+
+                helper.parent.css(resizeProperties);
+            }
+        }
+        handle.apply($this, arguments);
+        return;
+    }
+
+    // delete timeout and show helper
+    function show() {
+        tID = null;
+        var isBrowsable = false;
+        if ($.tooltip.current !== null) {
+            isBrowsable = settings($.tooltip.current).isBrowsable;
+        }
+
+        if (settings($.tooltip.current).fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);
+            } else {
+                helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
+            }
+        } else {
+            helper.parent.show();
+        }
+
+        $(helper.parent[0]).unbind('mouseenter').unbind('mouseleave').mouseenter(function () {
+            if (isBrowsable) {
+                $.tooltip.currentHover = true;
+            }
+        }).mouseleave(function () {
+            if (isBrowsable) {
+                // if tooltip has scrollable content or selectionnable text - should be closed on mouseleave:
+                $.tooltip.currentHover = false;
+                helper.parent.hide();
+            }
+        });
+
+        update();
+    }
+
+    function fix(event) {
+        if (!$.tooltip.current) {
+            return;
+        }
+        if (!$(this).hasClass('captionTips') || !event.altKey) {
+            if (!settings(this).fixable) {
+                hide(event);
+                return;
+            }
+        }
+        event.cancelBubble = true;
+        if (event.stopPropagation) event.stopPropagation();
+        showOverlay('_tooltip', 'body', unfixTooltip, settings(this).fixableIndex);
+        $('#tooltip .tooltip_closer').show().bind('click', unfixTooltip);
+        $.tooltip.blocked = true;
+        positioning.apply(this, arguments);
+    }
+
+    function visible() {
+        $.tooltip.visible = true;
+        helper.parent.css({
+            visibility: 'visible'
+        });
+    }
+
+    /**
+     * callback for mousemove
+     * updates the helper position
+     * removes itself when no current element
+     */
+    function update(event) {
+        if ($.tooltip.blocked) return;
+
+        if (event && event.target.tagName === 'OPTION') {
+            return;
+        }
+
+        // stop updating when tracking is disabled and the tooltip is visible
+        if (!track && helper.parent.is(':visible')) {
+            $(document.body).unbind('mousemove', update);
+            $.tooltip.currentHover = true;
+        }
+
+        // if no current element is available, remove this listener
+        if ($.tooltip.current === null) {
+            $(document.body).unbind('mousemove', update);
+            $.tooltip.currentHover = false;
+            return;
+        }
+
+        // remove position helper classes
+        helper.parent.removeClass('viewport-right').removeClass('viewport-bottom');
+
+        if (!settings($.tooltip.current).outside) {
+            var left = helper.parent[0].offsetLeft;
+            var top = helper.parent[0].offsetTop;
+            helper.parent.width('auto');
+            helper.parent.height('auto');
+            if (event) {
+                // position the helper 15 pixel to bottom right, starting from mouse position
+                left = event.pageX + settings($.tooltip.current).left;
+                top = event.pageY + settings($.tooltip.current).top;
+                var right = 'auto';
+                if (settings($.tooltip.current).positionLeft) {
+                    right = $(window).width() - left;
+                    left = 'auto';
+                }
+                helper.parent.css({
+                    left: left,
+                    right: right,
+                    top: top
+                });
+            }
+
+            var v = viewport(),
+                h = helper.parent[0];
+            // check horizontal position
+            if (v.x + v.cx < h.offsetLeft + h.offsetWidth) {
+                left -= h.offsetWidth + 20 + settings($.tooltip.current).left;
+                helper.parent.css({
+                    left: left + 'px'
+                }).addClass('viewport-right');
+            }
+            // check vertical position
+            if (v.y + v.cy < h.offsetTop + h.offsetHeight) {
+                top -= h.offsetHeight + 20 + settings($.tooltip.current).top;
+                helper.parent.css({
+                    top: top + 'px'
+                }).addClass('viewport-bottom');
+            }
+        }
+    }
+
+    function viewport() {
+        return {
+            x: $(window).width(),
+            y: $(window).height(),
+
+            cx: 0,
+            cy: 0
+        };
+    }
+
+    // hide helper and restore added classes and the title
+    function hide(event) {
+
+        var isBrowsable = false;
+        if ($.tooltip.current !== null) {
+            isBrowsable = settings($.tooltip.current).isBrowsable;
+        }
+        if ($.tooltip.currentHover && isBrowsable) {
+            return;
+        }
+
+        if ($.tooltip.blocked || !$.tooltip.current) return;
+
+        $(helper.parent[0]).unbind('mouseenter').unbind('mouseleave');
+
+        // clear timeout if possible
+        if (tID) clearTimeout(tID);
+        // no more current element
+        $.tooltip.visible = false;
+        var tsettings = settings($.tooltip.current);
+        clearTimeout($.tooltip.ajaxTimeout);
+        if ($.tooltip.ajaxRequest && $.tooltip.ajaxRequest.abort) {
+            $.tooltip.ajaxRequest.abort();
+        }
+
+        helper.body.empty();
+        $.tooltip.current = null;
+        function complete() {
+            helper.parent.removeClass(tsettings.extraClass).hide().css('opacity', '');
+        }
+
+        if (tsettings.fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().fadeTo(tsettings.fade, 0, complete);
+            } else {
+                helper.parent.stop().fadeOut(tsettings.fade, complete);
+            }
+        } else {
+            complete();
+        }
+    }
+
+    function unfixTooltip() {
+        $.tooltip.blocked = false;
+        $.tooltip.visible = false;
+        $.tooltip.current = null;
+        $('#tooltip').hide();
+        $('#tooltip .tooltip_closer').hide();
+        hideOverlay('_tooltip');
+    }
+
+    var showOverlay = function showOverlay(n, appendto, callback, zIndex) {
+        var div = 'OVERLAY';
+        if (typeof n !== 'undefined') div += n;
+        if ($('#' + div).length === 0) {
+            if (typeof appendto === 'undefined') appendto = 'body';
+            $(appendto).append('<div id="' + div + '" style="display:none;">&nbsp;</div>');
+        }
+
+        var css = {
+            display: 'block',
+            opacity: 0,
+            right: 0,
+            bottom: 0,
+            position: 'absolute',
+            top: 0,
+            zIndex: zIndex,
+            left: 0
+        };
+
+        if (parseInt(zIndex, 10) > 0) css['zIndex'] = parseInt(zIndex, 10);
+
+        if (typeof callback !== 'function') callback = function callback() {};
+        $('#' + div).css(css).addClass('overlay').fadeTo(500, 0.7).bind('click', function () {
+            callback();
+        });
+        if (navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/)) {
+            $('select').css({
+                visibility: 'hidden'
+            });
+        }
+    };
+
+    var hideOverlay = function hideOverlay(n) {
+        if (navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/)) {
+            $('select').css({
+                visibility: 'visible'
+            });
+        }
+        var div = 'OVERLAY';
+        if (typeof n !== 'undefined') div += n;
+        $('#' + div).hide().remove();
+    };
+
+    return {
+        unfixTooltip: unfixTooltip
+    };
+})(jQuery);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+
+/***/ 16:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _rx = __webpack_require__(7);
+
+var Rx = _interopRequireWildcard(_rx);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var hasOwnProp = {}.hasOwnProperty;
+
+function createName(name) {
+    return '$' + name;
+}
+
+var Emitter = function Emitter() {
+    this.subjects = {};
+};
+
+Emitter.prototype.emit = function (name, data) {
+    var fnName = createName(name);
+    this.subjects[fnName] || (this.subjects[fnName] = new Rx.Subject());
+    this.subjects[fnName].onNext(data);
+
+    return this.subjects[fnName];
+};
+
+Emitter.prototype.listen = function (name, handler) {
+    var fnName = createName(name);
+    this.subjects[fnName] || (this.subjects[fnName] = new Rx.Subject());
+    return this.subjects[fnName].subscribe(handler);
+};
+Emitter.prototype.listenAll = function (group, name, handler) {
+    for (var prop in group) {
+        var fnName = createName(prop);
+        this.subjects[fnName] || (this.subjects[fnName] = new Rx.Subject());
+        this.subjects[fnName].subscribe(group[prop]);
+    }
+};
+
+Emitter.prototype.disposeOf = function (startWith) {
+    var search = new RegExp('^\\$' + startWith);
+    var subjects = this.subjects;
+    for (var prop in subjects) {
+        if (hasOwnProp.call(subjects, prop)) {
+            if (search.test(prop)) {
+                subjects[prop].dispose();
+            }
+        }
+    }
+
+    this.subjects = {};
+};
+Emitter.prototype.dispose = function () {
+    var subjects = this.subjects;
+    for (var prop in subjects) {
+        if (hasOwnProp.call(subjects, prop)) {
+            subjects[prop].dispose();
+        }
+    }
+
+    this.subjects = {};
+};
+exports.default = Emitter;
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _applicationConfigService = __webpack_require__(19);
+
+var _applicationConfigService2 = _interopRequireDefault(_applicationConfigService);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var instance = null;
+
+var ConfigService = function (_ApplicationConfigSer) {
+    _inherits(ConfigService, _ApplicationConfigSer);
+
+    function ConfigService(configuration) {
+        var _ret;
+
+        _classCallCheck(this, ConfigService);
+
+        var _this = _possibleConstructorReturn(this, (ConfigService.__proto__ || Object.getPrototypeOf(ConfigService)).call(this, configuration));
+
+        if (!instance) {
+
+            instance = _this;
+        }
+
+        return _ret = instance, _possibleConstructorReturn(_this, _ret);
+    }
+
+    return ConfigService;
+}(_applicationConfigService2.default);
+
+exports.default = ConfigService;
+
+/***/ }),
+
+/***/ 18:
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! pym.js - v1.3.2 - 2018-02-13 */
+/*
+* Pym.js is library that resizes an iframe based on the width of the parent and the resulting height of the child.
+* Check out the docs at http://blog.apps.npr.org/pym.js/ or the readme at README.md for usage.
+*/
+
+/** @module pym */
+(function(factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    }
+    else if (typeof module !== 'undefined' && module.exports) {
+        module.exports = factory();
+    } else {
+        window.pym = factory.call(this);
+    }
+})(function() {
+    var MESSAGE_DELIMITER = 'xPYMx';
+
+    var lib = {};
+
+    /**
+    * Create and dispatch a custom pym event
+    *
+    * @method _raiseCustomEvent
+    * @inner
+    *
+    * @param {String} eventName
+    */
+   var _raiseCustomEvent = function(eventName) {
+     var event = document.createEvent('Event');
+     event.initEvent('pym:' + eventName, true, true);
+     document.dispatchEvent(event);
+   };
+
+    /**
+    * Generic function for parsing URL params.
+    * Via http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+    *
+    * @method _getParameterByName
+    * @inner
+    *
+    * @param {String} name The name of the paramter to get from the URL.
+    */
+    var _getParameterByName = function(name) {
+        var regex = new RegExp("[\\?&]" + name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]') + '=([^&#]*)');
+        var results = regex.exec(location.search);
+
+        if (results === null) {
+            return '';
+        }
+
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
+    };
+
+    /**
+     * Check the message to make sure it comes from an acceptable xdomain.
+     * Defaults to '*' but can be overriden in config.
+     *
+     * @method _isSafeMessage
+     * @inner
+     *
+     * @param {Event} e The message event.
+     * @param {Object} settings Configuration.
+     */
+    var _isSafeMessage = function(e, settings) {
+        if (settings.xdomain !== '*') {
+            // If origin doesn't match our xdomain, return.
+            if (!e.origin.match(new RegExp(settings.xdomain + '$'))) { return; }
+        }
+
+        // Ignore events that do not carry string data #151
+        if (typeof e.data !== 'string') { return; }
+
+        return true;
+    };
+
+    var _isSafeUrl = function(url) {
+        // Adapted from angular 2 url sanitizer
+        var SAFE_URL_PATTERN = /^(?:(?:https?|mailto|ftp):|[^&:/?#]*(?:[/?#]|$))/gi;
+        if (!url.match(SAFE_URL_PATTERN)) { return; }
+        
+        return true;
+    };
+
+    /**
+     * Construct a message to send between frames.
+     *
+     * NB: We use string-building here because JSON message passing is
+     * not supported in all browsers.
+     *
+     * @method _makeMessage
+     * @inner
+     *
+     * @param {String} id The unique id of the message recipient.
+     * @param {String} messageType The type of message to send.
+     * @param {String} message The message to send.
+     */
+    var _makeMessage = function(id, messageType, message) {
+        var bits = ['pym', id, messageType, message];
+
+        return bits.join(MESSAGE_DELIMITER);
+    };
+
+    /**
+     * Construct a regex to validate and parse messages.
+     *
+     * @method _makeMessageRegex
+     * @inner
+     *
+     * @param {String} id The unique id of the message recipient.
+     */
+    var _makeMessageRegex = function(id) {
+        var bits = ['pym', id, '(\\S+)', '(.*)'];
+
+        return new RegExp('^' + bits.join(MESSAGE_DELIMITER) + '$');
+    };
+
+    /**
+    * Underscore implementation of getNow
+    *
+    * @method _getNow
+    * @inner
+    *
+    */
+    var _getNow = Date.now || function() {
+        return new Date().getTime();
+    };
+
+    /**
+    * Underscore implementation of throttle
+    *
+    * @method _throttle
+    * @inner
+    *
+    * @param {function} func Throttled function
+    * @param {number} wait Throttle wait time
+    * @param {object} options Throttle settings
+    */
+
+    var _throttle = function(func, wait, options) {
+        var context, args, result;
+        var timeout = null;
+        var previous = 0;
+        if (!options) {options = {};}
+        var later = function() {
+            previous = options.leading === false ? 0 : _getNow();
+            timeout = null;
+            result = func.apply(context, args);
+            if (!timeout) {context = args = null;}
+        };
+        return function() {
+            var now = _getNow();
+            if (!previous && options.leading === false) {previous = now;}
+            var remaining = wait - (now - previous);
+            context = this;
+            args = arguments;
+            if (remaining <= 0 || remaining > wait) {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+                previous = now;
+                result = func.apply(context, args);
+                if (!timeout) {context = args = null;}
+            } else if (!timeout && options.trailing !== false) {
+                timeout = setTimeout(later, remaining);
+            }
+            return result;
+        };
+    };
+
+    /**
+     * Clean autoInit Instances: those that point to contentless iframes
+     * @method _cleanAutoInitInstances
+     * @inner
+     */
+    var _cleanAutoInitInstances = function() {
+        var length = lib.autoInitInstances.length;
+
+        // Loop backwards to avoid index issues
+        for (var idx = length - 1; idx >= 0; idx--) {
+            var instance = lib.autoInitInstances[idx];
+            // If instance has been removed or is contentless then remove it
+            if (instance.el.getElementsByTagName('iframe').length &&
+                instance.el.getElementsByTagName('iframe')[0].contentWindow) {
+                continue;
+            }
+            else {
+                // Remove the reference to the removed or orphan instance
+                lib.autoInitInstances.splice(idx,1);
+            }
+        }
+    };
+
+    /**
+     * Store auto initialized Pym instances for further reference
+     * @name module:pym#autoInitInstances
+     * @type Array
+     * @default []
+     */
+    lib.autoInitInstances = [];
+
+    /**
+     * Initialize Pym for elements on page that have data-pym attributes.
+     * Expose autoinit in case we need to call it from the outside
+     * @instance
+     * @method autoInit
+     * @param {Boolean} doNotRaiseEvents flag to avoid sending custom events
+     */
+    lib.autoInit = function(doNotRaiseEvents) {
+        var elements = document.querySelectorAll('[data-pym-src]:not([data-pym-auto-initialized])');
+        var length = elements.length;
+
+        // Clean stored instances in case needed
+        _cleanAutoInitInstances();
+        for (var idx = 0; idx < length; ++idx) {
+            var element = elements[idx];
+            /*
+            * Mark automatically-initialized elements so they are not
+            * re-initialized if the user includes pym.js more than once in the
+            * same document.
+            */
+            element.setAttribute('data-pym-auto-initialized', '');
+
+            // Ensure elements have an id
+            if (element.id === '') {
+                element.id = 'pym-' + idx + "-" + Math.random().toString(36).substr(2,5);
+            }
+
+            var src = element.getAttribute('data-pym-src');
+
+            // List of data attributes to configure the component
+            // structure: {'attribute name': 'type'}
+            var settings = {'xdomain': 'string', 'title': 'string', 'name': 'string', 'id': 'string',
+                            'sandbox': 'string', 'allowfullscreen': 'boolean',
+                            'parenturlparam': 'string', 'parenturlvalue': 'string',
+                            'optionalparams': 'boolean', 'trackscroll': 'boolean',
+                            'scrollwait': 'number'};
+
+            var config = {};
+
+            for (var attribute in settings) {
+                // via https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute#Notes
+               if (element.getAttribute('data-pym-'+attribute) !== null) {
+                  switch (settings[attribute]) {
+                    case 'boolean':
+                       config[attribute] = !(element.getAttribute('data-pym-'+attribute) === 'false'); // jshint ignore:line
+                       break;
+                    case 'string':
+                       config[attribute] = element.getAttribute('data-pym-'+attribute);
+                       break;
+                    case 'number':
+                        var n = Number(element.getAttribute('data-pym-'+attribute));
+                        if (!isNaN(n)) {
+                            config[attribute] = n;
+                        }
+                        break;
+                    default:
+                       console.err('unrecognized attribute type');
+                  }
+               }
+            }
+
+            // Store references to autoinitialized pym instances
+            var parent = new lib.Parent(element.id, src, config);
+            lib.autoInitInstances.push(parent);
+        }
+
+        // Fire customEvent
+        if (!doNotRaiseEvents) {
+            _raiseCustomEvent("pym-initialized");
+        }
+        // Return stored autoinitalized pym instances
+        return lib.autoInitInstances;
+    };
+
+    /**
+     * The Parent half of a response iframe.
+     *
+     * @memberof module:pym
+     * @class Parent
+     * @param {String} id The id of the div into which the iframe will be rendered. sets {@link module:pym.Parent~id}
+     * @param {String} url The url of the iframe source. sets {@link module:pym.Parent~url}
+     * @param {Object} [config] Configuration for the parent instance. sets {@link module:pym.Parent~settings}
+     * @param {string} [config.xdomain='*'] - xdomain to validate messages received
+     * @param {string} [config.title] - if passed it will be assigned to the iframe title attribute
+     * @param {string} [config.name] - if passed it will be assigned to the iframe name attribute
+     * @param {string} [config.id] - if passed it will be assigned to the iframe id attribute
+     * @param {boolean} [config.allowfullscreen] - if passed and different than false it will be assigned to the iframe allowfullscreen attribute
+     * @param {string} [config.sandbox] - if passed it will be assigned to the iframe sandbox attribute (we do not validate the syntax so be careful!!)
+     * @param {string} [config.parenturlparam] - if passed it will be override the default parentUrl query string parameter name passed to the iframe src
+     * @param {string} [config.parenturlvalue] - if passed it will be override the default parentUrl query string parameter value passed to the iframe src
+     * @param {string} [config.optionalparams] - if passed and different than false it will strip the querystring params parentUrl and parentTitle passed to the iframe src
+     * @param {boolean} [config.trackscroll] - if passed it will activate scroll tracking on the parent
+     * @param {number} [config.scrollwait] - if passed it will set the throttle wait in order to fire scroll messaging. Defaults to 100 ms.
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe iFrame}
+     */
+    lib.Parent = function(id, url, config) {
+        /**
+         * The id of the container element
+         *
+         * @memberof module:pym.Parent
+         * @member {string} id
+         * @inner
+         */
+        this.id = id;
+        /**
+         * The url that will be set as the iframe's src
+         *
+         * @memberof module:pym.Parent
+         * @member {String} url
+         * @inner
+         */
+        this.url = url;
+
+        /**
+         * The container DOM object
+         *
+         * @memberof module:pym.Parent
+         * @member {HTMLElement} el
+         * @inner
+         */
+        this.el = document.getElementById(id);
+        /**
+         * The contained child iframe
+         *
+         * @memberof module:pym.Parent
+         * @member {HTMLElement} iframe
+         * @inner
+         * @default null
+         */
+        this.iframe = null;
+        /**
+         * The parent instance settings, updated by the values passed in the config object
+         *
+         * @memberof module:pym.Parent
+         * @member {Object} settings
+         * @inner
+         */
+        this.settings = {
+            xdomain: '*',
+            optionalparams: true,
+            parenturlparam: 'parentUrl',
+            parenturlvalue: window.location.href,
+            trackscroll: false,
+            scrollwait: 100,
+        };
+        /**
+         * RegularExpression to validate the received messages
+         *
+         * @memberof module:pym.Parent
+         * @member {String} messageRegex
+         * @inner
+         */
+        this.messageRegex = _makeMessageRegex(this.id);
+        /**
+         * Stores the registered messageHandlers for each messageType
+         *
+         * @memberof module:pym.Parent
+         * @member {Object} messageHandlers
+         * @inner
+         */
+        this.messageHandlers = {};
+
+        // ensure a config object
+        config = (config || {});
+
+        /**
+         * Construct the iframe.
+         *
+         * @memberof module:pym.Parent
+         * @method _constructIframe
+         * @inner
+         */
+        this._constructIframe = function() {
+            // Calculate the width of this element.
+            var width = this.el.offsetWidth.toString();
+
+            // Create an iframe element attached to the document.
+            this.iframe = document.createElement('iframe');
+
+            // Save fragment id
+            var hash = '';
+            var hashIndex = this.url.indexOf('#');
+
+            if (hashIndex > -1) {
+                hash = this.url.substring(hashIndex, this.url.length);
+                this.url = this.url.substring(0, hashIndex);
+            }
+
+            // If the URL contains querystring bits, use them.
+            // Otherwise, just create a set of valid params.
+            if (this.url.indexOf('?') < 0) {
+                this.url += '?';
+            } else {
+                this.url += '&';
+            }
+
+            // Append the initial width as a querystring parameter
+            // and optional params if configured to do so
+            this.iframe.src = this.url + 'initialWidth=' + width +
+                                         '&childId=' + this.id;
+
+            if (this.settings.optionalparams) {
+                this.iframe.src += '&parentTitle=' + encodeURIComponent(document.title);
+                this.iframe.src += '&'+ this.settings.parenturlparam + '=' + encodeURIComponent(this.settings.parenturlvalue);
+            }
+            this.iframe.src +=hash;
+
+            // Set some attributes to this proto-iframe.
+            this.iframe.setAttribute('width', '100%');
+            this.iframe.setAttribute('scrolling', 'no');
+            this.iframe.setAttribute('marginheight', '0');
+            this.iframe.setAttribute('frameborder', '0');
+
+            if (this.settings.title) {
+                this.iframe.setAttribute('title', this.settings.title);
+            }
+
+            if (this.settings.allowfullscreen !== undefined && this.settings.allowfullscreen !== false) {
+                this.iframe.setAttribute('allowfullscreen','');
+            }
+
+            if (this.settings.sandbox !== undefined && typeof this.settings.sandbox === 'string') {
+                this.iframe.setAttribute('sandbox', this.settings.sandbox);
+            }
+
+            if (this.settings.id) {
+                if (!document.getElementById(this.settings.id)) {
+                    this.iframe.setAttribute('id', this.settings.id);
+                }
+            }
+
+            if (this.settings.name) {
+                this.iframe.setAttribute('name', this.settings.name);
+            }
+
+            // Replace the child content if needed
+            // (some CMSs might strip out empty elements)
+            while(this.el.firstChild) { this.el.removeChild(this.el.firstChild); }
+            // Append the iframe to our element.
+            this.el.appendChild(this.iframe);
+
+            // Add an event listener that will handle redrawing the child on resize.
+            window.addEventListener('resize', this._onResize);
+
+            // Add an event listener that will send the child the viewport.
+            if (this.settings.trackscroll) {
+                window.addEventListener('scroll', this._throttleOnScroll);
+            }
+        };
+
+        /**
+         * Send width on resize.
+         *
+         * @memberof module:pym.Parent
+         * @method _onResize
+         * @inner
+         */
+        this._onResize = function() {
+            this.sendWidth();
+            if (this.settings.trackscroll) {
+                this.sendViewportAndIFramePosition();
+            }
+        }.bind(this);
+
+        /**
+         * Send viewport and iframe info on scroll.
+         *
+         * @memberof module:pym.Parent
+         * @method _onScroll
+         * @inner
+         */
+        this._onScroll = function() {
+            this.sendViewportAndIFramePosition();
+        }.bind(this);
+
+        /**
+         * Fire all event handlers for a given message type.
+         *
+         * @memberof module:pym.Parent
+         * @method _fire
+         * @inner
+         *
+         * @param {String} messageType The type of message.
+         * @param {String} message The message data.
+         */
+        this._fire = function(messageType, message) {
+            if (messageType in this.messageHandlers) {
+                for (var i = 0; i < this.messageHandlers[messageType].length; i++) {
+                   this.messageHandlers[messageType][i].call(this, message);
+                }
+            }
+        };
+
+        /**
+         * Remove this parent from the page and unbind it's event handlers.
+         *
+         * @memberof module:pym.Parent
+         * @method remove
+         * @instance
+         */
+        this.remove = function() {
+            window.removeEventListener('message', this._processMessage);
+            window.removeEventListener('resize', this._onResize);
+
+            this.el.removeChild(this.iframe);
+            // _cleanAutoInitInstances in case this parent was autoInitialized
+            _cleanAutoInitInstances();
+        };
+
+        /**
+         * Process a new message from the child.
+         *
+         * @memberof module:pym.Parent
+         * @method _processMessage
+         * @inner
+         *
+         * @param {Event} e A message event.
+         */
+        this._processMessage = function(e) {
+            // First, punt if this isn't from an acceptable xdomain.
+            if (!_isSafeMessage(e, this.settings)) {
+                return;
+            }
+
+            // Discard object messages, we only care about strings
+            if (typeof e.data !== 'string') {
+                return;
+            }
+
+            // Grab the message from the child and parse it.
+            var match = e.data.match(this.messageRegex);
+
+            // If there's no match or too many matches in the message, punt.
+            if (!match || match.length !== 3) {
+                return false;
+            }
+
+            var messageType = match[1];
+            var message = match[2];
+
+            this._fire(messageType, message);
+        }.bind(this);
+
+        /**
+         * Resize iframe in response to new height message from child.
+         *
+         * @memberof module:pym.Parent
+         * @method _onHeightMessage
+         * @inner
+         *
+         * @param {String} message The new height.
+         */
+        this._onHeightMessage = function(message) {
+            /*
+             * Handle parent height message from child.
+             */
+            var height = parseInt(message);
+
+            this.iframe.setAttribute('height', height + 'px');
+        };
+
+        /**
+         * Navigate parent to a new url.
+         *
+         * @memberof module:pym.Parent
+         * @method _onNavigateToMessage
+         * @inner
+         *
+         * @param {String} message The url to navigate to.
+         */
+        this._onNavigateToMessage = function(message) {
+            /*
+             * Handle parent scroll message from child.
+             */
+             if (!_isSafeUrl(message)) {return;}
+            document.location.href = message;
+        };
+
+        /**
+         * Scroll parent to a given child position.
+         *
+         * @memberof module:pym.Parent
+         * @method _onScrollToChildPosMessage
+         * @inner
+         *
+         * @param {String} message The offset inside the child page.
+         */
+        this._onScrollToChildPosMessage = function(message) {
+            // Get the child container position using getBoundingClientRect + pageYOffset
+            // via https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+            var iframePos = document.getElementById(this.id).getBoundingClientRect().top + window.pageYOffset;
+
+            var totalOffset = iframePos + parseInt(message);
+            window.scrollTo(0, totalOffset);
+        };
+
+        /**
+         * Bind a callback to a given messageType from the child.
+         *
+         * Reserved message names are: "height", "scrollTo" and "navigateTo".
+         *
+         * @memberof module:pym.Parent
+         * @method onMessage
+         * @instance
+         *
+         * @param {String} messageType The type of message being listened for.
+         * @param {module:pym.Parent~onMessageCallback} callback The callback to invoke when a message of the given type is received.
+         */
+        this.onMessage = function(messageType, callback) {
+            if (!(messageType in this.messageHandlers)) {
+                this.messageHandlers[messageType] = [];
+            }
+
+            this.messageHandlers[messageType].push(callback);
+        };
+
+        /**
+         * @callback module:pym.Parent~onMessageCallback
+         * @param {String} message The message data.
+         */
+
+        /**
+         * Send a message to the the child.
+         *
+         * @memberof module:pym.Parent
+         * @method sendMessage
+         * @instance
+         *
+         * @param {String} messageType The type of message to send.
+         * @param {String} message The message data to send.
+         */
+        this.sendMessage = function(messageType, message) {
+            // When used alongside with pjax some references are lost
+            if (this.el.getElementsByTagName('iframe').length) {
+                if (this.el.getElementsByTagName('iframe')[0].contentWindow) {
+                    this.el.getElementsByTagName('iframe')[0].contentWindow
+                        .postMessage(_makeMessage(this.id, messageType, message), '*');
+                }
+                else {
+                    // Contentless child detected remove listeners and iframe
+                    this.remove();
+                }
+            }
+        };
+
+        /**
+         * Transmit the current iframe width to the child.
+         *
+         * You shouldn't need to call this directly.
+         *
+         * @memberof module:pym.Parent
+         * @method sendWidth
+         * @instance
+         */
+        this.sendWidth = function() {
+            var width = this.el.offsetWidth.toString();
+            this.sendMessage('width', width);
+        };
+
+        /**
+         * Transmit the current viewport and iframe position to the child.
+         * Sends viewport width, viewport height
+         * and iframe bounding rect top-left-bottom-right
+         * all separated by spaces
+         *
+         * You shouldn't need to call this directly.
+         *
+         * @memberof module:pym.Parent
+         * @method sendViewportAndIFramePosition
+         * @instance
+         */
+        this.sendViewportAndIFramePosition = function() {
+            var iframeRect = this.iframe.getBoundingClientRect();
+            var vWidth   = window.innerWidth || document.documentElement.clientWidth;
+            var vHeight  = window.innerHeight || document.documentElement.clientHeight;
+            var payload = vWidth + ' ' + vHeight;
+            payload += ' ' + iframeRect.top + ' ' + iframeRect.left;
+            payload += ' ' + iframeRect.bottom + ' ' + iframeRect.right;
+            this.sendMessage('viewport-iframe-position', payload);
+        };
+
+        // Add any overrides to settings coming from config.
+        for (var key in config) {
+            this.settings[key] = config[key];
+        }
+
+        /**
+         * Throttled scroll function.
+         *
+         * @memberof module:pym.Parent
+         * @method _throttleOnScroll
+         * @inner
+         */
+        this._throttleOnScroll = _throttle(this._onScroll.bind(this), this.settings.scrollwait);
+
+        // Bind required message handlers
+        this.onMessage('height', this._onHeightMessage);
+        this.onMessage('navigateTo', this._onNavigateToMessage);
+        this.onMessage('scrollToChildPos', this._onScrollToChildPosMessage);
+        this.onMessage('parentPositionInfo', this.sendViewportAndIFramePosition);
+
+        // Add a listener for processing messages from the child.
+        window.addEventListener('message', this._processMessage, false);
+
+        // Construct the iframe in the container element.
+        this._constructIframe();
+
+        return this;
+    };
+
+    /**
+     * The Child half of a responsive iframe.
+     *
+     * @memberof module:pym
+     * @class Child
+     * @param {Object} [config] Configuration for the child instance. sets {@link module:pym.Child~settings}
+     * @param {function} [config.renderCallback=null] Callback invoked after receiving a resize event from the parent, sets {@link module:pym.Child#settings.renderCallback}
+     * @param {string} [config.xdomain='*'] - xdomain to validate messages received
+     * @param {number} [config.polling=0] - polling frequency in milliseconds to send height to parent
+     * @param {number} [config.id] - parent container id used when navigating the child iframe to a new page but we want to keep it responsive.
+     * @param {string} [config.parenturlparam] - if passed it will be override the default parentUrl query string parameter name expected on the iframe src
+     */
+    lib.Child = function(config) {
+        /**
+         * The initial width of the parent page
+         *
+         * @memberof module:pym.Child
+         * @member {string} parentWidth
+         * @inner
+         */
+        this.parentWidth = null;
+        /**
+         * The id of the parent container
+         *
+         * @memberof module:pym.Child
+         * @member {String} id
+         * @inner
+         */
+        this.id = null;
+        /**
+         * The title of the parent page from document.title.
+         *
+         * @memberof module:pym.Child
+         * @member {String} parentTitle
+         * @inner
+         */
+        this.parentTitle = null;
+        /**
+         * The URL of the parent page from window.location.href.
+         *
+         * @memberof module:pym.Child
+         * @member {String} parentUrl
+         * @inner
+         */
+        this.parentUrl = null;
+        /**
+         * The settings for the child instance. Can be overriden by passing a config object to the child constructor
+         * i.e.: var pymChild = new pym.Child({renderCallback: render, xdomain: "\\*\.npr\.org"})
+         *
+         * @memberof module:pym.Child.settings
+         * @member {Object} settings - default settings for the child instance
+         * @inner
+         */
+        this.settings = {
+            renderCallback: null,
+            xdomain: '*',
+            polling: 0,
+            parenturlparam: 'parentUrl'
+        };
+
+        /**
+         * The timerId in order to be able to stop when polling is enabled
+         *
+         * @memberof module:pym.Child
+         * @member {String} timerId
+         * @inner
+         */
+        this.timerId = null;
+        /**
+         * RegularExpression to validate the received messages
+         *
+         * @memberof module:pym.Child
+         * @member {String} messageRegex
+         * @inner
+         */
+        this.messageRegex = null;
+        /**
+         * Stores the registered messageHandlers for each messageType
+         *
+         * @memberof module:pym.Child
+         * @member {Object} messageHandlers
+         * @inner
+         */
+        this.messageHandlers = {};
+
+        // Ensure a config object
+        config = (config || {});
+
+        /**
+         * Bind a callback to a given messageType from the child.
+         *
+         * Reserved message names are: "width".
+         *
+         * @memberof module:pym.Child
+         * @method onMessage
+         * @instance
+         *
+         * @param {String} messageType The type of message being listened for.
+         * @param {module:pym.Child~onMessageCallback} callback The callback to invoke when a message of the given type is received.
+         */
+        this.onMessage = function(messageType, callback) {
+
+            if (!(messageType in this.messageHandlers)) {
+                this.messageHandlers[messageType] = [];
+            }
+
+            this.messageHandlers[messageType].push(callback);
+        };
+
+        /**
+         * @callback module:pym.Child~onMessageCallback
+         * @param {String} message The message data.
+         */
+
+
+        /**
+         * Fire all event handlers for a given message type.
+         *
+         * @memberof module:pym.Child
+         * @method _fire
+         * @inner
+         *
+         * @param {String} messageType The type of message.
+         * @param {String} message The message data.
+         */
+        this._fire = function(messageType, message) {
+            /*
+             * Fire all event handlers for a given message type.
+             */
+            if (messageType in this.messageHandlers) {
+                for (var i = 0; i < this.messageHandlers[messageType].length; i++) {
+                   this.messageHandlers[messageType][i].call(this, message);
+                }
+            }
+        };
+
+        /**
+         * Process a new message from the parent.
+         *
+         * @memberof module:pym.Child
+         * @method _processMessage
+         * @inner
+         *
+         * @param {Event} e A message event.
+         */
+        this._processMessage = function(e) {
+            /*
+            * Process a new message from parent frame.
+            */
+            // First, punt if this isn't from an acceptable xdomain.
+            if (!_isSafeMessage(e, this.settings)) {
+                return;
+            }
+
+            // Discard object messages, we only care about strings
+            if (typeof e.data !== 'string') {
+                return;
+            }
+
+            // Get the message from the parent.
+            var match = e.data.match(this.messageRegex);
+
+            // If there's no match or it's a bad format, punt.
+            if (!match || match.length !== 3) { return; }
+
+            var messageType = match[1];
+            var message = match[2];
+
+            this._fire(messageType, message);
+        }.bind(this);
+
+        /**
+         * Resize iframe in response to new width message from parent.
+         *
+         * @memberof module:pym.Child
+         * @method _onWidthMessage
+         * @inner
+         *
+         * @param {String} message The new width.
+         */
+        this._onWidthMessage = function(message) {
+            /*
+             * Handle width message from the child.
+             */
+            var width = parseInt(message);
+
+            // Change the width if it's different.
+            if (width !== this.parentWidth) {
+                this.parentWidth = width;
+
+                // Call the callback function if it exists.
+                if (this.settings.renderCallback) {
+                    this.settings.renderCallback(width);
+                }
+
+                // Send the height back to the parent.
+                this.sendHeight();
+            }
+        };
+
+        /**
+         * Send a message to the the Parent.
+         *
+         * @memberof module:pym.Child
+         * @method sendMessage
+         * @instance
+         *
+         * @param {String} messageType The type of message to send.
+         * @param {String} message The message data to send.
+         */
+        this.sendMessage = function(messageType, message) {
+            /*
+             * Send a message to the parent.
+             */
+            window.parent.postMessage(_makeMessage(this.id, messageType, message), '*');
+        };
+
+        /**
+         * Transmit the current iframe height to the parent.
+         *
+         * Call this directly in cases where you manually alter the height of the iframe contents.
+         *
+         * @memberof module:pym.Child
+         * @method sendHeight
+         * @instance
+         */
+        this.sendHeight = function() {
+            // Get the child's height.
+            var height = document.getElementsByTagName('body')[0].offsetHeight.toString();
+
+            // Send the height to the parent.
+            this.sendMessage('height', height);
+
+            return height;
+        }.bind(this);
+
+        /**
+         * Ask parent to send the current viewport and iframe position information
+         *
+         * @memberof module:pym.Child
+         * @method sendHeight
+         * @instance
+         */
+        this.getParentPositionInfo = function() {
+            // Send the height to the parent.
+            this.sendMessage('parentPositionInfo');
+        };
+
+        /**
+         * Scroll parent to a given element id.
+         *
+         * @memberof module:pym.Child
+         * @method scrollParentTo
+         * @instance
+         *
+         * @param {String} hash The id of the element to scroll to.
+         */
+        this.scrollParentTo = function(hash) {
+            this.sendMessage('navigateTo', '#' + hash);
+        };
+
+        /**
+         * Navigate parent to a given url.
+         *
+         * @memberof module:pym.Child
+         * @method navigateParentTo
+         * @instance
+         *
+         * @param {String} url The url to navigate to.
+         */
+        this.navigateParentTo = function(url) {
+            this.sendMessage('navigateTo', url);
+        };
+
+        /**
+         * Scroll parent to a given child element id.
+         *
+         * @memberof module:pym.Child
+         * @method scrollParentToChildEl
+         * @instance
+         *
+         * @param {String} id The id of the child element to scroll to.
+         */
+        this.scrollParentToChildEl = function(id) {
+            // Get the child element position using getBoundingClientRect + pageYOffset
+            // via https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+            var topPos = document.getElementById(id).getBoundingClientRect().top + window.pageYOffset;
+            this.scrollParentToChildPos(topPos);
+        };
+
+        /**
+         * Scroll parent to a particular child offset.
+         *
+         * @memberof module:pym.Child
+         * @method scrollParentToChildPos
+         * @instance
+         *
+         * @param {Number} pos The offset of the child element to scroll to.
+         */
+        this.scrollParentToChildPos = function(pos) {
+            this.sendMessage('scrollToChildPos', pos.toString());
+        };
+
+        /**
+         * Mark Whether the child is embedded or not
+         * executes a callback in case it was passed to the config
+         *
+         * @memberof module:pym.Child
+         * @method _markWhetherEmbedded
+         * @inner
+         *
+         * @param {module:pym.Child~onMarkedEmbeddedStatus} The callback to execute after determining whether embedded or not.
+         */
+        var _markWhetherEmbedded = function(onMarkedEmbeddedStatus) {
+          var htmlElement = document.getElementsByTagName('html')[0],
+              newClassForHtml,
+              originalHtmlClasses = htmlElement.className;
+          try {
+            if(window.self !== window.top) {
+              newClassForHtml = "embedded";
+            }else{
+              newClassForHtml = "not-embedded";
+            }
+          }catch(e) {
+            newClassForHtml = "embedded";
+          }
+          if(originalHtmlClasses.indexOf(newClassForHtml) < 0) {
+            htmlElement.className = originalHtmlClasses ? originalHtmlClasses + ' ' + newClassForHtml : newClassForHtml;
+            if(onMarkedEmbeddedStatus){
+              onMarkedEmbeddedStatus(newClassForHtml);
+            }
+            _raiseCustomEvent("marked-embedded");
+          }
+        };
+
+        /**
+         * @callback module:pym.Child~onMarkedEmbeddedStatus
+         * @param {String} classname "embedded" or "not-embedded".
+         */
+
+        /**
+         * Unbind child event handlers and timers.
+         *
+         * @memberof module:pym.Child
+         * @method remove
+         * @instance
+         */
+        this.remove = function() {
+            window.removeEventListener('message', this._processMessage);
+            if (this.timerId) {
+                clearInterval(this.timerId);
+            }
+        };
+
+        // Initialize settings with overrides.
+        for (var key in config) {
+            this.settings[key] = config[key];
+        }
+
+        // Identify what ID the parent knows this child as.
+        this.id = _getParameterByName('childId') || config.id;
+        this.messageRegex = new RegExp('^pym' + MESSAGE_DELIMITER + this.id + MESSAGE_DELIMITER + '(\\S+)' + MESSAGE_DELIMITER + '(.*)$');
+
+        // Get the initial width from a URL parameter.
+        var width = parseInt(_getParameterByName('initialWidth'));
+
+        // Get the url of the parent frame
+        this.parentUrl = _getParameterByName(this.settings.parenturlparam);
+
+        // Get the title of the parent frame
+        this.parentTitle = _getParameterByName('parentTitle');
+
+        // Bind the required message handlers
+        this.onMessage('width', this._onWidthMessage);
+
+        // Set up a listener to handle any incoming messages.
+        window.addEventListener('message', this._processMessage, false);
+
+        // If there's a callback function, call it.
+        if (this.settings.renderCallback) {
+            this.settings.renderCallback(width);
+        }
+
+        // Send the initial height to the parent.
+        this.sendHeight();
+
+        // If we're configured to poll, create a setInterval to handle that.
+        if (this.settings.polling) {
+            this.timerId = window.setInterval(this.sendHeight, this.settings.polling);
+        }
+
+        _markWhetherEmbedded(config.onMarkedEmbeddedStatus);
+
+        return this;
+    };
+
+    // Initialize elements with pym data attributes
+    // if we are not in server configuration
+    if(typeof document !== "undefined") {
+        lib.autoInit(true);
+    }
+
+    return lib;
+});
+
+
+
+/***/ }),
+
+/***/ 19:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _underscore = __webpack_require__(1);
+
+var _ = _interopRequireWildcard(_underscore);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var instance = null;
+
+var ApplicationConfigService = function () {
+    function ApplicationConfigService(config) {
+        _classCallCheck(this, ApplicationConfigService);
+
+        // if( !instance ) {
+        //     instance = this;
+        // }
+        this.configuration = config;
+        // return instance;
+    }
+
+    _createClass(ApplicationConfigService, [{
+        key: 'get',
+        value: function get(configKey) {
+            if (configKey !== undefined) {
+                var foundValue = this._findKeyValue(configKey || this.configuration);
+                switch (typeof foundValue === 'undefined' ? 'undefined' : _typeof(foundValue)) {
+                    case 'string':
+                        return foundValue;
+                    default:
+                        return foundValue ? foundValue : null;
+
+                }
+            }
+
+            return this.configuration;
+        }
+    }, {
+        key: 'set',
+        value: function set(configKey, value) {
+            if (configKey !== undefined) {
+                if (_typeof(this.configuration[configKey]) === 'object') {
+                    // merge
+                    this.configuration[configKey] = _.extend({}, this.configuration[configKey], value);
+                } else {
+                    this.configuration[configKey] = value;
+                }
+            }
+        }
+
+        // @TODO cast
+
+    }, {
+        key: '_findKeyValue',
+        value: function _findKeyValue(configName) {
+            if (!configName) {
+                return undefined;
+            }
+
+            var isStr = _.isString(configName);
+            var name = isStr ? configName : configName.name;
+            var path = configName.indexOf('.') > 0 ? true : false;
+
+            if (path) {
+                return this._search(this.configuration, name);
+            }
+            var state = this.configuration[name];
+            if (state && (isStr || !isStr && state === configName)) {
+                return state;
+            } else if (isStr) {
+                return state;
+            }
+            return undefined;
+        }
+
+        // @TODO cast
+
+    }, {
+        key: '_search',
+        value: function _search(obj, path) {
+            if (_.isNumber(path)) {
+                path = [path];
+            }
+            if (_.isEmpty(path)) {
+                return obj;
+            }
+            if (_.isEmpty(obj)) {
+                return null;
+            }
+            if (_.isString(path)) {
+                return this._search(obj, path.split('.'));
+            }
+
+            var currentPath = path[0];
+
+            if (path.length === 1) {
+                if (obj[currentPath] === void 0) {
+                    return null;
+                }
+                return obj[currentPath];
+            }
+
+            return this._search(obj[currentPath], path.slice(1));
+        }
+    }]);
+
+    return ApplicationConfigService;
+}();
+
+exports.default = ApplicationConfigService;
 
 /***/ }),
 
 /***/ 20:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(jQuery) {
+
+// @TODO enable lints
+/* eslint-disable max-len*/
+/* eslint-disable object-shorthand*/
+/* eslint-disable dot-notation*/
+/* eslint-disable vars-on-top*/
+/* eslint-disable prefer-template*/
+/* eslint-disable prefer-const*/
+/* eslint-disable spaced-comment*/
+/* eslint-disable curly*/
+/* eslint-disable object-curly-spacing*/
+/* eslint-disable spaced-comment*/
+/* eslint-disable prefer-arrow-callback*/
+/* eslint-disable one-var*/
+/* eslint-disable space-in-parens*/
+/* eslint-disable camelcase*/
+/* eslint-disable no-undef*/
+/* eslint-disable quote-props*/
+/* eslint-disable no-shadow*/
+/* eslint-disable no-param-reassign*/
+/* eslint-disable no-unused-expressions*/
+/* eslint-disable no-shadow*/
+/* eslint-disable no-implied-eval*/
+/* eslint-disable brace-style*/
+/* eslint-disable no-unused-vars*/
+/* eslint-disable brace-style*/
+/* eslint-disable no-lonely-if*/
+/* eslint-disable no-inline-comments*/
+/* eslint-disable default-case*/
+/* eslint-disable one-var*/
+/* eslint-disable semi*/
+/* eslint-disable no-throw-literal*/
+/* eslint-disable no-sequences*/
+/* eslint-disable consistent-this*/
+/* eslint-disable no-dupe-keys*/
+/* eslint-disable semi*/
+/* eslint-disable no-loop-func*/
+/* eslint-disable space-after-keywords*/
+/* eslint-disable no-var*/
+/* eslint-disable quotes*/
+
+/**
+ * Copyright (c)2005-2009 Matt Kruse (javascripttoolbox.com)
+ *
+ * Dual licensed under the MIT and GPL licenses.
+ * This basically means you can use this code however you want for
+ * free, but don't claim to have written it yourself!
+ * Donations always accepted: http://www.JavascriptToolbox.com/donate/
+ *
+ * Please do not link to the .js files on javascripttoolbox.com from
+ * your site. Copy the files locally to your server instead.
+ *
+ */
+/**
+ * jquery.contextmenu.js
+ * jQuery Plugin for Context Menus
+ * http://www.JavascriptToolbox.com/lib/contextmenu/
+ *
+ * Copyright (c) 2008 Matt Kruse (javascripttoolbox.com)
+ * Dual licensed under the MIT and GPL licenses.
+ *
+ * @version 1.0
+ * @history 1.0 2008-10-20 Initial Release
+ * @todo slideUp doesn't work in IE - because of iframe?
+ * @todo Hide all other menus when contextmenu is shown?
+ * @todo More themes
+ * @todo Nested context menus
+ */
+
+(function ($) {
+    $.contextMenu = {
+        // props add by Alchemy
+        _showEvent: null, // the original event the caused the menu to show (useful to find the original element clicked)
+        _div: null,
+        //
+        openEvt: "contextmenu", // ouverture sur right-click
+        closeTimer: null, // fermer le menu apres 100ms de mouseout
+
+        shadow: true,
+        dropDown: false,
+        shadowOffset: 0,
+        shadowOffsetX: 5,
+        shadowOffsetY: 5,
+        shadowWidthAdjust: -3,
+        shadowHeightAdjust: -3,
+        shadowOpacity: 0.2,
+        shadowClass: 'context-menu-shadow',
+        shadowColor: 'black',
+
+        offsetX: 0,
+        offsetY: 0,
+        appendTo: 'body',
+        direction: 'down',
+        constrainToScreen: true,
+
+        showTransition: 'show',
+        hideTransition: 'hide',
+        showSpeed: '',
+        hideSpeed: '',
+        showCallback: null,
+        hideCallback: null,
+
+        className: 'context-menu',
+        itemClassName: 'context-menu-item',
+        itemHoverClassName: 'context-menu-item-hover',
+        disabledItemClassName: 'context-menu-item-disabled',
+        disabledItemHoverClassName: 'context-menu-item-disabled-hover',
+        separatorClassName: 'context-menu-separator',
+        innerDivClassName: 'context-menu-item-inner',
+        themePrefix: 'context-menu-theme-',
+        theme: 'default',
+
+        separator: 'context-menu-separator', // A specific key to identify a separator
+        target: null, // The target of the context click, to be populated when triggered
+        menu: null, // The jQuery object containing the HTML object that is the menu itself
+        shadowObj: null, // Shadow object
+        bgiframe: null, // The iframe object for IE6
+        shown: false, // Currently being shown?
+        useIframe: /*@cc_on @*/ /*@if (@_win32) true, @else @*/false, /*@end @*/ // This is a better check than looking at userAgent!
+
+        _originalPlace: null,
+        _hovered: false,
+
+        _hover_in: function _hover_in(cm) {
+            if (cm.closeTimer) {
+                clearTimeout(cm.closeTimer);
+                cm.closeTimer = null;
+            }
+        },
+
+        _hover_out: function _hover_out(cm, tms) {
+            cm.closeTimer = setTimeout(function () {
+                cm.hide();
+            }, tms);
+        },
+
+        // Create the menu instance
+        create: function create(menu, opts) {
+            var cmenu = $.extend({}, this, opts); // Clone all default properties to created object
+
+            // If a selector has been passed in, then use that as the menu
+            if (typeof menu === "string") {
+                cmenu.menu = $(menu);
+                cmenu._originalPlace = cmenu.menu.parent();
+                cmenu.menu.hover(function () {
+                    cmenu._hover_in(cmenu);
+                }, function () {
+                    cmenu._hover_out(cmenu, 500);
+                });
+            }
+            // If a function has been passed in, call it each time the menu is shown to create the menu
+            else if (typeof menu === "function") {
+                    cmenu.menuFunction = menu;
+                }
+                // Otherwise parse the Array passed in
+                else {
+                        cmenu.menu = cmenu.createMenu(menu, cmenu);
+                    }
+            if (cmenu.menu) {
+                cmenu.menu.css({ display: 'none' });
+                $(cmenu.appendTo).append(cmenu.menu);
+            }
+
+            // Create the shadow object if shadow is enabled
+            if (cmenu.shadow) {
+                cmenu.createShadow(cmenu); // Extracted to method for extensibility
+                if (cmenu.shadowOffset) {
+                    cmenu.shadowOffsetX = cmenu.shadowOffsetY = cmenu.shadowOffset;
+                }
+            }
+            $('body').bind(cmenu.openEvt, function () {
+                cmenu.hide();
+            }); // If right-clicked somewhere else in the document, hide this menu
+
+            cmenu.onCreated(cmenu);
+            return cmenu;
+        },
+
+        // Create an iframe object to go behind the menu
+        createIframe: function createIframe() {
+            return $('<iframe tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
+        },
+
+        // Accept an Array representing a menu structure and turn it into HTML
+        createMenu: function createMenu(menu, cmenu) {
+            var className = cmenu.className;
+            $.each(cmenu.theme.split(","), function (i, n) {
+                className += ' ' + cmenu.themePrefix + n;
+            });
+            var $t = $('<table style=""></table>').click(function () {
+                cmenu.hide();
+                return false;
+            }); // We wrap a table around it so width can be flexible
+            var $tr = $('<tr></tr>');
+            var $td = $('<td></td>');
+            var $div = cmenu._div = $('<div class="' + className + '"></div>');
+
+            cmenu._div.hover(function () {
+                cmenu._hover_in(cmenu);
+            }, function () {
+                cmenu._hover_out(cmenu, 500);
+            });
+
+            // Each menu item is specified as either:
+            //     title:function
+            // or  title: { property:value ... }
+            /*
+             for (var i=0; i<menu.length; i++) {
+             var m = menu[i];
+             if (m==$.contextMenu.separator) {
+             $div.append(cmenu.createSeparator());
+             }
+             else {
+             for (var opt in menu[i]) {
+             $div.append(cmenu.createMenuItem(opt,menu[i][opt])); // Extracted to method for extensibility
+             }
+             }
+             }
+             */
+            for (var i = 0; i < menu.length; i++) {
+                var m = menu[i];
+                if (m === $.contextMenu.separator) {
+                    $div.append(cmenu.createSeparator());
+                } else {
+                    $div.append(cmenu.createMenuItem(m)); // Extracted to method for extensibility
+                }
+            }
+            if (cmenu.useIframe) {
+                $td.append(cmenu.createIframe());
+            }
+            $t.append($tr.append($td.append($div)));
+
+            return $t;
+        },
+
+        // Create an individual menu item
+        createMenuItem: function createMenuItem(obj) {
+            var cmenu = this;
+            var label = obj.label;
+            if (typeof obj === "function") {
+                obj = { onclick: obj };
+            } // If passed a simple function, turn it into a property of an object
+            // Default properties, extended in case properties are passed
+            var o = $.extend({
+                onclick: function onclick() {},
+                className: '',
+                hoverClassName: cmenu.itemHoverClassName,
+                icon: '',
+                disabled: false,
+                title: '',
+                hoverItem: cmenu.hoverItem,
+                hoverItemOut: cmenu.hoverItemOut
+            }, obj);
+            // If an icon is specified, hard-code the background-image style. Themes that don't show images should take this into account in their CSS
+            var iconStyle = o.icon ? 'background-image:url(' + o.icon + ');' : '';
+            var $div = $('<div class="' + cmenu.itemClassName + ' ' + o.className + (o.disabled ? ' ' + cmenu.disabledItemClassName : '') + '" title="' + o.title + '"></div>')
+            // If the item is disabled, don't do anything when it is clicked
+            .click(function (e) {
+                if (cmenu.isItemDisabled(this)) {
+                    return false;
+                } else {
+                    return o.onclick.call(cmenu.target, this, cmenu, e, label);
+                }
+            })
+            // Change the class of the item when hovered over
+            .hover(function () {
+                o.hoverItem.call(this, cmenu.isItemDisabled(this) ? cmenu.disabledItemHoverClassName : o.hoverClassName);
+            }, function () {
+                o.hoverItemOut.call(this, cmenu.isItemDisabled(this) ? cmenu.disabledItemHoverClassName : o.hoverClassName);
+            });
+            var $idiv = $('<div class="' + cmenu.innerDivClassName + '" style="' + iconStyle + '">' + label + '</div>');
+            $div.append($idiv);
+
+            return $div;
+        },
+
+        // Create a separator row
+        createSeparator: function createSeparator() {
+            return $('<div class="' + this.separatorClassName + '"></div>');
+        },
+
+        // Determine if an individual item is currently disabled. This is called each time the item is hovered or clicked because the disabled status may change at any time
+        isItemDisabled: function isItemDisabled(item) {
+            return $(item).is('.' + this.disabledItemClassName);
+        },
+
+        // Functions to fire on hover. Extracted to methods for extensibility
+        hoverItem: function hoverItem(c) {
+            $(this).addClass(c);
+        },
+        hoverItemOut: function hoverItemOut(c) {
+            $(this).removeClass(c);
+        },
+
+        // Create the shadow object
+        createShadow: function createShadow(cmenu) {
+            cmenu.shadowObj = $('<div class="' + cmenu.shadowClass + '"></div>').css({
+                display: 'none',
+                position: "absolute",
+                zIndex: 9998,
+                opacity: cmenu.shadowOpacity,
+                backgroundColor: cmenu.shadowColor
+            });
+            $(cmenu.appendTo).append(cmenu.shadowObj);
+        },
+
+        // Display the shadow object, given the position of the menu itself
+        showShadow: function showShadow(x, y, e) {
+            var cmenu = this;
+            if (cmenu.shadow) {
+                cmenu.shadowObj.css({
+                    width: cmenu.menu.width() + cmenu.shadowWidthAdjust + "px",
+                    height: cmenu.menu.height() + cmenu.shadowHeightAdjust + "px",
+                    top: y + cmenu.shadowOffsetY + "px",
+                    left: x + cmenu.shadowOffsetX + "px"
+                }).addClass(cmenu.shadowClass)[cmenu.showTransition](cmenu.showSpeed);
+            }
+        },
+
+        // A hook to call before the menu is shown, in case special processing needs to be done.
+        // Return false to cancel the default show operation
+        beforeShow: function beforeShow() {
+            return true;
+        },
+
+        onCreated: function onCreated(cmenu) {},
+
+        // Show the context menu
+        show: function show(t, e) {
+            var cmenu = this;
+            var x = e.pageX,
+                y = e.pageY;
+
+            if (cmenu._div) {
+                cmenu._div.css('height', 'auto').css('overflow-y', 'auto');
+            }
+
+            cmenu.target = t; // Preserve the object that triggered this context menu so menu item click methods can see it
+            cmenu._showEvent = e; // Preserve the event that triggered this context menu so menu item click methods can see it
+            if (cmenu.beforeShow() !== false) {
+                var $t = $(t);
+                $t.off("mouseleave").on("mouseleave", function () {
+                    cmenu._hover_out(cmenu, 100);
+                });
+
+                // If the menu content is a function, call it to populate the menu each time it is displayed
+                if (cmenu.menuFunction) {
+                    if (cmenu.menu) {
+                        if (cmenu._originalPlace) {
+                            cmenu._originalPlace.append(cmenu.menu);
+                        } else {
+                            $(cmenu.menu).remove();
+                        }
+                    }
+                    var r = cmenu.menuFunction(cmenu, t);
+                    if (Array.isArray(r)) {
+                        cmenu.menu = cmenu.createMenu(r, cmenu);
+                    } else {
+                        cmenu.menu = r;
+                    }
+                    cmenu.menu.css({ display: 'none' });
+                    $(cmenu.appendTo).append(cmenu.menu);
+                }
+                var $c = cmenu.menu;
+                x += cmenu.offsetX;
+                y += cmenu.offsetY;
+                var pos = cmenu.getPosition(x, y, cmenu, e); // Extracted to method for extensibility
+                cmenu.showShadow(pos.x, pos.y, e);
+                // Resize the iframe if needed
+                if (cmenu.useIframe) {
+                    $c.find('iframe').css({
+                        width: $c.width() + cmenu.shadowOffsetX + cmenu.shadowWidthAdjust,
+                        height: $c.height() + cmenu.shadowOffsetY + cmenu.shadowHeightAdjust
+                    });
+                }
+                if (cmenu.dropDown) {
+                    $c.css('visibility', 'hidden').show();
+
+                    var bodySize = { x: $(window).width(), y: $(window).height() };
+
+                    if ($t.offset().top + $t.outerHeight() + $c.height() > bodySize.y) {
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
+                            top: $t.offset().top - $c.outerHeight() + "px",
+                            left: $t.offset().left - $c.outerWidth() + "px",
+                            position: "absolute",
+                            zIndex: 9999
+                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
+                            cmenu.showCallback.call(cmenu);
+                        } : null);else $c.css({
+                            top: $t.offset().top - $c.outerHeight() + "px",
+                            left: $t.offset().left + "px",
+                            position: "absolute",
+                            zIndex: 9999
+                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
+                            cmenu.showCallback.call(cmenu);
+                        } : null);
+                    } else {
+
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
+                            top: $t.offset().top + $t.outerHeight() + "px",
+                            left: $t.offset().left - $c.outerWidth() + "px",
+                            position: "absolute",
+                            zIndex: 9999
+                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
+                            cmenu.showCallback.call(cmenu);
+                        } : null);else $c.css({
+                            top: $t.offset().top + $t.outerHeight() + "px",
+                            left: $t.offset().left + "px",
+                            position: "absolute",
+                            zIndex: 9999
+                        })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
+                            cmenu.showCallback.call(cmenu);
+                        } : null);
+                    }
+                    $c.css('visibility', 'visible');
+                } else {
+                    $c.css({
+                        top: pos.y + "px",
+                        left: pos.x + "px",
+                        position: "absolute",
+                        zIndex: 9999
+                    })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
+                        cmenu.showCallback.call(cmenu);
+                    } : null);
+                }
+                cmenu.shown = true;
+                $(document).one('click', null, function () {
+                    cmenu.hide();
+                }); // Handle a single click to the document to hide the menu
+            }
+        },
+
+        // Find the position where the menu should appear, given an x,y of the click event
+        getPosition: function getPosition(clickX, clickY, cmenu, e) {
+            var x = clickX + cmenu.offsetX;
+            var y = clickY + cmenu.offsetY;
+            var h = $(cmenu.menu).height();
+            var w = $(cmenu.menu).width();
+            var dir = cmenu.direction;
+            if (cmenu.constrainToScreen) {
+                var $w = $(window);
+                var wh = $w.height();
+                var ww = $w.width();
+                var st = $w.scrollTop();
+                var maxTop = y - st - 5;
+                var maxBottom = wh + st - y - 5;
+                if (h > maxBottom) {
+                    if (h > maxTop) {
+                        if (maxTop > maxBottom) {
+                            // scrollable en haut
+                            h = maxTop;
+                            cmenu._div.css('height', h + 'px').css('overflow-y', 'scroll');
+                            y -= h;
+                        } else {
+                            // scrollable en bas
+                            h = maxBottom;
+                            cmenu._div.css('height', h + 'px').css('overflow-y', 'scroll');
+                        }
+                    } else {
+                        // menu ok en haut
+                        y -= h;
+                    }
+                } else {
+                    // menu ok en bas
+                }
+
+                var maxRight = x + w - $w.scrollLeft();
+                if (maxRight > ww) {
+                    x -= maxRight - ww;
+                }
+            }
+            return { 'x': x, 'y': y };
+        },
+
+        // Hide the menu, of course
+        hide: function hide() {
+            var cmenu = this;
+            if (cmenu.shown) {
+                if (cmenu.iframe) {
+                    $(cmenu.iframe).hide();
+                }
+                if (cmenu.menu) {
+                    cmenu.menu[cmenu.hideTransition](cmenu.hideSpeed, cmenu.hideCallback ? function () {
+                        cmenu.hideCallback.call(cmenu);
+                    } : null);
+                }
+                if (cmenu.shadow) {
+                    cmenu.shadowObj[cmenu.hideTransition](cmenu.hideSpeed);
+                }
+            }
+            cmenu.shown = false;
+        }
+    };
+
+    // This actually adds the .contextMenu() function to the jQuery namespace
+    $.fn.contextMenu = function (menu, options) {
+        var cmenu = $.contextMenu.create(menu, options);
+        return this.each(function () {
+            $(this).bind(cmenu.openEvt, function (e) {
+                if (cmenu.menu.is(':visible')) cmenu.hide();else {
+                    $('body').trigger(cmenu.openEvt);
+                    cmenu.show(this, e);
+                }
+                return false;
+            }).bind('mouseover', function () {
+                return false;
+            });
+        });
+    };
+})(jQuery);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+
+/***/ 21:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4774,11 +4774,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _i18next = __webpack_require__(23);
+var _i18next = __webpack_require__(25);
 
 var _i18next2 = _interopRequireDefault(_i18next);
 
-var _i18nextXhrBackend = __webpack_require__(33);
+var _i18nextXhrBackend = __webpack_require__(35);
 
 var _i18nextXhrBackend2 = _interopRequireDefault(_i18nextXhrBackend);
 
@@ -4786,7 +4786,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _rx = __webpack_require__(8);
+var _rx = __webpack_require__(7);
 
 var Rx = _interopRequireWildcard(_rx);
 
@@ -4878,7 +4878,7 @@ exports.default = LocaleService;
 
 /***/ }),
 
-/***/ 21:
+/***/ 23:
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -5069,7 +5069,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 23:
+/***/ 25:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5089,7 +5089,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDefaultNamespace", function() { return setDefaultNamespace; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return t; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "use", function() { return use; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__i18next__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__i18next__ = __webpack_require__(26);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
@@ -5112,22 +5112,22 @@ var use = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].use.bind(__W
 
 /***/ }),
 
-/***/ 24:
+/***/ 26:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PluralResolver__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Interpolator__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__BackendConnector__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CacheConnector__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__defaults__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__postProcessor__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__compatibility_v1__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PluralResolver__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Interpolator__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__BackendConnector__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CacheConnector__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__defaults__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__postProcessor__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__compatibility_v1__ = __webpack_require__(14);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -5536,7 +5536,7 @@ var I18n = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 25:
+/***/ 27:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5688,410 +5688,14 @@ var ResourceStore = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 258:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-
-var _bootstrap = __webpack_require__(259);
-
-var _bootstrap2 = _interopRequireDefault(_bootstrap);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var lightboxMobileApplication = {
-    bootstrap: _bootstrap2.default
-};
-
-if (typeof window !== 'undefined') {
-    window.lightboxMobileApplication = lightboxMobileApplication;
-}
-
-/*resize of PDF */
-$(window).on("load resize ", function (e) {
-    if ($('.pdf-iframe').length > 0) {
-        var pdfHeight = $('.pdf-iframe').width() / 0.707;
-        $('.pdf-iframe').css('height', pdfHeight);
-    }
-});
-/*resize of VIDEO */
-$(window).on("load resize ", function (e) {
-    if ($('.video-iframe').length > 0) {
-
-        var $sel = $('.center-image');
-        var $window = $(window).height();
-
-        // V is for "video" ; K is for "container" ; N is for "new"
-        var VH = $('[name=videoHeight]').val();
-        var VW = $('[name=videoWidth]').val();
-        var KW = $sel.width();
-        var KH = $sel.height();
-
-        if ($window <= 375) {
-            KH = 150;
-        } else {
-            if ($window > 375 && $window <= 480) {
-                KH = 200;
-            }
-            if ($window > 480 && $window <= 640) {
-                KH = 300;
-            }
-
-            if ($window > 640 && $window <= 767) {
-                KH = 400;
-            }
-            if ($window > 767) {
-                KH = 550;
-            }
-        }
-
-        var NW, NH;
-        if ((NH = VH / VW * (NW = KW)) > KH) {
-            // try to fit exact horizontally, adjust vertically
-            // too bad... new height overflows container height
-            NW = VW / VH * (NH = KH); // so fit exact vertically, adjust horizontally
-        }
-        $(".video-iframe", $sel).css('width', NW).css('height', NH);
-    }
-});
-
-module.exports = lightboxMobileApplication;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-
-/***/ 259:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-// import lightbox from './../components/lightbox/index';
-// import mainMenu from './../components/mainMenu';
-
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _configService = __webpack_require__(16);
-
-var _configService2 = _interopRequireDefault(_configService);
-
-var _locale = __webpack_require__(20);
-
-var _locale2 = _interopRequireDefault(_locale);
-
-var _config = __webpack_require__(260);
-
-var _config2 = _interopRequireDefault(_config);
-
-var _emitter = __webpack_require__(15);
-
-var _emitter2 = _interopRequireDefault(_emitter);
-
-var _lodash = __webpack_require__(4);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-__webpack_require__(14);
-__webpack_require__(19);
-
-var Bootstrap = function () {
-    function Bootstrap(userConfig) {
-        var _this = this;
-
-        _classCallCheck(this, Bootstrap);
-
-        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
-
-        this.appEvents = new _emitter2.default();
-        this.configService = new _configService2.default(configuration);
-        this.validatorLoaded = false;
-        this.localeService = new _locale2.default({
-            configService: this.configService
-        });
-
-        this.localeService.fetchTranslations().then(function () {
-            _this.onConfigReady();
-        });
-
-        return this;
-    }
-
-    _createClass(Bootstrap, [{
-        key: 'onConfigReady',
-        value: function onConfigReady() {
-            var _this2 = this;
-
-            this.appServices = {
-                configService: this.configService,
-                localeService: this.localeService,
-                appEvents: this.appEvents
-            };
-
-            window.bodySize = {
-                x: 0,
-                y: 0
-            };
-
-            /**
-             * add components
-             */
-
-            (0, _jquery2.default)(document).ready(function () {
-                // let $body = $('body');
-                // window.bodySize.y = $body.height();
-                // window.bodySize.x = $body.width();
-                //
-                // this.appLightbox = lightbox(this.appServices);
-                // this.appLightbox.initialize({$container: $body});
-                //mainMenu(this.appServices).initialize({$container: $body});
-                _this2.mobileValidator();
-                // this.isReleasable = this.configService.get('releasable');
-                //
-                // if (this.isReleasable !== null) {
-                //     this.appLightbox.setReleasable(this.isReleasable);
-                // }
-            });
-        }
-    }, {
-        key: 'mobileValidator',
-        value: function mobileValidator() {
-            var _this4 = this;
-
-            display_basket();
-
-            /*Get status before send validation*/
-            function _getReseaseStatus(el) {
-                _jquery2.default.ajax({
-                    url: '/lightbox/ajax/GET_ELEMENTS/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
-                    dataType: 'json',
-                    error: function error(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    timeout: function timeout(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    success: function success(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                        if (data.datas) {
-                            if (data.datas) {
-                                if (data.datas.counts.nul == 0) {
-                                    _setRelease((0, _jquery2.default)(this));
-                                } else {
-                                    console.log(data.datas.counts);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_accepted").html(data.datas.counts.yes);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_refused").html(data.datas.counts.no);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_null").html(data.datas.counts.nul);
-                                    (0, _jquery2.default)("#FeedbackRelease").modal("show");
-                                }
-                            }
-                        }
-
-                        return;
-                    }
-                });
-            }
-
-            /*Send validation*/
-            function _setRelease(el) {
-                var _this3 = this;
-
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_RELEASE/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
-                    dataType: 'json',
-                    error: function error(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    timeout: function timeout(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    success: function success(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                        if (data.datas) {
-                            //      alert(data.datas);
-                            window.location.href = "/lightbox";
-                        }
-                        if (!data.error) {
-                            _this3.isReleasable = false;
-                            //this.appLightbox.setReleasable(this.isReleasable);
-                        }
-
-                        return;
-                    }
-                });
-            };
-
-            (0, _jquery2.default)('body').on('touchstart click', '.confirm_report', function (event) {
-                event.preventDefault();
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                _getReseaseStatus($el);
-
-                return false;
-            });
-            (0, _jquery2.default)('body').on('touchstart click', '#validate-release', function (event) {
-                event.preventDefault();
-                (0, _jquery2.default)("#FeedbackRelease").modal("hide");
-                _setRelease((0, _jquery2.default)(_this4));
-                console.log('validation is done');
-
-                return false;
-            });
-
-            (0, _jquery2.default)('body').on('touchstart click', '.agreement_radio', function (event) {
-                event.preventDefault();
-                //$('.agreement_radio').on('mousedown', (event) => {
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                var sselcont_id = $el.attr('for').split('_').pop();
-                var agreement = (0, _jquery2.default)('#' + $el.attr('for')).val() === 'yes' ? '1' : '-1';
-
-                _jquery2.default.mobile.loading();
-
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' + sselcont_id + '/',
-                    dataType: 'json',
-                    data: {
-                        agreement: agreement
-                    },
-                    error: function error(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    timeout: function timeout(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    success: function success(datas) {
-                        if (!datas.error) {
-                            if (agreement === 1) {
-                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('disagree').addClass('agree');
-                            } else {
-                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('agree').addClass('disagree');
-                            }
-                            _jquery2.default.mobile.loading();
-                            if (datas.error) {
-                                alert(datas.datas);
-                                return;
-                            }
-                            _this4.isReleasable = datas.release;
-                            //this.appLightbox.setReleasable(this.isReleasable);
-                            window.location.reload();
-                        } else {
-                            console.log(datas.datas);
-                        }
-                        return;
-                    }
-                });
-                //return false;
-            });
-
-            (0, _jquery2.default)('body').on('touchstart click', '.note_area_validate', function (event) {
-
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                var sselcont_id = $el.closest('form').find('input[name="sselcont_id"]').val();
-
-                _jquery2.default.mobile.loading();
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
-                    dataType: 'json',
-                    data: {
-                        note: (0, _jquery2.default)('#note_form_' + sselcont_id).find('textarea').val()
-                    },
-                    error: function error(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    timeout: function timeout(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    success: function success(datas) {
-                        _jquery2.default.mobile.loading();
-                        if (datas.error) {
-                            console.log(datas.datas);
-                            return;
-                        }
-
-                        (0, _jquery2.default)('#notes_' + sselcont_id).empty().append(datas.datas);
-                        window.location.reload();
-                        return;
-                    }
-                });
-                return false;
-            });
-
-            function display_basket() {
-                var sc_wrapper = (0, _jquery2.default)('#sc_wrapper');
-
-                (0, _jquery2.default)('.basket_element', sc_wrapper).parent().bind('click', function (event) {
-                    scid_click(event, this);
-                    adjust_visibility(this);
-                    return false;
-                });
-
-                (0, _jquery2.default)('.agree_button, .disagree_button', sc_wrapper).bind('click', function (event) {
-
-                    var sselcont_id = (0, _jquery2.default)(this).closest('.basket_element').attr('id').split('_').pop();
-
-                    var agreement = (0, _jquery2.default)(this).hasClass('agree_button') ? '1' : '-1';
-
-                    set_agreement(event, (0, _jquery2.default)(this), sselcont_id, agreement);
-                    return false;
-                }).addClass('clickable');
-
-                var n = (0, _jquery2.default)('.basket_element', sc_wrapper).length;
-                (0, _jquery2.default)('#sc_container').width(n * (0, _jquery2.default)('.basket_element_wrapper:first', sc_wrapper).outerWidth() + 1);
-            }
-
-            this.validatorLoaded = true;
-        }
-    }]);
-
-    return Bootstrap;
-}();
-
-var bootstrap = function bootstrap(userConfig) {
-    return new Bootstrap(userConfig);
-};
-
-exports.default = bootstrap;
-
-/***/ }),
-
-/***/ 26:
+/***/ 28:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__postProcessor__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__compatibility_v1__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__postProcessor__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__compatibility_v1__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -6390,26 +5994,7 @@ var Translator = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 260:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var defaultConfig = {
-    locale: 'fr',
-    basePath: '/',
-    translations: '/prod/language/'
-};
-
-exports.default = defaultConfig;
-
-/***/ }),
-
-/***/ 27:
+/***/ 29:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6540,7 +6125,108 @@ var LanguageUtil = function () {
 
 /***/ }),
 
-/***/ 28:
+/***/ 3:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var consoleLogger = {
+  type: 'logger',
+
+  log: function log(args) {
+    this.output('log', args);
+  },
+  warn: function warn(args) {
+    this.output('warn', args);
+  },
+  error: function error(args) {
+    this.output('error', args);
+  },
+  output: function output(type, args) {
+    var _console;
+
+    /* eslint no-console: 0 */
+    if (console && console[type]) (_console = console)[type].apply(_console, _toConsumableArray(args));
+  }
+};
+
+var Logger = function () {
+  function Logger(concreteLogger) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    _classCallCheck(this, Logger);
+
+    this.init(concreteLogger, options);
+  }
+
+  Logger.prototype.init = function init(concreteLogger) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    this.prefix = options.prefix || 'i18next:';
+    this.logger = concreteLogger || consoleLogger;
+    this.options = options;
+    this.debug = options.debug;
+  };
+
+  Logger.prototype.setDebug = function setDebug(bool) {
+    this.debug = bool;
+  };
+
+  Logger.prototype.log = function log() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return this.forward(args, 'log', '', true);
+  };
+
+  Logger.prototype.warn = function warn() {
+    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    return this.forward(args, 'warn', '', true);
+  };
+
+  Logger.prototype.error = function error() {
+    for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      args[_key3] = arguments[_key3];
+    }
+
+    return this.forward(args, 'error', '');
+  };
+
+  Logger.prototype.deprecate = function deprecate() {
+    for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+      args[_key4] = arguments[_key4];
+    }
+
+    return this.forward(args, 'warn', 'WARNING DEPRECATED: ', true);
+  };
+
+  Logger.prototype.forward = function forward(args, lvl, prefix, debugOnly) {
+    if (debugOnly && !this.debug) return null;
+    if (typeof args[0] === 'string') args[0] = '' + prefix + this.prefix + ' ' + args[0];
+    return this.logger[lvl](args);
+  };
+
+  Logger.prototype.create = function create(moduleName) {
+    return new Logger(this.logger, _extends({ prefix: this.prefix + ':' + moduleName + ':' }, this.options));
+  };
+
+  return Logger;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (new Logger());
+
+/***/ }),
+
+/***/ 30:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6710,7 +6396,7 @@ var PluralResolver = function () {
 
 /***/ }),
 
-/***/ 29:
+/***/ 31:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6886,108 +6572,422 @@ var Interpolator = function () {
 
 /***/ }),
 
-/***/ 3:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ 311:
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+/* WEBPACK VAR INJECTION */(function($) {
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _bootstrap = __webpack_require__(312);
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
-var consoleLogger = {
-  type: 'logger',
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-  log: function log(args) {
-    this.output('log', args);
-  },
-  warn: function warn(args) {
-    this.output('warn', args);
-  },
-  error: function error(args) {
-    this.output('error', args);
-  },
-  output: function output(type, args) {
-    var _console;
-
-    /* eslint no-console: 0 */
-    if (console && console[type]) (_console = console)[type].apply(_console, _toConsumableArray(args));
-  }
+var lightboxMobileApplication = {
+    bootstrap: _bootstrap2.default
 };
 
-var Logger = function () {
-  function Logger(concreteLogger) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+if (typeof window !== 'undefined') {
+    window.lightboxMobileApplication = lightboxMobileApplication;
+}
 
-    _classCallCheck(this, Logger);
-
-    this.init(concreteLogger, options);
-  }
-
-  Logger.prototype.init = function init(concreteLogger) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    this.prefix = options.prefix || 'i18next:';
-    this.logger = concreteLogger || consoleLogger;
-    this.options = options;
-    this.debug = options.debug;
-  };
-
-  Logger.prototype.setDebug = function setDebug(bool) {
-    this.debug = bool;
-  };
-
-  Logger.prototype.log = function log() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+/*resize of PDF */
+$(window).on("load resize ", function (e) {
+    if ($('.pdf-iframe').length > 0) {
+        var pdfHeight = $('.pdf-iframe').width() / 0.707;
+        $('.pdf-iframe').css('height', pdfHeight);
     }
+});
+/*resize of VIDEO */
+$(window).on("load resize ", function (e) {
+    if ($('.video-iframe').length > 0) {
 
-    return this.forward(args, 'log', '', true);
-  };
+        var $sel = $('.center-image');
+        var $window = $(window).height();
 
-  Logger.prototype.warn = function warn() {
-    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
+        // V is for "video" ; K is for "container" ; N is for "new"
+        var VH = $('[name=videoHeight]').val();
+        var VW = $('[name=videoWidth]').val();
+        var KW = $sel.width();
+        var KH = $sel.height();
+
+        if ($window <= 375) {
+            KH = 150;
+        } else {
+            if ($window > 375 && $window <= 480) {
+                KH = 200;
+            }
+            if ($window > 480 && $window <= 640) {
+                KH = 300;
+            }
+
+            if ($window > 640 && $window <= 767) {
+                KH = 400;
+            }
+            if ($window > 767) {
+                KH = 550;
+            }
+        }
+
+        var NW, NH;
+        if ((NH = VH / VW * (NW = KW)) > KH) {
+            // try to fit exact horizontally, adjust vertically
+            // too bad... new height overflows container height
+            NW = VW / VH * (NH = KH); // so fit exact vertically, adjust horizontally
+        }
+        $(".video-iframe", $sel).css('width', NW).css('height', NH);
     }
+});
 
-    return this.forward(args, 'warn', '', true);
-  };
-
-  Logger.prototype.error = function error() {
-    for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-      args[_key3] = arguments[_key3];
-    }
-
-    return this.forward(args, 'error', '');
-  };
-
-  Logger.prototype.deprecate = function deprecate() {
-    for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-      args[_key4] = arguments[_key4];
-    }
-
-    return this.forward(args, 'warn', 'WARNING DEPRECATED: ', true);
-  };
-
-  Logger.prototype.forward = function forward(args, lvl, prefix, debugOnly) {
-    if (debugOnly && !this.debug) return null;
-    if (typeof args[0] === 'string') args[0] = '' + prefix + this.prefix + ' ' + args[0];
-    return this.logger[lvl](args);
-  };
-
-  Logger.prototype.create = function create(moduleName) {
-    return new Logger(this.logger, _extends({ prefix: this.prefix + ':' + moduleName + ':' }, this.options));
-  };
-
-  return Logger;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (new Logger());
+module.exports = lightboxMobileApplication;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 
-/***/ 30:
+/***/ 312:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+// import lightbox from './../components/lightbox/index';
+// import mainMenu from './../components/mainMenu';
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _configService = __webpack_require__(17);
+
+var _configService2 = _interopRequireDefault(_configService);
+
+var _locale = __webpack_require__(21);
+
+var _locale2 = _interopRequireDefault(_locale);
+
+var _config = __webpack_require__(313);
+
+var _config2 = _interopRequireDefault(_config);
+
+var _emitter = __webpack_require__(16);
+
+var _emitter2 = _interopRequireDefault(_emitter);
+
+var _lodash = __webpack_require__(4);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+__webpack_require__(15);
+__webpack_require__(20);
+
+var Bootstrap = function () {
+    function Bootstrap(userConfig) {
+        var _this = this;
+
+        _classCallCheck(this, Bootstrap);
+
+        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
+
+        this.appEvents = new _emitter2.default();
+        this.configService = new _configService2.default(configuration);
+        this.validatorLoaded = false;
+        this.localeService = new _locale2.default({
+            configService: this.configService
+        });
+
+        this.localeService.fetchTranslations().then(function () {
+            _this.onConfigReady();
+        });
+
+        return this;
+    }
+
+    _createClass(Bootstrap, [{
+        key: 'onConfigReady',
+        value: function onConfigReady() {
+            var _this2 = this;
+
+            this.appServices = {
+                configService: this.configService,
+                localeService: this.localeService,
+                appEvents: this.appEvents
+            };
+
+            window.bodySize = {
+                x: 0,
+                y: 0
+            };
+
+            /**
+             * add components
+             */
+
+            (0, _jquery2.default)(document).ready(function () {
+                // let $body = $('body');
+                // window.bodySize.y = $body.height();
+                // window.bodySize.x = $body.width();
+                //
+                // this.appLightbox = lightbox(this.appServices);
+                // this.appLightbox.initialize({$container: $body});
+                //mainMenu(this.appServices).initialize({$container: $body});
+                _this2.mobileValidator();
+                // this.isReleasable = this.configService.get('releasable');
+                //
+                // if (this.isReleasable !== null) {
+                //     this.appLightbox.setReleasable(this.isReleasable);
+                // }
+            });
+        }
+    }, {
+        key: 'mobileValidator',
+        value: function mobileValidator() {
+            var _this4 = this;
+
+            display_basket();
+
+            /*Get status before send validation*/
+            function _getReseaseStatus(el) {
+                _jquery2.default.ajax({
+                    url: '/lightbox/ajax/GET_ELEMENTS/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
+                    dataType: 'json',
+                    error: function error(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    timeout: function timeout(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    success: function success(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                        if (data.datas) {
+                            if (data.datas) {
+                                if (data.datas.counts.nul == 0) {
+                                    _setRelease((0, _jquery2.default)(this));
+                                } else {
+                                    console.log(data.datas.counts);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_accepted").html(data.datas.counts.yes);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_refused").html(data.datas.counts.no);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_null").html(data.datas.counts.nul);
+                                    (0, _jquery2.default)("#FeedbackRelease").modal("show");
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+                });
+            }
+
+            /*Send validation*/
+            function _setRelease(el) {
+                var _this3 = this;
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_RELEASE/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
+                    dataType: 'json',
+                    error: function error(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    timeout: function timeout(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    success: function success(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                        if (data.datas) {
+                            //      alert(data.datas);
+                            window.location.href = "/lightbox";
+                        }
+                        if (!data.error) {
+                            _this3.isReleasable = false;
+                            //this.appLightbox.setReleasable(this.isReleasable);
+                        }
+
+                        return;
+                    }
+                });
+            };
+
+            (0, _jquery2.default)('body').on('touchstart click', '.confirm_report', function (event) {
+                event.preventDefault();
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                _getReseaseStatus($el);
+
+                return false;
+            });
+            (0, _jquery2.default)('body').on('touchstart click', '#validate-release', function (event) {
+                event.preventDefault();
+                (0, _jquery2.default)("#FeedbackRelease").modal("hide");
+                _setRelease((0, _jquery2.default)(_this4));
+                console.log('validation is done');
+
+                return false;
+            });
+
+            (0, _jquery2.default)('body').on('touchstart click', '.agreement_radio', function (event) {
+                event.preventDefault();
+                //$('.agreement_radio').on('mousedown', (event) => {
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                var sselcont_id = $el.attr('for').split('_').pop();
+                var agreement = (0, _jquery2.default)('#' + $el.attr('for')).val() === 'yes' ? '1' : '-1';
+
+                _jquery2.default.mobile.loading();
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' + sselcont_id + '/',
+                    dataType: 'json',
+                    data: {
+                        agreement: agreement
+                    },
+                    error: function error(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    timeout: function timeout(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    success: function success(datas) {
+                        if (!datas.error) {
+                            if (agreement === 1) {
+                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('disagree').addClass('agree');
+                            } else {
+                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('agree').addClass('disagree');
+                            }
+                            _jquery2.default.mobile.loading();
+                            if (datas.error) {
+                                alert(datas.datas);
+                                return;
+                            }
+                            _this4.isReleasable = datas.release;
+                            //this.appLightbox.setReleasable(this.isReleasable);
+                            window.location.reload();
+                        } else {
+                            console.log(datas.datas);
+                        }
+                        return;
+                    }
+                });
+                //return false;
+            });
+
+            (0, _jquery2.default)('body').on('touchstart click', '.note_area_validate', function (event) {
+
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                var sselcont_id = $el.closest('form').find('input[name="sselcont_id"]').val();
+
+                _jquery2.default.mobile.loading();
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
+                    dataType: 'json',
+                    data: {
+                        note: (0, _jquery2.default)('#note_form_' + sselcont_id).find('textarea').val()
+                    },
+                    error: function error(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    timeout: function timeout(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    success: function success(datas) {
+                        _jquery2.default.mobile.loading();
+                        if (datas.error) {
+                            console.log(datas.datas);
+                            return;
+                        }
+
+                        (0, _jquery2.default)('#notes_' + sselcont_id).empty().append(datas.datas);
+                        window.location.reload();
+                        return;
+                    }
+                });
+                return false;
+            });
+
+            function display_basket() {
+                var sc_wrapper = (0, _jquery2.default)('#sc_wrapper');
+
+                (0, _jquery2.default)('.basket_element', sc_wrapper).parent().bind('click', function (event) {
+                    scid_click(event, this);
+                    adjust_visibility(this);
+                    return false;
+                });
+
+                (0, _jquery2.default)('.agree_button, .disagree_button', sc_wrapper).bind('click', function (event) {
+
+                    var sselcont_id = (0, _jquery2.default)(this).closest('.basket_element').attr('id').split('_').pop();
+
+                    var agreement = (0, _jquery2.default)(this).hasClass('agree_button') ? '1' : '-1';
+
+                    set_agreement(event, (0, _jquery2.default)(this), sselcont_id, agreement);
+                    return false;
+                }).addClass('clickable');
+
+                var n = (0, _jquery2.default)('.basket_element', sc_wrapper).length;
+                (0, _jquery2.default)('#sc_container').width(n * (0, _jquery2.default)('.basket_element_wrapper:first', sc_wrapper).outerWidth() + 1);
+            }
+
+            this.validatorLoaded = true;
+        }
+    }]);
+
+    return Bootstrap;
+}();
+
+var bootstrap = function bootstrap(userConfig) {
+    return new Bootstrap(userConfig);
+};
+
+exports.default = bootstrap;
+
+/***/ }),
+
+/***/ 313:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var defaultConfig = {
+    locale: 'fr',
+    basePath: '/',
+    translations: '/prod/language/'
+};
+
+exports.default = defaultConfig;
+
+/***/ }),
+
+/***/ 32:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7281,7 +7281,7 @@ var Connector = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 31:
+/***/ 33:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7367,7 +7367,7 @@ var Connector = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 32:
+/***/ 34:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7449,15 +7449,15 @@ function transformOptions(options) {
 
 /***/ }),
 
-/***/ 33:
+/***/ 35:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(34).default;
+module.exports = __webpack_require__(36).default;
 
 
 /***/ }),
 
-/***/ 34:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7469,11 +7469,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _utils = __webpack_require__(35);
+var _utils = __webpack_require__(37);
 
 var utils = _interopRequireWildcard(_utils);
 
-var _ajax = __webpack_require__(36);
+var _ajax = __webpack_require__(38);
 
 var _ajax2 = _interopRequireDefault(_ajax);
 
@@ -7587,7 +7587,7 @@ exports.default = Backend;
 
 /***/ }),
 
-/***/ 35:
+/***/ 37:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7626,7 +7626,7 @@ function extend(obj) {
 
 /***/ }),
 
-/***/ 36:
+/***/ 38:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9691,7 +9691,7 @@ function stubFalse() {
 
 module.exports = merge;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(9)(module)))
 
 /***/ }),
 
@@ -9794,35 +9794,6 @@ var EventEmitter = function () {
 /***/ }),
 
 /***/ 7:
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-
-/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global, process) {var __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c) Microsoft, All rights reserved. See License.txt in the project root for license information.
@@ -22215,7 +22186,36 @@ var ReactiveTest = Rx.ReactiveTest = {
 
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module), __webpack_require__(5), __webpack_require__(21)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)(module), __webpack_require__(5), __webpack_require__(23)))
+
+/***/ }),
+
+/***/ 9:
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ })
 

@@ -1,4 +1,4 @@
-{% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload, autoplay) %}
+{% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload, autoplay, isFromPreview = false) %}
     {% set record_type = thumbnail.get_type() %}
     {% set box_w = box_w|round %}
     {% set box_h = box_h|default(box_w)|round %}
@@ -9,7 +9,14 @@
         <div style="width:100%; height:100%;" class="thumb_wrapper {{extra_class|default('')}}" >
     {% endif %}
 
-    {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+    {% if isFromPreview and (record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' )%}
+        <div id="phraseanet-video-frame" class=""
+             data-original-width="{{original_w}}"
+             data-original-height="{{original_h}}"
+             data-kind="video"
+             data-src="">
+        </div>
+    {% elseif not isFromPreview and (record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV') %}
         <div id="phraseanet-embed-frame" class="videoTips"
              data-original-width="{{original_w}}"
              data-original-height="{{original_h}}"

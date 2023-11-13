@@ -91,7 +91,7 @@
 /******/ 		if (__webpack_require__.nc) {
 /******/ 			script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 		}
-/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=97";
+/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=98";
 /******/ 		var timeout = setTimeout(onScriptComplete, 120000);
 /******/ 		script.onerror = script.onload = onScriptComplete;
 /******/ 		function onScriptComplete() {
@@ -150,333 +150,6 @@
 /******/ ([
 /* 0 */,
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // @TODO enable lints
-/* eslint-disable max-len*/
-/* eslint-disable object-shorthand*/
-/* eslint-disable dot-notation*/
-/* eslint-disable vars-on-top*/
-/* eslint-disable prefer-template*/
-/* eslint-disable prefer-const*/
-/* eslint-disable spaced-comment*/
-/* eslint-disable curly*/
-/* eslint-disable object-curly-spacing*/
-/* eslint-disable spaced-comment*/
-/* eslint-disable prefer-arrow-callback*/
-/* eslint-disable one-let*/
-/* eslint-disable space-in-parens*/
-/* eslint-disable camelcase*/
-/* eslint-disable no-undef*/
-/* eslint-disable quote-props*/
-/* eslint-disable no-shadow*/
-/* eslint-disable no-param-reassign*/
-/* eslint-disable no-unused-expressions*/
-/* eslint-disable no-shadow*/
-/* eslint-disable no-implied-eval*/
-/* eslint-disable brace-style*/
-/* eslint-disable no-unused-vars*/
-/* eslint-disable brace-style*/
-/* eslint-disable no-lonely-if*/
-/* eslint-disable no-inline-comments*/
-/* eslint-disable default-case*/
-/* eslint-disable one-let*/
-/* eslint-disable semi*/
-/* eslint-disable no-throw-literal*/
-/* eslint-disable no-sequences*/
-/* eslint-disable consistent-this*/
-/* eslint-disable no-dupe-keys*/
-/* eslint-disable semi*/
-/* eslint-disable no-loop-func*/
-
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// jquery ui dependency
-
-function getLevel(level) {
-
-    level = parseInt(level, 10);
-
-    if (isNaN(level) || level < 1) {
-        return 1;
-    }
-
-    return level;
-}
-
-function getId(level) {
-    return 'DIALOG' + getLevel(level);
-}
-
-function addButtons(buttons, dialog) {
-    if (dialog.options.closeButton === true) {
-        buttons[dialog.services.localeService.t('fermer')] = function () {
-            dialog.close();
-        };
-    }
-    if (dialog.options.cancelButton === true) {
-        buttons[dialog.services.localeService.t('annuler')] = function () {
-            dialog.close();
-        };
-    }
-
-    return buttons;
-}
-
-var PhraseaDialog = function PhraseaDialog(services, options, level) {
-    var _this = this;
-
-    var createDialog = function createDialog(level) {
-
-        var $dialog = (0, _jquery2.default)('#' + getId(level));
-
-        if ($dialog.length > 0) {
-            throw 'Dialog already exists at this level';
-        }
-
-        $dialog = (0, _jquery2.default)('<div style="display:none;" id="' + getId(level) + '"></div>');
-        (0, _jquery2.default)('body').append($dialog);
-
-        return $dialog;
-    };
-
-    var defaults = {
-        size: 'Medium',
-        buttons: {},
-        loading: true,
-        title: '',
-        closeOnEscape: true,
-        confirmExit: false,
-        closeCallback: false,
-        closeButton: false,
-        cancelButton: false
-    };
-    var width = void 0;
-    var height = void 0;
-    var $dialog = void 0;
-    var $this = this;
-
-    options = (typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object' ? options : {};
-
-    this.closing = false;
-
-    this.options = _jquery2.default.extend(defaults, options);
-
-    this.services = services;
-
-    this.level = getLevel(level);
-
-    this.options.buttons = addButtons(this.options.buttons, this);
-
-    if (/\d+x\d+/.test(this.options.size)) {
-        var dimension = this.options.size.split('x');
-        height = dimension[1];
-        width = dimension[0];
-    } else {
-        switch (this.options.size) {
-            case 'Full':
-                height = bodySize.y - 30;
-                width = bodySize.x - 30;
-                break;
-            case 'Medium':
-                width = Math.min(bodySize.x - 30, 730);
-                height = Math.min(bodySize.y - 30, 520);
-                break;
-            default:
-            case 'Small':
-                width = Math.min(bodySize.x - 30, 420);
-                height = Math.min(bodySize.y - 30, 300);
-                break;
-            case 'Alert':
-                width = Math.min(bodySize.x - 30, 300);
-                height = Math.min(bodySize.y - 30, 150);
-                break;
-            case 'Custom':
-                width = Math.min(bodySize.x - 30, this.options.customWidth);
-                height = Math.min(bodySize.y - 30, this.options.customHeight);
-                break;
-        }
-    }
-
-    /*
-     * 3 avaailable dimensions :
-     *
-     *  - Full   | Full size ()
-     *  - Medium | 420 x 450
-     *  - Small  | 730 x 480
-     *
-     **/
-    this.$dialog = createDialog(this.level);
-    this.zIndex = 5000 + parseInt(this.level, 10); //Math.min(this.level * 2000 + 5000, 32767);
-
-    var CloseCallback = function CloseCallback() {
-        if (typeof $this.options.closeCallback === 'function') {
-            $this.options.closeCallback($this.$dialog);
-        }
-
-        if ($this.closing === false) {
-            $this.closing = true;
-            $this.close();
-        }
-    };
-
-    if (this.$dialog.data('ui-dialog')) {
-        this.$dialog.dialog('destroy');
-    }
-
-    this.$dialog.attr('title', this.options.title).empty().dialog({
-        buttons: this.options.buttons,
-        draggable: false,
-        resizable: false,
-        closeOnEscape: this.options.closeOnEscape,
-        modal: true,
-        width: width,
-        height: height,
-        open: function open(event) {
-            var $dialogEl = (0, _jquery2.default)(event.currentTarget);
-            //$(this)
-            $dialogEl.dialog('widget').css('z-index', _this.zIndex);
-        },
-        close: CloseCallback
-    }).dialog('open').addClass('dialog-' + this.options.size);
-
-    if (this.options.loading === true) {
-        this.$dialog.addClass('loading');
-    }
-
-    if (this.options.size === 'Full') {
-        var _$this = this;
-        (0, _jquery2.default)(window).unbind('resize.DIALOG' + getLevel(level)).bind('resize.DIALOG' + getLevel(level), function () {
-            if (_$this.$dialog.data('ui-dialog')) {
-                _$this.$dialog.dialog('option', {
-                    width: bodySize.x - 30,
-                    height: bodySize.y - 30
-                });
-            }
-        });
-    }
-
-    return this;
-};
-
-PhraseaDialog.prototype = {
-    close: function close() {
-        dialog.close(this.level);
-    },
-    setContent: function setContent(content) {
-        this.$dialog.removeClass('loading').empty().append(content);
-    },
-    getId: function getId() {
-        return this.$dialog.attr('id');
-    },
-    load: function load(url, method, params) {
-        var $this = this;
-        this.loader = {
-            url: url,
-            method: typeof method === 'undefined' ? 'GET' : method,
-            params: typeof params === 'undefined' ? {} : params
-        };
-
-        _jquery2.default.ajax({
-            type: this.loader.method,
-            url: this.loader.url,
-            dataType: 'html',
-            data: this.loader.params,
-            beforeSend: function beforeSend() {},
-            success: function success(data) {
-                $this.setContent(data);
-                return;
-            }
-        });
-    },
-    refresh: function refresh() {
-        if (typeof this.loader === 'undefined') {
-            throw 'Nothing to refresh';
-        }
-        this.load(this.loader.url, this.loader.method, this.loader.params);
-    },
-    getDomElement: function getDomElement() {
-        return this.$dialog;
-    },
-    getOption: function getOption(optionName) {
-        if (this.$dialog.data('ui-dialog')) {
-            return this.$dialog.dialog('option', optionName);
-        }
-        return null;
-    },
-    setOption: function setOption(optionName, optionValue) {
-        if (optionName === 'buttons') {
-            optionValue = addButtons(optionValue, this);
-        }
-        if (this.$dialog.data('ui-dialog')) {
-            this.$dialog.dialog('option', optionName, optionValue);
-        }
-    }
-};
-
-var Dialog = function Dialog() {
-    this.currentStack = {};
-};
-
-Dialog.prototype = {
-    create: function create(services, options, level) {
-
-        if (this.get(level) instanceof PhraseaDialog) {
-            this.get(level).close();
-        }
-
-        var $dialog = new PhraseaDialog(services, options, level);
-
-        this.currentStack[$dialog.getId()] = $dialog;
-
-        return $dialog;
-    },
-    get: function get(level) {
-
-        var id = getId(level);
-
-        if (id in this.currentStack) {
-            return this.currentStack[id];
-        }
-
-        return null;
-    },
-    close: function close(level) {
-
-        (0, _jquery2.default)(window).unbind('resize.DIALOG' + getLevel(level));
-
-        this.get(level).closing = true;
-        var dialog = this.get(level).getDomElement();
-        if (dialog.data('ui-dialog')) {
-            dialog.dialog('close').dialog('destroy');
-        }
-        dialog.remove();
-
-        var id = this.get(level).getId();
-
-        if (id in this.currentStack) {
-            delete this.currentStack.id;
-        }
-    }
-};
-
-var dialog = new Dialog();
-exports.default = dialog;
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.9.1
@@ -2173,7 +1846,334 @@ exports.default = dialog;
   }
 }());
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(9)(module)))
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // @TODO enable lints
+/* eslint-disable max-len*/
+/* eslint-disable object-shorthand*/
+/* eslint-disable dot-notation*/
+/* eslint-disable vars-on-top*/
+/* eslint-disable prefer-template*/
+/* eslint-disable prefer-const*/
+/* eslint-disable spaced-comment*/
+/* eslint-disable curly*/
+/* eslint-disable object-curly-spacing*/
+/* eslint-disable spaced-comment*/
+/* eslint-disable prefer-arrow-callback*/
+/* eslint-disable one-let*/
+/* eslint-disable space-in-parens*/
+/* eslint-disable camelcase*/
+/* eslint-disable no-undef*/
+/* eslint-disable quote-props*/
+/* eslint-disable no-shadow*/
+/* eslint-disable no-param-reassign*/
+/* eslint-disable no-unused-expressions*/
+/* eslint-disable no-shadow*/
+/* eslint-disable no-implied-eval*/
+/* eslint-disable brace-style*/
+/* eslint-disable no-unused-vars*/
+/* eslint-disable brace-style*/
+/* eslint-disable no-lonely-if*/
+/* eslint-disable no-inline-comments*/
+/* eslint-disable default-case*/
+/* eslint-disable one-let*/
+/* eslint-disable semi*/
+/* eslint-disable no-throw-literal*/
+/* eslint-disable no-sequences*/
+/* eslint-disable consistent-this*/
+/* eslint-disable no-dupe-keys*/
+/* eslint-disable semi*/
+/* eslint-disable no-loop-func*/
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// jquery ui dependency
+
+function getLevel(level) {
+
+    level = parseInt(level, 10);
+
+    if (isNaN(level) || level < 1) {
+        return 1;
+    }
+
+    return level;
+}
+
+function getId(level) {
+    return 'DIALOG' + getLevel(level);
+}
+
+function addButtons(buttons, dialog) {
+    if (dialog.options.closeButton === true) {
+        buttons[dialog.services.localeService.t('fermer')] = function () {
+            dialog.close();
+        };
+    }
+    if (dialog.options.cancelButton === true) {
+        buttons[dialog.services.localeService.t('annuler')] = function () {
+            dialog.close();
+        };
+    }
+
+    return buttons;
+}
+
+var PhraseaDialog = function PhraseaDialog(services, options, level) {
+    var _this = this;
+
+    var createDialog = function createDialog(level) {
+
+        var $dialog = (0, _jquery2.default)('#' + getId(level));
+
+        if ($dialog.length > 0) {
+            throw 'Dialog already exists at this level';
+        }
+
+        $dialog = (0, _jquery2.default)('<div style="display:none;" id="' + getId(level) + '"></div>');
+        (0, _jquery2.default)('body').append($dialog);
+
+        return $dialog;
+    };
+
+    var defaults = {
+        size: 'Medium',
+        buttons: {},
+        loading: true,
+        title: '',
+        closeOnEscape: true,
+        confirmExit: false,
+        closeCallback: false,
+        closeButton: false,
+        cancelButton: false
+    };
+    var width = void 0;
+    var height = void 0;
+    var $dialog = void 0;
+    var $this = this;
+
+    options = (typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object' ? options : {};
+
+    this.closing = false;
+
+    this.options = _jquery2.default.extend(defaults, options);
+
+    this.services = services;
+
+    this.level = getLevel(level);
+
+    this.options.buttons = addButtons(this.options.buttons, this);
+
+    if (/\d+x\d+/.test(this.options.size)) {
+        var dimension = this.options.size.split('x');
+        height = dimension[1];
+        width = dimension[0];
+    } else {
+        switch (this.options.size) {
+            case 'Full':
+                height = bodySize.y - 30;
+                width = bodySize.x - 30;
+                break;
+            case 'Medium':
+                width = Math.min(bodySize.x - 30, 730);
+                height = Math.min(bodySize.y - 30, 520);
+                break;
+            default:
+            case 'Small':
+                width = Math.min(bodySize.x - 30, 420);
+                height = Math.min(bodySize.y - 30, 300);
+                break;
+            case 'Alert':
+                width = Math.min(bodySize.x - 30, 300);
+                height = Math.min(bodySize.y - 30, 150);
+                break;
+            case 'Custom':
+                width = Math.min(bodySize.x - 30, this.options.customWidth);
+                height = Math.min(bodySize.y - 30, this.options.customHeight);
+                break;
+        }
+    }
+
+    /*
+     * 3 avaailable dimensions :
+     *
+     *  - Full   | Full size ()
+     *  - Medium | 420 x 450
+     *  - Small  | 730 x 480
+     *
+     **/
+    this.$dialog = createDialog(this.level);
+    this.zIndex = 5000 + parseInt(this.level, 10); //Math.min(this.level * 2000 + 5000, 32767);
+
+    var CloseCallback = function CloseCallback() {
+        if (typeof $this.options.closeCallback === 'function') {
+            $this.options.closeCallback($this.$dialog);
+        }
+
+        if ($this.closing === false) {
+            $this.closing = true;
+            $this.close();
+        }
+    };
+
+    if (this.$dialog.data('ui-dialog')) {
+        this.$dialog.dialog('destroy');
+    }
+
+    this.$dialog.attr('title', this.options.title).empty().dialog({
+        buttons: this.options.buttons,
+        draggable: false,
+        resizable: false,
+        closeOnEscape: this.options.closeOnEscape,
+        modal: true,
+        width: width,
+        height: height,
+        open: function open(event) {
+            var $dialogEl = (0, _jquery2.default)(event.currentTarget);
+            //$(this)
+            $dialogEl.dialog('widget').css('z-index', _this.zIndex);
+        },
+        close: CloseCallback
+    }).dialog('open').addClass('dialog-' + this.options.size);
+
+    if (this.options.loading === true) {
+        this.$dialog.addClass('loading');
+    }
+
+    if (this.options.size === 'Full') {
+        var _$this = this;
+        (0, _jquery2.default)(window).unbind('resize.DIALOG' + getLevel(level)).bind('resize.DIALOG' + getLevel(level), function () {
+            if (_$this.$dialog.data('ui-dialog')) {
+                _$this.$dialog.dialog('option', {
+                    width: bodySize.x - 30,
+                    height: bodySize.y - 30
+                });
+            }
+        });
+    }
+
+    return this;
+};
+
+PhraseaDialog.prototype = {
+    close: function close() {
+        dialog.close(this.level);
+    },
+    setContent: function setContent(content) {
+        this.$dialog.removeClass('loading').empty().append(content);
+    },
+    getId: function getId() {
+        return this.$dialog.attr('id');
+    },
+    load: function load(url, method, params) {
+        var $this = this;
+        this.loader = {
+            url: url,
+            method: typeof method === 'undefined' ? 'GET' : method,
+            params: typeof params === 'undefined' ? {} : params
+        };
+
+        _jquery2.default.ajax({
+            type: this.loader.method,
+            url: this.loader.url,
+            dataType: 'html',
+            data: this.loader.params,
+            beforeSend: function beforeSend() {},
+            success: function success(data) {
+                $this.setContent(data);
+                return;
+            }
+        });
+    },
+    refresh: function refresh() {
+        if (typeof this.loader === 'undefined') {
+            throw 'Nothing to refresh';
+        }
+        this.load(this.loader.url, this.loader.method, this.loader.params);
+    },
+    getDomElement: function getDomElement() {
+        return this.$dialog;
+    },
+    getOption: function getOption(optionName) {
+        if (this.$dialog.data('ui-dialog')) {
+            return this.$dialog.dialog('option', optionName);
+        }
+        return null;
+    },
+    setOption: function setOption(optionName, optionValue) {
+        if (optionName === 'buttons') {
+            optionValue = addButtons(optionValue, this);
+        }
+        if (this.$dialog.data('ui-dialog')) {
+            this.$dialog.dialog('option', optionName, optionValue);
+        }
+    }
+};
+
+var Dialog = function Dialog() {
+    this.currentStack = {};
+};
+
+Dialog.prototype = {
+    create: function create(services, options, level) {
+
+        if (this.get(level) instanceof PhraseaDialog) {
+            this.get(level).close();
+        }
+
+        var $dialog = new PhraseaDialog(services, options, level);
+
+        this.currentStack[$dialog.getId()] = $dialog;
+
+        return $dialog;
+    },
+    get: function get(level) {
+
+        var id = getId(level);
+
+        if (id in this.currentStack) {
+            return this.currentStack[id];
+        }
+
+        return null;
+    },
+    close: function close(level) {
+
+        (0, _jquery2.default)(window).unbind('resize.DIALOG' + getLevel(level));
+
+        this.get(level).closing = true;
+        var dialog = this.get(level).getDomElement();
+        if (dialog.data('ui-dialog')) {
+            dialog.dialog('close').dialog('destroy');
+        }
+        dialog.remove();
+
+        var id = this.get(level).getId();
+
+        if (id in this.currentStack) {
+            delete this.currentStack.id;
+        }
+    }
+};
+
+var dialog = new Dialog();
+exports.default = dialog;
 
 /***/ }),
 /* 3 */
@@ -4257,7 +4257,7 @@ function stubFalse() {
 
 module.exports = merge;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(9)(module)))
 
 /***/ }),
 /* 5 */
@@ -4357,34 +4357,6 @@ var EventEmitter = function () {
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global, process) {var __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c) Microsoft, All rights reserved. See License.txt in the project root for license information.
@@ -16777,10 +16749,10 @@ var ReactiveTest = Rx.ReactiveTest = {
 
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module), __webpack_require__(5), __webpack_require__(21)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)(module), __webpack_require__(5), __webpack_require__(23)))
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -17024,6 +16996,34 @@ var ReactiveTest = Rx.ReactiveTest = {
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -17145,7 +17145,8 @@ function escape(data) {
 
 /***/ }),
 /* 11 */,
-/* 12 */
+/* 12 */,
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17168,7 +17169,7 @@ function escape(data) {
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17320,7 +17321,7 @@ function appendBackwardsAPI(i18n) {
 }
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17356,7 +17357,7 @@ function appendBackwardsAPI(i18n) {
 /* eslint-disable default-case*/
 /* eslint-disable one-var*/
 /* eslint-disable semi*/
-var pym = __webpack_require__(17);
+var pym = __webpack_require__(18);
 /*
  * jQuery Tooltip plugin 1.3
  *
@@ -18102,7 +18103,7 @@ var pym = __webpack_require__(17);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18112,7 +18113,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _rx = __webpack_require__(8);
+var _rx = __webpack_require__(7);
 
 var Rx = _interopRequireWildcard(_rx);
 
@@ -18175,7 +18176,7 @@ Emitter.prototype.dispose = function () {
 exports.default = Emitter;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18185,7 +18186,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _applicationConfigService = __webpack_require__(18);
+var _applicationConfigService = __webpack_require__(19);
 
 var _applicationConfigService2 = _interopRequireDefault(_applicationConfigService);
 
@@ -18223,7 +18224,7 @@ var ConfigService = function (_ApplicationConfigSer) {
 exports.default = ConfigService;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! pym.js - v1.3.2 - 2018-02-13 */
@@ -19351,7 +19352,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! pym.js - v
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19365,7 +19366,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(1);
 
 var _ = _interopRequireWildcard(_underscore);
 
@@ -19477,7 +19478,7 @@ var ApplicationConfigService = function () {
 exports.default = ApplicationConfigService;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19995,7 +19996,7 @@ exports.default = ApplicationConfigService;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20007,11 +20008,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _i18next = __webpack_require__(23);
+var _i18next = __webpack_require__(25);
 
 var _i18next2 = _interopRequireDefault(_i18next);
 
-var _i18nextXhrBackend = __webpack_require__(33);
+var _i18nextXhrBackend = __webpack_require__(35);
 
 var _i18nextXhrBackend2 = _interopRequireDefault(_i18nextXhrBackend);
 
@@ -20019,7 +20020,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _rx = __webpack_require__(8);
+var _rx = __webpack_require__(7);
 
 var Rx = _interopRequireWildcard(_rx);
 
@@ -20110,7 +20111,8 @@ var LocaleService = function () {
 exports.default = LocaleService;
 
 /***/ }),
-/* 21 */
+/* 22 */,
+/* 23 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -20300,8 +20302,8 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 22 */,
-/* 23 */
+/* 24 */,
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20321,7 +20323,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDefaultNamespace", function() { return setDefaultNamespace; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return t; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "use", function() { return use; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__i18next__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__i18next__ = __webpack_require__(26);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
@@ -20343,22 +20345,22 @@ var t = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].t.bind(__WEBPA
 var use = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].use.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PluralResolver__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Interpolator__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__BackendConnector__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CacheConnector__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__defaults__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__postProcessor__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__compatibility_v1__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PluralResolver__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Interpolator__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__BackendConnector__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CacheConnector__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__defaults__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__postProcessor__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__compatibility_v1__ = __webpack_require__(14);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -20766,7 +20768,7 @@ var I18n = function (_EventEmitter) {
 /* harmony default export */ __webpack_exports__["a"] = (new I18n());
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20917,14 +20919,14 @@ var ResourceStore = function (_EventEmitter) {
 /* harmony default export */ __webpack_exports__["a"] = (ResourceStore);
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__postProcessor__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__compatibility_v1__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__postProcessor__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__compatibility_v1__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -21222,7 +21224,7 @@ var Translator = function (_EventEmitter) {
 /* harmony default export */ __webpack_exports__["a"] = (Translator);
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21352,7 +21354,7 @@ var LanguageUtil = function () {
 /* harmony default export */ __webpack_exports__["a"] = (LanguageUtil);
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21521,7 +21523,7 @@ var PluralResolver = function () {
 /* harmony default export */ __webpack_exports__["a"] = (PluralResolver);
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21696,7 +21698,7 @@ var Interpolator = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Interpolator);
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21989,7 +21991,7 @@ var Connector = function (_EventEmitter) {
 /* harmony default export */ __webpack_exports__["a"] = (Connector);
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22074,7 +22076,7 @@ var Connector = function (_EventEmitter) {
 /* harmony default export */ __webpack_exports__["a"] = (Connector);
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22155,14 +22157,14 @@ function transformOptions(options) {
 }
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(34).default;
+module.exports = __webpack_require__(36).default;
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22174,11 +22176,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _utils = __webpack_require__(35);
+var _utils = __webpack_require__(37);
 
 var utils = _interopRequireWildcard(_utils);
 
-var _ajax = __webpack_require__(36);
+var _ajax = __webpack_require__(38);
 
 var _ajax2 = _interopRequireDefault(_ajax);
 
@@ -22291,7 +22293,7 @@ Backend.type = 'backend';
 exports.default = Backend;
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22329,7 +22331,7 @@ function extend(obj) {
 }
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22412,8 +22414,9 @@ function ajax(url, options, callback, data, cache) {
 exports.default = ajax;
 
 /***/ }),
-/* 37 */,
-/* 38 */
+/* 39 */,
+/* 40 */,
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var jQuery = __webpack_require__(0);
@@ -37424,9 +37427,6 @@ $.widget( "ui.tooltip", {
 
 
 /***/ }),
-/* 39 */,
-/* 40 */,
-/* 41 */,
 /* 42 */,
 /* 43 */,
 /* 44 */,
@@ -37442,7 +37442,15 @@ $.widget( "ui.tooltip", {
 /* 54 */,
 /* 55 */,
 /* 56 */,
-/* 57 */
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37573,14 +37581,6 @@ var utilsModule = function () {
 exports.default = utilsModule;
 
 /***/ }),
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
 /* 66 */,
 /* 67 */,
 /* 68 */,
@@ -37593,7 +37593,23 @@ exports.default = utilsModule;
 /* 75 */,
 /* 76 */,
 /* 77 */,
-/* 78 */
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37609,7 +37625,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(19);
+__webpack_require__(20);
 
 var mainMenu = function mainMenu(services) {
     var configService = services.configService,
