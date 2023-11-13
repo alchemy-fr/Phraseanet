@@ -148,14 +148,13 @@ class Job
             ':minrid' => 0
         ];
         if ($ifCollection) {
-            $selectRecordsClauses[] = "`coll_id` = :coll_id";
-            $this->selectRecordParams[':coll_id'] = $ifCollection->get_coll_id();
+            $selectRecordsClauses[] = "`coll_id` = " . (int)($ifCollection->get_coll_id());
         }
 
         if (array_key_exists('if_status', $job_conf)) {
-            $selectRecordsClauses[] = "`status` & :sb_and = :sb_equ";
-            $this->selectRecordParams[':sb_and'] = 'b'.str_replace(['0', 'x'], ['1', '0'], $job_conf['if_status']);
-            $this->selectRecordParams[':sb_equ'] = 'b'.str_replace('x', '0', $job_conf['if_status']);
+            $_and = '0b'.str_replace(['0', 'x'], ['1', '0'], $job_conf['if_status']);
+            $_equ = '0b'.str_replace('x', '0', $job_conf['if_status']);
+            $selectRecordsClauses[] = "`status` & " . $_and . " = " . $_equ;
         }
 
         $cnx = $this->databox->get_connection();
