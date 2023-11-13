@@ -153,9 +153,9 @@ class Job
         }
 
         if (array_key_exists('if_status', $job_conf)) {
-            $selectRecordsClauses[] = "`status` & b:sb_and = b:sb_equ";
-            $this->selectRecordParams[':sb_and'] = str_replace(['0', 'x'], ['1', '0'], $job_conf['if_status']);
-            $this->selectRecordParams[':sb_equ'] = str_replace('x', '0', $job_conf['if_status']);
+            $selectRecordsClauses[] = "`status` & :sb_and = :sb_equ";
+            $this->selectRecordParams[':sb_and'] = 'b'.str_replace(['0', 'x'], ['1', '0'], $job_conf['if_status']);
+            $this->selectRecordParams[':sb_equ'] = 'b'.str_replace('x', '0', $job_conf['if_status']);
         }
 
         $cnx = $this->databox->get_connection();
