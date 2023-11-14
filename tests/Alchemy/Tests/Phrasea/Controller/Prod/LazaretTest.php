@@ -288,13 +288,16 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $em->expects($this->once())
             ->method('flush');
 
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
         self::$DI['app']['orm.em'] = $em;
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
             'copy_meta'       => 1,
             'record_id'       => self::$DI['record_1']->get_record_id(),
             'bas_id'          => $lazaretFile->getBaseId(),
             'keep_attributes' => 1,
-            'attributes'      => [1, 2, 3, 4] //Check only the four first attributes
+            'attributes'      => [1, 2, 3, 4], //Check only the four first attributes
+            'prodLazaret_token'  => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
