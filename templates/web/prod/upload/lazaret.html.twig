@@ -187,25 +187,24 @@
         $("button.add-lazaret", scope).bind('click', function () {
             const that = $(this);
             const $elementRow = that.closest(".lazaretElement");
-            if(!$elementRow.attr("hasSelected")) {
-                return false;
-            }
-            var lazaretId = getLazaretId(that);
-
+            let $form    = $("FORM", $elementRow);
+            const lazaretId = getLazaretId(that);
 
             let $selectedProposals = $(".record-proposal .selected");
-            if($selectedProposals.length !== 1) {
+            if($selectedProposals.length > 1) {
                 alert(language.onlyOneRecord);
                 return false;
             }
-            let recordId = $selectedProposals.first().attr("data-record_id");
-            let $form = $("FORM", $elementRow);
-
-            $(".record_id", $form).val(recordId);
+            if($selectedProposals.length === 1) {
+                let recordId = $selectedProposals.first().attr("data-record_id");
+                $(".record_id", $form).val(recordId);
+            }
+            else {
+                $(".record_id", $form).val('');
+            }
 
             var destinationCollectionId = getDestinationId(that);
             var container = $(this).closest('.wrapper-item');
-
 
             /*fix POST on firefox*/
             data = $form.serializeArray();
@@ -582,7 +581,8 @@
                                         </div>
 
                                         <h5 class="copy_meta disabled-if-no-selection" style="border-top: 1px solid black; margin-top:5px;">
-                                            <input type="checkbox" name="copy_meta" />&nbsp;{{ 'upload:: Copy meta' | trans }}
+                                            <input type="checkbox" id="copy_meta" name="copy_meta" />&nbsp;
+                                            <label for="copy_meta" style="color:revert; display:revert;">{{ 'upload:: Copy meta' | trans }}</label>
                                         </h5>
 
                                     </div>

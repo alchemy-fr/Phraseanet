@@ -136,7 +136,7 @@ class LazaretController extends Controller
         $recordId = $request->request->get('record_id');
         /** @var LazaretFile $lazaretFile */
         $metadatasToSet = [];
-        if(!!$request->request->get('copy_meta', false)) {
+        if($recordId !== "" && !!$request->request->get('copy_meta', false)) {
 
             $substitutedRecord = null;
 
