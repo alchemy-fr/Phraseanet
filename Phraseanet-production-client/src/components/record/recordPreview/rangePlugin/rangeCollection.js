@@ -22,7 +22,8 @@ class RangeCollection extends Component {
         handlePositions: [],
         selected: false,
         image: {
-            src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFkAAAAyCAYAAAA3OHc2AAAAuElEQVR4Xu3UwQkAIAwEwdh/0Qr2kH2NBWRhODwzc8dbFTiQV33/ccj7xpADY8iQC4Gg4U+GHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgEiQftoTIBhrHr1wAAAABJRU5ErkJggg==',
+            // src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFkAAAAyCAYAAAA3OHc2AAAAuElEQVR4Xu3UwQkAIAwEwdh/0Qr2kH2NBWRhODwzc8dbFTiQV33/ccj7xpADY8iQC4Gg4U+GHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgECUuGHAgEiQftoTIBhrHr1wAAAABJRU5ErkJggg==',
+            src: '',
             width: 89,
             height: 50
         },
@@ -476,26 +477,27 @@ ${JSON.stringify(exportableData)}
     }
 
     exportRangesData = (rangeData) => {
-        var title = this.settings.translations.alertTitle;
-        var message = this.settings.translations.updateTitle;
+        // var title = this.settings.translations.alertTitle;
+        // var message = this.settings.translations.updateTitle;
         var services = this.settings.services;
-        $.ajax({
-            type: 'POST',
-            url: `${this.settings.baseUrl}prod/tools/metadata/save/`,
-            data: {
-                databox_id: this.settings.databoxId,
-                record_id: this.settings.recordId,
-                meta_struct_id: this.settings.meta_struct_id,
-                value: rangeData
-            },
-            success: function (data) {
-                if (!data.success) {
-                    humane.error(data.message);
-                } else {
-                    humane.info(message);
-                }
-            }
-        });
+        // do not save on metadata
+        // $.ajax({
+        //     type: 'POST',
+        //     url: `${this.settings.baseUrl}prod/tools/metadata/save/`,
+        //     data: {
+        //         databox_id: this.settings.databoxId,
+        //         record_id: this.settings.recordId,
+        //         meta_struct_id: this.settings.meta_struct_id,
+        //         value: rangeData
+        //     },
+        //     success: function (data) {
+        //         if (!data.success) {
+        //             humane.error(data.message);
+        //         } else {
+        //             humane.info(message);
+        //         }
+        //     }
+        // });
 };
 }
 

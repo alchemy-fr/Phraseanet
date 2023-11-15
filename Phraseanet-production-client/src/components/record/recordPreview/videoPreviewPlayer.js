@@ -3,6 +3,7 @@ import $ from 'jquery';
 import rangePlugin from './rangePlugin/index';
 let hotkeys = require('videojs-hotkeys');
 import videojs from 'video.js';
+import FieldCollection from "../recordEditor/models/fieldCollection";
 // require('video.js').default;
 
 const videoPreviewPlayer = (services, datas, activeTab = false) => {
@@ -34,6 +35,26 @@ const videoPreviewPlayer = (services, datas, activeTab = false) => {
         // options.translations = initData.translations;
         // options.services = params.services;
         options.preferences = initData.preferences;
+
+        if (initData.videoEditorConfig !== null) {
+            options.seekBackwardStep = initData.videoEditorConfig.seekBackwardStep;
+            options.seekForwardStep = initData.videoEditorConfig.seekForwardStep;
+            options.playbackRates = initData.videoEditorConfig.playbackRates === undefined ? [1, 2, 3] : initData.videoEditorConfig.playbackRates;
+            options.vttFieldValue = false;
+            options.ChapterVttFieldName = initData.videoEditorConfig.ChapterVttFieldName === undefined ? false : initData.videoEditorConfig.ChapterVttFieldName;
+        }
+
+        // get default videoTextTrack value
+        if (options.ChapterVttFieldName !== false) {
+            var fieldCollection = new FieldCollection(initData.T_fields);
+            let vttField = fieldCollection.getFieldByName(options.ChapterVttFieldName);
+            if (vttField !== false) {
+                if(vttField._value.VideoTextTrackChapters != undefined) {
+                    options.vttFieldValue = vttField._value.VideoTextTrackChapters[0];
+                }
+                options.meta_struct_id = vttField.id;
+            }
+        }
 
         dispose();
         render(initData);

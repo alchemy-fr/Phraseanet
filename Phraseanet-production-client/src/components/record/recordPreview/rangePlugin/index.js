@@ -307,11 +307,10 @@ const plugin = function (options) {
     this.ready(() => {
 
         /*resize video*/
-        var videoChapterH = $('#rangeExtractor').height();
-        $('#rangeExtractor .video-player-container').css('max-height', videoChapterH);
-        $('#rangeExtractor .range-collection-container').css('height', videoChapterH - 100);
-        $('#rangeExtractor .video-range-editor-container').css('max-height', videoChapterH).css('overflow','hidden');
-
+        var videoChapterH = $('#phraseanet-video-preview').height();
+        $('#phraseanet-video-preview .video-player-container').css('max-height', videoChapterH);
+        $('#phraseanet-video-preview .range-collection-container').css('height', videoChapterH - 100);
+        $('#phraseanet-video-preview .video-range-editor-container').css('max-height', videoChapterH).css('overflow','hidden');
 
         this.setVTT();
 

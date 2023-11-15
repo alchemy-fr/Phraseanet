@@ -164,6 +164,22 @@ class RecordController extends Controller
             }
         }
 
+        $JSFields = [];
+
+        foreach ($record->getDatabox()->get_meta_structure() as $meta) {
+            /** @var \databox_field $meta */
+            $fields[] = $meta;
+
+            /** @Ignore */
+            $JSFields[$meta->get_id()] = [
+                'id' => $meta->get_id(),
+                'name' => $meta->get_name(),
+                '_value' => $record->getCaption([$meta->get_name()]),
+            ];
+
+
+        }
+
         $previewConfig = [
             "isVideo" => ($record->getType() == 'video'),
             "databaseId" => $record->getBaseId(),
@@ -174,6 +190,7 @@ class RecordController extends Controller
                 "type"  => $record->getType(),
                 "sources" => $sources
             ],
+            "T_fields" => $JSFields,
             "preferences" => [
                 "overlapChapters" => $this->app['settings']->getUserSetting($this->getAuthenticatedUser(), 'overlapChapters')
             ]
