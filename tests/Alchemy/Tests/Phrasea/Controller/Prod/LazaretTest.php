@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
@@ -136,8 +137,8 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $lazaretAttribute->expects($this->exactly(4))
             ->method('getName')
             ->will($this->onConsecutiveCalls(
-            AttributeInterface::NAME_METADATA, AttributeInterface::NAME_STORY, AttributeInterface::NAME_STATUS, AttributeInterface::NAME_METAFIELD
-                ));
+                AttributeInterface::NAME_METADATA, AttributeInterface::NAME_STORY, AttributeInterface::NAME_STATUS, AttributeInterface::NAME_METAFIELD
+            ));
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         //Provide some valid test values
         $lazaretAttribute->expects($this->exactly(4))
@@ -173,6 +174,126 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $randomValue = $this->setSessionFormToken('prodLazaret');
 
         self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
+            'bas_id'          => $lazaretFile->getBaseId(),
+            'keep_attributes' => 1,
+            'attributes'      => [1, 2, 3, 4], //Check only the four first attributes
+            'prodLazaret_token'  => $randomValue
+        ]);
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertResponseOk($response);
+        $this->assertGoodJsonContent(json_decode($response->getContent()));
+
+        self::$DI['app']['orm.em'] = $originalEm;
+        $story->delete();
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::addElement
+     */
+    public function testAddElementWithCopyMeta()
+    {
+        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
+        $originalEm = self::$DI['app']['orm.em'];
+        $em = $this->createEntityManagerMock();
+
+        // $lazaretFile = $this->getOneLazaretFile();
+
+        //The lazaret session
+        $lazaretSession = new \Alchemy\Phrasea\Model\Entities\LazaretSession();
+        $lazaretSession->setUser(self::$DI['user']);
+        $lazaretSession->setUpdated(new \DateTime('now'));
+        $lazaretSession->setCreated(new \DateTime('-1 day'));
+
+        //The lazaret file
+        $lazaretFile = $this->getMock(LazaretFile::class, [], [], '', false);
+//        $lazaretFile->setOriginalName('test');
+
+//        $lazaretFile->setFilename('test001.jpg');
+        $lazaretFile->method('getFilename')->willReturn('test001.jpg');
+
+//        $lazaretFile->setThumbFilename('test001.jpg');
+        $lazaretFile->method('getThumbFilename')->willReturn('test001.jpg');
+
+//        $lazaretFile->setBaseId(self::$DI['collection']->get_base_id());
+        $lazaretFile->method('getBaseId')->willReturn(self::$DI['collection']->get_base_id());
+        $lazaretFile->method('getCollection')->willReturn(self::$DI['collection']);
+
+//        $lazaretFile->setSession($lazaretSession);
+        $lazaretFile->method('getSession')->willReturn($lazaretSession);
+
+
+//        $lazaretFile->setSha256('3191af52748620e0d0da50a7b8020e118bd8b8a0845120b0bb');
+//        $lazaretFile->setUuid('7b8ef0e3-dc8f-4b66-9e2f-bd049d175124');
+//        $lazaretFile->setCreated(new \DateTime('-1 day'));
+//        $lazaretFile->setUpdated(new \DateTime('now'));
+
+        $lazaretFileName = self::$DI['app']['tmp.lazaret.path'].'/'.$lazaretFile->getFilename();
+        $lazaretThumbFileName = self::$DI['app']['tmp.lazaret.path'].'/'.$lazaretFile->getThumbFilename();
+
+        copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretFileName);
+        copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretThumbFileName);
+
+
+        //mock lazaret Attribute
+        $lazaretAttribute = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretAttribute', [], [], '', false);
+
+        //Expect to be called 3 times since we add 5 attribute to lazaretFile
+        //and each one is called to verify if it is an attribute to keep
+        $lazaretAttribute->expects($this->exactly(5))
+            ->method('getId')
+            ->will($this->onConsecutiveCalls(1, 2, 3, 4, 5));
+
+        //Provide consecutive value for all type of attributes
+        //Expect 4 call since the Fifth attribute is not eligible (see request attributes)
+        $lazaretAttribute->expects($this->exactly(4))
+            ->method('getName')
+            ->will($this->onConsecutiveCalls(
+                AttributeInterface::NAME_METADATA, AttributeInterface::NAME_STORY, AttributeInterface::NAME_STATUS, AttributeInterface::NAME_METAFIELD
+            ));
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+        //Provide some valid test values
+        $lazaretAttribute->expects($this->exactly(4))
+            ->method('getValue')
+            ->will($this->onConsecutiveCalls('metadataValue', $story->getId(), '00001111', 'metafieldValue'));
+
+        //Add the 5 attribute
+//        $lazaretFile->addAttribute($lazaretAttribute);
+//        $lazaretFile->addAttribute($lazaretAttribute);
+//        $lazaretFile->addAttribute($lazaretAttribute);
+//        $lazaretFile->addAttribute($lazaretAttribute);
+//        $lazaretFile->addAttribute($lazaretAttribute);
+        $lazaretFile->method('getAttributes')->willReturn([$lazaretAttribute, $lazaretAttribute, $lazaretAttribute, $lazaretAttribute, $lazaretAttribute]);
+
+        //expect to fetch possible records to subtitute
+        $lazaretFile->expects($this->once())
+            ->method('getRecordsToSubstitute')
+            ->will($this->returnValue([self::$DI['record_2'], self::$DI['record_1']]));
+
+        $id = 1;
+
+        self::$DI['app']['repo.lazaret-files'] = $this->createEntityRepositoryMock();
+        self::$DI['app']['repo.lazaret-files']->expects($this->exactly(2))
+            ->method('find')
+            ->with($this->equalTo($id))
+            ->will($this->returnValue($lazaretFile));
+
+        //In any case we expect the deletion of the lazaret file
+        $em->expects($this->once())
+            ->method('remove')
+            ->with($this->equalTo($lazaretFile));
+
+        //Then flush
+        $em->expects($this->once())
+            ->method('flush');
+
+        $randomValue = $this->setSessionFormToken('prodLazaret');
+
+        self::$DI['app']['orm.em'] = $em;
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', [
+            'copy_meta'       => 1,
+            'record_id'       => self::$DI['record_1']->get_record_id(),
             'bas_id'          => $lazaretFile->getBaseId(),
             'keep_attributes' => 1,
             'attributes'      => [1, 2, 3, 4], //Check only the four first attributes
