@@ -13,7 +13,12 @@ const recordPublishModal = (services, datas) => {
             , function (data) {
 
                 return publication(services).openModal(data);
-            });
+            }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
+        })
+        ;
 
         return true;
     };

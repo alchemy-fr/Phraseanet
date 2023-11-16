@@ -74,8 +74,11 @@ const editRecord = (services) => {
                 $('#tooltip').hide();
                 return;
             },
-            error: function (XHR, textStatus, errorThrown) {
-                if (XHR.status === 0) {
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
+                if (data.status === 0) {
                     return false;
                 }
             }
