@@ -435,7 +435,7 @@ class set_export extends set_abstract
      * @return array
      * @throws Exception
      */
-    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod, $removeStamp, $exportEmail)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod, $removeStamp, $exportEmail = false)
     {
         if (!is_array($wantedSubdefs)) {
             throw new Exception('No subdefs given');
@@ -646,7 +646,7 @@ class set_export extends set_abstract
                         ];
 
                         $stampedPath = null;
-                        if($files[$id]['to_stamp'] !== self::NO_STAMP){
+                        if($files[$id]['to_stamp'] !== self::NO_STAMP && $this->getConf()->get(['registry', 'actions', 'stamp-subdefs'], false) === true){
                             // stamp is mandatory, or user did not check "no stamp" : we must apply stamp
                             if($files[$id]['to_stamp'] === self::STAMP_SYNC) {
                                 // we prepare a direct download, we must stamp now

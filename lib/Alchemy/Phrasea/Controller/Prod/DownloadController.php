@@ -43,7 +43,7 @@ class DownloadController extends Controller
         $ssttid = $request->request->get('ssttid', '');
         $subdefs = $request->request->get('obj', []);
 
-        $download = new \set_export($this->app, $lst, $ssttid);
+        $download = new set_export($this->app, $lst, $ssttid);
 
         if (0 === $download->get_total_download()) {
             $this->app->abort(403);
@@ -55,7 +55,7 @@ class DownloadController extends Controller
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields'),
-            \set_export::STAMP_SYNC,
+            set_export::STAMP_SYNC,
             $request->request->get('stamp_choice') === "REMOVE_STAMP",
             false
         );
@@ -92,7 +92,7 @@ class DownloadController extends Controller
         $ssttid = $request->request->get('ssttid', '');
         $subdefs = $request->request->get('obj', []);
 
-        $download = new \set_export($this->app, $lst, $ssttid);
+        $download = new set_export($this->app, $lst, $ssttid);
 
         if (0 === $download->get_total_download()) {
             $this->app->abort(403);
@@ -106,12 +106,12 @@ class DownloadController extends Controller
 
         $list = $download->prepare_export(
             $this->getAuthenticatedUser(),
-            $this->app['filesystem'],
+            $this->getFilesystem(),
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields'),
-            // do not stamp now, worker will do
-            $stamp_method,
+            set_export::STAMP_ASYNC,
+            $request->request->get('stamp_choice') === "REMOVE_STAMP",
             true
         );
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
