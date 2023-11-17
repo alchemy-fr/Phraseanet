@@ -207,6 +207,11 @@ const preferences = services => {
                     $('body').removeClass().addClass('PNB ' + color);
                    /* console.log('saved:' + color);*/
                     return;
+                },
+                error: function (data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href);  // refresh will redirect to login
+                    }
                 }
             });
 

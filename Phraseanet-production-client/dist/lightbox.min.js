@@ -1249,6 +1249,11 @@ var download = function download(services) {
             success: function success(data) {
                 $dialog.setContent(data);
                 _onDownloadReady($dialog, window.exportConfig);
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
