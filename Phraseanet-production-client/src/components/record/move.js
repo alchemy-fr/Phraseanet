@@ -86,7 +86,12 @@ const moveRecord = (services) => {
         return $.ajax({
             type: 'POST',
             url: `${url}prod/records/movecollection/`,
-            data: datas
+            data: datas,
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
+            }
         });
     };
 
