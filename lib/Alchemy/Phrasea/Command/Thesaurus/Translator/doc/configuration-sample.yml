@@ -3,45 +3,40 @@
 translator:
   jobs:
     #
-    # first job : translate EN keywords to FR and DE
-    #             then change status-bit to elect record for job 2
-    keywords_EN_to_FR_DE:
+    # - translate EN keywords to FR and EN
+    #       nb: since we clean the destination fields, we MUST (re)write EN to EN
+    # - add country to keywords, both FR/EN
+    keywords:
       active: true
       databox: my_databox
       if_collection: to_translate
-      if_status: xx1xxxx
-      source_field: KeywordsEN
-      source_lng: en
-      destination_fields:
-        - fr:keywordsFR
-        - de:keywordsDE
-      cleanup_source: if_translated
-      # job 1 cleans the destination fields
-      cleanup_destination: true
-      # do NOT change collection because job 2 looks here...
-      #-- set_collection: online
-      # ... but change status
-      set_status: 010xxxx
+      if_status: x1xxxx
+      actions:
 
-    #
-    # second (last) job : translate EN country to FR and DE, add also as keywords !
-    #
-    country_EN_to_FR_DE:
-      active: true
-      databox: my_databox
-      # same collection as job 1
-      if_collection: to_translate
-      # status was changet by job 1
-      if_status: 010xxxx
-      source_field: CountryEN
-      source_lng: en
-      # add translated country to the keywords
-      destination_fields:
-        - fr:keywordsFR
-        - de:keywordsDE
-      cleanup_source: if_translated
-      # job 2 must NOT erase what job 1 did
-      cleanup_destination: false
-      # the last job will change collection
+        KeywordsENtoFREN:
+          active: true
+          source_field: KeywordsEN
+          source_lng: en
+          destination_fields:
+            - fr:keywordsFR
+            - en:keywordsEN
+          cleanup_source: if_translated
+          # action 1 cleans the destination fields
+          cleanup_destination: true
+
+        CountryENtoKeywordsFREN:
+          active: true
+          source_field: CountryEN
+          source_lng: en
+          # add translated country to the keywords
+          destination_fields:
+            - fr:keywordsFR
+            - en:keywordsEN
+          cleanup_source: if_translated
+          # action 2 must NOT erase what action 1 did
+          cleanup_destination: false
+
+      # end of job : change coll status
+      set_status: 10xxxx
       set_collection: online
-      set_status: 100xxxx
+

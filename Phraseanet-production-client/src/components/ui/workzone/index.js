@@ -538,6 +538,11 @@ const workzone = (services) => {
                 },
                 success: function (data) {
                     return;
+                },
+                error: function (data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href);  // refresh will redirect to login
+                    }
                 }
             });
         });
@@ -1185,6 +1190,11 @@ const workzone = (services) => {
 
                 if ('error' in data) {
                     $('.publication-list').empty().html(data.error);
+                }
+            },
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
                 }
             }
         });
