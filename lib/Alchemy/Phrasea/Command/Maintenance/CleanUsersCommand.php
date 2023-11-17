@@ -93,7 +93,7 @@ class CleanUsersCommand extends Command
             return 1;
         }
 
-        $clauses[] = sprintf("`last_connection` < DATE_SUB(NOW(), INTERVAL %d day)", $inactivityPeriod);
+        $clauses[] = sprintf("((`last_connection` IS NULL AND `Users`.`created` <  DATE_SUB(NOW(), INTERVAL %d day)) OR (`last_connection` < DATE_SUB(NOW(), INTERVAL %d day)))", $inactivityPeriod, $inactivityPeriod);
 
         $sql_where_u = 1;
         $sql_where_ub = 1;
@@ -249,7 +249,7 @@ class CleanUsersCommand extends Command
                 $usersList[] = [
                     $user->getId(),
                     $user->getLogin(),
-                    $user->getLastConnection()->format('Y-m-d h:m:s'),
+                    ($user->getLastConnection() == null) ? 'never connected' : $user->getLastConnection()->format('Y-m-d h:m:s'),
                     $action
                 ];
             }
@@ -280,7 +280,7 @@ class CleanUsersCommand extends Command
 
             $mail->setLogin($user->getLogin());
             $mail->setLocale($user->getLocale());
-            $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
+            $mail->setLastConnection(($user->getLastConnection() == null) ? 'never connected': $user->getLastConnection()->format('Y-m-d'));
             $mail->setDeleteDate((new \DateTime("+{$graceDuration} day"))->format('Y-m-d'));
 
             // return 0 on failure
@@ -296,7 +296,7 @@ class CleanUsersCommand extends Command
             if ($validMail && !empty($maxRelances)) {
                 $receiver = Receiver::fromUser($user);
                 $mail = MailSuccessAccountInactifDelete::create($this->container, $receiver);
-                $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
+                $mail->setLastConnection(($user->getLastConnection() == null) ? 'never connected' : $user->getLastConnection()->format('Y-m-d'));
 
                 // if --max_relances=0  there is no inactivity email
                 if ($user->getLastInactivityEmail() !== null) {
