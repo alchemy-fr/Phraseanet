@@ -1665,10 +1665,12 @@ class V1Controller extends Controller
             $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 
+        $resourceId = $this->getResourceIdResolver()($record);
+
         $data = [
             'databox_id'             => $record->getDataboxId(),
             'record_id'              => $record->getRecordId(),
-            'resource_id'            => ($this->getResourceIdResolver())($record),
+            'resource_id'            => $resourceId,
             'mime_type'              => $record->getMimeType(),
             'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),
@@ -1722,11 +1724,13 @@ class V1Controller extends Controller
             return $field->get_serialized_values();
         };
 
+        $resourceId = $this->getResourceIdResolver()($story);
+
         return [
             '@entity@'        => self::OBJECT_TYPE_STORY,
             'databox_id'      => $story->getDataboxId(),
             'story_id'        => $story->getRecordId(),
-            'resource_id'     => ($this->getResourceIdResolver())($story),
+            'resource_id'     => $resourceId,
             'cover_record_id' => $story->getCoverRecordId(),
             'updated_on'      => $story->getUpdated()->format(DATE_ATOM),
             'created_on'      => $story->getCreated()->format(DATE_ATOM),
