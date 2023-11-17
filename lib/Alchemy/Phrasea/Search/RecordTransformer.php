@@ -58,7 +58,8 @@ class RecordTransformer extends TransformerAbstract
         /** @var RecordView $recordView */
         $record = $recordView->getRecord();
 
-        $resourceId = $this->resourceIdResolver($record);
+        $resolver = $this->resourceIdResolver;
+        $resourceId = $resolver($record);
 
         return [
             'databox_id' => $record->getDataboxId(),
