@@ -151,10 +151,12 @@ class V3ResultHelpers
             $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 
+        $resourceId = $this->getResourceIdResolver()($record);
+
         $data = [
             'databox_id'             => $record->getDataboxId(),
             'record_id'              => $record->getRecordId(),
-            'resource_id'            => ($this->getResourceIdResolver())($record),
+            'resource_id'            => $resourceId,
             'mime_type'              => $record->getMimeType(),
             'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),

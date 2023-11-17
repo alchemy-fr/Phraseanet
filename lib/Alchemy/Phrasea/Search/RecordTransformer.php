@@ -58,10 +58,13 @@ class RecordTransformer extends TransformerAbstract
         /** @var RecordView $recordView */
         $record = $recordView->getRecord();
 
+        $resolver = $this->resourceIdResolver;
+        $resourceId = $resolver($record);
+
         return [
             'databox_id' => $record->getDataboxId(),
             'record_id' => $record->getRecordId(),
-            'resource_id' => ($this->resourceIdResolver)($record),
+            'resource_id' => $resourceId,
             'mime_type' => $record->getMimeType(),
             'title' => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name' => $record->get_original_name(),
