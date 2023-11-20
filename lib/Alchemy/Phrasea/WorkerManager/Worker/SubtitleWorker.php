@@ -239,6 +239,14 @@ class SubtitleWorker implements WorkerInterface
             // order to write meta in file
             $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
                 new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+
+            $this->getEventsManager()->notify(
+                $payload['authenticatedUserId'],
+                'eventsmanager_notify_subtitle',
+                json_encode([]),
+                false
+            );
+
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             $this->jobFinished();
@@ -476,4 +484,15 @@ class SubtitleWorker implements WorkerInterface
 
         return $t[0];
     }
+
+    /**
+     * @return \eventsmanager_broker
+     */
+    private function getEventsManager()
+    {
+        $app = $this->getApplicationBox()->getPhraseApplication();
+
+        return $app['events-manager'];
+    }
+
 }
