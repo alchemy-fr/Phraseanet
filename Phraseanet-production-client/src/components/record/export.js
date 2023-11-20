@@ -64,6 +64,11 @@ const exportRecord = services => {
                 else {
                     _onExportReady($dialog, window.exportConfig);
                 }
+            },
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
             }
         });
 
