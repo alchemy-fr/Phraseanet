@@ -361,7 +361,6 @@
 
     $('#submit-subtitle-request').on('click', function (e) {
         e.preventDefault();
-        console.log("auto-subtitle process");
 
         var destination = {};
         $.each($('input[name=subtitle_language_destination]'), function(k, input){
@@ -382,8 +381,9 @@
                 subtitle_destination: JSON.stringify(destination),
             },
             success: function success(data) {
-                console.log(data);
                 $('#request-status').removeClass('hide');
+
+                $('#submit-subtitle-request').hide();
             }
         });
     });

@@ -30,7 +30,7 @@ class eventsmanager_notify_subtitle extends eventsmanager_notifyAbstract
      */
     public function datas(array $data, $unread)
     {
-        $text = $this->app->trans('notification:: subtitle generation finished');
+        $text = $this->app->trans($data['translateMessage'], ['%title%' => $data['title'], '%langues%' => $data['langues']]);
 
         return [
             'text'  => $text,
