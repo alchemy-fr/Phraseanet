@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\Record\RecordAutoSubtitleEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Model\Entities\WorkerJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,6 +32,7 @@ class SubtitleSubscriber implements EventSubscriberInterface
                 "recordId"                      => $event->getRecord()->getRecordId(),
                 "languageSource"                => $event->getLanguageSource(),
                 "languageDestination"           => $event->getLanguageDestination(),
+                "authenticatedUserId"           => $event->getAuthenticatedUserId(),
                 "type"                          => MessagePublisher::SUBTITLE_TYPE  // used to specify the final Q to publish message
             ];
 

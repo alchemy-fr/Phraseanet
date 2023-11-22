@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use ACL;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
@@ -19,6 +20,8 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\WorkerManager\Event\ExportFtpEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use DOMDocument;
+use DOMXPath;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +31,15 @@ class ExportController extends Controller
     use DispatcherAware;
     use FilesystemAware;
     use NotifierAware;
+
+    /**
+     * @return ACL
+     */
+    private function getAclForConnectedUser()
+    {
+        return $this->getAclForUser($this->getAuthenticatedUser());
+    }
+
 
     /**
      * Display form to export documents
@@ -44,17 +56,63 @@ class ExportController extends Controller
             $request->request->get('story')
         );
 
+        // we must propose "do not stamp" when at least one collection is stamped AND the user has right to
+        // remove stamp on this collection
+        $removeable_stamp = false;          // true if at least one coll is "unstampable"
+        $removeable_stamp_by_base = [];     // unset: no stamp ; false: stamp not "unstampable" ; true: stamp "unstampable"
+
+        $colls_manageable = array_keys($this->getAclForConnectedUser()->get_granted_base([ACL::COLL_MANAGE]) ?? []);
+        $dbox_manageable = array_keys($this->getAclForConnectedUser()->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
+
+        foreach($download->get_elements() as $recordAdapter) {
+            // check collection only once
+            if(array_key_exists($bid = $recordAdapter->getCollection()->get_base_id(), $removeable_stamp_by_base)) {
+                continue;
+            }
+            // check stamp
+            $domprefs = new DOMDocument();
+            if ( !$domprefs->loadXML($recordAdapter->getCollection()->get_prefs()) ) {
+                continue;
+            }
+            $xpprefs = new DOMXPath($domprefs);
+            if ($xpprefs->query('/baseprefs/stamp')->length == 0) {
+                // the collection has no stamp settings
+                continue;
+            }
+            unset($domprefs);
+            // the collection has stamp, check user's right to remove it
+            $removeable_stamp_by_base[$bid] = false;
+            switch ((string)$this->getConf()->get(['registry', 'actions', 'export-stamp-choice'], false)) {
+                case '1':   // == (string)true
+                    // everybody can remove stamp (bc)
+                    $removeable_stamp_by_base[$bid] = $removeable_stamp = true;
+                    break;
+                case 'manage_collection':
+                    if (in_array($bid, $colls_manageable)) {
+                        $removeable_stamp_by_base[$bid] = $removeable_stamp = true;
+                    }
+                    break;
+                case 'manage_databox':
+                    if (in_array($recordAdapter->getDatabox()->get_sbas_id(), $dbox_manageable)) {
+                        $removeable_stamp_by_base[$bid] = $removeable_stamp = true;
+                    }
+                    break;
+            }
+        }
+
         $this->setSessionFormToken('prodExportDownload');
         $this->setSessionFormToken('prodExportEmail');
         $this->setSessionFormToken('prodExportFTP');
         $this->setSessionFormToken('prodExportOrder');
 
         return new Response($this->render('common/dialog_export.html.twig', [
-            'download'             => $download,
-            'ssttid'               => $request->request->get('ssel'),
-            'lst'                  => $download->serialize_list(),
-            'default_export_title' => $this->getConf()->get(['registry', 'actions', 'default-export-title']),
-            'choose_export_title'  => $this->getConf()->get(['registry', 'actions', 'export-title-choice'])
+            'download'                  => $download,
+            'ssttid'                    => $request->request->get('ssel'),
+            'lst'                       => $download->serialize_list(),
+            'default_export_title'      => $this->getConf()->get(['registry', 'actions', 'default-export-title']),
+            'choose_export_title'       => $this->getConf()->get(['registry', 'actions', 'export-title-choice']),
+            'removeable_stamp'          => $removeable_stamp,
+            'removeable_stamp_by_base'  => $removeable_stamp_by_base,
         ]));
     }
 
@@ -123,7 +181,9 @@ class ExportController extends Controller
                 $request->request->get('obj'),
                 false,
                 $request->request->get('businessfields'),
-                $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_ASYNC
+                \set_export::STAMP_ASYNC,
+                $request->request->get('stamp_choice') === "REMOVE_STAMP",
+                false
         );
 
             $exportFtpId = $download->export_ftp(
@@ -181,7 +241,8 @@ class ExportController extends Controller
             (array) $request->request->get('obj'),
             $request->request->get("type") == "title" ? : false,
             $request->request->get('businessfields'),
-            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_ASYNC,
+            \set_export::STAMP_ASYNC,
+            $request->request->get('stamp_choice') === "REMOVE_STAMP",
             true
         );
 

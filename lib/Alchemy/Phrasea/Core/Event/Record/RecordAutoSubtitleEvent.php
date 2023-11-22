@@ -7,20 +7,21 @@ use Alchemy\Phrasea\Model\RecordInterface;
 class RecordAutoSubtitleEvent extends RecordEvent
 {
     private $languageSource;
-    private $metaStructureIdSource;
     private $languageDestination;
-    private $metaStructureIdDestination;
+    private $authenticatedUserId;
 
     public function __construct(
         RecordInterface $record,
         $languageSource,
-        $languageDestination
+        $languageDestination,
+        $authenticatedUserId
     )
     {
         parent::__construct($record);
 
         $this->languageSource               = $languageSource;
         $this->languageDestination          = $languageDestination;
+        $this->authenticatedUserId          = $authenticatedUserId;
     }
 
     public function getLanguageSource()
@@ -33,8 +34,8 @@ class RecordAutoSubtitleEvent extends RecordEvent
         return $this->languageDestination;
     }
 
-    public function getMetaStructureIdDestination()
+    public function getAuthenticatedUserId()
     {
-        return $this->metaStructureIdDestination;
+        return $this->authenticatedUserId;
     }
 }

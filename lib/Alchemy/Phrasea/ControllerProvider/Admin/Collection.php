@@ -52,10 +52,12 @@ class Collection implements ControllerProviderInterface, ServiceProviderInterfac
             ->assert('bas_id', '\d+')
             ->bind('admin_display_collection');
 
+        /** @uses CollectionController::getSuggestedValues */
         $controllers->get('/{bas_id}/suggested-values/', 'controller.admin.collection:getSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_display_suggested_values');
 
+        /** @uses CollectionController::submitSuggestedValues */
         $controllers->post('/{bas_id}/suggested-values/', 'controller.admin.collection:submitSuggestedValues')
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_submit_suggested_values');

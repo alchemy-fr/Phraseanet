@@ -279,6 +279,7 @@ registry:
         api-subdef_service: false
     actions:
         export-stamp-choice: false
+        stamp-subdefs: false
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
