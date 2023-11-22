@@ -10,23 +10,15 @@ namespace Alchemy\Phrasea\Command\MetadataUpdater;
 
 use \appbox;
 use Alchemy\Phrasea\Command\Command;
+use Monolog\Logger;
+use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Reader;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class SetmetaCustomCommand extends Command
 {
-    /** @var InputInterface $input */
-    private $input;
-    /** @var OutputInterface $output */
-    private $output;
-    /** @var  appbox $appbox */
-    private $appbox;
-    /** @var array $databoxes */
-    private $databoxes;
-
-    
     public function configure()
     {
         $this->setName("metadatas:set")
@@ -49,79 +41,89 @@ class SetmetaCustomCommand extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
-        // add cool styles
-        $style = new OutputFormatterStyle('black', 'yellow'); //array('bold'));
-        $output->getFormatter()->setStyle('warning', $style);
-        $this->output = $output;
-        
-        $this->appbox = $this->container['phraseanet.appbox'];
-        $this->databox = null;
-        $databoxes = NULL;
+        /** @var appbox $appbox */
+        $appbox = $this->container['phraseanet.appbox'];
 
-        if (empty($input->getOption('metadata-tag'))) {
+        $metadataTag = $input->getOption('metadata-tag');
+
+        if ($metadataTag != NULL) {
+            $meta_struct_id = $input->getOption("meta-struct-id");
+        } else {
+            $output->writeln("meta_struct_id is mandatory");
+
+            return 0;
+        }
+
+        if (empty($metadataTag)) {
             $output->writeln("metadata-tag is mandatory");
 
             return 0;
         }
 
+        $record_max = $input->getOption("max-rid");
+        $record_min = $input->getOption("min-rid");
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
-            $this->databox = $databox;
+        if ($input->getOption("sbas-id") != NULL) {
+            try {
+                $databoxes = [$appbox->get_databox($input->getOption("sbas-id"))];
+            } catch (\Exception $e) {
+                $databoxes = [];
+            }
+        } else {
+            $databoxes = $appbox->get_databoxes();
+        }
 
-            if ($input->getOption("sbas-id") != NULL) {
-                $databox = $this->appbox->get_databox($input->getOption("sbas-id"));
+
+        foreach ($databoxes as $databox) {
+            $sbasId = $databox->get_sbas_id();
+            $sbasName = $databox->get_dbname();
+
+            $output->writeln(sprintf("<comment>Working on database %s with Id : %d</comment>", $sbasName, $sbasId));
+
+            $clauses[]= '1';
+            if ($record_min != NULL) {
+                $clauses[] = "record_id >= " . $record_min;
             }
 
-            $sbas_id = $databox->get_sbas_id();
-            $sbas_name = $databox->get_dbname();
-            echo "Working ON ".$sbas_name." with Id ".$sbas_id;
-            $this->connection = $databox->get_connection();
-            $meta = new MetaManager();
-            $sql = "SELECT * FROM record";
-            $record_max = $input->getOption("max-rid");
-            $record_min = $input->getOption("min-rid");
-
-            if($record_min != NULL) {
-                $sql .=" WHERE record_id>=".$record_min;
+            if ($record_max != NULL) {
+                $clauses[] = "record_id <= " . $record_max;
             }
 
-            if($record_max != NULL) {
-                $sql .= " AND record_id<=".$record_max;
-            }
+            $sql_where = join(" AND ", $clauses);
 
-            $exec = $databox->get_connection()->executeQuery($sql);
+            $sql = "SELECT * FROM record WHERE " . $sql_where;
 
-            while ($row=$exec->fetch(\PDO::FETCH_ASSOC)) {
+            $stmt = $databox->get_connection()->prepare($sql);
 
-                $record = $this->databox->get_record($row['record_id']);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-                /** @var media_subdef $subdef */
+            foreach ($rows as $row) {
+                $record = $databox->get_record($row['record_id']);
 
-                if($input->getOption("meta-struct-id") != NULL) {
-                    $meta_struct_id = $input->getOption("meta-struct-id");
-                } else {
-                    echo "meta_struct_id is mandatory";
-                    break;
+                try {
+                    $documentSubdef = $record->get_subdef('document');
+                } catch (\Exception $e) {
+                    $output->writeln(sprintf("<error>Document not found for the record %d on database %s! </error>", $row['record_id'], $sbasName));
+                    continue;
                 }
 
-                foreach ($record->get_subdefs() as $subdef) {
-                    $name = $subdef->get_name();
-                    $path = $subdef->get_path($name);
-                    $filepath  = $subdef->get_file($name);
-                    $file = $path.$filepath;
-                    $this->metadatatag = $input->getOption('metadata-tag');
-                    $subdef = ($input->getOption('subdef')==NULL ? "document" : $input->getOption('subdef'));
 
-                    if ($name==$subdef) {
-                        echo "Searching for data into: ".$this->metadatatag." into ".$name."\n";
-                        $results = $meta->get_meta($file, $this->metadatatag);
-                        // var_dump($results);
+                if ($documentSubdef->is_physically_present()) {
+                    $output->writeln(sprintf("<info>Searching for data %s into the record %d on database %s </info>", $metadataTag, $row['record_id'], $sbasName));
+                    try {
+                        $results = $this->getMeta($documentSubdef->getRealPath(), $metadataTag);
+                    } catch (\Exception $e) {
+                        $output->writeln("<error>" . $e->getMessage() . "</error>");
+                        $results = [];
                     }
+                } else {
+                    $output->writeln(sprintf("<warning>Document not found for the record %d on database %s! </warning>", $row['record_id'], $sbasName));
+                    $results = [];
                 }
 
                 if ($results != NULL) {
-
+                  $metadatas = [];
                   foreach ($results as $result) {
                     $metadatas[] = [
                         'action'         => 'set',
@@ -138,4 +140,24 @@ class SetmetaCustomCommand extends Command
             }
         }
     }
-}      
+
+    private function getMeta($file,$tag )
+    {
+        $logger = new Logger('exif-tool');
+        $reader = Reader::create($logger);
+
+        $metadatas = $reader->files($file)->first();
+
+        $value = NULL;
+
+        /** @var Metadata $metadata */
+        foreach ($metadatas as $metadata) {
+            if ($metadata->getTag() == $tag) {
+                $value = explode(";", $metadata->getValue());
+                break;
+            }
+        }
+
+        return $value;
+    }
+}
