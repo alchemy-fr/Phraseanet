@@ -558,7 +558,8 @@ class ToolsController extends Controller
             new RecordAutoSubtitleEvent(
                 $record,
                 $request->request->get("subtitle_language_source"),
-                json_decode($request->request->get("subtitle_destination"), true)
+                json_decode($request->request->get("subtitle_destination"), true),
+                $this->getAuthenticatedUser()->getId()
             )
         );
 
