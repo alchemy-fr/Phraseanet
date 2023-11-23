@@ -244,7 +244,6 @@ class SubtitleWorker implements WorkerInterface
                 $payload['authenticatedUserId'],
                 'eventsmanager_notify_subtitle',
                 json_encode([
-                    'translateMessage' => 'notification:: subtitle "%langues%" generated for "%title%" !',
                     'langues'          => implode(', ', array_keys($payload['languageDestination'])),
                     'title'            => htmlentities($record->get_title())
                 ]),
