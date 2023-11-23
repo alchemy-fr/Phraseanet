@@ -348,7 +348,7 @@
       </trans-unit>
       <trans-unit id="e3f18be0f58ebf1fe310471f7bc5ac6f430b8c3c" resname="%user% vous demande de valider %title%">
         <source>%user% vous demande de valider %title%</source>
-        <target state="needs-translation">%user% asks you to validate %title%</target>
+        <target state="translated">%user% asks you to validate %title%</target>
         <jms:reference-file line="63">eventsmanager/notify/validate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd8b8aa0c4e8a2a4534fc794850750326e79fae3" resname="%user_count% users have been created." approved="yes">
@@ -1351,7 +1351,7 @@
       </trans-unit>
       <trans-unit id="8b969adc101e5cc2004621a3ff26cd908672674f" resname="Auth failure">
         <source>Auth failure</source>
-        <target state="needs-translation">Authentication failure</target>
+        <target state="translated">Authentication failure</target>
         <jms:reference-file line="65">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9e761dfcff90efcb07867accd3e8b109762fc596" resname="Auth_token directory path" approved="yes">
@@ -1779,7 +1779,7 @@
       </trans-unit>
       <trans-unit id="71ee936cf061f76f8517f5b295a24fb93097c08b" resname="Changes for rotation will be applied only on&#10;                    the sub-definitions of &quot;image&quot; type.">
         <source>Changes for rotation will be applied only on the sub-definitions of "image" type.</source>
-        <target state="needs-translation">Changes for rotation will be applied only on the "image" type subdefinitions</target>
+        <target state="translated">Changes for rotation will be applied only on the "image" type subdefinitions</target>
         <jms:reference-file line="122">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="18e03e2a37ba37df713f9665ef752fb8b40fc1e8" resname="Channels" approved="yes">
@@ -6567,12 +6567,12 @@
       </trans-unit>
       <trans-unit id="ae4e4820ede3152f01ed2c29ed62c5c04524f7c8" resname="TLSV1.1">
         <source>TLSV1.1</source>
-        <target state="new">TLSV1.1</target>
+        <target state="translated">TLSV1.1</target>
         <jms:reference-file line="45">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="05f5d5405297f9db653bb43fa83da7e9dd3218d0" resname="TLSV1.2">
         <source>TLSV1.2</source>
-        <target state="new">TLSV1.2</target>
+        <target state="translated">TLSV1.2</target>
         <jms:reference-file line="45">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a524057f93fd59da6998f240a0602fabc16dfb02" resname="Tableau de bord" approved="yes">
@@ -8202,7 +8202,7 @@
       </trans-unit>
       <trans-unit id="a00a6c0cf7ae6161e321fed393c53ce0630cff54" resname="admin:: auth failure list">
         <source>admin:: auth failure list</source>
-        <target state="needs-translation">Authentication failure list</target>
+        <target state="translated">Authentication failure list</target>
         <jms:reference-file line="2">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26486e6d7e272de63a46c52bb7deea3dcd3b55b5" resname="admin:: demandes en cours" approved="yes">
@@ -8226,17 +8226,17 @@
       </trans-unit>
       <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
         <source>admin:: find record</source>
-        <target state="needs-translation">View</target>
+        <target state="translated">View</target>
         <jms:reference-file line="15">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
         <source>admin:: object inspector</source>
-        <target state="needs-translation">Object inspector</target>
+        <target state="translated">Object inspector</target>
         <jms:reference-file line="71">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
         <source>admin:: record index</source>
-        <target state="needs-translation">Record's Elastic index</target>
+        <target state="translated">Record's Elastic index</target>
         <jms:reference-file line="2">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
@@ -9243,7 +9243,7 @@
       </trans-unit>
       <trans-unit id="c767eb6f0297cbffa3fa9591dc197542c96a8bae" resname="admin::users: delete auth failure">
         <source>admin::users: delete auth failure</source>
-        <target state="needs-translation">Delete authentication failure</target>
+        <target state="translated">Delete authentication failure</target>
         <jms:reference-file line="28">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2d00e6f420c23a8910d8c20a4a938cac197bb8e" resname="admin::users: distance_id">
@@ -9253,7 +9253,7 @@
       </trans-unit>
       <trans-unit id="e7ab6de2942a61fb7b79f5f4b4e3d95db0fe528f" resname="admin::users: erase auth failure table">
         <source>admin::users: erase auth failure table</source>
-        <target state="needs-translation">Delete all authentication failures</target>
+        <target state="translated">Delete all authentication failures</target>
         <jms:reference-file line="9">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
@@ -9280,7 +9280,7 @@
       </trans-unit>
       <trans-unit id="4344a147edb8f171db16fa1916addea8d5ebde19" resname="admin::users: locked">
         <source>admin::users: locked</source>
-        <target state="needs-translation">locked</target>
+        <target state="translated">locked</target>
         <jms:reference-file line="17">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e76893b673dcca93abf91a13f24e586b7f399823" resname="admin::users: modification date">
@@ -11793,7 +11793,7 @@
       </trans-unit>
       <trans-unit id="3088d4b496cba452af114c52c359b374152d89f4" resname="notification:: Basket %name% is shared">
         <source>notification:: Basket %name% is shared</source>
-        <target state="needs-translation">Basket %name% is shared</target>
+        <target state="translated">Basket %name% is shared</target>
         <jms:reference-file line="40">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e7145c7051531d106368fe8c2fea2e69e7d2b0b9" resname="notification:: Basket '%title%' shared from %user%">
@@ -11818,7 +11818,7 @@
       </trans-unit>
       <trans-unit id="fa77df0b440665c48bc80e73081df4124014aa72" resname="notification:: Sharing basket &quot;%name%&quot;...">
         <source>notification:: Sharing basket "%name%"...</source>
-        <target state="needs-translation">Sharing basket "%name%"...</target>
+        <target state="translated">Sharing basket "%name%"...</target>
         <jms:reference-file line="38">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
@@ -11833,7 +11833,7 @@
       </trans-unit>
       <trans-unit id="a2bf7781f39380085a90eba4b183c2f9f886633c" resname="notification:: subtitle &quot;%langues%&quot; generated for &quot;%title%&quot; !">
         <source>notification:: subtitle "%langues%" generated for "%title%" !</source>
-        <target state="needs-translation">Subtitles in "%langues%" have been generated for document "%title%" !</target>
+        <target state="needs-translation">Subtitle in "%langues%" has been generated for document "%title%" !</target>
         <jms:reference-file line="33">eventsmanager/notify/subtitle.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
@@ -14242,7 +14242,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="b7ee9779ae9a09607df07dcc561ef328d7229de2" resname="prod:videoeditor field filled">
         <source>prod:videoeditor field filled</source>
-        <target state="needs-translation">A translation is already available</target>
+        <target state="needs-translation">Already subtitled</target>
         <jms:reference-file line="255">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling" approved="yes">
@@ -16174,7 +16174,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="e08ad584358135b5587612d4ec46223c2b09e791" resname="upload:: Copy meta">
         <source>upload:: Copy meta</source>
-        <target state="needs-translation">Add the same metadata as the current record</target>
+        <target state="needs-translation">Add the same metadata as the selected record</target>
         <jms:reference-file line="585">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc34ae0ecd7020a2f3f57afaf84d3fea6c3e9c0f" resname="upload:: Destination (collection) :" approved="yes">
