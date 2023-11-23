@@ -11832,7 +11832,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="a2bf7781f39380085a90eba4b183c2f9f886633c" resname="notification:: subtitle &quot;%langues%&quot; generated for &quot;%title%&quot; !">
         <source>notification:: subtitle "%langues%" generated for "%title%" !</source>
-        <target state="needs-translation">Les sous-titres en langue "%langues%" ont été générés pour le document "%title%" !</target>
+        <target state="needs-translation">Le sous-titre en langue "%langues%" a été généré pour le document "%title%" !</target>
         <jms:reference-file line="33">eventsmanager/notify/subtitle.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
@@ -14246,7 +14246,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="b7ee9779ae9a09607df07dcc561ef328d7229de2" resname="prod:videoeditor field filled">
         <source>prod:videoeditor field filled</source>
-        <target state="needs-translation">Une traduction existe déjà</target>
+        <target state="needs-translation">Déjà sous-titré</target>
         <jms:reference-file line="255">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling" approved="yes">
@@ -16178,7 +16178,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="e08ad584358135b5587612d4ec46223c2b09e791" resname="upload:: Copy meta">
         <source>upload:: Copy meta</source>
-        <target state="needs-translation">Ajouter les mêmes métadonnées que l'enregistrement actuel</target>
+        <target state="needs-translation">Ajouter les mêmes métadonnées que l'enregistrement sélectionné</target>
         <jms:reference-file line="585">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc34ae0ecd7020a2f3f57afaf84d3fea6c3e9c0f" resname="upload:: Destination (collection) :" approved="yes">
