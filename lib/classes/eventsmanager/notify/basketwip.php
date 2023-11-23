@@ -34,7 +34,11 @@ class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
             // to be retro compatible with old data value
             $text = $data['message'];
         } else {
-            $text = $this->app->trans($data['translateMessage'], ['%name%' => $data['name']]);
+            if ($data['translateMessage'] == 'text1') {
+                $text = $this->app->trans('notification:: Sharing basket "%name%"...', ['%name%' => $data['name']]);
+            } else {
+                $text = $this->app->trans('notification:: Basket %name% is shared', ['%name%' => $data['name']]);
+            }
         }
 
         $ret = [
