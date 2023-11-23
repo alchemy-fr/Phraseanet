@@ -1350,7 +1350,7 @@
       </trans-unit>
       <trans-unit id="8b969adc101e5cc2004621a3ff26cd908672674f" resname="Auth failure">
         <source>Auth failure</source>
-        <target state="needs-translation">Authentifizierungsfehler</target>
+        <target state="translated">Authentifizierungsfehler</target>
         <jms:reference-file line="65">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9e761dfcff90efcb07867accd3e8b109762fc596" resname="Auth_token directory path" approved="yes">
