@@ -1778,7 +1778,7 @@
       </trans-unit>
       <trans-unit id="71ee936cf061f76f8517f5b295a24fb93097c08b" resname="Changes for rotation will be applied only on&#10;                    the sub-definitions of &quot;image&quot; type.">
         <source>Changes for rotation will be applied only on the sub-definitions of "image" type.</source>
-        <target state="needs-translation">Les changements de rotation ne seront appliqués qu'aux sous-définitions de type "image"</target>
+        <target state="translated">Les changements de rotation ne seront appliqués qu'aux sous-définitions de type "image"</target>
         <jms:reference-file line="122">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="18e03e2a37ba37df713f9665ef752fb8b40fc1e8" resname="Channels" approved="yes">
@@ -8200,7 +8200,7 @@
       </trans-unit>
       <trans-unit id="a00a6c0cf7ae6161e321fed393c53ce0630cff54" resname="admin:: auth failure list">
         <source>admin:: auth failure list</source>
-        <target state="needs-translation">Liste des erreurs d'authentification</target>
+        <target state="translated">Liste des erreurs d'authentification</target>
         <jms:reference-file line="2">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26486e6d7e272de63a46c52bb7deea3dcd3b55b5" resname="admin:: demandes en cours" approved="yes">
@@ -8224,7 +8224,7 @@
       </trans-unit>
       <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
         <source>admin:: find record</source>
-        <target state="needs-translation">Voir</target>
+        <target state="translated">Voir</target>
         <jms:reference-file line="15">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
@@ -8234,7 +8234,7 @@
       </trans-unit>
       <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
         <source>admin:: record index</source>
-        <target state="needs-translation">Index Elastic de l'enregistrement</target>
+        <target state="translated">Index Elastic de l'enregistrement</target>
         <jms:reference-file line="2">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
@@ -11792,7 +11792,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="3088d4b496cba452af114c52c359b374152d89f4" resname="notification:: Basket %name% is shared">
         <source>notification:: Basket %name% is shared</source>
-        <target state="needs-translation">Le panier %name% est partagé</target>
+        <target state="translated">Le panier %name% est partagé</target>
         <jms:reference-file line="40">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e7145c7051531d106368fe8c2fea2e69e7d2b0b9" resname="notification:: Basket '%title%' shared from %user%">
@@ -11817,7 +11817,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="fa77df0b440665c48bc80e73081df4124014aa72" resname="notification:: Sharing basket &quot;%name%&quot;...">
         <source>notification:: Sharing basket "%name%"...</source>
-        <target state="needs-translation">Partage du panier "%name%"...</target>
+        <target state="translated">Partage du panier "%name%"...</target>
         <jms:reference-file line="38">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
