@@ -29,6 +29,14 @@ class SubtitleWorker implements WorkerInterface
     private $repoWorker;
 
     private $dispatcher;
+    /**
+     * @var Client
+     */
+    private $happyscribeClient;
+    private $happyscribeToken;
+    private $extension;
+    private $workerRunningJob;
+    private $transcriptionsId;
 
     public function __construct(WorkerRunningJobRepository $repoWorker, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger, EventDispatcherInterface $dispatcher)
     {
@@ -41,16 +49,17 @@ class SubtitleWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        $gingaBaseurl           = $this->conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'service_base_url']);
-        $gingaToken             = $this->conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'token']);
-        $gingaTranscriptFormat  = $this->conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'transcript_format']);
+        $this->happyscribeToken       = $this->conf->get(['externalservice', 'happyscribe', 'token']);
+        $organizationId         = $this->conf->get(['externalservice', 'happyscribe', 'organization_id']);
+        $happyscribeTranscriptFormat  = $this->conf->get(['externalservice', 'happyscribe', 'transcript_format'], 'vtt');
 
-        if (!$gingaBaseurl || !$gingaToken || !$gingaTranscriptFormat) {
+        if (!$organizationId || !$this->happyscribeToken ) {
             $this->logger->error("External service Ginga not set correctly in configuration.yml");
 
             return 0;
         }
-        $workerRunningJob = null;
+
+        $this->workerRunningJob = null;
         $em = $this->repoWorker->getEntityManager();
 
         $em->beginTransaction();
@@ -62,8 +71,8 @@ class SubtitleWorker implements WorkerInterface
             ];
 
             $date = new \DateTime();
-            $workerRunningJob = new WorkerRunningJob();
-            $workerRunningJob
+            $this->workerRunningJob = new WorkerRunningJob();
+            $this->workerRunningJob
                 ->setDataboxId($payload['databoxId'])
                 ->setRecordId($payload['recordId'])
                 ->setWork(MessagePublisher::SUBTITLE_TYPE)
@@ -73,7 +82,7 @@ class SubtitleWorker implements WorkerInterface
                 ->setPayload($message)
             ;
 
-            $em->persist($workerRunningJob);
+            $em->persist($this->workerRunningJob);
             $em->flush();
 
             $em->commit();
@@ -81,223 +90,182 @@ class SubtitleWorker implements WorkerInterface
             $em->rollback();
         }
 
-        switch ($gingaTranscriptFormat) {
-            case 'text/srt,':
-                $extension = 'srt';
-                break;
-            case 'text/plain':
-                $extension = 'txt';
-                break;
-            case 'application/json':
-                $extension = 'json';
-                break;
-            case 'text/vtt':
-            default:
-                $extension = 'vtt';
-                break;
+        if (in_array(strtolower($happyscribeTranscriptFormat), ['srt', 'txt', 'json', 'vtt'])) {
+            $this->extension = strtolower($happyscribeTranscriptFormat);
+        } else {
+            $this->extension = 'vtt';
         }
-
-        $languageSource         = $this->getLanguageFormat($payload['languageSource']);
-        $languageDestination    = $this->getLanguageFormat($payload['languageDestination']);
 
         $record = $this->getApplicationBox()->get_databox($payload['databoxId'])->get_record($payload['recordId']);
-        $languageSourceFieldName = $record->getDatabox()->get_meta_structure()->get_element($payload['metaStructureIdSource'])->get_name();
 
-        $subtitleSourceTemporaryFile = $this->getTemporaryFilesystem()->createTemporaryFile("subtitle", null, $extension);
-        $gingerClient = new Client();
+        // if subdef_source not set, by default use the preview permalink
+        $subdefSource = $this->conf->get(['externalservice', 'happyscribe', 'subdef_source']) ?: 'preview';
 
-        // if the languageSourceFieldName do not yet exist, first generate subtitle for it
-        if ($payload['permalinkUrl'] != '' && !$record->get_caption()->has_field($languageSourceFieldName)) {
-            try {
-                $response = $gingerClient->post($gingaBaseurl.'/media/', [
-                    'headers' => [
-                        'Authorization' => 'token '.$gingaToken
-                    ],
-                    'json' => [
-                        'url'       => $payload['permalinkUrl'],
-                        'language'  => $languageSource
-                    ]
-                ]);
-            } catch(\Exception $e) {
-                $this->logger->error($e->getMessage());
-                $this->jobFinished($workerRunningJob);
-
-                return 0;
-            }
-
-            if ($response->getStatusCode() !== 201) {
-                $this->logger->error("response status /media/ : ". $response->getStatusCode());
-                $this->jobFinished($workerRunningJob);
-
-                return 0;
-            }
-
-            $responseMediaBody = $response->getBody()->getContents();
-            $responseMediaBody = json_decode($responseMediaBody,true);
-
-            $checkStatus = true;
-            do {
-                // first wait 5 second before check subtitling status
-                sleep(5);
-                $this->logger->info("bigin to check status");
-                try {
-                    $response = $gingerClient->get($gingaBaseurl.'/task/'.$responseMediaBody['task_id'].'/', [
-                        'headers' => [
-                            'Authorization' => 'token '.$gingaToken
-                        ]
-                    ]);
-                } catch (\Exception $e) {
-                    $checkStatus = false;
-
-                    break;
-                }
-
-                if ($response->getStatusCode() !== 200) {
-                    $checkStatus = false;
-
-                    break;
-                }
-
-                $responseTaskBody = $response->getBody()->getContents();
-                $responseTaskBody = json_decode($responseTaskBody,true);
-
-            } while($responseTaskBody['status'] != 'SUCCESS');
-
-            if (!$checkStatus) {
-                $this->logger->error("can't check status");
-                $this->jobFinished($workerRunningJob);
-
-                return 0;
-            }
-
-            try {
-                $response = $gingerClient->get($gingaBaseurl.'/media/'.$responseMediaBody['media']['uuid'].'/', [
-                    'headers' => [
-                        'Authorization' => 'token '.$gingaToken,
-                        'ACCEPT'        => $gingaTranscriptFormat
-                    ],
-                    'query' => [
-                        'language'  => $languageSource
-                    ]
-                ]);
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
-                $this->jobFinished($workerRunningJob);
-
-                return 0;
-            }
-
-            if ($response->getStatusCode() !== 200) {
-                $this->logger->error("response status /media/uuid : ". $response->getStatusCode());
-                $this->jobFinished($workerRunningJob);
-
-                return 0;
-            }
-
-            $transcriptContent = $response->getBody()->getContents();
-
-            $transcriptContent = preg_replace('/WEBVTT/', 'WEBVTT - with cue identifier', $transcriptContent, 1);
-
-            // save subtitle on temporary file to use to translate if needed
-            file_put_contents($subtitleSourceTemporaryFile, $transcriptContent);
-
-            $metadatas[0] = [
-                'meta_struct_id' => (int)$payload['metaStructureIdSource'],
-                'meta_id'        => '',
-                'value'          => $transcriptContent
-            ];
-
-            try {
-                $record->set_metadatas($metadatas);
-
-                // order to write meta in file
-                $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                    new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
-                $this->jobFinished($workerRunningJob);
-
-                return 0;
-            }
-
-            $this->logger->info("Generate subtitle on language source SUCCESS");
-        } elseif ($record->get_caption()->has_field($languageSourceFieldName)) {
-            // get the source subtitle and save it to a temporary file
-            $fieldValues = $record->get_caption()->get_field($languageSourceFieldName)->get_values();
-            $fieldValue = array_pop($fieldValues);
-
-            file_put_contents($subtitleSourceTemporaryFile, $fieldValue->getValue());
+        $tmpUrl = '';
+        if ($this->isPhysicallyPresent($record, $subdefSource) && ($previewLink = $record->get_subdef($subdefSource)->get_permalink()) != null) {
+            $tmpUrl = $previewLink->get_url()->__toString();
         }
 
-        if ($payload['metaStructureIdSource'] !== $payload['metaStructureIdDestination']) {
-            try {
-                $response = $gingerClient->post($gingaBaseurl.'/translate/', [
-                    'headers' => [
-                        'Authorization' => 'token '.$gingaToken,
-                        'ACCEPT'        => $gingaTranscriptFormat
-                    ],
-                    'multipart' => [
-                        [
-                            'name'      => 'transcript',
-                            'contents'  => fopen($subtitleSourceTemporaryFile, 'r')
-                        ],
-                        [
-                            'name'      => 'transcript_format',
-                            'contents'  => $gingaTranscriptFormat,
+        $this->happyscribeClient = new Client();
 
-                        ],
-                        [
-                            'name'      => 'language_in',
-                            'contents'  => $languageSource,
+        if (!$this->isRemoteFileExist($tmpUrl)) {
+            $fileName = $record->get_subdef($subdefSource)->get_file();
 
-                        ],
-                        [
-                            'name'      => 'language_out',
-                            'contents'  => $languageDestination,
+            // first get a signed URL
+            $responseUpload = $this->happyscribeClient->get('https://www.happyscribe.com/api/v1/uploads/new?filename=' . $fileName, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->happyscribeToken
+                ]
+            ]);
 
-                        ]
-                    ]
-                ]);
-            } catch(\Exception $e) {
-                $this->logger->error($e->getMessage());
-                $this->jobFinished($workerRunningJob);
+            if ($responseUpload->getStatusCode() !== 200) {
+                $this->logger->error("error when uploading file to transcript,response status : ". $responseUpload->getStatusCode());
+                $this->jobFinished();
 
                 return 0;
             }
 
-            if ($response->getStatusCode() !== 200) {
-                $this->logger->error("response status /translate/ : ". $response->getStatusCode());
-                $this->jobFinished($workerRunningJob);
+            $responseUploadBody = $responseUpload->getBody()->getContents();
+            $responseUploadBody = json_decode($responseUploadBody,true);
+
+            $tmpUrl = $responseUploadBody['signedUrl'];
+            $res = $this->happyscribeClient->put($tmpUrl, [
+                'body' => fopen($record->get_subdef($subdefSource)->getRealPath(), 'r')
+            ]);
+
+            if ($res->getStatusCode() !== 200) {
+                $this->logger->error("error when uploading file to signed url,response status : ". $res->getStatusCode());
+                $this->jobFinished();
 
                 return 0;
             }
-
-            $transcriptContent = $response->getBody()->getContents();
-            $transcriptContent = preg_replace('/WEBVTT/', 'WEBVTT - with cue identifier', $transcriptContent, 1);
-
-            $metadatas[0] = [
-                'meta_struct_id' => (int)$payload['metaStructureIdDestination'],
-                'meta_id'        => '',
-                'value'          => $transcriptContent
-            ];
-
-            try {
-                $record->set_metadatas($metadatas);
-
-                // order to write meta in file
-                $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                    new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
-                $this->jobFinished($workerRunningJob);
-
-                return 0;
-            }
-
-            $this->logger->info("Translate subtitle on language destination SUCCESS");
         }
 
-        $this->jobFinished($workerRunningJob);
+        // create a transcription
+
+        try {
+            $responseTranscription = $this->happyscribeClient->post('https://www.happyscribe.com/api/v1/transcriptions', [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $this->happyscribeToken
+                ],
+                'json' => [
+                    'transcription' => [
+                        'name'              => $record->get_title(),
+                        'is_subtitle'       => true,
+                        'language'          => $payload['languageSource'],
+                        'organization_id'   => $organizationId,
+                        'tmp_url'           => $tmpUrl
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error("error when creating transcript : " . $e->getMessage());
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        if ($responseTranscription->getStatusCode() !== 200) {
+            $this->logger->error("error when creating transcript,response status : ". $responseTranscription->getStatusCode());
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        $responseTranscriptionBody = $responseTranscription->getBody()->getContents();
+        $responseTranscriptionBody = json_decode($responseTranscriptionBody,true);
+        $this->transcriptionsId[] = $transcriptionId = $responseTranscriptionBody['id'];
+
+        // check transcription status
+        $failureTranscriptMessage = '';
+
+        do {
+            // first wait 5 second before check transcript status
+            sleep(5);
+            $resCheckTranscript = $this->happyscribeClient->get('https://www.happyscribe.com/api/v1/transcriptions/' . $transcriptionId, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->happyscribeToken
+                ]
+            ]);
+
+            if ($resCheckTranscript->getStatusCode() !== 200) {
+                $this->logger->error("error when checking transcript,response status : ". $responseTranscription->getStatusCode());
+                $this->jobFinished();
+
+                return 0;
+            }
+
+            $resCheckTranscriptBody = $resCheckTranscript->getBody()->getContents();
+            $resCheckTranscriptBody = json_decode($resCheckTranscriptBody,true);
+            $transcriptStatus = $resCheckTranscriptBody['state'];
+            if (isset($resCheckTranscriptBody['failureMessage'])) {
+                $failureTranscriptMessage = $resCheckTranscriptBody['failureMessage'];
+            }
+
+        } while(!in_array($transcriptStatus, ['automatic_done', 'locked', 'failed']));
+
+        if ($transcriptStatus != "automatic_done") {
+            $this->logger->error("error when checking transcript, : " . $failureTranscriptMessage);
+            $this->jobFinished();
+
+            return 0;
+        }
+
+
+        $metadatas = [];
+
+        foreach ($payload['languageDestination'] as $language =>  $metaStructureIdDestination) {
+            $languageDestination = strtolower($language);
+
+            if ($this->getTargetLanguageByCode($payload['languageSource']) == $languageDestination) {
+                $metadatas[] = [
+                    'meta_struct_id' => (int)$metaStructureIdDestination,
+                    'meta_id'        => '',
+                    'value'          => $this->exportTranscription($transcriptionId)
+                ];
+            } else {
+                $metadatas[] = [
+                    'meta_struct_id' => (int)$metaStructureIdDestination,
+                    'meta_id'        => '',
+                    'value'          => $this->translate($transcriptionId, $languageDestination)
+                ];
+            }
+        }
+
+        try {
+            $record->set_metadatas($metadatas);
+
+            // order to write meta in file
+            $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+
+            $this->getEventsManager()->notify(
+                $payload['authenticatedUserId'],
+                'eventsmanager_notify_subtitle',
+                json_encode([
+                    'langues'          => implode(', ', array_keys($payload['languageDestination'])),
+                    'title'            => htmlentities($record->get_title())
+                ]),
+                false
+            );
+
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        $this->logger->info("Translate subtitle on language destination SUCCESS");
+
+        // delete transcription
+
+//        foreach ($this->transcriptionsId as $transcriptionId) {
+//            $this->deleteTranscription($transcriptionId);
+//        }
+
+        $this->jobFinished();
 
         return 0;
     }
@@ -312,30 +280,222 @@ class SubtitleWorker implements WorkerInterface
         return $callable();
     }
 
-    private function jobFinished(WorkerRunningJob $workerRunningJob)
+    private function jobFinished()
     {
-        if ($workerRunningJob != null) {
-            $workerRunningJob->setStatus(WorkerRunningJob::FINISHED)
+        if ($this->workerRunningJob != null) {
+            $this->workerRunningJob->setStatus(WorkerRunningJob::FINISHED)
                 ->setFinished(new \DateTime('now'));
 
             $em = $this->repoWorker->getEntityManager();
             $this->repoWorker->reconnect();
 
-            $em->persist($workerRunningJob);
+            $em->persist($this->workerRunningJob);
             $em->flush();
         }
     }
 
-    private function getLanguageFormat($language)
+    private function isRemoteFileExist($fileUrl)
     {
-        switch ($language) {
-            case 'En':
-                return 'en-GB';
-            case 'De':
-                return 'de-DE';
-            case 'Fr':
-            default:
-                return 'fr-FR';
+        $client = new Client();
+
+        try {
+            $client->head($fileUrl);
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
     }
+
+    private function isPhysicallyPresent(\record_adapter $record, $subdefName)
+    {
+        try {
+            return $record->get_subdef($subdefName)->is_physically_present();
+        }
+        catch (\Exception $e) {
+            unset($e);
+        }
+
+        return false;
+    }
+
+    private function exportTranscription($transcriptionId)
+    {
+        $subtitleTranscriptTemporaryFile = $this->getTemporaryFilesystem()->createTemporaryFile("subtitle", null, $this->extension);
+
+        $resExport = $this->happyscribeClient->post('https://www.happyscribe.com/api/v1/exports', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->happyscribeToken
+            ],
+            'json' => [
+                'export' => [
+                    'format' => $this->extension,
+                    'transcription_ids' => [
+                        $transcriptionId
+                    ]
+                ]
+            ]
+        ]);
+
+        if ($resExport->getStatusCode() !== 200) {
+            $this->logger->error("error when creating transcript export, response status : ". $resExport->getStatusCode());
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        $resExportBody = $resExport->getBody()->getContents();
+        $resExportBody = json_decode($resExportBody,true);
+
+        $exportId = $resExportBody['id'];
+        $failureExportMessage = '';
+
+        // retrieve transcript export when ready
+        do {
+            sleep(3);
+            $resCheckExport = $this->happyscribeClient->get('https://www.happyscribe.com/api/v1/exports/' . $exportId, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->happyscribeToken
+                ]
+            ]);
+
+            if ($resCheckExport->getStatusCode() !== 200) {
+                $this->logger->error("error when checking transcript export ,response status : ". $resCheckExport->getStatusCode());
+                $this->jobFinished();
+
+                return 0;
+            }
+
+            $resCheckExportBody = $resCheckExport->getBody()->getContents();
+            $resCheckExportBody = json_decode($resCheckExportBody,true);
+            $exportStatus = $resCheckExportBody['state'];
+            if (isset($resCheckExportBody['failureMessage'])) {
+                $failureExportMessage = $resCheckExportBody['failureMessage'];
+            }
+
+        } while(!in_array($exportStatus, ['ready', 'expired', 'failed']));
+
+
+        if ($exportStatus != 'ready') {
+            $this->logger->error("error when exporting transcript : " . $failureExportMessage);
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        $this->happyscribeClient->get($resCheckExportBody['download_link'], [
+            'sink' => $subtitleTranscriptTemporaryFile
+        ]);
+
+        $transcriptContent = file_get_contents($subtitleTranscriptTemporaryFile);
+
+        return $transcriptContent;
+    }
+
+    private function translate($sourceTranscriptionId, $targetLanguage)
+    {
+        // translate
+        try {
+            $resTranslate = $this->happyscribeClient->post('https://www.happyscribe.com/api/v1/task/transcription_translation', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->happyscribeToken
+                ],
+                'json' => [
+                    'source_transcription_id' => $sourceTranscriptionId,
+                    'target_language'         => strtolower($targetLanguage)
+                ]
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error("error when translate : ". $e->getMessage());
+            $this->jobFinished();
+
+            return 0;
+        }
+
+
+        if ($resTranslate->getStatusCode() !== 200) {
+            $this->logger->error("error when translate, response status : ". $resTranslate->getStatusCode());
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        $resTranslateBody = $resTranslate->getBody()->getContents();
+        $resTranslateBody = json_decode($resTranslateBody,true);
+
+        if ($resTranslateBody['state'] == 'failed') {
+            $this->logger->error("failed when translate, : " . $resTranslateBody['failureReason']);
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        $translateId = $resTranslateBody['id'];
+        $this->transcriptionsId[] = $translatedTranscriptionId = $resTranslateBody['translatedTranscriptionId'];
+
+        // check translation
+        $failureTranslateMessage = '';
+
+        do {
+            sleep(5);
+
+            $resCheckTranslate = $this->happyscribeClient->get('https://www.happyscribe.com/api/v1/task/transcription_translation/' . $translateId, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->happyscribeToken
+                ]
+            ]);
+
+            if ($resCheckTranslate->getStatusCode() !== 200) {
+                $this->logger->error("error when checking translation task ,response status : " . $resCheckTranslate->getStatusCode());
+                $this->jobFinished();
+
+                return 0;
+            }
+
+            $resCheckTranslateBody = $resCheckTranslate->getBody()->getContents();
+            $resCheckTranslateBody = json_decode($resCheckTranslateBody,true);
+            $checkTranslateStatus = $resCheckTranslateBody['state'];
+            if (isset($resCheckTranslateBody['failureReason'])) {
+                $failureTranslateMessage = $resCheckTranslateBody['failureReason'];
+            }
+
+        } while(!in_array($checkTranslateStatus, ['done', 'failed']));
+
+        if ($checkTranslateStatus != 'done') {
+            $this->logger->error("error when translate : " . $failureTranslateMessage);
+            $this->jobFinished();
+
+            return 0;
+        }
+
+        // export the translation now
+
+        return $this->exportTranscription($translatedTranscriptionId);
+    }
+
+    private function deleteTranscription($transcriptionId)
+    {
+        $this->happyscribeClient->delete('https://www.happyscribe.com/api/v1/transcriptions/' . $transcriptionId, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->happyscribeToken
+            ]
+        ]);
+    }
+
+    private function getTargetLanguageByCode($code)
+    {
+        $t = explode('-', $code);
+
+        return $t[0];
+    }
+
+    /**
+     * @return \eventsmanager_broker
+     */
+    private function getEventsManager()
+    {
+        $app = $this->getApplicationBox()->getPhraseApplication();
+
+        return $app['events-manager'];
+    }
+
 }

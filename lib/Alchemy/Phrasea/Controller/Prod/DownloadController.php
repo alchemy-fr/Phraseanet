@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\DownloadAsyncEvent;
 use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use set_export;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,7 +43,7 @@ class DownloadController extends Controller
         $ssttid = $request->request->get('ssttid', '');
         $subdefs = $request->request->get('obj', []);
 
-        $download = new \set_export($this->app, $lst, $ssttid);
+        $download = new set_export($this->app, $lst, $ssttid);
 
         if (0 === $download->get_total_download()) {
             $this->app->abort(403);
@@ -50,11 +51,13 @@ class DownloadController extends Controller
 
         $list = $download->prepare_export(
             $this->getAuthenticatedUser(),
-            $this->app['filesystem'],
+            $this->getFilesystem(),
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields'),
-            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_SYNC
+            set_export::STAMP_SYNC,
+            $request->request->get('stamp_choice') === "REMOVE_STAMP",
+            false
         );
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
@@ -89,7 +92,7 @@ class DownloadController extends Controller
         $ssttid = $request->request->get('ssttid', '');
         $subdefs = $request->request->get('obj', []);
 
-        $download = new \set_export($this->app, $lst, $ssttid);
+        $download = new set_export($this->app, $lst, $ssttid);
 
         if (0 === $download->get_total_download()) {
             $this->app->abort(403);
@@ -103,12 +106,12 @@ class DownloadController extends Controller
 
         $list = $download->prepare_export(
             $this->getAuthenticatedUser(),
-            $this->app['filesystem'],
+            $this->getFilesystem(),
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields'),
-            // do not stamp now, worker will do
-            $stamp_method,
+            set_export::STAMP_ASYNC,
+            $request->request->get('stamp_choice') === "REMOVE_STAMP",
             true
         );
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
@@ -211,5 +214,12 @@ class DownloadController extends Controller
     protected function getSession()
     {
         return $this->app['session'];
+    }
+    /**
+     * @return PhraseanetFilesystem
+     */
+    private function getFilesystem()
+    {
+        return $this->app['filesystem'];
     }
 }

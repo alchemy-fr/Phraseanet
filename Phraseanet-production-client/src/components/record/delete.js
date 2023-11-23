@@ -24,6 +24,11 @@ const deleteRecord = (services) => {
                 //reset top position of dialog
                 $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight) / 2);
                 _onDialogReady();
+            },
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
             }
         });
 

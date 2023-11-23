@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2016 Alchemy
+ * (c) 2005-2023 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,7 @@
 
 use Alchemy\Phrasea\Model\Entities\User;
 
-class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
+class eventsmanager_notify_subtitle extends eventsmanager_notifyAbstract
 {
     /**
      *
@@ -30,23 +30,12 @@ class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
      */
     public function datas(array $data, $unread)
     {
-        if (isset($data['message'])) {
-            // to be retro compatible with old data value
-            $text = $data['message'];
-        } else {
-            if ($data['translateMessage'] == 'text1') {
-                $text = $this->app->trans('notification:: Sharing basket "%name%"...', ['%name%' => $data['name']]);
-            } else {
-                $text = $this->app->trans('notification:: Basket %name% is shared', ['%name%' => $data['name']]);
-            }
-        }
+        $text = $this->app->trans('notification:: subtitle "%langues%" generated for "%title%" !', ['%title%' => $data['title'], '%langues%' => $data['langues']]);
 
-        $ret = [
+        return [
             'text'  => $text,
             'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
-
-        return $ret;
     }
 
     /**
@@ -55,7 +44,7 @@ class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return $this->app->trans('notification:: Basket WIP');
+        return $this->app->trans('notification:: subtitle');
     }
 
     /**
@@ -64,7 +53,7 @@ class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return $this->app->trans('notification:: Receive notification when a basket is WIP');
+        return $this->app->trans('notification:: Receive notification when subtitle generated');
     }
 
     /**

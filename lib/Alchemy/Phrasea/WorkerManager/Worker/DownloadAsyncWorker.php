@@ -218,7 +218,7 @@ class DownloadAsyncWorker implements WorkerInterface
             }
 
             foreach($v_file['subdefs'] as $k_subdef => $v_subdef) {
-                if($k_subdef === "document" && $v_subdef['to_stamp']) {
+                if($v_subdef['to_stamp']) {
                     // we must stamp this document
                     try {
                         if(!$record) {
@@ -370,6 +370,7 @@ class DownloadAsyncWorker implements WorkerInterface
                     ]
                 ]
             ];
+            $list['count']++;
 
             $totalSize += $list['files']['report']["subdefs"]['report']["size"];
         }
