@@ -45,6 +45,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
+use Monolog\Logger;
+use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Reader;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
@@ -1264,6 +1267,34 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // WIP crashes when trying to access an undefined stdClass property ? should return null ?
         $this->apply_body($actions);
         return $this;
+    }
+
+    /**
+     * @param $tag
+     * @return array|null
+     * @throws \PHPExiftool\Exception\EmptyCollectionException
+     */
+    public function getFileMetadataByTag($tag)
+    {
+        $logger = new Logger('exif-tool');
+        $reader = Reader::create($logger);
+
+        $value = null;
+
+        // throw exception
+        $documentSubdef = $this->get_subdef('document');
+
+        $metadatas = $reader->files($documentSubdef->getRealPath())->first();
+
+        /** @var Metadata $metadata */
+        foreach ($metadatas as $metadata) {
+            if ($metadata->getTag() == $tag) {
+                $value = explode(";", $metadata->getValue());
+                break;
+            }
+        }
+
+        return $value;
     }
 
 
