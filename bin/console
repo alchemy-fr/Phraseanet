@@ -56,6 +56,7 @@ use Alchemy\Phrasea\Command\Task\TaskState;
 use Alchemy\Phrasea\Command\Task\TaskStop;
 use Alchemy\Phrasea\Command\Thesaurus\FindConceptsCommand;
 use Alchemy\Phrasea\Command\Thesaurus\Translator\TranslateCommand;
+use Alchemy\Phrasea\Command\Feedback\Report\FeedbackReportCommand;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\User\UserApplicationsCommand;
 use Alchemy\Phrasea\Command\User\UserCreateCommand;
@@ -177,6 +178,7 @@ $cli->command(new QueryParseCommand());
 $cli->command(new QuerySampleCommand());
 $cli->command(new FindConceptsCommand());
 $cli->command(new TranslateCommand());
+$cli->command(new FeedbackReportCommand());
 
 $cli->command(new WorkerExecuteCommand());
 $cli->command(new WorkerHeartbeatCommand());
