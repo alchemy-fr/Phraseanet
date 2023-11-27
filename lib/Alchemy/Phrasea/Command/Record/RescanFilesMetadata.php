@@ -164,10 +164,8 @@ class RescanFilesMetadata extends Command
             $action = "set";
 
             if ($field->is_multi()) {
-                $action = 'add';
-
-                if ($multi == 'replace') {
-                    $action = 'replace';
+                if ($multi != 'replace') {
+                    $action = 'add';
                 }
             }
 
@@ -205,9 +203,9 @@ class RescanFilesMetadata extends Command
                 if ($results != NULL) {
                     $metadatas = [];
 
-                    if ($action == 'replace') {
-                        // available action when field is multi-value
+                    if ($field->is_multi()) {
                         $metadatas[] = [
+                            'action'         => $action,
                             'meta_struct_id' => $metaStructId,
                             'meta_id'        => null,
                             'value'          => $this->sanitizeValue($results, $fieldType)
