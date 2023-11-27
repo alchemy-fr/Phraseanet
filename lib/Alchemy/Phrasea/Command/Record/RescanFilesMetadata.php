@@ -131,7 +131,7 @@ class RescanFilesMetadata extends Command
         foreach ($dboxes as $databox) {
             $sbasId = $databox->get_sbas_id();
             $sbasName = $databox->get_dbname();
-            $rToDoCount = $rDoneCount = 0;
+            $rToDoCount = $rDoneCount = $rTagFound = 0;
 
             $field = $this->getField($sbasId, $destination);
 
@@ -185,9 +185,8 @@ class RescanFilesMetadata extends Command
             }
 
             $stmt->execute();
-            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            foreach ($rows as $row) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $record = $databox->get_record($row['record_id']);
 
                 // skip non empty field if overwrite is not set and not a merge multivalued field
@@ -206,8 +205,8 @@ class RescanFilesMetadata extends Command
                 if ($results != NULL) {
                     $metadatas = [];
 
-                    // for multi valued field
                     if ($action == 'replace') {
+                        // available action when field is multi-value
                         $metadatas[] = [
                             'meta_struct_id' => $metaStructId,
                             'meta_id'        => null,
@@ -230,12 +229,12 @@ class RescanFilesMetadata extends Command
                         print_r($actions);
                     } else {
                         $record->setMetadatasByActions(json_decode(json_encode($actions)));
-                        $rDoneCount ++;
                     }
+                    $rDoneCount ++;
                 }
             }
 
-            $output->writeln(sprintf("<info>%d records scaned and %d record metadata updated on database %s</info>", $rToDoCount, $rDoneCount, $sbasName));
+            $output->writeln(sprintf("<info>%d records scanned and %d record metadata to be updated on database %s</info>", $rToDoCount, $rDoneCount, $sbasName));
         }
 
         return 0;
