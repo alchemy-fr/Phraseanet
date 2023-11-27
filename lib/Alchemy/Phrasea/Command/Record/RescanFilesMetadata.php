@@ -18,6 +18,9 @@ class RescanFilesMetadata extends Command
     /** @var PhraseanetExtension */
     private $helpers;
 
+    /** @var \unicode */
+    private $unicode;
+
     public function __construct()
     {
         parent::__construct('records:rescan-files-metadata');
@@ -34,7 +37,6 @@ class RescanFilesMetadata extends Command
             ->addOption('destination', null, InputOption::VALUE_REQUIRED, "ID of the field de fill")
             ->addOption('overwrite', null, InputOption::VALUE_NONE, "act even if the destination field has a value in databox")
             ->addOption('multi', null, InputOption::VALUE_REQUIRED, "replace or merge for multi value field")
-//            ->addOption('allow-delete', null, InputOption::VALUE_NONE, "")
             ->addOption('dry', null, InputOption::VALUE_NONE, "Dry run (list alert only and list record and meta values).")
         ;
 
@@ -124,9 +126,12 @@ class RescanFilesMetadata extends Command
 
         ///
 
+        $this->unicode = new \unicode();
+
         foreach ($dboxes as $databox) {
             $sbasId = $databox->get_sbas_id();
             $sbasName = $databox->get_dbname();
+            $rToDoCount = $rDoneCount = 0;
 
             $field = $this->getField($sbasId, $destination);
 
@@ -154,16 +159,16 @@ class RescanFilesMetadata extends Command
 
             $metaStructId = $field->get_id();
             $fieldName = $field->get_name();
+            $fieldType = $field->get_type();
 
             $action = "set";
 
             if ($field->is_multi()) {
                 $action = 'add';
 
-                // define what value to replace ??
-//                if ($multi == 'replace') {
-//                    $action = 'replace';
-//                }
+                if ($multi == 'replace') {
+                    $action = 'replace';
+                }
             }
 
             $output->writeln(sprintf("<comment>Working on database %s with Id : %d</comment>", $sbasName, $sbasId));
@@ -185,13 +190,14 @@ class RescanFilesMetadata extends Command
             foreach ($rows as $row) {
                 $record = $databox->get_record($row['record_id']);
 
-                // skip non empty field if overwrite is not set
-                if ($overwrite == null && !$this->isEmptyField($record, $fieldName)) {
+                // skip non empty field if overwrite is not set and not a merge multivalued field
+                if ($overwrite == null && $action != 'add' && !$this->isEmptyField($record, $fieldName)) {
                     continue;
                 }
 
                 try {
                     $results = $record->getFileMetadataByTag($sourceTag);
+                    $rToDoCount ++;
                 } catch (\Exception $e) {
                     $output->writeln("<error> can not get metadata into the document file : " . $e->getMessage() . "</error>");
                     $results = [];
@@ -199,13 +205,23 @@ class RescanFilesMetadata extends Command
 
                 if ($results != NULL) {
                     $metadatas = [];
-                    foreach ($results as $result) {
+
+                    // for multi valued field
+                    if ($action == 'replace') {
                         $metadatas[] = [
-                            'action'         => $action,
                             'meta_struct_id' => $metaStructId,
                             'meta_id'        => null,
-                            'value'          => $result
+                            'value'          => $this->sanitizeValue($results, $fieldType)
                         ];
+                    } else {
+                        foreach ($results as $result) {
+                            $metadatas[] = [
+                                'action'         => $action,
+                                'meta_struct_id' => $metaStructId,
+                                'meta_id'        => null,
+                                'value'          => $this->sanitizeValue($result, $fieldType)
+                            ];
+                        }
                     }
 
                     $actions['metadatas'] = $metadatas;
@@ -214,12 +230,36 @@ class RescanFilesMetadata extends Command
                         print_r($actions);
                     } else {
                         $record->setMetadatasByActions(json_decode(json_encode($actions)));
+                        $rDoneCount ++;
                     }
                 }
             }
+
+            $output->writeln(sprintf("<info>%d records scaned and %d record metadata updated on database %s</info>", $rToDoCount, $rDoneCount, $sbasName));
         }
 
         return 0;
+    }
+
+    private function sanitizeValue($values, $type)
+    {
+        $isValueArray = true;
+        if (!is_array($values)) {
+            $isValueArray = false;
+            $values = [$values];
+        }
+
+        $v = [];
+        foreach ($values as $value) {
+            $value = $this->unicode->substituteCtrlCharacters($value, ' ');
+            $value = $this->unicode->toUTF8($value);
+            if ($type == 'date') {
+                $value = $this->unicode->parseDate($value);
+            }
+            $v[] = $value;
+        }
+
+        return $isValueArray ? $v : current($v);
     }
 
     private function resolveName()
