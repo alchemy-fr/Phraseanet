@@ -2,16 +2,13 @@
 
 namespace Alchemy\Phrasea\Command\Feedback\Report;
 
-use Alchemy\Phrasea\Command\Thesaurus\Translator\ConfigurationException;
+
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use appbox;
 use collection;
 use databox;
 use databox_field;
-use Exception;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 use Twig_Environment;
-use Unicode;
 
 Class GlobalConfiguration
 {
@@ -33,20 +30,39 @@ Class GlobalConfiguration
      */
     private $twig;
     /**
-     * @var OutputInterface
+     * @var string
      */
-    private $output;
+    private $reportFormat;
+
 
     /**
+     * @param PropertyAccess $conf
+     * @param Twig_Environment $twig
      * @param appbox $appBox
-     * @param array $global_conf
+     * @param bool $dryRun
+     * @param string $reportFormat
+     * @throws ConfigurationException
      */
-    private function __construct(Twig_Environment $twig, appbox $appBox, array $global_conf, bool $dryRun, OutputInterface $output)
+    public function __construct(PropertyAccess $conf, Twig_Environment $twig, appbox $appBox, bool $dryRun, string $reportFormat)
     {
         $this->twig = $twig;
-        $this->configuration = $global_conf;
+        $this->configuration = $conf->get(['feedback-report'], ['enabled' => false, 'actions' => []]);
         $this->dryRun = $dryRun;
-        $this->output = $output;
+        $this->reportFormat = $reportFormat;
+
+        if($this->isEnabled()) {
+            // sanitize sb
+            foreach ($this->configuration['actions'] as $action_name => $action_conf) {
+                if (array_key_exists('status_bit', $action_conf)) {
+                    $bit = (int)($sbit = trim($action_conf['status_bit']));
+                    if ($bit < 4 || $bit > 31) {
+                        throw new ConfigurationException(sprintf("bad status bit (%s)", $sbit));
+                    }
+                }
+            }
+            // nb: "metadata" cannot be sanitized because validity depends on databox, and a basket may contain records from many dbx.
+            //     unknown field will be ignored during actions creation.
+        }
 
         // list databoxes and collections to access by id or by name
         $this->databoxes = [];
@@ -74,45 +90,6 @@ Class GlobalConfiguration
                 $this->databoxes[$sbas_id]['fields'][$field_id] = $dbf;
                 $this->databoxes[$sbas_id]['fields'][$field_name] = &$this->databoxes[$sbas_id]['fields'][$field_id];
             }
-        }
-
-    }
-
-    /**
-     * @param appbox $appBox
-     * @param Unicode $unicode
-     * @param string $root
-     * @param bool $dryRun
-     * @param string $reportFormat
-     * @param OutputInterface $output
-     * @return GlobalConfiguration
-     * @throws ConfigurationException
-     */
-    public static function create(Twig_Environment $twig, appbox $appBox, string $root, bool $dryRun, OutputInterface $output): GlobalConfiguration
-    {
-        try {
-            $config_file = ($config_dir = $root . self::CONFIG_DIR) . self::CONFIG_FILE;
-
-            @mkdir($config_dir, 0777, true);
-
-            $config = Yaml::parse(file_get_contents($config_file));
-
-            // sanitize sb
-            foreach($config['feedbackreport']['actions'] as $action_name => $action_conf) {
-                if (array_key_exists('status_bit', $action_conf)) {
-                    $bit = (int)($sbit = trim($action_conf['status_bit']));
-                    if ($bit < 4 || $bit > 31) {
-                        throw new ConfigurationException(sprintf("bad status bit (%s)", $sbit));
-                    }
-                }
-            }
-            // nb: "metadata" cannot be sanitized because validity depends on databox, and a basket may contain records from many dbx.
-            //     unknown field will be ignored during actions creation.
-
-            return new self($twig, $appBox, $config['feedbackreport'], $dryRun, $output);
-        }
-        catch (Exception $e) {
-            throw new ConfigurationException(sprintf("missing or bad configuration (%s)", $e->getMessage()));
         }
     }
 
@@ -146,7 +123,6 @@ Class GlobalConfiguration
 
     /**
      * @param string|int $sbasIdOrName
-     * @param string|int $collIdOrName
      * @return databox_field|null
      */
     public function getField($sbasIdOrName, $fieldIdOrName)
@@ -161,6 +137,23 @@ Class GlobalConfiguration
     {
         return $this->dryRun;
     }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return !!$this->configuration['enabled'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getReportFormat(): string
+    {
+        return $this->reportFormat;
+    }
+
 
     /**
      * @return ActionInterface[]
