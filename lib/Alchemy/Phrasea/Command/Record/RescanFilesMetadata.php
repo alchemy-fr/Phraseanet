@@ -82,7 +82,7 @@ class RescanFilesMetadata extends Command
         }
 
         if ($method != null && !in_array($method, ['replace', 'merge'])) {
-            $output->writeln("<error> wrong value for --multi, use replace or merge</error>");
+            $output->writeln("<error> wrong value for --method, use replace or merge</error>");
 
             return 0;
         }
