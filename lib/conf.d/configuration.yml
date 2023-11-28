@@ -260,10 +260,7 @@ registration-fields:
         required: true
 download_async:
     enabled: false
-pusher:
-    auth_key: 'pusher-auth_key'
-    secret: 'pusher-secret'
-    app_id: 'pusher-app_id'
+
 xsendfile:
     enabled: false
     type: nginx
@@ -430,12 +427,10 @@ workers:
             - application/pdf
             - image/tiff
 externalservice:
-    ginger:
-        AutoSubtitling:
-            service_base_url: https://base.uri
-            token: 39c6011d
-            transcript_format: text/vtt
-            subdef_source: preview
+    pusher:
+        auth_key: 'pusher-auth_key'
+        secret: 'pusher-secret'
+        app_id: 'pusher-app_id'
 
 
 Console_logger_enabled_environments: [test]

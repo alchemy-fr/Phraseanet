@@ -98,9 +98,9 @@ class DownloadAsyncWorker implements WorkerInterface
             );
             try {
                 $this->pusher = new Pusher(
-                    $this->conf->get(['pusher', 'auth_key'], ''),
-                    $this->conf->get(['pusher', 'secret'], ''),
-                    $this->conf->get(['pusher', 'app_id'], ''),
+                    $this->conf->get(['externalservice', 'pusher', 'auth_key'], ''),
+                    $this->conf->get(['externalservice', 'pusher', 'secret'], ''),
+                    $this->conf->get(['externalservice', 'pusher', 'app_id'], ''),
                     $options
                 );
                 $this->pusher_channel_name = $token->getValue();
