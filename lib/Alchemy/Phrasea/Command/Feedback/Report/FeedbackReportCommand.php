@@ -4,8 +4,11 @@ namespace Alchemy\Phrasea\Command\Feedback\Report;
 
 
 use Alchemy\Phrasea\Command\Command as phrCommand;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use appbox;
 use Doctrine\DBAL\DBALException;
+use Exception;
 use PDO;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +34,7 @@ class FeedbackReportCommand extends phrCommand
     {
         $this->setName('feedback:report')
             ->setDescription('Report ended feedback results (votes) on records (set status-bits)')
+            ->addOption('report',    null,  InputOption::VALUE_REQUIRED, "Report output format (all|condensed)", "all")
             ->addOption('dry',    null,  InputOption::VALUE_NONE, "list translations but don't apply.", null)
             ->setHelp("")
         ;
@@ -55,70 +59,41 @@ class FeedbackReportCommand extends phrCommand
         // config must be ok
         //
         try {
-            $this->config = GlobalConfiguration::create(
+            $this->config = new GlobalConfiguration(
+                $this->getConf(),
                 $this->container['twig'],
                 $this->container['phraseanet.appbox'],
-                $this->container['root.path'],
                 $input->getOption('dry'),
-                $output
+                $input->getOption('report')
             );
         }
-        catch(\Exception $e) {
+        catch(Exception $e) {
             $output->writeln(sprintf("<error>missing or bad configuration: %s</error>", $e->getMessage()));
 
             return -1;
         }
 
-//
-//        $sql = "
-//ALTER TABLE `BasketElements`
-//            ADD `vote_basket_id` INT NULL,
-//            ADD `vote_expired` DATETIME NULL,
-//            ADD `vote_participants` INT UNSIGNED NULL,
-//            ADD `vote_blank` INT UNSIGNED NULL,
-//            ADD `vote_false` INT UNSIGNED NULL,
-//            ADD `vote_true` INT UNSIGNED NULL,
-//            ADD INDEX `vote_expired` (`vote_expired`);
-//";
+        if(!$this->config->isEnabled()) {
+            $output->writeln(sprintf("<info>configuration is not enabled</info>"));
 
+            return 0;
+        }
 
-
-//        $sql = "
-//UPDATE BasketElements AS be INNER JOIN (
-//    SELECT q1.*,
-//    COUNT(bp.id) AS n_participants,
-//    SUM(IF(ISNULL(agreement),1,0)) AS unvoted,
-//    SUM(IF((agreement=0), 1,0)) AS voted_false,
-//    SUM(IF((agreement=1),1,0)) AS voted_true
-//    FROM (
-//        SELECT SUBSTRING_INDEX(GROUP_CONCAT(b.id ORDER BY vote_expires DESC), ',', 1) AS basket_id,
-//            MAX(b.vote_expires) AS expired, be.id AS be_id, CONCAT(be.sbas_id, '_', be.record_id) AS sbid_rid
-//        FROM `BasketElements` AS be INNER JOIN Baskets AS b ON b.id=be.basket_id
-//        WHERE b.vote_expires < NOW()
-//        GROUP BY sbid_rid
-//    ) AS q1
-//    INNER JOIN BasketParticipants AS bp ON bp.basket_id=q1.basket_id
-//    LEFT JOIN BasketElementVotes AS bv ON bv.participant_id=bp.id AND bv.basket_element_id=be_id
-//    GROUP BY q1.sbid_rid
-//) AS q2 ON be.id=q2.be_id
-//SET vote_basket_id=q2.basket_id,
-//    vote_expired=q2.expired,
-//    vote_participants = q2.n_participants,
-//    vote_blank = q2.unvoted,
-//    vote_false = q2.voted_false,
-//    vote_true = q2.voted_true
-//WHERE q2.expired > vote_expired
-//";
 
         $appbox = $this->getAppBox();
 
-        $sql_select = "SELECT q1.*,
-    COUNT(bp.id) AS `voters_count`,
-    SUM(IF(ISNULL(`agreement`),1,0)) AS `votes_unvoted`,
-    SUM(IF((`agreement`=0), 1,0)) AS `votes_no`,
-    SUM(IF((`agreement`=1),1,0)) AS `votes_yes`
+        $sql_update = "UPDATE `BasketElements` SET `vote_expired` = :expired WHERE `id` = :id";
+        $stmt_update = $appbox->get_connection()->prepare($sql_update);
+
+        $sql_select = "SELECT * FROM (
+    SELECT q1.*,
+        COUNT(bp.id) AS `voters_count`,
+        SUM(IF(ISNULL(`agreement`), 1 , 0)) AS `votes_unvoted`,
+        SUM(IF((`agreement`=0), 1, 0)) AS `votes_no`,
+        SUM(IF((`agreement`=1), 1, 0)) AS `votes_yes`
     FROM (
-        SELECT SUBSTRING_INDEX(GROUP_CONCAT(b.id ORDER BY vote_expires DESC), ',', 1) AS basket_id,
+        SELECT SUBSTRING_INDEX(GROUP_CONCAT(b.`id` ORDER BY `vote_expires` DESC), ',', 1) AS `basket_id`,
+            b.`vote_created` AS `created`, b.`vote_initiator_id`,   
             MAX(b.`vote_expires`) AS `expired`, be.`id` AS `be_id`, be.`vote_expired` AS `be_vote_expired`,
             be.`sbas_id`, be.`record_id`, CONCAT(be.`sbas_id`, '_', be.`record_id`) AS `sbid_rid`
         FROM `BasketElements` AS be INNER JOIN `Baskets` AS b ON b.`id`=be.`basket_id`
@@ -128,16 +103,57 @@ class FeedbackReportCommand extends phrCommand
     INNER JOIN `BasketParticipants` AS bp ON bp.`basket_id`=q1.`basket_id`
     LEFT JOIN `BasketElementVotes` AS bv ON bv.`participant_id`=bp.`id` AND bv.`basket_element_id`=`be_id`
     GROUP BY q1.`sbid_rid`
-    HAVING ISNULL(`be_vote_expired`) OR `expired` > `be_vote_expired`";
+    HAVING ISNULL(`be_vote_expired`) OR `expired` > `be_vote_expired`
+) AS q2 ORDER BY basket_id, record_id";
 
-
-        $sql_update = "UPDATE `BasketElements` SET `vote_expired` = :expired WHERE `id` = :id";
-        $stmt_update = $appbox->get_connection()->prepare($sql_update);
-
+        $last_basket_id = null;
+        $condensed = null;
+        $vote_initiator = null;
         $stmt_select = $appbox->get_connection()->query($sql_select);
         while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
+            if($row['basket_id'] !== $last_basket_id) {
+                $this->outputCondensed($condensed);
+                $condensed = [
+                    'voters_count' => $row['voters_count'],
+                    'records_count' => 0,
+                    'votes_unvoted' => 0,
+                    'votes_no' => 0,
+                    'votes_yes' => 0,
+                ];
+
+                $vote_initiator = $this->findUser($row['vote_initiator_id']);
+
+                $this->output->writeln(sprintf("basket: %s, initated on %s by %s (%s), expired %s",
+                    $last_basket_id = $row['basket_id'],
+                        $row['created'],
+                        $row['vote_initiator_id'],
+                        $vote_initiator ? $vote_initiator->getEmail() : "<error>unknown</error>",
+                        $row['expired'])
+                );
+            }
+            if($this->config->getReportFormat() === 'all') {
+                $this->output->writeln(sprintf("\tdatabox: %s, record id: %s", $row['sbas_id'], $row['record_id']));
+            }
+
             if( ($databox = $this->config->getDatabox($row['sbas_id'])) === null) {
+                $this->output->writeln(sprintf("\t\t<error>unknown databox</error> (ignored)"));
                 continue;
+            }
+
+            try {
+                $record = $databox->get_record($row['record_id']);
+            }
+            catch(Exception $e) {
+                $this->output->writeln(sprintf("\t\t<error>unknown record</error> (ignored)"));
+                continue;
+            }
+
+            $condensed['records_count']++;
+            foreach(['votes_unvoted', 'votes_no', 'votes_yes'] as $k) {
+                if($this->config->getReportFormat() !== 'condensed') {
+                    $this->output->writeln(sprintf("\t\t%s: %s", $k, $row[$k]));
+                }
+                $condensed[$k] += $row[$k];
             }
 
             $setMetasActions = [];
@@ -145,21 +161,30 @@ class FeedbackReportCommand extends phrCommand
                 $action->addAction(
                     $setMetasActions,
                     [
+                        'initiator' => $vote_initiator,
                         'vote' => $row,
                     ]
                 );
             }
 
             if(count($setMetasActions) > 0) {
-                $this->output->writeln(var_export($setMetasActions, true));
-                $record = $databox->get_record($row['record_id']);
-                $record->setMetadatasByActions(json_decode(json_encode($setMetasActions)));
+                $jsActions = json_encode($setMetasActions, JSON_PRETTY_PRINT);
+                if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+                    $this->output->writeln(sprintf("<info>JS : %s</info>", $jsActions));
+                }
+
+                if(!$this->config->isDryRun()) {
+                    $record->setMetadatasByActions(json_decode($jsActions));
+                }
             }
-            $stmt_update->execute([
-                ':expired' => $row['expired'],
-                ':id' => $row['be_id']
-            ]);
+            if(!$this->config->isDryRun()) {
+                $stmt_update->execute([
+                    ':expired' => $row['expired'],
+                    ':id'      => $row['be_id']
+                ]);
+            }
         }
+        $this->outputCondensed($condensed);
         $stmt_select->closeCursor();
 
         return 0;
@@ -171,6 +196,39 @@ class FeedbackReportCommand extends phrCommand
     private function getAppBox(): appbox
     {
         return $this->container['phraseanet.appbox'];
+    }
+
+    /**
+     * @return PropertyAccess
+     */
+    protected function getConf()
+    {
+        return $this->container['conf'];
+    }
+
+    private function findUser($user_id)
+    {
+        /** @var UserRepository $repo */
+        $repo = $this->container['repo.users'];
+        try {
+            return $repo->find($user_id);
+        }
+        catch (Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param array|null $condensed
+     * @return void
+     */
+    private function outputCondensed($condensed)
+    {
+        if($condensed !== null && $this->config->getReportFormat() === 'condensed') {
+            foreach($condensed as $k => $v) {
+                $this->output->writeln(sprintf("\t%s: %s", $k, $v));
+            }
+        }
     }
 
 }
