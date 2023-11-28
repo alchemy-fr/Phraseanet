@@ -194,11 +194,6 @@ class RescanFilesMetadata extends Command
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $record = $databox->get_record($row['record_id']);
 
-                // skip non empty field if overwrite is not set and not a merge multivalued field
-                if ($overwrite == null && $action != 'add' && !$this->isEmptyField($record, $fieldName)) {
-                    continue;
-                }
-
                 try {
                     $results = $record->getFileMetadataByTag($sourceTag);
                     $rToDoCount ++;
@@ -295,23 +290,6 @@ class RescanFilesMetadata extends Command
                 $this->databoxes[$sbas_id]['fields'][$field_id] = $dbf;
                 $this->databoxes[$sbas_id]['fields'][$field_name] = &$this->databoxes[$sbas_id]['fields'][$field_id];
             }
-        }
-    }
-
-    private function isEmptyField(\record_adapter $r, $fieldName)
-    {
-        if ($r->get_caption()->has_field($fieldName)) {
-            // normally if there is no value, there is no caption field
-            $captionField =  $r->get_caption()->get_field($fieldName);
-            $fieldValues = $captionField->get_values();
-
-            if (empty($this->helpers->getCaptionField($r, $fieldName, $fieldValues))) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
         }
     }
 
