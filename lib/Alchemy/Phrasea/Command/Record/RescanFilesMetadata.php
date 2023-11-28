@@ -36,7 +36,7 @@ class RescanFilesMetadata extends Command
             ->addOption('source', null, InputOption::VALUE_REQUIRED, 'tag to search exemple IPTC:KEYWORD')
             ->addOption('destination', null, InputOption::VALUE_REQUIRED, "ID of the field de fill")
             ->addOption('overwrite', null, InputOption::VALUE_NONE, "act even if the destination field has a value in databox")
-            ->addOption('multi', null, InputOption::VALUE_REQUIRED, "replace or merge for multi value field")
+            ->addOption('method', null, InputOption::VALUE_REQUIRED, "replace or merge for multi value field")
             ->addOption('dry', null, InputOption::VALUE_NONE, "Dry run (list alert only and list record and meta values).")
         ;
 
@@ -56,7 +56,7 @@ class RescanFilesMetadata extends Command
         $destination = $input->getOption('destination');
         $type = $input->getOption('record_type');
         $col = $input->getOption('collection');
-        $multi = $input->getOption('multi');
+        $method = $input->getOption('method');
         $overwrite = $input->getOption('overwrite');
         $dry = $input->getOption('dry');
 
@@ -81,7 +81,7 @@ class RescanFilesMetadata extends Command
             }
         }
 
-        if ($multi != null && !in_array($multi, ['replace', 'merge'])) {
+        if ($method != null && !in_array($method, ['replace', 'merge'])) {
             $output->writeln("<error> wrong value for --multi, use replace or merge</error>");
 
             return 0;
@@ -109,11 +109,11 @@ class RescanFilesMetadata extends Command
         //  sql request
         $clauses[]= '1';
         if ($minRecord != NULL) {
-            $clauses[] = "record_id >= " . $minRecord;
+            $clauses[] = "record.record_id >= " . $minRecord;
         }
 
         if ($maxRecord != NULL) {
-            $clauses[] = "record_id <= " . $maxRecord;
+            $clauses[] = "record.record_id <= " . $maxRecord;
         }
 
         if ($type != null) {
@@ -121,7 +121,7 @@ class RescanFilesMetadata extends Command
         }
 
         if($partitionCount !== null && $partitionIndex !== null) {
-            $clauses[] = " MOD(`record_id`, " . $partitionCount . ")=" . ($partitionIndex-1);
+            $clauses[] = " MOD(`record.record_id`, " . $partitionCount . ")=" . ($partitionIndex-1);
         }
 
         ///
@@ -133,13 +133,6 @@ class RescanFilesMetadata extends Command
             $sbasName = $databox->get_dbname();
             $rToDoCount = $rDoneCount = $rTagFound = 0;
 
-            $field = $this->getField($sbasId, $destination);
-
-            if ($field == null) {
-                $output->writeln(sprintf("<error>Field %s not found on database %s </error>", $destination, $sbasName));
-                continue;
-            }
-
             if ( $col != null) {
                 $collection = $this->getCollection($sbasId, $col);
                 if ($collection == null) {
@@ -150,6 +143,13 @@ class RescanFilesMetadata extends Command
                 $collId = $collection->get_coll_id();
 
                 $clauses[] = "coll_id = " . $collId;
+            }
+
+            $field = $this->getField($sbasId, $destination);
+
+            if ($field == null) {
+                $output->writeln(sprintf("<error>Field %s not found on database %s </error>", $destination, $sbasName));
+                continue;
             }
 
             if ($source == null) {
@@ -164,17 +164,24 @@ class RescanFilesMetadata extends Command
             $action = "set";
 
             if ($field->is_multi()) {
-                if ($multi != 'replace') {
+                // for replace action always set
+                if ($method == null || $method == 'merge') {
                     $action = 'add';
                 }
             }
 
             $output->writeln(sprintf("<comment>Working on database %s with Id : %d</comment>", $sbasName, $sbasId));
 
-
             $sql_where = join(" AND ", $clauses);
 
-            $sql = "SELECT * FROM record WHERE " . $sql_where;
+            if ($overwrite == null && $action != 'add') {
+                $sql = "SELECT record.record_id FROM record"
+                        . " LEFT JOIN metadatas as m ON (record.record_id = m.record_id AND m.meta_struct_id = ". $metaStructId ." )"
+                        . " WHERE " . $sql_where ." AND m.id IS NULL";
+
+            } else {
+                $sql = "SELECT record_id FROM record WHERE " . $sql_where;
+            }
 
             $stmt = $databox->get_connection()->prepare($sql);
 
