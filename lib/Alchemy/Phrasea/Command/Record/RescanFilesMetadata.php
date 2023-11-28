@@ -136,7 +136,6 @@ class RescanFilesMetadata extends Command
             if ( $col != null) {
                 $collection = $this->getCollection($sbasId, $col);
                 if ($collection == null) {
-                    $output->writeln(sprintf("<error>collection %s not found on database %s </error>", $col, $sbasName));
                     continue;
                 }
 
@@ -158,7 +157,6 @@ class RescanFilesMetadata extends Command
             }
 
             $metaStructId = $field->get_id();
-            $fieldName = $field->get_name();
             $fieldType = $field->get_type();
 
             $action = "set";
