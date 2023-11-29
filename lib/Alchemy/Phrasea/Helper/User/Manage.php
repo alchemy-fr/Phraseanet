@@ -62,6 +62,7 @@ class Manage extends Helper
             'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
             'filter_mail_locked_only' => $this->request->get('filter_mail_locked_only') ? true : false,
             'filter_grace_period_only' => $this->request->get('filter_grace_period_only') ? true : false,
+            'filter_with_api_only' => $this->request->get('filter_with_api_only') ? true : false,
             'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $request->get("ord", \User_Query::ORD_DESC),
             'offset_start' => $offset_start,
@@ -81,6 +82,7 @@ class Manage extends Helper
             ->templates_only($this->query_parms['filter_model_only'])
             ->mail_locked_only($this->query_parms['filter_mail_locked_only'])
             ->grace_period_only($this->query_parms['filter_grace_period_only'])
+            ->with_api_only($this->query_parms['filter_with_api_only'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
             ->include_invite($this->query_parms['filter_guest_user'])
@@ -114,6 +116,7 @@ class Manage extends Helper
             'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
             'filter_mail_locked_only' => $this->request->get('filter_mail_locked_only') ? true : false,
             'filter_grace_period_only' => $this->request->get('filter_grace_period_only') ? true : false,
+            'filter_with_api_only' => $this->request->get('filter_with_api_only') ? true : false,
             'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
             'per_page' => $results_quantity,
@@ -136,6 +139,7 @@ class Manage extends Helper
             ->templates_only($this->query_parms['filter_model_only'])
             ->mail_locked_only($this->query_parms['filter_mail_locked_only'])
             ->grace_period_only($this->query_parms['filter_grace_period_only'])
+            ->with_api_only($this->query_parms['filter_with_api_only'])
             ->include_invite($this->query_parms['filter_guest_user'])
             ->phantoms_only($this->query_parms['filter_phantoms_only'])
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), [\ACL::CANADMIN])
