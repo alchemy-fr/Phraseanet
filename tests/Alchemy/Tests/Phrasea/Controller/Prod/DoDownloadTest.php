@@ -79,6 +79,9 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testOneDocumentsDownload()
     {
+        $this->markTestSkipped("direct download removed by PHRAS-3958");
+
+        /*
         $nbRowLogsBefore = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $thumbnail = self::$DI['record_1']->get_thumbnail();
 
@@ -119,6 +122,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $nbRowLogsAfter = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $this->assertGreaterThan($nbRowLogsBefore, $nbRowLogsAfter);
         unset($response);
+        */
     }
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
