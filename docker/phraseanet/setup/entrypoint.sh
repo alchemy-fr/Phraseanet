@@ -177,7 +177,7 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set -q workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
     bin/setup system:config set -q workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
     
-    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting DOWNLOAD_ASYNC"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting Download Async"
     if [ -z "$PHRASEANET_DOWNLOAD_ASYNC" ]; then
         echo "$(date +"%Y-%m-%d %H:%M:%S") - DownloadAsync not set, PHRASEANET_DOWNLOAD_ASYNC is null "
     else
