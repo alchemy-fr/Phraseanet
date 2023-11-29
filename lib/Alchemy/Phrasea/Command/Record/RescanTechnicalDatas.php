@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Command;
+namespace Alchemy\Phrasea\Command\Record;
 
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
