@@ -14,8 +14,8 @@ namespace KonsoleKommander;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\ApplyRightsCommand;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
-use Alchemy\Phrasea\Command\BuildPermalinks;
-use Alchemy\Phrasea\Command\BuildSubdefs;
+use Alchemy\Phrasea\Command\Record\BuildPermalinks;
+use Alchemy\Phrasea\Command\Record\BuildSubdefs;
 use Alchemy\Phrasea\Command\CheckConfig;
 use Alchemy\Phrasea\Command\Collection\ListCollectionCommand;
 use Alchemy\Phrasea\Command\Collection\PublishCollectionCommand;
@@ -31,8 +31,9 @@ use Alchemy\Phrasea\Command\NetworkProxiesTestCommand;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
-use Alchemy\Phrasea\Command\RecordAdd;
-use Alchemy\Phrasea\Command\RescanTechnicalDatas;
+use Alchemy\Phrasea\Command\Record\RecordAdd;
+use Alchemy\Phrasea\Command\Record\RescanFilesMetadata;
+use Alchemy\Phrasea\Command\Record\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\SearchEngine\Debug\QueryParseCommand;
 use Alchemy\Phrasea\Command\SearchEngine\Debug\QuerySampleCommand;
 use Alchemy\Phrasea\Command\SearchEngine\IndexCreateCommand;
@@ -156,8 +157,10 @@ $cli->command(new UserListCommand('user:list'));
 
 
 $cli->command(new RecordAdd('records:add'));
+$cli->command(new BuildPermalinks());
 $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
 $cli->command(new BuildSubdefs('records:build-subdefs'));
+$cli->command(new RescanFilesMetadata());
 
 $cli->command(new AddPlugin());
 $cli->command(new ListPlugin());
@@ -186,8 +189,6 @@ $cli->command(new WorkerShowConfigCommand());
 $cli->command(new SendValidationRemindersCommand());
 
 $cli->command(new NetworkProxiesTestCommand('network-proxies:test'));
-
-$cli->command(new BuildPermalinks());
 
 $cli->loadPlugins();
 
