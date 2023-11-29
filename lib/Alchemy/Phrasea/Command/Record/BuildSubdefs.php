@@ -8,8 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Command;
+namespace Alchemy\Phrasea\Command\Record;
 
+use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Media\SubdefGenerator;
