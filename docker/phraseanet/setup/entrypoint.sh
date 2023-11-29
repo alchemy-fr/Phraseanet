@@ -179,14 +179,14 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting Download Async"
     if [ -z "$PHRASEANET_DOWNLOAD_ASYNC" ]; then
-        echo "$(date +"%Y-%m-%d %H:%M:%S") - DownloadAsync not set, PHRASEANET_DOWNLOAD_ASYNC is null "
+        echo "$(date +"%Y-%m-%d %H:%M:%S")  - DownloadAsync not set, PHRASEANET_DOWNLOAD_ASYNC is null "
     else
     bin/setup system:config set download_async.enabled $PHRASEANET_DOWNLOAD_ASYNC
     fi 
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Define external service Pusher"
     if [ -z "$PUSHER_APP_ID" ]; then
-        echo "$(date +"%Y-%m-%d %H:%M:%S") - Pusher service not defined, PUSHER_APP_ID is null"
+        echo "$(date +"%Y-%m-%d %H:%M:%S")  - Pusher service not defined, PUSHER_APP_ID is null"
     else
         bin/setup system:config set externalservice.pusher.auth_key $PUSHER_AUTH_KEY
         bin/setup system:config set externalservice.pusher.secret $PUSHER_SECRET
