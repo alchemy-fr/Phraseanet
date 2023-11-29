@@ -22818,12 +22818,24 @@ var recordEditorService = function recordEditorService(services) {
                             $editTimeArea.hide();
                             $editDateArea.css('width', 210);
                         }
+
+                        if (field.input_disable) {
+                            $editDateArea.prop('disabled', true);
+                        } else {
+                            $editDateArea.prop('disabled', false);
+                        }
                     } else {
                         $editDateArea.hide();
                         $editTimeArea.hide();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).hide();
                         $editTextArea.show();
                         $editTextArea.css('height', '100%');
+
+                        if (field.input_disable) {
+                            $editTextArea.prop('disabled', true);
+                        } else {
+                            $editTextArea.prop('disabled', false);
+                        }
                     }
 
                     $ztextStatus.hide();
@@ -22883,6 +22895,12 @@ var recordEditorService = function recordEditorService(services) {
                     (0, _jquery2.default)('#idEditZone', options.$container).show();
 
                     $editMultiValTextArea.trigger('keyup.maxLength');
+
+                    if (field.input_disable) {
+                        $editMultiValTextArea.prop('disabled', true);
+                    } else {
+                        $editMultiValTextArea.prop('disabled', false);
+                    }
 
                     self.setTimeout(function () {
                         return $editMultiValTextArea.focus();
