@@ -188,9 +188,9 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     if [ -z "$PUSHER_APP_ID" ]; then
         echo "$(date +"%Y-%m-%d %H:%M:%S")  - Pusher service not defined, PUSHER_APP_ID is null"
     else
-        bin/setup system:config set externalservice.pusher.auth_key $PUSHER_AUTH_KEY
-        bin/setup system:config set externalservice.pusher.secret $PUSHER_SECRET
-        bin/setup system:config set externalservice.pusher.app_id $PUSHER_APP_ID
+        bin/setup system:config set -q externalservice.pusher.auth_key $PUSHER_AUTH_KEY
+        bin/setup system:config set -q externalservice.pusher.secret $PUSHER_SECRET
+        bin/setup system:config set -q externalservice.pusher.app_id $PUSHER_APP_ID
     fi
 
 
