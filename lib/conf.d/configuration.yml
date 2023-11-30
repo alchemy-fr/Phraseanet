@@ -438,3 +438,20 @@ externalservice:
 
 Console_logger_enabled_environments: [test]
 
+feedback-report:
+    enabled: false
+    actions:
+        action_unvoted:
+            status_bit: 8
+            value: '{% if vote.votes_unvoted > 0 %} 1 {% else %} 0 {% endif %}'
+        action_red:
+            status_bit: 9
+            value: '{% if vote.votes_no > 0 %} 1 {% else %} 0 {% endif %}'
+        action_green:
+            status_bit: 10
+            value: '{% if vote.votes_no == 0 %} 1 {% else %} 0 {% endif %}'
+        action_log:
+            metadata: Validations
+            method: prepend
+            delimiter: "\n"
+            value: 'Vote initated on {{ vote.created }} by {{ initiator ? initiator.getEmail() : "?" }} expired {{ vote.expired }} : {{ vote.voters_count }} participants, {{ vote.votes_unvoted }} unvoted, {{ vote.votes_no }} "no", {{ vote.votes_yes}} "yes".'

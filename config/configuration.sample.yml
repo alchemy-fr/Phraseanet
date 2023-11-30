@@ -417,3 +417,27 @@ order-manager:
     download-hd:
         expiration-days: null
         expiration-override: false
+
+feedback-report:
+  enabled: false
+  actions:
+    action_unvoted:
+      # if any participant has not voted, set the "incomplete" icon
+      status_bit: 8
+      value: '{% if vote.votes_unvoted > 0 %} 1 {% else %} 0 {% endif %}'
+
+    # because records not involved in a vote should not display a red or green flag, we need 2 sb
+    action_red:
+      # if _any_ vote is "no", set the red flag
+      status_bit: 9
+      value: '{% if vote.votes_no > 0 %} 1 {% else %} 0 {% endif %}'
+    action_green:
+      # if _all_ votes are "yes" (=no vote is "no"), set the green flag
+      status_bit: 10
+      value: '{% if vote.votes_no == 0 %} 1 {% else %} 0 {% endif %}'
+
+    action_log:
+      metadata: 'Validations'
+      method: "prepend"
+      delimiter: "\n"
+      value: 'Vote initated on {{ vote.created }} by {{ initiator ? initiator.getEmail() : "?" }} expired {{ vote.expired }} : {{ vote.voters_count }} participants, {{ vote.votes_unvoted }} unvoted, {{ vote.votes_no }} "no", {{ vote.votes_yes}} "yes".'
