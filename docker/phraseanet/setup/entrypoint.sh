@@ -177,11 +177,21 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set -q workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
     bin/setup system:config set -q workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
     
-    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting DOWNLOAD_ASYNC & PUSHER"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting Download Async"
+    if [ -z "$PHRASEANET_DOWNLOAD_ASYNC" ]; then
+        echo "$(date +"%Y-%m-%d %H:%M:%S")  - DownloadAsync not set, PHRASEANET_DOWNLOAD_ASYNC is null "
+    else
     bin/setup system:config set download_async.enabled $PHRASEANET_DOWNLOAD_ASYNC
-    bin/setup system:config set pusher.auth_key $PUSHER_AUTH_KEY
-    bin/setup system:config set pusher.secret $PUSHER_SECRET
-    bin/setup system:config set pusher.app_id $PUSHER_APP_ID
+    fi 
+
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Define external service Pusher"
+    if [ -z "$PUSHER_APP_ID" ]; then
+        echo "$(date +"%Y-%m-%d %H:%M:%S")  - Pusher service not defined, PUSHER_APP_ID is null"
+    else
+        bin/setup system:config set -q externalservice.pusher.auth_key $PUSHER_AUTH_KEY
+        bin/setup system:config set -q externalservice.pusher.secret $PUSHER_SECRET
+        bin/setup system:config set -q externalservice.pusher.app_id $PUSHER_APP_ID
+    fi
 
 
 
