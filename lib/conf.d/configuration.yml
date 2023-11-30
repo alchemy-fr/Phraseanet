@@ -387,6 +387,9 @@ workers:
         exportMail:
             max_retry: 3
             ttl_retry: 10000
+        downloadAsync:
+            max_retry: 3
+            ttl_retry: 10000
         exposeUpload:
             max_retry: 3
             ttl_retry: 10000
