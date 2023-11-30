@@ -8,24 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Command;
+namespace Alchemy\Phrasea\Command\Record;
 
-use Alchemy\Phrasea\Core\PhraseaTokens;
-use Alchemy\Phrasea\Databox\SubdefGroup;
-use Alchemy\Phrasea\Media\SubdefGenerator;
+use Alchemy\Phrasea\Command\Command;
 use Databox;
-use databox_subdef;
-use DateTime;
 use Doctrine\DBAL\Connection;
 use media_Permalink_Adapter;
 use PDO;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBar;
-use media_subdef;
 
 class BuildPermalinks extends Command
 {

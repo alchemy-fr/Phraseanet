@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Exception;
 use set_export;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -81,6 +82,7 @@ class DownloadController extends Controller
      *
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function listDownloadAsync(Request $request)
     {
@@ -96,12 +98,6 @@ class DownloadController extends Controller
 
         if (0 === $download->get_total_download()) {
             $this->app->abort(403);
-        }
-
-        // "stamp_choice" is a ckbox with value "NO_STAMP" to "remove stamp" on download
-        $stamp_method = set_export::STAMP_ASYNC;    // will not stamp, but flag files to be stamped
-        if($request->request->get('stamp_choice') === set_export::NO_STAMP) {
-            $stamp_method = set_export::NO_STAMP;
         }
 
         $list = $download->prepare_export(
@@ -128,7 +124,7 @@ class DownloadController extends Controller
 
             try {
                 $record = new \record_adapter($this->app, $sbasId, $file['record_id']);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 continue;
             }
 
@@ -183,10 +179,10 @@ class DownloadController extends Controller
                 ]);
             }
             else {
-                throw new \Exception("invalid or expired token");
+                throw new Exception("invalid or expired token");
             }
         }
-        catch(\Exception $e) {
+        catch(Exception $e) {
             // no-op
             $this->app->abort(403, $e->getMessage());
         }

@@ -9,10 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Command;
+namespace Alchemy\Phrasea\Command\Record;
 
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
+use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Symfony\Component\Console\Input\InputArgument;

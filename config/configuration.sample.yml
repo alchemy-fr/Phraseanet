@@ -391,12 +391,10 @@ workers:
         verify_ssl: true
 
 externalservice:
-    ginger:
-        AutoSubtitling:
-            service_base_url: https://base.uri
-            token: 39c6011d
-            transcript_format: text/vtt
-            subdef_source: preview
+    pusher:
+        auth_key: 'pusher-auth_key'
+        secret: 'pusher-secret'
+        app_id: 'pusher-app_id'
 
 user_account:
     deleting_policies:
