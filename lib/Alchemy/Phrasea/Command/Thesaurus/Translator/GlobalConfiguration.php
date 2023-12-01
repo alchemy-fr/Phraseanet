@@ -12,8 +12,6 @@ use Unicode;
 
 Class GlobalConfiguration
 {
-    const CONFIG_DIR = "/config/translator/";
-    const CONFIG_FILE = "configuration.yml";
     const REPORT_FORMAT_ALL = "all";
     const REPORT_FORMAT_TRANSLATED = "translated";
 
@@ -105,12 +103,9 @@ Class GlobalConfiguration
     public static function create(appbox $appBox, Unicode $unicode, string $root, bool $dryRun, string $reportFormat, OutputInterface $output): GlobalConfiguration
     {
         try {
-            $config_file = ($config_dir = $root . self::CONFIG_DIR) . self::CONFIG_FILE;
+            $app = $appBox->getPhraseApplication();
 
-            @mkdir($config_dir, 0777, true);
-
-            $config = Yaml::parse(file_get_contents($config_file));
-            return new self($appBox, $unicode, $config['translator'], $dryRun, $reportFormat, $output);
+            return new self($appBox, $unicode, $app['conf']->get(['translator']), $dryRun, $reportFormat, $output);
         }
         catch (\Exception $e) {
             throw new ConfigurationException(sprintf("missing or bad configuration (%s)", $e->getMessage()));
