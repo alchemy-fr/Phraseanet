@@ -34,6 +34,7 @@ const recordEditorService = services => {
     let $editTimeArea;
     let $editMonoValTextArea;
     let $editMultiValTextArea;
+    let $searchThesaurus;
     let $toolsTabs;
     let $idExplain;
     let $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
@@ -59,6 +60,7 @@ const recordEditorService = services => {
         $editMultiValTextArea = $('#EditTextMultiValued', options.$container);
         $toolsTabs = $('#EDIT_MID_R .tabs', options.$container);
         $idExplain = $('#idExplain', options.$container);
+        $searchThesaurus = $('.editor-thesaurus-search', options.$container);
 
         $toolsTabs.tabs({
             activate: function (event, ui) {
@@ -212,6 +214,11 @@ const recordEditorService = services => {
                     $editTimeArea.hide();
                     $editDateArea.css('width',210);
                 }
+            })
+            .on('mouseup mousedown keyup keydown', '.editor-thesaurus-search', (event) => {
+                let currentField = options.fieldCollection.getActiveField();
+
+                onUserInputComplete(event, $searchThesaurus.val(), currentField);
             })
         ;
     };
@@ -476,6 +483,8 @@ const recordEditorService = services => {
     function onSelectField(evt, fieldIndex) {
         $editTextArea.blur();
         $editMultiValTextArea.blur();
+        $searchThesaurus.blur();
+
         $('.editDiaButtons', options.$container).hide();
 
         $($editTextArea, $editMultiValTextArea).unbind('keyup.maxLength');
@@ -607,6 +616,8 @@ const recordEditorService = services => {
                     if (field.type === 'date') {
                         $editTextArea.hide();
                         $editDateArea.show();
+                        $searchThesaurus.hide();
+
                         $('#idEditDateZone', options.$container).show();
                         $editDateArea.val(field._value);
 
@@ -629,6 +640,7 @@ const recordEditorService = services => {
                         $('#idEditDateZone', options.$container).hide();
                         $editTextArea.show();
                         $editTextArea.css('height', '100%');
+                        $searchThesaurus.show();
                     }
 
                     $ztextStatus.hide();
@@ -699,6 +711,8 @@ const recordEditorService = services => {
                     $editMultiValTextArea.trigger('keyup.maxLength');
 
                     self.setTimeout(() => $editMultiValTextArea.focus(), 50);
+
+                    $searchThesaurus.show();
 
                     //      reveal_mval();
                 }
@@ -849,6 +863,9 @@ const recordEditorService = services => {
 
         $editTextArea.blur();
         $editMultiValTextArea.blur();
+        $searchThesaurus.blur();
+
+        $searchThesaurus.hide();
 
         $('#idFieldNameEdit', options.$container).html('[STATUS]');
         $idExplain.html('&nbsp;');
