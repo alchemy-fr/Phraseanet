@@ -54,7 +54,7 @@ class SubtitleWorker implements WorkerInterface
         $happyscribeTranscriptFormat  = $this->conf->get(['externalservice', 'happyscribe', 'transcript_format'], 'vtt');
 
         if (!$organizationId || !$this->happyscribeToken ) {
-            $this->logger->error("External service Ginga not set correctly in configuration.yml");
+            $this->logger->error("External service happyscribe not set correctly in configuration.yml");
 
             return 0;
         }

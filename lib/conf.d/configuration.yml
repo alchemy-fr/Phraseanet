@@ -434,6 +434,11 @@ externalservice:
         auth_key: 'pusher-auth_key'
         secret: 'pusher-secret'
         app_id: 'pusher-app_id'
+    happyscribe:
+        token: token
+        organization_id: 123456
+        transcript_format: vtt
+        subdef_source: preview
 
 
 Console_logger_enabled_environments: [test]
