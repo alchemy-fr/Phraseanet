@@ -76,6 +76,36 @@ class patch_418RC8PHRAS3777 implements patchInterface
             $conf->remove(['main', 'bridge']);
         }
 
+        // remove old pusher configuration
+        // copy it under externalservice
+        if ($conf->has(['pusher'])) {
+            $p = $conf->get(['pusher']);
+            $conf->set(['externalservice', 'pusher'], $p);
+
+            $conf->remove(['pusher']);
+        }
+
+        // if no pusher configuration
+        if (!$conf->has(['externalservice', 'pusher'])) {
+            $pusher = [
+                'auth_key' => 'pusher-auth_key',
+                'secret' => 'pusher-secret',
+                'app_id' => 'pusher-app_id'
+            ];
+            $conf->set(['externalservice', 'pusher'], $pusher);
+        }
+
+        // if no happyscribe configuration
+        if (!$conf->has(['externalservice', 'happyscribe'])) {
+            $h = [
+                'token'             => 'token',
+                'organization_id'   => '123456',
+                'transcript_format' => 'vtt',
+                'subdef_source'     => 'preview'
+            ];
+            $conf->set(['externalservice', 'happyscribe'], $h);
+        }
+
         // remove cooliris
         if ($conf->has(['crossdomain', 'allow-access-from'])) {
             $tValues = $conf->get(['crossdomain', 'allow-access-from']);

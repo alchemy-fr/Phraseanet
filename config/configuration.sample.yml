@@ -246,10 +246,7 @@ registration-fields:
         required: true
 download_async:
   enabled: true
-pusher:
-  auth_key: 'pusher-auth_key'
-  secret: 'pusher-secret'
-  app_id: 'pusher-app_id'
+
 xsendfile:
     enabled: false
     type: nginx
@@ -395,6 +392,12 @@ externalservice:
         auth_key: 'pusher-auth_key'
         secret: 'pusher-secret'
         app_id: 'pusher-app_id'
+    happyscribe:
+        token: token
+        organization_id: 123456
+        transcript_format: vtt
+        subdef_source: preview
+
 
 user_account:
     deleting_policies:
