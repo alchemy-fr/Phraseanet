@@ -5,6 +5,7 @@ import merge from 'lodash.merge';
 import * as Rx from 'rx';
 import Emitter from '../../core/emitter';
 import leafletMap from './../../geolocalisation/providers/mapbox';
+import videoPreviewPlayer from './videoPreviewPlayer';
 import pym from 'pym.js';
 let image_enhancer = require('imports-loader?$=jquery!../../utils/jquery-plugins/imageEnhancer/imageEnhancer');
 require('./../../../phraseanet-common/components/tooltip');
@@ -299,10 +300,26 @@ const previewRecordService = services => {
                 // transform default embed ID in order to avoid conflicts:
                 let customId = 'phraseanet-embed-preview-frame';
                 let $template = $(data.html_preview);
-                $template.find('#phraseanet-embed-frame').attr('id', customId);
+
+                if (data.type == 'video') {
+                    customId = 'phraseanet-video-preview';
+                    $template.find('#phraseanet-video-frame').attr('id', customId);
+                } else {
+                    $template.find('#phraseanet-embed-frame').attr('id', customId);
+                }
 
                 $('#PREVIEWIMGCONT').empty().append($template.get(0));
-                if ($(`#${customId}`).length > 0) {
+
+                if (data.type == 'video') {
+                    let options = {
+                        playbackRates: [],
+                        fluid: true
+                    };
+
+                    videoPreviewPlayer(services).initialize({$container: $('#phraseanet-video-preview'), data: data.previewConfig}, options);
+                }
+
+                if ($(`#${customId}`).length > 0 && data.type != 'video') {
                     activeThumbnailFrame = new pym.Parent(
                         customId,
                         data.record.preview.url

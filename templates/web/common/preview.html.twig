@@ -28,4 +28,8 @@
 {% set width = preview_obj.get_width() %}
 {% set height = preview_obj.get_height() %}
 
-{{ thumbnail.format(preview_obj, preview_obj.get_width(), preview_obj.get_height(), '', wrap, false, autoplay) }}
+{% if detailedView is not defined %}
+    {% set  detailedView = false %}
+{% endif %}
+
+{{ thumbnail.format(preview_obj, preview_obj.get_width(), preview_obj.get_height(), '', wrap, false, autoplay, detailedView) }}

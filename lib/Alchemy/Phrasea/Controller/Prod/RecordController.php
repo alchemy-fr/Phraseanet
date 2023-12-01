@@ -130,6 +130,73 @@ class RecordController extends Controller
         $basketElementsRepository = $this->getBasketElementRepository();
         $feedbackElementDatas = $basketElementsRepository->findElementsDatasByRecord($record);
 
+        $sources = [];
+        if ($record->getType() == 'video') {
+            $previewHtml5 = $record->getSubdfefByDeviceAndMime(\databox_subdef::DEVICE_SCREEN, ['video/ogg', 'video/mp4', 'video/webm']);
+            $technical_info = $record->get_technical_infos();
+            try {
+                $width = $technical_info[\media_subdef::TC_DATA_WIDTH]->getValue();
+                $height = $technical_info[\media_subdef::TC_DATA_HEIGHT]->getValue();
+                $framerate = round($technical_info[\media_subdef::TC_DATA_FRAMERATE]->getValue(), 2);
+            } catch (\Exception $e) {
+                $width = '';
+                $height = '';
+                $framerate = '';
+            }
+
+
+            if (!empty($width) && !empty($height)) {
+                $ratio = (float)$width/$height;
+            } else {
+                $ratio = '';
+            }
+
+            $sources = [];
+            foreach ($previewHtml5 as $sub) {
+                $sources[]= [
+                    'ratio' => $ratio,
+                    'width' => $width,
+                    'height'=> $height,
+                    'framerate' => $framerate,
+                    'type'      => $sub->get_mime(),
+                    'src'       => $sub->get_url()->__toString()
+                ];
+            }
+        }
+
+        $JSFields = [];
+
+        foreach ($record->getDatabox()->get_meta_structure() as $meta) {
+            /** @var \databox_field $meta */
+            $fields[] = $meta;
+
+            /** @Ignore */
+            $JSFields[$meta->get_id()] = [
+                'id' => $meta->get_id(),
+                'name' => $meta->get_name(),
+                '_value' => $record->getCaption([$meta->get_name()]),
+            ];
+
+
+        }
+
+        $previewConfig = [
+            "isVideo" => ($record->getType() == 'video'),
+            "databaseId" => $record->getBaseId(),
+            "databoxId"  => $record->getDataboxId(),
+            "videoEditorConfig" => $this->app['conf']->get(['video-editor']),
+            "record"   => [
+                "id"    => $record->getRecordId(),
+                "type"  => $record->getType(),
+                "sources" => $sources
+            ],
+            "T_fields" => $JSFields,
+            "preferences" => [
+                "overlapChapters" => $this->app['settings']->getUserSetting($this->getAuthenticatedUser(), 'overlapChapters')
+            ]
+        ];
+
+
         return $this->app->json([
             "desc"            => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
@@ -139,7 +206,8 @@ class RecordController extends Controller
             ]),
             "recordCaptions"  => $recordCaptions,
             "html_preview"    => $this->render('common/preview.html.twig', [
-                'record'        => $record
+                'record'        => $record,
+                'detailedView'  => true
             ]),
             "others"          => $this->render('prod/preview/appears_in.html.twig', [
                 'parents'       => $record->get_grouping_parents(),
@@ -165,6 +233,8 @@ class RecordController extends Controller
             "databox_name"    => $record->getDatabox()->get_label($this->app['locale']),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
+            "type"            => $record->getType(),
+            "previewConfig"   => $previewConfig
         ]);
     }
 

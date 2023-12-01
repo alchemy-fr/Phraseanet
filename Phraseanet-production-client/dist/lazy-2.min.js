@@ -1,6 +1,269 @@
 webpackJsonpapp([2],{
 
-/***/ 458:
+/***/ 109:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loadImage = __webpack_require__(472);
+/* The jQuery UI widget factory, can be omitted if jQuery UI is already included */
+__webpack_require__(473);
+/* The Iframe Transport is required for browsers without support for XHR file uploads */
+__webpack_require__(474);
+/* The basic File Upload plugin */
+__webpack_require__(475);
+
+/**
+ * UPLOADER MANAGER
+ */
+var UploaderManager = function UploaderManager(options) {
+    options = options || {};
+
+    if ('container' in options === false) {
+        throw 'missing container parameter';
+    } else if (!options.container.jquery) {
+        throw 'container parameter must be a jquery dom element';
+    }
+
+    if ('settingsBox' in options === false) {
+        throw 'missing settingBox parameter';
+    } else if (!options.settingsBox.jquery) {
+        throw 'container parameter must be a jquery dom element';
+    }
+
+    if ('uploadBox' in options === false) {
+        throw 'missing uploadBox parameter';
+    } else if (!options.uploadBox.jquery) {
+        throw 'container parameter must be a jquery dom element';
+    }
+
+    if ('downloadBox' in options === false) {
+        throw 'missing downloadBox parameter';
+    } else if (!options.downloadBox.jquery) {
+        throw 'container parameter must be a jquery dom element';
+    }
+
+    this.recordClass = options.recordClass || 'upload-record';
+
+    this.options = options;
+
+    this.options.uploadBox.wrapInner('<ul class="thumbnails" />');
+
+    this.options.uploadBox = this.options.uploadBox.find('ul:first');
+
+    this.options.downloadBox.wrapInner('<ul class="thumbnails" />');
+
+    this.options.downloadBox = this.options.downloadBox.find('ul:first');
+
+    if (_jquery2.default.isFunction(_jquery2.default.fn.sortable)) {
+        this.options.uploadBox.sortable();
+    }
+
+    this.uploadIndex = 0;
+
+    this.Queue = new Queue();
+    this.Formater = new Formater();
+    this.Preview = new Preview();
+};
+
+UploaderManager.prototype = {
+    setOptions: function setOptions(options) {
+        return _jquery2.default.extend(this.options, options);
+    },
+    getContainer: function getContainer() {
+        return this.options.container;
+    },
+    getUploadBox: function getUploadBox() {
+        return this.options.uploadBox;
+    },
+    getSettingsBox: function getSettingsBox() {
+        return this.options.settingsBox;
+    },
+    getDownloadBox: function getDownloadBox() {
+        return this.options.downloadBox;
+    },
+    clearUploadBox: function clearUploadBox() {
+        this.getUploadBox().empty();
+        this.uploadIndex = 0;
+        this.Queue.clear();
+    },
+    getDatas: function getDatas() {
+        return this.Queue.all();
+    },
+    getData: function getData(index) {
+        return this.Queue.get(index);
+    },
+    addData: function addData(data) {
+        this.uploadIndex++;
+        data.uploadIndex = this.uploadIndex;
+        this.Queue.set(this.uploadIndex, data);
+    },
+    removeData: function removeData(index) {
+        this.Queue.remove(index);
+    },
+    addAttributeToData: function addAttributeToData(indexOfData, attribute, value) {
+        var data = this.getData(indexOfData);
+        if (_jquery2.default.type(attribute) === 'string') {
+            data[attribute] = value;
+            this.Queue.set(indexOfData, data);
+        }
+    },
+    getUploadIndex: function getUploadIndex() {
+        return this.uploadIndex;
+    },
+    hasData: function hasData() {
+        return !this.Queue.isEmpty();
+    },
+    countData: function countData() {
+        return this.Queue.getLength();
+    }
+};
+/**
+ * PREVIEW
+ *
+ * Dependency : loadImage function
+ * @see https://github.com/blueimp/JavaScript-Load-Image
+ *
+ * Options
+ *  maxWidth: (int) Max width of preview
+ *  maxHeight: (int) Max height of preview
+ *  minWidth: (int) Min width of preview
+ *  minHeight: (int) Min height of preview
+ *  canva: (boolean) render preview as canva if supported by the navigator
+ */
+
+var Preview = function Preview() {
+    this.options = {
+        fileType: /^image\/(gif|jpeg|png|jpg)$/,
+        maxSize: 5242880 // 5MB
+    };
+};
+
+Preview.prototype = {
+    setOptions: function setOptions(options) {
+        this.options = _jquery2.default.extend(this.options, options);
+    },
+    getOptions: function getOptions() {
+        return this.options;
+    },
+    render: function render(file, callback) {
+        if (typeof loadImage === 'function' && this.options.fileType.test(file.type)) {
+            if (_jquery2.default.type(this.options.maxSize) !== 'number' || file.size < this.options.maxSize) {
+                var options = {
+                    maxWidth: this.options.maxWidth || 150,
+                    maxHeight: this.options.maxHeight || 75,
+                    minWidth: this.options.minWidth || 80,
+                    minHeight: this.options.minHeight || 40,
+                    canvas: this.options.canva || true
+                };
+                loadImage(file, callback, options);
+            }
+        }
+    }
+};
+
+/**
+ * FORMATER
+ */
+
+var Formater = function Formater() {};
+
+Formater.prototype = {
+    size: function size(bytes) {
+        if (typeof bytes !== 'number') {
+            throw bytes + ' is not a number';
+        }
+        if (bytes >= 1073741824) {
+            return (bytes / 1073741824).toFixed(2) + ' GB';
+        }
+        if (bytes >= 1048576) {
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        }
+        return (bytes / 1024).toFixed(2) + ' KB';
+    },
+    bitrate: function bitrate(bits) {
+        if (typeof bits !== 'number') {
+            throw bits + ' is not a number';
+        }
+        // 1 byte = 8 bits
+        var bytes = bits >> 3;
+
+        if (bytes >= 1 << 30) {
+            return (bytes / (1 << 30)).toFixed(2) + ' Go/s';
+        }
+        if (bytes >= 1 << 20) {
+            return (bytes / (1 << 20)).toFixed(2) + ' Mo/s';
+        }
+        if (bytes >= 1 << 10) {
+            return (bytes / (1 << 10)).toFixed(2) + ' Ko/s';
+        }
+        return bytes + ' o/s';
+    },
+    pourcent: function pourcent(current, total) {
+        return (current / total * 100).toFixed(2);
+    }
+};
+
+/**
+ * QUEUE
+ */
+var Queue = function Queue() {
+    this.list = {};
+};
+
+Queue.prototype = {
+    all: function all() {
+        return this.list;
+    },
+    set: function set(id, item) {
+        this.list[id] = item;
+        return this;
+    },
+    get: function get(id) {
+        if (!this.list[id]) {
+            throw 'Unknown ID' + id;
+        }
+        return this.list[id];
+    },
+    remove: function remove(id) {
+        delete this.list[id];
+    },
+    getLength: function getLength() {
+        var count = 0;
+        for (var k in this.list) {
+            if (this.list.hasOwnProperty(k)) {
+                ++count;
+            }
+        }
+        return count;
+    },
+    isEmpty: function isEmpty() {
+        return this.getLength() === 0;
+    },
+    clear: function clear() {
+        var $this = this;
+        _jquery2.default.each(this.list, function (k) {
+            $this.remove(k);
+        });
+    }
+};
+
+exports.default = UploaderManager;
+
+/***/ }),
+
+/***/ 472:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -153,7 +416,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*
 
 /***/ }),
 
-/***/ 459:
+/***/ 473:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -739,7 +1002,7 @@ var widget = $.widget;
 
 /***/ }),
 
-/***/ 460:
+/***/ 474:
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -969,7 +1232,7 @@ var $ = __webpack_require__(0);
 
 /***/ }),
 
-/***/ 461:
+/***/ 475:
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -1003,7 +1266,7 @@ var $ = __webpack_require__(0);
         // Node/CommonJS:
         factory(
             __webpack_require__(0),
-            __webpack_require__(462)
+            __webpack_require__(476)
         );
     } else {
         // Browser globals:
@@ -2464,7 +2727,7 @@ var $ = __webpack_require__(0);
 
 /***/ }),
 
-/***/ 462:
+/***/ 476:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! jQuery UI - v1.11.4+CommonJS - 2015-08-28
@@ -3043,269 +3306,6 @@ var widget = $.widget;
 
 }));
 
-
-/***/ }),
-
-/***/ 93:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var loadImage = __webpack_require__(458);
-/* The jQuery UI widget factory, can be omitted if jQuery UI is already included */
-__webpack_require__(459);
-/* The Iframe Transport is required for browsers without support for XHR file uploads */
-__webpack_require__(460);
-/* The basic File Upload plugin */
-__webpack_require__(461);
-
-/**
- * UPLOADER MANAGER
- */
-var UploaderManager = function UploaderManager(options) {
-    options = options || {};
-
-    if ('container' in options === false) {
-        throw 'missing container parameter';
-    } else if (!options.container.jquery) {
-        throw 'container parameter must be a jquery dom element';
-    }
-
-    if ('settingsBox' in options === false) {
-        throw 'missing settingBox parameter';
-    } else if (!options.settingsBox.jquery) {
-        throw 'container parameter must be a jquery dom element';
-    }
-
-    if ('uploadBox' in options === false) {
-        throw 'missing uploadBox parameter';
-    } else if (!options.uploadBox.jquery) {
-        throw 'container parameter must be a jquery dom element';
-    }
-
-    if ('downloadBox' in options === false) {
-        throw 'missing downloadBox parameter';
-    } else if (!options.downloadBox.jquery) {
-        throw 'container parameter must be a jquery dom element';
-    }
-
-    this.recordClass = options.recordClass || 'upload-record';
-
-    this.options = options;
-
-    this.options.uploadBox.wrapInner('<ul class="thumbnails" />');
-
-    this.options.uploadBox = this.options.uploadBox.find('ul:first');
-
-    this.options.downloadBox.wrapInner('<ul class="thumbnails" />');
-
-    this.options.downloadBox = this.options.downloadBox.find('ul:first');
-
-    if (_jquery2.default.isFunction(_jquery2.default.fn.sortable)) {
-        this.options.uploadBox.sortable();
-    }
-
-    this.uploadIndex = 0;
-
-    this.Queue = new Queue();
-    this.Formater = new Formater();
-    this.Preview = new Preview();
-};
-
-UploaderManager.prototype = {
-    setOptions: function setOptions(options) {
-        return _jquery2.default.extend(this.options, options);
-    },
-    getContainer: function getContainer() {
-        return this.options.container;
-    },
-    getUploadBox: function getUploadBox() {
-        return this.options.uploadBox;
-    },
-    getSettingsBox: function getSettingsBox() {
-        return this.options.settingsBox;
-    },
-    getDownloadBox: function getDownloadBox() {
-        return this.options.downloadBox;
-    },
-    clearUploadBox: function clearUploadBox() {
-        this.getUploadBox().empty();
-        this.uploadIndex = 0;
-        this.Queue.clear();
-    },
-    getDatas: function getDatas() {
-        return this.Queue.all();
-    },
-    getData: function getData(index) {
-        return this.Queue.get(index);
-    },
-    addData: function addData(data) {
-        this.uploadIndex++;
-        data.uploadIndex = this.uploadIndex;
-        this.Queue.set(this.uploadIndex, data);
-    },
-    removeData: function removeData(index) {
-        this.Queue.remove(index);
-    },
-    addAttributeToData: function addAttributeToData(indexOfData, attribute, value) {
-        var data = this.getData(indexOfData);
-        if (_jquery2.default.type(attribute) === 'string') {
-            data[attribute] = value;
-            this.Queue.set(indexOfData, data);
-        }
-    },
-    getUploadIndex: function getUploadIndex() {
-        return this.uploadIndex;
-    },
-    hasData: function hasData() {
-        return !this.Queue.isEmpty();
-    },
-    countData: function countData() {
-        return this.Queue.getLength();
-    }
-};
-/**
- * PREVIEW
- *
- * Dependency : loadImage function
- * @see https://github.com/blueimp/JavaScript-Load-Image
- *
- * Options
- *  maxWidth: (int) Max width of preview
- *  maxHeight: (int) Max height of preview
- *  minWidth: (int) Min width of preview
- *  minHeight: (int) Min height of preview
- *  canva: (boolean) render preview as canva if supported by the navigator
- */
-
-var Preview = function Preview() {
-    this.options = {
-        fileType: /^image\/(gif|jpeg|png|jpg)$/,
-        maxSize: 5242880 // 5MB
-    };
-};
-
-Preview.prototype = {
-    setOptions: function setOptions(options) {
-        this.options = _jquery2.default.extend(this.options, options);
-    },
-    getOptions: function getOptions() {
-        return this.options;
-    },
-    render: function render(file, callback) {
-        if (typeof loadImage === 'function' && this.options.fileType.test(file.type)) {
-            if (_jquery2.default.type(this.options.maxSize) !== 'number' || file.size < this.options.maxSize) {
-                var options = {
-                    maxWidth: this.options.maxWidth || 150,
-                    maxHeight: this.options.maxHeight || 75,
-                    minWidth: this.options.minWidth || 80,
-                    minHeight: this.options.minHeight || 40,
-                    canvas: this.options.canva || true
-                };
-                loadImage(file, callback, options);
-            }
-        }
-    }
-};
-
-/**
- * FORMATER
- */
-
-var Formater = function Formater() {};
-
-Formater.prototype = {
-    size: function size(bytes) {
-        if (typeof bytes !== 'number') {
-            throw bytes + ' is not a number';
-        }
-        if (bytes >= 1073741824) {
-            return (bytes / 1073741824).toFixed(2) + ' GB';
-        }
-        if (bytes >= 1048576) {
-            return (bytes / 1048576).toFixed(2) + ' MB';
-        }
-        return (bytes / 1024).toFixed(2) + ' KB';
-    },
-    bitrate: function bitrate(bits) {
-        if (typeof bits !== 'number') {
-            throw bits + ' is not a number';
-        }
-        // 1 byte = 8 bits
-        var bytes = bits >> 3;
-
-        if (bytes >= 1 << 30) {
-            return (bytes / (1 << 30)).toFixed(2) + ' Go/s';
-        }
-        if (bytes >= 1 << 20) {
-            return (bytes / (1 << 20)).toFixed(2) + ' Mo/s';
-        }
-        if (bytes >= 1 << 10) {
-            return (bytes / (1 << 10)).toFixed(2) + ' Ko/s';
-        }
-        return bytes + ' o/s';
-    },
-    pourcent: function pourcent(current, total) {
-        return (current / total * 100).toFixed(2);
-    }
-};
-
-/**
- * QUEUE
- */
-var Queue = function Queue() {
-    this.list = {};
-};
-
-Queue.prototype = {
-    all: function all() {
-        return this.list;
-    },
-    set: function set(id, item) {
-        this.list[id] = item;
-        return this;
-    },
-    get: function get(id) {
-        if (!this.list[id]) {
-            throw 'Unknown ID' + id;
-        }
-        return this.list[id];
-    },
-    remove: function remove(id) {
-        delete this.list[id];
-    },
-    getLength: function getLength() {
-        var count = 0;
-        for (var k in this.list) {
-            if (this.list.hasOwnProperty(k)) {
-                ++count;
-            }
-        }
-        return count;
-    },
-    isEmpty: function isEmpty() {
-        return this.getLength() === 0;
-    },
-    clear: function clear() {
-        var $this = this;
-        _jquery2.default.each(this.list, function (k) {
-            $this.remove(k);
-        });
-    }
-};
-
-exports.default = UploaderManager;
 
 /***/ })
 

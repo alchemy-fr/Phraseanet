@@ -17,13 +17,13 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 
 /***/ }),
 
-/***/ 253:
+/***/ 306:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 
-var _bootstrap = __webpack_require__(254);
+var _bootstrap = __webpack_require__(307);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -63,7 +63,7 @@ module.exports = lightboxApplication;
 
 /***/ }),
 
-/***/ 254:
+/***/ 307:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79,27 +79,27 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _configService = __webpack_require__(16);
+var _configService = __webpack_require__(17);
 
 var _configService2 = _interopRequireDefault(_configService);
 
-var _locale = __webpack_require__(20);
+var _locale = __webpack_require__(21);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _config = __webpack_require__(255);
+var _config = __webpack_require__(308);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _emitter = __webpack_require__(15);
+var _emitter = __webpack_require__(16);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _index = __webpack_require__(256);
+var _index = __webpack_require__(309);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _mainMenu = __webpack_require__(78);
+var _mainMenu = __webpack_require__(94);
 
 var _mainMenu2 = _interopRequireDefault(_mainMenu);
 
@@ -111,9 +111,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-__webpack_require__(14);
-__webpack_require__(19);
-var humane = __webpack_require__(9);
+__webpack_require__(15);
+__webpack_require__(20);
+var humane = __webpack_require__(8);
 
 var Bootstrap = function () {
     function Bootstrap(userConfig) {
@@ -190,7 +190,7 @@ exports.default = bootstrap;
 
 /***/ }),
 
-/***/ 255:
+/***/ 308:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -209,7 +209,7 @@ exports.default = defaultConfig;
 
 /***/ }),
 
-/***/ 256:
+/***/ 309:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -223,22 +223,22 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _utils = __webpack_require__(57);
+var _utils = __webpack_require__(65);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _download = __webpack_require__(257);
+var _download = __webpack_require__(310);
 
 var _download2 = _interopRequireDefault(_download);
 
-var _pym = __webpack_require__(17);
+var _pym = __webpack_require__(18);
 
 var _pym2 = _interopRequireDefault(_pym);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(38);
-var humane = __webpack_require__(9);
+__webpack_require__(41);
+var humane = __webpack_require__(8);
 
 
 var lightbox = function lightbox(services) {
@@ -1194,7 +1194,7 @@ exports.default = lightbox;
 
 /***/ }),
 
-/***/ 257:
+/***/ 310:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1208,13 +1208,13 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _dialog = __webpack_require__(1);
+var _dialog = __webpack_require__(2);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(9);
+var humane = __webpack_require__(8);
 
 var download = function download(services) {
     var configService = services.configService,
@@ -1620,5 +1620,5 @@ exports.default = download;
 
 /***/ })
 
-},[253]);
+},[306]);
 });
