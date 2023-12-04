@@ -468,7 +468,7 @@ translator:
         #       nb: since we clean the destination fields, we MUST (re)write EN to EN
         # - add country to keywords, both FR/EN
         keywords:
-            active: true
+            active: false
             databox: my_databox
             if_collection: to_translate
             if_status: x1xxxx

@@ -72,16 +72,25 @@ class patch_418RC8PHRAS3967 implements patchInterface
                 // retrive value for the old conf file if possible
                 $config_file = ($config_dir =  $app['root.path'] . "/config/translator/") . "configuration.yml";
 
-                @mkdir($config_dir, 0777, true);
+                if (!file_exists($config_file)) {
+                    throw new Exception("file not found");
+                }
 
-                $oldConf = Yaml::parse(file_get_contents($config_file));
+                $config_file = file_get_contents($config_file);
+                if ( $config_file == false) {
+                    throw new Exception("can not get file content");
+                }
+
+                // throw ParseException  if not a valid yaml
+                $oldConf = Yaml::parse($config_file);
 
                 $conf->set(['translator'], $oldConf['translator']);
             } catch (\Exception $e) {
                 // if missing configuration
                 $conf->set(['translator'], ['jobs' => ['keywords' => []]]);
+            } catch(\Throwable $e) {
+                $conf->set(['translator'], ['jobs' => ['keywords' => []]]);
             }
-
         }
     }
 }
