@@ -40,6 +40,7 @@ final class DbalDataboxFieldRepository implements DataboxFieldRepository
         'gui_editable',
         'gui_visible',
         'printable',
+        'input_disable',
     ];
 
     /** @var DataboxFieldFactory */

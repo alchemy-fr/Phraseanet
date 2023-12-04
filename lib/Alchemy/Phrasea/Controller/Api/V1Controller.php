@@ -629,6 +629,7 @@ class V1Controller extends Controller
                 'gui_editable'     => $databox_field->get_gui_editable(),
                 'gui_visible'      => $databox_field->get_gui_visible(),
                 'printable'        => $databox_field->get_printable(),
+                'input_disable'    => $databox_field->get_input_disable(),
                 'type'             => $databox_field->get_type(),
                 'indexable'        => $databox_field->is_indexable(),
                 'multivalue'       => $databox_field->is_multi(),
