@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2023-11-28T07:58:32Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2023-11-29T15:10:50Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -865,7 +865,7 @@
       <trans-unit id="b9ba037c0e4c06d192c83e08070b15787f07daaa" resname="Aggregation">
         <source>Aggregation</source>
         <target state="new">Aggregation</target>
-        <jms:reference-file line="248">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="256">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40a1dd8272b48953d037ba565c6189e9ef5cd06b" resname="Aide" approved="yes">
         <source>Aide</source>
@@ -1084,8 +1084,8 @@
         <target state="translated">Er is een fout opgetreden</target>
         <jms:reference-file line="81">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="298">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="2093">Controller/Api/V1Controller.php</jms:reference-file>
-        <jms:reference-file line="2547">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2094">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2548">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="136">Controller/Admin/SearchEngineController.php</jms:reference-file>
         <jms:reference-file line="532">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="127">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -1270,7 +1270,7 @@
       <trans-unit id="b2ed82f1bf1c30916cde300ded82176c2ff0300a" resname="Aucun" approved="yes">
         <source>Aucun</source>
         <target state="translated">Geen enkele</target>
-        <jms:reference-file line="239">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="247">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f9f7ad2bc75b4c34160ea51aeff9a273da06c1f" resname="Aucun bridge disponible. Veuillez contacter un administrateur." approved="yes">
         <source>Aucun bridge disponible. Veuillez contacter un administrateur.</source>
@@ -1594,7 +1594,7 @@
       <trans-unit id="2d90cbe9431fb9e8d6013b651c2fb46a598de9eb" resname="Business Fields" approved="yes">
         <source>Business Fields</source>
         <target state="translated">Zakelijke velden</target>
-        <jms:reference-file line="222">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="230">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7985544ae054430f8b4416a883fa9d0b084ee0cf" resname="By checking this box, you accept %beginning_link% Terms of Use %end_link%" approved="yes">
         <source>By checking this box, you accept %beginning_link% Terms of Use %end_link%</source>
@@ -2169,7 +2169,7 @@
         <source>Current configuration contains some errors</source>
         <target state="new">Current configuration contains some
             errors</target>
-        <jms:reference-file line="320">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="328">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="31b3c410ee3a3630f3efc08bae2fd9d06ec16ff4" resname="Current operations cannot be executed because the site is temporarily in maintenance mode. Wait a few minutes and try your request again" approved="yes">
         <source>Current operations cannot be executed because the site is temporarily in maintenance mode. Wait a few minutes and try your request again</source>
@@ -2573,7 +2573,7 @@
       <trans-unit id="91ac9f9a0ff33ed65ca817be668da3693d743364" resname="Display thumbnails" approved="yes">
         <source>Display thumbnails</source>
         <target state="translated">Toon thumbnails</target>
-        <jms:reference-file line="235">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="243">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2f91f3c9d0ddbb497a99ee01c0f18a4b896bad4" resname="Do not display">
         <source>Do not display</source>
@@ -3497,7 +3497,7 @@
       <trans-unit id="05db1e4e974fff47ae67bae1309fb4edd9b0a053" resname="Generate-cterms">
         <source>Generate-cterms</source>
         <target state="new">Generate-cterms</target>
-        <jms:reference-file line="277">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="285">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f1b4c9f85fcbbf355fdd3c97210173b63551aa6" resname="Generates a flexpaper flash file" approved="yes">
         <source>Generates a flexpaper flash file</source>
@@ -4744,7 +4744,7 @@
         <source>Not aggregated</source>
         <target state="new">Not aggregated</target>
         <jms:reference-file line="17">admin/search-engine/general-aggregation.html.twig</jms:reference-file>
-        <jms:reference-file line="251">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="259">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cc451929f50e088ffcff10e90dfe157d2319e753" resname="Notification par email" approved="yes">
         <source>Notification par email</source>
@@ -5603,7 +5603,7 @@
       <trans-unit id="3cd74928930cda94205568949be186e4cae37119" resname="Record Not Found" approved="yes">
         <source>Record Not Found</source>
         <target state="translated">Document niet gevonden</target>
-        <jms:reference-file line="2091">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2092">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0112aa634cbad5a586b72e4befe1ab1a39e73f" resname="Record removed from basket" approved="yes">
         <source>Record removed from basket</source>
@@ -5743,7 +5743,7 @@
       <trans-unit id="ee45c30326b750387589752c0f75e1dd87ddc7e4" resname="Report" approved="yes">
         <source>Report</source>
         <target state="translated">Overzicht</target>
-        <jms:reference-file line="230">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="238">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="859ca6c24228b6fe9c9010bed75d2933884d7b49" resname="Request access" approved="yes">
         <source>Request access</source>
@@ -6412,7 +6412,7 @@
       <trans-unit id="315bc332aafca63cad8ac042c2e2f5111544fe9d" resname="Story Not Found" approved="yes">
         <source>Story Not Found</source>
         <target state="translated">Artikel niet gevonden</target>
-        <jms:reference-file line="2545">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2546">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="94e347da85f4797810ed7987973c8ef79092057e" resname="Story created" approved="yes">
         <source>Story created</source>
@@ -6822,7 +6822,7 @@
       <trans-unit id="163fc70a23cf29331bab9896c9a8a0cb0b113bd6" resname="Thesaurus branch" approved="yes">
         <source>Thesaurus branch</source>
         <target state="translated">Thesaurus tak</target>
-        <jms:reference-file line="271">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="279">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c80f8a4f795945c822db75e5414796446ada185c" resname="Thesaurus ou CTerms invalide">
         <source>Thesaurus ou CTerms invalide</source>
@@ -6969,7 +6969,7 @@
       <trans-unit id="b97ae3b4f9093f64a85df9e7d4338f6c62772516" resname="Tous" approved="yes">
         <source>Tous</source>
         <target state="translated">Alle</target>
-        <jms:reference-file line="238">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="246">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6a5df111083f0da274d3b57d9b32183a19d33616" resname="Tout type" approved="yes">
         <source>Tout type</source>
@@ -7467,12 +7467,12 @@
       <trans-unit id="f5bd306a7ccf0851eeefd7659ac5c01c382df934" resname="Vocabulary not found" approved="yes">
         <source>Vocabulary not found</source>
         <target state="translated">Vocabulary niet gevonden</target>
-        <jms:reference-file line="262">Controller/Prod/EditController.php</jms:reference-file>
+        <jms:reference-file line="263">Controller/Prod/EditController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1e3e6d2f9b416cfab10df81ce100f4fc43eb90a" resname="Vocabulary type" approved="yes">
         <source>Vocabulary type</source>
         <target state="translated">Type van de vocabulair</target>
-        <jms:reference-file line="260">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="268">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="044d95dece43b99febe25cb6bc5fab28bf212ee0" resname="Voici vos paniers" approved="yes">
         <source>Voici vos paniers</source>
@@ -11398,6 +11398,11 @@
         <target state="new">index:advanced-preferences:: use truncation</target>
         <jms:reference-file line="476">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="484db3d45053a06d362ea0cf0c31ba8ca406001e" resname="input-disable">
+        <source>input-disable</source>
+        <target state="new">input-disable</target>
+        <jms:reference-file line="222">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
         <source>invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez</source>
         <target state="translated">Doorsturen naar de authenticatiezone, klik op OK om door te gaan of annuleer</target>
@@ -14622,7 +14627,7 @@
       <trans-unit id="e32952b1a087c6ba28e13097e0ebb5395c2f2105" resname="reponses::document sans titre" approved="yes">
         <source>reponses::document sans titre</source>
         <target state="translated">Documenten zonder titel</target>
-        <jms:reference-file line="1036">classes/record/adapter.php</jms:reference-file>
+        <jms:reference-file line="1039">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)">
         <source>report:: (connexions)</source>
