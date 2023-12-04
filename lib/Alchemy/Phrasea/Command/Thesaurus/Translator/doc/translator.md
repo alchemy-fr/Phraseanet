@@ -9,7 +9,6 @@ Translator play __jobs__ one after one, each __job__ can define his own settings
 Jobs and settings are declared in a configuration file (yml):
 
 ```yaml
-# <phraseanet>/config/translator/configuration.yml
 
 translator:
   jobs:
