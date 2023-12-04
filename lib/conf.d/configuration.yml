@@ -460,3 +460,43 @@ feedback-report:
             method: prepend
             delimiter: "\n"
             value: 'Vote initated on {{ vote.created }} by {{ initiator ? initiator.getEmail() : "?" }} expired {{ vote.expired }} : {{ vote.voters_count }} participants, {{ vote.votes_unvoted }} unvoted, {{ vote.votes_no }} "no", {{ vote.votes_yes}} "yes".'
+
+translator:
+    jobs:
+        #
+        # - translate EN keywords to FR and EN
+        #       nb: since we clean the destination fields, we MUST (re)write EN to EN
+        # - add country to keywords, both FR/EN
+        keywords:
+            active: false
+            databox: my_databox
+            if_collection: to_translate
+            if_status: x1xxxx
+            actions:
+
+                KeywordsENtoFREN:
+                    active: true
+                    source_field: KeywordsEN
+                    source_lng: en
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 1 cleans the destination fields
+                    cleanup_destination: true
+
+                CountryENtoKeywordsFREN:
+                    active: true
+                    source_field: CountryEN
+                    source_lng: en
+                    # add translated country to the keywords
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 2 must NOT erase what action 1 did
+                    cleanup_destination: false
+
+            # end of job : change coll status
+            set_status: 10xxxx
+            set_collection: online
