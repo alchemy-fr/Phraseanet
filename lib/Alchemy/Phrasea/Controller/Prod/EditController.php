@@ -81,6 +81,7 @@ class EditController extends Controller
                     'gui_editable'         => $meta->get_gui_editable(),
                     'gui_visible'          => $meta->get_gui_visible(),
                     'printable'            => $meta->get_printable(),
+                    'input_disable'        => $meta->get_input_disable(),
                     'maxLength'            => $meta->get_tag()
                         ->getMaxLength(),
                     'minLength'            => $meta->get_tag()
