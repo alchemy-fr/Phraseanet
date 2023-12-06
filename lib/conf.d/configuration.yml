@@ -177,6 +177,9 @@ border-manager:
 registry:
     api-clients:
         api-subdef_service: false
+    actions:
+        export-stamp-choice: false
+        stamp-subdefs: false
 user_account:
     deleting_policies:
         email_confirmation: true
