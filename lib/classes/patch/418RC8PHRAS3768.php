@@ -63,10 +63,11 @@ class patch_418RC8PHRAS3768 implements patchInterface
 
     private function patch_appbox(base $appbox, Application $app)
     {
-        $cnx = $appbox->get_connection();
-        $sql = "ALTER TABLE `BasketElements` ADD `vote_expired` DATETIME NULL, ADD INDEX `vote_expired` (`vote_expired`)";
+// disabled cause crash on some install (missing table) due to pre-post migration (?)
+        //        $cnx = $appbox->get_connection();
+//        $sql = "ALTER TABLE `BasketElements` ADD `vote_expired` DATETIME NULL, ADD INDEX `vote_expired` (`vote_expired`)";
 //        try {
-            $cnx->exec($sql);
+//            $cnx->exec($sql);
 //        }
 //        catch (\Exception $e) {
             // the field already exist ?
