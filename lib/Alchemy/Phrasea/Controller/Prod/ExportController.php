@@ -22,6 +22,7 @@ use Alchemy\Phrasea\WorkerManager\Event\ExportFtpEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DOMDocument;
 use DOMXPath;
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,8 +62,10 @@ class ExportController extends Controller
         $removeable_stamp = false;          // true if at least one coll is "unstampable"
         $removeable_stamp_by_base = [];     // unset: no stamp ; false: stamp not "unstampable" ; true: stamp "unstampable"
 
-        $colls_manageable = array_keys($this->getAclForConnectedUser()->get_granted_base([ACL::COLL_MANAGE]) ?? []);
-        $dbox_manageable = array_keys($this->getAclForConnectedUser()->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
+        $colls_manageable   = array_keys($this->getAclForConnectedUser()->get_granted_base([ACL::COLL_MANAGE]) ?? []);
+        $colls_editable     = array_keys($this->getAclForConnectedUser()->get_granted_base([ACL::CANMODIFRECORD]) ?? []);
+        $colls_imgtoolsable = array_keys($this->getAclForConnectedUser()->get_granted_base([ACL::IMGTOOLS]) ?? []);
+        $dbox_manageable    = array_keys($this->getAclForConnectedUser()->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
 
         foreach($download->get_elements() as $recordAdapter) {
             // check collection only once
@@ -89,6 +92,16 @@ class ExportController extends Controller
                     break;
                 case 'manage_collection':
                     if (in_array($bid, $colls_manageable)) {
+                        $removeable_stamp_by_base[$bid] = $removeable_stamp = true;
+                    }
+                    break;
+                case 'record_edit':
+                    if (in_array($bid, $colls_editable)) {
+                        $removeable_stamp_by_base[$bid] = $removeable_stamp = true;
+                    }
+                    break;
+                case 'image_tools':
+                    if (in_array($bid, $colls_imgtoolsable)) {
                         $removeable_stamp_by_base[$bid] = $removeable_stamp = true;
                     }
                     break;
@@ -138,7 +151,9 @@ class ExportController extends Controller
             $ftpClient->close();
             $msg = $this->app->trans('Connection to FTP succeed');
             $success = true;
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         return $this->app->json([
@@ -184,7 +199,7 @@ class ExportController extends Controller
                 \set_export::STAMP_ASYNC,
                 $request->request->get('stamp_choice') === "REMOVE_STAMP",
                 false
-        );
+            );
 
             $exportFtpId = $download->export_ftp(
                 $request->request->get('user_dest'),
@@ -206,7 +221,8 @@ class ExportController extends Controller
                 'success' => true,
                 'message' => $this->app->trans('Export saved in the waiting queue')
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             return $this->app->json([
                 'success' => false,
                 'message' => $e->getMessage()//$this->app->trans('Something went wrong')
@@ -217,8 +233,9 @@ class ExportController extends Controller
     /**
      * Export document by mail
      *
-     * @param  Request      $request
+     * @param Request $request
      * @return JsonResponse
+     * @throws Exception
      */
     public function exportMail(Request $request)
     {
