@@ -20,7 +20,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use record_adapter;
 
 /**
- * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
+ * @ORM\Table(name="BasketElements",
+ *     uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})
+ * },
+ *     indexes={
+ *     @ORM\Index(name="vote_expired", columns={"vote_expired"})
+ * }
+ *     )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketElementRepository")
  */
 class BasketElement
@@ -69,6 +76,11 @@ class BasketElement
      * @ORM\JoinColumn(name="basket_id", referencedColumnName="id")
      */
     private $basket;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $vote_expired;
 
     /**
      * Constructor
@@ -166,6 +178,29 @@ class BasketElement
     public function getOrd()
     {
         return $this->ord;
+    }
+
+    /**
+     * Get vote_expired
+     *
+     * @return DateTime
+     */
+    public function getVoteExpired()
+    {
+        return $this->vote_expired;
+    }
+
+    /**
+     * Set vote_expired
+     *
+     * @param  DateTime     $voteExpired
+     * @return self
+     */
+    public function setVoteExpired(DateTime $voteExpired)
+    {
+        $this->vote_expired = $voteExpired;
+
+        return $this;
     }
 
     /**

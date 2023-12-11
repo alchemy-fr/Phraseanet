@@ -125,5 +125,13 @@ class patch_418RC8PHRAS3777 implements patchInterface
             $conf->set(['workers', 'queues', 'downloadAsync'], $value);
         }
 
+        // patch for stamp PHRAS-3520
+        if (!$conf->has(['registry', 'actions', 'export-stamp-choice'])) {
+            $conf->set(['registry', 'actions', 'export-stamp-choice'], false);
+        }
+        if (!$conf->has(['registry', 'actions', 'stamp-subdefs'])) {
+            $conf->set(['registry', 'actions', 'stamp-subdefs'], false);
+        }
+
     }
 }
