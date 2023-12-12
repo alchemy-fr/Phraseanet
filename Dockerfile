@@ -166,18 +166,13 @@ RUN echo "BUILDING AND INSTALLING FFMPEG" \
         && make distclean \
     )
     #&& rm -rf /tmp/ffmpeg
-RUN echo "INSTALLING NEWRELIC AND BLACKFIRE EXTENTIONS" \
+RUN echo "INSTALLING NEWRELIC EXTENTION" \
     && echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
     && curl -o- https://download.newrelic.com/548C16BF.gpg | apt-key add - \
     && apt-get update \ 
     && apt-get install -y newrelic-php5 \ 
     && NR_INSTALL_SILENT=1 newrelic-install install \
-    && touch /etc/newrelic/newrelic.cfg \
-    && curl -o- https://packages.blackfire.io/gpg.key |apt-key add - \
-    && echo "deb http://packages.blackfire.io/debian any main" |tee /etc/apt/sources.list.d/blackfire.list \
-    && apt update \
-    && apt install blackfire-agent \
-    && apt install blackfire-php
+    && touch /etc/newrelic/newrelic.cfg
 RUN echo "FINALIZING BUILD AND CLEANING" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
