@@ -113,6 +113,11 @@ else
         fi
       done
 
+    if [ ! -z "$PHRASEANET_CMD_MODE" ] && [ ${PHRASEANET_CMD_MODE} == "1" ] ; then
+      apt update
+      apt install screen
+      echo "Worker are in custom process mode" 
+    fi 
     
       echo $NBR_WORKERS " workers defined"
       echo $NBR_WORKERS > bin/workers_count.txt
