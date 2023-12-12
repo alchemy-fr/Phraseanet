@@ -40,6 +40,7 @@ define([
             "vocabulary-type": null,
             "aggregable": 0,
             "vocabulary-restricted": false,
+            "input_disable": false,
             "labels": {
                 "fr": "",
                 "en": "",
