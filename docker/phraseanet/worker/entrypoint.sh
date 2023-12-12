@@ -70,16 +70,6 @@ else
   rm -f /usr/local/etc/php/conf.d/newrelic.ini 
 fi
 
-if [[ $BLACKFIRE_ENABLED = "true" ]]; then
-  echo `date +"%Y-%m-%d %H:%M:%S"` " - BlackFire setup."
-  blackfire-agent --register --server-id=$BLACKFIRE_SERVER_ID --server-token=$BLACKFIRE_SERVER_TOKEN
-  service blackfire-agent start
-  echo "Blackfire setup done"
-else
-  echo `date +"%Y-%m-%d %H:%M:%S"` " - blackfire extension deactivation."
-  rm -f /usr/local/etc/php/conf.d/zz-blackfire.ini
-fi
-
 rm -rf bin/run-worker.sh
 
 if [ ! -z "$PHRASEANET_SCHEDULER" ] ; then
@@ -123,6 +113,7 @@ else
         fi
       done
 
+    
       echo $NBR_WORKERS " workers defined"
       echo $NBR_WORKERS > bin/workers_count.txt
       chown root:app bin/workers_count.txt
