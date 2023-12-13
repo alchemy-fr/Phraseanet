@@ -1394,9 +1394,9 @@
         <target state="translated">*Phraseanet Navigator* aktivieren</target>
         <jms:reference-file line="38">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b85de40822e66ce4309b94ccad5bb731f2a89373" resname="Authorize Adobe cc Plugin to connect." approved="yes">
+      <trans-unit id="b85de40822e66ce4309b94ccad5bb731f2a89373" resname="Authorize Adobe cc Plugin to connect." approved="no">
         <source>Authorize Adobe cc Plugin to connect.</source>
-        <target state="translated">Adobe cc Plugin Verbindung erlauben</target>
+        <target state="translated">Adobe CC Plugin Verbindung erlauben</target>
         <jms:reference-file line="47">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e1ead524b95ba3b45281df7ba45d2addbbf1a79" resname="Authorize Microsoft Office Plugin to connect." approved="yes">
