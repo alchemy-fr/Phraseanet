@@ -35,7 +35,8 @@ class FeedbackReportCommand extends phrCommand
         $this->setName('feedback:report')
             ->setDescription('Report ended feedback results (votes) on records (set status-bits)')
             ->addOption('report',    null,  InputOption::VALUE_REQUIRED, "Report output format (all|condensed)", "all")
-            ->addOption('dry',    null,  InputOption::VALUE_NONE, "list translations but don't apply.", null)
+            ->addOption('min_date',    null,  InputOption::VALUE_REQUIRED, "Run only for feedbacks expired from this date (yyyy-mm-dd)", null)
+            ->addOption('dry',    null,  InputOption::VALUE_NONE, "list records but don't apply.", null)
             ->setHelp("")
         ;
     }
@@ -79,6 +80,17 @@ class FeedbackReportCommand extends phrCommand
             return 0;
         }
 
+        $min_date_filter = '';
+        if( ($min_date = $input->getOption('min_date')) !== null) {
+            $matches = [];
+            if(preg_match('/(\d\d\d\d)\D(\d\d)\D(\d\d)/', $min_date, $matches) !== 1) {
+                $output->writeln(sprintf("<error>bad format for --min_date</error>"));
+
+                return -1;
+            }
+
+            $min_date_filter = ' AND b.`vote_expires` >= \'' . $matches[1] . '-' . $matches[2] . '-' . $matches[3] . '\'';
+        }
 
         $appbox = $this->getAppBox();
 
@@ -97,10 +109,10 @@ class FeedbackReportCommand extends phrCommand
             MAX(b.`vote_expires`) AS `expired`, be.`id` AS `be_id`, be.`vote_expired` AS `be_vote_expired`,
             be.`sbas_id`, be.`record_id`, CONCAT(be.`sbas_id`, '_', be.`record_id`) AS `sbid_rid`
         FROM `BasketElements` AS be INNER JOIN `Baskets` AS b ON b.`id`=be.`basket_id`
-        WHERE b.`vote_expires` < NOW()
+        WHERE b.`vote_expires` < NOW()" . $min_date_filter . "
         GROUP BY `sbid_rid`
     ) AS q1
-    INNER JOIN `BasketParticipants` AS bp ON bp.`basket_id`=q1.`basket_id`
+    INNER JOIN `BasketParticipants` AS bp ON bp.`can_agree`=1 AND bp.`basket_id`=q1.`basket_id`
     LEFT JOIN `BasketElementVotes` AS bv ON bv.`participant_id`=bp.`id` AND bv.`basket_element_id`=`be_id`
     GROUP BY q1.`sbid_rid`
     HAVING ISNULL(`be_vote_expired`) OR `expired` > `be_vote_expired`

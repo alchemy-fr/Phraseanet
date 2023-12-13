@@ -424,8 +424,12 @@ order-manager:
 feedback-report:
   enabled: false
   actions:
+    # if any participant has not voted, set the "incomplete" icon
     action_unvoted:
-      # if any participant has not voted, set the "incomplete" icon
+      # play this action only on those databoxes
+      databoxes:
+        - myDatabox
+        - 555
       status_bit: 8
       value: '{% if vote.votes_unvoted > 0 %} 1 {% else %} 0 {% endif %}'
 
