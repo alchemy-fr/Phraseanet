@@ -302,7 +302,6 @@ services:
     - LC_NAME=C.UTF-8
     - PHRASEANET_EXPLODE_WORKER 
     - PHRASEANET_WORKERS_LAUNCH_METHOD
-    - PHRASEANET_WORKER_CUSTOM
     - PHRASEANET_WORKER_assetsIngest
     - PHRASEANET_WORKER_createRecord
     - PHRASEANET_WORKER_deleteRecord
@@ -1301,6 +1300,49 @@ services:
     - IMAGEMAGICK_POLICY_AREA
     - IMAGEMAGICK_POLICY_DISK
     - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+    
+  cmd:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["cmd"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_CMD_MODE
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
     - NEWRELIC_ENABLED
     - NEWRELIC_LICENSE_KEY
     - NEWRELIC_APP_NAME
