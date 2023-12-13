@@ -1384,9 +1384,9 @@
         <target state="translated">Autorisierungscode</target>
         <jms:reference-file line="4">login/oauth/desktop-code.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e4677b6a26f23406496ed953159c0e914b83b04e" resname="Authorize" approved="yes">
+      <trans-unit id="e4677b6a26f23406496ed953159c0e914b83b04e" resname="Authorize" approved="no">
         <source>Authorize</source>
-        <target state="translated">berechtigen</target>
+        <target state="translated">Berechtigen</target>
         <jms:reference-file line="37">login/oauth/authorize-access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f364d5d9a0a95fdba37f29a65a9ba61d6329ef" resname="Authorize *Phraseanet Navigator*" approved="yes">
