@@ -458,8 +458,10 @@ class set_export extends set_abstract
         // remove stamp on this collection
         $stamp_by_base = [];     // unset: no stamp ; false: stamp not "unstampable" ; true: stamp "unstampable"
 
-        $colls_manageable = array_keys($this->getAclForUser($user)->get_granted_base([ACL::COLL_MANAGE]) ?? []);
-        $dbox_manageable = array_keys($this->getAclForUser($user)->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
+        $colls_manageable   = array_keys($this->getAclForUser($user)->get_granted_base([ACL::COLL_MANAGE]) ?? []);
+        $colls_editable     = array_keys($this->getAclForUser($user)->get_granted_base([ACL::CANMODIFRECORD]) ?? []);
+        $colls_imgtoolsable = array_keys($this->getAclForUser($user)->get_granted_base([ACL::IMGTOOLS]) ?? []);
+        $dbox_manageable    = array_keys($this->getAclForUser($user)->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
 
         /** @var record_exportElement $download_element */
         foreach ($this->elements as $download_element) {
@@ -508,6 +510,16 @@ class set_export extends set_abstract
                                     break;
                                 case 'manage_collection':
                                     if (in_array($bid, $colls_manageable)) {
+                                        $stamp_by_base[$bid] = self::NO_STAMP;
+                                    }
+                                    break;
+                                case 'record_edit':
+                                    if (in_array($bid, $colls_editable)) {
+                                        $stamp_by_base[$bid] = self::NO_STAMP;
+                                    }
+                                    break;
+                                case 'image_tools':
+                                    if (in_array($bid, $colls_imgtoolsable)) {
                                         $stamp_by_base[$bid] = self::NO_STAMP;
                                     }
                                     break;
