@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<baseprefs>
+    <!--
+    <status>0</status>
+    <caninscript>0</caninscript>
+    -->
+    <!-- stamper settings -->
+    <!-- color = "R,G,B,t" with R,G,B: [0...255] ;  trancparency: [0 (opaque)...127 (transparent)]  -->
+    <!--
+    <stamp position="top-over" background="255,255,255,40">
+        <text size="250%" color="255,255,0,32" shadow="0,0,0,64">Record-id : <var name="RECORD_ID"/></text>
+        <text size="120%" color="255,255,255,0" shadow="0,0,0,0">Title : <field name="Title"/></text>
+        <text size="100%" color="255,255,255,0" shadow="0,0,0,0">Creator : <field name="Creator"/></text>
+    </stamp>
+    <stamp position="bottom-over" background="255,255,255,127">
+        <logo position="left" width="25%"/>
+        <text size="100%" color="255,255,255,0" shadow="0,0,0,50">Date export : <var name="DATE"/></text>
+    </stamp>
+    -->
+</baseprefs>

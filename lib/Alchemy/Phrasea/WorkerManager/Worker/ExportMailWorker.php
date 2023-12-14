@@ -88,7 +88,7 @@ class ExportMailWorker implements WorkerInterface
 
         foreach($list['files'] as $k_file => $v_file) {
             foreach($v_file['subdefs'] as $k_subdef => $v_subdef) {
-                if($k_subdef === "document" && $v_subdef['to_stamp']) {
+                if($v_subdef['to_stamp']) {
                     // we must stamp this document
                     try {
                         $record = $this->app->getApplicationBox()->get_databox($v_file['databox_id'])->get_record($v_file['record_id']);

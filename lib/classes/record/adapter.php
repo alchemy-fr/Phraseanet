@@ -1339,9 +1339,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @param $metadatas
-     * @throws Exception
+     * @throws Exception|Exception_InvalidArgument
      *
-     *  nb : use of "silent" @ operator on stdClass member access (equals null in not defined) is more simple than "iseet()" or "empty()"
+     *  nb : use of "silent" @ operator on stdClass member access (equals null if not defined) is more simple than "isset()" or "empty()"
      */
     private function do_metadatas(array $metadatas)
     {
