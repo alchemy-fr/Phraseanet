@@ -371,14 +371,14 @@
         <target state="translated">Feedback request to send</target>
         <jms:reference-file line="59">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4917c899b027967555ba3f1c755a1aeae2775ee1" resname="(validation) envoyee" approved="yes">
+      <trans-unit id="4917c899b027967555ba3f1c755a1aeae2775ee1" resname="(validation) envoyee" approved="no">
         <source>(validation) envoyee</source>
-        <target state="translated">Feedback request sent.</target>
+        <target state="translated">Feedback request sent</target>
         <jms:reference-file line="57">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6e41adb316d2c64579c0c85a614f4a4830054520" resname="(validation) session terminee" approved="yes">
+      <trans-unit id="6e41adb316d2c64579c0c85a614f4a4830054520" resname="(validation) session terminee" approved="no">
         <source>(validation) session terminee</source>
-        <target state="translated">Feedback session ended.</target>
+        <target state="translated">Feedback session ended</target>
         <jms:reference-file line="55">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4412a659c3e1ca169796ab2f540a932ea7cbe2a4" resname="*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance" approved="yes">
@@ -745,9 +745,9 @@
         <target state="translated">Add new chapter</target>
         <jms:reference-file line="156">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b27740ce4d6bea2dd21cee1c12fa73206c1444a" resname="Add this url" approved="yes">
+      <trans-unit id="1b27740ce4d6bea2dd21cee1c12fa73206c1444a" resname="Add this url" approved="no">
         <source>Add this url</source>
-        <target state="translated">Add this url</target>
+        <target state="translated">Add this URL</target>
         <jms:reference-file line="36">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f347a8ddd22508ed0310a2f9d8cf43dd96be34b1" resname="Add user" approved="yes">
@@ -872,9 +872,9 @@
         <target state="translated">Help</target>
         <jms:reference-file line="983">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c26a1a41764983bc03456d418ee43e732e5f513e" resname="Aide sur les expressions regulieres" approved="yes">
+      <trans-unit id="c26a1a41764983bc03456d418ee43e732e5f513e" resname="Aide sur les expressions regulieres" approved="no">
         <source>Aide sur les expressions regulieres</source>
-        <target state="translated">Help about Regular expressions</target>
+        <target state="translated">Help about regular expressions</target>
         <jms:reference-file line="325">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5e8a35671080dba23a7f84416dcf97fd975a33e6" resname="Ajouter a" approved="yes">
@@ -9173,7 +9173,7 @@
       </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
         <source>admin::userlist: filterguestuser</source>
-        <target state="translated">Display guest users</target>
+        <target state="translated">Include guest users</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd3b85a7535e1a5e824820bbf7feb6a9ce0a3676" resname="admin::userlist: phantoms only">
@@ -11276,9 +11276,9 @@
         <target state="translated">Default operator between terms is AND, example : typing words “red“ “dog”, search "red AND dog" in same record</target>
         <jms:reference-file line="26">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a939bc9799c52952fd10a0a4c27520ffb080abf8" resname="help::help-section-bullet: expand search" approved="yes">
+      <trans-unit id="a939bc9799c52952fd10a0a4c27520ffb080abf8" resname="help::help-section-bullet: expand search" approved="no">
         <source>help::help-section-bullet: expand search</source>
-        <target state="translated">Expand search with fewer keywords.</target>
+        <target state="translated">Expand search with fewer keywords</target>
         <jms:reference-file line="20">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1635ba73964dd21d9d5907401d77a11cd474611" resname="help::help-section-bullet: quotation-marks-allow" approved="yes">
@@ -11286,9 +11286,9 @@
         <target state="translated">Quotation marks allow the search of contiguous terms or expressions contained in the media description.</target>
         <jms:reference-file line="29">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2c7c99c6e44d0f6117f812b18739f8990ebb8052" resname="help::help-section-bullet: remove-advance-search" approved="yes">
+      <trans-unit id="2c7c99c6e44d0f6117f812b18739f8990ebb8052" resname="help::help-section-bullet: remove-advance-search" approved="no">
         <source>help::help-section-bullet: remove-advance-search</source>
-        <target state="translated">Remove advanced search filters.</target>
+        <target state="translated">Remove advanced search filters</target>
         <jms:reference-file line="19">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="76544223abc0670157f5a270138a638283071678" resname="help::help-section-bullet: search-in-a-specific-field" approved="yes">
@@ -11729,7 +11729,7 @@
       </trans-unit>
       <trans-unit id="cdd667d2c32d16cb283d68f7835b243167042feb" resname="mail::share: Basket '%title%' shared from %user%">
         <source>mail::share: Basket '%title%' shared from %user%</source>
-        <target state="translated">Basket '%title%' shared from %user%</target>
+        <target state="translated">Basket '%title%' shared by %user%</target>
         <jms:reference-file line="86">Notification/Mail/MailInfoBasketShared.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="74a0d3080e9129b20b131485aa0fb119a41ef659" resname="mail::validation: Share will expire on %expire%">
