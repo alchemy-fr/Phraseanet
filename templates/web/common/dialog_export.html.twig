@@ -171,9 +171,9 @@
                             </div>
                         {% endif %}
                         {% if removeable_stamp and download.has_stamp_option() == true %}
-                            <div id="stamp_choice" class="well-small" style="margin-left: 20px;" >
-                                <label for="option_stamp" class="checkbox">
-                                    <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                            <div class="well-small" style="margin-left: 20px;" >
+                                <label for="export_stamp_choice" class="checkbox">
+                                    <input class="stamp_choice" type="checkbox" id="export_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
                                     {{ 'prod::download: delete-marking-stamp' | trans }}
                                 </label>
                             </div>
@@ -249,6 +249,14 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
+                        {% if removeable_stamp and download.has_stamp_option() == true %}
+                            <div class="well-small" style="margin-left: 20px;" >
+                                <label for="email_stamp_choice" class="checkbox">
+                                    <input class="stamp_choice" type="checkbox" id="email_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                                    {{ 'prod::download: delete-marking-stamp' | trans }}
+                                </label>
+                            </div>
+                        {% endif  %}
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_sendmail" class="checkbox">
@@ -478,6 +486,14 @@
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                            {% if removeable_stamp and download.has_stamp_option() == true %}
+                                <div class="well-small" style="margin-left: 20px;" >
+                                    <label for="ftp_stamp_choice" class="checkbox">
+                                        <input class="stamp_choice" type="checkbox" id="ftp_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                                        {{ 'prod::download: delete-marking-stamp' | trans }}
+                                    </label>
+                                </div>
+                            {% endif  %}
                         </div>
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields" style="margin-left:20px;display:none;">
