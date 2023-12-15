@@ -56,8 +56,15 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
         echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"
    fi
 fi
-
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
+   backup_dir="backup"
+   timestamp=$(date +'%Y%m%d%H%M%S')
+   timestamp_dir="$backup_dir/$timestamp"
+   mkdir -p "$timestamp_dir"
+   archive_name="$PHRASEANET_HOSTNAME-config-$timestamp.tar"
+   # echo  "backup_dir: " $backup_dir " - timestamp: " $timestamp " - timestamp_dir: " $timestamp_dir " - archive_name: " $archive_name
+   tar -cf "$timestamp_dir/$archive_name" -C "config" .
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - Pre-upgrade backup done for config  $timestamp_dir/$archive_name"
    echo `date +"%Y-%m-%d %H:%M:%S"` " - Start Phraseanet upgrade datas"
    # TODO check before if an upgrade is require
    bin/setup system:upgrade -y
