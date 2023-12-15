@@ -75,8 +75,17 @@ class CleanWorkerRunningJobCommand extends Command
         $output->writeln(sprintf("%d WorkerRunningJob will be deleted.", $n));
 
         if (!$dry) {
-            $n = $this->container->getApplicationBox()->get_connection()->exec($sql_delete);
-            $output->writeln(sprintf("%d WorkerRunningJob have been be deleted.", $n));
+            $cnx = $this->container->getApplicationBox()->get_connection();
+
+            $count = 0;
+            // group delete by 1000
+            $sql_delete =  $sql_delete . ' LIMIT 1000';
+            do {
+                $nbDeletedRow = $cnx->exec($sql_delete);
+                $count += $nbDeletedRow;
+            } while ($nbDeletedRow > 0);
+
+            $output->writeln(sprintf("%d WorkerRunningJob have been be deleted.", $count));
         } else {
             $output->writeln("Dry mode: Not executed.");
         }

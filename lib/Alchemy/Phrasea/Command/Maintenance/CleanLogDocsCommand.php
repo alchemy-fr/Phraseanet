@@ -84,38 +84,48 @@ class CleanLogDocsCommand extends Command
             $dry = true;
         }
 
-        $sql = 'SELECT id, log_id, `date`, record_id, final, `action` FROM log_docs WHERE ' . $clauseWhere;
-        $sqlDelete = 'DELETE FROM log_docs WHERE ' . $clauseWhere;
-
         $databoxId = $input->getOption('databox_id');
 
         $foundDatabox = false;
         foreach ($this->container->getDataboxes() as $databox) {
             if (empty($databoxId) || (!empty($databoxId) && $databox->get_sbas_id() == $databoxId)) {
                 $foundDatabox = true;
-                $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
 
                 if ($dry) {
                     // for delete action, delete all event for the records
-                    if (in_array('delete', $action) && !empty($rows)) {
-                        $recordsId = array_column($rows, 'record_id');
-                        $sqlActionDelete = "SELECT id, log_id, `date`, record_id, final, `action` FROM log_docs WHERE record_id IN (" . implode(', ', $recordsId). ") ORDER BY record_id, id";
+                    if (in_array('delete', $action)) {
+                        $sqlRecordIds =  'SELECT DISTINCT record_id FROM log_docs WHERE ' . $clauseWhere ;
+                        $sqlActionDelete = "SELECT id, log_id, `date`, record_id, final, `action` FROM log_docs WHERE record_id IN (" . $sqlRecordIds. ") ORDER BY record_id, id LIMIT 1000";
+
+                        $sqlCount = "SELECT COUNT(`id`) AS n FROM log_docs WHERE record_id IN (" . $sqlRecordIds. ")";
+
                         $stmt = $databox->get_connection()->prepare($sqlActionDelete);
                         $stmt->execute();
-                        $rowsActionDelete = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                        // result is limited to 1000 rows to avoid memory leak
+                        $displayedRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                         $stmt->closeCursor();
                     } else {
-                        $rowsActionDelete = $rows;
+                        $sql = 'SELECT id, log_id, `date`, record_id, final, `action` FROM log_docs WHERE ' . $clauseWhere . ' LIMIT 1000';
+
+                        $sqlCount = 'SELECT COUNT(`id`) AS n FROM log_docs WHERE ' . $clauseWhere;
+
+                        $stmt = $databox->get_connection()->prepare($sql);
+                        $stmt->execute();
+                        // result is limited to 1000 rows to avoid memory leak
+                        $displayedRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                        $stmt->closeCursor();
                     }
 
-                    $output->writeln(sprintf("\n \n dry-run , %d log docs entry to delete for databox %s", count($rowsActionDelete), $databox->get_dbname()));
-                    // displayed only the 1000 first row to avoid memory leak
+                    $stmt = $databox->get_connection()->prepare($sqlCount);
+                    $stmt->execute();
+                    $count = $stmt->fetchColumn(0);
+                    $stmt->closeCursor();
 
-                    $displayedRows = array_slice($rowsActionDelete, 0, 1000);
-                    if (count($rows) > 1000) {
+
+                    $output->writeln(sprintf("\n \n dry-run , %d log docs entry to delete for databox %s", $count, $databox->get_dbname()));
+
+                    // displayed only the 1000 first row to avoid memory leak
+                    if ($count> 1000) {
                         array_push($displayedRows, array_fill_keys(['id', 'log_id', 'date', 'record_id', 'final', 'action'], ' ... '));
                         array_push($displayedRows, array_fill_keys(['id', 'log_id', 'date', 'record_id', 'final', 'action'], ' ... '));
                     }
@@ -128,16 +138,43 @@ class CleanLogDocsCommand extends Command
                         ->render($output);
 
                 } else {
-                    if (in_array('delete', $action) && !empty($rows)) {
-                        $recordsId = array_column($rows, 'record_id');
-                        $sqlDeleteAction = 'DELETE FROM log_docs WHERE record_id IN(' . implode(',', $recordsId) . ')';
+                    if (in_array('delete', $action)) {
+                        $sqlRecordIds =  'SELECT DISTINCT record_id FROM log_docs WHERE ' . $clauseWhere . '  LIMIT 1000';
+
+                        $cnx = $databox->get_connection();
+                        $count = 0;
+
+                        do {
+                            $stmt = $cnx->prepare($sqlRecordIds);
+                            $stmt->execute();
+                            $recordsId = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                            $stmt->closeCursor();
+
+                            if (empty($recordsId)) {
+                                // nothing to delete
+                                break;
+                            }
+
+                            $sqlDeleteAction = 'DELETE FROM log_docs WHERE record_id IN(' . implode(',', $recordsId) . ') LIMIT 1000';
+                            do {
+                                $nbDeletedRow = $cnx->exec($sqlDeleteAction);
+                                $count += $nbDeletedRow;
+                            } while ($nbDeletedRow > 0);
+
+                        } while (1);
+
                     } else {
-                        $sqlDeleteAction = $sqlDelete;
+                        $sqlDeleteAction = 'DELETE FROM log_docs WHERE ' . $clauseWhere . ' LIMIT 1000';
+
+                        $cnx = $databox->get_connection();
+                        $count = 0;
+                        do {
+                            $nbDeletedRow = $cnx->exec($sqlDeleteAction);
+                            $count += $nbDeletedRow;
+                        } while ($nbDeletedRow > 0);
                     }
 
-                    $stmt = $databox->get_connection()->executeQuery($sqlDeleteAction);
-
-                    $output->writeln(sprintf("%d log docs entry deleted on databox %s", $stmt->rowCount(), $databox->get_dbname()));
+                    $output->writeln(sprintf("%d log docs entry deleted on databox %s", $count, $databox->get_dbname()));
                 }
             }
         }
