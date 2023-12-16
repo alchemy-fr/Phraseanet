@@ -58,13 +58,12 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
 fi
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
-   timestamp_dir="backup/$timestamp"
+   timestamp_dir="backup/pre-upgrade/$timestamp"
    mkdir -p "$timestamp_dir"
-   archive_name="$PHRASEANET_HOSTNAME-config.tar"
-   tar -cf "$timestamp_dir/$archive_name" -C "config" .
+   archive_name="$PHRASEANET_HOSTNAME-config.tgz"
+   tar -zcf "$timestamp_dir/$archive_name" -C "config" .
    echo `date +"%Y-%m-%d %H:%M:%S"` " - Pre-upgrade backup done for config  $timestamp_dir/$archive_name"
    echo `date +"%Y-%m-%d %H:%M:%S"` " - Start Phraseanet upgrade datas"
-   # TODO check before if an upgrade is require
    bin/setup system:upgrade -y
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End Phraseanet upgrade datas"
 fi
