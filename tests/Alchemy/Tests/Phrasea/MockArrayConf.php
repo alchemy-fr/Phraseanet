@@ -67,4 +67,9 @@ class MockArrayConf implements ConfigurationInterface
     {
         throw new \Exception('not implemented');
     }
+
+    public function setNoCompile(bool $noCompile)
+    {
+        throw new \Exception('not implemented');
+    }
 }

@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
-use Neutron\ReCaptcha\ReCaptcha;
+use ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\Request;
 
 class FailureManager
@@ -85,6 +85,44 @@ class FailureManager
         return $this;
     }
 
+    public function resetLockedFailureByUsername($username)
+    {
+        $failures = $this->repository->findBy(['username' => $username, 'locked' => true]);
+        foreach ($failures as $failure) {
+            $failure->setLocked(false);
+            $this->em->persist($failure);
+        }
+
+        $this->em->flush();
+
+        return $this;
+    }
+
+    public function removeFailureById($failureId)
+    {
+        // truncate table if failureId == 0
+        if ($failureId == 0) {
+            $connection = $this->em->getConnection();
+            $platform = $connection->getDatabasePlatform();
+            $this->em->beginTransaction();
+            try {
+                $connection->executeUpdate($platform->getTruncateTableSQL('AuthFailures'));
+            }
+            catch (\Exception $e) {
+                $this->em->rollback();
+            }
+        } else {
+            $failure = $this->repository->find($failureId);
+
+            if (empty($failure)) {
+                return;
+            }
+
+            $this->em->remove($failure);
+            $this->em->flush($failure);
+        }
+    }
+
     /**
      * Checks a request for previous failures
      *
@@ -98,16 +136,20 @@ class FailureManager
     public function checkFailures($username, Request $request)
     {
         $failures = $this->repository->findLockedFailuresMatching($username, $request->getClientIp());
+        $captchaResp = $request->get('g-recaptcha-response');
 
         if (0 === count($failures)) {
             return $this;
         }
 
-        if ($this->trials < count($failures) && $this->captcha->isSetup()) {
-            $response = $this->captcha->bind($request);
-
-            if (!$response->isValid()) {
+        if ($this->trials <= count($failures)) {
+            if ($captchaResp === null) {
                 throw new RequireCaptchaException('Too many failures, require captcha');
+            }
+
+            $response = $this->captcha->verify($captchaResp, $request->getClientIp());
+            if (!$response->isSuccess()) {
+                throw new RequireCaptchaException('Please fill captcha');
             }
 
             foreach ($failures as $failure) {

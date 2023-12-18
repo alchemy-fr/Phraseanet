@@ -12,9 +12,11 @@
 namespace Alchemy\Phrasea\Plugin\Management;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Plugin\Schema\Manifest;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOException;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Manages plugins assets

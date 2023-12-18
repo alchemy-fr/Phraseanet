@@ -5,6 +5,8 @@ namespace Alchemy\Phrasea\Core\Database;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\DoctrineMigrations\AbstractMigration;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use vierbergenlars\SemVer\version;
 
 class DatabaseMaintenanceService
@@ -20,6 +22,8 @@ class DatabaseMaintenanceService
         'ApiOauthTokens',
         'AuthFailures',
         'BasketElements',
+        'BasketElementVotes',
+        'BasketParticipants',
         'Baskets',
         'FeedEntries',
         'FeedItems',
@@ -49,9 +53,6 @@ class DatabaseMaintenanceService
         'UsrListOwners',
         'UsrLists',
         'UsrListsContent',
-        'ValidationDatas',
-        'ValidationParticipants',
-        'ValidationSessions',
     ];
 
     private $app;
@@ -64,9 +65,11 @@ class DatabaseMaintenanceService
         $this->connection = $connection;
     }
 
-    public function upgradeDatabase(\base $base, $applyPatches)
+    public function upgradeDatabase(\base $base, $applyPatches, InputInterface $input, OutputInterface $output)
     {
-       $this->reconnect();
+        $dry = !!$input->getOption('dry');
+
+        $this->reconnect();
 
         $recommends = [];
         $allTables = [];
@@ -103,18 +106,26 @@ class DatabaseMaintenanceService
         }
 
         foreach ($allTables as $tableName => $table) {
-            $this->createTable($table);
+            if($dry) {
+                $output->writeln(sprintf("dry : NOT creating table \"%s\"", $tableName));
+            }
+            else {
+                $this->createTable($table);
+            }
         }
 
         $current_version = $base->get_version();
 
         if ($applyPatches) {
+            $version = $this->app['phraseanet.version']->getNumber();
             $this->applyPatches(
                 $base,
                 $current_version,
-                $this->app['phraseanet.version']->getNumber(),
+                $version,
                 false,
-                $this->app);
+                $input,
+                $output
+            );
         }
 
         return $recommends;
@@ -514,8 +525,12 @@ class DatabaseMaintenanceService
         return $return;
     }
 
-    public function applyPatches(\base $base, $from, $to, $post_process)
+    public function applyPatches(\base $base, $from, $to, $post_process, InputInterface $input, OutputInterface $output)
     {
+        $dry = !!$input->getOption('dry');
+
+        $output->writeln(sprintf("into applyPatches(from=%s, to=%s, post_process=%s) on base \"%s\"", $from, $to, $post_process?'true':'false', $base->get_dbname()));
+
         if (version::eq($from, $to)) {
             return true;
         }
@@ -526,16 +541,17 @@ class DatabaseMaintenanceService
 
         foreach ($iterator as $fileinfo) {
             if (!$fileinfo->isDot()) {
+// printf("---- [%d]\n", __LINE__);
                 if (substr($fileinfo->getFilename(), 0, 1) == '.') {
                     continue;
                 }
-
                 $versions = array_reverse(explode('.', $fileinfo->getFilename()));
                 $classname = 'patch_' . array_pop($versions);
 
                 /** @var \patchAbstract $patch */
                 $patch = new $classname();
 
+// printf("---- [%d]\n", __LINE__);
                 if (!in_array($base->get_base_type(), $patch->concern())) {
                     continue;
                 }
@@ -544,14 +560,18 @@ class DatabaseMaintenanceService
                     continue;
                 }
 
+// printf("---- [%d] %s ; from: %s ; patch: %s; to:%s\n", __LINE__, $classname, $from, $patch->get_release(), $to);
+// printf("---- [%d]\n", __LINE__);
                 // if patch is older than current install
                 if (version::lte($patch->get_release(), $from)) {
                     continue;
                 }
+// printf("---- [%d]\n", __LINE__);
                 // if patch is new than current target
                 if (version::gt($patch->get_release(), $to)) {
                     continue;
                 }
+// printf("---- [%d]\n", __LINE__);
 
                 $n = 0;
                 do {
@@ -571,9 +591,10 @@ class DatabaseMaintenanceService
 
         // disable mail
         $this->app['swiftmailer.transport'] = null;
-
+// var_dump($list_patches);
         foreach ($list_patches as $patch) {
 
+            $output->writeln(sprintf(" - patch \"%s\" (release %s) should be applied", get_class($patch), $patch->get_release()));
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
                 /** @var \Doctrine\DBAL\Migrations\Version $version */
@@ -592,25 +613,48 @@ class DatabaseMaintenanceService
 
                     // Execute migration if not marked as migrated and not already applied by an older patch
                     if (!$migration->isAlreadyApplied()) {
-                        $this->reconnect();
-
-                        $version->execute('up');
+                        if($dry) {
+                            $output->writeln(sprintf("    dry : NOT executing(up) legacy migration \"%s\"", get_class($migration)));
+                        }
+                        else {
+                            $output->writeln(sprintf("    executing(up) legacy migration \"%s\"", get_class($migration)));
+                            $this->reconnect();
+                            $version->execute('up');
+                        }
                         continue;
                     }
 
                     // Or mark it as migrated
-                    $version->markMigrated();
-                } else {
-                    $this->reconnect();
-
-                    $version->execute('up');
+                    if($dry) {
+                        $output->writeln(sprintf("    dry : NOT marking migrated legacy migration \"%s\"", get_class($migration)));
+                    }
+                    else {
+                        $output->writeln(sprintf("    marking migrated legacy migration \"%s\"", get_class($migration)));
+                        $version->markMigrated();
+                    }
+                }
+                else {
+                    if($dry) {
+                        $output->writeln(sprintf("    dry : NOT executing(up) doctrine migration \"%s\"", get_class($migration)));
+                    }
+                    else {
+                        $output->writeln(sprintf("    executing(up) migration doctrine \"%s\"", get_class($migration)));
+                        $this->reconnect();
+                        $version->execute('up');
+                    }
                 }
             }
 
             $this->reconnect();
 
-            if (false === $patch->apply($base, $this->app)) {
-                $success = false;
+            if($dry) {
+                $output->writeln(sprintf("    dry : NOT applying patch \"%s\"", get_class($patch)));
+            }
+            else {
+                $output->writeln(sprintf("    applying patch \"%s\"", get_class($patch)));
+                if (false === $patch->apply($base, $this->app)) {
+                    $success = false;
+                }
             }
         }
 

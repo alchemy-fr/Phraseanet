@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Application\Helper;
 
 use Alchemy\Phrasea\Helper\JsonBodyHelper;
+use stdClass;
 use Symfony\Component\HttpFoundation\Request;
 
 trait JsonBodyAware
@@ -58,10 +59,10 @@ trait JsonBodyAware
     /**
      * @param Request     $request
      * @param null|string $schemaUri
-     * @return mixed
+     * @return stdClass
      */
-    public function decodeJsonBody(Request $request, $schemaUri = null)
+    public function decodeJsonBody(Request $request, $schemaUri = null, $format = JsonBodyHelper::OBJECT)
     {
-        return $this->getJsonBodyHelper()->decodeJsonBody($request, $schemaUri);
+        return $this->getJsonBodyHelper()->decodeJsonBody($request, $schemaUri, $format);
     }
 }

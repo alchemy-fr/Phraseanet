@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>maintenance page</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">	
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<style type="text/css">
+
+*{
+	margin: 0;
+	padding: 0;
+}
+
+h1{
+	font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	font-size: 38px;
+	color: white;
+	margin-bottom: 24px;
+}
+
+h2{
+	font-family: 'Roboto', sans-serif;
+	font-size: 30px; 
+	font-weight: 300;
+	color: white;
+}
+
+html, body{
+	height: 100%;
+	
+
+}
+
+body{
+	background: linear-gradient(to right bottom , #FBD001 50%, #FF4E4E 50%);
+	margin: 0;
+	padding: 0;
+	background-repeat: no-repeat;
+	display: flex;
+	flex-direction: column;
+	felx-wrap: wrap;
+
+}
+
+header{
+	display: felx;
+}
+
+footer{
+	height: 100%;
+
+}
+
+.cercle{
+	width: 100px;
+	height: 100px;
+	background-color: #81B9F9;
+	top: 40%;
+	left: 80%;
+	border-radius: 50%;
+	position: absolute;
+}
+
+.circle{
+
+	width: 100px;
+	height: 100px;
+	background-color: #FBD001;
+	top: 43%;
+	left: 77%;
+	border-radius: 50%;
+	position: absolute;
+
+}
+
+.rond{
+	width: 100px;
+	height: 100px;
+	background-color: #81B9F9;
+	top: 46%;
+	left: 74%;
+	border-radius: 50%;
+	position: absolute;
+}
+
+.dernier{
+
+	width: 100px;
+	height: 100px;
+	background-color: #FBD001;
+	top: 49%;
+	left: 71%;
+	border-radius: 50%;
+	position: absolute;
+
+}
+
+.information{
+	width: 552px;
+	top: 16%;
+	left: 16%;
+	position: relative;
+}
+
+
+
+
+
+.zigzag{
+	position: absolute;
+    bottom: 15%;
+    width: 100%;
+}
+
+.zigzag:after{
+	background: linear-gradient(-45deg, #81B9F9 16px, transparent 0), linear-gradient(45deg, #81B9F9 16px, transparent 0);
+	background-repeat: repeat-x;
+	background-size: 30px 30px;
+	content: "";
+	display: block;
+	position: relative;
+	
+	left: 0px;
+	width: 100%;
+	height: 30px;
+}
+.block{
+	width: 100%;
+	height: 15%;
+	bottom: 0;
+	position: absolute;
+	background-color: #81B9F9;
+}
+
+@media(max-width: 767px){
+
+
+	.information{
+		width: 300px;
+		
+	}
+
+	h1{
+		font-size: 30px;
+	}
+
+	h2{
+		font-size: 20px;
+	}
+}
+
+@media(max-width: 510px){
+
+
+	.information{
+		width: 200px;
+		
+	}
+
+	h1{
+		font-size: 22px;
+	}
+
+	h2{
+		font-size: 12px;
+	}
+
+	.cercle{
+	width: 50px;
+	height: 50px;
+	
+	}
+
+	.circle{
+
+	width: 50px;
+	height: 50px;
+	
+
+	}
+
+	.rond{
+	width: 50px;
+	height: 50px;
+	
+	}
+
+	.dernier{
+
+	width: 50px;
+	height: 50px;
+	
+
+	‡			}
+}
+
+
+
+</style>
+
+
+
+
+
+
+
+
+
+<body>
+
+	<header>
+
+		<div class="cercle">
+		</div>
+
+		<div class="circle">
+		</div>
+
+		<div class="rond">
+		</div>
+		<div class="dernier">
+		</div>
+
+	</header>
+
+	<div class="information">
+
+		<h1>Alchemy hosting service, Phraseanet</h1>
+
+		<h2>We are performing scheduled
+			maintenance and will be back 
+			online in a few minutes.</h2>
+		</div>
+	
+	
+
+
+
+	<footer>
+			<div class="zigzag">
+			</div>
+
+			<div class="block">
+			</div>
+			
+
+		
+		
+
+	</footer>

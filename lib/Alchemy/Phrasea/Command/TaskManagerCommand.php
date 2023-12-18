@@ -16,6 +16,7 @@ use Alchemy\Phrasea\TaskManager\Log\LogFileInterface;
 use Alchemy\TaskManager\TaskManager;
 use Assert\Assertion;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 use Neutron\SignalHandler\SignalHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -73,7 +74,7 @@ abstract class TaskManagerCommand extends Command
             $file = $fileLocator();
             Assertion::isInstanceOf($file, LogFileInterface::class);
 
-            $handler = new RotatingFileHandler($file->getPath(), $configuration['max-files'], $configuration['level']);
+            $handler = new StreamHandler($file->getPath(), $configuration['level']);
 
             $this->getTaskManagerLogger()->pushHandler($handler);
         }

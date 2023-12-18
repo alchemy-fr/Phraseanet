@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -63,5 +64,25 @@ class FeedEntryRepository extends EntityRepository
             ->setParameter('feeds', $feeds);
 
         return $builder->getQuery()->getSingleScalarResult();
+    }
+
+    public function getByUserAndFeed(User $user, Feed $feed, $isCount = false)
+    {
+        $qb = $this->createQueryBuilder('fe');
+
+        $qb->innerJoin('fe.publisher', 'fp');
+        $qb->where($qb->expr()->eq('fp.user', ':publisher'));
+        $qb->setParameter(':publisher', $user);
+
+        $qb->andWhere($qb->expr()->eq('fe.feed', ':feed'));
+        $qb->setParameter(':feed', $feed);
+
+        if ($isCount) {
+            $qb->select('count(fe)');
+            return  $qb->getQuery()->getSingleScalarResult();
+        } else {
+            $qb->orderBy('fe.id', 'DESC');
+            return $qb->getQuery()->getResult();
+        }
     }
 }

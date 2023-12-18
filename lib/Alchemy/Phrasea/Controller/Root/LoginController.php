@@ -13,9 +13,11 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\AccountCreator;
-use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
-use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
@@ -27,45 +29,43 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
-use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
-use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
+use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Alchemy\Phrasea\Helper\User\Manage;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
-use Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository;
-use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
-use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
-use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
-use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
-use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
-use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
-use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
+use Alchemy\Phrasea\Notification\Receiver;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Neutron\ReCaptcha\ReCaptcha;
 use RandomLib\Generator;
+use ReCaptcha\ReCaptcha;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\FormInterface;
 
 class LoginController extends Controller
 {
@@ -95,7 +95,7 @@ class LoginController extends Controller
 
         $conf = $this->getConf();
         $browser = $this->getBrowser();
-        
+
         return [
             'last_publication_items' => $items,
             'instance_title' => $conf->get(['registry', 'general', 'title']),
@@ -109,6 +109,7 @@ class LoginController extends Controller
             'current_url' => $request->getUri(),
             'flash_types' => $this->app->getAvailableFlashTypes(),
             'recaptcha_display' => $this->app->isCaptchaRequired(),
+            'recaptcha_enabled' => $conf->get(['registry', 'webservices', 'captchas-enabled']),
             'unlock_usr_id' => $this->app->getUnlockAccountData(),
             'guest_allowed' => $this->app->isGuestAllowed(),
             'register_enable' => $this->getRegistrationManager()->isRegistrationEnabled(),
@@ -188,6 +189,14 @@ class LoginController extends Controller
             $data = $form->getData();
 
             $provider = null;
+
+            if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+                $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
+
+                $dateError = new FormError("");
+                $form->get('captcha')->addError($dateError);
+            }
+
             if ($data['provider-id']) {
                 try {
                     $provider = $this->findProvider($data['provider-id']);
@@ -223,13 +232,6 @@ class LoginController extends Controller
 
             try {
                 if ($form->isValid()) {
-                    $captcha = $this->getRecaptcha()->bind($request);
-
-                    $conf = $this->getConf();
-                    if ($conf->get(['registry', 'webservices', 'captcha-enabled']) && !$captcha->isValid()) {
-                        throw new FormProcessingException($this->app->trans('Invalid captcha answer.'));
-                    }
-
                     $registrationService = $this->getRegistrationService();
                     $providerId = isset($data['provider-id']) ? $data['provider-id'] : null;
                     $selectedCollections = isset($data['collections']) ? $data['collections'] : null;
@@ -424,10 +426,19 @@ class LoginController extends Controller
     {
         $form = $this->app->form(new PhraseaForgotPasswordForm());
         $service = $this->getRecoveryService();
+        $flashMessage = $this->app->trans('login:: request password mail sent');
 
         try {
             if ('POST' === $request->getMethod()) {
                 $form->handleRequest($request);
+                $requestData = $request->request->all();
+
+                if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+                    $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
+
+                    $dataError = new FormError("");
+                    $form->get('captcha')->addError($dataError);
+                }
 
                 if ($form->isValid()) {
                     $data = $form->getData();
@@ -441,13 +452,13 @@ class LoginController extends Controller
                         throw new FormProcessingException($message, 0, $ex);
                     }
 
-                    $this->app->addFlash('info', $this->app->trans('phraseanet:: Un email vient de vous etre envoye'));
+                    $this->app->addFlash('info', $flashMessage);
 
                     return $this->app->redirectPath('login_forgot_password');
                 }
             }
         } catch (FormProcessingException $e) {
-            $this->app->addFlash('error', $e->getMessage());
+            $this->app->addFlash('info', $flashMessage);
         }
 
         return $this->render('login/forgot-password.html.twig', array_merge(
@@ -483,17 +494,43 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
-        $this->getAuthenticator()->closeAccount();
+        $providerId = $this->getSession()->get('auth_provider.id', null);
 
-        $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+        /** @var RedirectResponse $response */
+        $response = null;
 
-        $response = $this->app->redirectPath('homepage', [
-            'redirect' => $request->query->get("redirect")
-        ]);
+        // does the provider provides a logout redirection ?
+        if($providerId && ($provider = $this->findProvider($providerId))) {
+            if(method_exists($provider, 'logoutAndRedirect')) {
+                $redirectToPhr = $this->app->url('logout', [
+                    'redirect' => $request->query->get("redirect")
+                ]);
+                $response = $provider->logoutAndRedirect($redirectToPhr);
+            }
+            else {
+                $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+                $this->getAuthenticator()->closeAccount();
 
-        $response->headers->clearCookie('persistent');
-        $response->headers->clearCookie('last_act');
+                $response = $provider->logout();
+            }
+        }
+
+        if($response) {
+            $this->getSession()->set('auth_provider.id', null);
+        }
+        else {
+            // no provider logout : use ours
+            $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+            $this->getAuthenticator()->closeAccount();
+
+            $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
+
+            $response = $this->app->redirectPath('homepage', [
+                'redirect' => $request->query->get("redirect")
+            ]);
+            $response->headers->clearCookie('persistent');
+            $response->headers->clearCookie('last_act');
+        }
 
         return $response;
     }
@@ -670,12 +707,15 @@ class LoginController extends Controller
 
     public function authenticationCallback(Request $request, $providerId)
     {
+        $this->getSession()->set('auth_provider.id', null);
+
         $provider = $this->findProvider($providerId);
 
         // triggers what's necessary
         try {
             $provider->onCallback($request);
             $token = $provider->getToken();
+            $this->getSession()->set('auth_provider.id', $providerId);
         } catch (NotAuthenticatedException $e) {
             $this->getSession()->getFlashBag()->add('error', $this->app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
 
@@ -803,7 +843,7 @@ class LoginController extends Controller
             );
         } catch (RequireCaptchaException $e) {
             $this->app->requireCaptcha();
-            $this->app->addFlash('warning', $this->app->trans('Please fill the captcha'));
+            $this->app->addFlash('warning', $e->getMessage());
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         } catch (AccountLockedException $e) {
@@ -968,11 +1008,11 @@ class LoginController extends Controller
     }
 
     /**
-     * @return ValidationParticipantRepository
+     * @return BasketParticipantRepository
      */
-    private function getValidationParticipantRepository()
+    private function getBasketParticipantRepository()
     {
-        return $this->app['repo.validation-participants'];
+        return $this->app['repo.basket-participants'];
     }
 
     /**

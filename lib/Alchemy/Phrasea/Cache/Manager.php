@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Monolog\Logger;
 
@@ -34,23 +33,37 @@ class Manager
         $this->logger = $logger;
         $this->factory = $factory;
 
-        if (!is_file($file)) {
+        try {
+            if (!is_file($file)) {
+                $this->registry = [];
+                $this->save();
+            } else {
+                $this->registry = require $file;
+                if (!is_array($this->registry)) {
+                    $this->registry = [];
+                }
+            }
+        } catch (\Throwable $e) {
+            // if the file content is not an array and not parsable
             $this->registry = [];
-            $this->save();
-        } else {
-            $this->registry = require $file;
         }
     }
 
     /**
      * Flushes all registered cache
      *
+     * @param null| string $pattern
+     *
      * @return Manager
      */
-    public function flushAll()
+    public function flushAll($pattern = null)
     {
         foreach ($this->drivers as $driver) {
-            $driver->flushAll();
+            if ($driver->getName() === 'redis' && !empty($pattern)) {
+                $driver->removeByPattern($pattern);
+            } else {
+                $driver->flushAll();
+            }
         }
 
         $this->registry = [];
@@ -74,7 +87,7 @@ class Manager
 
         try {
             $cache = $this->factory->create($name, $options);
-        } catch (RuntimeException $e) {
+        } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             $cache = $this->factory->create('array', []);
         }
@@ -89,7 +102,14 @@ class Manager
 
         if (!$this->isAlreadyRegistered($name, $label)) {
             $this->register($name, $label);
-            $cache->flushAll();
+
+            // by default we use redis cache
+            // so only initiate the corresponding namespace after register
+            if ($cache->getName() === 'redis') {
+                $cache->removeByPattern($cache->getNamespace() . '*');
+            } else {
+                $cache->flushAll();
+            }
         }
 
         return $cache;
@@ -125,8 +145,8 @@ class Manager
     private function save()
     {
         $date = new \DateTime();
-        $data = $this->compiler->compile($this->registry)
-            . "\n// Last Update on " . $date->format(DATE_ISO8601) . " \n";
+        $data = $this->compiler->compile($this->registry);
+//            . "\n// Last Update on " . $date->format(DATE_ISO8601) . " \n";
 
         file_put_contents($this->file, $data);
     }

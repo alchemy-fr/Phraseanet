@@ -7,19 +7,24 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Alchemy\Phrasea\Media\Subdef\Image;
+
 use Alchemy\Phrasea\Media\Subdef\Audio;
-use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
-use Alchemy\Phrasea\Media\Subdef\Unknown;
+use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Pdf;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
+use Alchemy\Phrasea\Media\Subdef\Unknown;
+use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+
 class databox_subdef
 {
+    /** @var databox|null  */
+    private $databox;
+
     /**
      * The class type of the subdef
      * Is null or one of the CLASS_* constants
@@ -38,6 +43,9 @@ class databox_subdef
      */
     private $requiresMetadataUpdate;
     protected $downloadable;
+    protected $orderable;
+    protected $substituable;
+    protected $tobuild;
     protected $translator;
     protected static $mediaTypeToSubdefTypes = [
         SubdefType::TYPE_AUDIO    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
@@ -61,11 +69,12 @@ class databox_subdef
      *
      * @param SubdefType $type
      * @param SimpleXMLElement $sd
-     *
-     * @return databox_subdef
+     * @param TranslatorInterface $translator
+     * @param databox|null $databox
      */
-    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator)
+    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator, databox $databox = null)
     {
+        $this->databox = $databox;
         $this->subdef_group = $type;
         $this->class = (string)$sd->attributes()->class;
         $this->translator = $translator;
@@ -74,7 +83,9 @@ class databox_subdef
         }
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
-        $this->orderable = isset($sd->attributes()->orderable) ? p4field::isyes($sd->attributes()->orderable) : true;
+        $this->substituable = isset($sd->attributes()->substituable) && p4field::isyes($sd->attributes()->substituable);
+        $this->orderable = !isset($sd->attributes()->orderable) || p4field::isyes($sd->attributes()->orderable);
+        $this->tobuild = !isset($sd->attributes()->tobuild) || p4field::isyes($sd->attributes()->tobuild);
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
         $this->preset = $sd->attributes()->presets;
         $this->requiresMetadataUpdate = p4field::isyes((string)$sd->meta);
@@ -109,6 +120,12 @@ class databox_subdef
                 break;
         }
     }
+
+    public function getDatabox()
+    {
+        return $this->databox;
+    }
+
     /**
      * Build Image Subdef object depending the SimpleXMLElement
      *
@@ -135,6 +152,18 @@ class databox_subdef
         }
         if ($sd->flatten) {
             $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
+        }
+        if ($sd->watermark) {
+            $image->setOptionValue(Image::OPTION_WATERMARK, (string) $sd->watermark);
+        }
+        if ($sd->watermarktext) {
+            $image->setOptionValue(Image::OPTION_WATERMARKTEXT, $sd->watermarktext);
+        }
+        if ($sd->watermarkrid) {
+            $image->setOptionValue(Image::OPTION_WATERMARKRID, $sd->watermarkrid);
+        }
+        if ($sd->backgroundcolor) {
+            $image->setOptionValue(Image::OPTION_BACKGROUNDCOLOR, $sd->backgroundcolor);
         }
         return $image;
     }
@@ -339,6 +368,22 @@ class databox_subdef
     public function isOrderable()
     {
         return $this->orderable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTobuild()
+    {
+        return $this->tobuild;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubstituable()
+    {
+        return $this->substituable;
     }
 
     /**

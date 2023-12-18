@@ -110,6 +110,21 @@ components:
         minimum: 1
         maximum: 100
         # default:
+
+    bases:
+      name: bases
+      in: query
+      description: >
+        'bases_id s to search on as seen in `Collection id ("base_id" API side)` in _admin > Databases > ... collection_
+
+        If not set: search all collections'
+      required: false
+      schema:
+        type: array
+        uniqueItems: false
+        items:
+          type: integer
+
 #  securitySchemes:
 #      api_key:
 #          type: apiKey
@@ -123,14 +138,14 @@ components:
 #                  tokenUrl: azea
 
 paths:
-  '/me':
-    get:
-      description: 'todo'
-      responses:
-        200:
-          description: successful operation
-        default:
-          description: Any error
+#  '/me':
+#    get:
+#      description: 'todo'
+#      responses:
+#        200:
+#          description: successful operation
+#        default:
+#          description: Any error
 
   # ---------------- search ----------------
   '/search':
@@ -175,11 +190,296 @@ paths:
 
         To get smaller / faster response, facets and stories children are ommited by default.
 
-        Add _include_ parameters to get those if needed.
+        Add __include__ parameters to get those if needed.
+
+        each __include__ parameter maps a matching sub-object in the response data.
+
+        Since records and stories results are dispatched into 2 separated arrays `response.results.records[]` or
+        `response.results.stories[]` (depending on the `search_type=0|1` parameter), one must use the correct __include(s)__
+        that match the result structure.
+
+        ### facets
+        ```
+        {
+          "response": {
+            "facets": [
+              {
+                "name": "_base",
+                "field": "database",
+                "values": [
+                  {
+                    "value": "Base Beta Version 3.0",
+                    "raw_value": "Base Beta Version 3.0",
+                    "count": 2902,
+                    "query": "database:\"Base Beta Version 3.0\""
+                  },
+                  {
+                    "value": "Base test demo support",
+                    "raw_value": "Base test demo support",
+                    "count": 1120,
+                    "query": "database:\"Base test demo support\""
+                  },
+                  ...
+                ]
+              },
+              {
+                "name": "Categorie",
+                "field": "field.Categorie",
+                "values": [
+                  {
+                    "value": "USA Août 2018",
+                    "raw_value": "USA Août 2018",
+                    "count": 268,
+                    "query": "field.Categorie=\"USA Août 2018\""
+                  },
+                  {
+                    "value": "Voyage Bahamas",
+                    "raw_value": "Voyage Bahamas",
+                    "count": 83,
+                    "query": "field.Categorie=\"Voyage Bahamas\""
+                  },
+                  ...
+                ]
+              },
+              {
+                "name": "MotsCles",
+                "field": "field.MotsCles",
+                "values": [
+                  {
+                    "value": "USA",
+                    "raw_value": "USA",
+                    "count": 914,
+                    "query": "field.MotsCles=\"USA\""
+                  },
+                  ...
+                ]
+              },
+              ...
+            ]
+          }
+        }
+        ```
+
+        ### suggestions
+        flatened facets
+        ```
+        "response": {
+          "suggestions": [
+            {
+              "suggestion": "Demo Online",
+              "query": "collection:\"Demo Online\"",
+              "hits": 2
+            },
+            {
+              "suggestion": "Voyage Bahamas",
+              "query": "field.Categorie=\"Voyage Bahamas\"",
+              "hits": 83
+            },
+            ...
+          ]
+        }
+        ```
+
+        ### results.records.subdefs ; results.stories.subdefs
+        ```
+        "response": {
+          "results": {
+            "records": [
+              {
+                "subdefs": [
+                  {
+                    "name": "document",
+                    "permalink": {
+                      "created_on": "2021-09-23T16:04:25+02:00",
+                      "id": 12539,
+                      "is_activated": false,
+                      "label": "TX9329_23",
+                      "updated_on": "2021-09-23T16:05:34+02:00",
+                      "page_url": "https://demo.alchemyasp.com/permalink/v1/43/82227/document/?token=xxx",
+                      "download_url": "https://demo.alchemyasp.com/permalink/v1/43/82227/document/TX9329_23.tif?token=xxx&download=1",
+                      "url": "https://demo.alchemyasp.com/permalink/v1/43/82227/document/TX9329_23.tif?token=xxx"
+                    },
+                    "height": 3181,
+                    "width": 3181,
+                    "filesize": 30439108,
+                    "devices": [
+                      "all"
+                    ],
+                    "player_type": "UNKNOWN",
+                    "mime_type": "image/tiff",
+                    "substituted": false,
+                    "created_on": "2021-09-23T16:04:25+02:00",
+                    "updated_on": "2021-09-23T16:04:25+02:00",
+                    "url": "https://demo.alchemyasp.com/medias/xxxx.yyyy.zzzz",
+                    "url_ttl": 7200
+                  },
+                  {
+                    "name": "preview",
+                    "permalink": {
+                      "created_on": "2021-09-23T16:04:46+02:00",
+                      "id": 12541,
+                      "is_activated": false,
+                      "label": "TX9329_23",
+                      "updated_on": "2021-09-23T16:05:34+02:00",
+                      "page_url": "https://demo.alchemyasp.com/permalink/v1/43/82227/preview/?token=xxx",
+                      "download_url": "https://demo.alchemyasp.com/permalink/v1/43/82227/preview/TX9329_23.jpg?token=xxx&download=1",
+                      "url": "https://demo.alchemyasp.com/permalink/v1/43/82227/preview/TX9329_23.jpg?token=xxx"
+                    },
+                    "height": 800,
+                    "width": 800,
+                    "filesize": 112906,
+                    "devices": [
+                      "screen"
+                    ],
+                    "player_type": "IMAGE",
+                    "mime_type": "image/jpeg",
+                    "substituted": false,
+                    "created_on": "2021-09-23T16:04:46+02:00",
+                    "updated_on": "2021-09-23T16:04:46+02:00",
+                    "url": "https://demo.alchemyasp.com/medias/xxxx.yyyy.zzzz",
+                    "url_ttl": 7200
+                  },
+                  ...
+                ]
+              }
+            ]
+          }
+        }
+        ```
+
+        ### results.records.caption ; results.stories.caption
+        simple metadata
+        ```
+        "response": {
+          "results": {
+            "records": [
+              {
+                "caption": [
+                  {
+                    "meta_structure_id": 12,
+                    "name": "Titre",
+                    "value": "New demo pictures - Oceans"
+                  },
+                  {
+                    "meta_structure_id": 4,
+                    "name": "MotsCles",
+                    "value": "Bahamas ; mer ; Nassau ; plage ; nuage ; turquoise ; ocean ; sea ; Atlantic"
+                  },
+                  ...
+                ]
+              }
+            ]
+          }
+        }
+        ```
+
+        ### results.records.metadata ; results.stories.metadata
+        complete metadata with labels
+        ```
+        {
+          "response": {
+            "results": {
+              "records": [
+                {
+                  "metadata": [
+                    {
+                      "meta_structure_id": 12,
+                      "name": "Titre",
+                      "labels": {
+                        "fr": "Titre principal",
+                        "en": "Headline title",
+                        "de": "Titre",
+                        "nl": "Titre"
+                      },
+                      "meta_id": 346744,
+                      "value": "New demo pictures - Oceans"
+                    },
+                    {
+                      "meta_structure_id": 4,
+                      "name": "MotsCles",
+                      "labels": {
+                        "fr": "Mots Clés",
+                        "en": "Keywords",
+                        "de": "MotsCles",
+                        "nl": "MotsCles"
+                      },
+                      "meta_id": 346745,
+                      "value": "Bahamas"
+                    },
+                    ...
+                  ]
+                }
+              ]
+            }
+          }
+        }
+        ```
+
+        ### results.records.status ; results.stories.status
+        ```
+        "response": {
+          "results": {
+            "records": [
+              {
+                "status": [
+                  {
+                    "bit": 8,
+                    "state": false
+                  },
+                  {
+                    "bit": 9,
+                    "state": true
+                  },
+                  ...
+                ]
+              }
+            ]
+          }
+        }
+        ```
+
+        ### results.records.thumbnail ; results.stories.thumbnail
+        always included
+
+        ### results.records.technical_informations
+        always included
+
+        _nb:_ since stories are not related to a document, there is no technical_informations for stories.
+
+        ### results.records.children
+        In story search mode, will publish a children[] array for each result. See _story_children_limit_ parameter.
+
+        children is an array of records, with same structure as a result record.
+        ```
+        "response": {
+          "results": {
+            "stories": [
+              {
+                "children": [
+                  {
+                    // record structure
+                  },
+                  ...
+                ],
+                ...
+              },
+              ...
+            ]
+          }
+        }
+        ```
+        ### results.records.children.thumbnail
+        ### results.records.children.technical_informations
+        ### results.records.children.subdefs
+        ### results.records.children.caption
+        ### results.records.children.metadata
+        ### results.records.children.status
+        see result.records.* includes.
 
       parameters:
         - $ref: '#/components/parameters/query'
         - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/bases'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/per_page'
         - $ref: '#/components/parameters/offset'
@@ -204,7 +504,21 @@ paths:
               type: string
               enum:
                 - facets
+                - suggestions
                 - result.stories.children
+                - results.records.subdefs
+                - results.stories.subdefs
+                - results.records.caption
+                - results.stories.caption
+                - results.records.metadata
+                - results.stories.metadata
+                - results.records.status
+                - results.stories.status
+                - results.records.children
+                - results.records.children.subdefs
+                - results.records.children.caption
+                - results.records.children.metadata
+                - results.records.children.status
       responses:
         200:
           description: ok
@@ -229,6 +543,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/query'
         - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/bases'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/per_page'
         - $ref: '#/components/parameters/offset'
@@ -735,7 +1050,7 @@ paths:
       tags:
         - story
       summary: Returns uri of each record (child) contained in the story ; Optional pagination
-      description: Returns children of a story
+      description: Returns children of a story.
       operationId: getStoryChildren
       parameters:
         - $ref: '#/components/parameters/sbas_id'

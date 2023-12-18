@@ -15,8 +15,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Doctrine\DBAL\Connection;
@@ -184,7 +188,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $query = $this->app['phraseanet.user-query'];
         $templates = $query
-                ->only_templates(true)
+                ->only_user_templates(true)
                 ->execute()->get_results();
 
         $this->users_datas = $rs;
@@ -203,6 +207,142 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         }
 
         return $out;
+    }
+
+    public function getFeeds($userId = null)
+    {
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'feeds' => [],
+                ];
+            }
+        }
+
+        $user = $this->app['repo.users']->find($userId);
+
+        /** @var FeedRepository $feedsRepository */
+        $feedsRepository = $this->app['repo.feeds'];
+        $feeds = $feedsRepository->getUserFeed($user);
+
+        /** @var FeedEntryRepository $feedEntryRepo */
+        $feedEntryRepo = $this->app['repo.feed-entries'];
+
+        $feedCount = [];
+        /** @var Feed $feed */
+        foreach ($feeds as $feed) {
+            $feedCount[$feed->getId()] = $feedEntryRepo->getByUserAndFeed($user, $feed, true);
+        }
+
+        return [
+            'feeds'         => $feedsRepository->getUserFeed($user),
+            'feeds_count'   => $feedCount
+        ];
+    }
+
+    public function getBasketElements($userId = null, $databoxId = null, $recordId = null)
+    {
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'basket_elements' => [],
+                ];
+            }
+        }
+
+        $user = $this->app['repo.users']->find($userId);
+
+        /** @var BasketElementRepository $basketElementRepository */
+        $basketElementRepository = $this->app['repo.basket-elements'];
+
+        return [
+            'basket_elements'        => $basketElementRepository->getElements($user, $databoxId, $recordId),
+            'basket_elements_count'  => $basketElementRepository->getElementsCount($user, $databoxId, $recordId)
+        ];
+    }
+
+    public function get_user_records_rights($userId = null, $databoxId = null, $recordId = null, $type = null, $expiredRight = false)
+    {
+        $rows = [];
+        $totalCount = 0;
+
+        $databoxIds = array_map(function (\databox $databox) {
+            return $databox->get_sbas_id();
+        },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
+
+        if (empty($userId)) {
+            if (count($this->users) == 1) {
+                $userId = current($this->users);
+            } else {
+                return [
+                    'records_acl' => $rows,
+                    'total_count' => $totalCount,
+                    'databoxIds'  => $databoxIds
+                ];
+            }
+        }
+
+        $whereClause = "WHERE rr.usr_id = :usr_id";
+        $params[':usr_id'] = $userId;
+
+        if (!empty($databoxId)) {
+            $whereClause .= " AND rr.sbas_id= :databox_id";
+            $params[':databox_id'] = $databoxId;
+        }
+
+        if (!empty($recordId)) {
+            $whereClause .= " AND rr.record_id= :record_id";
+            $params[':record_id'] = $recordId;
+        }
+
+        if (!empty($type)) {
+            $whereClause .= " AND rr.case= :case";
+            $params[':case'] = $type;
+        }
+
+        if ($expiredRight) {
+            $whereClause .= " AND rr.expire_on < NOW()";
+        }
+
+        $sql = "SELECT rr.sbas_id, rr.record_id, rr.preview, rr.document, rr.`case` as type, \n"
+              . "IF(TRIM(p.last_name)!='' OR TRIM(p.first_name)!='', \n"
+              . "   CONCAT_WS(' ', p.last_name, p.first_name),\n"
+              . "   IF(TRIM(p.email)!='', p.email, p.login)\n"
+              . ") as pusher_name, rr.expire_on\n"
+              . " FROM records_rights rr \n"
+              . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id\n"
+              . " JOIN Users as p ON p.id = rr.pusher_usr_id\n"
+              . $whereClause
+              . " ORDER BY rr.id DESC limit 200 \n"
+        ;
+
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $sql = "SELECT count(*) as nb \n"
+            . " FROM records_rights rr \n"
+            . " INNER JOIN sbas ON sbas.sbas_id = rr.sbas_id\n"
+            . $whereClause
+        ;
+
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $totalCount = $stmt->fetchColumn();
+        $stmt->closeCursor();
+
+        return [
+            'records_acl' => $rows,
+            'total_count' => $totalCount,
+            'databoxIds'  => $databoxIds
+        ];
     }
 
     public function get_quotas()

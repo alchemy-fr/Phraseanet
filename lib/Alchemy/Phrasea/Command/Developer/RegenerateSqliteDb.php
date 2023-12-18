@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\AggregateToken;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -35,9 +36,6 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
-use Alchemy\Phrasea\Model\Entities\ValidationSession;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
@@ -48,7 +46,9 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 class RegenerateSqliteDb extends Command
 {
@@ -131,6 +131,7 @@ class RegenerateSqliteDb extends Command
         $fixtures['user']['user_guest'] = $DI['user_guest']->getId();
 
         $fixtures['oauth']['user'] = $DI['api-app-user']->getId();
+        $fixtures['oauth']['user1'] = $DI['api-app-user1']->getId();
         $fixtures['oauth']['acc-user'] = $DI['api-app-acc-user']->getId();
         $fixtures['oauth']['user-not-admin'] = $DI['api-app-user-not-admin']->getId();
         $fixtures['oauth']['acc-user-not-admin'] = $DI['api-app-acc-user-not-admin']->getId();
@@ -206,6 +207,17 @@ class RegenerateSqliteDb extends Command
             );
         }
 
+        if (null === $DI['api-app-user1'] = $this->container['repo.api-applications']->findOneByName('test-web-user1')) {
+            $DI['api-app-user1'] = $this->container['manipulator.api-application']->create(
+                'test-web-user1',
+                ApiApplication::WEB_TYPE,
+                '',
+                'http://website.com/',
+                $DI['user_1'],
+                'http://callback.com/callback/'
+            );
+        }
+
     }
 
     public function insertOauthAccounts(\Pimple $DI)
@@ -218,6 +230,8 @@ class RegenerateSqliteDb extends Command
         $apiOAuthTokenManipulator->create($DI['api-app-acc-user']);
         $DI['api-app-acc-user-not-admin'] = $apiAccountManipulator->create($DI['api-app-user-not-admin'], $DI['user_notAdmin'], V2::VERSION);
         $apiOAuthTokenManipulator->create($DI['api-app-acc-user-not-admin']);
+        $DI['api-app-acc-user1'] = $apiAccountManipulator->create($DI['api-app-user1'], $DI['user_1'], V2::VERSION);
+        $apiOAuthTokenManipulator->create($DI['api-app-acc-user1']);
     }
 
     public function insertNativeApps()
@@ -561,28 +575,21 @@ class RegenerateSqliteDb extends Command
             $em->persist($basketElement);
         }
 
-        $validationSession = new ValidationSession();
-        $validationSession->setBasket($basket4);
-        $basket4->setValidation($validationSession);
+        $basket4->startVoteSession($this->getUser());
         $expires = new \DateTime();
         $expires->modify('+1 week');
-        $validationSession->setExpires($expires);
-        $validationSession->setInitiator($this->getUser());
+        $basket4->setVoteExpires($expires);
 
         foreach ([$this->getUser(), $DI['user_alt1'], $DI['user_alt2']] as $user) {
-            $validationParticipant = new ValidationParticipant();
-            $validationParticipant->setUser($user);
-            $validationParticipant->setSession($validationSession);
-            $validationParticipant->setCanAgree(true);
-            $validationSession->addParticipant($validationParticipant);
+            $basketParticipant = $basket4->addParticipant($user);
+            $basketParticipant->setCanAgree(true);
+
             foreach ($basket4->getElements() as $basketElement) {
-                $data = new ValidationData();
-                $data->setParticipant($validationParticipant);
-                $validationParticipant->addData($data);
-                $data->setBasketElement($basketElement);
-                $em->persist($data);
+                $basketElementVote = $basketElement->createVote($basketParticipant);
+
+                $em->persist($basketElementVote);
             }
-            $em->persist($validationParticipant);
+            $em->persist($basketParticipant);
         }
 
         $DI['basket_4'] = $basket4;
@@ -662,12 +669,20 @@ class RegenerateSqliteDb extends Command
         $publisher->setFeed($feed);
 
         $feed->addPublisher($publisher);
+
+        $publisher1 = new FeedPublisher();
+
+        $publisher1->setUser($DI['user_1']);
+        $publisher1->setIsOwner(false);
+        $publisher1->setFeed($feed);
+
         $feed->setTitle("Feed test, Public!");
         $feed->setIsPublic(true);
         $feed->setSubtitle("description");
 
         $em->persist($feed);
         $em->persist($publisher);
+        $em->persist($publisher1);
 
         $entry = $this->insertOneFeedEntry($em, $DI, $feed, true);
         $token = $this->insertOneFeedToken($em, $DI, $feed);

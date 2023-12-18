@@ -28,6 +28,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
 
     // Phraseanet Record data
     private $databoxId;
+    private $databoxName;
     private $recordId;
     private $collectionId;
     private $baseId;
@@ -46,6 +47,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $type;
     private $status;
     private $isStory;
+    private $coverRecordId;
     private $caption = [];
     private $privateCaption = [];
     private $exif = [];
@@ -62,6 +64,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
             '_version'       => $this->_version,
             '_score'         => $this->_score,
             'databoxId'      => $this->databoxId,
+            'databoxName'    => $this->databoxName,
             'recordId'       => $this->recordId,
             'collectionId'   => $this->collectionId,
             'baseId'         => $this->baseId,
@@ -80,6 +83,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
             'type'           => $this->type,
             'status'         => $this->status,
             'isStory'        => $this->isStory,
+            'coverRecordId'  => $this->coverRecordId,
             'caption'        => $this->caption,
             'privateCaption' => $this->privateCaption,
             'exif'           => $this->exif,
@@ -192,6 +196,16 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         $this->databoxId = $databoxId;
     }
 
+    public function getDataboxName()
+    {
+        return $this->databoxName;
+    }
+
+    public function setDataboxName($databoxName)
+    {
+        $this->databoxName = $databoxName;
+    }
+
     /** {@inheritdoc} */
     public function isStory()
     {
@@ -202,6 +216,16 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setIsStory($isStory)
     {
         $this->isStory = (bool)$isStory;
+    }
+
+    public function setCoverRecordId($coverRecordId)
+    {
+        $this->coverRecordId =  $coverRecordId;
+    }
+
+    public function getCoverRecordId($coverRecordId)
+    {
+        return $this->coverRecordId;
     }
 
     /** {@inheritdoc} */

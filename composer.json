@@ -8,15 +8,15 @@
   "repositories": [
     {
       "type": "package",
-        "package": {
-          "name": "facebook/php-sdk",
-          "version": "3.2.3",
-          "source": {
-            "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
-            "type": "git",
-            "reference": "3.2.3"
-            }
-       }
+      "package": {
+        "name": "facebook/php-sdk",
+        "version": "3.2.3",
+        "source": {
+          "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
+          "type": "git",
+          "reference": "3.2.3"
+        }
+      }
     },
     {
       "type": "package",
@@ -59,7 +59,7 @@
     "php": ">=7.0 <7.1",
     "ext-intl": "*",
     "alchemy-fr/tcpdf-clone": "~6.0",
-    "alchemy/embed-bundle": "^2.0.7",
+    "alchemy/embed-bundle": "^2.0.16",
     "alchemy/geonames-api-consumer": "~0.1.0",
     "alchemy/mediavorus": "^0.4.4",
     "alchemy/oauth2php": "1.1.0",
@@ -89,18 +89,17 @@
     "hoa/dispatcher": "~0.0",
     "hoa/router": "~2.0",
     "igorw/get-in": "~1.0",
-    "imagine/imagine": "0.6.x-dev",
+    "imagine/imagine": "^0.11.0",
     "jms/serializer": "~0.10",
     "jms/translation-bundle": "dev-fix-2021-04-19",
     "justinrainbow/json-schema": "2.0.3 as 1.6.1",
     "league/flysystem": "^1.0",
     "league/flysystem-aws-s3-v2": "^1.0",
     "league/fractal": "dev-webgalleries#af1acc0275438571bc8c1d08a05a4b5af92c9f97 as 0.13.0",
-    "media-alchemyst/media-alchemyst": "^0.5.6",
+    "media-alchemyst/media-alchemyst": "^4.1.9",
     "monolog/monolog": "~1.3",
     "mrclay/minify": "~2.1.6",
     "neutron/process-manager": "2.0.x-dev@dev",
-    "neutron/recaptcha": "~0.1.0",
     "neutron/silex-filesystem-provider": "~1.0",
     "neutron/silex-imagine-provider": "~0.1.0",
     "neutron/temporary-filesystem": "~2.1",
@@ -109,7 +108,6 @@
     "php-xpdf/php-xpdf": "~0.2.1",
     "exiftool/exiftool": "^11",
     "ramsey/uuid": "^3.0",
-    "roave/security-advisories": "dev-master",
     "silex/silex": "^1.3.0",
     "silex/web-profiler": "~1.0",
     "simple-bus/doctrine-orm-bridge": "^4.0",
@@ -118,7 +116,7 @@
     "simple-bus/serialization": "^2.0",
     "sorien/silex-dbal-profiler": "^1.1",
     "sorien/silex-pimple-dumper": "^1.0",
-    "swiftmailer/swiftmailer": "~5.4.5",
+    "swiftmailer/swiftmailer": "^5.4.12",
     "symfony/symfony": "~2.7.10|~2.8.3",
     "themattharris/tmhoauth": "~0.7",
     "twig/extensions": "^1.2.0",
@@ -134,7 +132,10 @@
     "box/spout": "^2.7",
     "paragonie/random-lib": "^2.0",
     "czproject/git-php": "^3.17",
-    "php-amqplib/php-amqplib": "^2.9"
+    "php-amqplib/php-amqplib": "^2.9",
+    "guzzlehttp/guzzle": " 6.3.3",
+    "pusher/pusher-php-server": "^3.4",
+    "phpoffice/phpspreadsheet": "~1.8.0"
   },
   "require-dev": {
     "mikey179/vfsstream": "~1.5",
@@ -146,7 +147,9 @@
       "": "lib/classes"
     }
   },
-  "include-path": ["vendor/zend/gdata/library"],
+  "include-path": [
+    "vendor/zend/gdata/library"
+  ],
   "extra": {
     "branch-alias": {
       "dev-master": "4.1.x-dev"

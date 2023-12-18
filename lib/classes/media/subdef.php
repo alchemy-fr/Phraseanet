@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
@@ -19,6 +20,7 @@ use Guzzle\Http\Url;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+
 
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
@@ -30,6 +32,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     private static function getMediaSubdefRepository(Application $app, $databoxId)
     {
         return $app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
+    }
+
+    /**
+     * @return Filesystem
+     */
+    private function getFilesystem()
+    {
+        return $this->app['filesystem'];
     }
 
     /** @var Application */
@@ -99,6 +109,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_COLORSPACE = 'ColorSpace';
     const TC_DATA_CHANNELS = 'Channels';
     const TC_DATA_ORIENTATION = 'Orientation';
+    const TC_DATA_THUMBNAILORIENTATION = 'ThumbnailOrientation';
     const TC_DATA_COLORDEPTH = 'ColorDepth';
     const TC_DATA_DURATION = 'Duration';
     const TC_DATA_AUDIOCODEC = 'AudioCodec';
@@ -673,6 +684,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $symlinker->symlink($subdef->getRealPath());
         }
 
+        // delete from cache the list of available subdef for the record to taken account the new subdef
+        $subdef->get_record()->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
+
         return $subdef;
     }
 
@@ -772,7 +786,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     private function isStillAccessible()
     {
-        return $this->is_physically_present && file_exists($this->getRealPath());
+        // return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath(), 10);    // allow 10 secs for the file to be visible on shared fs
+        return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath());    // NO delay allowed, this slows down phr if any subdef is missing
     }
 
     /**
@@ -853,6 +868,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
               self::TC_DATA_VIDEOCODEC         => ['method' => 'getVideoCodec', 'type' => 'string', 'analyzable' => false],
               self::TC_DATA_AUDIOCODEC         => ['method' => 'getAudioCodec', 'type' => 'string', 'analyzable' => false],
               self::TC_DATA_ORIENTATION        => ['method' => 'getOrientation', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_THUMBNAILORIENTATION => ['type' => 'string', 'analyzable' => false],
               self::TC_DATA_LONGITUDE          => ['method' => 'getLongitude', 'type' => 'float', 'analyzable' => false],
               self::TC_DATA_LONGITUDE_REF      => ['method' => 'getLongitudeRef'],
               self::TC_DATA_LATITUDE           => ['method' => 'getLatitude', 'type' => 'float', 'analyzable' => false],

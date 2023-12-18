@@ -46,6 +46,8 @@ class databox_field implements cache_cacheableInterface
     protected $generate_cterms;
     protected $gui_editable;
     protected $gui_visible;
+    protected $input_disable;
+    protected $printable;
     protected $separator;
     protected $thumbtitle;
 
@@ -172,6 +174,8 @@ class databox_field implements cache_cacheableInterface
         $this->generate_cterms = (bool)$row['generate_cterms'];
         $this->gui_editable = (bool)$row['gui_editable'];
         $this->gui_visible = (bool)$row['gui_visible'];
+        $this->printable = (bool)$row['printable'];
+        $this->input_disable = (bool)$row['input_disable'];
         $this->VocabularyType = $row['VocabularyControlType'];
         $this->VocabularyRestriction = (bool)$row['RestrictToVocabularyControl'];
 
@@ -315,6 +319,8 @@ class databox_field implements cache_cacheableInterface
           `generate_cterms` = :generate_cterms,
           `gui_editable` = :gui_editable,
           `gui_visible` = :gui_visible,
+          `printable` = :printable,
+          `input_disable` = :input_disable,
           `sorter` = :position,
           `thumbtitle` = :thumbtitle,
           `VocabularyControlType` = :VocabularyControlType,
@@ -338,9 +344,11 @@ class databox_field implements cache_cacheableInterface
             ':report'                => $this->report ? '1' : '0',
             ':type'                  => $this->type,
             ':tbranch'               => $this->tbranch,
-            ':generate_cterms'        => $this->generate_cterms ? '1' : '0',
+            ':generate_cterms'       => $this->generate_cterms ? '1' : '0',
             ':gui_editable'          => $this->gui_editable ? '1' : '0',
-            ':gui_visible'          => $this->gui_visible ? '1' : '0',
+            ':gui_visible'           => $this->gui_visible ? '1' : '0',
+            ':printable'             => $this->printable ? '1' : '0',
+            ':input_disable'         => $this->input_disable ? '1' : '0',
             ':position'              => $this->position,
             ':thumbtitle'            => $this->thumbtitle,
             ':VocabularyControlType' => $this->getVocabularyControl() ? $this->getVocabularyControl()->getType() : null,
@@ -395,6 +403,8 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('generate_cterms', $this->generate_cterms ? '1' : '0');
         $meta->setAttribute('gui_editable', $this->gui_editable ? '1' : '0');
         $meta->setAttribute('gui_visible', $this->gui_visible ? '1' : '0');
+        $meta->setAttribute('printable', $this->printable ? '1' : '0');
+        $meta->setAttribute('input_disable', $this->input_disable ? '1' : '0');
         if ($this->multi) {
             $meta->setAttribute('separator', $this->separator);
         }
@@ -760,6 +770,28 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
+     * @param  boolean       $printable
+     * @return databox_field
+     */
+    public function set_printable($printable)
+    {
+        $this->printable = $printable;
+
+        return $this;
+    }
+
+    /**
+     * @param  boolean       $input_disable
+     * @return databox_field
+     */
+    public function set_input_disable($input_disable)
+    {
+        $this->input_disable = $input_disable;
+
+        return $this;
+    }
+
+    /**
      *
      * @param  string        $separator
      * @return databox_field
@@ -868,6 +900,24 @@ class databox_field implements cache_cacheableInterface
     public function get_gui_visible()
     {
         return $this->gui_visible;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function get_printable()
+    {
+        return $this->printable;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function get_input_disable()
+    {
+        return $this->input_disable;
     }
 
     /**
@@ -982,7 +1032,9 @@ class databox_field implements cache_cacheableInterface
             'tbranch'               => $this->tbranch,
             'generate_cterms'        => $this->generate_cterms,
             'gui_editable'          => $this->gui_editable,
-            'gui_visible'          => $this->gui_visible,
+            'gui_visible'           => $this->gui_visible,
+            'printable'             => $this->printable,
+            'input_disable'         => $this->input_disable,
             'separator'             => $this->separator,
             'required'              => $this->required,
             'report'                => $this->report,
@@ -1021,10 +1073,10 @@ class databox_field implements cache_cacheableInterface
         }
 
         $sql = "INSERT INTO metadatas_structure
-        (`id`, `name`, `src`, `readonly`, `gui_editable`,`gui_visible`, `required`, `indexable`, `type`, `tbranch`, `generate_cterms`,
+        (`id`, `name`, `src`, `readonly`, `gui_editable`,`gui_visible`, `printable`, `input_disable`, `required`, `indexable`, `type`, `tbranch`, `generate_cterms`,
           `thumbtitle`, `multi`, `business`, `aggregable`,
           `report`, `sorter`, `separator`)
-        VALUES (null, :name, '', 0, 1, 1, 0, 1, 'string', '', 1,
+        VALUES (null, :name, '', 0, 1, 1, 1, 0, 0, 1, 'string', '', 1,
           null, 0, 0, 0,
            1, :sorter, '')";
 

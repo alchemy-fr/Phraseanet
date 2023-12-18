@@ -2,7 +2,6 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -21,6 +20,8 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['record_2'];
         $route = '/prod/baskets/';
 
+        $randomValue = $this->setSessionFormToken('prodCreateBasket');
+
         $records = [
             self::$DI['record_1']->get_serialize_key(),
             self::$DI['record_2']->get_serialize_key(),
@@ -35,7 +36,9 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
             'POST', $route, [
             'name' => 'panier',
             'desc' => 'mon beau panier',
-            'lst'  => $lst]
+            'lst'  => $lst,
+            'prodCreateBasket_token'  =>   $randomValue
+            ]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -61,6 +64,8 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $query = $entityManager->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $count = $query->getSingleScalarResult();
 
+        $randomValue = $this->setSessionFormToken('prodCreateBasket');
+
         $route = '/prod/baskets/';
 
         $client = $this->getClient();
@@ -70,6 +75,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
             [
                 'name' => 'panier',
                 'desc' => 'mon beau panier',
+                'prodCreateBasket_token'  =>   $randomValue
             ],
             [],
             [
@@ -201,10 +207,14 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
+        $randomValue = $this->setSessionFormToken('prodBasketRename');
+
         self::$DI['client']->request(
             'POST', $route, [
             'name'        => 'new_name',
-            'description' => 'new_desc']
+            'description' => 'new_desc',
+            'prodBasketRename_token' => $randomValue
+            ]
         );
 
         $response = self::$DI['client']->getResponse();
@@ -218,10 +228,13 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
         $route = sprintf('/prod/baskets/%s/update/', $basket->getId());
 
+        $randomValue = $this->setSessionFormToken('prodBasketRename');
+
         self::$DI['client']->request(
             'POST', $route, [
             'name'        => 'new_name',
-            'description' => 'new_desc'
+            'description' => 'new_desc',
+            'prodBasketRename_token' => $randomValue
             ], [], [
             "HTTP_ACCEPT" => "application/json"]
         );
@@ -336,7 +349,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAddElementToValidationPost()
     {
-        $countData = count(self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll());
+        $countData = count(self::$DI['app']['orm.em']->getRepository('Phraseanet:BasketElementVote')->findAll());
 
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
         $this->assertCount(2, $basket->getElements());
@@ -359,8 +372,11 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(4, $basket->getElements());
-        $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll();
+
+        /* no. votes are now dynamic, so adding elements to a "vote" basket do not add empty votes for participnts
+        $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:BasketElementVote')->findAll();
         $this->assertTrue($countData < count($datas), 'assert that ' . count($datas) . ' > ' . $countData);
+        */
     }
 
     public function testAddElementPostJSON()
@@ -454,14 +470,11 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
 
-        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationParticipant v');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:BasketParticipant v');
         $this->assertEquals(0, $query->getSingleScalarResult());
 
         $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:BasketElement b');
         $this->assertEquals(1, $query->getSingleScalarResult());
-
-        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(v.id) FROM Phraseanet:ValidationSession v');
-        $this->assertEquals(0, $query->getSingleScalarResult());
 
         $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(b.id) FROM Phraseanet:Basket b');
         $this->assertEquals(3, $query->getSingleScalarResult());

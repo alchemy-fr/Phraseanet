@@ -44,14 +44,12 @@ class ValidationData
     private $updated;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ValidationParticipant", inversedBy="datas", cascade={"persist"})
-     * @ORM\JoinColumn(name="participant_id", referencedColumnName="id")
+     * @ORM\Column(type="integer", nullable=true, name="participant_id")
      */
     private $participant;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="validation_datas", cascade={"persist"})
-     * @ORM\JoinColumn(name="basket_element_id", referencedColumnName="id")
+     * @ORM\Column(type="integer", nullable=true, name="basket_element_id")
      */
     private $basket_element;
 

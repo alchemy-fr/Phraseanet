@@ -208,6 +208,6 @@ class GithubTest extends ProviderTestCase
 
     protected function getProvider()
     {
-        return new Github($this->getUrlGeneratorMock(), $this->getMockSession(), $this->getGuzzleMock(), 'key', 'secret');
+        return new Github($this->getUrlGeneratorMock(), $this->getMockSession(), ['client-id'=>'id', 'client-secret'=>'secret'], $this->getGuzzleMock());
     }
 }

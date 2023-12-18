@@ -9,14 +9,12 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Model\Entities\Token;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -71,6 +69,7 @@ class DoDownloadController extends Controller
         }
 
         return new Response($this->render(
+            /** @uses templates/web/prod/actions/Download/prepare.html.twig */
             '/prod/actions/Download/prepare.html.twig', [
             'module_name'   => $this->app->trans('Export'),
             'module'        => $this->app->trans('Export'),
@@ -106,17 +105,17 @@ class DoDownloadController extends Controller
 
         $exportName = $list['export_name'];
 
-        if ($list['count'] === 1) {
-            $file = end($list['files']);
-            $subdef = end($file['subdefs']);
-            $exportName = sprintf('%s%s.%s', $file['export_name'], $subdef['ajout'], $subdef['exportExt']);
-            $exportFile = \p4string::addEndSlash($subdef['path']) . $subdef['file'];
-            $mime = $subdef['mime'];
-            $list['complete'] = true;
-        } else {
+//        if ($list['count'] === 1 && !$list['cgu']) {
+//            $file = end($list['files']);
+//            $subdef = end($file['subdefs']);
+//            $exportName = sprintf('%s%s.%s', $file['export_name'], $subdef['ajout'], $subdef['exportExt']);
+//            $exportFile = \p4string::addEndSlash($subdef['path']) . $subdef['file'];
+//            $mime = $subdef['mime'];
+//            $list['complete'] = true;
+//        } else {
             $exportFile = $this->app['tmp.download.path'].'/'.$token->getValue() . '.zip';
             $mime = 'application/zip';
-        }
+//        }
 
         if (!$this->getFilesystem()->exists($exportFile)) {
             $this->app->abort(404, 'Download file not found');
@@ -158,21 +157,21 @@ class DoDownloadController extends Controller
         $session->save();
         ignore_user_abort(true);
 
-        if ($list['count'] > 1) {
+//        if ($list['count'] > 1 || $list['cgu']) {
             \set_export::build_zip(
                 $this->app,
                 $token,
                 $list,
                 sprintf('%s/%s.zip', $this->app['tmp.download.path'], $token->getValue()) // Dest file
             );
-        } else {
-            $list['complete'] = true;
-            $token->setData(serialize($list));
-            /** @var EntityManagerInterface $manager */
-            $manager = $this->app['orm.em'];
-            $manager->persist($token);
-            $manager->flush();
-        }
+//        } else {
+//            $list['complete'] = true;
+//            $token->setData(serialize($list));
+//            /** @var EntityManagerInterface $manager */
+//            $manager = $this->app['orm.em'];
+//            $manager->persist($token);
+//            $manager->flush();
+//        }
 
         return $this->app->json([
             'success' => true,

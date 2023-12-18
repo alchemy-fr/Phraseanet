@@ -1,6 +1,6 @@
 
 image:
-  registry:
+  registry: alchemyfr
   tag:
       phraseanet: 4.1.3
       database : 4.1.3
@@ -45,8 +45,13 @@ elasticsearch:
     size: 1Gi
 
 rabbitmq:
+  host: rabbitmq
+  port: 5672
   default_user: rabbit
-  default_pass: rabbit 
+  default_pass: rabbit
+  default_vhost: /
+  ssl: false
+  heartbeat: 60
   resources:
     requests:
       cpu: "50m"
@@ -58,6 +63,9 @@ rabbitmq:
 http:
   max_body_size: 2G
   max_input_vars: 12000
+  gateway_allowed_ips:
+  gateway_denied_ips:
+  gateway_users:
 
 php:
   opcache_enabled: 1
@@ -66,11 +74,13 @@ php:
 
 ingress:
   enabled: false
-  hostname: phraseanet
+  host: phraseanet
   tls: false
 
 app:
   hostname: localhost
+  phraseanet_install: 1
+  phraseanet_setup: 1
   phraseanet_admin_account_email: admin@alchemy.fr
   phraseanet_admin_account_password: phraseanet
   phraseanet_db_host: db
@@ -79,7 +89,9 @@ app:
   install_db_template: DublinCore
   install_appbox: ab_master
   install_databox: db_databox1
-  phraseanet_server_name: localhost
+  phraseanet_hostname: localhost
+  phraseanet_app_port: 80
+  phraseanet_scheme: http
   phraseanet_trusted_proxies:
   gateway:
     resources:

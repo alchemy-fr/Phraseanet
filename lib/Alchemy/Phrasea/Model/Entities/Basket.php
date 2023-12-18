@@ -12,10 +12,13 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use record_adapter;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ORM\Table(name="Baskets")
@@ -83,15 +86,48 @@ class Basket
     private $updated;
 
     /**
-     * @ORM\OneToOne(targetEntity="ValidationSession", mappedBy="basket", cascade={"ALL"})
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="vote_initiator_id", referencedColumnName="id", nullable=true)
+     *
+     * @return User
+     **/
+    private $vote_initiator;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $validation;
+    private $vote_created;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $vote_updated;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $vote_expires;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $share_expires;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $wip;
 
     /**
      * @ORM\OneToMany(targetEntity="BasketElement", mappedBy="basket", cascade={"ALL"})
      * @ORM\OrderBy({"ord" = "ASC"})
      */
     private $elements;
+
+    /**
+     * @ORM\OneToMany(targetEntity="BasketParticipant", mappedBy="basket", cascade={"ALL"})
+     */
+    private $participants;
 
     /**
      * @ORM\OneToOne(targetEntity="Order", mappedBy="basket", cascade={"ALL"})
@@ -103,7 +139,8 @@ class Basket
      */
     public function __construct()
     {
-        $this->elements = new ArrayCollection();
+        $this->elements     = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     /**
@@ -202,6 +239,35 @@ class Basket
     }
 
     /**
+     * return true  if the user is participant and is aware
+     *        false if the user is participant and is not aware
+     *        null  if the user is not particiapant
+     *
+     * used to display an "unread" flag near basket (use along with isRead() method)
+     *
+     * @param User $user
+     * @return bool|null
+     */
+    public function isAwareByUserParticipant(User $user)
+    {
+        if($this->isParticipant($user)) {
+            $now = new DateTime();
+            if(!$this->getParticipant($user)->getIsAware()) {
+                if (is_null($this->share_expires)
+                    || $now < $this->share_expires
+                    || (!is_null($this->vote_expires) && $now < $this->vote_expires)
+                ) {
+                    // unread
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
+        return null;
+    }
+
+    /**
      * @param User $user
      *
      * @return $this
@@ -214,7 +280,7 @@ class Basket
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getPusher()
     {
@@ -291,33 +357,157 @@ class Basket
     }
 
     /**
-     * Set validation
+     * @param User|null $user
      *
-     * @param  ValidationSession $validation
-     * @return Basket
+     * @return $this
      */
-    public function setValidation(ValidationSession $validation = null)
+    public function setVoteInitiator($user)
     {
-        $this->validation = $validation;
+        $this->vote_initiator = $user;
+        $this->upadteVoteDates();
 
         return $this;
     }
 
     /**
-     * Get validation
+     * Get vote initiator
      *
-     * @return ValidationSession
+     * @return User
      */
-    public function getValidation()
+    public function getVoteInitiator()
     {
-        return $this->validation;
+        return $this->vote_initiator;
+    }
+
+    /**
+     * Set vote created
+     *
+     * @param  DateTime         $created
+     * @return self
+     */
+    public function setVoteCreated(DateTime $created)
+    {
+        $this->vote_created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get vote created
+     *
+     * @return DateTime
+     */
+    public function getVoteCreated()
+    {
+        return $this->vote_created;
+    }
+
+    /**
+     * Set vote updated
+     *
+     * @param  DateTime         $updated
+     * @return self
+     */
+    public function setVoteUpdated(DateTime $updated)
+    {
+        $this->vote_updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get vote updated
+     *
+     * @return DateTime
+     */
+    public function getVoteUpdated()
+    {
+        return $this->vote_updated;
+    }
+
+    /**
+     * Set vote expires
+     *
+     * @param  DateTime|null         $expires
+     * @return self
+     */
+    public function setVoteExpires($expires)
+    {
+        $this->vote_expires = $expires;
+        $this->upadteVoteDates();
+
+        return $this;
+    }
+
+    /**
+     * Get vote expires
+     *
+     * @return DateTime|null
+     */
+    public function getVoteExpires()
+    {
+        return $this->vote_expires;
+    }
+
+    /**
+     * Set share expires
+     *
+     * @param  DateTime|null         $expires
+     * @return self
+     */
+    public function setShareExpires($expires)
+    {
+        $this->share_expires = $expires;
+        $this->upadteVoteDates();
+
+        return $this;
+    }
+
+    /**
+     * Get share expires
+     *
+     * @return DateTime|null
+     */
+    public function getShareExpires()
+    {
+        return $this->share_expires;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getWip()
+    {
+        return $this->wip;
+    }
+
+    /**
+     * @param DateTime|null $wip
+     */
+    public function setWip($wip)
+    {
+        $this->wip = $wip;
+    }
+
+
+
+    /**
+     * for every method that touch a "vote" data : maintain created/updated
+     */
+    private function upadteVoteDates()
+    {
+        $now = new DateTime();
+        if(is_null($this->getVoteCreated())) {
+            $this->setVoteCreated($now);
+        }
+        $this->setVoteUpdated($now);
     }
 
     /**
      * Add element
      *
      * @param  BasketElement $element
-     * @return Basket
+     * @return self
      */
     public function addElement(BasketElement $element)
     {
@@ -346,10 +536,120 @@ class Basket
     }
 
     /**
+     * Add participant
+     *
+     * @param  User $participant
+     * @return BasketParticipant
+     */
+    public function addParticipant(User $participant)
+    {
+        $bp = new BasketParticipant($participant);
+        $bp->setBasket($this);
+        $this->participants[] = $bp;
+
+        return $bp;
+    }
+
+    /**
+     * Remove participant
+     *
+     * @param BasketParticipant $participant
+     * @return bool
+     */
+    public function removeParticipant(BasketParticipant $participant)
+    {
+        if ($this->participants->removeElement($participant)) {
+            // $participant->setBasket();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * todo : implement getVoteParticipants (or accept a filter)
+     * Get participants
+     *
+     * @return Collection|BasketParticipant[]
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
+    }
+
+    /**
+     * Check if a user is a participant
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isParticipant(User $user)
+    {
+        /** @var BasketParticipant $participant */
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() == $user->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return boolean
+     */
+    public function isVoteInitiator(User $user)
+    {
+        if($this->getVoteInitiator() !== null) {
+            return $this->getVoteInitiator()->getId() == $user->getId();
+        }
+        return false;
+    }
+
+    /**
+     * Get list of participant user Ids
+     *
+     * @return array
+     */
+    public function getListParticipantsUserId()
+    {
+        $userIds = [];
+        foreach ($this->getParticipants() as $participant) {
+            $userIds[] = $participant->getUser()->getId();
+        }
+
+        return $userIds;
+    }
+
+    /**
+     * Get a participant
+     *
+     * @param User $user
+     *
+     * @return BasketParticipant
+     */
+    public function getParticipant(User $user)
+    {
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() == $user->getId()) {
+                return $participant;
+            }
+        }
+
+        throw new NotFoundHttpException('Participant not found' . $user->getEmail());
+    }
+
+
+
+    /**
      * Set order
      *
      * @param  Order  $order
-     * @return Basket
+     * @return self
      */
     public function setOrder(Order $order = null)
     {
@@ -375,14 +675,41 @@ class Basket
      */
     public function getElements()
     {
+        $i = 1;
+        /** @var BasketElement $element */
+        foreach ($this->elements as $element) {
+            // display the right ord in screen
+            if ($element->getOrd() !== $i) {
+                $element->setOrd($i);
+            }
+            $i++;
+        }
+
         return $this->elements;
+    }
+
+    /**
+     * start a vote session on this basket
+     * !!!!!!!!!!!!!!!!!!!!! used only by RegenerateSqlite ? !!!!!!!!!!!!!!!
+     *
+     * @param User $initiator
+     * @return self
+     */
+    public function startVoteSession(User $initiator)
+    {
+        $now = new DateTime();
+        $this->setVoteInitiator($initiator)
+            ->setVoteCreated($now)
+            ->setVoteUpdated($now);
+
+        return $this;
     }
 
     /**
      * @param string $order one of self::ELEMENTSORDER_* const
      * @return ArrayCollection|BasketElement[]
      */
-    public function getElementsByOrder($order)
+    public function getElementsByOrder(string $order)
     {
         $elements = $this->elements->toArray();
 
@@ -409,14 +736,14 @@ class Basket
         $total_el1 = 0;
         $total_el2 = 0;
 
-        foreach ($element1->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el1 += $data->getAgreement() ? 1 : 0;
+        foreach ($element1->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el1 += $vote->getAgreement() ? 1 : 0;
             }
         }
-        foreach ($element2->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el2 += $data->getAgreement() ? 1 : 0;
+        foreach ($element2->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el2 += $vote->getAgreement() ? 1 : 0;
             }
         }
 
@@ -437,14 +764,14 @@ class Basket
         $total_el1 = 0;
         $total_el2 = 0;
 
-        foreach ($element1->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el1 += $data->getAgreement() ? 0 : 1;
+        foreach ($element1->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el1 += $vote->getAgreement() ? 0 : 1;
             }
         }
-        foreach ($element2->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el2 += $data->getAgreement() ? 0 : 1;
+        foreach ($element2->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el2 += $vote->getAgreement() ? 0 : 1;
             }
         }
 
@@ -455,17 +782,17 @@ class Basket
         return $total_el1 < $total_el2 ? 1 : -1;
     }
 
-    public function hasRecord(Application $app, \record_adapter $record)
+    public function hasRecord(Application $app, record_adapter $record)
     {
         return !is_null($this->getElementByRecord($app, $record));
     }
 
     /**
      * @param Application $app
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @return BasketElement
      */
-    public function getElementByRecord(Application $app, \record_adapter $record)
+    public function getElementByRecord(Application $app, record_adapter $record)
     {
         foreach ($this->getElements() as $basket_element) {
             $bask_record = $basket_element->getRecord($app);
@@ -478,6 +805,67 @@ class Basket
 
         return null;
     }
+
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! easy way to tell if a basket "is" a vote (former = has "validation")
+     * @return bool
+     */
+    public function isVoteBasket()
+    {
+        return !!$this->getVoteInitiator();
+    }
+
+    /**
+     * /!\ returns null if the basket has no voteExpires date
+     *
+     * @return bool|null
+     */
+    public function isVoteFinished()
+    {
+        if (is_null($this->getVoteExpires())) {
+            return null;
+        }
+
+        $date_obj = new DateTime();
+
+        return $date_obj > $this->getVoteExpires();
+    }
+
+    /**
+     * returns null if the basket has no shareExpires date
+     *
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function isShareExpires()
+    {
+        if (is_null($this->getShareExpires())) {
+            return null;
+        }
+
+        $date_obj = new DateTime();
+
+        return $date_obj > $this->getShareExpires();
+    }
+
+    public function getVoteString(Application $app, User $user)
+    {
+        if ($this->isVoteInitiator($user)) {
+            if ($this->isVoteFinished()) {
+                return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
+            }
+
+            return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
+        }
+        else {
+            if ($this->getParticipant($user)->getCanSeeOthers()) {
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getVoteInitiator()->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
+            }
+
+            return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getVoteInitiator()->getDisplayName()]);
+        }
+    }
+
 
     public function getSize(Application $app)
     {
@@ -497,4 +885,5 @@ class Basket
 
         return $totSize;
     }
+
 }

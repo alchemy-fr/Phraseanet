@@ -51,13 +51,13 @@ class SessionHandlerServiceProviderTest extends \PHPUnit_Framework_TestCase
 
     public function provideVariousConfigurations()
     {
+        @mkdir("/tmp/session");
         $configurations = [
             [
                 [
-                    'main' => [
-                        'session' => [
-                            'type' => 'file',
-                        ]
+                    'type' => 'file',
+                    'options' => [
+                        'save-path' => '/tmp/session',
                     ]
                 ],
                 'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler'

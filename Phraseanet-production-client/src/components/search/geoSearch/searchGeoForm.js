@@ -54,9 +54,9 @@ const searchGeoForm = (services) => {
                 event.preventDefault();
                 if($('#map-zoom-to-setting').val()!= '') {
                     savePreferences(
-                        {map_zoom : parseFloat($('#map-zoom-to-setting').val())}
+                        {map_zoom : parseInt($('#map-zoom-to-setting').val())}
                     );
-                    $('#map-zoom-from-setting').val(parseFloat($('#map-zoom-to-setting').val()));
+                    $('#map-zoom-from-setting').val(parseInt($('#map-zoom-to-setting').val()));
                 }
                 if($('#map-position-to-setting').val()!= '') {
                     var centerRes = $('#map-position-to-setting').val();
@@ -89,7 +89,7 @@ const searchGeoForm = (services) => {
         return `
         <div style="overflow:hidden">
         <div id="${mapContainerName}" style="top: 0px; left: 0;    bottom: 42px;    position: absolute;height: auto;width: 100%;overflow: hidden;"></div>
-        <div style="position: absolute;bottom: 0; text-align:center; height: 35px; width: 98%;overflow: hidden;"><button class="submit-geo-search-action btn map-geo-btn" style="font-size: 14px">${localeService.t('Valider')}</button></div>
+        <div style="position: absolute;bottom: 0; text-align:center; height: 35px; width: 98%;overflow: hidden;"><button class="submit-geo-search-action btn map-geo-btn" style="font-size: 14px">${localeService.t('valider')}</button></div>
         </div>`;
     };
 

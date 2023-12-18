@@ -1,0 +1,58 @@
+version: "3.9"
+
+services: 
+  db:
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
+    build: ./docker/db
+    restart: on-failure
+    profiles: ["db"]
+    environment:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_MAX_ALLOWED_PACKET
+    - MYSQL_MAX_CONNECTION
+    - MYSQL_LONG_QUERY_TIME
+    - MYSQL_SLOW_QUERY_LOG
+    - MYSQL_QUERY_CACHE_LIMIT
+    - MYSQL_QUERY_CACHE_SIZE
+    - MYSQL_KEY_BUFFER_SIZE
+    volumes:
+    - ${PHRASEANET_DB_DIR}:/var/lib/mysql
+    networks:
+      - internal
+
+  rabbitmq:
+    image: rabbitmq:3.6.16-management
+    profiles: ["rabbitmq"]
+    restart: on-failure
+    hostname: $RABBITMQ_HOSTNAME
+    environment:
+    - RABBITMQ_DEFAULT_USER
+    - RABBITMQ_DEFAULT_PASS
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq
+    networks:
+      - internal
+  
+  redis:
+    image: redis
+    profiles: ["redis"]
+    restart: on-failure
+    networks:
+      - internal
+
+  redis-session:
+    image: redis
+    profiles: ["redis-session"]
+    restart: on-failure
+    networks:
+      - internal
+
+  elasticsearch:
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
+    profiles: ["elasticsearch"]
+    build: ./docker/elasticsearch
+    restart: on-failure
+    volumes:
+    - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data
+    networks:
+      - internal

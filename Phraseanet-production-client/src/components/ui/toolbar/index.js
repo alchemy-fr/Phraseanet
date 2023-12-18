@@ -4,13 +4,13 @@ import editRecord from '../../record/edit';
 import deleteRecord from '../../record/delete';
 import exportRecord from '../../record/export';
 import propertyRecord from '../../record/property';
-import recordPushModal from '../../record/push';
+import sharebasketModal from '../../record/sharebasketModal';
+import pushbasketModal from '../../record/pushbasketModal';
+// import usersListsModal from '../../userslists/index';
 import recordPublish from '../../record/publish';
 import recordToolsModal from '../../record/tools/index';
 import printRecord from '../../record/print';
-import recordFeedbackModal from '../../record/feedback';
 import bridgeRecord from '../../record/bridge';
-import videoToolsModal from '../../record/videoEditor/index';
 import merge from 'lodash.merge';
 import * as _ from "underscore";
 
@@ -115,7 +115,7 @@ const toolbar = (services) => {
             panel.css('maxHeight', '');
         }
     }
-    const _triggerModal = (event, actionFn, nodocselected= true) => {
+    const _triggerModal = (event, actionFn, needSelectedDocs= true) => {
         event.preventDefault();
         const $el = $(event.currentTarget);
         const selectionSource = $el.data('selection-source');
@@ -124,12 +124,11 @@ const toolbar = (services) => {
         let params = _prepareParams(selection);
 
         // require a list of records a basket group or a story
-        if (params !== false) {
+        if (needSelectedDocs && params === false) {
+            alert(localeService.t('nodocselected'));
+        }
+        else {
             return actionFn.apply(null, [params]);
-        } else {
-            if (nodocselected != false) {
-                alert(localeService.t('nodocselected'));
-            }
         }
     };
 
@@ -168,13 +167,6 @@ const toolbar = (services) => {
         });
 
         /**
-         * tools > Edit > VideoEditor
-         */
-        $container.on('click', '.video-tools-record-action', function (event) {
-            _triggerModal(event, videoToolsModal(services).openModal, false);
-        });
-
-        /**
          * tools > Edit > Move
          */
         $container.on('click', '.TOOL_chgcoll_btn', function (event) {
@@ -193,27 +185,33 @@ const toolbar = (services) => {
          * tools > Push
          */
         $container.on('click', '.TOOL_pushdoc_btn', function (event) {
-            _triggerModal(event, recordPushModal(services).openModal);
+            _triggerModal(event, pushbasketModal(services).openModal);
         });
         /**
-         * tools > Push > Feedback
+         * tools > Push > Share
          */
-        $container.on('click', '.TOOL_feedback_btn', function (event) {
-
-            _triggerModal(event, recordFeedbackModal(services).openModal);
+        $container.on('click', '.TOOL_sharebasket_btn', function (event) {
+            _triggerModal(event, sharebasketModal(services).openModal);
         });
 
+//        /**
+//         * tools > Push > UsersLists
+//         */
+//        $container.on('click', '.TOOL_userslists_btn', function (event) {
+//            _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
+//        });
+
         /**
-         * workzone > feedback
+         * workzone (opened basket) > feedback
          */
         $container.on('click', '.feedback-user', function (event) {
             event.preventDefault();
             let $el = $(event.currentTarget);
-            let params = {};
-            params.ssel = $el.data('basket-id');
-            params.feedbackaction = 'adduser';
 
-            recordFeedbackModal(services).openModal(params);
+            sharebasketModal(services).openModal({
+                ssel: $el.data('basket-id'),
+                feedbackaction: 'adduser'
+            });
         });
 
         /**
@@ -277,7 +275,7 @@ const toolbar = (services) => {
             this.classList.toggle("active");
 
             /* Toggle between hiding and showing the active panel */
-            var panel = this.nextElementSibling;
+            const panel = this.nextElementSibling; // risky don't change html !
             if (panel.style.maxHeight){
                 panel.style.maxHeight = null;
             } else {
@@ -286,9 +284,7 @@ const toolbar = (services) => {
         });
 
         $container.on('click', function (event) {
-            if ($(event.target).is('button.tools-accordion')) {
-                return;
-            } else {
+            if (!$(event.target).is('button.tools-accordion')) {
                 _closeActionPanel();
             }
         });

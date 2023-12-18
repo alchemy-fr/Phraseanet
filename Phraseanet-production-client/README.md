@@ -16,19 +16,19 @@ Node `^5.0.0`.
  - Install dependancies for dev : ```npm install```
 
 ### Code
- - Increment `jsFileVersion` in both files
+ - Increment `assetFileVersion` in both files
     - `lib/Alchemy/Phrasea/Twig/PhraseanetExtension.php`
     -  `Phraseanet-production-client/config/config.js`
  - Make your modification
  - Go to Phraseanet-production-client folder ```cd Phraseanet-production-client```
  - Generate dist ```npm run dist```
  - Go back to Phraseanet folder : ```cd ..```
- - Copy assets in www/assets folder ```make install_asset```
- - ... or simply one cmd : ```cd Phraseanet-production-client && npm run dist && cd .. && make install_assets```
- 
-### Push 
- - If features is finished ```dist``` folder is to be commited with sources.
- 
+ - Copy assets in www/assets folder ```make install_assets```
+ - ... or simply one cmd : ```cd Phraseanet-production-client && npm run dist && cd .. && make install_assets && rm -rf cache/*```
+
+### Push
+ - If features is finished ```dist``` folder is to be committed with sources.
+
 ## Available commands
 
 * `npm run production` - Build task that generate a minified script for production

@@ -37,6 +37,10 @@ class ProdOrderController extends BaseOrderController
      */
     public function createOrder(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodExportOrder')) {
+            return $this->app->json(['message' => 'invalid export order form'], 403);
+        }
+
         $records = RecordsRequest::fromRequest($this->app, $request, true, [\ACL::CANCMD]);
 
         try {
@@ -144,9 +148,13 @@ class ProdOrderController extends BaseOrderController
     public function displayOneOrder($order_id)
     {
         $order = $this->findOr404($order_id);
+        $grantedBaseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
+
+        $this->setSessionFormToken('prodCreateBasket');
 
         return $this->render('prod/orders/order_item.html.twig', [
-            'order' => $order,
+            'order'             => $order,
+            'grantedBaseIds'    => $grantedBaseIds
         ]);
     }
 
@@ -162,7 +170,17 @@ class ProdOrderController extends BaseOrderController
         $elementIds = $request->request->get('elements', []);
         $acceptor = $this->getAuthenticatedUser();
 
-        $basketElements = $this->doAcceptElements($order_id, $elementIds, $acceptor);
+        if (empty($request->request->get('expireOn'))) {
+            $expireOn = null;
+        } else {
+            try {
+                $expireOn = new \DateTime($request->request->get('expireOn') . ' 23:59:59');
+            } catch (\Exception $e) {
+                $expireOn = null;
+            }
+        }
+
+        $basketElements = $this->doAcceptElements($order_id, $elementIds, $acceptor, $expireOn);
 
         $success = !empty($basketElements);
 
@@ -214,5 +232,59 @@ class ProdOrderController extends BaseOrderController
         ]);
     }
 
+    public function validateOrder(Request $request, $order_id)
+    {
+        $elementSendIds = $request->request->get('elementsSend', []);
+        $elementDenyIds = $request->request->get('elementsDeny', []);
+        $acceptor = $this->getAuthenticatedUser();
 
+        if (!empty($elementSendIds)) {
+            if (empty($request->request->get('expireOn'))) {
+                $expireOn = null;
+            } else {
+                try {
+                    $expireOn = new \DateTime($request->request->get('expireOn') . ' 23:59:59');
+                } catch (\Exception $e) {
+                    $expireOn = null;
+                }
+            }
+
+            $basketElements = $this->doAcceptElements($order_id, $elementSendIds, $acceptor, $expireOn);
+        }
+
+        if (!empty($elementDenyIds)) {
+            $elementsDeny = $this->doDenyElements($order_id, $elementDenyIds, $acceptor);
+        }
+
+        $success = !empty($basketElements) || !empty($elementsDeny);
+
+        return $this->app->json([
+            'success'  => $success,
+            'msg'      => $success
+                ? $this->app->trans('Order has been sent')
+                : $this->app->trans('An error occured while sending, please retry  or contact an admin if problem persists'),
+            'order_id' => $order_id,
+        ]);
+    }
+
+    public function cancelOrder(Request $request, $order_id)
+    {
+        $order = $this->findOr404($order_id);
+        $oldTodo = $order->getTodo();
+
+        $order->setTodo(0);
+        $order->setCanceledOn(new \DateTime());
+        $order->setCanceledBy($this->getAuthenticatedUser()->getId());
+        $order->setCanceledTodo($oldTodo);
+
+        $manager = $this->getEntityManager();
+        $manager->persist($order);
+        $manager->flush();
+
+        return $this->app->json([
+            'success'  => true,
+            'msg'      => $this->app->trans('Order has been canceled'),
+            'order_id' => $order_id
+        ]);
+    }
 }

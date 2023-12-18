@@ -15,7 +15,9 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
+use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -251,8 +253,8 @@ class RootController extends Controller
             'searchable' => $request->request->get('searchable') ? '1' : '0',
             'printable'  => $request->request->get('printable') ? '1' : '0',
             'name'       => $request->request->get('name', ''),
-            'labelon'    => htmlentities($request->request->get('label_on', '')),
-            'labeloff'   => htmlentities($request->request->get('label_off', '')),
+            'labelon'    => $request->request->get('label_on', ''),
+            'labeloff'   => $request->request->get('label_off', ''),
             'labels_on'  => $request->request->get('labels_on', []),
             'labels_off' => $request->request->get('labels_off', []),
         ];
@@ -358,6 +360,42 @@ class RootController extends Controller
         $this->dispatchEvent(RecordStructureEvents::STATUS_BIT_UPDATED, new StatusBitUpdatedEvent($databox, $bit, []));
 
         return $this->app->redirectPath('database_display_statusbit', ['databox_id' => $databox_id, 'success' => 1]);
+    }
+
+    public function displayInspector(Request $request)
+    {
+        $databoxIds = array_map(function (\databox $databox) {
+            return $databox->get_sbas_id();
+        },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
+
+        return $this->render('admin/inspector/record-index.html.twig', ['databoxIds' => $databoxIds]);
+    }
+
+    public function getESRecord(Request $request)
+    {
+        $client = new Client();
+
+        /** @var ElasticsearchOptions $options */
+        $options = $this->app['elasticsearch.options'];
+
+        $uri = $options->getHost() . ":" . $options->getPort() . "/" . urlencode($options->getIndexName()) . "/record/" . urlencode($request->query->get('databoxId')) . "_" . urlencode($request->query->get('recordId'));
+
+        $ret = [
+            'uri' => $uri
+        ];
+        $js = $client->get($uri, ['http_errors' => false])->getBody()->getContents();
+        $arr = json_decode($js,true);
+        if(is_null($arr)) {
+            $ret['result'] = "*** error decoding json ***";
+            $ret['raw'] = $js;
+        }
+        else {
+            $ret['result'] = $arr;
+        }
+
+        return json_encode($ret, JSON_PRETTY_PRINT, 512);
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)

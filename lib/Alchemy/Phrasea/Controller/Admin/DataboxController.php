@@ -14,10 +14,12 @@ use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
+use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use collection;
+use Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -102,7 +104,8 @@ class DataboxController extends Controller
                 $success = true;
                 $msg = $this->app->trans('Successful removal');
             }
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
 
         }
         if (!$databox) {
@@ -149,7 +152,8 @@ class DataboxController extends Controller
                 $value = $labels[$code] ?: null;
                 $databox->set_label($code, $value);
             }
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $success = false;
         }
 
@@ -189,7 +193,9 @@ class DataboxController extends Controller
         try {
             $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
             $success = true;
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -221,8 +227,8 @@ class DataboxController extends Controller
             $indexable = !!$request->request->get('indexable', false);
             $this->getApplicationBox()->set_databox_indexable($databox, $indexable);
             $success = true;
-        } catch (\Exception $e) {
-
+        } catch (Exception $e) {
+            // no-op
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -254,7 +260,8 @@ class DataboxController extends Controller
             foreach ($request->request->get('TOU', []) as $loc => $terms) {
                 $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             return $this->app->redirectPath('admin_database_display_cgus', [
                 'databox_id' => $databox_id,
                 'success'    => 0,
@@ -282,7 +289,7 @@ class DataboxController extends Controller
         try {
             /** @var Authenticator $authenticator */
             $authenticator = $this->app->getAuthenticator();
-            $baseId = \collection::mount_collection(
+            $baseId = collection::mount_collection(
                 $this->app,
                 $this->findDataboxById($databox_id),
                 $collection_id,
@@ -314,7 +321,8 @@ class DataboxController extends Controller
                 'databox_id' => $databox_id,
                 'mount'      => 'ok',
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $connection->rollBack();
 
             return $this->app->redirectPath('admin_database', [
@@ -365,7 +373,8 @@ class DataboxController extends Controller
                     'error'      => 'file-invalid',
                 ]);
             }
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             return $this->app->redirectPath('admin_database', [
                 'databox_id' => $databox_id,
                 'success'    => '0',
@@ -394,8 +403,9 @@ class DataboxController extends Controller
                 \databox::PIC_PDF
             );
             $success = true;
-        } catch (\Exception $e) {
-
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -427,8 +437,9 @@ class DataboxController extends Controller
         try {
             $this->findDataboxById($databox_id)->clear_logs();
             $success = true;
-        } catch (\Exception $e) {
-
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -464,8 +475,9 @@ class DataboxController extends Controller
         try {
             $this->findDataboxById($databox_id)->set_viewname($viewName);
             $success = true;
-        } catch (\Exception $e) {
-
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -499,8 +511,9 @@ class DataboxController extends Controller
             $databox->unmount_databox();
 
             $success = true;
-        } catch (\Exception $e) {
-
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -535,24 +548,26 @@ class DataboxController extends Controller
         try {
             $databox = $this->findDataboxById($databox_id);
 
-            foreach ($databox->get_collections() as $collection) {
-                if ($collection->get_record_amount() <= 500) {
-                    $collection->empty_collection(500);
-                } else {
-                    /** @var TaskManipulator $taskManipulator */
-                    $taskManipulator = $this->app['manipulator.task'];
-                    $taskManipulator->createEmptyCollectionJob($collection);
-                }
-            }
-
-            $msg = $this->app->trans('Base empty successful');
+//            foreach ($databox->get_collections() as $collection) {
+//                if ($collection->get_record_amount() <= 500) {
+//                    $collection->empty_collection(500);
+//                } else {
+//                    /** @var TaskManipulator $taskManipulator */
+//                    $taskManipulator = $this->app['manipulator.task'];
+//                    $taskManipulator->createEmptyCollectionJob($collection);
+//                }
+//            }
+//
+//            $msg = $this->app->trans('Base empty successful');
             $success = true;
 
-            if ($taskCreated) {
-                $msg = $this->app->trans('A task has been created, please run it to complete empty collection');
-            }
-        } catch (\Exception $e) {
 
+//            if ($taskCreated) {
+//                $msg = $this->app->trans('A task has been created, please run it to complete empty collection');
+//            }
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         if ('json' === $request->getRequestFormat()) {
@@ -610,8 +625,9 @@ class DataboxController extends Controller
 
             $ret['success'] = true;
             $ret['msg'] = $this->app->trans('Successful update');
-        } catch (\Exception $e) {
-
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         return $this->app->json($ret);
@@ -643,11 +659,12 @@ class DataboxController extends Controller
     {
         try {
             foreach ($request->request->get('order', []) as $data) {
-                $collection = \collection::getByBaseId($this->app, $data['id']);
+                $collection = collection::getByBaseId($this->app, $data['id']);
                 $collection->set_ord($data['offset']);
             }
             $success = true;
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $success = false;
         }
 
@@ -667,22 +684,22 @@ class DataboxController extends Controller
 
     /**
      * Display page to create a new collection
-     *
-     * @return Response
      */
     public function getNewCollection()
     {
-        return $this->render('admin/collection/create.html.twig');
+        return $this->render('admin/collection/create.html.twig', [
+            'collections'   => $this->getGrantedCollections($this->getAclForUser()),
+        ]);
     }
 
     /**
      * Create a new collection
      *
-     * @param  Request $request    The current HTTP request
-     * @param  integer $databox_id The requested databox
+     * @param  Request $request   The current HTTP request
+     * @param integer $databox_id The requested databox
      * @return Response
      */
-    public function createCollection(Request $request, $databox_id)
+    public function createCollection(Request $request, int $databox_id)
     {
         if (($name = trim($request->request->get('name', ''))) === '') {
             return $this->app->redirectPath('admin_database_display_new_collection_form', [
@@ -693,7 +710,7 @@ class DataboxController extends Controller
 
         try {
             $databox = $this->findDataboxById($databox_id);
-            $collection = \collection::create(
+            $collection = collection::create(
                 $this->app, $databox,
                 $this->getApplicationBox(),
                 $name,
@@ -719,7 +736,8 @@ class DataboxController extends Controller
                 'success' => 1,
                 'reload-tree' => 1,
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             return $this->app->redirectPath('admin_database_submit_collection', [
                 'databox_id' => $databox_id,
                 'error' => $e->getMessage(),
@@ -767,6 +785,52 @@ class DataboxController extends Controller
             'table'   => $details,
             'total'   => $total
         ]);
+    }
+
+    private function getGrantedCollections(\ACL $acl)
+    {
+        $collections = [];
+
+        foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
+            $sbasId = $databox->get_sbas_id();
+            foreach ($acl->get_granted_base([\ACL::CANADMIN], [$sbasId]) as $collection) {
+                $databox = $collection->get_databox();
+                if (!isset($collections[$sbasId])) {
+                    $collections[$databox->get_sbas_id()] = [
+                        'databox'             => $databox,
+                        'databox_collections' => []
+                    ];
+                }
+                $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
+                /** @var DisplaySettingService $settings */
+                $settings = $this->app['settings'];
+                $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
+                // a temporary array to sort the collections
+                $aName = [];
+                list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
+                switch ($userOrderSetting) {
+                    case $settings::ORDER_ALPHA_ASC :
+                        list($ukey, $uorder) = ["name", SORT_ASC];
+                        break;
+                    case $settings::ORDER_ALPHA_DESC :
+                        list($ukey, $uorder) = ["name", SORT_DESC];
+                        break;
+                }
+                foreach ($collections[$databox->get_sbas_id()]['databox_collections'] as $key => $row) {
+                    if ($ukey == "order") {
+                        $aName[$key] = $row->get_ord();
+                    }
+                    else {
+                        $aName[$key] = $row->get_name();
+                    }
+                }
+                // sort the collections
+                array_multisort($aName, $uorder, SORT_REGULAR, $collections[$databox->get_sbas_id()]['databox_collections']);
+            }
+        }
+
+
+        return $collections;
     }
 
     /**

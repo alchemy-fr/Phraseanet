@@ -173,6 +173,10 @@ abstract class PhraseanetTestCase extends WebTestCase
             return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
         });
 
+        self::$DI['oauth2-app-user1'] = self::$DI->share(function ($DI) {
+            return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user1']);
+        });
+
         self::$DI['webhook-event'] = self::$DI->share(function ($DI) {
             return $DI['app']['repo.webhook-event']->find(self::$fixtureIds['webhook']['event']);
         });
@@ -806,5 +810,13 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->will($this->returnValue([]));
 
         return $mock;
+    }
+
+    protected function setSessionFormToken($formName)
+    {
+        $randomValue = bin2hex(random_bytes(35));
+        self::$DI['app']['session']->set($formName.'_token', $randomValue);
+
+        return $randomValue;
     }
 }

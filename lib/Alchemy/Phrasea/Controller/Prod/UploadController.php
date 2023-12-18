@@ -26,8 +26,9 @@ use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use DataURI\Exception\Exception as DataUriException;
 use DataURI\Parser;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -56,6 +57,8 @@ class UploadController extends Controller
 
     public function getHtml5UploadForm()
     {
+        $this->setSessionFormToken('prodUpload');
+
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $this->render('prod/upload/upload.html.twig', [
@@ -68,6 +71,8 @@ class UploadController extends Controller
 
     public function getUploadForm()
     {
+        $this->setSessionFormToken('prodUpload');
+
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $this->render('prod/upload/upload.html.twig', [
@@ -88,10 +93,10 @@ class UploadController extends Controller
             $url = $request->get('url');
             $basename = pathinfo($url, PATHINFO_BASENAME);
 
-            $guzzle = new Guzzle($url);
-            $res = $guzzle->head("")->send();
-            $response['content-type'] = $res->getContentType();
-            $response['content-length'] = $res->getContentLength();
+            $guzzle = new Guzzle(['base_uri' => $url]);
+            $res = $guzzle->head('');
+            $response['content-type'] = $res->getHeaderLine('content-type');
+            $response['content-length'] = doubleval($res->getHeaderLine('content-length'));
             $response['basename'] = $basename;
         }
         catch (\Exception $e) {
@@ -117,10 +122,6 @@ class UploadController extends Controller
      */
     public function upload(Request $request)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into upload controller")
-        ), FILE_APPEND | LOCK_EX);
-
         $data = [
             'success' => false,
             'code'    => null,
@@ -129,6 +130,10 @@ class UploadController extends Controller
             'reasons' => [],
             'id'      => '',
         ];
+
+        if (!$this->isCrsfValid($request, 'prodUpload')) {
+            throw new AccessDeniedHttpException('Invalid prodUpload token');
+        }
 
         if (null === $request->files->get('files')) {
             throw new BadRequestHttpException('Missing file parameter');
@@ -165,8 +170,8 @@ class UploadController extends Controller
             $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, $pi['extension']);
 
             try {
-                $guzzle = new Guzzle($url);
-                $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                $guzzle = new Guzzle(['base_uri' => $url]);
+                $res = $guzzle->get("", ['save_to' => $tempfile]);
             }
             catch (\Exception $e) {
                 throw new BadRequestHttpException(sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
@@ -198,21 +203,12 @@ class UploadController extends Controller
                 $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
             }
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("rename \"%s\" to \"%s\"", $uploadedFilename, $renamedFilename)
-            ), FILE_APPEND | LOCK_EX);
-
             $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
 
             $originalName = $file->getClientOriginalName();
         }
 
         try {
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("calling getMediaFromUri(\"%s\")", $renamedFilename)
-            ), FILE_APPEND | LOCK_EX);
-
-
             $media = $this->app->getMediaFromUri($renamedFilename);
             $collection = \collection::getByBaseId($this->app, $base_id);
 
@@ -241,15 +237,7 @@ class UploadController extends Controller
             $elementCreated = null;
 
             $callback = function ($element, Visa $visa) use (&$reasons, &$elementCreated) {
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("into callback")
-                ), FILE_APPEND | LOCK_EX);
-
                 foreach ($visa->getResponses() as $response) {
-                    file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("visa returned %s", $response->isOk() ? 'ok' : 'not ok')
-                    ), FILE_APPEND | LOCK_EX);
-
                     if (!$response->isOk()) {
                         $reasons[] = $response->getMessage($this->app['translator']);
                     }
@@ -258,23 +246,10 @@ class UploadController extends Controller
                 $elementCreated = $element;
             };
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("process")
-            ), FILE_APPEND | LOCK_EX);
-
             $code = $this->getBorderManager()->process( $lazaretSession, $packageFile, $callback, $forceBehavior);
-
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("processed, returned elementCreated class \"%s\"", get_class($elementCreated))
-            ), FILE_APPEND | LOCK_EX);
 
             if($renamedFilename !== $uploadedFilename) {
                 $this->getFilesystem()->rename($renamedFilename, $uploadedFilename);
-
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("renamed \"%s\" back to \"%s\"", $renamedFilename, $uploadedFilename)
-                ), FILE_APPEND | LOCK_EX);
-
             }
 
             if (!!$forceBehavior) {
@@ -282,18 +257,9 @@ class UploadController extends Controller
             }
 
             if ($elementCreated instanceof \record_adapter) {
-
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("record %s created", $elementCreated->getRecordId())
-                ), FILE_APPEND | LOCK_EX);
-
                 $id = $elementCreated->getId();
                 $element = 'record';
                 $message = $this->app->trans('The record was successfully created');
-
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("dispatch event RECORD_UPLOAD")
-                ), FILE_APPEND | LOCK_EX);
 
                 $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
 
@@ -305,15 +271,7 @@ class UploadController extends Controller
                         $fileName = $this->getTemporaryFilesystem()->createTemporaryFile('base_64_thumb', null, "png");
                         file_put_contents($fileName, $dataUri->getData());
 
-                        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                            sprintf("calling getMediaFromUri(\"%s\")", $fileName)
-                        ), FILE_APPEND | LOCK_EX);
-
                         $media = $this->app->getMediaFromUri($fileName);
-
-                        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                            sprintf("getMediaFromUri(...) done")
-                        ), FILE_APPEND | LOCK_EX);
 
                         $this->getSubDefinitionSubstituer()->substituteSubdef($elementCreated, 'thumbnail', $media);
                         $this->getDataboxLogger($elementCreated->getDatabox())
@@ -327,10 +285,6 @@ class UploadController extends Controller
                 }
             } else {
                 /** @var LazaretFile $elementCreated */
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("dispatch event LAZARET_CREATE")
-                ), FILE_APPEND | LOCK_EX);
-
                 $this->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
 
                 $id = $elementCreated->getId();
@@ -349,10 +303,6 @@ class UploadController extends Controller
         } catch (\Exception $e) {
             $data['message'] = $this->app->trans('Unable to add file to Phraseanet');
         }
-
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("returns")
-        ), FILE_APPEND | LOCK_EX);
 
         $response = $this->app->json($data);
         // IE 7 and 8 does not correctly handle json response in file API

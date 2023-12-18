@@ -7,6 +7,14 @@ main:
     languages: []
     key: ''
     delete-account-require-email-confirmation: true
+    cookieconsent:
+        axeptio:
+            enabled: false
+            axeptio_id: id
+            axeptio_version_fr: local-fr
+            axeptio_version_en: null
+            axeptio_version_de: null
+            axeptio_version_du: null
     database:
         host: 127.0.0.1
         port: 3306
@@ -145,7 +153,7 @@ border-manager:
             type: Checker\Extension
             enabled: false
             options:
-                extensions: [jpg, jpeg, bmp, tif, gif, png, pdf, doc, odt, mpg, mpeg, mov, avi, xls, flv, mp3, mp2]
+                extensions: [jpg, jpeg, bmp, tif, gif, png, heic, pdf, doc, docx, xls, xlsx, odt, mpg, mpeg, mov, avi, mp3, mp2, mp4, m4v, m4a, mkv, hevc, aac, aiff, wav]
         -
             type: Checker\Filename
             enabled: false
@@ -157,45 +165,72 @@ border-manager:
             type: Checker\MediaType
             enabled: false
             options:
-                mediatypes: [Audio, Document, Flash, Image, Video]
+                mediatypes: [Audio, Document, Image, Video]
 authentication:
     auto-create:
         templates: {  }
-    captcha:
-        enabled: true
-        trials-before-display: 9
     providers:
         facebook:
             enabled: false
+            display: false
+            title: Facebook
+            type: facebook
             options:
                 app-id: ''
                 secret: ''
                 default-graph-version: 'v2.10'
         twitter:
             enabled: false
+            display: false
+            title: Twitter
+            type: twitter
             options:
                 consumer-key: ''
                 consumer-secret: ''
-        google-plus:
-            enabled: false
-            options:
-                client-id: ''
-                client-secret: ''
         github:
             enabled: false
+            display: false
+            title: Github
+            type: github
             options:
                 client-id: ''
                 client-secret: ''
         viadeo:
             enabled: false
+            display: false
+            title: Viadeo
+            type: viadeo
             options:
                 client-id: ''
                 client-secret: ''
         linkedin:
             enabled: false
+            display: false
+            title: LinkedIN
+            type: linkedin
             options:
                 client-id: ''
                 client-secret: ''
+        ps_auth_1:
+            enabled: false
+            display: false
+            title: 'PS Auth 1'
+            type: 'ps-auth'
+            options:
+                client-id: ''
+                client-secret: ''
+                base-url: 'https://api-auth.phrasea.local'
+                provider-type: 'oauth'
+                provider-name: 'v2'
+                icon-uri: null
+                debug: false
+                birth-group: '_firstlog'
+                everyone-group: '_everyone'
+                metamodel: '_metamodel'
+                model-gpfx: '_M_'
+                model-upfx: '_U_'
+                auto-logout: false
+                auto-connect-idp-name: null
 registration-fields:
     -
         name: company
@@ -209,6 +244,9 @@ registration-fields:
     -
         name: geonameid
         required: true
+download_async:
+  enabled: true
+
 xsendfile:
     enabled: false
     type: nginx
@@ -235,8 +273,10 @@ registry:
     api-clients:
         api-require-ssl: false
         api-auth-token-header-only: false
+        api-subdef_service: false
     actions:
         export-stamp-choice: false
+        stamp-subdefs: false
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
@@ -332,6 +372,7 @@ workers:
           port: 5672
           user: guest
           password: guest
+          ssl: false
           vhost: /
           heartbeat: 60
     queues:
@@ -342,18 +383,109 @@ workers:
             ttl_delayed: 10000      # overwrite 5000 ms default delay
         pullAssets:
             ttl_retry: 5000
-            max_retry : 5
+    webhook:
+        timeout: 30
+        verify_ssl: true
 
 externalservice:
-    ginger:
-        AutoSubtitling:
-            service_base_url: https://base.uri
-            token: 39c6011d
-            transcript_format: text/vtt
-            subdef_source: preview
+    pusher:
+        auth_key: 'pusher-auth_key'
+        secret: 'pusher-secret'
+        app_id: 'pusher-app_id'
+    happyscribe:
+        token: token
+        organization_id: 123456
+        transcript_format: vtt
+        subdef_source: preview
+
 
 user_account:
     deleting_policies:
         email_confirmation: true
 
 Console_logger_enabled_environments: [test]
+
+phraseanet-service:
+    uploader-service:
+        push_verify_ssl: true
+        pulled_target:
+            pull-test-local:
+                pullmodeUri: 'https://api-uploader.phrasea.local/commits?target=bdb5b019-340b-4c96-892c-d07deba5a425'
+                clientSecret: 239zb7mhzmu8cgg48cgok8ww4ccokw0ck8kwow4ggw80s84koc
+                clientId: pull-local-test_3pj0iu
+                verify_ssl: true
+
+
+order-manager:
+    download-hd:
+        expiration-days: null
+        expiration-override: false
+
+feedback-report:
+  enabled: false
+  actions:
+    # if any participant has not voted, set the "incomplete" icon
+    action_unvoted:
+      # play this action only on those databoxes
+      databoxes:
+        - myDatabox
+        - 555
+      status_bit: 8
+      value: '{% if vote.votes_unvoted > 0 %} 1 {% else %} 0 {% endif %}'
+
+    # because records not involved in a vote should not display a red or green flag, we need 2 sb
+    action_red:
+      # if _any_ vote is "no", set the red flag
+      status_bit: 9
+      value: '{% if vote.votes_no > 0 %} 1 {% else %} 0 {% endif %}'
+    action_green:
+      # if _all_ votes are "yes" (=no vote is "no"), set the green flag
+      status_bit: 10
+      value: '{% if vote.votes_no == 0 %} 1 {% else %} 0 {% endif %}'
+
+    action_log:
+      metadata: 'Validations'
+      method: "prepend"
+      delimiter: "\n"
+      value: 'Vote initated on {{ vote.created }} by {{ initiator ? initiator.getEmail() : "?" }} expired {{ vote.expired }} : {{ vote.voters_count }} participants, {{ vote.votes_unvoted }} unvoted, {{ vote.votes_no }} "no", {{ vote.votes_yes}} "yes".'
+
+
+translator:
+    jobs:
+        #
+        # - translate EN keywords to FR and EN
+        #       nb: since we clean the destination fields, we MUST (re)write EN to EN
+        # - add country to keywords, both FR/EN
+        keywords:
+            active: true
+            databox: my_databox
+            if_collection: to_translate
+            if_status: x1xxxx
+            actions:
+
+                KeywordsENtoFREN:
+                    active: true
+                    source_field: KeywordsEN
+                    source_lng: en
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 1 cleans the destination fields
+                    cleanup_destination: true
+
+                CountryENtoKeywordsFREN:
+                    active: true
+                    source_field: CountryEN
+                    source_lng: en
+                    # add translated country to the keywords
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 2 must NOT erase what action 1 did
+                    cleanup_destination: false
+
+            # end of job : change coll status
+            set_status: 10xxxx
+            set_collection: online

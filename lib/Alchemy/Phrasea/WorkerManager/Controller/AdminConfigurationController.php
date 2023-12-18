@@ -4,22 +4,23 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
-use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerRecordsActionsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker\RecordsActionsWorker;
 use Doctrine\ORM\OptimisticLockException;
+use Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
@@ -33,22 +34,8 @@ class AdminConfigurationController extends Controller
 {
     public function indexAction(PhraseaApplication $app, Request $request)
     {
-        /** @var WorkerRunningJobRepository $repoWorker */
-        $repoWorker = $app['repo.worker-running-job'];
-
-        $filterStatus = [
-            WorkerRunningJob::RUNNING,
-            WorkerRunningJob::FINISHED,
-            WorkerRunningJob::ERROR,
-            WorkerRunningJob::INTERRUPT
-        ];
-
-        $workerRunningJob = $repoWorker->findByStatus($filterStatus);
-
         return $this->render('admin/worker-manager/index.html.twig', [
             'isConnected'       => $this->getAMQPConnection()->getChannel() != null,
-            'workerRunningJob'  => $workerRunningJob,
-            'reload'            => false,
             '_fragment' => $request->get('_fragment') ?? 'worker-configuration',
         ]);
     }
@@ -121,9 +108,23 @@ class AdminConfigurationController extends Controller
         $repoWorker = $app['repo.worker-running-job'];
 
         $reload = ($request->query->get('reload') == 1);
+        $jobType = $request->query->get('jobType');
+        $databoxId = empty($request->query->get('databoxId')) ? null : $request->query->get('databoxId');
+        $recordId = empty($request->query->get('recordId')) ? null : $request->query->get('recordId');
+        $timeFilter = empty($request->query->get('timeFilter')) ? null : $request->query->get('timeFilter');
+        $fieldTimeFilter = $request->query->get('fieldTimeFilter');
+        $fieldTimeFilter = $fieldTimeFilter?: 'created';
 
-        $workerRunningJob = [];
+        $dateTimeFilter = null;
+        if ($timeFilter != null) {
+            try {
+                $dateTimeFilter = (new \DateTime())->sub(new \DateInterval($timeFilter));
+            } catch (Exception $e) {
+            }
+        }
+
         $filterStatus = [];
+
         if ($request->query->get('running') == 1) {
             $filterStatus[] = WorkerRunningJob::RUNNING;
         }
@@ -137,14 +138,69 @@ class AdminConfigurationController extends Controller
             $filterStatus[] = WorkerRunningJob::INTERRUPT;
         }
 
-        if (count($filterStatus) > 0) {
-            $workerRunningJob = $repoWorker->findByStatus($filterStatus);
+        $helpers = new PhraseanetExtension($this->app);
+
+        $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
+        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
+        $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
+        $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
+        // format duration
+        $totalDuration  = $helpers->getDuration($totalDuration);
+
+        $tFieldTimes = array_column($workerRunningJob, $fieldTimeFilter);
+        $realEntryDuration = 0;
+        $oldestEntry = end($tFieldTimes);
+        $recentEntry = reset($tFieldTimes);
+
+        if (!empty($oldestEntry) && !empty($recentEntry)) {
+            $realEntryDuration = (new \DateTime($recentEntry))->getTimestamp() - (new \DateTime($oldestEntry))->getTimestamp();
         }
 
-        return $this->render('admin/worker-manager/worker_info.html.twig', [
-            'workerRunningJob' => $workerRunningJob,
-            'reload'           => $reload
-        ]);
+        $realEntryDuration = $helpers->getDuration($realEntryDuration);
+
+        // get all row count in the table WorkerRunningJob
+        $totalCount = $repoWorker->getJobCount([], null, null , null);
+        $totalCount = number_format($totalCount, 0, '.', ' ');
+
+        $databoxIds = array_map(function (\databox $databox) {
+                return $databox->get_sbas_id();
+            },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
+
+        $types = AMQPConnection::MESSAGES;
+
+        // these types are not included in workerRunningJob
+        unset($types['mainQueue'], $types['createRecord'], $types['pullAssets'], $types['validationReminder']);
+
+        $jobTypes = array_keys($types);
+
+        if ($reload) {
+            return $this->app->json(['content' => $this->render('admin/worker-manager/worker_info.html.twig', [
+                'workerRunningJob' => $workerRunningJob,
+                'reload'           => $reload,
+                'jobTypes'         => $jobTypes,
+                'databoxIds'       => $databoxIds,
+            ]),
+                'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
+                'resultTotal'      => $workerRunningJobTotalCount,
+                'totalCount'       => $totalCount,
+                'totalDuration'    => $totalDuration,
+                'realEntryDuration'=> $realEntryDuration
+            ]);
+        } else {
+            return $this->render('admin/worker-manager/worker_info.html.twig', [
+                'workerRunningJob' => $workerRunningJob,
+                'reload'           => $reload,
+                'jobTypes'         => $jobTypes,
+                'databoxIds'       => $databoxIds,
+                'resultCount'      => number_format(count($workerRunningJob), 0, '.', ' '),
+                'resultTotal'      => $workerRunningJobTotalCount,
+                'totalCount'       => $totalCount,
+                'totalDuration'    => $totalDuration,
+                'realEntryDuration'=> $realEntryDuration
+            ]);
+        }
     }
 
     /**
@@ -174,13 +230,59 @@ class AdminConfigurationController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+    public function changeStatusCanceledAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+
+        $result = $repoWorker->getRunningSinceCreated($request->get('hour'));
+        return $this->render('admin/worker-manager/worker_info_change_status.html.twig', [
+            'jobCount' => count($result)
+        ]);
+    }
+
+    public function doChangeStatusToCanceledAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+        $repoWorker->updateStatusRunningToCanceledSinceCreated($request->request->get('hour'));
+
+        return $this->app->json(['success' => true]);
+    }
+
+    public function getRunningAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+        $result = $repoWorker->getRunningSinceCreated($request->get('hour'));
+
+        return $this->app->json([
+            'success'   => true,
+            'count'     => count($result)
+        ]);
+    }
+
     public function queueMonitorAction(PhraseaApplication $app, Request $request)
     {
         $reload = ($request->query->get('reload') == 1);
+        $hideEmptyQ = $request->query->get('hide-empty-queue');
+        $consumedQ = $request->query->get('consumed-queue');
+
+        if ($hideEmptyQ === null || $hideEmptyQ == 1) {
+            $hideEmptyQ = true;
+        } else {
+            $hideEmptyQ = false;
+        }
+
+        if ($consumedQ === null || $consumedQ == 1) {
+            $consumedQ = true;
+        } else {
+            $consumedQ = false;
+        }
 
         $this->getAMQPConnection()->getChannel();
         $this->getAMQPConnection()->declareExchange();
-        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus();
+        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus($hideEmptyQ, $consumedQ);
 
         return $this->render('admin/worker-manager/worker_queue_monitor.html.twig', [
             'queuesStatus' => $queuesStatus,
@@ -329,7 +431,7 @@ class AdminConfigurationController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::VALIDATION_REMINDER_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::VALIDATION_REMINDER_TYPE)
@@ -391,7 +493,7 @@ class AdminConfigurationController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::RECORDS_ACTIONS_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::RECORDS_ACTIONS_TYPE)
@@ -409,28 +511,32 @@ class AdminConfigurationController extends Controller
 
     public function recordsActionsFacilityAction(PhraseaApplication $app, Request $request)
     {
-        $ret = ['tasks' => []];
-        $job = new RecordsActionsWorker($app);
-        switch ($request->get('ACT')) {
-            case 'PLAYTEST':
-                $sxml = simplexml_load_string($request->get('xml'));
-                if (isset($sxml->tasks->task)) {
-                    foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, true);
+        $ret = [
+            'error' => null,
+            'tasks' => []
+        ];
+        try {
+            $job = new RecordsActionsWorker($app);
+            switch ($request->get('ACT')) {
+                case 'PLAYTEST':
+                case 'CALCTEST':
+                case 'CALCSQL':
+                    $sxml = simplexml_load_string($request->get('xml'));
+                    if ((string)$sxml['version'] !== '2') {
+                        throw new JsonValidationException(sprintf("bad settings version (%s), should be \"2\"", (string)$sxml['version']));
                     }
-                }
-                break;
-            case 'CALCTEST':
-            case 'CALCSQL':
-                $sxml = simplexml_load_string($request->get('xml'));
-                if (isset($sxml->tasks->task)) {
-                    foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, false);
+                    if (isset($sxml->tasks->task)) {
+                        foreach ($sxml->tasks->task as $sxtask) {
+                            $ret['tasks'][] = $job->calcSQL($sxtask, $request->get('ACT') === 'PLAYTEST');
+                        }
                     }
-                }
-                break;
-            default:
-                throw new NotFoundHttpException('Route not found.');
+                    break;
+                default:
+                    throw new NotFoundHttpException('Route not found.');
+            }
+        }
+        catch (Exception $e) {
+            $ret['error'] = $e->getMessage();
         }
 
         return $app->json($ret);
@@ -446,66 +552,6 @@ class AdminConfigurationController extends Controller
         return $repoWorkerJob->checkPopulateStatusByDataboxIds($databoxIds);
     }
 
-    public function pullAssetsAction(PhraseaApplication $app, Request $request)
-    {
-        $config = $this->getConf()->get(['workers', 'pull_assets'], []);
-        // the "pullInterval" comes from the ttl_retry
-        $ttl_retry = $this->getConf()->get(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], null);
-        if(!is_null($ttl_retry)) {
-            $ttl_retry /= 1000;     // form is in sec
-        }
-        $config['pullInterval'] = $ttl_retry;
-
-        $form = $app->form(new WorkerPullAssetsType(), $config);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-            switch($data['act']) {
-                case 'save' :   // save the form content (settings) in 2 places
-                    $ttl_retry = $data['pullInterval'];
-                    unset($data['act'], $data['pullInterval'], $config['pullInterval']);
-                    // save most data under workers/pull_assets
-                    $app['conf']->set(['workers', 'pull_assets'], array_merge($config, $data));
-                    // save ttl in the q settings
-                    if(!is_null($ttl_retry)) {
-                        $this->getConf()->set(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], 1000 * (int)$ttl_retry);
-                    }
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    break;
-                case 'start':
-                    // reinitialize the validation reminder queues
-                    $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
-                    break;
-                case 'stop':
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    break;
-            }
-
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-pull-assets']);
-        }
-
-        // guess if the q is "running" = check if there are pending message on Q or loop-Q
-        $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
-        foreach([
-                    MessagePublisher::PULL_ASSETS_TYPE,
-                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::PULL_ASSETS_TYPE)
-                ] as $qName) {
-            if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
-                $running = true;
-            }
-        }
-        return $this->render('admin/worker-manager/worker_pull_assets.html.twig', [
-            'form' => $form->createView(),
-            'running' => $running
-        ]);
-    }
-
     private function getDefaultRecordsActionsSettings()
     {
         return <<<EOF
@@ -517,73 +563,134 @@ class AdminConfigurationController extends Controller
     -->
     <tasks>
 
-        <comment> keep offline (sb4 = 1) all docs before their "go online" date and after credate (record column) </comment>
+        <!-- SANITY CHECK ON DOCUMENT SIZE workflow
 
-        <task active="0" name="stay offline" action="update" databoxId="1">
-            <from>
-                <date direction="before" field="GO_ONLINE"/>
-                <date direction="after" field="#credate" />
-            </from>
-            <to>
-                <status mask="x1xxxx"/>
-            </to>
+        - trash records with documents > 10Mo
+        -->
+
+        <!-- trash jpeg files > 10Mo -->
+        <task active="0" name="reject too big files " action="update" databoxId="db_databox1">
+            <if>
+                <number field="#filesize" compare=">" value="10485760" />
+            </if>
+            <then>
+                <coll id="_TRASH_" />
+            </then>
         </task>
 
 
-        <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
 
-        <task active="0" name="go online" action="update" databoxId="1">
-            <from>
-                <comment> 5, 6, 7 are "public" collections </comment>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="GO_ONLINE"/>
-                <date direction="before" field="TO_ARCHIVE"/>
-            </from>
-            <to>
-                <status mask="x0xxxx"/>
-            </to>
+        <!-- EXPIRATION workflow
+
+        from "test" collection :
+        - records having Source = "internal" will expire after 1 month
+        - other records will expire after 10 days
+        - records go to "Public" collection
+        - we want a "last days" status-bit to be set 2 days before expiration
+        - Expired documents from "Public" collection will go to trash
+        -->
+
+
+        <!-- set the ExpireDate to (create + 1 month) for source="internal, go public -->
+        <task active="0" name="compute expiring date for internal" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="test" />
+                <text field="Source" compare="=" value="internal" />
+                <is_unset field="ExpireDate" />
+            </if>
+            <then>
+                <compute_date direction="after" field="#credate" delta="+1 month" computed="exp" />
+                <set_field field="ExpireDate" value="" />
+                <coll id="Public" />
+            </then>
+        </task>
+
+        <!-- set the ExpireDate to (create + 10 days) for others -->
+        <task active="0" name="compute expiring date for others" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="test" />
+                <text field="Source" compare="!=" value="internal" />
+                <is_unset field="ExpireDate" />
+            </if>
+            <then>
+                <compute_date direction="after" field="#credate" delta="+10 days" computed="exp" />
+                <set_field field="ExpireDate" value="" />
+                <coll id="Public" />
+            </then>
+        </task>
+
+        <!-- if set the "last days" sb 2 days before expiration-->
+        <task active="0" name="will expire in 2 days" action="update" databoxId="db_databox1">
+            <if>
+                <date direction="after" field="ExpireDate" delta="-2 days" />
+            </if>
+            <then>
+                <status mask="1xxxxxx"/>
+            </then>
+        </task>
+
+        <!-- if Public, move to trash after expiration -->
+        <task active="0"  name="expire" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="Public" />
+                <date direction="after" field="ExpireDate" />
+            </if>
+            <then>
+                <coll id="_TRASH_" />
+            </then>
         </task>
 
 
-        <comment> Warn 10 days before archiving (raise sb5) </comment>
 
-        <task active="0" name="almost the end" action="update" databoxId="1">
-            <from>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="TO_ARCHIVE" delta="-10"/>
-            </from>
-            <to>
-                <status mask="1xxxxx"/>
-            </to>
+        <!-- EMPTY TRASH workflow -->
+
+        <task active="0" name="clean trash" action="delete" databoxId="db_databox1">
+            <!-- Delete the records that are in the trash collection, unmodified from 3 months -->
+            <if>
+                <coll compare="=" id="_TRASH_"/>
+                <date direction="after" field="#moddate" delta="+3 months" />
+            </if>
         </task>
 
 
-        <comment> Move to 'archive' collection </comment>
 
-        <task active="0" name="archivage" action="update" databoxId="1">
-            <from>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="TO_ARCHIVE" />
-            </from>
-            <to>
-                <comment> reset status of archived documents </comment>
-                <status mask="00xxxx"/>
-                <comment> 666 is the "archive" collection </comment>
-                <coll id="666" />
-            </to>
+        <!-- SANITY CHECK ON FIELDS workflow
+
+        we want a status to show if "Title" and "Description" are filled
+        -->
+
+        <!-- set sb "caption filled" (sb4=1) when both title and Description are set -->
+        <task active="0" name="Title and Description set" action="update" databoxId="db_databox1">
+            <if>
+                <is_set field="Title"/>
+                <is_set field="Description"/>
+            </if>
+            <then>
+                <status mask="1xxxx"/>
+            </then>
         </task>
 
-
-        <comment> Delete the documents that are in the trash collection unmodified from 3 months </comment>
-
-        <task active="0" name="trash" action="delete" databoxId="1">
-            <from>
-                <coll compare="=" id="666"/>
-                <date direction="after" field="#moddate" delta="+90" />
-            </from>
+        <!-- reset sb "caption filled" (sb4=0) when title is not set -->
+        <task active="0" name="Title not set" action="update" databoxId="db_databox1">
+            <if>
+                <is_unset field="Title"/>
+            </if>
+            <then>
+                <status mask="0xxxx"/>
+            </then>
         </task>
+
+        <!-- reset sb "caption filled" (sb4=0) when caption is not set -->
+        <task active="0" name="Description not set" action="update" databoxId="db_databox1">
+            <if>
+                <is_unset field="Description"/>
+            </if>
+            <then>
+                <status mask="0xxxx"/>
+            </then>
+        </task>
+
     </tasks>
-
 </tasksettings>
 EOF;
     }

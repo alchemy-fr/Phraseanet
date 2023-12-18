@@ -35,8 +35,10 @@ ESRecordSource:
   properties:
     record_id:
       $ref: 'common.yaml#/ID'
+      example: 555
     collection_id:
       $ref: 'common.yaml#/ID'
+      example: 123
     uuid:
       type: string
       example:
@@ -59,6 +61,10 @@ ESRecordSource:
       type: string
       example:
         'image'
+    cover_record_id:
+      $ref: 'common.yaml#/ID'
+      description: 'for a story, id of the record chosen as "cover" (or null)'
+      example: null
     created_on:
       type: string
       format: date-time
@@ -71,18 +77,17 @@ ESRecordSource:
         '2021-01-01 15:30:00'
     coll_id:
       $ref: 'common.yaml#/ID'
+      example: '123'
     collection_name:
       type: string
       example:
         'collection de test'
     witdh:
       type: integer
-      example:
-        5616
+      example: 5616
     height:
       type: integer
-      example:
-        3744
+      example: 3744
     size:
       type: integer
       example:

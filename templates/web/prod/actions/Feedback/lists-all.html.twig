@@ -1,41 +1,47 @@
 <div class="PNB lists content">
-  <div style="padding:10px 20px 10px;">
-    <ul class="general_togglers" style="list-style: none;">
-      <li>
-        <a href="{{ path('prod_lists_list') }}" class="list_adder link push-add-list-action push-add-user btn btn-block btn-push-orange">
-          <img src="/assets/common/images/icons/orange-plus.png" class="image-normal">
-          <img src="/assets/common/images/icons/white-plus.png" class="image-hover">
-          {{ "Add a list" | trans }}
+    <div style="padding:10px 20px 10px;">
+        <ul class="general_togglers" style="list-style: none;">
+            <li>
+                <a href="{{ path('prod_lists_list') }}" class="colored push-add-list-action btn">
+                    <i class="fa fa-plus"></i>&nbsp;{{ "Add a list" | trans }}
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div style="padding: 0 10px;">
+        <span class="main-title">
+            <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
+        </span>
+        <a href="{{ path('prod_lists_all') }}" class="list_refresh link push-refresh-list-action btn pull-right colored"
+           style="margin-top: -2px;">
+            <!--
+            <img src="/assets/common/images/icons/orange-refresh.png" alt="Refresh list" class="image-normal">
+            <img src="/assets/common/images/icons/white-refresh.png" alt="Refresh list" class="image-hover">
+            -->
+            <i class="fa fa-refresh"></i>
         </a>
-      </li>
+    </div>
+    <ul class="lists">
+        {% for list in lists %}
+            <li class="list lists_manager_list" style="padding:0;position:relative;" data-list-id="{{ list.getId() }}">
+                <a href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}"
+                   class="list_link list-edit-action" data-list-id="{{ list.getId() }}">
+                    {# {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %} #}
+                    {# <img src="/assets/prod/images/Push/list-icon.png" /> #}
+                    {# {% else %} #}
+                    {# <img src="/assets/common/images/icons/SHARE16.png" /> #}
+                    {# {% endif %} #}
+                    {{ list.getName() }}
+                    (<span class="counter">{{ list.getEntries().count() }}</span>)
+                </a>
+                <!--
+                <button class="list-trash-btn" style="display: none;">
+                    <img src="/assets/common/images/icons/delete-black.png" class="image-normal"/>
+                    <img src="/assets/common/images/icons/delete-white.png" class="image-hover"/>
+                </button>
+                -->
+                <i class="list-trash-btn fa fa-trash" style="font-size: 170%; cursor: pointer; display: none;"></i>
+            </li>
+        {% endfor %}
     </ul>
-  </div>
-  <div style="padding: 0 10px;">
-    <span class="main-title">
-      <img src="/assets/common/images/icons/list-grey.png">{{ 'Lists' | trans }}
-    </span>
-    <a href="{{ path('prod_lists_all') }}" class="list_refresh link push-refresh-list-action btn pull-right" style="margin-top: -2px;">
-      <img src="/assets/common/images/icons/orange-refresh.png" alt="Refresh list" class="image-normal">
-      <img src="/assets/common/images/icons/white-refresh.png" alt="Refresh list" class="image-hover">
-    </a>
-  </div>
-  <ul class="lists">
-    {% for list in lists %}
-      <li class="list lists_manager_list" style="padding:0;position:relative;" data-list-id="{{  list.getId() }}">
-        <a href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}" class="list_link list-edit-action" data-list-id="{{  list.getId() }}">
-          {#{% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}#}
-            {#<img src="/assets/prod/images/Push/list-icon.png" />#}
-          {#{% else %}#}
-            {#<img src="/assets/common/images/icons/SHARE16.png" />#}
-          {#{% endif %}#}
-          {{ list.getName() }}
-          (<span class="counter">{{ list.getEntries().count() }}</span>)
-        </a>
-        <button class="list-trash-btn" style="display: none;">
-          <img src="/assets/common/images/icons/delete-black.png" class="image-normal"/>
-          <img src="/assets/common/images/icons/delete-white.png" class="image-hover"/>
-        </button>
-      </li>
-    {% endfor %}
-  </ul>
 </div>

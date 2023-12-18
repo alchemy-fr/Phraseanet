@@ -21,6 +21,9 @@
             {{ 'prod:expose:publication:permission:list:Edit'| trans }}
         </th>
         <th>
+            {{ 'Owner'| trans }}
+        </th>
+        <th>
             {{ 'prod:expose:publication:permission:list:Delete'| trans }}
         </th>
         <th>
@@ -41,10 +44,13 @@
                     <input class="group-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
+                    <input class="group-owner" type="checkbox" {% if (permission.mask b-and 128) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
                     <input class="group-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
-                    <button class="btn-danger btn-mini delete-group-permission" >{{ 'prod:expose:publication:permission:list:Remove User'| trans }}</button>
+                    <button class="btn-danger btn-mini delete-group-permission" >{{ 'prod:expose:publication:permission:list:Remove Group'| trans }}</button>
                 </td>
             </tr>
         {% endif %}
@@ -78,6 +84,9 @@
             {{ 'prod:expose:publication:permission:list:Edit'| trans }}
         </th>
         <th>
+            {{ 'Owner'| trans }}
+        </th>
+        <th>
             {{ 'prod:expose:publication:permission:list:Delete'| trans }}
         </th>
         <th>
@@ -98,10 +107,13 @@
                     <input class="user-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
+                    <input class="user-owner" type="checkbox" {% if (permission.mask b-and 128) != 0  %} checked {% endif %}/>
+                </td>
+                <td>
                     <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
-                    <button class="btn-danger btn-mini delete-user-permission" >{{ 'prod:expose:publication:permission:list:Remove Group'| trans }}</button>
+                    <button class="btn-danger btn-mini delete-user-permission" >{{ 'prod:expose:publication:permission:list:Remove User'| trans }}</button>
                 </td>
             </tr>
         {% endif %}

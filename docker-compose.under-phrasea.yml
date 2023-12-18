@@ -1,0 +1,37 @@
+version: "3.9"
+
+networks:
+    phrasea:
+      name: ${PHRASEA_NETWORK_NAME}
+      external: true
+
+services:
+  gateway-traefik:
+    networks:
+      - internal
+      - phrasea
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${PHRASEA_NETWORK_NAME}"
+      - "traefik.http.routers.phraseanet.rule=Host(`${PHRASEANET_HOSTNAME}`)"
+      - "traefik.http.routers.phraseanet.tls=true"
+      - "traefik.project_name=${PHRASEA_COMPOSE_PROJECT_NAME}"
+
+  phraseanet:
+    extra_hosts:
+      - api-auth.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - api-databox.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - api-expose.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - api-uploader.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - databox-indexer.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - minio.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - phraseanet.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+
+  worker:
+    extra_hosts:
+      - api-auth.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - api-databox.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - api-expose.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - api-uploader.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - databox-indexer.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}
+      - minio.${PHRASEA_DOMAIN}:${PHRASEA_GATEWAY_IP}

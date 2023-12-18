@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Alchemy\Phrasea\Model\Entities\User;
 
 class record_exportElement extends record_adapter
 {
@@ -47,14 +48,13 @@ class record_exportElement extends record_adapter
     /**
      *
      * @param Application $app
-     * @param integer     $sbas_id
-     * @param integer     $record_id
-     * @param string      $directory
-     * @param integer     $remain_hd
-     *
-     * @return record_exportElement
+     * @param integer $sbas_id
+     * @param integer $record_id
+     * @param string $directory
+     * @param bool $remain_hd
+     * @param User|null $userOwner
      */
-    public function __construct(Application $app, $sbas_id, $record_id, $directory = '', $remain_hd = false)
+    public function __construct(Application $app, $sbas_id, $record_id, $directory = '', $remain_hd = false, User $userOwner = null)
     {
         $this->directory = $directory;
 
@@ -67,15 +67,17 @@ class record_exportElement extends record_adapter
         $this->size = [];
         parent::__construct($app, $sbas_id, $record_id);
 
-        $this->get_actions($remain_hd);
+        $this->get_actions($userOwner);
     }
 
     /**
      *
      * @return record_exportElement
      */
-    protected function get_actions()
+    protected function get_actions($userOwner)
     {
+        $user = ($userOwner == null ) ? $this->app->getAuthenticatedUser() : $userOwner;
+
         $this->downloadable = $downloadable = [];
         $this->orderable = $orderable = [];
 
@@ -99,17 +101,17 @@ class record_exportElement extends record_adapter
             'thumbnail' => true
         ];
 
-        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), \ACL::CANDWNLDHD)) {
+        if ($this->app->getAclForUser($user)->has_right_on_base($this->getBaseId(), \ACL::CANDWNLDHD)) {
             $go_dl['document'] = true;
         }
-        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
+        if ($this->app->getAclForUser($user)->has_right_on_base($this->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
             $go_dl['preview'] = true;
         }
-        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_hd_grant($this)) {
+        if ($this->app->getAclForUser($user)->has_hd_grant($this)) {
             $go_dl['document'] = true;
             $go_dl['preview'] = true;
         }
-        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_preview_grant($this)) {
+        if ($this->app->getAclForUser($user)->has_preview_grant($this)) {
             $go_dl['preview'] = true;
         }
 
@@ -119,14 +121,14 @@ class record_exportElement extends record_adapter
                 ->who_have_right([\ACL::ORDER_MASTER])
                 ->execute()->get_results();
 
-        $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), \ACL::CANCMD));
+        $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($user)->has_right_on_base($this->getBaseId(), \ACL::CANCMD));
 
         $orderable['document'] = false;
         $downloadable['document'] = false;
 
         if (isset($sd['document']) && is_file($sd['document']->getRealPath())) {
             if ($go_dl['document'] === true) {
-                if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->getBaseId())) {
+                if ($this->app->getAclForUser($user)->is_restricted_download($this->getBaseId())) {
                     $this->remain_hd --;
                     if ($this->remain_hd >= 0) {
                         $localizedLabel = $this->app->trans('document original');
@@ -180,7 +182,7 @@ class record_exportElement extends record_adapter
                 if (isset($sd[$name]) && $sd[$name]->is_physically_present()) {
                     if ($class == 'document') {
 
-                        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->is_restricted_download($this->getBaseId())) {
+                        if ($this->app->getAclForUser($user)->is_restricted_download($this->getBaseId())) {
                             $this->remain_hd --;
                             if ($this->remain_hd >= 0)
                                 $downloadable[$name] = [

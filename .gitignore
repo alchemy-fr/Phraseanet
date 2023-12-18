@@ -34,6 +34,14 @@
 # Exclude log folder
 /logs
 
+# Exclude backup folder
+/backup
+!/backup/.gitkeep
+
+# Exclude ftp folder
+/ftp
+!/ftp/.gitkeep
+
 # Exclude plugin folder
 /plugins
 # Excluse assets plugin folder
@@ -50,6 +58,8 @@
 !/bin/console
 !/bin/developer
 !/bin/setup
+!/bin/maintenance
+!/bin/report
 
 # Exclude composer
 composer.phar
@@ -80,6 +90,11 @@ npm-debug.log
 # Exclude alternate env files
 .env.*
 env.local
+
+# Exclude alternate helm values
+my_values.yaml
+myvalues.yaml
+
 
 # Exclude gitlog files
 www/gitlog.txt

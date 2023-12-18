@@ -97,6 +97,7 @@ class EditRecordWorker implements WorkerInterface
 
                 /** @var \record_adapter $record */
                 $record = $databox->get_record($payload['record_id']);
+                $previousDescription = $record->getRecordDescriptionAsArray();
 
                 $statbits = $payload['status'];
                 $editDirty = $payload['edit'];
@@ -109,7 +110,7 @@ class EditRecordWorker implements WorkerInterface
 
                 if (isset($payload['metadatas']) && is_array($payload['metadatas'])) {
                     $record->set_metadatas($payload['metadatas']);
-                    $this->dispatcher->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+                    $this->dispatcher->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
                 }
 
                 if (isset($payload['technicalsdatas']) && is_array($payload['technicalsdatas'])) {
@@ -210,6 +211,6 @@ class EditRecordWorker implements WorkerInterface
             $em->rollback();
         }
 
-        $this->messagePublisher->pushLog("Record edited for recorid=". $payload['record_id']);
+        $this->messagePublisher->pushLog(sprintf("record edited databoxname=%s databoxid=%d recordid=%d", $databox->get_viewname(), $payload['databoxId'], $payload['record_id']));
     }
 }

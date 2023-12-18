@@ -28,6 +28,10 @@ spec:
       - name: phraseanet-wwwplugins
         persistentVolumeClaim:
           claimName: {{ .Values.app.pvc.wwwplugins.name }}
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
       containers:
       - name: gateway
         image: {{ .Values.image.registry }}/phraseanet-nginx:{{ .Values.image.tag.phraseanet }}
@@ -53,4 +57,14 @@ spec:
           value: "1200"
         - name: GATEWAY_FASTCGI_TIMEOUT
           value: "1200"
-          
+        - name: PHRASEANET_K8S_NAMESPACE
+          value: {{ .Values.saml.phraseanet_k8s_namespace }}
+        - name: PHRASEANET_TRUSTED_PROXIES
+          value: {{ .Values.app.phraseanet_trusted_proxies }}
+        - name: "GATEWAY_ALLOWED_IPS"
+          value: {{ .Values.http.gateway_allowed_ips }}
+        - name: "GATEWAY_DENIED_IPS"
+          value: {{ .Values.http.gateway_denied_ips }}
+        - name: "GATEWAY_USERS"
+          value: {{ .Values.http.gateway_users }}
+

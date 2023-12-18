@@ -203,6 +203,29 @@ class ACL implements cache_cacheableInterface
         return $this->_rights_sbas;
     }
 
+    public function update_expire_grant_hd(RecordReferenceInterface $record, $action, $expireOn = null)
+    {
+        if (!empty($expireOn)) {
+            try {
+                $expireOn = (new DateTime($expireOn))->format(DATE_ATOM);
+            } catch (\Exception $e) {
+                $expireOn = null;
+            }
+        }
+
+        $sql = "UPDATE records_rights SET `case`=:act, `expire_on`=:expire_on WHERE `usr_id` = :usr_id AND `sbas_id`=:sbas_id AND `record_id`=:record_id AND `document`=1";
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute([
+            ':usr_id'   => $this->user->getId(),
+            ':sbas_id'  => $record->getDataboxId(),
+            ':record_id' => $record->getRecordId(),
+            ':act'      => $action,
+            ':expire_on'=> $expireOn
+        ]);
+
+        return $this;
+    }
+
     /**
      * Check if a hd grant has been received for a record
      *
@@ -221,21 +244,34 @@ class ACL implements cache_cacheableInterface
         return false;
     }
 
-    public function grant_hd_on(RecordReferenceInterface $record, User $pusher, $action)
+    public function grant_hd_on(RecordReferenceInterface $record, User $pusher, $action, $expireOn = null)
     {
-        $sql = "REPLACE INTO records_rights\n"
-            . " (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)\n"
-            . " VALUES (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+        static $stmt = null;
+        if(!$stmt) {
+            $sql = "REPLACE INTO records_rights\n"
+                . " (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id, expire_on)\n"
+                . " VALUES (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher, :expireOn)";
+
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        }
+
+        if (!empty($expireOn)) {
+            try {
+                $expireOn = (new DateTime($expireOn))->format(DATE_ATOM);
+            } catch (\Exception $e) {
+                $expireOn = null;
+            }
+        }
+
 
         $params = [
             ':usr_id'    => $this->user->getId(),
             ':sbas_id'   => $record->getDataboxId(),
             ':record_id' => $record->getRecordId(),
             ':case'      => $action,
-            ':pusher'    => $pusher->getId()
+            ':pusher'    => $pusher->getId(),
+            ':expireOn'  => $expireOn
         ];
-
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -244,12 +280,191 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
+    public function nono_grant_preview_on(RecordReferenceInterface $record, User $pusher, $action)
+    {
+        static $stmt_upd = null;
+        static $stmt_ins = null;
+        static $sql_upd = null;
+        $cnx = $this->app->getApplicationBox()->get_connection();
+        if(!$stmt_upd) {
+            $sql_upd = "UPDATE records_rights SET\n"
+                . " document = 0, preview = 1, `case` = :case, pusher_usr_id = :pusher\n"
+                . " WHERE usr_id = :usr_id AND sbas_id = :sbas_id AND record_id = :record_id";
+
+            $stmt_upd = $cnx->prepare($sql_upd);
+        }
+        if(!$stmt_ins) {
+            $sql = "INSERT INTO records_rights\n"
+                . " (usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)\n"
+                . " VALUES\n"
+                . " (:usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+
+            $stmt_ins = $cnx->prepare($sql);
+        }
+
+        $cnx->exec("START TRANSACTION");
+
+        try {
+            $n0 = $stmt_upd->execute([
+                ':usr_id'    => $this->user->getId(),
+                ':sbas_id'   => $record->getDataboxId(),
+                ':record_id' => $record->getRecordId(),
+                ':case'      => $action,
+                ':pusher'    => $pusher->getId()
+            ]);
+
+//            $n = $cnx->executeUpdate(
+//                $sql_upd,
+//                [
+//                    ':usr_id'    => $this->user->getId(),
+//                    ':sbas_id'   => $record->getDataboxId(),
+//                    ':record_id' => $record->getRecordId(),
+//                    ':case'      => $action,
+//                    ':pusher'    => $pusher->getId()
+//                ]
+//            );
+//
+            $n1 = $stmt_upd->rowCount();
+            $n2 = $cnx->executeQuery("SELECT ROW_COUNT()")->fetchColumn(0);
+            file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", 'u'.$n0.$n1.$n2."\n", FILE_APPEND);
+//            if($n != 1) {
+//                throw new \Exception("no update");
+//            }
+
+            $stmt_ins->execute([
+                ':usr_id'    => $this->user->getId(),
+                ':sbas_id'   => $record->getDataboxId(),
+                ':record_id' => $record->getRecordId(),
+                ':case'      => $action,
+                ':pusher'    => $pusher->getId()
+            ]);
+//            file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", "i", FILE_APPEND);
+        }
+        catch (\Exception $e) {
+            // file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", sprintf("%s\n", $e->getMessage()), FILE_APPEND);
+            $stmt_upd->execute([
+                ':usr_id'    => $this->user->getId(),
+                ':sbas_id'   => $record->getDataboxId(),
+                ':record_id' => $record->getRecordId(),
+                ':case'      => $action,
+                ':pusher'    => $pusher->getId()
+            ]);
+//            file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", 'u', FILE_APPEND);
+        }
+
+        // $stmt->closeCursor();
+        $cnx->exec("COMMIT");
+
+        $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
+
+        return $this;
+    }
+
+    public function no_grant_preview_on(RecordReferenceInterface $record, User $pusher, $action)
+    {
+        static $stmt_del = null;
+        static $stmt_upd = null;
+        static $stmt_ins = null;
+        static $sql_upd = null;
+        $cnx = $this->app->getApplicationBox()->get_connection();
+        if(!$stmt_del) {
+            $sql = "DELETE FROM records_rights\n"
+                . " WHERE usr_id = :usr_id AND sbas_id = :sbas_id AND record_id = :record_id";
+
+            $stmt_del = $cnx->prepare($sql);
+        }
+        if(!$stmt_upd) {
+            $sql_upd = "UPDATE records_rights SET\n"
+                . " document = 0, preview = 1, `case` = :case, pusher_usr_id = :pusher\n"
+                . " WHERE usr_id = :usr_id AND sbas_id = :sbas_id AND record_id = :record_id";
+
+            $stmt_upd = $cnx->prepare($sql_upd);
+        }
+        if(!$stmt_ins) {
+            $sql = "INSERT INTO records_rights\n"
+                . " (usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)\n"
+                . " VALUES\n"
+                . " (:usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+
+            $stmt_ins = $cnx->prepare($sql);
+        }
+
+        $cnx->exec("START TRANSACTION");
+
+//        $stmt_del->execute([
+//            ':usr_id'    => $this->user->getId(),
+//            ':sbas_id'   => $record->getDataboxId(),
+//            ':record_id' => $record->getRecordId()
+//        ]);
+//        file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", "d", FILE_APPEND);
+
+        try {
+//            $n = $stmt_upd->execute([
+//                ':usr_id'    => $this->user->getId(),
+//                ':sbas_id'   => $record->getDataboxId(),
+//                ':record_id' => $record->getRecordId(),
+//                ':case'      => $action,
+//                ':pusher'    => $pusher->getId()
+//            ]);
+
+//            $n = $cnx->executeUpdate(
+//                $sql_upd,
+//                [
+//                    ':usr_id'    => $this->user->getId(),
+//                    ':sbas_id'   => $record->getDataboxId(),
+//                    ':record_id' => $record->getRecordId(),
+//                    ':case'      => $action,
+//                    ':pusher'    => $pusher->getId()
+//                ]
+//            );
+//
+//            // $n = $stmt_upd->rowCount();
+//            $n = $cnx->executeQuery("SELECT ROW_COUNT()")->fetchColumn(0);
+//            file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", 'u'.$n, FILE_APPEND);
+//            if($n != 1) {
+//                throw new \Exception("no update");
+//            }
+
+            $stmt_ins->execute([
+                ':usr_id'    => $this->user->getId(),
+                ':sbas_id'   => $record->getDataboxId(),
+                ':record_id' => $record->getRecordId(),
+                ':case'      => $action,
+                ':pusher'    => $pusher->getId()
+            ]);
+//            file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", "i", FILE_APPEND);
+        }
+        catch (\Exception $e) {
+            // file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", sprintf("%s\n", $e->getMessage()), FILE_APPEND);
+            $stmt_upd->execute([
+                ':usr_id'    => $this->user->getId(),
+                ':sbas_id'   => $record->getDataboxId(),
+                ':record_id' => $record->getRecordId(),
+                ':case'      => $action,
+                ':pusher'    => $pusher->getId()
+            ]);
+//            file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", 'u', FILE_APPEND);
+        }
+
+        // $stmt->closeCursor();
+        $cnx->exec("COMMIT");
+
+        $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
+
+        return $this;
+    }
+
     public function grant_preview_on(RecordReferenceInterface $record, User $pusher, $action)
     {
-        $sql = "REPLACE INTO records_rights\n"
-            . " (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)\n"
-            . " VALUES\n"
-            . " (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+        static $stmt = null;
+        if(!$stmt) {
+            $sql = "REPLACE INTO records_rights\n"
+                . " (usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)\n"
+                . " VALUES\n"
+                . " (:usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        }
 
         $params = [
             ':usr_id'    => $this->user->getId(),
@@ -259,7 +474,6 @@ class ACL implements cache_cacheableInterface
             ':pusher'    => $pusher->getId()
         ];
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -883,11 +1097,10 @@ class ACL implements cache_cacheableInterface
     /**
      * Load if needed the elements which have a HD grant
      *
-     * @return Array
+     * @return ACL
      */
     protected function load_hd_grant()
     {
-
         if ($this->_rights_records_preview) {
             return $this;
         }
@@ -901,7 +1114,7 @@ class ACL implements cache_cacheableInterface
         } catch (\Exception $e) {
 
         }
-        $sql = "SELECT sbas_id, record_id, preview, document FROM records_rights WHERE usr_id = :usr_id";
+        $sql = "SELECT sbas_id, record_id, preview, document, expire_on FROM records_rights WHERE usr_id = :usr_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
@@ -912,10 +1125,23 @@ class ACL implements cache_cacheableInterface
         $this->_rights_records_preview = [];
         $this->_rights_records_document = [];
 
+        $dateNow = new DateTime("now");
         foreach ($rs as $row) {
             $currentid = $row["sbas_id"] . "_" . $row["record_id"];
-            if ($row['document'] == '1')
+            if (!empty($row['expire_on'])) {
+                try {
+                    $expireOn = new DateTime($row['expire_on']);
+
+                    if ($expireOn < $dateNow) {
+                        continue;
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+
+            if ($row['document'] == '1') {
                 $this->_rights_records_document[$currentid] = $currentid;
+            }
             $this->_rights_records_preview[$currentid] = $currentid;
         }
 

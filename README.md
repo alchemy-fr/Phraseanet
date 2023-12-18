@@ -1,17 +1,27 @@
 Phraseanet 4.1 - Digital Asset Management application
 =====================================================
 
-[![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master)
+[![CI](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml)
 
 # Main Features :
 
- - Several GUI : Prod, Admin, Thesaurus, Lightbox ,Report,    
- - Metadata Management (include Thesaurus and DublinCore Mapping)
+ - Several GUI : Prod, Admin, Thesaurus, Lightbox, Report,    
+ - Metadata Management (includes Thesaurus and DublinCore Mapping)
  - RestFull APIS
  - Elasticsearch search engine
  - Multiple resolution assets generation
  - Advanced Rights Management
- - Rich ecosystem: Plugin for Wordpress, Drupal and Adobe Creative Suite. 
+ - Duplicates management
+ - SSO
+ - Thesaurus
+ - Publications
+ - Collaborative editing and approval process
+ - Video tools
+ - Rich ecosystem: Plugins for Wordpress, Drupal and Adobe Creative Suite.
+   
+ and much more 
+
+![Phraseanet Prod](doc/assets/PhraseanetProd.png)
 
 # License :
 
@@ -21,7 +31,7 @@ Phraseanet is licensed under GPL-v3 license.
 
 https://docs.phraseanet.com/
 
-For development with Phraseanet API see https://docs.phraseanet.com/4.1/en/Devel/index.html
+For development with Phraseanet API, see https://docs.phraseanet.com/4.1/en/Devel/index.html
 
 
 # Installation and Quick Launch:
@@ -35,24 +45,24 @@ https://www.phraseanet.com/en/download/
 You can also ```git clone``` this repository for dev and/or test. 
 
 
-In each case, Phraseanet includes Dockerfile for building images and Docker-compose deployment.
+In each case, Phraseanet includes Dockerfile for building images and ```Docker compose``` deployment.
 
 
 See below for more information about Prerequisites and how to personalize the stack deployed. 
 
 
-But in fact if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
+But in fact, if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
 
-In a terminal from the Phraseanet repositorie launch 
+In a terminal from the Phraseanet repository launch 
 
 
     
-    docker-compose build
-    docker-compose up -d 
+    docker compose build
+    docker compose up -d 
      
 
-After installation processus, The default parameters allow you to reach the app on : `http://localhost:8082`
-Default see phraseanet credential define in .env file.
+After installation process, the default parameters allow you to reach the app on : `http://localhost:8082`
+Default see Phraseanet credentials defined in .env file.
 
     PHRASEANET_ADMIN_ACCOUNT_EMAIL
 
@@ -60,7 +70,7 @@ Default see phraseanet credential define in .env file.
 
 
 > Note : This install will be made with default password for all services.
-> Except for a test, This is VERY important to customise .env file and define your own password.   
+> Except for a test, This is VERY important to customize .env file and define your own password.   
 
 
 
@@ -73,12 +83,50 @@ https://docs.phraseanet.com/4.1/en/Admin/Install.html
 We do not recommend using this method anymore.
 
 
+## Need help implementing Phraseanet? 
+
+
+Ask the community: https://groups.google.com/g/phrasea-install-en
+
+Get official support : https://www.alchemy.fr/en/rubrique/services/
+
+
+
 # Phraseanet with Docker:
 
 ## Prerequisites
 
-- docker-compose >=v1.27.4
-- docker >=v19.03.13
+
+- docker >=v20.10.24
+
+In the stack Docker, Docker Compose included in this repo starts by default in test mode. 
+All services are launched in a separate container and except "Phraseanet app" and "workers" containers, 
+it can be replaced by an external service.
+This is especially recommended to use your SGBD (Mariadb or MySql) service for a production use. 
+The SGBD is one of primary Datastore, running the container included in this stack in "Production"
+required some tuning regarding the volumes of your datas.
+
+Filer service is provided by the hosts.
+
+All port numbers are the default service given by the vendor and can be changed with ENV Variables except for the NFS.
+
+For dev and testing, the stack include also some Tools containers and can be launched by compositing the stack.
+
+eg :
+
+ - Builder
+
+ - Mailhog
+
+ - Pma etc...
+
+Refer to ```.env``` file and ```docker compose``` files or on documentation for stack compositing.
+
+https://docs.phraseanet.com/4.1/en/Admin/EnvironnementVariables.html
+
+
+![Phraseanet architectur](doc/assets/Phraseanet_architecture_V.1.1.png)
+
 
 Note about elasticsearch container, check this link
 
@@ -106,11 +154,11 @@ Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 ## Stack description and customization
 
-We provide a Dockerfile docker-compose deployment 
+We provide a Dockerfile for build images and several ```docker-compose...``` for deployment. 
 
-Use ```COMPOSE_FILE``` env variables for composing this deployment.
+Use ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` env variables for composing this deployment.
 
-By default COMPOSE_FILE is set for deploying a test stack including containers.
+By default ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` is set for deploying a test stack including containers.
 
     
     phraseanet_db_1                 
@@ -123,8 +171,18 @@ By default COMPOSE_FILE is set for deploying a test stack including containers.
     phraseanet_worker_1 
     
 
-At first launch of the stack, Phraseanet container plays install.
-it will restart until it can do this installation: waiting for readiness of all other containers
+At first launch of the stack, the `Setup` container plays install.
+It will restart until it can do this installation: waiting for readiness of all other containers.
+At each container starting , `setup` container reaplying also some ```PHRASEANET_*``` environement variable into 
+Phraseanet ```configuration.yml``` file.
+
+default configuration is 
+
+````
+COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml
+COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,redis-session,rabbitmq,workers,mailhog,setup
+````
+
 
 You should review the default env variables defined in `.env` file.
 Use `export` method to override these values.
@@ -143,18 +201,32 @@ If you are not interested in the development of Phraseanet, you can ignore every
 
 It may be easier to deal with a local file to manage our env variables.
 
-You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc`:
+You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-# ~/.bashrc or ~/.zshrc
+#######################################
+# Docker compose helper:
+#   Locate first defined environment
+#   file and inject variables found in
+#   docker compose command.
+# Arguments:
+#   command (string)
+# Usage example:
+#   dc up -d
+#######################################
+
 function dc() {
-    if [ -f env.local ]; then
-        env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose $@
-    else
-        docker-compose $@
+  for envFile in {".env.local","env.local"}; do
+    if [ -f ${envFile} ]; then
+      docker compose --env-file=.env --env-file=${envFile} $@
+      return
     fi
+  done
+
+  docker compose $@
 }
 ```
+> Note that helper function only works with `"docker compose"` .
 
 ### Phraseanet Docker Images
 
@@ -172,7 +244,7 @@ PHRASEANET_DOCKER_REGISTRY=alchemyfr
 ```
 and launch
 
-```docker-compose pull```
+```docker compose pull```
 
 > Pulling images from Docker Hub takes ~ 3 minutes, depending on your bandwith
 
@@ -181,7 +253,7 @@ and launch
 
 launch 
 
-```docker-compose build```
+```docker compose build```
 
 
 > The first build takes ~ 30 minutes on host without any Docker building cache, depending on your bandwith and the host capacity.
@@ -190,7 +262,7 @@ launch
 ### Running the application
 
 
-    docker-compose up -d
+    docker compose up -d
 
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
@@ -232,21 +304,24 @@ Etc
 ## Development mode
 
 
-The development mode uses the `docker-compose-override.yml` file, so you need to set ```COMPOSE_FILE``` env
+The development mode uses the `docker-compose-override.yml` file, so you need to set ```COMPOSE_FILE``` and ```COMPOSE_PROFILE``` env
 
-```COMPOSE_FILE=docker-compose.yml:docker-compose.db.yml:docker-compose.mailhog.yml:docker-compose.override.yml```
+````
+COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml
+COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog,builder
+````
 
 
 
 You can run it with:
 
-    docker-compose up -d
+    docker compose up -d
 
 The environment is not ready yet: you have to fetch all dependencies.
 
 This can be made easily from the builder container:
 
-    docker-compose run --rm -u app builder make install install_composer_dev
+    docker compose run --rm -u app builder make install install_composer_dev
 
 > Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allows the final image to be light.
 > If you need to use dev tools, ensure you are running the `builder` image!
@@ -257,9 +332,9 @@ This can be made easily from the builder container:
 You can also obtain a shell access in builder container:
 
 ```bash
-docker-compose run --rm builder /bin/bash
+docker compose run --rm builder /bin/bash
 # or
-docker-compose run --rm builder /bin/zsh
+docker compose run --rm builder /bin/zsh
 ```
 
 In this container you will have the same libraries (PHP, Node, composer, ...) that are used to build images.
@@ -291,7 +366,7 @@ You have to set the following env:
 XDEBUG_REMOTE_HOST=host.docker.internal
 ```
 
-> Don't forget to recreate your container (`docker-compose up -d phraseanet`)
+> Don't forget to recreate your container (`docker compose up -d phraseanet`)
 
 ### Build images with plugins
 
@@ -321,7 +396,7 @@ export PHRASEANET_SSH_PRIVATE_KEY=$(openssl rsa -in ~/.ssh/id_rsa -out /tmp/id_r
 #### Running workers
 
 ```bash
-docker-compose -f docker-compose.yml run --rm worker <command>
+docker compose -f docker-compose.yml run --rm worker <command>
 ```
 
 Where `<command>` can be:
@@ -337,23 +412,6 @@ You can also download a testing pre installed Virtual Machine in OVA format here
 https://www.phraseanet.com/download/
 
 
-# With Vagrant (deprecated)
-
-## Development :
-
-For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
-You can easily choose betweeen a complete build or a prebuild box, with a specific PHP version.
-
-    git clone
-    vagrant up --provision
-
-then, a prompt allow you to choose PHP version, and another one to choose a complete build or an Alchemy prebuilt boxes.
-
-Ex:
-- vagrant up --provision  //// 5.6 ///// 1  >> Build an ubuntu/xenial box with php5.6
-- vagrant up --provision  //// 7.0 ///// 1  >> Build an ubuntu/xenial with php7.0
-- vagrant up --provision  //// 7.2 ///// 2  >> Build the alchemy/phraseanet-php-7.2 box
-- vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
 
 
 

@@ -64,10 +64,10 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'isRead', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'pusher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'archived', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'validation', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'order'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'isRead', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'pusher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'archived', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_initiator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'share_expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'wip', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'participants', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'order'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'isRead', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'pusher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'archived', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'validation', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'order'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'isRead', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'pusher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'archived', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_initiator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'vote_expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'share_expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'wip', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'participants', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Basket' . "\0" . 'order'];
     }
 
     /**
@@ -290,6 +290,17 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function isAwareByUserParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAwareByUserParticipant', [$user]);
+
+        return parent::isAwareByUserParticipant($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setPusher(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
@@ -378,23 +389,133 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setValidation(\Alchemy\Phrasea\Model\Entities\ValidationSession $validation = NULL)
+    public function setVoteInitiator($user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValidation', [$validation]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVoteInitiator', [$user]);
 
-        return parent::setValidation($validation);
+        return parent::setVoteInitiator($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getValidation()
+    public function getVoteInitiator()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValidation', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVoteInitiator', []);
 
-        return parent::getValidation();
+        return parent::getVoteInitiator();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVoteCreated(\DateTime $created)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVoteCreated', [$created]);
+
+        return parent::setVoteCreated($created);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVoteCreated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVoteCreated', []);
+
+        return parent::getVoteCreated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVoteUpdated(\DateTime $updated)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVoteUpdated', [$updated]);
+
+        return parent::setVoteUpdated($updated);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVoteUpdated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVoteUpdated', []);
+
+        return parent::getVoteUpdated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVoteExpires($expires)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVoteExpires', [$expires]);
+
+        return parent::setVoteExpires($expires);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVoteExpires()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVoteExpires', []);
+
+        return parent::getVoteExpires();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setShareExpires($expires)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setShareExpires', [$expires]);
+
+        return parent::setShareExpires($expires);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getShareExpires()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getShareExpires', []);
+
+        return parent::getShareExpires();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getWip()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWip', []);
+
+        return parent::getWip();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWip($wip)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWip', [$wip]);
+
+        return parent::setWip($wip);
     }
 
     /**
@@ -417,6 +538,83 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeElement', [$element]);
 
         return parent::removeElement($element);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addParticipant(\Alchemy\Phrasea\Model\Entities\User $participant)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addParticipant', [$participant]);
+
+        return parent::addParticipant($participant);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeParticipant(\Alchemy\Phrasea\Model\Entities\BasketParticipant $participant)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeParticipant', [$participant]);
+
+        return parent::removeParticipant($participant);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getParticipants()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipants', []);
+
+        return parent::getParticipants();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isParticipant', [$user]);
+
+        return parent::isParticipant($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isVoteInitiator(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isVoteInitiator', [$user]);
+
+        return parent::isVoteInitiator($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListParticipantsUserId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getListParticipantsUserId', []);
+
+        return parent::getListParticipantsUserId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipant', [$user]);
+
+        return parent::getParticipant($user);
     }
 
     /**
@@ -455,7 +653,18 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getElementsByOrder($order)
+    public function startVoteSession(\Alchemy\Phrasea\Model\Entities\User $initiator)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'startVoteSession', [$initiator]);
+
+        return parent::startVoteSession($initiator);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getElementsByOrder(string $order)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getElementsByOrder', [$order]);
@@ -483,6 +692,50 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getElementByRecord', [$app, $record]);
 
         return parent::getElementByRecord($app, $record);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isVoteBasket()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isVoteBasket', []);
+
+        return parent::isVoteBasket();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isVoteFinished()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isVoteFinished', []);
+
+        return parent::isVoteFinished();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isShareExpires()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isShareExpires', []);
+
+        return parent::isShareExpires();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVoteString(\Alchemy\Phrasea\Application $app, \Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVoteString', [$app, $user]);
+
+        return parent::getVoteString($app, $user);
     }
 
     /**

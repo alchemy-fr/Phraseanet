@@ -3,7 +3,7 @@
 {% else %}
     {% set opener = "opener" %}
 {% endif %}
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
         <style type="text/css">
             a
             {
@@ -18,6 +18,20 @@
             {
                 font-weight:900;
             }
+            #TSY thead {
+                display:table;
+                table-layout:fixed;
+            }
+            #TSY table tbody {
+                display: block;
+                height: 150px;
+                overflow: scroll;
+            }
+            #TSY tbody tr {
+                display:table;
+                width:100%;
+                table-layout:fixed;
+            }
         </style>
 
         <script type="text/javascript">
@@ -27,6 +41,7 @@
             }
             $( document ).ready(function() {
                 loaded();
+                $('#TSY table thead').width($("#LSY")[0].scrollWidth);
             });
         </script>
 <div class="menu" id="syMenu" style="z-index:999">
@@ -48,56 +63,52 @@
         <div id="TSY" class="tableContainer" style="margin:10px; position:relative; top:0px; left:0px">
             <div>
                 <table border="0" cellpadding="0" cellspacing="0" style="width:100%; ">
-                    <col style="width:40px;" />
-                    <col style="width:30px;" />
-                    <col style="width:auto;" />
-                    <col style="width:40px;" />
-                    <col style="width:140px;" />
-                    <col style="width:14px;" />
                     <thead>
                         <tr>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
+                            <th style="width:40px;">&nbsp;</th>
+                            <th style="width:30px;">&nbsp;</th>
                             <th>{{ 'thesaurus:: synonymes' | trans }}</th>
-                            <th colspan="3">{{ 'thesaurus:termePorperties:termeId' | trans }}</th>
+                            <th style="width:180px;" colspan="2">{{ 'thesaurus:termePorperties:termeId' | trans }}</th>
                         </tr>
                     </thead>
-                </table>
-            </div>
-            <div style="position:relative; height:150px; overflow:scroll">
-                <div style="position:relative; height:150px; ">
-                    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
-                        <col style="width:40px;" />
-                        <col style="width:30px;" />
-                        <col style="width:auto;" />
-                        <col style="width:40px;" />
-                        <col style="width:140px;" />
-                        <tbody id="LSY" style="">
+                    <tbody id="LSY" style="">
 
-                        {% for data in synonyms %}
-                            <tr class='s_' id='SYN_{{ data['id'] }}' hits='{{ data['hits'] }}'>
-                                <td style='text-align:center;'>
+                    {% for data in synonyms %}
+                        <tr class='s_' id='SYN_{{ data['id'] }}' hits='{{ data['hits'] }}'>
+                            <td style='text-align:center;width:40px;'>
                                 {% if loop.index > 0 %}
                                     <img id="BTNU_{{ data['id'] }}" src="/assets/thesaurus/images/up.gif" />
                                 {% endif %}
                                 {% if not loop.last %}
                                     <img id="BTND_{{ data['id'] }}" src="/assets/thesaurus/images/down.gif" />
                                 {% endif %}
-                                </td>
-                                {% if data['lng'] %}
-                                    <td id='FLG_{{ data['id'] }}'>{{ data['lng'] }}</td>
-                                {% else %}
-                                    <td id='FLG_{{ data['id'] }}'></td>
-                                {% endif %}
-                                <td>{{ data['t'] }}</td>
-                                <td>{{ data['id'] }}</td>
-                                <td><span class="delete_term"></span></td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                            </td>
+                            {% if data['lng'] %}
+                                <td id='FLG_{{ data['id'] }}' style='width:30px;'>{{ data['lng'] }}</td>
+                            {% else %}
+                                <td style="width:30px;" id='FLG_{{ data['id'] }}' style='width:30px;'></td>
+                            {% endif %}
+                            <td>{{ data['t'] }}</td>
+                            <td style="width:100px;">{{ data['id'] }}</td>
+                            <td style="width:calc( 86px - 1em )" ><span class="delete_term"></span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
+{#            <div style="position:relative; height:150px; overflow:scroll">#}
+{#                <div style="position:relative; height:150px; ">#}
+{#                    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">#}
+{#                        <col style="width:40px;" />#}
+{#                        <col style="width:30px;" />#}
+{#                        <col style="width:auto;" />#}
+{#                        <col style="width:40px;" />#}
+{#                        <col style="width:140px;" />#}
+{#                        <col style="width:14px;" />#}
+
+{#                    </table>#}
+{#                </div>#}
+{#            </div>#}
         </div>
     <center>
         <form onsubmit="return(false);">
@@ -117,7 +128,12 @@
             if(action != "SELECT" || !menuelem_id) {
                 return;
             }
+
             lng = menuelem_id.substr(9,2);
+
+            if (lng == '') {
+                return;
+            }
 
             url = "xmlhttp/changesylng.x.php";
             parms  = "bid={{ bid | url_encode }}";
@@ -261,6 +277,7 @@
 
                 td = tr.appendChild(document.createElement("td"));
                 td.style.textAlign = "center";
+                td.style.width = "40px";
                 if(nsy > 0)
                 {
                     img = td.appendChild(document.createElement("img"));
@@ -280,6 +297,7 @@
 
                 td = tr.appendChild(document.createElement("td"));
                 td.id = "FLG_"+(nsy+1);
+                td.style.width = "30px";
                 // td.innerText = n.getAttribute("lng");
                 span = td.appendChild(document.createElement("span"));
                 span.innerHTML = n.getAttribute("lng");
@@ -293,11 +311,14 @@
                 td.innerHTML = n.getAttribute("hits");*/
 
                 td = tr.appendChild(document.createElement("td"));
+                td.style.width = "100px";
                 td.innerHTML = n.getAttribute("id");
 
                 if(n.getAttribute("sel")) {
                     myGUI.select(tr);
                 }
+                td = tr.appendChild(document.createElement("td"));
+                td.style.width = "calc( 86px - 1em )";
             }
 
             newtbody = oldtbody.parentNode.replaceChild(tbody, oldtbody);

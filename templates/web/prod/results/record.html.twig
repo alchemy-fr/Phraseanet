@@ -77,7 +77,7 @@
                     <td class="icon-stack-wrapper" style="text-align:right;width:{{l_width}}px;" valign="bottom">
 
                         {% if settings.rollover_thumbnail == 'caption' %}
-                            {% if record_subdef_url(record, 'preview') is not null and has_access_subdef(record, 'preview') %}
+                            {% if has_access_subdef(record, 'preview') %}
                                 <span class="fa-stack fa-lg previewTips"
                                       tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
                                   <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
@@ -157,7 +157,7 @@
                                         {% endif %}
 
                                         {# video tools for type = video #}
-                                        {% if record.type == 'video' %}
+                                        {% if record.type == 'video' and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner video-tools-record-action" data-db="{{record.baseId}}" data-record-id="{{record.recordId}}" data-idlst="{{record.id}}" >
                                                     <a title="{{ 'action:: video tools' | trans }}" href="#" class="TOOL_videoeditor_btn" >

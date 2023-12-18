@@ -20,7 +20,15 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
+use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
+use Alchemy\Phrasea\Media\Subdef\OptionType\Text;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
+use databox_subdef;
+use Exception;
+use Imagine\Image\ImagineInterface;
+use Imagine\Image\Palette\RGB;
+use Imagine\Image\Point;
+use Imagine\Imagick\Imagine;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Exception\FileNotFoundException;
@@ -111,9 +119,6 @@ class SubdefGenerator
             $hd = $hd->getRealPath();
 
             clearstatcache(true, $hd);
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("creating subdefs for %s.%s from document \"%s\" (size=%s)", $record->getDataboxId(), $record->getRecordId(), $hd, filesize($hd))
-            ), FILE_APPEND | LOCK_EX);
         }
 
         $mediaCreated = [];
@@ -129,10 +134,6 @@ class SubdefGenerator
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
 
                 $pathdest = $record->get_subdef($subdefname)->getRealPath();
-
-                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("deleting previous subdef \"%s\" (file=\"%s\") for %s.%s", $subdefname, $pathdest, $record->getDataboxId(), $record->getRecordId())
-                ), FILE_APPEND | LOCK_EX);
 
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));
@@ -235,7 +236,7 @@ class SubdefGenerator
         return $this->logger;
     }
 
-    private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
+    private function generateSubdef(\record_adapter $record, databox_subdef $subdef_class, $pathdest)
     {
         $start = microtime(true);
         $destFile = null;
@@ -254,39 +255,81 @@ class SubdefGenerator
 
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
 
+                file_put_contents(dirname(__FILE__).'/../../../../logs/subdefgenerator.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf(
+                        "into generateSubdef for image subdef %s", $subdef_class->get_name()
+                    )
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
 
-            } elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+            }
+            elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
 
                 $this->generatePdfSubdef($record->get_hd_file()->getPathname(), $pathdest);
 
-            } else {
+            }
+            else {
 
                 $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
 
             }
 
-            if($destFile){
+            if($destFile) {
+                // the file was built elsewhere, we copy it to original destination
                 $this->filesystem->copy($pathdest, $destFile);
                 $this->app['filesystem']->remove($pathdest);
+                $pathdest = $destFile;
             }
 
-        } catch (MediaAlchemystException $e) {
+        }
+        catch (MediaAlchemystException $e) {
             $start = 0;
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
 
-        $stop = microtime(true);
-        if($start){
-            $duration = $stop - $start;
+        if($start) {
+
+            // the subdef was done
+
+            // watermark ?
+            if($subdef_class->getSpecs() instanceof Image) {
+                /** @var Subdef\Image $image */
+                $image = $subdef_class->getSubdefType();
+                /** @var Boolean $wm */
+                $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
+                if($wm->getValue() === 'yes') {     // bc to "text" mode
+                    // we must watermark the file
+                    $wm_text = null;
+                    $wm_image = null;
+
+                    /** @var Text $opt */
+
+                    $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
+                    if($opt && ($t = trim($opt->getValue())) !== '') {
+                        $wm_text = $t;
+                    }
+
+                    $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKRID);
+                    if($opt && ($rid = trim($opt->getValue())) !== '') {
+                        try {
+                            $wm_image = $subdef_class->getDatabox()->get_record($rid)->get_subdef('document')->getRealPath();
+                        }
+                        catch (\Exception $e) {
+                            $this->logger->error(sprintf('Getting wm image (record %d) failed with message %s', $rid, $e->getMessage()));
+                        }
+                    }
+
+                    if(!is_null($wm_text) || !is_null($wm_image)) {
+                        $this->wartermarkImageFile($pathdest, $wm_text, $wm_image);
+                    }
+                }
+            }
+
+            $duration = microtime(true) - $start;
 
             $originFileSize = $this->sizeHumanReadable($record->get_hd_file()->getSize());
-
-            if($destFile){
-                $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
-            }else{
-                $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
-            }
+            $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
 
             $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
                     $subdef_class->get_name(),
@@ -300,7 +343,199 @@ class SubdefGenerator
                 )
             );
         }
+    }
 
+    /**
+     * @param string $filepath
+     * @param string|null $watermarkText
+     * @param string|null $watermarkImage
+     */
+    private function wartermarkImageFile(string $filepath, $watermarkText, $watermarkImage)
+    {
+        static $palette;
+
+        /** @var Imagine $imagine */
+        $imagine = $this->getImagine();
+
+        $in_image = $imagine->open($filepath);
+        $in_size = $in_image->getSize();
+        $in_w = $in_size->getWidth();
+        $in_h = $in_size->getHeight();
+
+        $in_image_changed = false;
+
+        if ($watermarkImage !== null && file_exists($watermarkImage)) {
+            $wm_image = $imagine->open($watermarkImage);
+            $wm_size = $wm_image->getSize();
+            $wm_w = $wm_size->getWidth();
+            $wm_h = $wm_size->getHeight();
+
+            if (($wm_w / $wm_h) > ($in_w / $in_h)) {
+                $wm_size = $wm_size->widen($in_w);
+            }
+            else {
+                $wm_size = $wm_size->heighten($in_h);
+            }
+            $wm_image->resize($wm_size);
+
+            $in_image->paste($wm_image, new Point(($in_w - $wm_size->getWidth()) >> 1, ($in_h - $wm_size->getHeight()) >> 1));
+
+            $in_image_changed = true;
+        }
+
+        if($watermarkText !== null) {
+            if (null === $palette) {
+                $palette = new RGB();
+            }
+
+            $draw = $in_image->draw();
+            $black = $palette->color("000000");
+            $white = $palette->color("FFFFFF");
+            $draw->line(new Point(0, 1), new Point($in_w - 2, $in_h - 1), $black);
+            $draw->line(new Point(1, 0), new Point($in_w - 1, $in_h - 2), $white);
+            $draw->line(new Point(0, $in_h - 2), new Point($in_w - 2, 0), $black);
+            $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
+
+            if ($watermarkText) {
+                $fsize = max(8, (int)(max($in_w, $in_h) / 30));
+                $fonts = [
+                    $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $black),
+                    $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $white)
+                ];
+                $testbox = $fonts[0]->box($watermarkText, 0);
+                $tx_w = min($in_w, $testbox->getWidth());
+                $tx_h = min($in_h, $testbox->getHeight());
+
+                $x0 = max(1, ($in_w - $tx_w) >> 1);
+                $y0 = max(1, ($in_h - $tx_h) >> 1);
+                for ($i = 0; $i <= 1; $i++) {
+                    $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
+                    $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
+                    $x = max(1, $in_w - $x - $tx_w);
+                    $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
+
+                    $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
+                    $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
+                    $y = max(1, $in_h - $y - $tx_h);
+                    $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
+                }
+            }
+            $in_image_changed = true;
+        }
+
+        if($in_image_changed) {
+            $in_image->save($filepath);
+        }
+    }
+
+    /**
+     * Used only by api V3 subdef generator service
+     *
+     * @param $pathSrc
+     * @param databox_subdef $subdef_class
+     * @param $pathdest
+     */
+    public function generateSubdefFromFile($pathSrc, databox_subdef $subdef_class, $pathdest)
+    {
+        $start = microtime(true);
+        $destFile = null;
+
+        try {
+            if($subdef_class->getSpecs() instanceof Video && !empty($this->tmpDirectory)){
+                // a video must be generated on worker tmp (from conf) : change pathdest
+                $destFile = $pathdest;
+
+                $ffmpegDir = \p4string::addEndSlash($this->tmpDirectory) . "ffmpeg/";
+                if(!is_dir($ffmpegDir)){
+                    $this->filesystem->mkdir($ffmpegDir);
+                }
+                $tmpname = str_replace('.', '_', (string)$start) .
+                    '_' . $subdef_class->get_name() .
+                    '.' . $this->filesystem->getExtensionFromSpec($subdef_class->getSpecs());
+
+                $pathdest = $ffmpegDir . $tmpname;
+            }
+
+            if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
+
+                $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
+
+            }
+            elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+
+                $this->generatePdfSubdef($pathSrc, $pathdest);
+
+            }
+            else {
+
+                $this->alchemyst->turnInto($pathSrc, $pathdest, $subdef_class->getSpecs());
+
+            }
+
+            if($destFile){
+                // the video subdef was generated on tmp, copy it to original dest
+                $this->filesystem->copy($pathdest, $destFile);
+                $this->app['filesystem']->remove($pathdest);
+            }
+
+        }
+        catch (Exception $e) {
+            $this->logger->error(sprintf('Subdef generation failed with message %s', $e->getMessage()));
+        }
+
+        // watermark ?
+        if($subdef_class->getSpecs() instanceof Image) {
+            /** @var Subdef\Image $image */
+            $image = $subdef_class->getSubdefType();
+            /** @var Boolean $wm */
+            $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
+
+            if($wm->getValue() === 'yes') {     // bc to "text" mode
+                // we must watermark the file
+                $wm_text = null;
+                $wm_image = null;
+
+                /** @var Text $opt */
+
+                $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
+                if($opt && ($t = trim($opt->getValue())) !== '') {
+                    $wm_text = $t;
+                }
+
+                $opt = $image->getOption(Subdef\Image::OPTION_WATERMARKRID);
+                if($opt && ($rid = trim($opt->getValue())) !== '') {
+                    try {
+                        $wm_image = $subdef_class->getDatabox()->get_record($rid)->get_subdef('document')->getRealPath();
+                    }
+                    catch (\Exception $e) {
+                        $this->logger->error(sprintf('Getting wm image (record %d) failed with message %s', $rid, $e->getMessage()));
+                    }
+                }
+
+                if(!is_null($wm_text) || !is_null($wm_image)) {
+                    $this->wartermarkImageFile($pathdest, $wm_text, $wm_image);
+                }
+            }
+        }
+
+        $duration = microtime(true) - $start;
+
+        $originFileSize = $this->sizeHumanReadable(filesize($pathSrc));
+
+        if($destFile){
+            $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
+        }else{
+            $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
+        }
+
+        $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s',
+                $subdef_class->get_name(),
+                date('H:i:s', mktime(0,0, $duration)),
+                $originFileSize,
+                $subdef_class->get_name(),
+                $generatedFileSize
+            )
+        );
     }
 
     private function generatePdfSubdef($source, $pathdest)
@@ -322,7 +557,7 @@ class SubdefGenerator
             }
         } catch (UnoconvException $e) {
             throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', null, $e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
 
@@ -342,4 +577,13 @@ class SubdefGenerator
     {
         return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
     }
+
+    /**
+     * @return ImagineInterface $imagine
+     */
+    private function getImagine()
+    {
+        return $this->app['imagine'];
+    }
+
 }

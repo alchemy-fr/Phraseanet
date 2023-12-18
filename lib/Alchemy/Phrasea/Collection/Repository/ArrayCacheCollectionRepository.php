@@ -74,4 +74,10 @@ class ArrayCacheCollectionRepository implements CollectionRepository
             unset($this->collectionCache[$collection->getCollectionId()]);
         }
     }
+
+    public function clearCache()
+    {
+        $this->collectionCache = null;
+        $this->collectionRepository->clearCache();
+    }
 }

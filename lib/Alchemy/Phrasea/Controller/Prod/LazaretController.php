@@ -53,6 +53,8 @@ class LazaretController extends Controller
             $lazaretFiles = $this->getLazaretFileRepository()->findPerPage($baseIds, $offset, $perPage);
         }
 
+        $this->setSessionFormToken('prodLazaret');
+
         return $this->render('prod/upload/lazaret.html.twig', [
             'lazaretFiles' => $lazaretFiles,
             'currentPage'  => $page,
@@ -110,6 +112,12 @@ class LazaretController extends Controller
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
+        if (!$this->isCrsfValid($request, 'prodLazaret')) {
+            $ret['message'] = 'invalid prodLazaret token';
+
+            return $this->app->json($ret, 403);
+        }
+
         //Mandatory parameter
         if (null === $request->request->get('bas_id')) {
             $ret['message'] = $this->app->trans('You must give a destination collection');
@@ -124,6 +132,38 @@ class LazaretController extends Controller
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
 
+        //Check if the chosen record is eligible to the substitution
+        $recordId = $request->request->get('record_id');
+        /** @var LazaretFile $lazaretFile */
+        $metadatasToSet = [];
+        if($recordId !== "" && !!$request->request->get('copy_meta', false)) {
+
+            $substitutedRecord = null;
+
+            $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
+            foreach ($lazaretFile->getRecordsToSubstitute($this->app) as $r) {
+                if ($r->getRecordId() === (int)$recordId) {
+                    $substitutedRecord = $r;
+                    break;
+                }
+            }
+            if (!$substitutedRecord) {
+                $ret['message'] = $this->app->trans('The destination record provided is not allowed');
+
+                return $this->app->json($ret);
+            }
+
+            $fieldsToCopy = [];
+            foreach ($substitutedRecord->getDatabox()->get_meta_structure() as $df) {
+                if(!$df->is_readonly()) {
+                    $fieldsToCopy[] = $df->get_name();
+                }
+            }
+            foreach ($substitutedRecord->getCaption($fieldsToCopy) as $k=>$v) {
+                $metadatasToSet[] = ['field_name' => $k, 'value' => $v];
+            }
+        }
+
         $ret = $lazaretManipulator->add($file_id, $keepAttributes, $attributesToKeep);
 
         try{
@@ -132,7 +172,13 @@ class LazaretController extends Controller
             $postStatus = (array) $request->request->get('status');
             // update status
             $this->updateRecordStatus($record, $postStatus);
-        }catch(\Exception $e){
+
+            if(!empty($metadatasToSet)) {
+                $actions = json_decode(json_encode(['metadatas' => $metadatasToSet]));
+                $record->setMetadatasByActions($actions);
+            }
+        }
+        catch(\Exception $e){
             $ret['message'] = $this->app->trans('An error occured when wanting to change status!');
         }
 
@@ -146,8 +192,14 @@ class LazaretController extends Controller
      *
      * @return Response
      */
-    public function denyElement($file_id)
+    public function denyElement(Request $request, $file_id)
     {
+        if (!$this->isCrsfValid($request, 'prodLazaret')) {
+            $ret['message'] = 'invalid prodLazaret token';
+
+            return $this->app->json($ret, 403);
+        }
+
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
 
@@ -193,6 +245,12 @@ class LazaretController extends Controller
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
+        if (!$this->isCrsfValid($request, 'prodLazaret')) {
+            $ret['message'] = 'invalid prodLazaret token';
+
+            return $this->app->json($ret, 403);
+        }
+
         //Mandatory parameter
         if (null === $recordId = $request->request->get('record_id')) {
             $ret['message'] = $this->app->trans('You must give a destination record');
@@ -209,16 +267,14 @@ class LazaretController extends Controller
             return $this->app->json($ret);
         }
 
-        $found = false;
 
         //Check if the chosen record is eligible to the substitution
+        $found = false;
         foreach ($lazaretFile->getRecordsToSubstitute($this->app) as $record) {
-            if ($record->getRecordId() !== (int) $recordId) {
-                continue;
+            if ($record->getRecordId() === (int) $recordId) {
+                $found = true;
+                break;
             }
-
-            $found = true;
-            break;
         }
 
         if (!$found) {

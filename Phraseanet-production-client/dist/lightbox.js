@@ -17,13 +17,13 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 
 /***/ }),
 
-/***/ 251:
+/***/ 253:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 
-var _bootstrap = __webpack_require__(252);
+var _bootstrap = __webpack_require__(254);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -63,7 +63,7 @@ module.exports = lightboxApplication;
 
 /***/ }),
 
-/***/ 252:
+/***/ 254:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87,7 +87,7 @@ var _locale = __webpack_require__(20);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _config = __webpack_require__(253);
+var _config = __webpack_require__(255);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -95,7 +95,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _index = __webpack_require__(254);
+var _index = __webpack_require__(256);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -190,7 +190,7 @@ exports.default = bootstrap;
 
 /***/ }),
 
-/***/ 253:
+/***/ 255:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -209,7 +209,7 @@ exports.default = defaultConfig;
 
 /***/ }),
 
-/***/ 254:
+/***/ 256:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -227,7 +227,7 @@ var _utils = __webpack_require__(57);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _download = __webpack_require__(255);
+var _download = __webpack_require__(257);
 
 var _download2 = _interopRequireDefault(_download);
 
@@ -428,18 +428,26 @@ var lightbox = function lightbox(services) {
                         _slideshow(bool);
                         break;
                     case 38:
-                        el = (0, _jquery2.default)('#sc_container .basket_element.selected');
-                        if (el.length === 1) {
-                            id = el.attr('id').split('_').pop();
-                            _setAgreement(event, el, id, 1);
+                        // participants can vote
+                        if ((0, _jquery2.default)('#basket_infos .user_infos .choices').length === 1) {
+                            el = (0, _jquery2.default)('#sc_container .basket_element.selected');
+                            if (el.length === 1) {
+                                id = el.attr('id').split('_').pop();
+                                _setAgreement(event, el, id, 1);
+                            }
                         }
+
                         break;
                     case 40:
-                        el = (0, _jquery2.default)('#sc_container .basket_element.selected');
-                        if (el.length === 1) {
-                            id = el.attr('id').split('_').pop();
-                            _setAgreement(event, el, id, -1);
+                        // participants can vote
+                        if ((0, _jquery2.default)('#basket_infos .user_infos .choices').length === 1) {
+                            el = (0, _jquery2.default)('#sc_container .basket_element.selected');
+                            if (el.length === 1) {
+                                id = el.attr('id').split('_').pop();
+                                _setAgreement(event, el, id, -1);
+                            }
                         }
+
                         break;
                     default:
                         break;
@@ -1056,7 +1064,8 @@ var lightbox = function lightbox(services) {
             url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
             dataType: 'json',
             data: {
-                note: note
+                note: note,
+                lightbox_token: (0, _jquery2.default)(button).closest('form').find('input[name=lightbox_token]').val()
             },
             success: function success(datas) {
                 _hideNotes(container);
@@ -1185,7 +1194,7 @@ exports.default = lightbox;
 
 /***/ }),
 
-/***/ 255:
+/***/ 257:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1240,6 +1249,11 @@ var download = function download(services) {
             success: function success(data) {
                 $dialog.setContent(data);
                 _onDownloadReady($dialog, window.exportConfig);
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
@@ -1606,5 +1620,5 @@ exports.default = download;
 
 /***/ })
 
-},[251]);
+},[253]);
 });

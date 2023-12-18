@@ -94,13 +94,17 @@
     {% if acl.has_right(constant('\\ACL::CANPUSH')) %}
         {% set m = m|merge([
             {
-                'class':'TOOL_pushdoc_btn',
-                'icon':'/assets/common/images/icons/push16.png',
-                'label':'action : push' | trans },
+                'class':'TOOL_sharebasket_btn',
+                'fa_icon': 'fa-share',
+                'i_class': 'share_sent',
+                'label':'Share' | trans
+            },
             {
-                'class':'TOOL_feedback_btn',
-                'icon':'/assets/common/images/icons/feedback16.png',
-                'label':'Feedback' | trans }
+                'class':'TOOL_pushdoc_btn',
+                'fa_icon':'fa-gift',
+                'i_class': 'push_rec',
+                'label':'action : push' | trans
+            }
         ]) %}
     {% endif %}
     {% if acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}
@@ -159,7 +163,11 @@
                 <div class="btn-group">
             {% set menu_entry = menu_entries[0] %}
                     <button class="results_window btn btn-inverse {{ menu_entry.class }}" data-selection-source="search-result">
-                        <img src="{{ menu_entry.icon }}"  class="btn-image"/>
+                        {% if menu_entry.icon is defined %}
+                            <img src="{{ menu_entry.icon }}"  class="btn-image"/>
+                        {% elseif menu_entry.fa_icon is defined %}
+                            <i class="fa {{ menu_entry.fa_icon|e }} {% if menu_entry.i_class is defined %} {{ menu_entry.i_class|e }} {% endif %}" style="margin: 0px 5px;"></i>
+                        {% endif %}
                         {{ menu_entry.label }}
                     </button>
             {% set menu_entries = menu_entries|slice(1) %}
@@ -170,7 +178,11 @@
                         {% for menu_entry in menu_entries %}
                         <li>
                             <a class="results_window {{ menu_entry.class }}" data-selection-source="search-result">
-                                <img src="{{ menu_entry.icon }}" class="btn-image"/>
+                                {% if menu_entry.icon is defined %}
+                                    <img src="{{ menu_entry.icon }}"  class="btn-image"/>
+                                {% elseif menu_entry.fa_icon is defined %}
+                                    <i class="fa {{ menu_entry.fa_icon|e }} {% if menu_entry.i_class is defined %} {{ menu_entry.i_class|e }} {% endif %}"></i>
+                                {% endif %}
                                 {{ menu_entry.label }}
                             </a>
                         </li>

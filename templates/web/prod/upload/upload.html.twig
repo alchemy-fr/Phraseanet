@@ -75,32 +75,34 @@
                             {# collections status #}
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'
-                                         style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
-                                        <h5>{{ 'upload:: Status :' | trans }} :</h5>
-                                        <table class="status-tab">
-                                            <tbody>
-                                            {% for bit, status in availableCollections['databox'].getStatusStructure() %}
-                                                <tr>
-                                                    <td class="status-tab-left">
-                                                        {% if status['img_off'] is not empty %}
-                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
-                                                    </td>
-                                                    <td class="status-tab-right">
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
-                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                        {% if status['img_on'] is not empty %}
-                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), constant('\\ACL::CHGSTATUS')) %}
+                                        <div id="status-{{ collection.get_base_id() }}" class='collection-status'
+                                             style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
+                                            <h5>{{ 'upload:: Status :' | trans }} :</h5>
+                                            <table class="status-tab">
+                                                <tbody>
+                                                {% for bit, status in availableCollections['databox'].getStatusStructure() %}
+                                                    <tr>
+                                                        <td class="status-tab-left">
+                                                            {% if status['img_off'] is not empty %}
+                                                                <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                            {% endif %}
+                                                            <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                        </td>
+                                                        <td class="status-tab-right">
+                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                            <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                            {% if status['img_on'] is not empty %}
+                                                                <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             {% endfor %}
                         </div>
@@ -138,7 +140,7 @@
                         {# download box #}
                         <div class="download-box"></div>
                     </div>
-
+                    <input type="hidden" name="prodUpload_token" value="{{ app['session'].get('prodUpload_token') }}">
                 </form>
             {% else %}
                 {{ 'You can not upload files' | trans }}

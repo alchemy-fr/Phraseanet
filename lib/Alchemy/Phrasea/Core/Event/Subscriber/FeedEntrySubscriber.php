@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\FeedEntryEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
@@ -23,19 +24,50 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
 {
     public function onCreate(FeedEntryEvent $event)
     {
-        $entry = $event->getFeedEntry();
-
         $params = [
-            'entry_id' => $entry->getId(),
+            'entry_id' => $event->getFeedEntry()->getId(),
             'notify_email' => $event->hasEmailNotification(),
         ];
 
         $this->app['manipulator.webhook-event']->create(
             WebhookEvent::NEW_FEED_ENTRY,
             WebhookEvent::FEED_ENTRY_TYPE,
-            array_merge(array('feed_id' => $entry->getFeed()->getId()), $params),
-            $entry->getFeed()->getBaseId() ? [$entry->getFeed()->getBaseId()] : []
+            array_merge(array('feed_id' => $event->getFeedEntry()->getFeed()->getId()), $params),
+            []
         );
+
+        $this->sendEmailNotification($event);
+    }
+
+    public function onUpdate(FeedEntryEvent $event)
+    {
+        $this->sendEmailNotification($event);
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            PhraseaEvents::FEED_ENTRY_CREATE => 'onCreate',
+            PhraseaEvents::FEED_ENTRY_UPDATE => 'onUpdate'
+        ];
+    }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
+    }
+
+    private function sendEmailNotification(FeedEntryEvent $event)
+    {
+        $entry = $event->getFeedEntry();
+
+        $params = [
+            'entry_id' => $entry->getId(),
+            'notify_email' => $event->hasEmailNotification(),
+        ];
 
         $datas = json_encode($params);
 
@@ -97,20 +129,5 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
             $start += $perLoop;
         }
         while (count($results) > 0);
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            PhraseaEvents::FEED_ENTRY_CREATE => 'onCreate',
-        ];
-    }
-
-    /**
-     * @return TokenManipulator
-     */
-    private function getTokenManipulator()
-    {
-        return $this->app['manipulator.token'];
     }
 }

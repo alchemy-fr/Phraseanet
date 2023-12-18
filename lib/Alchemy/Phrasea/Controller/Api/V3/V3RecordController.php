@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use collection;
 use Doctrine\DBAL\DBALException;
 use Exception;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use p4field;
 use record_adapter;
@@ -104,8 +104,8 @@ class V3RecordController extends Controller
                 $tempfile = $tmpFs->createTemporaryFile('download_', null, $pi['extension']);
 
                 try {
-                    $guzzle = new Guzzle($url);
-                    $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                    $guzzle = new Guzzle(['base_uri' => $url]);
+                    $res = $guzzle->get("", ['save_to' => $tempfile]);
                 }
                 catch (Exception $e) {
                     return Result::createBadRequest($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
@@ -249,6 +249,7 @@ class V3RecordController extends Controller
     public function indexAction_PATCH(Request $request, $databox_id, $record_id)
     {
         $record = $this->findDataboxById($databox_id)->get_record($record_id);
+        $previousDescription = $record->getRecordDescriptionAsArray();
 
         try {
             $body = $this->decodeJsonBody($request);
@@ -265,7 +266,7 @@ class V3RecordController extends Controller
         }
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
 
         $ret = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
 

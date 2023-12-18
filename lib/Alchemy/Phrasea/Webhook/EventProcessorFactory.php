@@ -10,7 +10,9 @@ use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\OrderNotificationProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\ProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\ProcessorInterface;
+use Alchemy\Phrasea\Webhook\Processor\RecordEventProcessor;
 use Alchemy\Phrasea\Webhook\Processor\UserDeletedProcessorFactory;
+use Alchemy\Phrasea\Webhook\Processor\UserProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\UserRegistrationProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\SubdefEventProcessor;
 
@@ -30,9 +32,14 @@ class EventProcessorFactory
         $this->registerFactory(WebhookEvent::FEED_ENTRY_TYPE, new FeedEntryProcessorFactory($app));
         $this->registerFactory(WebhookEvent::USER_REGISTRATION_TYPE, new UserRegistrationProcessorFactory($app));
         $this->registerFactory(WebhookEvent::ORDER_TYPE, new OrderNotificationProcessorFactory($app));
-        $this->registerFactory(WebhookEvent::USER_DELETED_TYPE, new UserDeletedProcessorFactory());
-        $this->registerCallableFactory(WebhookEvent::RECORD_SUBDEF_TYPE, function () {
-            return new SubdefEventProcessor();
+
+        $this->registerFactory(WebhookEvent::USER_TYPE, new UserProcessorFactory());
+        $this->registerCallableFactory(WebhookEvent::RECORD_SUBDEF_TYPE, function ()  use ($app) {
+            return (new SubdefEventProcessor())
+                ->setApplicationBox($app['phraseanet.appbox']);
+        });
+        $this->registerCallableFactory(WebhookEvent::RECORD_TYPE, function () {
+            return new RecordEventProcessor();
         });
     }
 

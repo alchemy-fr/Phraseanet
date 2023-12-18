@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\RecordController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -45,21 +45,26 @@ class Record implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        /** @uses RecordController::getRecord() */
         $controllers->match('/', 'controller.prod.records:getRecord')
             ->bind('record_details')
             ->method('GET|POST');
 
+        /** @uses RecordController::getRecordById() */
         $controllers->get('/record/{sbasId}/{recordId}/', 'controller.prod.records:getRecordById')
             ->bind('record_single')
             ->assert('sbasId', '\d+')
             ->assert('recordId', '\d+');
 
+        /** @uses RecordController::doDeleteRecords() */
         $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');
 
+        /** @uses RecordController::whatCanIDelete() */
         $controllers->post('/delete/what/', 'controller.prod.records:whatCanIDelete')
             ->bind('record_what_can_i_delete');
 
+        /** @uses RecordController::renewUrl() */
         $controllers->post('/renew-url/', 'controller.prod.records:renewUrl')
             ->bind('record_renew_url');
 

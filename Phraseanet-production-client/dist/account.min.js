@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 280);
+/******/ 	return __webpack_require__(__webpack_require__.s = 282);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -3864,21 +3864,21 @@ var PluralResolver = function () {
 
 /***/ }),
 
-/***/ 280:
+/***/ 282:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(281);
+module.exports = __webpack_require__(283);
 
 
 /***/ }),
 
-/***/ 281:
+/***/ 283:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _bootstrap = __webpack_require__(282);
+var _bootstrap = __webpack_require__(284);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -3896,7 +3896,7 @@ module.exports = accountApp;
 
 /***/ }),
 
-/***/ 282:
+/***/ 284:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3924,7 +3924,7 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _config = __webpack_require__(283);
+var _config = __webpack_require__(285);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -3932,7 +3932,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _account = __webpack_require__(284);
+var _account = __webpack_require__(286);
 
 var _account2 = _interopRequireDefault(_account);
 
@@ -4010,7 +4010,7 @@ exports.default = bootstrap;
 
 /***/ }),
 
-/***/ 283:
+/***/ 285:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4029,7 +4029,7 @@ exports.default = defaultConfig;
 
 /***/ }),
 
-/***/ 284:
+/***/ 286:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4157,6 +4157,7 @@ var account = function account(services) {
             var modifierBtn = (0, _jquery2.default)(this);
             var saveBtn = (0, _jquery2.default)('a.save_webhook');
             var input = (0, _jquery2.default)('.url_webhook_input');
+            var checkboxActive = (0, _jquery2.default)('.update-webhook-status');
             var inputVal = input.html();
 
             modifierBtn.hide();
@@ -4178,6 +4179,7 @@ var account = function account(services) {
                     success: function success(data) {
                         if (data.success) {
                             input.empty().append(webhook);
+                            checkboxActive.prop('checked', true);
                         } else {
                             input.empty().append(inputVal);
                         }
@@ -4206,6 +4208,32 @@ var account = function account(services) {
                 url: $this.attr('value'),
                 dataType: 'json',
                 data: { grant: $this.is(':checked') ? '1' : '0' },
+                success: function success(data) {}
+            });
+        });
+
+        $container.on('click', '.update-listened-event', function () {
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: $this.is(':checked') ? 'add' : 'remove'
+                },
+                success: function success(data) {}
+            });
+        });
+
+        $container.on('click', '.update-webhook-status', function () {
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: $this.is(':checked') ? 'activate' : 'deactivate'
+                },
                 success: function success(data) {}
             });
         });

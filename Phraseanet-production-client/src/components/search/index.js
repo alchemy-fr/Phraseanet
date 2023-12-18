@@ -190,9 +190,12 @@ const search = services => {
                 }
                 beforeSearch();
             },
-            error: function () {
+            error: function (data) {
                 answAjaxrunning = false;
                 $searchResult.removeClass('loading');
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
             },
             timeout: function () {
                 answAjaxrunning = false;
@@ -300,13 +303,13 @@ const search = services => {
     }
 
     const updateHiddenFacetsListInPrefsScreen = () => {
-        const $hiddenFacetsContainer = $('#look_box_settings').find('.hiddenFiltersListContainer');
+        const $hiddenFacetsContainer = $('.card-body').find('.hiddenFiltersListContainer');
         if (savedHiddenFacetsList.length > 0) {
             $hiddenFacetsContainer.empty();
             _.each(savedHiddenFacetsList, function (value) {
-                var $html = $('<span class="facetFilter" data-name="' + value.name + '"><span class="facetFilter-label" title="'
+                var $html = $('<span class="hiddenFacetFilter" data-name="' + value.name + '"><span class="hiddenFacetFilter-label" title="'
                     + value.title + '">' + value.title
-                    + '<span class="facetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
+                    + '<span class="hiddenFacetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
 
                 $hiddenFacetsContainer.append($html);
 
@@ -428,7 +431,7 @@ const search = services => {
     const updateFacetData = () => {
         appEvents.emit('facets.doLoadFacets', {
             facets: facets,
-            filterFacet: $('#look_box_settings input[name=filter_facet]').prop('checked'),
+            filterFacet: $('.look_box_settings input[name=filter_facet]').prop('checked'),
             facetOrder: $('.look_box_settings select[name=orderFacet]').val(),
             facetValueOrder: $('.look_box_settings select[name=facetValuesOrder]').val(),
             hiddenFacetsList: savedHiddenFacetsList
@@ -504,11 +507,42 @@ const search = services => {
 
         $('.term_select_field').each(function (i, el) {
             if ($(el).val()) {
+                let operator = '';
+                let value = '';
+
+                switch ($(el).next().val()) {
+                    case "set":
+                        operator = "=";
+                        value    = "_set_";
+
+                        break;
+                    case "unset":
+                        operator = "=";
+                        value    = "_unset_";
+
+                        break;
+                    case "=":
+                    case ":":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<":
+                        operator = $(el).next().val();
+                        value    = $(el).next().next().val();
+
+                        break;
+                    default:
+                        operator = "=";
+                        value    = $(el).next().next().val();
+
+                        break;
+                }
+
                 fields.push({
                     'type': 'TEXT-FIELD',
                     'field': $(el).val(),
-                    'operator': $(el).next().val() === ':' ? ":" : "=",
-                    'value': $(el).next().next().val(),
+                    'operator': operator,
+                    'value': value,
                     "enabled": true
                 });
             }

@@ -2,8 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Notification\Mail;
 
-use Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest;
 
 /**
  * @group functional
@@ -33,8 +33,9 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
         try {
             $mail->getSubject();
             $this->fail('Should have raised an exception');
-        } catch (LogicException $e) {
-
+        }
+        catch (LogicException $e) {
+            // no-op
         }
     }
 
@@ -60,8 +61,9 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
         try {
             $mail->getSubject();
             $this->fail('Should have raised an exception');
-        } catch (LogicException $e) {
-
+        }
+        catch (LogicException $e) {
+            // no-op
         }
     }
 

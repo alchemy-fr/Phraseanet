@@ -22,11 +22,36 @@ class BasketACL
             return true;
         }
 
-        if ($basket->getValidation()) {
-            foreach ($basket->getValidation()->getParticipants() as $participant) {
-                if ($participant->getUser()->getId() === $user->getId()) {
-                    return true;
-                }
+        //       if ($basket->isVoteBasket()) {
+        foreach ($basket->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() === $user->getId()) {
+                return true;
+            }
+        }
+        //       }
+
+        return false;
+    }
+
+    /**
+     * returns true if the user can add or remove elements from the basket
+     * - is owner
+     * or
+     * - is participant with cam_modify=1
+     *
+     * @param Basket $basket
+     * @param User $user
+     * @return bool
+     */
+    public function canModifyContent(Basket $basket, User $user)
+    {
+        if ($this->isOwner($basket, $user)) {
+            return true;
+        }
+
+        foreach ($basket->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() === $user->getId() && $participant->getCanModify()) {
+                return true;
             }
         }
 

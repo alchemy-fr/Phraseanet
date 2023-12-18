@@ -5,7 +5,7 @@
     .ui-accordion .ui-accordion-content {
         padding: 0 10px;
         &.content {
-            padding: 0 5px;
+            padding: 5px;
         }
     }
     #baskets_wrapper {
@@ -29,6 +29,17 @@
                 }
             }
         }
+        #expose_tab{
+            .expose_workzone {
+                position: absolute;
+                top: 0;
+                left: 2px;
+                right: 2px;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+            }
+        }
     }
     #baskets {
         top: $tabHeight ;
@@ -42,11 +53,15 @@
             left: 0;
             right: 1px;
             bottom: 0;
+            /*
             overflow-y: auto;
             overflow-x: hidden;
+             */
             &.groupDrop {
                 border: 3px solid #a00;
             }
+            display: flex;
+            flex-direction: column;
         }
         .content {
             &.grouping .alert_datas_changed,
@@ -73,6 +88,7 @@
         }
         .insidebloc {
             top: 0;
+            overflow-y: auto;
         }
         .top-scroller, .bottom-scroller {
             height: 80px;
@@ -228,7 +244,7 @@
     }
     .expiredDate {
         text-align: center;
-        margin-top: 30px;
+        margin-top: 10px;
         display: inline-block;
         width: 100%;
     }
@@ -254,9 +270,8 @@
     position: relative;
     margin-bottom: 15px;
     background: $chimWrap;
-    margin-right: 1px;
+    margin: 0 -1px;
     display: inline-block;
-    float: left;
     span.feedback_user_name {
         position: relative;
         background: $feedback;
@@ -314,6 +329,7 @@
     width: 108px;
     overflow: hidden;
     margin: 0;
+    float: none;
 }
 .basket-content {
     margin: 0 7px;
@@ -390,7 +406,7 @@
         border-radius: 2px;
         padding: 0px 1px;
         line-height: 1;
-        margin: 0 4px 4px 4px;
+        margin: 0 4px;
     }
 }
 
@@ -407,7 +423,7 @@
 }
 
 .basket-filter {
-    padding: 10px 20px;
+    padding: 10px 16px;
 
     .filter-item {
         margin: 0 10px 5px;
@@ -416,6 +432,8 @@
     .checkbox input[type=checkbox], .radio input[type=radio] {
         margin-top: 1px;
     }
+
+    flex: 0 0 auto;
 }
 .basket_type {
     width: 15px;

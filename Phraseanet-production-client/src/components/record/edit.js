@@ -51,6 +51,20 @@ const editRecord = (services) => {
             data: datas,
             success: (data) => {
                 $('#EDITWINDOW').removeClass('loading').empty().html(data);
+
+                // if the user have not "edit" right in all selected document
+                if (window.recordEditorConfig.state.T_records.length === 0) {
+                    $('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
+                if (window.recordEditorConfig.hasMultipleDatabases === true) {
+                    $('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 // let recordEditor = recordEditorService(services);
                 recordEditor.initialize({
                     $container: $('#EDITWINDOW'),
@@ -60,8 +74,11 @@ const editRecord = (services) => {
                 $('#tooltip').hide();
                 return;
             },
-            error: function (XHR, textStatus, errorThrown) {
-                if (XHR.status === 0) {
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
+                if (data.status === 0) {
                     return false;
                 }
             }

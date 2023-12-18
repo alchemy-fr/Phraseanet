@@ -69,6 +69,11 @@ class AMQPConnection
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
+        MessagePublisher::DOWNLOAD_ASYNC_TYPE         => [
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+        ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
             'with'            => self::WITH_RETRY,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
@@ -128,6 +133,11 @@ class AMQPConnection
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
             self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
+        ],
+        MessagePublisher::SHARE_BASKET_TYPE             => [
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
     ];
 
@@ -310,7 +320,7 @@ class AMQPConnection
 
     public function getConnection()
     {
-        if (!isset($this->connection)) {
+        if (empty($this->connection)) {
             try {
                 $heartbeat = $this->hostConfig['heartbeat'] ?? 60;
 
@@ -360,9 +370,9 @@ class AMQPConnection
 
     public function getChannel()
     {
-        if (!isset($this->channel)) {
+        if (empty($this->channel)) {
             $this->getConnection();
-            if (isset($this->connection)) {
+            if (!empty($this->connection)) {
                 $this->channel = $this->connection->channel();
 
                 return $this->channel;
@@ -386,9 +396,26 @@ class AMQPConnection
     /**
      * @param $queueName
      * @return AMQPChannel|null
+     * @throws Exception
      */
     public function setQueue($queueName)
     {
+        // first send heartbeat
+        // catch if connection closed, and get a new one connection
+        if (!empty($this->connection)) {
+            try {
+                $this->connection->checkHeartBeat();
+            } catch(\Exception $e) {
+                $this->connection = null;
+                $this->channel = null;
+                $this->getChannel();
+            }
+        } else {
+            $this->connection = null;
+            $this->channel = null;
+            $this->getChannel();
+        }
+
         if (!isset($this->channel)) {
             $this->getChannel();
             if (!isset($this->channel)) {
@@ -551,7 +578,7 @@ class AMQPConnection
      * @return array
      * @throws Exception
      */
-    public function getQueuesStatus()
+    public function getQueuesStatus($hideEmptyQ = true, $consumedQ = true)
     {
         $this->getChannel();
         $queuesStatus = [];
@@ -566,6 +593,14 @@ class AMQPConnection
             }
             try {
                 list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($name, true);
+                if ($hideEmptyQ && $messageCount == 0) {
+                    continue;
+                }
+
+                if ($consumedQ && $consumerCount == 0) {
+                    continue;
+                }
+
                 $queuesStatus[$queueName] = [
                     'queueName'     => $queueName,
                     'exists'        => true,

@@ -134,7 +134,7 @@ const videoSubtitleCapture = (services, datas, activeTab = false) => {
             minutes = (minutes < 10) ? "0" + minutes : minutes;
             seconds = (seconds < 10) ? "0" + seconds : seconds;
             // if(isNaN(hours) && isNaN(minutes) && isNaN(seconds) && isNaN(milliseconds) ) {
-            return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+            return hours + ":" + minutes + ":" + seconds + "." + ('000' + milliseconds).slice(-3);
             //}
 
         }
@@ -172,11 +172,14 @@ const videoSubtitleCapture = (services, datas, activeTab = false) => {
                     var captionText = "WEBVTT - with cue identifier\n\n";
                     while (i <= countSubtitle * 3) {
                         j= j +1;
-                        captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        // save only wich with value not empty
+                        if (allData[i + 2].value.length != 0) {
+                            captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        }
+
                         i = i + 3;
                         if (i == (countSubtitle * 3) - 3) {
                             $('#record-vtt').val(captionText);
-                            console.log(captionText);
                             if (btn == 'save') {
                                 //send data
                                 $.ajax({
@@ -286,8 +289,7 @@ const videoSubtitleCapture = (services, datas, activeTab = false) => {
                     ResValue = fieldvalue.split("WEBVTT - with cue identifier\n\n");
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
-                    console.log(captionValue);
-                    for (var i = 0; i < captionLength - 1; i++) {
+                    for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
                         var ResValueItem = captionValue[i].replace(/\n\r/g, "\n")
@@ -317,7 +319,7 @@ const videoSubtitleCapture = (services, datas, activeTab = false) => {
 
                         startVal = stringToseconde(timeValue[0]);
                         //Re-Build EndTime
-                        timeValue = timeValue [1].split("\n")
+                        timeValue = timeValue[1].split("\n")
                         $('.item_' + i + ' .video-subtitle-item ').closest('.editing').find('.end-label').text(timeValue[0]);
                         $('.item_' + i + ' .video-subtitle-item ').find('.endTime').val(timeValue[0]);
                         endVal = stringToseconde(timeValue[0]);
@@ -393,7 +395,6 @@ const videoSubtitleCapture = (services, datas, activeTab = false) => {
             try {
                 var requestData = $('#video-subtitle-request').serializeArray();
                 requestData = JSON.parse(JSON.stringify(requestData));
-                console.log(requestData)
 
             } catch (err) {
                 return;

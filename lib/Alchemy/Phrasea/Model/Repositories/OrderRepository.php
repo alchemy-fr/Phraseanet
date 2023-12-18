@@ -145,4 +145,12 @@ class OrderRepository extends EntityRepository
 
         return $builder->getQuery()->getSingleScalarResult();
     }
+
+    public function findAllTodo()
+    {
+        $qb = $this->createQueryBuilder('o');
+        $qb->where('o.todo != 0');
+
+        return $qb->getQuery()->getResult();
+    }
 }

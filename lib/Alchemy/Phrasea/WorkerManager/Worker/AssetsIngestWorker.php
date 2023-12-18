@@ -38,14 +38,26 @@ class AssetsIngestWorker implements WorkerInterface
 
         $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
+        if ($payload['type'] === WorkerRunningJob::TYPE_PUSH) {
+            // get verify_ssl from config
+            $verifySsl = $this->app['conf']->get(['phraseanet-service', 'uploader-service', 'push_verify_ssl'], true);
+        } elseif ($payload['type'] === WorkerRunningJob::TYPE_PULL) {
+            // the verify_ssl  in payload when pull is also from the config in a specific target name
+            // it is injected from the PullAssetsWorker
+            $verifySsl = isset($payload['verify_ssl']) ? $payload['verify_ssl'] : true ;
+        }
+
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $payload['base_url']];
+        $clientOptions = [
+            'base_uri'  => $payload['base_url'],
+            'verify'    => $verifySsl
+        ];
 
         $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get first asset informations to check if it's a story
         try {
-            $body = $uploaderClient->get('/assets/'.$assets[0], [
+            $body = $uploaderClient->get('assets/'.$assets[0], [
                 'headers' => [
                     'Authorization' => 'AssetToken '.$payload['token']
                 ]
@@ -80,7 +92,8 @@ class AssetsIngestWorker implements WorkerInterface
                 'assetToken' => $payload['token'],
                 'storyId'    => $storyId,
                 'base_url'   => $payload['base_url'],
-                'commit_id'  => $payload['commit_id']
+                'commit_id'  => $payload['commit_id'],
+                'verify_ssl' => $verifySsl
             ];
 
             $this->messagePublisher->publishMessage($createRecordMessage, MessagePublisher::CREATE_RECORD_TYPE);

@@ -24,6 +24,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('sort_collections', array(CollectionHelper::class, 'sort')),
+            new \Twig_SimpleFilter('date_duration', array($this, 'getDuration')),
         );
     }
 
@@ -52,6 +53,7 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
 
             new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
+            new \Twig_SimpleFunction('user_display_name', array($this, 'getUserDisplayName')),
         );
     }
 
@@ -59,9 +61,15 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return [
             // change this version when you change JS file to force the navigation to reload js file
-            'jsFileVersion' => 29
+            'assetFileVersion' => 101
         ];
 
+    }
+
+    public function getDuration(int $interval)
+    {
+        $t = round($interval);
+        return sprintf('%02d h  %02d m  %02d s', ($t/3600),($t/60 %60), $t%60);
     }
 
     /**
@@ -304,7 +312,7 @@ class PhraseanetExtension extends \Twig_Extension
                 break;
             case 'video':
                 $src = '/assets/common/images/icons/icon_video.png';
-                $title = $this->app['translator']->trans('reportage');
+                $title = $this->app['translator']->trans('video');
                 break;
             case 'audio':
                 $src = '/assets/common/images/icons/icon_audio.png';
@@ -401,6 +409,14 @@ class PhraseanetExtension extends \Twig_Extension
     public function getCheckerFromFQCN($checkerFQCN)
     {
         return $this->app['border-manager']->getCheckerFromFQCN($checkerFQCN);
+    }
+
+    public function getUserDisplayName($userId)
+    {
+        /** @var User $user */
+        $user = $this->app['repo.users']->find($userId);
+
+        return ($user == null) ? '' : $user->getDisplayName();
     }
 
     public function getName()

@@ -1,0 +1,46 @@
+{% for r_a in records_acl %}
+    <tr>
+        <td>{{ r_a.sbas_id | sbas_labels(app) }}</td>
+        <td>{{ r_a.record_id }}</td>
+        <td>{{ r_a.document }}</td>
+        <td>{{ r_a.preview }}</td>
+        <td>{{ r_a.type }}</td>
+        <td>{{ r_a.pusher_name }}</td>
+        <td>
+            {% if r_a.expire_on %}
+                {{ r_a.expire_on|date('Y-m-d H:i:s') }}
+                {% if r_a.expire_on|date('Y-m-d H:i:s') > "now"|date('Y-m-d H:i:s') %}
+                    <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c;"></i>
+                {% else %}
+                    <i class="fa fa-times" aria-hidden="true" style="color:#d1051f;"></i>
+                {% endif %}
+            {% else %}
+                -  <i class="fa fa-check" aria-hidden="true" style="color:#7cd21c"></i>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+
+{% if feed_entries is defined %}
+    {% if feed_entries | length > 0 %}
+        <ul>
+            {% for f_e in feed_entries %}
+                <li style="line-height: 25px;">
+                    <span class="publication-name">{{ f_e.title }}</span>
+                    <span style="margin-left:15px;">({{ f_e.getItems() | length }} records)</span>
+                    <button data-feed-entry="{{ f_e.getId() }}" class="btn btn-danger btn-mini pull-right delete-publication" style="margin-left:30px;">Delete</button>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No publication</p>
+    {% endif %}
+{% endif %}
+
+{% for b_e in basket_elements %}
+    <tr>
+        <td>{{ b_e.getSbasId() | sbas_labels(app) }}</td>
+        <td>{{ b_e.getRecordId() }}</td>
+        <td>{{ b_e.basket.name }}</td>
+    </tr>
+{% endfor %}

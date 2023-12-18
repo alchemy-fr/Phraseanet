@@ -67,10 +67,6 @@ class WriteMetadatasWorker implements WorkerInterface
         $recordId    = $payload['recordId'];
         $subdefName  = $payload['subdefName'];
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("process WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
-        ), FILE_APPEND | LOCK_EX);
-
         $MWG         = $payload['MWG'] ?? false;
         $clearDoc    = $payload['clearDoc'] ?? false;
         $databox     = $this->findDataboxById($databoxId);
@@ -87,24 +83,19 @@ class WriteMetadatasWorker implements WorkerInterface
                 ],
                 MessagePublisher::WRITE_METADATAS_TYPE
             );
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("cannot WriteMeta for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
-            ), FILE_APPEND | LOCK_EX);
 
             return ;
         }
 
         // here we can work
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("ready to WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
-        ), FILE_APPEND | LOCK_EX);
+        try {
+            $record  = $databox->get_record($recordId);
+        } catch (\Exception $e) {
+            $this->repoWorker->markFinished($workerRunningJobId, "error " . $e->getMessage());
 
-        $record  = $databox->get_record($recordId);
-
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf(" - recordid = %s", $record->getRecordId())
-        ), FILE_APPEND | LOCK_EX);
+            return;
+        }
 
         if ($record->getMimeType() == 'image/svg+xml') {
 
@@ -119,17 +110,9 @@ class WriteMetadatasWorker implements WorkerInterface
         $this->repoWorker->reconnect();
 
         try {
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf(" - getsubdef %s", $subdefName)
-            ), FILE_APPEND | LOCK_EX);
-
             $subdef = $record->get_subdef($subdefName);
         }
         catch (Exception $e) {
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf(" - %s", $e->getMessage())
-            ), FILE_APPEND | LOCK_EX);
-
             $workerMessage = "Exception catched when try to get subdef " .$subdefName. " from DB for the recordID: " .$recordId;
             $this->logger->error($workerMessage);
 
@@ -150,10 +133,6 @@ class WriteMetadatasWorker implements WorkerInterface
         }
 
         if (!$subdef->is_physically_present()) {
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf(" - not present")
-            ), FILE_APPEND | LOCK_EX);
-
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
@@ -265,10 +244,6 @@ class WriteMetadatasWorker implements WorkerInterface
             }
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf(" - reset")
-        ), FILE_APPEND | LOCK_EX);
-
         $this->writer->reset();
 
         if ($MWG) {
@@ -277,20 +252,12 @@ class WriteMetadatasWorker implements WorkerInterface
 
         $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf(" - erased")
-        ), FILE_APPEND | LOCK_EX);
-
         // write meta in file
         try {
             $this->writer->write($subdef->getRealPath(), $metadata);
 
-            $this->messagePublisher->pushLog(sprintf('meta written for databoxId=%1$d - recordId=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
-
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("meta written in %s.%s.%s", $databoxId, $recordId, $subdefName)
-            ), FILE_APPEND | LOCK_EX);
-
+            $this->messagePublisher->pushLog(sprintf('metadatas written %s databoxname=%s databoxid=%d recordid=%d',
+                $subdef->get_name(), $databox->get_viewname(), $databox->get_sbas_id(), $recordId), 'info');
         }
         catch (Exception $e) {
 
@@ -302,10 +269,6 @@ class WriteMetadatasWorker implements WorkerInterface
             if( preg_match('/\\(looks more like a .*\\)/', $msg,$matches) ) {
                 $stopInfo = $matches[0];
             }
-
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("meta NOT written in %s.%s.%s because (%s)\n  Will %sretry", $databoxId, $recordId, $subdefName, $msg, ($stopInfo ? "not ":""))
-            ), FILE_APPEND | LOCK_EX);
 
             $workerMessage = sprintf('meta NOT written for databoxId=%1$d - recordId=%2$d (%3$s) because "%4$s"',
                 $databox->get_sbas_id(),

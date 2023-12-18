@@ -31,11 +31,13 @@ final class PhraseaEvents
     const ORDER_DENY = 'order.deny';
 
     const FEED_ENTRY_CREATE = 'feed-entry.create';
+    const FEED_ENTRY_UPDATE = 'feed-entry.update';
 
     const REGISTRATION_CREATE = 'registration.create';
     const REGISTRATION_AUTOREGISTER = 'registration.autoregister';
 
     const BASKET_PUSH = 'basket.push';
+    const BASKET_SHARE = 'basket.share';
     const BASKET_ELEMENTS_ADDED = 'basket.elements-added';
     const BASKET_ELEMENTS_REMOVED = 'basket.elements-removed';
 
@@ -50,6 +52,7 @@ final class PhraseaEvents
     const EXPORT_MAIL_FAILURE = 'export.mail-failure';
     const EXPORT_CREATE       = 'export.create';
     const EXPORT_MAIL_CREATE  = 'export.mail-create';
+    const DOWNLOAD_ASYNC_CREATE  = 'download.async-create';
 
     const RECORD_EDIT = 'record.edit';
     const RECORD_UPLOAD = 'record.upload';

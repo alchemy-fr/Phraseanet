@@ -29,6 +29,7 @@ define([
             "generate_cterms": false,
             "gui_editable": true,
             "gui_visible": true,
+            "printable": true,
             "separator": "",
             "required": false,
             "report": true,
@@ -39,6 +40,7 @@ define([
             "vocabulary-type": null,
             "aggregable": 0,
             "vocabulary-restricted": false,
+            "input_disable": false,
             "labels": {
                 "fr": "",
                 "en": "",

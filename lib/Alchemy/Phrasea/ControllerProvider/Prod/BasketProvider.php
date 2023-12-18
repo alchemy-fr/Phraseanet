@@ -44,8 +44,14 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access']);
 
+        /** @uses   \Alchemy\Phrasea\Controller\Prod\BasketController::displayBasket() */
         $controllers->get('/{basket}/', 'controller.prod.basket:displayBasket')
             ->bind('prod_baskets_basket')
+            ->assert('basket', '\d+');
+
+        /** @uses   \Alchemy\Phrasea\Controller\Prod\BasketController::getWip() */
+        $controllers->get('/{basket}/wip/', 'controller.prod.basket:getWip')
+            ->bind('prod_baskets_getwip')
             ->assert('basket', '\d+');
 
         $controllers->get('/{basket}/reminder/', 'controller.prod.basket:displayReminder')
@@ -68,7 +74,7 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
             ->bind('prod_baskets_basket_element_remove')
             ->assert('basket', '\d+')
             ->assert('basket_element_id', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
+            ->before($app['middleware.basket.user-can-modify-content']);
 
         $controllers->post('/{basket}/update/', 'controller.prod.basket:updateBasket')
             ->bind('prod_baskets_basket_update')
@@ -95,7 +101,7 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->post('/{basket}/addElements/', 'controller.prod.basket:addElements')
             ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
+            ->before($app['middleware.basket.user-can-modify-content']);
 
         $controllers->post('/{basket}/stealElements/', 'controller.prod.basket:stealElements')
             ->assert('basket', '\d+')

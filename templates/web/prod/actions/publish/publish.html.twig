@@ -33,13 +33,7 @@
                             {% set title = publishing.basket().getName() %}
                             {% set desc = publishing.basket().getDescription() %}
                         {% endif %}
-                        {% if app['conf'].get(['registry', 'actions', 'enable-feed-notification']) %}
-                        <label class="checkbox">
-                            <input class="required_text checkbox" type="checkbox" name="notify" id="feed_add_notify" value="1" style="min-height: 0; height: auto" />
-                            <i class="icon fa fa-envelope"
-                               aria-hidden="true"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
-                        </label>
-                        {% endif %}
+
                         <label for="feed_add_title"><b>{{ 'publication : titre' | trans }}</b> &nbsp;<span>( {{ 'publication : title warning' | trans }} )</span></label>
                         <input class="required_text input-block-level" style="max-width:500px" type="text" name="title" id="feed_add_title" value="{{title}}" />
                         <label><span class="feed_title_warning feed_warning">{{ 'publication : title alert' | trans }}</span></label>
@@ -54,6 +48,15 @@
                         <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_mail" id="feed_add_author_mail" value="{{ app.getAuthenticatedUser().getEmail() }}" />
                     </div>
                     <div class="span4">
+                        {% if app['conf'].get(['registry', 'actions', 'enable-feed-notification']) %}
+                            <label class="checkbox">
+                                <input class="required_text checkbox" type="checkbox" name="notify" id="feed_add_notify"
+                                       value="1" style="min-height: 0; height: auto" data-path="{{ path('prod_feeds_notify_count') }}"/>
+                                <i class="icon fa fa-envelope"
+                                   aria-hidden="true"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
+                                <span id="publication-notify-message" style="color: #10a4cc;"></span>
+                            </label>
+                        {% endif %}
                         <div class="feeds">
                             <label>{{ 'Fils disponibles' | trans }}</label>
                             <div class="list">

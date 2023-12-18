@@ -11,11 +11,12 @@
 
 namespace Alchemy\Phrasea\Setup\Requirements;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Setup\RequirementCollection;
 
 class FilesystemRequirements extends RequirementCollection implements RequirementInterface
 {
-    public function __construct()
+    public function __construct(PropertyAccess $conf)
     {
         $baseDir = realpath(__DIR__ . '/../../../../../');
 
@@ -26,16 +27,14 @@ class FilesystemRequirements extends RequirementCollection implements Requiremen
             $baseDir . '/config/stamp',
             $baseDir . '/config/status',
             $baseDir . '/config/minilogos',
-            $baseDir . '/config/templates',
-            $baseDir . '/config/topics',
             $baseDir . '/config/wm',
-            $baseDir . '/logs',
+            $conf->get(['main', 'storage', 'log']),
             $baseDir . '/tmp',
             $baseDir . '/tmp/locks',
-            $baseDir . '/tmp/caption',
-            $baseDir . '/tmp/lazaret',
-            $baseDir . '/tmp/download',
-            $baseDir . '/cache',
+            $conf->get(['main', 'storage', 'caption']),
+            $conf->get(['main', 'storage', 'lazaret']),
+            $conf->get(['main', 'storage', 'download']),
+            $conf->get(['main', 'storage', 'cache']),
             $baseDir . '/www/custom',
         ];
 

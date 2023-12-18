@@ -94,11 +94,6 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
         $controllers->get('/populate-status',  'controller.worker.admin.configuration:populateStatusAction')
             ->bind('worker_admin_populate_status');
 
-        /** @uses AdminConfigurationController::pullAssetsAction */
-        $controllers->match('/pull-assets',  'controller.worker.admin.configuration:pullAssetsAction')
-            ->method('GET|POST')
-            ->bind('worker_admin_pullAssets');
-
         /** @uses AdminConfigurationController::validationReminderAction */
         $controllers->match('/validation-reminder',  'controller.worker.admin.configuration:validationReminderAction')
             ->method('GET|POST')
@@ -134,6 +129,21 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('POST')
             ->assert('workerId', '\d+')
             ->bind('worker_admin_change_status');
+
+        /** @uses AdminConfigurationController::changeStatusCanceledAction */
+        $controllers->match('/change-status/canceled',  'controller.worker.admin.configuration:changeStatusCanceledAction')
+            ->method('GET')
+            ->bind('worker_admin_change_status_canceled');
+
+        /** @uses AdminConfigurationController::doChangeStatusToCanceledAction */
+        $controllers->match('/change-status/canceled',  'controller.worker.admin.configuration:doChangeStatusToCanceledAction')
+            ->method('POST')
+            ->bind('worker_admin_do_change_status_canceled');
+
+        /** @uses AdminConfigurationController::getRunningAction */
+        $controllers->match('/running',  'controller.worker.admin.configuration:getRunningAction')
+            ->method('GET')
+            ->bind('worker_admin_get_running');
 
         return $controllers;
     }

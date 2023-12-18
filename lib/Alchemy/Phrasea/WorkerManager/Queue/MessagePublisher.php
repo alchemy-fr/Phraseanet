@@ -15,6 +15,7 @@ class MessagePublisher
     const CREATE_RECORD_TYPE   = 'createRecord';
     const DELETE_RECORD_TYPE   = 'deleteRecord';
     const EXPORT_MAIL_TYPE     = 'exportMail';
+    const DOWNLOAD_ASYNC_TYPE  = 'downloadAsync';
     const EXPOSE_UPLOAD_TYPE   = 'exposeUpload';
     const FTP_TYPE             = 'ftp';
     const POPULATE_INDEX_TYPE  = 'populateIndex';
@@ -25,6 +26,7 @@ class MessagePublisher
     const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const WRITE_METADATAS_TYPE = 'writeMetadatas';
     const WEBHOOK_TYPE         = 'webhook';
+    const SHARE_BASKET_TYPE    = 'shareBasket';
 
     // *** by main queue *** \\
     const SUBTITLE_TYPE        = 'subtitle';
@@ -98,6 +100,8 @@ class MessagePublisher
             return ;
         }
 
+//        $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $FailedQ);
+
         $this->_publishMessage($payload, $FailedQ, $headers);
     }
 
@@ -105,7 +109,11 @@ class MessagePublisher
     {
         // add published timestamp to all message payload
         $payload['payload']['published'] = time();
-        $msg = new AMQPMessage(json_encode($payload));
+
+        $msg = new AMQPMessage(json_encode($payload), [
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+            'content_type'  => 'application/json'
+        ]);
 
         if (!is_null($headers)) {
             // add a message header information

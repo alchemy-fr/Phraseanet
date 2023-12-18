@@ -262,6 +262,21 @@ class User
     private $notificationSettings;
 
     /**
+     * @ORM\Column(type="boolean", name="granted_api", options={"default" = 0})
+     */
+    private $grantedApi = false;
+
+    /**
+     * @ORM\Column(type="integer", name="nb_inactivity_email", options={"default" = 0})
+     */
+    private $nbInactivityEmail = 0;
+
+    /**
+     * @ORM\Column(type="datetime", name="last_inactivity_email", nullable=true)
+     */
+    private $lastInactivityEmail;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -1051,6 +1066,56 @@ class User
         $this->notificationSettings->set($notificationSetting->getName(), $notificationSetting);
 
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasGrantedApi()
+    {
+        return $this->grantedApi;
+    }
+
+    /**
+     * @param boolean $grantedApi
+     *
+     * @return User
+     */
+    public function setGrantedApi($grantedApi)
+    {
+        $this->grantedApi = (Boolean) $grantedApi;
+
+        return $this;
+    }
+
+    public function setNbInactivityEmail($nbEnactivityEmail)
+    {
+        $this->nbInactivityEmail = $nbEnactivityEmail;
+    }
+
+    public function getNbInactivityEmail()
+    {
+        return $this->nbInactivityEmail;
+    }
+
+    /**
+     * @param \DateTime|null $lastInactivityEmail
+     *
+     * @return $this
+     */
+    public function setLastInactivityEmail($lastInactivityEmail)
+    {
+        $this->lastInactivityEmail = $lastInactivityEmail;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastInactivityEmail()
+    {
+        return $this->lastInactivityEmail;
     }
 
     /**

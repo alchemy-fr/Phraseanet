@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+
+use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\Report\ConnectionsCommand;
+use Alchemy\Phrasea\Command\Report\CountAssetsCommand;
+use Alchemy\Phrasea\Command\Report\CountUsersCommand;
+use Alchemy\Phrasea\Command\Report\DownloadsCommand;
+use Alchemy\Phrasea\Command\Report\DataboxContentCommand;
+use Alchemy\Phrasea\Command\Report\DataboxActionsCommand;
+
+require_once __DIR__ . '/../lib/autoload.php';
+
+$version = new Version();
+$cli = new CLI("
+    __                       _     _              _
+  /__\ ___ _ __   ___  _ __| |_  | |_ ___   ___ | |___
+ / \/// _ \ '_ \ / _ \| '__| __| | __/ _ \ / _ \| / __|
+/ _  \  __/ |_) | (_) | |  | |_  | || (_) | (_) | \__ \
+\/ \_/\___| .__/ \___/|_|   \__|  \__\___/ \___/|_|___/
+          |_|
+
+ Phraseanet Copyright (C) 2004 Alchemy
+ This program comes with ABSOLUTELY NO WARRANTY.
+ This is free software, and you are welcome to redistribute it
+ under certain conditions; type `about:license` for details.\n\n".
+ ' Report Tools ,'.  $version->getName() . ' ' . $version->getNumber());
+
+
+$cli->command(new ConnectionsCommand());
+$cli->command(new CountAssetsCommand());
+$cli->command(new CountUsersCommand());
+$cli->command(new DownloadsCommand());
+$cli->command(new DataboxContentCommand());
+$cli->command(new DataboxActionsCommand());
+
+$cli->run();

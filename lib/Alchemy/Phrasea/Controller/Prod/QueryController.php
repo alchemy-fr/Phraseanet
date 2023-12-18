@@ -21,6 +21,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use unicode;
 
 class QueryController extends Controller
@@ -76,7 +77,8 @@ class QueryController extends Controller
             $this->app['elasticsearch.client'],
             $query_context_factory,
             $this->app['elasticsearch.facets_response.factory'],
-            $this->app['elasticsearch.options']
+            $this->app['elasticsearch.options'],
+            $this->app['translator']
         );
 
         $autocomplete = $engine->autocomplete($word, $options);
@@ -120,6 +122,10 @@ class QueryController extends Controller
      */
     public function query(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'searchForm')) {
+            return $this->app->json(['message' => 'invalid search token'], 403);
+        }
+
         $query = (string) $request->request->get('qry');
 
         // since the query comes from a submited form, normalize crlf,cr,lf ...
@@ -351,7 +357,7 @@ class QueryController extends Controller
 
             // add technical fields
             $fieldsInfosByName = [];
-            foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+            foreach(ElasticsearchOptions::getAggregableTechnicalFields($this->app['translator']) as $k => $f) {
                 $fieldsInfosByName[$k] = $f;
                 $fieldsInfosByName[$k]['trans_label'] = $this->app->trans( /** @ignore */ $f['label']);
                 $fieldsInfosByName[$k]['labels'] = [];

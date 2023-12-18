@@ -51,7 +51,9 @@ const printRecord = (services) => {
                     $(this).dialog('widget').css('z-index', '1999');
                 },
                 close: function (event, ui) {
-                    $(this).dialog('widget').css('z-index', 'auto');
+                    // $(this).dialog('widget').css('z-index', 'auto');
+                    $('#DIALOG').dialog('destroy');
+                    $('#DIALOG').css('display', 'none');
                 }
             })
             .dialog('open');
@@ -67,6 +69,11 @@ const printRecord = (services) => {
                 $('#DIALOG').removeClass('loading').empty()
                     .append(data);
                 return;
+            },
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
             }
         });
     }

@@ -14,12 +14,14 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Phrasea\Media\Type\Type;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Gif;
+use unicode;
 
 class SubdefsController extends Controller
 {
@@ -44,14 +46,25 @@ class SubdefsController extends Controller
      * @param Request $request
      * @param int     $sbas_id
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     function changeSubdefsAction(Request $request, $sbas_id) {
         $delete_subdef = $request->request->get('delete_subdef');
         $toadd_subdef = $request->request->get('add_subdef');
-        $Parmsubdefs = $request->request->get('subdefs', []);
+        $Paramsubdefs = $request->request->get('subdefs', []);
+        $ParamDocumentMeta = $request->request->get('document_meta', []);
 
         $databox = $this->findDataboxById((int) $sbas_id);
+        $subdefs = $databox->get_subdef_structure();
+
+        foreach (array_keys($this->getSubviewsMapping()) as $groupeName) {
+            $atributeValue = 'false';
+            if (isset($ParamDocumentMeta[$groupeName])) {
+                $atributeValue = $ParamDocumentMeta[$groupeName] ? 'true' : 'false' ;
+            }
+
+            $subdefs->setGroupAttribute($groupeName, 'writemetaoriginaldocument', $atributeValue);
+        }
 
         $add_subdef = ['class' => null, 'name' => null, 'group' => null, 'mediaType' => null, 'presets' => null, 'path' => null];
         foreach ($add_subdef as $k => $v) {
@@ -73,7 +86,7 @@ class SubdefsController extends Controller
             $subdefs = $databox->get_subdef_structure();
 
             $group = $add_subdef['group'];
-            /** @var \unicode $unicode */
+            /** @var unicode $unicode */
             $unicode = $this->app['unicode'];
             $name = $unicode->remove_nonazAZ09($add_subdef['name'], false);
             $class = $add_subdef['class'];
@@ -91,7 +104,7 @@ class SubdefsController extends Controller
                 //On applique directement les valeurs du preset à la sous def
                 switch ($mediatype) {
                     case Subdef::TYPE_IMAGE :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Image::OPTION_SIZE] = $config["image"]["definitions"][$preset][Image::OPTION_SIZE];
@@ -100,12 +113,13 @@ class SubdefsController extends Controller
                         $options[Image::OPTION_FLATTEN] = $config["image"]["definitions"][$preset][Image::OPTION_FLATTEN];
                         $options[Image::OPTION_QUALITY] = $config["image"]["definitions"][$preset][Image::OPTION_QUALITY];
                         $options[Image::OPTION_ICODEC] = $config["image"]["definitions"][$preset][Image::OPTION_ICODEC];
+                        $options[Image::OPTION_BACKGROUNDCOLOR] = $config["image"]["definitions"][$preset][Image::OPTION_BACKGROUNDCOLOR];
                         foreach ($config["image"]["definitions"][$preset][Subdef::OPTION_DEVICE] as $devices) {
                             $options[Subdef::OPTION_DEVICE][] = $devices;
                         }
                         break;
                     case Subdef::TYPE_VIDEO :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Video::OPTION_AUDIOBITRATE] = $config["video"]["definitions"][$preset][Video::OPTION_AUDIOBITRATE];
@@ -121,7 +135,7 @@ class SubdefsController extends Controller
                         }
                         break;
                     case Subdef::TYPE_FLEXPAPER :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         foreach ($config["document"]["definitions"][$preset]["devices"] as $devices) {
@@ -129,7 +143,7 @@ class SubdefsController extends Controller
                         }
                         break;
                     case Subdef::TYPE_ANIMATION :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Gif::OPTION_SIZE] = $config["gif"]["definitions"][$preset][Gif::OPTION_SIZE];
@@ -139,7 +153,7 @@ class SubdefsController extends Controller
                         }
                         break;
                     case Subdef::TYPE_AUDIO :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Audio::OPTION_AUDIOBITRATE] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOBITRATE];
@@ -159,7 +173,7 @@ class SubdefsController extends Controller
 
             $subdefs = $databox->get_subdef_structure();
 
-            foreach ($Parmsubdefs as $post_sub) {
+            foreach ($Paramsubdefs as $post_sub) {
                 $options = [];
 
                 $post_sub_ex = explode('_', $post_sub, 2);
@@ -171,6 +185,8 @@ class SubdefsController extends Controller
                 $class = $request->request->get($post_sub . '_class');
                 $downloadable = $request->request->get($post_sub . '_downloadable');
                 $orderable = $request->request->get($post_sub . '_orderable');
+                $substituable = $request->request->get($post_sub . '_substituable');
+                $toBuild = $request->request->get($post_sub . '_tobuild');
 
                 $defaults = ['path', 'meta', 'mediatype'];
 
@@ -196,7 +212,7 @@ class SubdefsController extends Controller
                 }
 
                 $labels = $request->request->get($post_sub . '_label', []);
-                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset);
+                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset, $toBuild, $substituable);
             }
         }
 

@@ -1,12 +1,15 @@
-version: "3.4"
+version: "3.9"
 services:
   gateway:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
-    networks:
-      - internal
+  gateway-traefik:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
   builder:
     build:
       context: .
@@ -14,6 +17,7 @@ services:
       args:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    profiles: ["builder"]
     stdin_open: true
     tty: true
     volumes:
@@ -43,21 +47,171 @@ services:
     - .:/var/alchemy/Phraseanet
     networks:
       - internal
+      
+  elasticsearch:
+    ports:
+      - 9200:9200
+    networks:
+      - internal
+      
 
   worker:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     networks:
+      - internal    
+
+  w-mainQueue:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
       - internal
+  
+  w-assetsIngest:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-createRecord:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-deleteRecord:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-editRecord:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-exportMail:
+    volumes:
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-downloadAsync:
+    volumes:
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-exposeUpload:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-exportftp:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-populateIndex:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-pullAssets:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-recordsActions:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-subdefCreation:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-subtitle:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-validationReminder:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-webhook:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-writeMetadatas:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-shareBasket:
+    volumes:
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  scheduler:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  cmd:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal    
 
   rabbitmq:
     ports:
     - ${RABBITMQ_MANAGEMENT_PORT}:15672
     networks:
       - internal
+      
   db:
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
+    ports:
+      - 3306:3306
     networks:
       - internal

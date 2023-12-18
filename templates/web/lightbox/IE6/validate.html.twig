@@ -4,8 +4,8 @@
 {% import 'common/macro_caption.html.twig' as macro_caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
-    <script type="text/javascript" src="/assets/lightbox/js/lightboxIe6{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/lightbox/js/lightboxIe6{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -80,7 +80,7 @@
                                 <img class="collapsed" src="/assets/lightbox/images/collapsedie6.gif"/>
                                 <span class="caption">{{ 'notice' | trans }}</span>
                             </td>
-              {% if basket.getValidation() %}
+              {% if basket.isVoteBasket() %}
                             <td>
                                 <img class="collapsed" src="/assets/lightbox/images/collapsedie6.gif"/>
                                 <span class="validate highlight">{{ 'Validation' | trans }}</span>
@@ -90,7 +90,7 @@
                     </table>
                 </div>
 
-                <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;{% if basket.getValidation() %}display:none;{% endif %}">
+                <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;{% if basket.isVoteBasket() %}display:none;{% endif %}">
                     <div id="record_infos">
                         <div class="lightbox_container">
               {% if basket_element %}
@@ -100,7 +100,7 @@
             </div>
                     </div>
                 </div>
-        {% if basket.getValidation() %}
+        {% if basket.isVoteBasket() %}
                 <div style="width:230px;height:auto;" id="basket_infos" class="right_column_wrapper unselectable right_column_wrapper_user left">
                             {% include 'lightbox/IE6/agreement_box.html.twig' %}
                     <div id="basket_options" class="ui-corner-all unselectable left" style="height:35px;xmargin-top:10px;">
@@ -118,7 +118,7 @@
                             <select id="navigation">
                                 <optgroup label="{{ 'Validations' | trans }}">
                                 {% for item in baskets_collection %}
-                                    {% if item.getValidation() %}
+                                    {% if item.isVoteBasket() %}
                                         <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
                                             value="{{item.getId()}}">{{item.getName()}}</option>
                                     {% endif %}
@@ -126,7 +126,7 @@
                                 </optgroup>
                                 <optgroup label="{{ 'Paniers' | trans }}">
                                 {% for item in baskets_collection %}
-                                  {% if item.getValidation() is null %}
+                                  {% if item.isVoteBasket() is null %}
                                       <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
                                           value="{{item.getId()}}">{{item.getName()}}</option>
                                   {% endif %}

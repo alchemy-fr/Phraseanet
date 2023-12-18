@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \record_adapter;
@@ -409,6 +410,28 @@ class LazaretFile
     }
 
     /**
+     *  get the actual eligible checker from the list saved in DB when uploaded file
+     *
+     * @param Application $app
+     * @return array
+     */
+    public function getEligibleChecks(Application $app)
+    {
+        $eligibleChecks = [];
+        foreach($this->getChecks() as $check) {
+            try {
+                $app['border-manager']->getCheckerFromFQCN($check->getCheckClassname());
+                $eligibleChecks[] = $check;
+            } catch (RuntimeException $e) {
+                // the checker is not enable ( not found )
+                continue;
+            }
+        }
+
+        return $eligibleChecks;
+    }
+
+    /**
      * @return array $checkers
      */
     public function getChecksWhithNameKey()
@@ -453,7 +476,7 @@ class LazaretFile
     {
         $merged = [];
         /** @var LazaretCheck $check */
-        foreach($this->getChecks() as $check) {
+        foreach($this->getEligibleChecks($app) as $check) {
             /** @var record_adapter $record */
             $conflicts = $check->listConflicts($app);
             foreach ($conflicts as $record) {

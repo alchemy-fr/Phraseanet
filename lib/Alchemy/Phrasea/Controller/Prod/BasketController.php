@@ -12,9 +12,9 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoReminderFeedback;
 use Alchemy\Phrasea\Notification\Receiver;
+use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -32,37 +33,84 @@ class BasketController extends Controller
 {
     use NotifierAware;
 
+    public function getWip(Request $request, Basket $basket)
+    {
+        return $this->app->json([
+            'basket_id' => $basket->getId(),
+            'wip' => $basket->getWip()
+        ]);
+    }
+
     public function displayBasket(Request $request, Basket $basket)
     {
+        $me = $this->getAuthenticatedUser();
+        $ret = [
+            'html' => '',
+            'data' => null
+        ];
+
+        $workzoneHelper = new WorkzoneHelper($this->app, $request);
+        $wzContent = $workzoneHelper->getContent(null, $basket->getId());    // same infos as "workzone", but only for this basket
+        foreach ([WorkzoneHelper::BASKETS, WorkzoneHelper::VALIDATIONS] as $kBlock) {
+            foreach ($wzContent[$kBlock] as $wzBasketExt) {
+                /** @var Basket $wzBasket */
+                $wzBasket = $wzBasketExt['object'];
+                // only one should be found
+                if($wzBasket->getId() === $basket->getId()) {
+                    $ret['data'] = $wzBasketExt['data'];
+                }
+            }
+        }
+
+        $ouputFormat = $request->getRequestFormat();
+
+        // if basket is wip, return now
+        if($basket->getWip() !== NULL) {
+            $ret['html'] = $this->render('prod/WorkZone/BasketWip.html.twig', [
+                'basket' => $basket,
+            ]);
+            return $ouputFormat === 'json' ? $this->app->json($ret) : $ret['html'];
+        }
+
+        // basket is not wip, update som infos
         if ($basket->isRead() === false) {
             $basket->markRead();
             $this->getEntityManager()->flush();
         }
 
-        if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+        if ($basket->isParticipant($me)) {
+            if ($basket->getParticipant($me)->getIsAware() === false) {
+                $basket->getParticipant($me)->setIsAware(true);
                 $this->getEntityManager()->flush();
             }
         }
 
-        /** @var \Closure $filter */
+        /** @var Closure $filter */
         $filter = $this->app['plugin.filter_by_authorization'];
 
-        return $this->render('prod/WorkZone/Basket.html.twig', [
-            'basket' => $basket,
-            'ordre'  => $request->query->get('order'),
-            'plugins' => [
-                'actionbar' => $filter('workzone.basket.actionbar'),
-            ],
-        ]);
+        $ret['html'] = $this->render('prod/WorkZone/Basket.html.twig', [
+                'basket'  => $basket,
+                // !!!!!!!!!!!!!!!!!!!!!!!! order is null when a "vote" (feedback) is deployed in wz
+                'ordre'   => $request->query->get('order') ?: Basket::ELEMENTSORDER_NAT,
+                'plugins' => [
+                    'actionbar' => $filter('workzone.basket.actionbar'),
+                ],
+            ]
+        );
+
+        if($ouputFormat === "json") {
+            // return advanced format containig share, feedback... infos and html
+            return $this->app->json($ret);
+        }
+        // default return html
+        return $ret['html'];
     }
 
     public function displayReminder(Request $request, Basket $basket)
     {
-        if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+        if ($basket->isVoteBasket()) {
+            if ($basket->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
+                $basket->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
                 $this->getEntityManager()->flush();
             }
         }
@@ -74,9 +122,16 @@ class BasketController extends Controller
 
     public function doReminder(Request $request, Basket $basket)
     {
-        $userFrom = $basket->getValidation()->getInitiator();
+        if ($basket->isVoteBasket()) {
+            $userFrom = $basket->getVoteInitiator();
+            $isFeedback = true;
+        } else {
+            // get the owner for share
+            $userFrom = $basket->getUser();
+            $isFeedback = false;
+        }
 
-        $expireDate = $basket->getValidation()->getExpires();
+        $expireDate = $basket->getVoteExpires();
         $emitter = Emitter::fromUser($userFrom);
         $localeFrom = $userFrom->getLocale();
 
@@ -124,6 +179,7 @@ class BasketController extends Controller
             $mail = MailInfoReminderFeedback::create($this->app, $receiver, $emitter, $message);
             $mail->setTitle($basket->getName());
             $mail->setButtonUrl($url);
+            $mail->setFeedback($isFeedback);
 
             if (($locale = $userTo->getLocale()) != null) {
                 $mail->setLocale($locale);
@@ -147,6 +203,10 @@ class BasketController extends Controller
 
     public function createBasket(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodCreateBasket')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $basket = new Basket();
 
         $basket->setName($request->request->get('name', ''));
@@ -215,6 +275,10 @@ class BasketController extends Controller
 
     public function updateBasket(Request $request, Basket $basket)
     {
+        if (!$this->isCrsfValid($request, 'prodBasketRename')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $success = false;
 
         try {
@@ -249,16 +313,24 @@ class BasketController extends Controller
 
     public function displayUpdateForm(Basket $basket)
     {
+        $this->setSessionFormToken('prodBasketRename');
+
         return $this->render('prod/Baskets/Update.html.twig', ['basket' => $basket]);
     }
 
     public function displayReorderForm(Basket $basket)
     {
+        $this->setSessionFormToken('prodBasketReorder');
+
         return $this->render('prod/Baskets/Reorder.html.twig', ['basket' => $basket]);
     }
 
     public function reorder(Request $request, Basket $basket)
     {
+        if (!$this->isCrsfValid($request, 'prodBasketReorder')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $ret = ['success' => false, 'message' => $this->app->trans('An error occured')];
         try {
             $order = $request->request->get('element');
@@ -345,20 +417,6 @@ class BasketController extends Controller
             $oldBasket->removeElement($basket_element);
             $basket->addElement($basket_element);
 
-            //  configure participant when moving from other type of basket to basket type feedback
-            if ($oldBasket->getValidation() == null &&  ($validationSession = $basket->getValidation()) !== null) {
-
-                $participants = $validationSession->getParticipants();
-
-                foreach ($participants as $participant) {
-                    $validationData = new ValidationData();
-                    $validationData->setParticipant($participant);
-                    $validationData->setBasketElement($basket_element);
-
-                    $this->getEntityManager()->persist($validationData);
-                }
-            }
-
             $n++;
         }
 
@@ -375,6 +433,8 @@ class BasketController extends Controller
 
     public function displayCreateForm()
     {
+        $this->setSessionFormToken('prodCreateBasket');
+
         return $this->render('prod/Baskets/Create.html.twig');
     }
 

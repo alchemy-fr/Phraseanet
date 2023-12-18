@@ -234,18 +234,26 @@ const lightbox = services => {
                         _slideshow(bool);
                         break;
                     case 38:
-                        el = $('#sc_container .basket_element.selected');
-                        if (el.length === 1) {
-                            id = el.attr('id').split('_').pop();
-                            _setAgreement(event, el, id, 1);
+                        // participants can vote
+                        if ($('#basket_infos .user_infos .choices').length === 1) {
+                            el = $('#sc_container .basket_element.selected');
+                            if (el.length === 1) {
+                                id = el.attr('id').split('_').pop();
+                                _setAgreement(event, el, id, 1);
+                            }
                         }
+
                         break;
                     case 40:
-                        el = $('#sc_container .basket_element.selected');
-                        if (el.length === 1) {
-                            id = el.attr('id').split('_').pop();
-                            _setAgreement(event, el, id, -1);
+                        // participants can vote
+                        if ($('#basket_infos .user_infos .choices').length === 1) {
+                            el = $('#sc_container .basket_element.selected');
+                            if (el.length === 1) {
+                                id = el.attr('id').split('_').pop();
+                                _setAgreement(event, el, id, -1);
+                            }
                         }
+
                         break;
                     default:
                         break;
@@ -1028,7 +1036,8 @@ const lightbox = services => {
             url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
             dataType: 'json',
             data: {
-                note: note
+                note: note,
+                lightbox_token: $(button).closest('form').find('input[name=lightbox_token]').val()
             },
             success: function (datas) {
                 _hideNotes(container);

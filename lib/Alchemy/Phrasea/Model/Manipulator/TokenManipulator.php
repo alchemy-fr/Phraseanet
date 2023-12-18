@@ -19,7 +19,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
-use InvalidArgumentException;
+use Doctrine\ORM\NonUniqueResultException;
 use RandomLib\Generator;
 use RuntimeException;
 
@@ -37,6 +37,7 @@ class TokenManipulator implements ManipulatorInterface
     const TYPE_VIEW = 'view';
     const TYPE_VALIDATE = 'validate';
     const TYPE_RSS = 'rss';
+    const TYPE_USER_RELANCE = 'user-relance';
 
     /** @var Objectmanager */
     private $om;
@@ -97,6 +98,17 @@ class TokenManipulator implements ManipulatorInterface
     }
 
     /**
+     * @param string $tokenValue
+     * @return Token
+     * @throws NonUniqueResultException
+     */
+    public function findValidToken(string $tokenValue)
+    {
+        return $this->repository->findValidToken($tokenValue);
+    }
+
+
+    /**
      * @param Basket $basket
      * @param User $user
      * @param DateTime|null $expiration
@@ -105,10 +117,6 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createBasketValidationToken(Basket $basket, User $user, $expiration)
     {
-        if (null === $basket->getValidation()) {
-            throw new InvalidArgumentException('A validation token requires a validation basket.');
-        }
-
         return $this->create($user, self::TYPE_VALIDATE, $expiration, $basket->getId());
     }
 

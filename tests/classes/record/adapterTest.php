@@ -76,6 +76,9 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $app['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
         $app['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
 
+        $randomValue = bin2hex(random_bytes(35));
+        $app['session']->set('prodExportOrder_token', $randomValue);
+
         $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
@@ -87,7 +90,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $this->getClient()->request(
             'POST', $app['url_generator']->generate('prod_order_new'), [
             'lst'      => $this->getRecord1()->getId(),
-            'deadline' => '+10 minutes'
+            'deadline' => '+10 minutes',
+            'prodExportOrder_token' =>  $randomValue
         ]);
 
         $this->assertTrue($triggered);
@@ -278,7 +282,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
         // Retrieve filename whatever template locale selected
         $values = null;
-        foreach ($record_1->get_caption()->get_fields(['FileName', 'NomDeFichier'], true) as $value) {
+        foreach ($record_1->get_caption()->get_fields(['FileName', 'Filename', 'NomDeFichier'], true) as $value) {
             $values = $value->get_values();
         }
 
@@ -407,7 +411,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
                 $separator = '';
             }
 
-            $multi_imploded = implode(' ' . $separator . ' ', ['test', 'de', 'jeu', 'un']);
+            $multi_imploded = implode(' ' . $separator . ' ', ['un', 'jeu', 'de', 'test']);
 
             if ($meta_el->is_multi()) {
                 $initial_values = [];
@@ -514,6 +518,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     public function testGet_container_baskets()
     {
         $app = $this->getApplication();
+        /** @var \Alchemy\Phrasea\Model\Entities\Basket $basket */
         $basket = $app['orm.em']->find('Phraseanet:Basket', 1);
         $found = $sselcont_id = false;
 

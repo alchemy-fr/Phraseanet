@@ -81,7 +81,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         $cookies = $event->getRequest()->cookies;
 
         if (isset($this->locale) && (false === $cookies->has('locale') || $cookies->get('locale') !== $this->locale)) {
-            $event->getResponse()->headers->setCookie(new Cookie('locale', $this->locale, 0,  '/',  null, false, false));
+            $event->getResponse()->headers->setCookie(new Cookie('locale', $this->locale, 0,  '/',  null, true, false));
         }
     }
 }

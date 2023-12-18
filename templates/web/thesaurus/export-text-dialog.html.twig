@@ -4,7 +4,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ 'thesaurus:: export au format texte' | trans }}</title>
 
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
         <script type="text/javascript">
             var format = "text";
 
@@ -52,7 +52,6 @@
                 url = "./export_"+format+".php?bid={{ bid }}&piv={{ piv }}&id={{ id }}&typ={{ typ }}&dlg=0&smp=1";
                 url += "&osl=" + ($('.osl_1')[0].checked ? "1" : $('.osl_0')[0].checked ? "0" : "0");
                 url += "&iln=" + ($('.iln')[0].checked ? "1" : "0");
-                url += "&hit=" + ($('.hit')[0].checked ? "1" : "0");
                 url += "&ilg=" + ($('.ilg')[0].checked ? "1" : "0");
                 document.getElementById("ifrsample").src = url;
             }
@@ -100,10 +99,6 @@
                                 <div style="white-space:nowrap">
                                     <input type='checkbox' name='ilg' class="ilg" value='1' onclick="chgFormat();">
                                     {{ 'thesaurus:: export : inclure la langue' | trans }}
-                                </div>
-                                <div style="white-space:nowrap">
-                                    <input type='checkbox' name='hit' class="hit" value='1' onclick="chgFormat();">
-                                    {{ 'thesaurus:: export : inclure les hits' | trans }}
                                 </div>
                             </div>
                         </td>

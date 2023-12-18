@@ -231,6 +231,8 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
             'vocabulary-restricted' => true,
             'gui_editable' => true,
             'gui_visible' => true,
+            'input_disable' => false,
+            'printable' => true,
             'generate_cterms' => true,
         ]);
 

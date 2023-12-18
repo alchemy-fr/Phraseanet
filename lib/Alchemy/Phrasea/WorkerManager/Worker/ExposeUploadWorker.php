@@ -22,6 +22,9 @@ class ExposeUploadWorker implements WorkerInterface
 
     private $app;
 
+    private $exposeConfiguration;
+    private $accessTokenInfo;
+
     public function __construct($app)
     {
         $this->app              = $app;
@@ -84,11 +87,16 @@ class ExposeUploadWorker implements WorkerInterface
         }
 
         try {
-            $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-            $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
+            $this->accessTokenInfo = $payload['accessTokenInfo'];
+            $this->exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+            $this->exposeConfiguration = $this->exposeConfiguration[$payload['exposeName']];
 
             $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-            $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+            $clientOptions = [
+                'base_uri'      => $this->exposeConfiguration['expose_base_uri'],
+                'http_errors'   => false,
+                'verify'        => $this->exposeConfiguration['verify_ssl']
+            ];
 
             // add proxy in each request if defined in configuration
             $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
@@ -98,12 +106,12 @@ class ExposeUploadWorker implements WorkerInterface
             $helpers = new PhraseanetExtension($this->app);
 
             // the identification of phraseanet instance in expose
-            $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+            $instanceId = $this->app['conf']->get(['main', 'instance_id']);
 
             // get mapping if exist
-            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $payload['accessToken'], $payload['publicationId']);
+            $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $payload['publicationId']);
 
-            $exposeFieldMappingName = $phraseanetLocalId . '_field_mapping';
+            $exposeFieldMappingName = $instanceId . '_field_mapping';
             $fieldMapping = !empty($clientAnnotationProfile[$exposeFieldMappingName]) ? $clientAnnotationProfile[$exposeFieldMappingName] : [];
             $fieldListToUpload = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
 
@@ -191,7 +199,7 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
-            $exposeSubdefMappingName = $phraseanetLocalId . '_subdef_mapping';
+            $exposeSubdefMappingName = $instanceId . '_subdef_mapping';
             $actualSubdefMapping = !empty($clientAnnotationProfile[$exposeSubdefMappingName]) ? $clientAnnotationProfile[$exposeSubdefMappingName] : [];
             $documentType = $record->getType();
 
@@ -209,20 +217,28 @@ class ExposeUploadWorker implements WorkerInterface
             unset($mapping[$phraseanetSubdefAsDocument]);
 
             // this is the unique reference for record in phraseanet and assets in expose
-            // phraseanetLocalKey_basedID_record_id
-            $assetId = $phraseanetLocalId.'_'.$record->getId();
+            // instanceId_basedID_record_id
+            $assetId = $instanceId . '_' . $record->getId();
 
-            $requestBody = [
-                'publication_id' => $payload['publicationId'],
-                'description'    => $description,
-                'asset_id'       => $assetId,
-                'upload' => [
-                    'type' => $record->get_subdef($phraseanetSubdefAsDocument)->get_mime(),
-                    'size' => $record->get_subdef($phraseanetSubdefAsDocument)->get_size(),
-                    'name' => $record->get_subdef($phraseanetSubdefAsDocument)->get_file()
+            if ($record->has_subdef($phraseanetSubdefAsDocument) && $record->get_subdef($phraseanetSubdefAsDocument)->is_physically_present()) {
+                $requestBody = [
+                    'publication_id' => $payload['publicationId'],
+                    'description'    => $description,
+                    'asset_id'       => $assetId,
+                    'title'          => $record->get_title(),
+                    'upload' => [
+                        'type' => $record->get_subdef($phraseanetSubdefAsDocument)->get_mime(),
+                        'size' => $record->get_subdef($phraseanetSubdefAsDocument)->get_size(),
+                        'name' => $record->get_subdef($phraseanetSubdefAsDocument)->get_file()
 
-                ]
-            ];
+                    ]
+                ];
+            } else {
+                $this->messagePublisher->pushLog(sprintf("subdefinition %s or file as document mapping not found", $phraseanetSubdefAsDocument));
+                $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
+
+                return ;
+            }
 
             if ($lat !== null) {
                 $requestBody['lat'] = $lat;
@@ -236,9 +252,11 @@ class ExposeUploadWorker implements WorkerInterface
                 $requestBody['webVTT'] = $webVTT;
             }
 
+            $token = $this->getToken();
+
             $response = $exposeClient->post('/assets', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $payload['accessToken']
+                    'Authorization' => 'Bearer ' . $token
                 ],
                 'json' => $requestBody
             ]);
@@ -252,7 +270,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             $assetsResponse = json_decode($response->getBody(),true);
 
-            $uploadUrl = $proxyConfig->getClientWithOptions();
+            $uploadUrl = $proxyConfig->getClientWithOptions(['verify' => $this->exposeConfiguration['verify_ssl']]);
             $uploadUrl->put($assetsResponse['uploadURL'], [
                 'headers' => [
                     'Content-Type' => 'application/binary'
@@ -263,13 +281,14 @@ class ExposeUploadWorker implements WorkerInterface
             if (count($mapping) == 0) {
                 $mapping = [
                     'thumbnail'  => 'thumbnail',
-                    'preview'    => 'preview'
+                    'preview'    => 'preview',
+                    'poster'     => 'poster'
                 ];
             }
 
             // add sub-definition from mapping
             foreach ($mapping as $phraseanetSubdef => $exposeSubdef) {
-                $isThumbnail = $isPreview= false;
+                $isThumbnail = $isPreview = $isPoster = false;
                 switch ($exposeSubdef) {
                     case 'thumbnail':
                         $subdefName = $exposeSubdef;
@@ -279,59 +298,70 @@ class ExposeUploadWorker implements WorkerInterface
                         $subdefName = $exposeSubdef;
                         $isPreview = true;
                         break;
+                    case 'poster':
+                        $subdefName = $exposeSubdef;
+                        $isPoster = true;
+                        break;
                     case 'none':
                     default:
                         $subdefName = $phraseanetSubdef;
                         break;
                 }
 
-                $this->postSubDefinition(
-                    $exposeClient,
-                    $payload['accessToken'],
-                    $assetsResponse['id'],
-                    $record->get_subdef($phraseanetSubdef),
-                    $subdefName,
-                    $isPreview,
-                    $isThumbnail
+                if ($record->has_subdef($phraseanetSubdef) && $record->get_subdef($phraseanetSubdef)->is_physically_present()) {
+                    $this->postSubDefinition(
+                        $exposeClient,
+                        $assetsResponse['id'],
+                        $record->get_subdef($phraseanetSubdef),
+                        $subdefName,
+                        $isPreview,
+                        $isThumbnail,
+                        $isPoster
 
-                );
+                    );
+                } else {
+                    $this->messagePublisher->pushLog(sprintf("subdefinition %s or file not found, skipped", $phraseanetSubdef));
+                }
             }
 
             $this->messagePublisher->pushLog("Asset ID :". $assetsResponse['id'] ." successfully uploaded! ");
         } catch (\Exception $e) {
-            $workerMessage = "An error occurred when creating asset!: ". $e->getMessage();
+//            $workerMessage = "An error occurred when creating asset!: ". $e->getMessage();
+//
+//            $this->messagePublisher->pushLog($workerMessage);
+//
+//            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+//
+//            $this->repoWorker->reconnect();
+//            $em->beginTransaction();
+//            try {
+//                $workerRunningJob
+//                    ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
+//                    ->setStatus(WorkerRunningJob::ERROR)
+//                ;
+//
+//                $em->persist($workerRunningJob);
+//                $em->flush();
+//                $em->commit();
+//            } catch (\Exception $e) {
+//                $em->rollback();
+//            }
+//
+//            $payload['workerJobId'] = $workerRunningJob->getId();
+//            $fullPayload = [
+//                'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
+//                'payload'       => $payload
+//            ];
+//
+//            $this->messagePublisher->publishRetryMessage(
+//                $fullPayload,
+//                MessagePublisher::EXPOSE_UPLOAD_TYPE,
+//                $count,
+//                $workerMessage
+//            );
 
-            $this->messagePublisher->pushLog($workerMessage);
-
-            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
-
-            $this->repoWorker->reconnect();
-            $em->beginTransaction();
-            try {
-                $workerRunningJob
-                    ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
-                    ->setStatus(WorkerRunningJob::ERROR)
-                ;
-
-                $em->persist($workerRunningJob);
-                $em->flush();
-                $em->commit();
-            } catch (\Exception $e) {
-                $em->rollback();
-            }
-
-            $payload['workerJobId'] = $workerRunningJob->getId();
-            $fullPayload = [
-                'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
-                'payload'       => $payload
-            ];
-
-            $this->messagePublisher->publishRetryMessage(
-                $fullPayload,
-                MessagePublisher::EXPOSE_UPLOAD_TYPE,
-                $count,
-                $workerMessage
-            );
+            $this->messagePublisher->pushLog("An error occurred when creating asset!: ". $e->getMessage());
+            $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
 
             return;
         }
@@ -340,8 +370,10 @@ class ExposeUploadWorker implements WorkerInterface
         $this->finishedJob($workerRunningJob, $em);
     }
 
-    private function getClientAnnotationProfile(Client $exposeClient, $accessToken, $publicationId)
+    private function getClientAnnotationProfile(Client $exposeClient, $publicationId)
     {
+        $accessToken = $this->getToken();
+
         $resPublication = $exposeClient->get('/publications/'.$publicationId , [
             'headers' => [
                 'Authorization' => 'Bearer '. $accessToken,
@@ -359,13 +391,16 @@ class ExposeUploadWorker implements WorkerInterface
         return $clientAnnotationProfile;
     }
 
-    private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false)
+    private function postSubDefinition(Client $exposeClient, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false, $isPoster = false)
     {
+        $token = $this->getToken();
+
         $requestBody = [
-            'asset_id' => $assetId,
-            'name'     => $subdefName,
+            'asset_id'          => $assetId,
+            'name'              => $subdefName,
             'use_as_preview'    => $isPreview,
             'use_as_thumbnail'  => $isThumbnail,
+            'use_as_poster'     => $isPoster,
             'upload' => [
                 'type' => $subdef->get_mime(),
                 'size' => $subdef->get_size(),
@@ -376,7 +411,7 @@ class ExposeUploadWorker implements WorkerInterface
 
         $response = $exposeClient->post('/sub-definitions', [
             'headers' => [
-                'Authorization' => 'Bearer ' .$token
+                'Authorization' => 'Bearer ' . $token
             ],
             'json'  => $requestBody
         ]);
@@ -391,7 +426,8 @@ class ExposeUploadWorker implements WorkerInterface
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
 
-        $uploadUrl = $proxyConfig->getClientWithOptions();
+        $verifySsl = $exposeClient->getConfig('verify') ? true : false;
+        $uploadUrl = $proxyConfig->getClientWithOptions(['verify' => $verifySsl]);
 
         $res = $uploadUrl->put($subDefResponse['uploadURL'], [
             'headers' => [
@@ -420,6 +456,85 @@ class ExposeUploadWorker implements WorkerInterface
         } catch (\Exception $e) {
             $this->messagePublisher->pushLog("Error when wanting to update database :" . $e->getMessage());
             $em->rollback();
+        }
+    }
+
+    private function getToken()
+    {
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+
+        $clientOptions = [
+            'http_errors' => false,
+            'verify' => $this->exposeConfiguration['verify_ssl']
+        ];
+
+        $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
+
+        if ($this->exposeConfiguration['connection_kind'] == 'password') {
+            if (!isset($this->accessTokenInfo['expires_at'])) {
+                return $this->accessTokenInfo['access_token'];
+            } elseif ($this->accessTokenInfo['expires_at'] > time()) {
+                return $this->accessTokenInfo['access_token'];
+            } elseif ($this->accessTokenInfo['expires_at'] <= time() && isset($tokenInfo['refresh_expires_at']) && $this->accessTokenInfo['refresh_expires_at'] > time()) {
+                $resToken = $oauthClient->post($this->exposeConfiguration['oauth_token_uri'], [
+                    'form_params' => [
+                        'client_id' => $this->exposeConfiguration['auth_client_id'],
+                        'client_secret' => $this->exposeConfiguration['auth_client_secret'],
+                        'grant_type' => 'refresh_token',
+                        'refresh_token' => $this->accessTokenInfo['refresh_token']
+                    ]
+                ]);
+
+                if ($resToken->getStatusCode() !== 200) {
+                    return null;
+                }
+
+                $refreshtokenBody = $resToken->getBody()->getContents();
+
+                $refreshtokenBody = json_decode($refreshtokenBody, true);
+
+                // update the access token information
+                $this->accessTokenInfo = [
+                    'access_token' => $refreshtokenBody['access_token'],
+                    'expires_at' => time() + $refreshtokenBody['expires_in'],
+                    'refresh_token' => $refreshtokenBody['refresh_token'],
+                    'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
+                ];
+
+                return $refreshtokenBody['access_token'];
+            } else {
+                return null;
+            }
+        } elseif ($this->exposeConfiguration['connection_kind'] == 'client_credentials') {
+            if (!isset($this->accessTokenInfo['expires_at'])) {
+                return $this->accessTokenInfo['access_token'];
+            } elseif ($this->accessTokenInfo['expires_at'] > time()) {
+                return $this->accessTokenInfo['access_token'];
+            } else {
+                $response = $oauthClient->post($this->exposeConfiguration['oauth_token_uri'], [
+                    'form_params' => [
+                        'client_id'     => $this->exposeConfiguration['expose_client_id'],
+                        'client_secret' => $this->exposeConfiguration['expose_client_secret'],
+                        'grant_type'    => 'client_credentials'
+                    ]
+                ]);
+
+                if ($response->getStatusCode() !== 200) {
+                    return null;
+                }
+
+                $refreshtokenBody = $response->getBody()->getContents();
+
+                $refreshtokenBody = json_decode($refreshtokenBody,true);
+
+                // update the access token information
+                $this->accessTokenInfo = [
+                    'access_token' => $refreshtokenBody['access_token'],
+                    'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                ];
+
+                return $refreshtokenBody['access_token'];
+            }
         }
     }
 }

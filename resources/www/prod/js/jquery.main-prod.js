@@ -1504,9 +1504,11 @@ $(document).ready(function () {
             $(this).removeClass('focused');
         });
 
-    $('.basketTips').tooltip({
-        delay: 200
-    });
+    // todo: check if used
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // $('.basketTips').tooltip({
+    //     delay: 200
+    // });
 
     $('#idFrameC .tabs').tabs({
         activate: function (event, ui) {

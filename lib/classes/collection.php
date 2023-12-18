@@ -66,6 +66,19 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $repository = self::getRepository($app, $databoxId);
         $collection = new CollectionVO($databoxId, 0, $name);
 
+        $dom = new \DOMDocument();
+        try {
+            if(!@$dom->load($app['root.path'] . '/lib/conf.d/collection_settings.xml')) {
+                $dom = null;
+            }
+        }
+        catch (Exception $e) {
+            $dom = null;
+        }
+        if($dom) {
+            $collection->setPreferences($dom->saveXML());
+        }
+
         $repository->save($collection);
 
         $repository = $app['repo.collection-references'];
@@ -597,6 +610,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
 
+        // clear cached collection
+        $this->getCollectionRepository()->clearCache();
+
         // clear the trivial cache of databox->get_collections()
         $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);
 
@@ -616,6 +632,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
+
+        // clear cached collection
+        $this->getCollectionRepository()->clearCache();
 
         // clear the trivial cache of databox->get_collections()
         $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);
@@ -637,6 +656,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->collectionService->emptyCollection($this->databox, $this->collectionVO, $pass_quantity);
         $this->dispatch(CollectionEvents::EMPTIED, new EmptiedEvent($this));
         return $this;
+    }
+
+    public function getCollectionRecordIdList()
+    {
+        return $this->collectionService->getCollectionRecordIdList($this->collectionVO);
     }
 
     /**

@@ -45,7 +45,9 @@ class eventsmanager_broker
                 'eventsmanager_notify_orderdeliver',
                 'eventsmanager_notify_ordernotdelivered',
                 'eventsmanager_notify_push',
+                'eventsmanager_notify_basketwip',
                 'eventsmanager_notify_register',
+                'eventsmanager_notify_subtitle',
                 'eventsmanager_notify_uploadquarantine',
                 'eventsmanager_notify_validate',
                 'eventsmanager_notify_validationdone',
@@ -381,6 +383,36 @@ class eventsmanager_broker
                 [
                     'usr_id' => PDO::PARAM_INT,
                     'notifications' => Connection::PARAM_INT_ARRAY,
+                ]
+            )
+            ->execute()
+        ;
+
+        return $this;
+    }
+
+    /**
+     * mark all user notification as read
+     * @param $usr_id
+     * @return $this
+     */
+    public function readAll($usr_id)
+    {
+        /** @var Connection $connection */
+        $connection = $this->app->getApplicationBox()->get_connection();
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->update('notifications')
+            ->set('unread', '0')
+            ->where(
+                $builder->expr()->eq('usr_id', ':usr_id')
+            )
+            ->setParameters(
+                [
+                    'usr_id' => $usr_id,
+                ],
+                [
+                    'usr_id' => PDO::PARAM_INT,
                 ]
             )
             ->execute()

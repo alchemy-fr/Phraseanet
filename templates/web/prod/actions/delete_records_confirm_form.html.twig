@@ -6,7 +6,8 @@
     {% endif %}
 
     <form id="delete-record-form" style="margin: 0;" method="POST" action="{{ path('record_delete') }}">
-        <input type="hidden" value="{{ records.serializedList() }}" name="lst"/>
+        <input type="hidden" value="{{ records.serializedList(true) }}" name="lst"/>
+
         {% if trashableCount > 0 %}
             <div class="well-small label-important"
                  style="background-color: #ffef22;">
@@ -36,6 +37,7 @@
                 <img src="/assets/common/images/icons/loader000.gif"/>
             </span>
         </div>
+        <input type="hidden" name="prodDeleteRecord_token" value="{{ app['session'].get('prodDeleteRecord_token') }}">
     </form>
 {% elseif records.received().count() == 0 %}
     <div class="well-small" style="text-align:center;">

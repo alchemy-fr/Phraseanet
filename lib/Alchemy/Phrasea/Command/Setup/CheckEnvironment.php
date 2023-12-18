@@ -42,7 +42,7 @@ class CheckEnvironment extends AbstractCheckCommand
         return [
             new BinariesRequirements(),
             new CacheServerRequirement(),
-            new FilesystemRequirements(),
+            new FilesystemRequirements($this->container['conf']),
             new LocalesRequirements(),
             new PhpRequirements(),
             new SystemRequirements(),

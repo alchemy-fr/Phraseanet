@@ -33,6 +33,7 @@ use Closure;
 use databox_field;
 use Doctrine\Common\Collections\ArrayCollection;
 use Elasticsearch\Client;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -59,6 +60,8 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private $context_factory;
 
+    private $translator;
+
     /**
      * @param Application $app
      * @param GlobalStructure $structure
@@ -66,8 +69,9 @@ class ElasticSearchEngine implements SearchEngineInterface
      * @param QueryContextFactory $context_factory
      * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
+     * @param TranslatorInterface $translator
      */
-    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options, TranslatorInterface $translator)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -75,6 +79,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->context_factory = $context_factory;
         $this->facetsResponseFactory = $facetsResponseFactory;
         $this->options = $options;
+        $this->translator = $translator;
 
         $this->indexName = $options->getIndexName();
     }
@@ -455,7 +460,57 @@ class ElasticSearchEngine implements SearchEngineInterface
             $sort['record_id'] = $options->getSortOrder();
         }
         else {
-            $sort[sprintf('caption.%s.raw', $options->getSortBy())] = $options->getSortOrder();
+            $f = array_filter(
+                $options->getFields(),
+                function (databox_field $f) use($options) {
+                    return $f->get_name() === $options->getSortBy();
+                }
+            );
+            if(count($f) == 1) {
+                // the field is found
+                $f = array_pop($f);
+                /** databox_field $f */
+                $k = sprintf('%scaption.%s', $f->isBusiness() ? "private_":"", $options->getSortBy());
+                switch ($f->get_type()) {
+                    case databox_field::TYPE_DATE:
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "date"
+                        ];
+                        break;
+                    case databox_field::TYPE_NUMBER:
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "double"
+                        ];
+                        break;
+                    case databox_field::TYPE_STRING:
+                    default:
+                        $k .= '.sort';
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "keyword"
+                        ];
+                        break;
+                }
+            }
+
+            /* script tryout
+                $sort["_script"] = [
+                'type' => "string",
+                'script' => [
+                    // 'lang' => "painless",
+                    'inline' => sprintf(
+                        "doc['caption.%s'] ? doc['caption.%s.raw'].value : (doc['private_caption.%s'] ? doc['private_caption.%s.raw'].value : '')",
+                        $options->getSortBy(), $options->getSortBy(), $options->getSortBy(), $options->getSortBy()
+                    )
+                ],
+                'order' => "asc"
+            ];
+            */
         }
 
         if (!array_key_exists('record_id', $sort)) {
@@ -730,7 +785,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $aggs = [];
         // technical aggregates (enable + optional limit)
-        foreach (ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+        foreach (ElasticsearchOptions::getAggregableTechnicalFields($this->translator) as $k => $f) {
             $size = $this->options->getAggregableFieldLimit($k);
             if ($size !== databox_field::FACET_DISABLED) {
                 if ($size === databox_field::FACET_NO_LIMIT) {
@@ -743,6 +798,13 @@ class ElasticSearchEngine implements SearchEngineInterface
                     ]
                 ];
                 $aggs[$k] = $agg;
+                if($options->getIncludeUnsetFieldFacet() === true) {
+                    $aggs[$k . '#empty'] = [
+                        'missing' => [
+                            'field' => $f['esfield'],
+                        ]
+                    ];
+                }
             }
         }
         // fields aggregates

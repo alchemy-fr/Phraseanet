@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Core\Version;
 interface VersionRepository
 {
 
-    const DEFAULT_VERSION = '0.0.0.0';
+    const DEFAULT_VERSION = '0.0.0';
 
     /**
      * @return string

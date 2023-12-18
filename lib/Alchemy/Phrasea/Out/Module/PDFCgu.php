@@ -4,7 +4,8 @@ namespace Alchemy\Phrasea\Out\Module;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
-use \IntlDateFormatter as DateFormatter;
+use IntlDateFormatter as DateFormatter;
+use record_adapter;
 
 class PDFCgu extends PDF
 {
@@ -102,8 +103,8 @@ class PDFCgu extends PDF
 
         $ndoc = 0;
         foreach ($this->recordIds as $recordId) {
-            /* @var \record_adapter $rec */
-            $rec = new \record_adapter($this->app, $this->databoxId, $recordId);
+            /* @var record_adapter $rec */
+            $rec = new record_adapter($this->app, $this->databoxId, $recordId);
             $subdef = $rec->get_subdef('thumbnail');
 
             $fimg = $subdef->getRealPath();
@@ -131,7 +132,7 @@ class PDFCgu extends PDF
             if ($this->pdf->GetY() > $this->pdf->getPageHeight() - (6 + $finalHeight + 20))
                 $this->pdf->AddPage();
 
-            $title = "record : " . $rec->get_title();
+            $title = "record : " . $rec->get_title(['encode'=> record_adapter::ENCODE_NONE]);
 
             $y = $this->pdf->GetY();
 

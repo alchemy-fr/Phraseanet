@@ -1,5 +1,6 @@
+{# @var Story \Alchemy\Phrasea\Model\Entities\StoryWZ #}
 <div>
-    <button class="tools-accordion"><span>{{ 'prod::workzone:Actions' | trans }}</span></button>
+    <button class="tools-accordion">{{ 'prod::workzone:Actions' | trans }}</button>
     <div class="tools-panel">
 
         <button class="ui-corner-all TOOL_disktt_btn story_window" data-selection-source="story">
@@ -43,15 +44,15 @@
 
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
             <button class="ui-corner-all TOOL_pushdoc_btn story_window" data-selection-source="story">
-                <img src="/assets/common/images/icons/push16.png"/>
+                <i class="fa fa-gift push_rec" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 15px;width:16px; height:16px"></i>
                 <span>{{ 'action : push' | trans }}</span>
             </button>
         {% endif %}
 
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-            <button class="ui-corner-all TOOL_feedback_btn story_window" data-selection-source="story">
-                <img src="/assets/common/images/icons/feedback16.png"/>
-                <span>{{ 'Feedback' | trans }}</span>
+            <button class="ui-corner-all TOOL_sharebasket_btn story_window" data-selection-source="story">
+                <i class="fa fa-share share_sent" style="width: 19px;padding-top: 3px;padding-bottom: 2px;height: 17px;"></i>
+                <span>{{ 'Share' | trans }}</span>
             </button>
         {% endif %}
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}

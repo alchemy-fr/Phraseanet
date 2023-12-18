@@ -2,17 +2,17 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
-    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script type="text/javascript">
 
-    {% if basket.getValidation() %}
+    {% if basket.isVoteBasket %}
     var lightboxApp = lightboxMobileApplication.bootstrap({
         lang: '{{ app.locale }}',
         baseUrl: '{{ app['request'].getUriForPath('/') }}',
         basePath: '{{ app.request.basePath|e('js') }}',
-        releasable: {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+        releasable: {% if basket.getVoteInitiator().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     });
 
 
@@ -30,7 +30,7 @@
 <div id="home" data-role="page">
     <div data-role="header">
         <a rel="external"
-           href="{{ path('lightbox') }}{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}"
+           href="{{ path('lightbox') }}{% if basket.isVoteBasket() %}#validation{% else %}#baskets{% endif %}"
            data-icon="arrow-l">{{ 'Back' | trans }}</a>
     <h1>{{basket.getName()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
@@ -46,7 +46,7 @@
     </p>
 
 
-        {% if basket.getValidation() %}
+        {% if basket.isVoteBasket() %}
             <div id="FeedbackRelease" class="modal fade" role="dialog" style="display: none">
                 <div class="modal-dialog">
                     <!-- Modal content-->
@@ -112,8 +112,8 @@
                             <div class="display_id">
                                 {{basket_element.getOrd()}}
                             </div>
-                            {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-                                <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}disagree{% endif %}">
+                            {% if basket_element.getBasket().isVoteBasket() and basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+                                <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == true %}agree{% elseif basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == false and basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() is not null %}disagree{% endif %}">
                                     </div>
                             {% endif %}
                             <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
@@ -127,7 +127,7 @@
     </div>
 
         <div class="btn-container">
-            {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+            {% if basket.isVoteBasket() and basket.getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
                 <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}" onclick="
 
 

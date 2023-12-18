@@ -87,13 +87,17 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExportFtpNoDocs()
     {
+        $randomValue = $this->setSessionFormToken('prodExportFTP');
+
         self::$DI['client']->request('POST', '/prod/export/ftp/',  [
             'address' => 'test.ftp',
             'login'      => 'login',
             'dest_folder' => 'documents',
             'prefix_folder' => 'documents',
-            'obj'        => ['preview']
+            'obj'        => ['preview'],
+            'prodExportFTP_token' => $randomValue
         ]);
+
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
@@ -109,7 +113,8 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExportFtpBadRequest($params)
     {
-        self::$DI['client']->request('POST', '/prod/export/ftp/', $params);
+        $randomValue = $this->setSessionFormToken('prodExportFTP');
+        self::$DI['client']->request('POST', '/prod/export/ftp/', array_merge($params, ['prodExportFTP_token' => $randomValue]));
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
@@ -131,6 +136,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
     public function testExportFtp()
     {
         $app = $this->getApplication();
+        $randomValue = $this->setSessionFormToken('prodExportFTP');
 
         $bkp = $app['conf']->get('registry');
 
@@ -150,7 +156,8 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
             'login'      => $user->getEmail(),
             'dest_folder' => '/home/test/',
             'prefix_folder' => 'test2/',
-            'obj'        => ['preview']
+            'obj'        => ['preview'],
+            'prodExportFTP_token' => $randomValue
         ]);
 
         $response = $this->getClient()->getResponse();
@@ -172,10 +179,13 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         //  deliver method removed in the listener
 //        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRecordsExport');
 
+        $randomValue = $this->setSessionFormToken('prodExportEmail');
+
         $this->getClient()->request('POST', '/prod/export/mail/', [
             'lst'        => $this->getRecord1()->getId(),
             'destmail'   => 'user@example.com',
             'obj'        => ['preview'],
+            'prodExportEmail_token' => $randomValue
         ]);
 
         $response = $this->getClient()->getResponse();

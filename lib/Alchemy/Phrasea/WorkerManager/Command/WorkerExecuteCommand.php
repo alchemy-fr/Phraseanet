@@ -34,6 +34,14 @@ class WorkerExecuteCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        // close all connection initialized in databox and appbox class for this worker command
+        //  the consumer will launch the command bin/console worker:run-service with all needed DB connection
+        foreach ($this->container['dbs.options'] as $name => $options) {
+            $this->container['dbs'][$name]->close();
+        }
+        $this->container['connection.pool.manager']->closeAll();
+        // close DB connection finished
+
         $argQueueName = $input->getOption('queue-name');
         $maxProcesses = intval($input->getOption('max-processes'));
 
@@ -68,15 +76,14 @@ class WorkerExecuteCommand extends Command
 
         /** @var MessageHandler $messageHandler */
         $messageHandler = $this->container['alchemy_worker.message.handler'];
-        $messageHandler->consume($serverConnection, $workerInvoker, $argQueueName, $maxProcesses);
+        $messageHandler->consume($channel, $serverConnection, $workerInvoker, $argQueueName, $maxProcesses);
 
         /** @var Connection $dbConnection */
         $dbConnection = $this->container['orm.em']->getConnection();
 
         while (count($channel->callbacks)) {
-            $output->writeln("[*] Waiting for messages. To exit press CTRL+C");
-
             // check connection for DB before given message to consumer
+            // otherwise return 1
             if($dbConnection->ping() === false){
                 $output->writeln("MySQL server is not available : retry to close and connect ....");
 

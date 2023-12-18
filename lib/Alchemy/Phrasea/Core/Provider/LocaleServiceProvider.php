@@ -31,7 +31,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
             $availableLanguages = PhraseaApplication::getAvailableLanguages();
 
             if ($app['configuration.store']->isSetup() && 0 < count((array) $app['conf']->get(['languages', 'available']))) {
-                $languages = $app['conf']->get(['languages', 'available']);
+                $languages = $app['conf']->get(['languages', 'available'], []);
                 $enabledLanguages = $availableLanguages;
 
                 foreach ($enabledLanguages as $code => $language) {

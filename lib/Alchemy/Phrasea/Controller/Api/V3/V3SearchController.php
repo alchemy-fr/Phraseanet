@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Controller\Api\V3;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use Alchemy\Phrasea\Controller\Api\InstanceIdAware;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
@@ -30,28 +31,28 @@ use Alchemy\Phrasea\Search\SubdefTransformer;
 use Alchemy\Phrasea\Search\SubdefView;
 use Alchemy\Phrasea\Search\TechnicalDataTransformer;
 use Alchemy\Phrasea\Search\TechnicalDataView;
-use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
+use Alchemy\Phrasea\Search\V3SearchCompositeResultTransformer;
 use Alchemy\Phrasea\Search\V3SearchResultTransformer;
 use Alchemy\Phrasea\Search\V3StoryTransformer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use caption_record;
 use League\Fractal\Manager as FractalManager;
 use League\Fractal\Resource\Item;
-use League\Fractal\Serializer\ArraySerializer;
 use media_Permalink_Adapter;
 use media_subdef;
 use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Utilities\Stopwatch;
 
 class V3SearchController extends Controller
 {
     use JsonBodyAware;
     use DispatcherAware;
+    use InstanceIdAware;
 
     /**
      * Search for results
@@ -66,9 +67,9 @@ class V3SearchController extends Controller
 
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
-        $storyTransformer = new V3StoryTransformer($subdefTransformer, $recordTransformer);
-        $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
+        $storyTransformer = new V3StoryTransformer($recordTransformer);
+        $compositeTransformer = new V3SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
         $searchTransformer = new V3SearchResultTransformer($compositeTransformer);
 
         $transformerResolver = new SearchResultTransformerResolver([
@@ -77,9 +78,6 @@ class V3SearchController extends Controller
             'facets' => new CallbackTransformer(),
             'suggestions' => new CallbackTransformer(),
             'results.stories' => $storyTransformer,
-            'results.stories.thumbnail' => $subdefTransformer,
-            'results.stories.metadatas' => new CallbackTransformer(),
-            'results.stories.caption' => new CallbackTransformer(),
             'results.stories.children' => $recordTransformer,
             'results.stories.children.thumbnail' => $subdefTransformer,
             'results.stories.children.technical_informations' => $technicalDataTransformer,
@@ -89,11 +87,19 @@ class V3SearchController extends Controller
             'results.stories.children.caption' => new CallbackTransformer(),
             'results.records' => $recordTransformer,
             'results.records.thumbnail' => $subdefTransformer,
+            'results.stories.thumbnail' => $subdefTransformer,
             'results.records.technical_informations' => $technicalDataTransformer,
+            // 'results.stories.technical_informations' => $technicalDataTransformer,   // no ti on story
             'results.records.subdefs' => $subdefTransformer,
+            'results.stories.subdefs' => $subdefTransformer,
             'results.records.metadata' => new CallbackTransformer(),
-            'results.records.status' => new CallbackTransformer(),
+            'results.stories.metadata' => new CallbackTransformer(),
+            'results.records.metadatas' => new CallbackTransformer(),
+            'results.stories.metadatas' => new CallbackTransformer(),
             'results.records.caption' => new CallbackTransformer(),
+            'results.stories.caption' => new CallbackTransformer(),
+            'results.records.status' => new CallbackTransformer(),
+            'results.stories.status' => new CallbackTransformer(),
         ]);
 
         $includeResolver = new IncludeResolver($transformerResolver);
@@ -269,7 +275,7 @@ class V3SearchController extends Controller
                 }
             }
 
-            if (in_array('results.stories.metadatas', $includes, true) ||
+            if (in_array('results.stories.metadata', $includes, true) ||
                 in_array('results.stories.caption', $includes, true)) {
                 $captions = $this->app['service.caption']->findByReferenceCollection($stories);
                 $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($stories);

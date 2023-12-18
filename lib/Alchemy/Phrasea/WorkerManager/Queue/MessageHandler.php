@@ -22,16 +22,14 @@ class MessageHandler
     /**
      * called by WorkerExecuteCommand cli
      *
+     * @param AMQPChannel $channel
      * @param AMQPConnection $AMQPConnection
      * @param WorkerInvoker $workerInvoker
      * @param array|null $argQueueNames
      * @param $maxProcesses
      */
-    public function consume(AMQPConnection $AMQPConnection, WorkerInvoker $workerInvoker, $argQueueNames, $maxProcesses)
+    public function consume(AMQPChannel $channel, AMQPConnection $AMQPConnection, WorkerInvoker $workerInvoker, $argQueueNames, $maxProcesses)
     {
-
-        $channel = $AMQPConnection->getChannel();
-
         if ($channel == null) {
             // todo : if there is no channel, can we push ?
             $this->messagePublisher->pushLog("Can't connect to rabbit, check configuration!", "error");
@@ -80,7 +78,7 @@ class MessageHandler
 
                 $logMessage = sprintf("Rabbit message executed %s times, it's to be saved in %s , payload >>> %s",
                     $count,
-                    $msgType,
+                    $AMQPConnection->getFailedQueueName($msgType),
                     json_encode($data['payload'])
                 );
                 $publisher->pushLog($logMessage);
@@ -89,7 +87,7 @@ class MessageHandler
             }
             else {
                 try {
-                    $workerInvoker->invokeWorker($msgType, json_encode($data['payload']));
+                    $workerInvoker->invokeWorker($msgType, json_encode($data['payload']), $channel);
 
                     if ($AMQPConnection->hasLoopQueue($msgType)) {
                         // make a loop for the loop type

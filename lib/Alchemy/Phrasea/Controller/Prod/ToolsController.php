@@ -28,6 +28,7 @@ use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DataURI\Parser;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 
 class ToolsController extends Controller
@@ -43,14 +44,14 @@ class ToolsController extends Controller
 
         $metadatas = false;
         $record = null;
-        $recordAccessibleSubdefs = array();
-        $listsubdef= null;
+        $recordAccessibleSubdefs = [];
+        $listsubdef = null;
         if (count($records) == 1) {
-            /** @var \record_adapter $record */
+            /** @var record_adapter $record */
             $record = $records->first();
 
             /**Array list of subdefs**/
-            $listsubdef = array_keys($record-> get_subdefs());
+            $listsubdef = array_keys($record->get_subdefs());
             // fetch subdef list:
             $subdefs = $record->get_subdefs();
 
@@ -72,18 +73,19 @@ class ToolsController extends Controller
                             continue;
                         }
                         $label = $this->app->trans('prod::tools: document');
-                    } elseif ($databoxSubdefs !== null && $databoxSubdefs->hasSubdef($subdefName)) {
+                    }
+                    elseif ($databoxSubdefs !== null && $databoxSubdefs->hasSubdef($subdefName)) {
                         if (!$acl->has_access_to_subdef($record, $subdefName)) {
                             continue;
                         }
 
                         $label = $databoxSubdefs->getSubdef($subdefName)->get_label($this->app['locale']);
                     }
-                    $recordAccessibleSubdefs[] = array(
-                        'name' => $subdef->get_name(),
+                    $recordAccessibleSubdefs[] = [
+                        'name'  => $subdef->get_name(),
                         'state' => $permalink->get_is_activated(),
                         'label' => $label,
-                    );
+                    ];
                 }
             }
             if (!$record->isStory()) {
@@ -91,17 +93,64 @@ class ToolsController extends Controller
             }
         }
 
+        $availableSubdefLabel = [];
+        $countSubdefTodo = [];
+
+        $substituables = [];
+        if ($this->getConf()->get(['registry', 'modules', 'doc-substitution'])) {
+            $substituables[] = 'document';
+        }
+        /** @var record_adapter $rec */
+        foreach ($records as $rec) {
+
+            $databoxSubdefs = $rec->getDatabox()->get_subdef_structure()->getSubdefGroup($rec->getType());
+            if ($databoxSubdefs !== null) {
+                foreach ($databoxSubdefs as $sub) {
+                    if ($sub->isTobuild()) {
+                        $label = trim($sub->get_label($this->app['locale']));
+                        $availableSubdefLabel[] = $label;
+                        if (isset($countSubdefTodo[$label])) {
+                            $countSubdefTodo[$label]++;
+                        }
+                        else {
+                            $countSubdefTodo[$label] = 1;
+                        }
+                    }
+                    if ($sub->isSubstituable()) {
+                        $substituables[] = $sub->get_name();
+                    }
+                }
+            }
+        }
+
+        if (count($records) > 1) {
+            $substituables = [];
+        }
+
+        $this->setSessionFormToken('prodToolsSubdef');
+        $this->setSessionFormToken('prodToolsRotate');
+        $this->setSessionFormToken('prodToolsHDSubstitution');
+        $this->setSessionFormToken('prodToolsThumbSubstitution');
+
         return $this->render('prod/actions/Tools/index.html.twig', [
-            'records'           => $records,
-            'record'            => $record,
-            'recordSubdefs'     => $recordAccessibleSubdefs,
-            'metadatas'         => $metadatas,
-            'listsubdef'        => $listsubdef
+            'records'              => $records,
+            'record'               => $record,
+            'recordSubdefs'        => $recordAccessibleSubdefs,
+            'metadatas'            => $metadatas,
+            'listsubdef'           => $listsubdef,
+            'availableSubdefLabel' => array_unique($availableSubdefLabel),
+            'nbRecords'            => count($records),
+            'countSubdefTodo'      => $countSubdefTodo,
+            'substituables'        => $substituables,
         ]);
     }
 
     public function rotateAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsRotate')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid rotate form'], 403);
+        }
+
         $records = RecordsRequest::fromRequest($this->app, $request, false);
         $rotation = (int)$request->request->get('rotation', 90);
         $rotation %= 360;
@@ -127,7 +176,8 @@ class ToolsController extends Controller
 
                 try {
                     $subdef->rotate($rotation, $this->getMediaAlchemyst(), $this->getMediaVorus());
-                } catch (\Exception $e) {
+                }
+                catch (\Exception $e) {
                     // ignore exception
                 }
             }
@@ -140,12 +190,18 @@ class ToolsController extends Controller
 
     public function imageAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsSubdef')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid create subview form'], 403);
+        }
+
         $return = ['success' => true];
 
         $force = $request->request->get('force_substitution') == '1';
+        $subdefsLabel = $request->request->get('subdefsLabel', []);
 
         $selection = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
 
+        /** @var record_adapter $record */
         foreach ($selection as $record) {
             $substituted = false;
             /** @var  \media_subdef $subdef */
@@ -162,7 +218,19 @@ class ToolsController extends Controller
             }
 
             if (!$substituted || $force) {
-                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record));
+                $subdefsName = [];
+
+                // get subdefinition name from selected subdefinition label
+                $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+                if ($databoxSubdefs !== null) {
+                    foreach ($databoxSubdefs as $sub) {
+                        if (in_array(trim($sub->get_label($this->app['locale'])), $subdefsLabel)) {
+                            $subdefsName[] = $sub->get_name();
+                        }
+                    }
+                }
+
+                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record, false, $subdefsName));
             }
         }
 
@@ -172,6 +240,10 @@ class ToolsController extends Controller
 
     public function hddocAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsHDSubstitution')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid document substitution form'], 403);
+        }
+
         $success = false;
         $message = $this->app->trans('An error occured');
 
@@ -194,52 +266,59 @@ class ToolsController extends Controller
                         throw new RuntimeException('Error while renaming file');
                     }
 
-                    $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
+                    $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
                     $media = $this->app->getMediaFromUri($tempoFile);
 
                     $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
                     $record->insertTechnicalDatas($this->getMediaVorus());
-                    $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader() ->read($media), $record);
+                    $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader()->read($media), $record);
 
                     $this->getDataboxLogger($record->getDatabox())
-                        ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '' );
+                        ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '');
 
-                    if ((int) $request->request->get('ccfilename') === 1) {
+                    if ((int)$request->request->get('ccfilename') === 1) {
                         $record->set_original_name($fileName);
                     }
                     unlink($tempoFile);
                     rmdir($tempoDir);
                     $success = true;
                     $message = $this->app->trans('Document has been successfully substitued');
-                } catch (\Exception $e) {
+                }
+                catch (\Exception $e) {
                     $message = $this->app->trans('file is not valid');
                 }
-            } else {
+            }
+            else {
                 $message = $this->app->trans('file is not valid');
             }
-        } else {
+        }
+        else {
             $this->app->abort(400, 'Missing file parameter');
         }
 
         return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
-            'success'   => $success,
-            'message'   => $message,
+            'success' => $success,
+            'message' => $message,
         ]);
     }
 
     public function changeThumbnailAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodToolsThumbSubstitution')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid thumbnail substitution form'], 403);
+        }
+
         $file = $request->files->get('newThumb');
 
         if (empty($file)) {
             $this->app->abort(400, 'Missing file parameter');
         }
 
-        if (! $file->isValid()) {
+        if (!$file->isValid()) {
             return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
-                'success'   => false,
-                'message'   => $this->app->trans('file is not valid'),
+                'success' => false,
+                'message' => $this->app->trans('file is not valid'),
             ]);
         }
 
@@ -254,26 +333,32 @@ class ToolsController extends Controller
                 throw new RuntimeException('Error while renaming file');
             }
 
-            $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
+            $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
-            $this->getSubDefinitionSubstituer()->substituteSubdef($record, 'thumbnail', $media);
+            // no BC break before PHRAS-3918 when only "thumbnail" was substituable
+            if(($subdef = $request->get('subdef')) === null) {
+                $subdef = 'thumbnail';
+            }
+
+            $this->getSubDefinitionSubstituer()->substituteSubdef($record, $subdef, $media);
             $this->getDataboxLogger($record->getDatabox())
-                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
+                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subdef, '');
 
             unlink($tempoFile);
             rmdir($tempoDir);
             $success = true;
-            $message = $this->app->trans('Thumbnail has been successfully substitued');
-        } catch (\Exception $e) {
+            $message = sprintf($this->app->trans('Subdef "%s" has been successfully substitued'), $subdef);
+        }
+        catch (\Exception $e) {
             $success = false;
             $message = $this->app->trans('file is not valid');
         }
 
         return $this->render('prod/actions/Tools/iframeUpload.html.twig', [
-            'success'   => $success,
-            'message'   => $message,
+            'success' => $success,
+            'message' => $message,
         ]);
     }
 
@@ -282,16 +367,17 @@ class ToolsController extends Controller
         $template = 'prod/actions/Tools/confirm.html.twig';
 
         try {
-            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
             $var = [
-                'video_title' => $record->get_title(),
+                'video_title' => $record->get_title(['encode' => record_adapter::ENCODE_NONE]),
                 'image'       => $request->request->get('image', ''),
             ];
             $return = [
                 'error' => false,
                 'datas' => $this->render($template, $var),
             ];
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $return = [
                 'error' => true,
                 'datas' => $this->app->trans('an error occured'),
@@ -304,7 +390,7 @@ class ToolsController extends Controller
     public function applyThumbnailExtractionAction(Request $request)
     {
         try {
-            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
             $subDef = $request->request->get('sub_def');
 
@@ -318,7 +404,8 @@ class ToolsController extends Controller
             }
 
             $return = ['success' => true, 'message' => ''];
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $return = ['success' => false, 'message' => $e->getMessage()];
         }
 
@@ -335,7 +422,7 @@ class ToolsController extends Controller
     public function editRecordSharing(Request $request, $base_id, $record_id)
     {
 
-        $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
+        $record = new record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
         $subdefName = (string)$request->request->get('name');
         $state = $request->request->get('state') == 'true' ? true : false;
 
@@ -358,7 +445,8 @@ class ToolsController extends Controller
         try {
             $permalink->set_is_activated($state);
             $return = ['success' => true, 'state' => $permalink->get_is_activated()];
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $return = ['success' => false, 'state' => $permalink->get_is_activated()];
         }
 
@@ -398,12 +486,12 @@ class ToolsController extends Controller
     }
 
     /**
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @param string $subDefName
      * @param string $subDefDataUri
      * @throws \DataURI\Exception\InvalidDataException
      */
-    private function substituteMedia(\record_adapter $record, $subDefName, $subDefDataUri)
+    private function substituteMedia(record_adapter $record, $subDefName, $subDefDataUri)
     {
         $dataUri = Parser::parse($subDefDataUri);
 
@@ -414,13 +502,14 @@ class ToolsController extends Controller
 
         $media = $this->app->getMediaFromUri($fileName);
 
-        if($subDefName == 'document') {
+        if ($subDefName == 'document') {
             $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
-        } else {
+        }
+        else {
             $this->getSubDefinitionSubstituer()->substituteSubdef($record, $subDefName, $media);
         }
         $this->getDataboxLogger($record->getDatabox())
-          ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
+            ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
 
         unset($media);
         $this->getFilesystem()->remove($fileName);
@@ -432,7 +521,7 @@ class ToolsController extends Controller
      */
     public function saveMetasAction(Request $request)
     {
-        $record = new \record_adapter($this->app,
+        $record = new record_adapter($this->app,
             (int)$request->request->get("databox_id"),
             (int)$request->request->get("record_id"));
 
@@ -458,30 +547,19 @@ class ToolsController extends Controller
 
     public function autoSubtitleAction(Request $request)
     {
-        $record = new \record_adapter($this->app,
+        $record = new record_adapter($this->app,
             (int)$request->request->get("databox_id"),
             (int)$request->request->get("record_id")
         );
 
-        $permalinkUrl = '';
-        $conf = $this->getConf();
-
-        // if subdef_source not set, by default use the preview permalink
-        $subdefSource = $conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'subdef_source']) ?: 'preview';
-
-        if ($this->isPhysicallyPresent($record, $subdefSource) && ($previewLink = $record->get_subdef($subdefSource)->get_permalink()) != null) {
-            $permalinkUrl = $previewLink->get_url()->__toString();
-        }
 
         $this->dispatch(
             PhraseaEvents::RECORD_AUTO_SUBTITLE,
             new RecordAutoSubtitleEvent(
                 $record,
-                $permalinkUrl,
                 $request->request->get("subtitle_language_source"),
-                $request->request->get("meta_struct_id_source"),
-                $request->request->get("subtitle_language_destination"),
-                $request->request->get("meta_struct_id_destination")
+                json_decode($request->request->get("subtitle_destination"), true),
+                $this->getAuthenticatedUser()->getId()
             )
         );
 
@@ -498,7 +576,7 @@ class ToolsController extends Controller
         $videoTextTrackFields = [];
 
         if (count($records) == 1) {
-            /** @var \record_adapter $record */
+            /** @var record_adapter $record */
             $record = $records->first();
             $databox = $record->getDatabox();
 
@@ -514,7 +592,7 @@ class ToolsController extends Controller
                     '_value' => $record->getCaption([$meta->get_name()]),
                 ];
 
-                if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2 ) {
+                if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2) {
                     $field['label'] = $matches[1];
                     $field['meta_struct_id'] = $meta->get_id();
                     $field['value'] = '';
@@ -535,23 +613,63 @@ class ToolsController extends Controller
         $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/videoEditor.html.twig', [
-            'records'               => $records,
-            'record'                => $record,
-            'videoEditorConfig'     => $conf->get(['video-editor']),
-            'metadatas'             => $metadatas,
-            'JSonFields'            => json_encode($JSFields),
-            'videoTextTrackFields'  => $videoTextTrackFields
+            'records'              => $records,
+            'record'               => $record,
+            'videoEditorConfig'    => $conf->get(['video-editor']),
+            'metadatas'            => $metadatas,
+            'JSonFields'           => json_encode($JSFields),
+            'videoTextTrackFields' => $videoTextTrackFields,
+            'languages'            => $this->languageList()
         ]);
     }
 
-    private function isPhysicallyPresent(\record_adapter $record, $subdefName)
+    private function isPhysicallyPresent(record_adapter $record, $subdefName)
     {
         try {
             return $record->get_subdef($subdefName)->is_physically_present();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             unset($e);
         }
 
         return false;
+    }
+
+    private function languageList()
+    {
+        return [
+            'af-ZA' => 'af-ZA Afrikaans (South Africa)', 'am-ET' => 'am-ET Amharic (Ethiopia)',
+            'ar-DZ' => 'ar-DZ Arabic (Algeria)', 'ar-BH' => 'ar-BH Arabic (Bahrain)',
+            'ar-EG' => 'ar-EG Arabic (Egypt)', 'ar-IQ' => 'ar-IQ Arabic (Iraq)',
+            'ar-IL' => 'ar-IL Arabic (Israel)', 'ar-YE' => 'ar-YE Arabic (Yemen)',
+            'eu-ES' => 'eu-ES Basque (Spain)', 'bn-BD' => 'bn-BD Bengali (Bangladesh)',
+            'bn-IN' => 'bn-IN Bengali (India)', 'bg-BG' => 'bg-BG Bulgarian (Bulgaria)',
+            'ca-ES' => 'ca-ES Catalan (Spain)', 'yue-Hant-HK' => 'yue-Hant-HK Chinese, Cantonese (Traditional, Hong Kong)',
+            'cmn-Hans-CN' => 'cmn-Hans-CN Chinese, Mandarin (Simplified, China)', 'hr-HR' => 'hr-HR Croatian (Croatia)',
+            'cs-CZ' => 'cs-CZ Czech (Czech Republic)', 'da-DK' => 'da-DK Danish (Denmark)',
+            'nl-NL' => 'nl-NL Dutch (Netherlands)', 'nl-BE' => 'nl-BE Dutch (Belgium)',
+            'en-AU' => 'en-AU English (Australia)', 'en-CA' => 'en-CA English (Canada)',
+            'en-GB' => 'en-GB English (United Kingdom)', 'en-US' => 'en-US	English (United States)',
+            'fr-CA' => 'fr-CA French (Canada)', 'fr-FR' => 'fr-FR French (France)',
+            'fr-BE' => 'fr-BE French (Belgium)', 'fr-CH' => 'fr-CH French (Switzerland)',
+            'ka-GE' => 'ka-GE Georgian (Georgia)', 'de-DE' => 'de-DE German (Germany)',
+            'el-GR' => 'el-GR Greek (Greece)', 'he-IL' => 'he-IL Hebrew (Israel)',
+            'hi-IN' => 'hi-IN Hindi (India)', 'hu-HU' => 'hu-HU Hungarian (Hungary)',
+            'is-IS' => 'is-IS Icelandic (Iceland)', 'id-ID' => 'id-ID Indonesian (Indonesia)',
+            'it-IT' => 'it-IT Italian (Italy)', 'ja-JP' => 'ja-JP Japanese (Japan)',
+            'ko-KR' => 'ko-KR Korean (South Korea)', 'lo-LA' => 'lo-LA Lao (Laos)',
+            'lt-LT' => 'lt-LT Lithuanian (Lithuania)', 'ms-MY' => 'ms-MY Malay (Malaysia)',
+            'ne-NP' => 'ne-NP Nepali (Nepal)', 'nb-NO' => 'nb-NO Norwegian Bokmål (Norway)',
+            'pl-PL' => 'pl-PL Polish (Poland)', 'pt-BR' => 'pt-BR Portuguese (Brazil)',
+            'pt-PT' => 'pt-PT Portuguese (Portugal)', 'ro-RO' => 'ro-RO	Romanian (Romania)',
+            'ru-RU' => 'ru-RU Russian (Russia)', 'sr-RS' => 'sr-RS Serbian (Serbia)',
+            'sk-SK' => 'sk-SK Slovak (Slovakia)', 'sl-SI' => 'sl-SI	Slovenian (Slovenia)',
+            'es-ES' => 'es-ES Spanish (Spain)', 'sv-SE' => 'sv-SE Swedish (Sweden)',
+            'th-TH' => 'th-TH Thai (Thailand)', 'tr-TR' => 'tr-TR Turkish (Turkey)',
+            'uk-UA' => 'uk-UA Ukrainian (Ukraine)', 'vi-VN' => 'vi-VN Vietnamese (Vietnam)',
+            'et-EE' => 'et-EE Estonian (Estonia)', 'mn-MN' => 'mn-MN Mongolian (Mongolia)',
+            'uz-UZ' => 'uz-UZ Uzbek (Uzbekistan)'
+
+        ];
     }
 }

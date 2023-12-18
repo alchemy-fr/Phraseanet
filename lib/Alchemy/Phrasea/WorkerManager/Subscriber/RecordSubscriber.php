@@ -58,18 +58,20 @@ class RecordSubscriber implements EventSubscriberInterface
 
             if ($subdefs !== null) {
                 foreach ($subdefs as $subdef) {
+                    // if subdefsTodo = null , so make all subdefs if phraseanet can build it
+                    if ($subdef->isTobuild() && ($event->getSubdefsTodo() === null || (!empty($event->getSubdefsTodo()) && in_array($subdef->get_name(), $event->getSubdefsTodo())))) {
+                        $payload = [
+                            'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
+                            'payload' => [
+                                'recordId'      => $event->getRecord()->getRecordId(),
+                                'databoxId'     => $event->getRecord()->getDataboxId(),
+                                'subdefName'    => $subdef->get_name(),
+                                'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
+                            ]
+                        ];
 
-                    $payload = [
-                        'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
-                        'payload' => [
-                            'recordId'      => $event->getRecord()->getRecordId(),
-                            'databoxId'     => $event->getRecord()->getDataboxId(),
-                            'subdefName'    => $subdef->get_name(),
-                            'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
-                        ]
-                    ];
-
-                    $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
+                        $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
+                    }
                 }
             }
         }
@@ -78,7 +80,7 @@ class RecordSubscriber implements EventSubscriberInterface
     public function onDelete(DeleteEvent $event)
     {
         //  first remove record from the grid answer, so first delete the record in the index elastic
-        $this->app['dispatcher']->dispatch(RecordEvents::DELETED, new DeletedEvent($event->getRecord()));
+        $this->app['dispatcher']->dispatch(WorkerEvents::RECORD_DELETE_INDEX, new DeletedEvent($event->getRecord()));
 
         //  publish payload to queue
         $payload = [
@@ -152,10 +154,7 @@ class RecordSubscriber implements EventSubscriberInterface
     {
         $databoxId = $event->getDataboxId();
         $recordIds = $event->getRecordIds();
-
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("handle RECORDS_WRITE_META for %s.[%s]", $databoxId, join(',', $recordIds))
-        ), FILE_APPEND | LOCK_EX);
+        $acceptedMimeTypes = $this->app['conf']->get(['workers', 'writeMetadatas', 'acceptedMimeType'], []);
 
         foreach ($recordIds as $recordId) {
             $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
@@ -163,41 +162,54 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $databox = $this->getApplicationBox()->get_databox($databoxId);
             $record  = $databox->get_record($recordId);
-            $type    = $record->getType();
 
-            foreach ($mediaSubdefs as $subdef) {
-                // check subdefmetadatarequired  from the subview setup in admin
-                if ( $subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
-                    $payload = [
-                        'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                        'payload' => [
-                            'recordId'    => $recordId,
-                            'databoxId'   => $databoxId,
-                            'subdefName'  => $subdef->get_name()
-                        ]
-                    ];
+            // do not try to write meta on non story record
+            if (!$record->isStory()) {
+                $type    = $record->getType();
 
-                    if ($subdef->is_physically_present()) {
-                        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                            sprintf("q-publish  WRITE_METADATAS_TYPE for %s.%s.%s", $databoxId, $recordId, $subdef->get_name())
-                        ), FILE_APPEND | LOCK_EX);
+                $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
-                        $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
-                    }
-                    else {
-                        $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
-                            $subdef->get_name(),
-                            MessagePublisher::WRITE_METADATAS_TYPE,
-                            json_encode($payload)
-                        );
-                        $this->messagePublisher->pushLog($logMessage);
+                if ($subdefGroupe !== null) {
+                    $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+                } else {
+                    $toWritemetaOriginalDocument = true;
+                }
 
-                        $this->messagePublisher->publishRetryMessage(
-                            $payload,
-                            MessagePublisher::WRITE_METADATAS_TYPE,
-                            2,
-                            'Subdef is not physically present!'
-                        );
+                foreach ($mediaSubdefs as $subdef) {
+                    // check subdefmetadatarequired  from the subview setup in admin
+                    // check if we want to write meta in this mime type
+                    if (in_array(trim($subdef->get_mime()), $acceptedMimeTypes) &&
+                        (
+                            ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
+                            $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
+                        )
+                    ) {
+                        $payload = [
+                            'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
+                            'payload' => [
+                                'recordId'    => $recordId,
+                                'databoxId'   => $databoxId,
+                                'subdefName'  => $subdef->get_name()
+                            ]
+                        ];
+                        if ($subdef->is_physically_present()) {
+                            $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
+                        }
+                        else {
+                            $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
+                                $subdef->get_name(),
+                                MessagePublisher::WRITE_METADATAS_TYPE,
+                                json_encode($payload)
+                            );
+                            $this->messagePublisher->pushLog($logMessage);
+
+                            $this->messagePublisher->publishRetryMessage(
+                                $payload,
+                                MessagePublisher::WRITE_METADATAS_TYPE,
+                                2,
+                                'Subdef is not physically present!'
+                            );
+                        }
                     }
                 }
             }
@@ -217,12 +229,6 @@ class RecordSubscriber implements EventSubscriberInterface
 
     public function onSubdefinitionWritemeta(SubdefinitionWritemetaEvent $event)
     {
-        $record = $event->getRecord();
-
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("Event WorkerEvents::SUBDEFINITION_WRITE_META catched  for %s.%s.%s", $record->getDataboxId(), $record->getRecordId(), $event->getSubdefName())
-        ), FILE_APPEND | LOCK_EX);
-
         if ($event->getStatus() == SubdefinitionWritemetaEvent::FAILED) {
             $payload = [
                 'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
@@ -277,6 +283,8 @@ class RecordSubscriber implements EventSubscriberInterface
 
         }
         else {
+            $acceptedMimeTypes = $this->app['conf']->get(['workers', 'writeMetadatas', 'acceptedMimeType'], []);
+
             $databoxId = $event->getRecord()->getDataboxId();
             $recordId = $event->getRecord()->getRecordId();
 
@@ -286,8 +294,22 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $subdef = $record->get_subdef($event->getSubdefName());
 
+            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            if ($subdefGroupe !== null) {
+                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            } else {
+                // default write meta on document
+                $toWritemetaOriginalDocument = true;
+            }
+
             //  only the required writemetadata from admin > subview setup is to be writing
-            if ($subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+            //  check if we want to write meta in this mime type
+            if (in_array($subdef->get_mime(), $acceptedMimeTypes) &&
+                (
+                    ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
+                    $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
+                )
+            ) {
                 $payload = [
                     'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                     'payload' => [
@@ -297,22 +319,7 @@ class RecordSubscriber implements EventSubscriberInterface
                     ]
                 ];
 
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("sending message MessagePublisher::WRITE_METADATAS_TYPE for %s.%s.%s ...", $databoxId, $recordId, $event->getSubdefName())
-                ), FILE_APPEND | LOCK_EX);
-
                 $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
-
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("   ... message MessagePublisher::WRITE_METADATAS_TYPE sent for %s.%s.%s", $databoxId, $recordId, $event->getSubdefName())
-                ), FILE_APPEND | LOCK_EX);
-            }
-            else {
-
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("no MessagePublisher::WRITE_METADATAS_TYPE for %s.%s.%s because(isSubdefMetadataUpdateRequired=%d)", $databoxId, $recordId, $event->getSubdefName(), $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name()))
-                ), FILE_APPEND | LOCK_EX);
-
             }
         }
 

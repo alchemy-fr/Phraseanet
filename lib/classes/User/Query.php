@@ -39,12 +39,17 @@ class User_Query
     const LIKE_MATCH_OR = 'OR';
     const LIKE_TYPE_START = 'like_start';
     const LIKE_TYPE_CONTAINS = 'like_contains';
+    const LIKE_TYPE_FINISH = 'like_finish';
+    const LIKE_TYPE_EMPTY = 'like_empty';
 
     protected $app;
     protected $results = [];
     protected $sort = [];
     protected $like_field = [];
     protected $like_type = 'like_start';
+    protected $date_field;
+    protected $date_operator;
+    protected $date_value;
     protected $have_rights = null;
     protected $have_not_rights = null;
     protected $like_match = 'OR';
@@ -55,7 +60,11 @@ class User_Query
     protected $bases_restrictions = false;
     protected $sbas_restrictions = false;
     protected $include_templates = false;
-    protected $only_templates = false;
+    protected $only_user_templates = false;
+    protected $templates_only = false;
+    protected $mail_locked_only = false;
+    protected $grace_period_only = false;
+    protected $with_api_only = false;
     protected $email_not_null = false;
     protected $base_ids = [];
     protected $sbas_ids = [];
@@ -64,6 +73,7 @@ class User_Query
     protected $last_model = null;
     protected $results_quantity = null;
     protected $include_phantoms = true;
+    protected $phantoms_only = false;
     protected $include_special_users = false;
     protected $include_invite = false;
     protected $emailDomains = null;
@@ -141,6 +151,19 @@ class User_Query
     }
 
     /**
+     * Users with no rights in any base only
+     *
+     * @param bool $boolean
+     * @return $this
+     */
+    public function phantoms_only($boolean = false)
+    {
+        $this->phantoms_only = !!$boolean;
+
+        return $this;
+    }
+
+    /**
      * Include user such as 'guest' and 'autoregister'
      *
      * @param bool $boolean
@@ -197,15 +220,76 @@ class User_Query
     }
 
     /**
-     * Restrict to templates
+     * Restrict to user templates
      *
      * @param $boolean
      *
      * @return $this
      */
-    public function only_templates($boolean)
+    public function only_user_templates($boolean)
     {
-        $this->only_templates = !!$boolean;
+        $this->only_user_templates = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict only to templates
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function templates_only($boolean)
+    {
+        $this->templates_only = !!$boolean;
+
+        // set include template if not restrict only to the templates
+        if (!$boolean) {
+            $this->include_templates = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Restrict only on mail locked
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function mail_locked_only($boolean)
+    {
+        $this->mail_locked_only = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict only on grace period
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function grace_period_only($boolean)
+    {
+        $this->grace_period_only = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict only on user with api
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function with_api_only($boolean)
+    {
+        $this->with_api_only = !!$boolean;
 
         return $this;
     }
@@ -414,6 +498,47 @@ class User_Query
         $this->like_type = $like_type;
         $this->total = $this->page = $this->total_page = null;
 
+        return $this;
+    }
+
+    /**
+     * Restrict on date
+     *
+     * @param $dateField
+     * @param $dateValue
+     * @param $dateOperator
+     *
+     * @return $this
+     */
+    public function date_filter($dateField, $dateValue, $dateOperator)
+    {
+        try {
+            $dValue = new \DateTime($dateValue);
+            $dateValue = $dValue->format('Y-m-d');
+        } catch (Exception $e) {
+            $dateValue = null;
+        }
+
+        switch ($dateOperator) {
+            case 'date_less_than':
+                $op = '<';
+
+                break;
+            case 'date_greater_than':
+                $op = '>=';
+
+                break;
+            default:
+                $op = $dateOperator;
+
+                break;
+        }
+
+        $this->date_field = $dateField;
+        $this->date_value = $dateValue;
+        $this->date_operator = $op;
+
+        $this->total = $this->page = $this->total_page = null;
         return $this;
     }
 
@@ -875,6 +1000,7 @@ class User_Query
         $sql = '
                 FROM Users LEFT JOIN basusr ON (Users.id = basusr.usr_id)
                 LEFT JOIN sbasusr ON (Users.id = sbasusr.usr_id)
+                LEFT JOIN ApiApplications ON (Users.id = ApiApplications.creator_id)
                 WHERE 1 ';
 
         if (! $this->include_special_users) {
@@ -891,7 +1017,9 @@ class User_Query
             $sql .= ' AND Users.email IS NOT NULL ';
         }
 
-        if ($this->only_templates === true) {
+        if ($this->templates_only) {
+            $sql .= ' AND model_of IS NOT NULL';
+        } elseif ($this->only_user_templates === true) {
             if (!$this->app->getAuthenticatedUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
@@ -900,8 +1028,18 @@ class User_Query
             $sql .= ' AND model_of IS NULL';
         } elseif ($this->app->getAuthenticatedUser()) {
             $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId() . ' ) ';
-        } else {
-            $sql .= ' AND model_of IS NULL';
+        }
+
+        if ($this->mail_locked_only) {
+            $sql .= ' AND mail_locked = 1';
+        }
+
+        if ($this->grace_period_only) {
+            $sql .= ' AND Users.nb_inactivity_email > 0 ';
+        }
+
+        if ($this->with_api_only) {
+            $sql .= ' AND ApiApplications.creator_id IS NOT NULL ';
         }
 
         if ($this->emailDomains) {
@@ -933,14 +1071,18 @@ class User_Query
                 throw new Exception('No base available for you, not enough rights');
             }
         } else {
-            $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
-
-            $not_base_id = array_diff($this->active_bases, $this->base_ids);
-
-            if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
-                $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+            if ($this->phantoms_only) {
+                $sql .= ' AND base_id IS NULL ';
             } else {
-                $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
+
+                $not_base_id = array_diff($this->active_bases, $this->base_ids);
+
+                if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
+                    $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+                } else {
+                    $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                }
             }
         }
 
@@ -949,18 +1091,22 @@ class User_Query
                 throw new Exception('No base available for you, not enough rights');
             }
         } else {
-            $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
-
-            $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
-
-            if (count($not_sbas_id) > 0 && count($not_sbas_id) < count($this->sbas_ids)) {
-                $sql .= sprintf('  AND ((sbas_id != %s ) ' . $extra . ')'
-                    , implode(' AND sbas_id != ', $not_sbas_id)
-                );
+            if ($this->phantoms_only) {
+                $sql .= ' AND sbas_id IS NULL ';
             } else {
-                $sql .= sprintf(' AND (sbas_id = %s  ' . $extra . ') '
-                    , implode(' OR sbas_id = ', $this->sbas_ids)
-                );
+                $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
+
+                $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
+
+                if (count($not_sbas_id) > 0 && count($not_sbas_id) < count($this->sbas_ids)) {
+                    $sql .= sprintf('  AND ((sbas_id != %s ) ' . $extra . ')'
+                        , implode(' AND sbas_id != ', $not_sbas_id)
+                    );
+                } else {
+                    $sql .= sprintf(' AND (sbas_id = %s  ' . $extra . ') '
+                        , implode(' OR sbas_id = ', $this->sbas_ids)
+                    );
+                }
             }
         }
 
@@ -990,6 +1136,16 @@ class User_Query
             $sql .= ' AND Users.last_model = ' . $this->app->getApplicationBox()->get_connection()->quote($this->last_model) . ' ';
         }
 
+        if (!empty($this->date_field)) {
+            if ($this->date_operator == 'date_null') {
+                $sql .= sprintf(' AND  Users.`%s` is NULL', $this->date_field);
+            } else {
+                if (!empty($this->date_value)) {
+                    $sql .= sprintf(' AND DATE(Users.`%s`) %s  "%s" ', $this->date_field, $this->date_operator, $this->date_value);
+                }
+            }
+        }
+
         $sql_like = [];
 
         foreach ($this->like_field as $like_field => $like_value) {
@@ -1008,7 +1164,15 @@ class User_Query
                                 , self::LIKE_LASTNAME
                                 , str_replace(['"', '%'], ['\"', '\%'], $like_val)
                             );
-                        } else {
+                        } elseif ($this->like_type == self::LIKE_TYPE_FINISH) {
+                            $queries[] = sprintf(
+                                ' (Users.`%s` LIKE "%%%s"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%%%s"  COLLATE utf8_unicode_ci)  '
+                                , self::LIKE_FIRSTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                                , self::LIKE_LASTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            );
+                        } elseif ($this->like_type == self::LIKE_TYPE_START) {
                             $queries[] = sprintf(
                                 ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
                                 , self::LIKE_FIRSTNAME
@@ -1017,7 +1181,16 @@ class User_Query
                                 , str_replace(['"', '%'], ['\"', '\%'], $like_val)
                             );
                         }
+                    }
 
+                    if ($this->like_type == self::LIKE_TYPE_EMPTY) {
+                        $queries[] = sprintf(
+                            ' ((Users.`%s` is NULL OR Users.`%s` = "") AND (Users.`%s` is NULL OR Users.`%s` = ""))  '
+                            , self::LIKE_FIRSTNAME
+                            , self::LIKE_FIRSTNAME
+                            , self::LIKE_LASTNAME
+                            , self::LIKE_LASTNAME
+                        );
                     }
 
                     if (count($queries) > 0) {
@@ -1035,6 +1208,18 @@ class User_Query
                             ' Users.`%s` LIKE "%%%s%%"  COLLATE utf8_unicode_ci '
                             , $like_field
                             , str_replace(['"', '%'], ['\"', '\%'], $like_value)
+                        );
+                    } elseif ($this->like_type == self::LIKE_TYPE_FINISH) {
+                        $sql_like[] = sprintf(
+                            ' Users.`%s` LIKE "%%%s"  COLLATE utf8_unicode_ci '
+                            , $like_field
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_value)
+                        );
+                    } elseif ($this->like_type == self::LIKE_TYPE_EMPTY) {
+                        $sql_like[] = sprintf(
+                            ' (Users.`%s` is NULL OR  Users.`%s` = "") '
+                            , $like_field
+                            , $like_field
                         );
                     } else {
                         $sql_like[] = sprintf(

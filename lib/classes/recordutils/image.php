@@ -15,6 +15,7 @@ use Imagine\Exception\Exception as ImagineException;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Palette\RGB;
+use Imagine\Image\Palette\Color\ColorInterface;
 use Imagine\Image\Point;
 use MediaVorus\Media\Image;
 use MediaVorus\Media\MediaInterface;
@@ -47,19 +48,22 @@ class recordutils_image
         }
 
         $xmlToColor = function ($attr, $ret = [255, 255, 255]) use ($palette) {
-            try {
-                $alpha = 100;
-                $attr = explode(',', $attr);
-                if (count($attr) == 4) {
-                    // 0..127 -> 100..0
-                    $alpha = (int)((127 - (int)array_pop($attr)) / 1.27);
-                }
+            if($attr !== null) {
+                try {
+                    $alpha = 100;
+                    $attr = explode(',', $attr);
+                    if (count($attr) == 4) {
+                        // 0..127 -> 100..0
+                        $alpha = (int)((127 - (int)array_pop($attr)) / 1.27);
+                    }
 
-                return $palette->color($attr, $alpha);
+                    return $palette->color($attr, $alpha);
+                }
+                catch (ImagineException $e) {
+                    return $palette->color($ret);
+                }
             }
-            catch (ImagineException $e) {
-                return $palette->color($ret);
-            }
+            return null;
         };
 
         $base_id = $subdef->get_record()->getBaseId();
@@ -106,7 +110,7 @@ class recordutils_image
             return $pathOut;
         }
 
-        /** @var Imagine\Imagick\Imagine $imageine */
+        /** @var Imagine\Imagick\Imagine $imagine */
         $imagine = $app['imagine'];
 
         // open the document
@@ -285,12 +289,13 @@ class recordutils_image
                 $txtline = $texts->item($i)->nodeValue;
 
                 if ($txtline != '') {
-                    $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width);
+                    $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/../../../resources/Fonts/arial.ttf', $txtline, $text_width);
                     $txtblock[] = [
-                        'fontsize'  => $fontsize,
-                        'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), [0, 0, 0]),
-                        'h'         => $wrap['toth'],
-                        'lines'     => $wrap['l']
+                        'fontsize'    => $fontsize,
+                        'fontcolor'   => $xmlToColor($texts->item($i)->getAttribute('color'), [0, 0, 0]),
+                        'shadowcolor' => $xmlToColor($texts->item($i)->getAttribute('shadow'), [0, 0, 0, 127]),
+                        'h'           => $wrap['toth'],
+                        'lines'       => $wrap['l'],
                     ];
                     $txth += $wrap['toth'];
                 }
@@ -327,10 +332,22 @@ class recordutils_image
             $draw = $imfg->draw();
             $txt_ypos = 0;
             foreach ($txtblock as $block) {
-                $font = $imagine->font(__DIR__ . '/arial.ttf', $block['fontsize'], $block['fontcolor']);
+                /** @var ColorInterface $color */
+                $color = $block['fontcolor'];
+                $font = $imagine->font(__DIR__ . '/../../../resources/Fonts/arial.ttf', $block['fontsize'], $color);
+                $shadowFont = null;
+                $shadowDelta = 0;
+                if($block['shadowcolor'] !== null) {
+                    $shadowFont = $imagine->font(__DIR__ . '/../../../resources/Fonts/arial.ttf', $block['fontsize'], $block['shadowcolor']);
+                    $shadowDelta = max(2, (int)($block['fontsize'] / 20));
+                }
                 foreach ($block['lines'] as $line) {
                     if ($line['t'] != '') {
-                        $draw->text($line['t'], $font, new Point($logo_reswidth, $txt_ypos), 0);
+                        if($shadowFont) {
+                            $draw->text($line['t'], $shadowFont, new Point($logo_reswidth, $txt_ypos + $shadowDelta), 0);
+                            $draw->text($line['t'], $shadowFont, new Point($logo_reswidth+1, $txt_ypos + $shadowDelta*1.5), 0);
+                        }
+                        $draw->text($line['t'], $font, new Point($logo_reswidth + $shadowDelta, $txt_ypos), 0);
                     }
                     $txt_ypos += $line['h'];
                 }
@@ -354,7 +371,7 @@ class recordutils_image
         $newh = $tables['TOP']['h'] + $image_height + $tables['BOTTOM']['h'];
 
         // create the output image
-        $image_out = $imagine->create(new Box($image_width, $newh), $palette->color("FFFFFF", 64));
+        $image_out = $imagine->create(new Box($image_width, $newh), $palette->color("FFFFFF"));
 
         // paste the input image into
         $image_out->paste($image_in, new Point(0, $tables['TOP']['h']));
@@ -414,7 +431,7 @@ class recordutils_image
      *
      * @return boolean|string
      */
-    public static function watermark(Application $app, media_subdef $subdef)
+    public static function watermark(Application $app, media_subdef $subdef, $otherPath = null)
     {
         static $palette;
 
@@ -436,7 +453,7 @@ class recordutils_image
             return false;
         }
 
-        $pathIn = $subdef->getRealPath();
+        $pathIn = $otherPath ?? $subdef->getRealPath();
 
         if (!is_file($pathIn)) {
             return false;
@@ -486,8 +503,8 @@ class recordutils_image
 
             $fsize = max(8, (int)(max($in_w, $in_h) / 30));
             $fonts = [
-                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
-                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
+                $imagine->font(__DIR__ . '/../../../resources/Fonts/arial.ttf', $fsize, $black),
+                $imagine->font(__DIR__ . '/../../../resources/Fonts/arial.ttf', $fsize, $white)
             ];
             $testbox = $fonts[0]->box($collname, 0);
             $tx_w = min($in_w, $testbox->getWidth());

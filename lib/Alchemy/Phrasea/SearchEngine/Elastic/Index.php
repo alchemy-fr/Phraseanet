@@ -83,6 +83,12 @@ class Index
     {
         $this->analysis = [
             'analyzer' => [
+                // used to sort
+                'sort' => [
+                    'type' => 'custom',
+                    'tokenizer' => 'keyword',   // don't tokenize, keep whole value as a string
+                    'filter' => ['lowercase', 'asciifolding']   // asciifolding = remove diacritics
+                ],
                 // General purpose, without removing stop word or stem: improve meaning accuracy
                 'general_light' => [
                     'type' => 'custom',

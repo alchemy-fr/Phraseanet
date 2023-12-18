@@ -1,11 +1,11 @@
 servername: 'http://local.phrasea/'
 languages:
     available:
-        - fr
-        - en
         - de
+        - en
+        - fr
         - nl
-    default: 'fr'
+    default: 'en'
 main:
     maintenance: false
     key: ''
@@ -27,7 +27,7 @@ main:
     search-engine:
         type: elasticsearch
         options:
-            host: 'localhost'
+            host: elasticsearch
             port: 9200
             index: ''
             shards: 3
@@ -35,7 +35,7 @@ main:
             minScore: 2
             highlight: true
             maxResultWindow: 500000
-            populate_order: RECORD_ID
+            populate_order: MODIFICATION_DATE
             populate_direction: DESC
             populate_permalinks: false
             activeTab: '#elastic-search'
@@ -83,7 +83,7 @@ main:
             enabled: true
             level: INFO
     session:
-        type: 'file'
+        type: native
         options: []
         ttl: 86400
     binaries:
@@ -162,7 +162,7 @@ border-manager:
             type: Checker\Extension
             enabled: false
             options:
-                extensions: [jpg, jpeg, bmp, tif, gif, png, pdf, doc, odt, mpg, mpeg, mov, avi, xls, flv, mp3, mp2]
+                extensions: [jpg, jpeg, bmp, tif, gif, png, heic, pdf, doc, docx, xls, xlsx, odt, mpg, mpeg, mov, avi, mp3, mp2, mp4, m4v, m4a, mkv, hevc, aac, aiff, wav]
         -
             type: Checker\Filename
             enabled: false
@@ -173,46 +173,81 @@ border-manager:
             enabled: false
             options:
                 mediatypes: [Audio, Document, Image, Video]
+
+registry:
+    api-clients:
+        api-subdef_service: false
+    actions:
+        export-stamp-choice: false
+        stamp-subdefs: false
 user_account:
     deleting_policies:
         email_confirmation: true
 authentication:
     auto-create:
         templates: {  }
-    captcha:
-        enabled: true
-        trials-before-display: 9
     providers:
         facebook:
             enabled: false
+            display: false
+            title: Facebook
+            type: facebook
             options:
                 app-id: ''
                 secret: ''
+                default-graph-version: 'v2.10'
         twitter:
             enabled: false
+            display: false
+            title: Twitter
+            type: twitter
             options:
                 consumer-key: ''
                 consumer-secret: ''
-        google-plus:
-            enabled: false
-            options:
-                client-id: ''
-                client-secret: ''
         github:
             enabled: false
+            display: false
+            title: Github
+            type: github
             options:
                 client-id: ''
                 client-secret: ''
         viadeo:
             enabled: false
+            display: false
+            title: Viadeo
+            type: viadeo
             options:
                 client-id: ''
                 client-secret: ''
         linkedin:
             enabled: false
+            display: false
+            title: LinkedIN
+            type: linkedin
             options:
                 client-id: ''
                 client-secret: ''
+        ps_auth_1:
+            enabled: false
+            display: false
+            title: 'PS Auth 1'
+            type: 'ps-auth'
+            options:
+                client-id: ''
+                client-secret: ''
+                base-url: 'https://api-auth.phrasea.local'
+                provider-type: 'oauth'
+                provider-name: 'v2'
+                icon-uri: null,
+                debug: false,
+                birth-group: '_firstlog'
+                everyone-group: '_everyone'
+                metamodel: '_metamodel'
+                model-gpfx: '_M_'
+                model-upfx: '_U_'
+                auto-logout: false
+                auto-connect-idp-name: null
 registration-fields:
     -
         name: company
@@ -226,6 +261,9 @@ registration-fields:
     -
         name: geonameid
         required: true
+download_async:
+    enabled: false
+
 xsendfile:
     enabled: false
     type: nginx
@@ -333,17 +371,135 @@ workers:
             port: 5672
             user: ''
             password: ''
+            ssl: false
             vhost: /
             heartbeat: 60
-
+    webhook:
+        timeout: 30
+        verify_ssl: true
+    queues:
+        assetsIngest:
+            max_retry: 3
+            ttl_retry: 10000
+        createRecord:
+            max_retry: 3
+            ttl_retry: 10000
+        editRecord:
+            max_retry: 3
+            ttl_retry: 10000
+        exportMail:
+            max_retry: 3
+            ttl_retry: 10000
+        downloadAsync:
+            max_retry: 3
+            ttl_retry: 10000
+        exposeUpload:
+            max_retry: 3
+            ttl_retry: 10000
+        ftp:
+            max_retry: 3
+            ttl_retry: 180000
+        populateIndex:
+            max_retry: 3
+            ttl_retry: 10000
+        pullAssets:
+            max_retry: 3
+            ttl_retry: 10000
+        recordsActions:
+            max_retry: 3
+            ttl_retry: 10000
+        shareBasket:
+            max_retry: 3
+            ttl_retry: 10000
+        subdefCreation:
+            max_retry: 3
+            ttl_retry: 10000
+            ttl_delayed: 5000
+        validationReminder:
+            max_retry: 3
+            ttl_retry: 7200000
+        webhook:
+            max_retry: 3
+            ttl_retry: 10000
+        writeMetadatas:
+            max_retry: 3
+            ttl_retry: 10000
+            ttl_delayed: 5000
+    writeMetadatas:
+        acceptedMimeType:
+            - image/jpeg
+            - image/png
+            - application/postscript
+            - application/pdf
+            - image/tiff
 externalservice:
-    ginger:
-        AutoSubtitling:
-            service_base_url: https://base.uri
-            token: 39c6011d
-            transcript_format: text/vtt
-            subdef_source: preview
+    pusher:
+        auth_key: 'pusher-auth_key'
+        secret: 'pusher-secret'
+        app_id: 'pusher-app_id'
+    happyscribe:
+        token: token
+        organization_id: 123456
+        transcript_format: vtt
+        subdef_source: preview
 
 
 Console_logger_enabled_environments: [test]
 
+feedback-report:
+    enabled: false
+    actions:
+        action_unvoted:
+            status_bit: 8
+            value: '{% if vote.votes_unvoted > 0 %} 1 {% else %} 0 {% endif %}'
+        action_red:
+            status_bit: 9
+            value: '{% if vote.votes_no > 0 %} 1 {% else %} 0 {% endif %}'
+        action_green:
+            status_bit: 10
+            value: '{% if vote.votes_no == 0 %} 1 {% else %} 0 {% endif %}'
+        action_log:
+            metadata: Validations
+            method: prepend
+            delimiter: "\n"
+            value: 'Vote initated on {{ vote.created }} by {{ initiator ? initiator.getEmail() : "?" }} expired {{ vote.expired }} : {{ vote.voters_count }} participants, {{ vote.votes_unvoted }} unvoted, {{ vote.votes_no }} "no", {{ vote.votes_yes}} "yes".'
+
+translator:
+    jobs:
+        #
+        # - translate EN keywords to FR and EN
+        #       nb: since we clean the destination fields, we MUST (re)write EN to EN
+        # - add country to keywords, both FR/EN
+        keywords:
+            active: false
+            databox: my_databox
+            if_collection: to_translate
+            if_status: x1xxxx
+            actions:
+
+                KeywordsENtoFREN:
+                    active: true
+                    source_field: KeywordsEN
+                    source_lng: en
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 1 cleans the destination fields
+                    cleanup_destination: true
+
+                CountryENtoKeywordsFREN:
+                    active: true
+                    source_field: CountryEN
+                    source_lng: en
+                    # add translated country to the keywords
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 2 must NOT erase what action 1 did
+                    cleanup_destination: false
+
+            # end of job : change coll status
+            set_status: 10xxxx
+            set_collection: online

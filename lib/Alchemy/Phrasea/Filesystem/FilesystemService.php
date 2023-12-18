@@ -17,11 +17,11 @@ use MediaAlchemyst\Specification\SpecificationInterface;
 class FilesystemService
 {
     /**
-     * @var \Symfony\Component\Filesystem\Filesystem
+     * @var PhraseanetFilesystem
      */
     private $filesystem;
 
-    public function __construct(\Symfony\Component\Filesystem\Filesystem $filesystem)
+    public function __construct(PhraseanetFilesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }
@@ -46,7 +46,10 @@ class FilesystemService
             $pathout = sprintf('%s%s%05d', $repository_path, $comp, $n++);
         } while (is_dir($pathout) && iterator_count(new \DirectoryIterator($pathout)) > 100);
 
-        $this->filesystem->mkdir($pathout, 0770);
+        if (!file_exists($pathout)) {
+            $this->filesystem->mkdir($pathout, 0770);
+        }
+
 
         return $pathout . DIRECTORY_SEPARATOR;
     }
@@ -99,18 +102,20 @@ class FilesystemService
      * @param \record_adapter $record
      * @param \databox_subdef $subdef
      * @param string $marker
+     * @param string $extension  if not set,get from subdef spec
      * @return string
      */
-    public function generateSubdefFilename(\record_adapter $record, \databox_subdef $subdef, $marker = '')
+    public function generateSubdefFilename(\record_adapter $record, \databox_subdef $subdef, $marker = '', $extension = null)
     {
-        return $record->getRecordId() . '_' . $marker . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
+        $extension = empty($extension) ? $this->getExtensionFromSpec($subdef->getSpecs()) : $extension;
+        return $record->getRecordId() . '_' . $marker . $subdef->get_name() . '.' . $extension;
     }
 
-    public function generateSubdefSubstitutionPathname(\record_adapter $record, \databox_subdef $subdef)
+    public function generateSubdefSubstitutionPathname(\record_adapter $record, \databox_subdef $subdef, $extension = null)
     {
         $pathdest = $this->directorySpread($subdef->get_path());
 
-        return $pathdest . $this->generateSubdefFilename($record, $subdef, '0_');
+        return $pathdest . $this->generateSubdefFilename($record, $subdef, '0_', $extension);
     }
 
     /**
@@ -169,6 +174,11 @@ class FilesystemService
         $this->filesystem->chmod($files, $mode, $umask, $recursive);
     }
 
+    public function mkdir($dirs, int $mode = 0777)
+    {
+        $this->filesystem->mkdir($dirs, $mode);
+    }
+
     /**
      * Get the extension from MediaAlchemyst specs
      *
@@ -176,7 +186,7 @@ class FilesystemService
      *
      * @return string
      */
-    private function getExtensionFromSpec(SpecificationInterface $spec)
+    public function getExtensionFromSpec(SpecificationInterface $spec)
     {
         switch ($spec->getType()) {
             case SpecificationInterface::TYPE_IMAGE:

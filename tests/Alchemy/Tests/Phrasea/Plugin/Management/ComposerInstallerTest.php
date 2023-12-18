@@ -2,11 +2,14 @@
 
 namespace Alchemy\Tests\Phrasea\Plugin\Management;
 
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Plugin\Management\ComposerInstaller;
 use Alchemy\Phrasea\Utilities\ComposerSetup;
 use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 /**
  * @group functional

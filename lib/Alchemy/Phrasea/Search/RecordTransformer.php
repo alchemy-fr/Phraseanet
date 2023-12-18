@@ -11,12 +11,25 @@
 namespace Alchemy\Phrasea\Search;
 
 use League\Fractal\TransformerAbstract;
+use record_adapter;
 
 class RecordTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['thumbnail', 'technical_informations', 'subdefs', 'metadata', 'status', 'caption'];
+    protected $availableIncludes = [
+        'thumbnail',
+        'technical_informations',
+        'subdefs',
+        'metadata',
+//        'metadatas',
+        'status',
+        'caption'
+    ];
 
-    protected $defaultIncludes = ['thumbnail', 'technical_informations'];
+    protected $defaultIncludes = [
+        'thumbnail',
+        'technical_informations',
+//        'metadatas',
+    ];
 
     /**
      * @var SubdefTransformer
@@ -28,21 +41,32 @@ class RecordTransformer extends TransformerAbstract
      */
     private $technicalDataTransformer;
 
-    public function __construct(SubdefTransformer $subdefTransformer, TechnicalDataTransformer $technicalDataTransformer)
+    /**
+     * @var callable
+     */
+    private $resourceIdResolver;
+
+    public function __construct(SubdefTransformer $subdefTransformer, TechnicalDataTransformer $technicalDataTransformer, callable $resourceIdResolver)
     {
         $this->subdefTransformer = $subdefTransformer;
         $this->technicalDataTransformer = $technicalDataTransformer;
+        $this->resourceIdResolver = $resourceIdResolver;
     }
 
-    public function transform(RecordView $recordView)
+    public function transform($recordView)
     {
+        /** @var RecordView $recordView */
         $record = $recordView->getRecord();
+
+        $resolver = $this->resourceIdResolver;
+        $resourceId = $resolver($record);
 
         return [
             'databox_id' => $record->getDataboxId(),
             'record_id' => $record->getRecordId(),
+            'resource_id' => $resourceId,
             'mime_type' => $record->getMimeType(),
-            'title' => $record->get_title(),
+            'title' => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name' => $record->get_original_name(),
             'updated_on' => $record->getUpdated()->format(DATE_ATOM),
             'created_on' => $record->getCreated()->format(DATE_ATOM),
@@ -54,19 +78,29 @@ class RecordTransformer extends TransformerAbstract
         ];
     }
 
+    protected function getSubdefTransformer()
+    {
+        return $this->subdefTransformer;
+    }
+
+    protected function getTechnicalDataTransformer()
+    {
+        return $this->technicalDataTransformer;
+    }
+
     public function includeThumbnail(RecordView $recordView)
     {
-        return $this->item($recordView->getSubdef('thumbnail'), $this->subdefTransformer);
+        return $this->item($recordView->getSubdef('thumbnail'), $this->getSubdefTransformer());
     }
 
     public function includeTechnicalInformations(RecordView $recordView)
     {
-        return $this->collection($recordView->getTechnicalDataView()->getDataSet(), $this->technicalDataTransformer);
+        return $this->collection($recordView->getTechnicalDataView()->getDataSet(), $this->getTechnicalDataTransformer());
     }
 
     public function includeSubdefs(RecordView $recordView)
     {
-        return $this->collection($recordView->getSubdefs(), $this->subdefTransformer);
+        return $this->collection($recordView->getSubdefs(), $this->getSubdefTransformer());
     }
 
     public function includeMetadata(RecordView $recordView)
@@ -135,5 +169,13 @@ class RecordTransformer extends TransformerAbstract
                 'value' => $field->get_serialized_values(';'),
             ];
         });
+    }
+
+    /**
+     * @return callable
+     */
+    public function getResourceIdResolver(): callable
+    {
+        return $this->resourceIdResolver;
     }
 }

@@ -7,7 +7,7 @@ FROM php:7.0-fpm-stretch as phraseanet-system
 
 ENV FFMPEG_VERSION=4.2.2
 
-RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y \
         apt-transport-https \
@@ -82,38 +82,59 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         libgsm1-dev \
         libfreetype6-dev \
         libldap2-dev \ 
-        # End FFmpeg
+        # End FFmpeg \
         nano \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
+    # --- jq and libs for php-ext-jq \
+    && mkdir /tmp/libjq \
+    && git clone https://github.com/stedolan/jq.git /tmp/libjq \
+    && cd /tmp/libjq \
+    && git checkout fd9da6647c0fa619f03464fe37a4a10b70147e73 \
+    && git submodule update --init \
+    && autoreconf -fi \
+    && ./configure --with-oniguruma=builtin --disable-maintainer-mode \
+    && make -j8 \
+    && make check \
+    && make install \
+    # --- end of jq \
     && mkdir /tmp/libheif \
     && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
     && cd /tmp/libheif \
+    && git checkout v1.13.0 \
     && ./autogen.sh \
     && ./configure \
     && make \
-    && make install \
-    && mkdir /tmp/ImageMagick \
-    && curl https://download.imagemagick.org/ImageMagick/download/ImageMagick.tar.gz| tar zx -C /tmp/ImageMagick --strip-components 1 \
+    && make install
+RUN echo "BUILDING AND INSTALLING IMAGEMAGICK" \
+    && git clone https://github.com/ImageMagick/ImageMagick.git /tmp/ImageMagick \
     && cd /tmp/ImageMagick \
+    && git checkout 7.1.0-39 \
     && ./configure \
     && make \
-    && make install \
+    && make install 
+RUN echo "BUILDING PHP PECL EXTENTIONS" \
     && ldconfig \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install -j$(nproc) ldap \
     && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
+    # --- extension jq - sources _must_ be in /usr/src/php/ext/ for the docker-php-ext-install script to find it \
+    && mkdir -p /usr/src/php/ext/ \
+    && git clone --depth=1 https://github.com/kjdev/php-ext-jq.git /usr/src/php/ext/php-ext-jq \
+    && docker-php-ext-install php-ext-jq \
+    # --- end of extension jq \
     && pecl install \
-        redis \
+        redis-5.3.7 \
         amqp-1.9.3 \
         zmq-beta \
         imagick-beta \
         xdebug-2.6.1 \
-    && docker-php-ext-enable redis amqp zmq imagick \
+    && docker-php-ext-enable redis amqp zmq imagick opcache \
     && pecl clear-cache \
-    && docker-php-source delete \
+    && docker-php-source delete
+RUN echo "BUILDING AND INSTALLING FFMPEG" \
     && mkdir /tmp/ffmpeg \
     && curl -s https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2 | tar jxf - -C /tmp/ffmpeg \
     && ( \
@@ -143,19 +164,16 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         && make \
         && make install \
         && make distclean \
-    ) \
-    #&& rm -rf /tmp/ffmpeg \
+    )
+    #&& rm -rf /tmp/ffmpeg
+RUN echo "INSTALLING NEWRELIC EXTENTION" \
     && echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
     && curl -o- https://download.newrelic.com/548C16BF.gpg | apt-key add - \
     && apt-get update \ 
     && apt-get install -y newrelic-php5 \ 
     && NR_INSTALL_SILENT=1 newrelic-install install \
-    && touch /etc/newrelic/newrelic.cfg \
-    && curl -o- https://packages.blackfire.io/gpg.key |apt-key add - \
-    && echo "deb http://packages.blackfire.io/debian any main" |tee /etc/apt/sources.list.d/blackfire.list \
-    && apt update \
-    && apt install blackfire-agent \
-    && apt install blackfire-php \
+    && touch /etc/newrelic/newrelic.cfg
+RUN echo "FINALIZING BUILD AND CLEANING" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && mkdir /entrypoint /var/alchemy \
@@ -239,6 +257,19 @@ ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 CMD []
 
 #########################################################################
+# Phraseanet install and setup application image
+#########################################################################
+
+FROM phraseanet-system as phraseanet-setup
+
+COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
+ADD ./docker/phraseanet/root /
+WORKDIR /var/alchemy/Phraseanet
+ENTRYPOINT ["docker/phraseanet/setup/entrypoint.sh"]
+CMD []
+
+
+#########################################################################
 # Phraseanet web application image
 #########################################################################
 
@@ -247,7 +278,7 @@ FROM phraseanet-system as phraseanet-fpm
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-ENTRYPOINT ["docker/phraseanet/entrypoint.sh"]
+ENTRYPOINT ["docker/phraseanet/fpm/entrypoint.sh"]
 CMD ["php-fpm", "-F"]
 
 #########################################################################
@@ -258,12 +289,17 @@ FROM phraseanet-fpm as phraseanet-worker
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         supervisor \
+        logrotate \
     && mkdir -p /var/log/supervisor \
     && chown -R app: /var/log/supervisor \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists 
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
+COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
+
+RUN chmod 644 /etc/logrotate.d/worker
+
 ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
 CMD ["/bin/bash", "bin/run-worker.sh"]
 
@@ -273,6 +309,8 @@ CMD ["/bin/bash", "bin/run-worker.sh"]
 
 FROM nginx:1.17.8-alpine as phraseanet-nginx
 RUN adduser --uid 1000 --disabled-password app
+RUN apk add --update apache2-utils \
+    && rm -rf /var/cache/apk/*
 ADD ./docker/nginx/root /
 COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
 
@@ -280,4 +318,42 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
 HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
+
+#########################################################################
+# phraseanet adapted simplesaml service provider 
+#########################################################################
+
+FROM php:7.0-fpm-stretch as phraseanet-saml-sp
+RUN adduser --uid 1000 --disabled-password app
+RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        gnupg2 \
+        wget \
+        nginx \
+        zlib1g-dev \
+        automake \
+        git \
+        libmcrypt-dev \
+        libzmq3-dev \
+        libtool \
+        locales \
+        gettext \
+        mcrypt \
+        libldap2-dev \
+    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/ \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-install -j$(nproc) ldap \
+    && docker-php-ext-install zip mbstring pdo_mysql gettext mcrypt \
+    && pecl install \
+        redis-5.3.7 \
+    && docker-php-ext-enable redis \
+    && pecl clear-cache \
+    && docker-php-source delete
+ADD ./docker/phraseanet/saml-sp/root /
+ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+CMD ["/bootstrap/bin/start-servers.sh"]
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 
 

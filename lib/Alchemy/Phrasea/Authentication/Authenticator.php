@@ -95,6 +95,10 @@ class Authenticator
     {
         $user = $session->getUser();
         $user->setLastConnection($session->getCreated());
+        // reset inactivity email when login
+        $user->setNbInactivityEmail(0);
+        $user->setLastInactivityEmail(null);
+
         $this->em->persist($user);
         $this->em->flush();
 
@@ -129,13 +133,11 @@ class Authenticator
      */
     public function closeAccount()
     {
-        if (!$this->session->has('session_id')) {
-            throw new RuntimeException('No session to close.');
-        }
-
-        if (null !== $session = $this->app['repo.sessions']->find($this->session->get('session_id'))) {
-            $this->em->remove($session);
-            $this->em->flush();
+        if ($this->session->has('session_id')) {
+            if (null !== $session = $this->app['repo.sessions']->find($this->session->get('session_id'))) {
+                $this->em->remove($session);
+                $this->em->flush();
+            }
         }
 
         $this->session->invalidate();

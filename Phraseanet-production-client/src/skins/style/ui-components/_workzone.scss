@@ -22,14 +22,15 @@ $toolTitleColor: #b9b9b9 !default;
 $basketTips: rgba(0, 0, 0, 0.2) !default;
 $basketTips2: rgba(0, 0, 0, 0.19) !default;
 $dividerBg: #6c6c6c !default;
+$sharebasketThemeColor: #4caf50;
 
 /**
  * Workzone
  */
 #idFrameC {
     top: 0 !important;
-    min-width: 300px;
     bottom: 0 !important;
+    min-width: 300px;
     &.closed {
         min-width: 0;
     }
@@ -181,7 +182,6 @@ $dividerBg: #6c6c6c !default;
         display: block;
         z-index: 2;
         position: relative;
-        margin-top: 3px;
         margin-bottom: 10px;
         width: auto;
         min-width: 160px;
@@ -194,7 +194,6 @@ $dividerBg: #6c6c6c !default;
         text-align: left;
         border: none;
         outline: none;
-        font-family: Roboto;
         font-size: 12px;
         font-weight: 700;
         &:before {
@@ -221,6 +220,7 @@ $dividerBg: #6c6c6c !default;
         width: 136px;
         z-index: 1000;
         position: absolute;
+        top: 35px;
         background-color: $toolsPanelBg;
         padding: 0 12px;
         overflow: hidden;
@@ -237,7 +237,6 @@ $dividerBg: #6c6c6c !default;
             height: 18px;
         }
         span {
-            font-family: Roboto;
             font-size: 11px;
             font-weight: normal;
             font-style: normal;
@@ -259,7 +258,6 @@ $dividerBg: #6c6c6c !default;
                 margin-left: 6px;
                 font-size: 11px;
                 color: $toolTitleColor;
-                font-family: Roboto;
             }
         }
         button:hover {
@@ -269,9 +267,220 @@ $dividerBg: #6c6c6c !default;
             }
         }
     }
+
+    .wz-block_title {
+        HR {
+            margin: 0px;
+            border-bottom: 0px;
+            border-top: 1px $textPrimaryColor solid;
+            position: relative;
+            top: 12px;
+        }
+        SPAN {
+            background-color: $workzoneBackgroundColor;
+            color: $textPrimaryColor;
+            position: relative;
+            padding-left: 5px;
+            padding-right: 5px;
+            font-size: larger;
+            margin-left: 10px;
+        }
+    }
 }
 
 .alert_datas_changed a {
     color: #404040;
     text-decoration: underline;
 }
+
+.ui-accordion .ui-accordion-header {
+    .workzone-menu-title {
+        I {
+            font-size: 16px;
+            display: inline-block;
+            background-color: #222;
+            padding: 5px 0 0 5px;
+            border-radius: 14px;
+            line-height: normal;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            color: white;
+            &.basket_wip {
+                background-color: lightslategrey;
+                display: none;
+            }
+
+            &.vote_rec {
+                background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+                display: none;
+            }
+
+            &.vote_sent {
+                background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+                display: none;
+            }
+
+            &.share_rec {
+                background-color: $sharebasketThemeColor;
+                display: none;
+            }
+
+            &.share_sent {
+                background-color: $sharebasketThemeColor;
+                display: none;
+            }
+
+            &.push_rec {
+                background-color: #2092ED;
+                // fa-gift must be fixed
+                font-size: 17px;
+                padding: 4px 0px 3px 6px;
+                display: none;
+            }
+
+            &.basket {
+                background-color: #1EADD6;
+                font-size:14px;     // icomoon stack-overflow looks too big
+                display: none;
+            }
+
+            &.story {
+                background-color: #6471BC;
+            }
+        }
+        // the "unread" is a small disc
+        .unread_flag {
+            color: transparent;
+            font-size: 8px;
+            background-color: transparent;
+            padding: 0;
+            width: 8px;
+        }
+    }
+    &.unread {
+        I.unread_flag {
+            // indicate basket as not read (fa-circle)
+            color: red;
+        }
+        //.workzone-menu-title {
+        //    font-style: italic;
+        //    font-weight: bold;
+        //}
+    }
+
+    &.basket_wip I.basket_wip {
+        display: inline-block;
+    }
+    &.vote_rec I.vote_rec {
+        display: inline-block;
+    }
+    &.share_rec I.share_rec {
+        display: inline-block;
+    }
+    &.push_rec I.push_rec {
+        display: inline-block;
+    }
+    &.vote_sent I.vote_sent {
+        display: inline-block;
+    }
+    &.share_sent I.share_sent {
+        display: inline-block;
+    }
+    &.basket I.basket {
+        display: inline-block;
+    }
+}
+
+.context-menu-item a I,
+#SPANTITLE I,
+#PREVIEWOTHERSINNER I,
+.TOOL_feedback_btn I,
+.TOOL_pushdoc_btn I,
+.TOOL_sharebasket_btn I{
+    font-size: 16px;
+    display: inline-block;
+    background-color: #222;
+    padding: 5px 0 0 5px;
+    border-radius: 14px;
+    line-height: normal;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    color: white;
+    &.push_rec {
+        background-color: #2092ED;
+        font-size: 17px;
+        padding: 1px 0px 0px 1px;
+    }
+
+    &.vote_sent {
+        background-color: #E0215D;
+    }
+
+    &.vote_rec {
+        background-color: #E0215D;
+    }
+
+    &.share_rec {
+        background-color: $sharebasketThemeColor;
+        font-size: 14px;
+    }
+
+    &.share_sent {
+        background-color: $sharebasketThemeColor;
+    }
+
+    &.basket {
+        background-color: #1EADD6;
+        font-size:14px;
+    }
+
+    &.story {
+        background-color: #6471BC;
+    }
+
+}
+
+.TOOL_sharebasket_btn .share_sent {
+    padding-right: 2px !important;
+    padding-left: 3px !important;
+    padding-top: 4px !important;
+    padding-bottom: 1px !important;
+    margin-right: 4px !important;
+}
+
+.TOOL_pushdoc_btn .push_rec {
+    padding: 3px 0px 2px 6px !important;
+    width: 19px !important;
+    margin-right: 4px !important;
+}
+
+#basket-filter I.refresh-basket {
+    font-size: 16px;
+    display: inline-block;
+    background-color: #666;
+    padding: 4px 0 1px 6px;
+    border-radius: 14px;
+    line-height: normal;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    color: white;
+    cursor:pointer;
+    &:hover {
+        background-color: #aaa;
+    }
+    &.load {
+        animation: load 0.5s infinite;
+    }
+}
+
+@keyframes load {
+    50% {transform: rotate(180deg);}
+}
+
+// #basket-fiter INPUT;checked[value=feedback] ~

@@ -9,6 +9,8 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\AssetsIngestWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\DeleteRecordWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\DownloadAsyncWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\EditRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExportMailWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExposeUploadWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Factory\CallableWorkerFactory;
@@ -17,16 +19,16 @@ use Alchemy\Phrasea\WorkerManager\Worker\MainQueueWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\PopulateIndexWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\PullAssetsWorker;
-use Alchemy\Phrasea\WorkerManager\Worker\EditRecordWorker;
-use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker\RecordsActionsWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
+use Alchemy\Phrasea\WorkerManager\Worker\ShareBasketWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubdefCreationWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubtitleWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ValidationReminderWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\WebhookWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
-use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
 use Silex\Application;
@@ -41,9 +43,14 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.logger'] = $app->share(function (Application $app) {
             $logger = new $app['monolog.logger.class']('alchemy-service logger');
-            $logger->pushHandler(new RotatingFileHandler(
+//            $logger->pushHandler(new RotatingFileHandler(
+//                $app['log.path'] . DIRECTORY_SEPARATOR . 'worker_service.log',
+//                10,
+//                Logger::INFO
+//            ));
+
+            $logger->pushHandler(new StreamHandler(
                 $app['log.path'] . DIRECTORY_SEPARATOR . 'worker_service.log',
-                10,
                 Logger::INFO
             ));
 
@@ -98,6 +105,13 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EXPORT_MAIL_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new ExportMailWorker($app))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DOWNLOAD_ASYNC_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return (new DownloadAsyncWorker($app, $app['conf']))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
         }));
 
@@ -108,6 +122,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::WEBHOOK_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new WebhookWorker($app))
+                ->setApplicationBox($app['phraseanet.appbox'])
                 ->setDispatcher($app['dispatcher']);
         }));
 
@@ -132,7 +147,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DELETE_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new DeleteRecordWorker($app['repo.worker-running-job']))
+            return (new DeleteRecordWorker($app['repo.worker-running-job'], $app['alchemy_worker.message.publisher']))
                 ->setApplicationBox($app['phraseanet.appbox']);
         }));
 
@@ -167,6 +182,10 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
             return (new EditRecordWorker($app['repo.worker-running-job'], $app['dispatcher'], $app['alchemy_worker.message.publisher']))
                    ->setApplicationBox($app['phraseanet.appbox'])
                 ;
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SHARE_BASKET_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new ShareBasketWorker($app);
         }));
     }
 

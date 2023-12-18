@@ -72,8 +72,6 @@ body {
     bottom: 0;
     right: 0;
     overflow: hidden;
-    overflow-x: hidden;
-    overflow-y: hidden;
 }
 
 html {
@@ -333,9 +331,23 @@ span.ww_winTitle {
 }
 
 #ui-datepicker-div {
-    z-index: 2000;
+    z-index: 2000 !important;
     background-color: $darkerBackgroundColor;
     position: absolute;
+}
+
+#ui-datepicker-div.expireOn {
+    z-index: 999999 !important;
+}
+
+#validation-window .ui-widget-content {
+    background-color: #fff;
+    a {
+        color: #282828;
+        &:hover {
+            color: #fff;
+        }
+    }
 }
 
 .ui-selectable-helper {
@@ -510,7 +522,8 @@ span.ww_winTitle {
 }
 
 #order_manager .order_list .selectable.selected {
-    background-color: $darkerBorderColor;
+    //background-color: $darkerBorderColor;
+    background-color: $darkBackgroundColor;
     border: 1px solid #4990e2;
 }
 
@@ -768,8 +781,8 @@ button.order_launcher.btn {
 }
 
 #order-action {
-    margin-top: 1.2em;
-    margin-bottom: 1.5em;
+    margin : 0px 0px 1.2em 30px;
+    text-align: left;
 }
 
 #filter_box {
@@ -968,6 +981,10 @@ span.action-text {
 }
 
 button.btn.validate {
+    background-color : #5bb75b;
+    background-image: linear-gradient(to bottom,#62c462,#51a351);
+    border-color: #51a351 #51a351 #387038;
+    color: #fff;
     margin-bottom: 10px;
     font-size: 14px;
     //border: 2px solid #f00;
@@ -1308,6 +1325,19 @@ h3.metadatas-title {
         height: 26px;
         line-height: 26px;
     }
+}
+
+#proposals #collapseOne {
+    background: $feedback;
+}
+
+.story-filter-db .not-selected-db {
+    display:none;
+    visibility: hidden;
+}
+
+div.create-story div.ui-dialog-content{
+    overflow: hidden;
 }
 
 @import 'ui-components/jquery-ui';

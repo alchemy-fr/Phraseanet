@@ -1,0 +1,62 @@
+#!/usr/bin/env php
+<?php
+
+use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Command\Maintenance\CleanNotificationsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanUsersCommand;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\Maintenance\CleanLogDocsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanLogSearchCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanLogViewCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanApiLogsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanBasesCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanWebhookLogsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanWorkerRunningJobCommand;
+use Alchemy\Phrasea\Command\Maintenance\SessionsCommand;
+
+require_once __DIR__ . '/../lib/autoload.php';
+
+$version = new Version();
+$cli = new CLI("
+ __ __       _        _                                    _             _     
+|  \  \ ___ <_>._ _ _| |_ ___ ._ _  ___ ._ _  ___  ___   _| |_ ___  ___ | | ___
+|     |<_> || || ' | | | / ._>| ' |<_> || ' |/ | '/ ._>   | | / . \/ . \| |<_-<
+|_|_|_|<___||_||_|_| |_| \___.|_|_|<___||_|_|\_|_.\___.   |_| \___/\___/|_|/__/
+                                                                               
+                                                                               
+ Phraseanet Copyright (C) 2004 Alchemy
+ This program comes with ABSOLUTELY NO WARRANTY.
+ This is free software, and you are welcome to redistribute it
+ under certain conditions; type `about:license' for details.\n\n"
+    . ' Maintenance Tools ', $version->getName() . ' ' . $version->getNumber());
+
+$cli->command(new \module_console_aboutAuthors('about:authors'));
+$cli->command(new \module_console_aboutLicense('about:license'));
+
+$cli->command(new CleanNotificationsCommand());
+
+$cli->command(new CleanRecordsCommand());
+
+$cli->command(new CleanUsersCommand());
+
+$cli->command(new CleanBasesCommand());
+
+$cli->command(new CleanRightsCommand());
+
+$cli->command(new CleanApiLogsCommand());
+
+$cli->command(new CleanWorkerRunningJobCommand());
+
+$cli->command(new SessionsCommand());
+
+$cli->command(new CleanLogDocsCommand());
+
+$cli->command(new CleanLogSearchCommand());
+
+$cli->command(new CleanLogViewCommand());
+
+$cli->command(new CleanWebhookLogsCommand());
+
+$cli->run();

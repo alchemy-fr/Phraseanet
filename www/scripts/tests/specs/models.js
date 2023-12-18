@@ -56,6 +56,10 @@ define([
                     this.field.get('gui_visible').should.equal("1");
                 });
 
+                it("should default printable property to '1'", function () {
+                    this.field.get('printable').should.equal("1");
+                });
+
                 it("should default separator property to 'empty'", function () {
                     this.field.get('separator').should.equal("");
                 });

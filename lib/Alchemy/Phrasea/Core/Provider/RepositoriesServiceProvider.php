@@ -63,11 +63,8 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.basket-elements'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:BasketElement');
         });
-        $app['repo.validation-participants'] = $app->share(function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ValidationParticipant');
-        });
-        $app['repo.validation-session'] = $app->share(function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ValidationSession');
+        $app['repo.basket-participants'] = $app->share(function (PhraseaApplication $app) {
+            return $app['orm.em']->getRepository('Phraseanet:BasketParticipant');
         });
         $app['repo.story-wz'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:StoryWZ');

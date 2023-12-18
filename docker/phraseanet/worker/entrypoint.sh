@@ -3,19 +3,39 @@
 set -e
 
 HEARTBEAT_INTERVAL=20
-
+APP_DIR="/var/alchemy/Phraseanet"
 DOCKER_DIR="./docker/phraseanet"
 PHR_USER=app
 
 mkdir -p "${APP_DIR}/tmp/locks" \
-    && chown -R app:app "${APP_DIR}/tmp"
+    && chown -R app:app "${APP_DIR}/tmp" \
+    && chown -R app:app "${APP_DIR}/tmp/locks"
 
-envsubst < "${DOCKER_DIR}/php.ini.sample" > /usr/local/etc/php/php.ini
+
+envsubst < "${DOCKER_DIR}/php.ini.worker.sample" > /usr/local/etc/php/php.ini
 envsubst < "${DOCKER_DIR}/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
 
 if [ ${XDEBUG_ENABLED} == "1" ]; then
     echo "XDEBUG is enabled. YOU MAY KEEP THIS FEATURE DISABLED IN PRODUCTION."
     docker-php-ext-enable xdebug
+fi
+
+./docker/phraseanet/plugins/console init
+
+# rm -Rf cache/*
+
+chown -R app:app cache
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on cache/ repository"
+
+#    config \
+#    tmp \
+#    logs \
+#    www
+
+
+if [ -d "plugins/" ];then
+chown -R app:app plugins
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on plugins/ repository"
 fi
 
 if [ -f /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then
@@ -48,16 +68,6 @@ if [[ $NEWRELIC_ENABLED = "true" ]]; then
 else
   echo `date +"%Y-%m-%d %H:%M:%S"` " - Newrelic extension deactivation."
   rm -f /usr/local/etc/php/conf.d/newrelic.ini 
-fi
-
-if [[ $BLACKFIRE_ENABLED = "true" ]]; then
-  echo `date +"%Y-%m-%d %H:%M:%S"` " - BlackFire setup."
-  blackfire-agent --register --server-id=$BLACKFIRE_SERVER_ID --server-token=$BLACKFIRE_SERVER_TOKEN
-  service blackfire-agent start
-  echo "Blackfire setup done"
-else
-  echo `date +"%Y-%m-%d %H:%M:%S"` " - blackfire extension deactivation."
-  rm -f /usr/local/etc/php/conf.d/zz-blackfire.ini
 fi
 
 rm -rf bin/run-worker.sh
@@ -103,6 +113,12 @@ else
         fi
       done
 
+    if [ ! -z "$PHRASEANET_CMD_MODE" ] && [ ${PHRASEANET_CMD_MODE} == "1" ] ; then
+      apt update
+      apt install screen
+      echo "Worker are in custom process mode" 
+    fi 
+    
       echo $NBR_WORKERS " workers defined"
       echo $NBR_WORKERS > bin/workers_count.txt
       chown root:app bin/workers_count.txt
@@ -116,7 +132,9 @@ function check() {
   nb_process=`ps faux | grep "worker:execute" | grep php | wc -l`
   nb_heartbeat=`ps faux | grep "worker:heartbeat" | grep php | wc -l`
   date_time_process=`date +"%Y-%m-%d %H:%M:%S"`
-  echo $date_time_process "-" $nb_process "running workers"
+  if [ -z $STACK_NAME ]; then
+    echo $date_time_process "-" $nb_process "running workers"
+  fi
   if [ $nb_process -lt $NBR_WORKERS ]; then
     echo "One or more worker:execute is not running, exiting..."
     exit 1
@@ -138,6 +156,13 @@ done' >> bin/run-worker.sh
     command="bin/console worker:execute"
     echo $command >> bin/run-worker.sh
   fi
+fi
+
+if [ ! -z "$PHRASEANET_SCHEDULER" ] ; then
+  tail -F "${APP_DIR}/logs/scheduler.log" &
+  tail -F "${APP_DIR}/logs/task.log" &
+else
+  tail -F "${APP_DIR}/logs/worker_service.log" &
 fi
 
 runuser -u $PHR_USER -- $@

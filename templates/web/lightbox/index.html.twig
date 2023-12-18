@@ -3,12 +3,12 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
-    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" media="screen"/>
 {% endblock %}
 
 {% block content %}
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
                 {% for basket in baskets_collection | sort | reverse%}
-                  {% if basket.getValidation() %}
+                  {% if basket.isVoteBasket() %}
                       {% set basket_length = basket.getElements().count() %}
                       {% set counter = ( counter | default(0) ) + 1 %}
 
@@ -51,9 +51,9 @@
                                                   <h2 class="title15">
                                                       {{basket.getName()|e}}
                                                   </h2>
-                                                  {% if basket.getValidation().isFinished() %}
+                                                  {% if basket.isVoteFinished() %}
                                                       {{ '(validation) session terminee' | trans }}
-                                                  {% elseif basket.getValidation().getParticipant(app.getAuthenticatedUser()).getIsConfirmed() %}
+                                                  {% elseif basket.isParticipant(app.getAuthenticatedUser()) and basket.getParticipant(app.getAuthenticatedUser()).getIsConfirmed() %}
                                                       {{ '(validation) envoyee' | trans }}
                                                   {% else %}
                                                       {{ '(validation) a envoyer' | trans }}
@@ -69,7 +69,7 @@
                                           <tr>
                                               <td colspan="2">
                                                   <div>{{ basket.getDescription() }}</div>
-                                                  <div>{{ basket.getValidation().getValidationString(app, app.getAuthenticatedUser()) }}</div>
+                                                  <div>{{ basket.getValidationString(app, app.getAuthenticatedUser()) }}</div>
                                               </td>
                                           </tr>
                                       </table>
@@ -96,7 +96,7 @@
                     </th>
                 </tr>
                 {% for basket in baskets_collection | sort | reverse%}
-                  {% if basket.getValidation is null %}
+                  {% if not basket.isVoteBasket() %}
                       {% set basket_length = basket.getElements().count() %}
                       {% set counter = ( counter | default(0) ) + 1 %}
                       {% set counter_length = baskets_collection | length %}

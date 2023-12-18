@@ -57,6 +57,10 @@ class StringFieldMapping extends ComplexFieldMapping
         $child->setAnalyzer('general_light');
         $this->addChild($child);
 
+        $child = new StringFieldMapping('sort');
+        $child->setAnalyzer('sort');    // custom = lowercase(keyword)
+        $this->addChild($child);
+
         $child = new StringFieldMapping('truncated');
         $child->setAnalyzer('truncation_analyzer', 'indexing');
         $child->setAnalyzer('truncation_analyzer#search', 'searching');

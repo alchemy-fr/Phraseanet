@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Controller\Report;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -48,6 +49,7 @@ class RootController extends Controller
         }
 
         $granted = [];
+        $availableSubdefName = [];
 
         $acl = $this->getAclForUser();
         foreach ($acl->get_granted_base([\ACL::CANREPORT]) as $collection) {
@@ -73,14 +75,31 @@ class RootController extends Controller
                 'base_id' => $collection->get_base_id(),
                 'name'    => $collection->get_name(),
             ];
+
+            if (!isset($availableSubdefName[$sbas_id])) {
+                foreach ($collection->get_databox()->get_subdef_structure() as $subdefGroup) {
+                    /** @var \databox_subdef $subdef */
+                    foreach ($subdefGroup as $subdef) {
+                        $availableSubdefName[$sbas_id][] = $subdef->get_name();
+                    }
+                }
+
+                $availableSubdefName[$sbas_id] = array_unique($availableSubdefName[$sbas_id]);
+            }
         }
 
         $conf = $this->getConf();
+
+        $this->setSessionFormToken('reportConnection');
+        $this->setSessionFormToken('reportDownload');
+        $this->setSessionFormToken('reportRecord');
+
 
         return $this->render('report/report_layout_child.html.twig', [
             'ajax_dash'     => true,
             'dashboard'     => null,
             'granted_bases' => $granted,
+            'availableSubdefName' => $availableSubdefName,
             'home_title'    => $conf->get(['registry', 'general', 'title']),
             'module'        => 'report',
             'module_name'   => 'Report',

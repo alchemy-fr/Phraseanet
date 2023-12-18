@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
+use PhpAmqpLib\Channel\AMQPChannel;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -85,7 +86,7 @@ class WorkerInvoker implements LoggerAwareInterface
      * @param string $messageType
      * @param string $payload
      */
-    public function invokeWorker($messageType, $payload)
+    public function invokeWorker($messageType, $payload, AMQPChannel $channel)
     {
         $args = [
             $this->binaryPath,
@@ -103,7 +104,7 @@ class WorkerInvoker implements LoggerAwareInterface
             $args[] = '--preserve-payload';
         }
 
-        $process = $this->processPool->getWorkerProcess($args, getcwd());
+        $process = $this->processPool->getWorkerProcess($args, $channel, getcwd());
 
         $this->logger->debug('Invoking shell command: ' . $process->getCommandLine());
 

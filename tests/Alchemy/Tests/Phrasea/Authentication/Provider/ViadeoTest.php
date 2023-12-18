@@ -2,9 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 
-use Alchemy\Phrasea\Authentication\Provider\Viadeo;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use Alchemy\Phrasea\Authentication\Provider\Viadeo;
 
 /**
  * @group functional
@@ -273,6 +273,6 @@ class ViadeoTest extends ProviderTestCase
 
     protected function getProvider()
     {
-        return new Viadeo($this->getUrlGeneratorMock(), $this->getMockSession(), $this->getGuzzleMock(), 'key', 'secret');
+        return new Viadeo($this->getUrlGeneratorMock(), $this->getMockSession(), ['client-id'=>'id', 'client-secret'=>'secret'], $this->getGuzzleMock());
     }
 }

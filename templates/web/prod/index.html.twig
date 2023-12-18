@@ -66,8 +66,8 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/production/production{% if not app.debug %}.min{% endif %}.css">
-    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/production/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
+    <link type="text/css" rel="stylesheet" href="/assets/production/production{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
+    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/production/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
     <style title="color_selection" type="text/css">
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
@@ -82,8 +82,8 @@
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
-    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
     <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
 
     <script type="text/javascript">
@@ -155,6 +155,13 @@
             $('body').addClass('{{ cssfile }}');
 
         });
+
+        // manage focus in a ui dialog
+        $(document).on('focusin', function(e) {
+            if ($(event.target).closest(".mce-window").length) {
+                e.stopImmediatePropagation();
+            }
+        });
     </script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
@@ -212,12 +219,32 @@
                             </div>
                         {% endif %}
 
+                        {# actions menu displayed when a basket is wip
+                           nb: no need for a trigger element ; menu will be created, not attached #}
+                        <table style="display:none;" class="contextMenu basketcontextmenu" id="basket_wip_menu">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="context-menu context-menu-theme-flat">
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner">
+                                                    {{ 'prod::workzone:Basket is WIP' | trans }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
                                 <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
                                 <input type="hidden" id="facet_and" value="{{ 'prod:workzone:facetstab:tooltips:facet_and_filter' | trans }}" />
                                 <input type="hidden" id="facet_remove" value="{{ 'prod:workzone:facetstab:tooltips:remove_facet_filter' | trans }}" />
-                                <div class="filter-facet-setting look_box_settings">
+                                <div class="filter-facet-setting look_box_settings" style="border-bottom: 1px solid #969595;
+">
                                     <div id="accordion">
                                         <div class="card">
                                             <div class="card-header" id="headingOne">
@@ -229,39 +256,60 @@
                                             </div>
                                             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                                 <div class="card-body">
-                                            <div class="left-facet-filter facet-filter">
-                                                <h4>{{ 'index::advance_search: facet-order' | trans }}</h4>
-                                                <form class="form-inline">
-                                                    {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
-                                                    <label class="select" for="orderFacet">
-                                                        <select class="preferences-facet-order" name="orderFacet" style="margin-left: 5px">
-                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
-                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
-                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
-                                                        </select>
-                                                    </label>
-                                                </form>
-                                            </div>
-                                            <div class="right-facet-filter facet-filter">
-                                                <h4>{{ 'index::advance_search: facet-values-order' | trans }}</h4>
-                                                <form class="form-inline">
-                                                    {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
-                                                    <label class="select" for="facetValuesOrder">
-                                                        <select class="preferences-facet-values-order" name="facetValuesOrder">
-                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
-                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') }}">{{ 'index::advance_search: order-by-hits-asc' | trans }}</option>
-                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
-                                                        </select>
-                                                    </label>
-                                                </form>
-                                            </div>
-                                            </div>
+                                                    <div class="left-facet-filter facet-filter">
+                                                        <h4>{{ 'index::advance_search: facet-order' | trans }}</h4>
+                                                        <form class="form-inline">
+                                                            {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
+                                                            <label class="select" for="orderFacet">
+                                                                <select class="preferences-facet-order" name="orderFacet" style="margin-left: 5px">
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
+                                                                </select>
+                                                            </label>
+                                                        </form>
+                                                    </div>
+                                                    <div class="right-facet-filter facet-filter">
+                                                    <h4>{{ 'index::advance_search: facet-values-order' | trans }}</h4>
+                                                    <form class="form-inline">
+                                                        {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
+                                                        <label class="select" for="facetValuesOrder">
+                                                            <select class="preferences-facet-values-order" name="facetValuesOrder">
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') }}">{{ 'index::advance_search: order-by-hits-asc' | trans }}</option>
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                            </select>
+                                                        </label>
+                                                    </form>
+                                                    </div>
+
+                                                    <div style="padding-left: 5px;">
+                                                        {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                                                        {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show_unset_field_facet') %}
+                                                        <h5 style="font-size:13px;">{{ 'index::advance_search: facet' | trans }}</h5>
+
+                                                         {# TODO : make behaviour as in 4.0 #}
+{#                                                        <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em;font-size:13px;">#}
+{#                                                            <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>#}
+{#                                                            {{ 'index::advance_search: disable-facet' | trans }}#}
+{#                                                        </label>#}
+{#                                                        <br/>#}
+                                                        <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em;font-size:13px;">
+                                                            <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == '1' %}checked="checked"{% endif %}>
+                                                            {{ 'index::advance_search: show-unset-field-facet' | trans }}
+                                                        </label>
+
+                                                        <h5 style="font-size:13px;">{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h5>
+
+                                                        <div class="hiddenFiltersListContainer"></div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -517,6 +565,13 @@
                                                 <div id="ADVSRCH_FIELDS_ZONE">
                                                     <label class="status-section-title">
                                                         <span class="danger_indicator">{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
+                                                        <span><input type="checkbox" class="preferences-see-real-field-name see-real-field-name" style="margin-top: 0px;margin-left: 27px; margin-right: 5px;"
+                                                            {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'see_real_field_name') != '1' %}
+                                                                data-real-field="field_without_real_name"
+                                                            {% else %}
+                                                                data-real-field="field_with_real_name" checked
+                                                            {% endif %}
+                                                            >{{ 'prod::advancesearch see real field name' | trans }}</span>
                                                         <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
                                                         <div id="info-box">
                                                             <p>{{ 'prod::advancesearch:tooltips:field_restriction_explanation' | trans }}</p>
@@ -535,23 +590,35 @@
 
                                                     <div class="term_select">
                                                         <div class="term_select_wrapper_template" style="display: none;">
-                                                        <select class="term_select_field" style="vertical-align:middle; width:30%;">
+                                                            <select class="term_select_field" style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
-                                                                {% for field_id, field in search_datas['fields'] %}
-                                                                   {# {% if field['type'] != 'date' %}#}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{field['fieldname']}}</option>
-                                                                    {#{% endif %}#}
+                                                                {% for label, field in search_datas['fields'] %}
+                                                                    <option class="field_without_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{ field['fieldname'] }}">
+                                                                        {{ label }}
+                                                                    </option>
+                                                                {% endfor %}
+
+                                                                {% for label, field in search_datas['fieldsWithName'] %}
+                                                                    <option class="field_with_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{ field['fieldname'] }}" style="display:none;">
+                                                                        {{ label }}
+                                                                    </option>
                                                                 {% endfor %}
                                                             </select>
                                                             <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
-                                                                <option value=":">{{ 'Contains' | trans }}</option>
+                                                                <option class="string-operator" value=":">{{ 'Contains' | trans }}</option>
                                                                 <option value="=">{{ 'Equals' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value=">=">{{ 'prod::advancesearch:operator greater than or equal' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value="<=">{{ 'prod::advancesearch:operator less than or equal' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value=">">{{ 'prod::advancesearch:operator greater than' | trans }}</option>
+                                                                <option style="display: none;" class="number-operator" value="<">{{ 'prod::advancesearch:operator less than' | trans }}</option>
+                                                                <option value="set">{{ 'prod::advancesearch:operator set' | trans }}</option>
+                                                                <option value="unset">{{ 'prod::advancesearch:operator unset' | trans }}</option>
                                                             </select>
                                                             <input class="term_select_value" disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
                                                             <input class="term_deleter" style="margin-bottom: 4px;">
                                                         </div>
 
-                                                        <button class="add_new_term"><span>&plus;</span> Add</button>
+                                                        <button class="add_new_term"><span>&plus;</span>{{ 'prod::advancesearch: Add' | trans }}</button>
                                                     </div>
 
                                                    {# <div style="display:none;">
@@ -582,12 +649,17 @@
                                                         <select name="date_field" class="date-field input-medium check-filters" data-save="true" style="width: 166px;">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
-                                                            {% for fieldname, date in search_datas['dates'] %}
-                                                                <option
-                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
+                                                            {% for label, date in search_datas['dates'] %}
+                                                                <option class="field_without_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ date['fieldname'] }}">
+                                                                    {{ label }}
+                                                                </option>
                                                             {% endfor %}
-                                                             <option value="updated_on">{{ 'updated_on' | trans }}</option>
-                                                            <option value="created_on">{{ 'created_on' | trans }}</option>
+
+                                                            {% for label, date in search_datas['datesWithName'] %}
+                                                                <option class="field_with_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ date['fieldname'] }}" style="display:none;">
+                                                                    {{ label }}
+                                                                </option>
+                                                            {% endfor %}
                                                         </select>
                                                     </span>
                                                     <span id="ADVSRCH_DATE_SELECTORS"  style="display: inline-block;height: 26px;line-height: 26px;">
@@ -672,6 +744,7 @@
                                 </tr>
                             </table>
                         </div>
+                        <input type="hidden" name="searchForm_token" value="{{ app['session'].get('searchForm_token') }}">
                     </form>
                     <div id="facet_filter_in_search" style="width:100%;height:40px;overflow-y: scroll;">
                     </div>
@@ -930,25 +1003,6 @@
                             </select>
                         </label>
                     </form>
-                </div>
-                <div class="box">
-                    {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
-                    {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show__empty__facet') %}
-                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
-
-                    <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
-                        <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
-                        {{ 'index::advance_search: disable-facet' | trans }}
-                    </label>
-                    <br/>
-                    <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em">
-                        <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == 'true' %}checked="checked"{% endif %}>
-                        {{ 'index::advance_search: show-unset-field-facet' | trans }}
-                    </label>
-
-                    <h1>{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h1>
-
-                    <div class="hiddenFiltersListContainer"></div>
                 </div>
             </div>
         </div>

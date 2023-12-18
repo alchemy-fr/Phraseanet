@@ -12,9 +12,11 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\Version\Migration\MigrationInterface;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe31;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe35;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe38;
+use Alchemy\Phrasea\Setup\Version\Probe\ProbeInterface;
 use Alchemy\Phrasea\Setup\Version\Probe\ProbeInterface as VersionProbeInterface;
 use Alchemy\Phrasea\Setup\Probe\BinariesProbe;
 use Alchemy\Phrasea\Setup\Probe\CacheServerProbe;
@@ -25,12 +27,17 @@ use Alchemy\Phrasea\Setup\Probe\PhpProbe;
 use Alchemy\Phrasea\Setup\Probe\SearchEngineProbe;
 use Alchemy\Phrasea\Setup\Probe\SubdefsPathsProbe;
 use Alchemy\Phrasea\Setup\Probe\SystemProbe;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use vierbergenlars\SemVer\version;
 
 class ConfigurationTester
 {
     private $app;
     private $requirements;
+
+    /** @var ProbeInterface[] */
     private $versionProbes;
 
     public function __construct(Application $app)
@@ -130,15 +137,37 @@ class ConfigurationTester
         return (Boolean) $this->getMigrations();
     }
 
-    public function getMigrations()
+    public function isConnectedToDBHost()
     {
-        $migrations = [];
+        $connectionConfig = $this->app['conf']->get(['main', 'database']);
+        /** @var Connection $connection */
+        $connection = $this->app['db.provider']($connectionConfig);
+
+        try {
+            $connection->connect();
+
+            return true;
+        } catch (\Exception $e) {
+
+            return false;
+        }
+    }
+
+    /**
+     * @return MigrationInterface[]
+     */
+    public function getMigrations(InputInterface $input = null, OutputInterface $output = null)
+    {
+       $migrations = [];
 
         if ($this->isUpToDate()) {
             return $migrations;
         }
 
         foreach ($this->versionProbes as $probe) {
+            if($output) {
+                $output->writeln(sprintf("configurationTester : probing \"%s\"", get_class($probe)));
+            }
             if ($probe->isMigrable()) {
                 $migrations[] = $probe->getMigration();
             }

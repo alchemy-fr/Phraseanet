@@ -23,4 +23,10 @@ spec:
           value: {{ .Values.rabbitmq.default_user }}
         - name: RABBITMQ_DEFAULT_PASS
           value: {{ .Values.rabbitmq.default_pass }}
+        - name: RABBITMQ_NODE_PORT
+          value: {{ .Values.rabbitmq.port | quote }}
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: {{ .Values.rabbitmq.default_vhost }}
+        - name: RABBITMQ_HEARTBEAT
+          value: {{ .Values.rabbitmq.heartbeat | quote }}
           

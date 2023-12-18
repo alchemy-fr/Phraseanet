@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
@@ -15,9 +15,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: phraseanet-gateway
-          servicePort: 80
+          service:
+            name: phraseanet-gateway
+            port:
+              number: 80
         path: /
+        pathType: Prefix
   {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}

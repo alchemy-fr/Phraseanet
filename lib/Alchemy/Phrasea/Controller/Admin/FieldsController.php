@@ -317,6 +317,8 @@ class FieldsController extends Controller
             ->set_generate_cterms($data['generate_cterms'])
             ->set_gui_editable($data['gui_editable'])
             ->set_gui_visible($data['gui_visible'])
+            ->set_printable($data['printable'])
+            ->set_input_disable($data['input_disable'])
             ->set_report($data['report'])
             ->setVocabularyControl(null)
             ->setVocabularyRestricted(false);
@@ -352,7 +354,7 @@ class FieldsController extends Controller
     {
         return [
             'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable', 'aggregable',
-            'required', 'separator', 'readonly', 'gui_editable', 'gui_visible' , 'type', 'tbranch', 'generate_cterms', 'report',
+            'required', 'separator', 'readonly', 'gui_editable', 'gui_visible' , 'printable', 'input_disable', 'type', 'tbranch', 'generate_cterms', 'report',
             'vocabulary-type', 'vocabulary-restricted', 'dces-element', 'labels'
         ];
     }

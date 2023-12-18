@@ -209,6 +209,7 @@
         <Publisher src="XMP-dc:Publisher" type="string" report="0" />
         <Contributor src="XMP-dc:Contributor" type="string" report="0"/>
         <Date src="XMP-dc:Date" type="date" report="0" />
+        <ExpireDate src="" type="date" report="0" />
         <Type src="XMP-dc:Type" type="string" report="1" />
         <Format src="XMP-dc:Format" type="string" report="0" />
         <Identifier src="XMP-dc:Identifier" type="string" report="1" />
@@ -221,25 +222,35 @@
         <Filename src="Phraseanet:tf-basename" readonly="1" type="string" report="1"/>
         <Latitude src="Composite:GPSLatitude" type="number" readonly="1" report="0" />
         <Longitude src="Composite:GPSLongitude"  type="number" readonly="1" report="0"/>
-        <StartOfMessage src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="number" gui_editable="1" gui_visible="1"/>
-        <VideoTextTrackChapters src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="0" gui_visible="0"/>
-        <VideoTextTrackFr src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
-        <VideoTextTrackEn src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
-        <VideoTextTrackDe src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
+        <StartOfMessage src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="number" gui_editable="1" gui_visible="1" printable="1"/>
+        <VideoTextTrackChapters src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="0" gui_visible="0" printable="0"/>
+        <VideoTextTrackFr src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0" printable="0" />
+        <VideoTextTrackEn src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0" printable="0" />
+        <VideoTextTrackDe src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0" printable="0" />
         <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
         <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
     </description>
 
     <statbits>
         <bit n="4" labelOn="Caption filled" searchable="0" printable="0" labelOff="Caption not filled">
-          <label switch="off" code="de">Nicht gefüllt</label>
-          <label switch="off" code="en">Caption not filled</label>
-          <label switch="off" code="fr">Média non renseigné</label>
-          <label switch="off" code="nl"/>
-          <label switch="on" code="de">Gefüllt</label>
-          <label switch="on" code="en">Caption filled</label>
-          <label switch="on" code="fr">Média renseigné</label>
-          <label switch="on" code="nl"/>
+            <label switch="off" code="de">Nicht gefüllt</label>
+            <label switch="off" code="en">Caption not filled</label>
+            <label switch="off" code="fr">Média non renseigné</label>
+            <label switch="off" code="nl"/>
+            <label switch="on" code="de">Gefüllt</label>
+            <label switch="on" code="en">Caption filled</label>
+            <label switch="on" code="fr">Média renseigné</label>
+            <label switch="on" code="nl"/>
+        </bit>
+        <bit n="5" labelOn="Rights expired" searchable="0" printable="0" labelOff="Rights not expired">
+            <label switch="off" code="de"/>
+            <label switch="off" code="en">Rights not expired</label>
+            <label switch="off" code="fr">Droits non expirés</label>
+            <label switch="off" code="nl"/>
+            <label switch="on" code="de"/>
+            <label switch="on" code="en">Rights expired</label>
+            <label switch="on" code="fr">Droits expirés</label>
+            <label switch="on" code="nl"/>
         </bit>
     </statbits>
 </record>

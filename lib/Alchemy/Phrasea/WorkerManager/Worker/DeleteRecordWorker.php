@@ -13,10 +13,12 @@ class DeleteRecordWorker implements WorkerInterface
 
     /** @var  WorkerRunningJobRepository $repoWorker*/
     private $repoWorker;
+    private $messagePublisher;
 
-    public function __construct( WorkerRunningJobRepository $repoWorker)
+    public function __construct( WorkerRunningJobRepository $repoWorker, MessagePublisher $messagePublisher)
     {
         $this->repoWorker = $repoWorker;
+        $this->messagePublisher = $messagePublisher;
     }
 
     public function process(array $payload)
@@ -50,11 +52,20 @@ class DeleteRecordWorker implements WorkerInterface
             $em->rollback();
         }
 
+        try {
+            $databox = $this->findDataboxById($payload['databoxId']);
+            $record = $databox->get_record($payload['recordId']);
 
-        $record = $this->findDataboxById($payload['databoxId'])->get_record($payload['recordId']);
+            $record->delete();
 
-        $record->delete();
-
+            $this->messagePublisher->pushLog(sprintf("record deleted databoxname=%s databoxid=%d recordid=%d", $databox->get_viewname(), $payload['databoxId'], $payload['recordId']));
+        } catch (\Exception $e) {
+            $this->messagePublisher->pushLog(sprintf("%s (%s) : Error %s", __FILE__, __LINE__, $e->getMessage()), 'error');
+            if ($workerRunningJob != null) {
+                $workerRunningJob->setInfo('error : ' . $e->getMessage());
+                $em->persist($workerRunningJob);
+            }
+        }
 
         // tell that the delete is finished
         if ($workerRunningJob != null) {

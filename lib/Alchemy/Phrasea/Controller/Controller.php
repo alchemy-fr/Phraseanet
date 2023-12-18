@@ -15,7 +15,9 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\User;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class Controller
 {
@@ -110,6 +112,35 @@ class Controller
     public function getAuthenticatedUser()
     {
         return $this->getAuthenticator()->getUser();
+    }
+
+    public function setSessionFormToken($formName)
+    {
+        $randomValue = bin2hex(random_bytes(35));
+        $this->app['session']->set($formName.'_token', $randomValue);
+
+        return $randomValue;
+    }
+
+    public function getSessionFormToken($formName)
+    {
+        return $this->app['session']->get($formName.'_token');
+    }
+
+    public function isCrsfValid(Request $request, $formName)
+    {
+        if (!$request->isMethod("POST") && !$request->isMethod("PUT")) {
+            return false;
+        }
+
+        $formTokenName = $formName . '_token';
+        $formToken = (string) $request->request->get($formTokenName);
+
+        if (empty($formToken) || $formToken != $this->getSessionFormToken($formName)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

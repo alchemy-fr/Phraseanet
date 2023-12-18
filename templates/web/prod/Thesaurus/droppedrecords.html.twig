@@ -1,6 +1,4 @@
 <div id="TXCLASSIFICATION">
-    <h3 style="color: red">{{ 'thesaurus::edit WIP/Experimental' | trans }}</h3>
-
     {% if error %}
 
         {{ error }}
@@ -42,7 +40,7 @@
                         <input type="hidden" class="value _0"  value="{{ bf0.selected_value.value }}">
                     </form>
                     {% if bf0.field.is_multi() %}
-                        {{ 'thesaurus::edit add %selected_value% to the field  %field_name%'| trans({'%selected_value%': '<b>' ~ bf0.selected_value.value ~ '</b>', '%field_name%': '<b>'~ bf0.field.get_name() ~ '</b>'}) }}
+                        {{ 'thesaurus::edit add %selected_value% to the field  %field_name%'| trans({'%selected_value%': '<b>' ~ bf0.selected_value.value ~ '</b>', '%field_name%': '<b>'~ bf0.field.get_name() ~ '</b>'}) | raw }}
                     {% else %}
                         {{ 'thesaurus::edit set  %field_name%  to  %selected_value%' | trans({'%field_name%': '<b>' ~ bf0.field.get_name() ~ '</b>', '%selected_value%': '<b>' ~ bf0.selected_value.value ~ '</b>'}) | raw }}
                     {% endif %}

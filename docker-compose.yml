@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.9"
 
 networks:
   internal:
@@ -15,6 +15,7 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
+    profiles: ["gateway-classic"]
     restart: on-failure
     volumes:
     - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
@@ -28,25 +29,67 @@ services:
     - GATEWAY_SEND_TIMEOUT
     - GATEWAY_PROXY_TIMEOUT
     - GATEWAY_FASTCGI_TIMEOUT
+    - GATEWAY_FASTCGI_HTTPS
+    - PHRASEANET_K8S_NAMESPACE
+    - PHRASEANET_TRUSTED_PROXIES
+    - GATEWAY_ALLOWED_IPS                      
+    - GATEWAY_DENIED_IPS 
+    - GATEWAY_USERS
+    - GATEWAY_CSP
     ports:
       - ${PHRASEANET_APP_PORT}:80
     networks:
       - internal
 
-  phraseanet:
+  gateway-traefik:
     build:
       context: .
-      target: phraseanet-fpm
+      target: phraseanet-nginx
       args:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
+    profiles: ["gateway-traefik"]
     restart: on-failure
+    volumes:
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_PLUGINS_DIR}:/var/alchemy/Phraseanet/www/plugins:rw
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
+    - phraseanet
     environment:
+    - MAX_BODY_SIZE
+    - GATEWAY_SEND_TIMEOUT
+    - GATEWAY_PROXY_TIMEOUT
+    - GATEWAY_FASTCGI_TIMEOUT
+    - PHRASEANET_K8S_NAMESPACE
+    - PHRASEANET_TRUSTED_PROXIES
+    - GATEWAY_ALLOWED_IPS
+    - GATEWAY_DENIED_IPS
+    - GATEWAY_USERS
+    - GATEWAY_FASTCGI_HTTPS
+    - GATEWAY_CSP
+    networks:
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phraseanet.rule=Host(`${PHRASEANET_HOSTNAME}`)"
+      - "traefik.http.routers.phraseanet.tls=true"
+
+  setup:
+    build:
+      context: .
+      target: phraseanet-setup
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-setup:$PHRASEANET_DOCKER_TAG
+    profiles: ["setup"]
+    #command: [ "/bin/sh", "-c", "exit" ]
+    restart: "on-failure"
+    environment:
+    - STACK_NAME
     - PHRASEANET_INSTALL
     - PHRASEANET_SETUP
     - PHRASEANET_UPGRADE
@@ -61,6 +104,7 @@ services:
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
     - PHRASEANET_ADMIN_ACCOUNT_ID
     - PHRASEANET_ADMIN_ACCOUNT_EMAIL
     - PHRASEANET_ADMIN_ACCOUNT_PASSWORD
@@ -71,7 +115,9 @@ services:
     - INSTALL_DB_TEMPLATE
     - INSTALL_APPBOX
     - INSTALL_DATABOX
-    - PHRASEANET_SERVER_NAME
+    - PHRASEANET_SCHEME
+    - PHRASEANET_HOSTNAME
+    - PHRASEANET_APP_PORT
     - PHRASEANET_AVAILABLE_LANGUAGE
     - PHRASEANET_DEFAULT_LANGUAGE
     - PHRASEANET_RABBITMQ_HOST
@@ -91,6 +137,10 @@ services:
     - PHRASEANET_SMTP_USER
     - PHRASEANET_SMTP_PASSWORD
     - PHRASEANET_DOWNLOAD_DIR
+    - PHRASEANET_DOWNLOAD_ASYNC
+    - PUSHER_APP_ID
+    - PUSHER_SECRET
+    - PUSHER_AUTH_KEY
     - PHRASEANET_LAZARET_DIR
     - PHRASEANET_CAPTION_DIR
     - PHRASEANET_WORKER_TMP
@@ -104,7 +154,7 @@ services:
     - PHRASEANET_API_ENABLED
     - PHRASEANET_API_SSL
     - PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
-    - ENV_SET_PHRASEANET_PROJET_NAME
+    - ENV_SET_PHRASEANET_PROJECT_NAME
     - LC_MESSAGES=C.UTF-8
     - LC_COLLATE=C.UTF-8
     - LC_IDENTIFICATION=C.UTF-8
@@ -116,9 +166,103 @@ services:
     - NEWRELIC_ENABLED
     - NEWRELIC_LICENSE_KEY
     - NEWRELIC_APP_NAME
-    - BLACKFIRE_ENABLED
-    - BLACKFIRE_SERVER_ID
-    - BLACKFIRE_SERVER_TOKEN
+    - SESSION_SAVE_HANDLER
+    - SESSION_SAVE_PATH
+    - PHRASEANET_CACHE_TYPE
+    - PHRASEANET_CACHE_HOST
+    - PHRASEANET_CACHE_PORT
+    - PHRASEANET_ELASTICSEARCH_HOST
+    - PHRASEANET_ELASTICSEARCH_PORT
+    - PHRASEANET_ELASTICSEARCH_INDEX
+    - PHRASEANET_ELASTICSEARCH_SHARD
+    - PHRASEANET_ELASTICSEARCH_REPLICAS
+    - PHRASEANET_ELASTICSEARCH_MINSCORE
+    - PHRASEANET_ELASTICSEARCH_HIGHLIGHT
+    - PHRASEANET_ELASTICSEARCH_MAXRESULTWINDOW
+    - PHRASEANET_ELASTICSEARCH_POPULATEORDER
+    - PHRASEANET_ELASTICSEARCH_ACTIVETAB
+    - PHRASEANET_ELASTICSEARCH_FACET_BASE
+    - PHRASEANET_ELASTICSEARCH_FACET_COLLECTION
+    - PHRASEANET_ELASTICSEARCH_FACET_DOCTYPE
+    - PHRASEANET_ELASTICSEARCH_FACET_ORIENTATION
+    - PHRASEANET_MAINTENANCE
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_PLUGINS_DIR}:/var/alchemy/Phraseanet/www/plugins:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    - ${PHRASEANET_BACKUP_DIR}:/var/alchemy/Phraseanet/backup:rw
+    networks:
+      - internal
+
+
+  phraseanet:
+    build:
+      context: .
+      target: phraseanet-fpm
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
+    profiles: ["app"]
+    restart: on-failure
+    environment:
+    - STACK_NAME
+    - PHRASEANET_PROJECT_NAME
+    - PHRASEANET_TRUSTED_PROXIES
+    - PHRASEANET_DEBUG_ALLOWED_IP
+    - MAX_BODY_SIZE
+    - MAX_INPUT_VARS
+    - MAX_EXECUTION_TIME
+    - MAX_INPUT_TIME
+    - COOKIE_SECURE
+    - REQUEST_TERMINATE_TIMEOUT
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHRASEANET_SCHEME
+    - PHRASEANET_HOSTNAME
+    - PHRASEANET_APP_PORT
+    - PHRASEANET_DOWNLOAD_DIR
+    - PHRASEANET_LAZARET_DIR
+    - PHRASEANET_CAPTION_DIR
+    - PHRASEANET_WORKER_TMP
+    - PHRASEANET_FFMPEG_TIMEOUT
+    - PHRASEANET_FFPROBE_TIMEOUT
+    - PHRASEANET_GS_TIMEOUT
+    - PHRASEANET_MP4BOX_TIMEOUT
+    - PHRASEANET_SWFTOOLS_TIMEOUT
+    - PHRASEANET_UNOCON_TIMEOUT
+    - PHRASEANET_EXIFTOOL_TIMEOUT
+    - PHRASEANET_API_ENABLED
+    - PHRASEANET_API_SSL
+    - PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
+    - ENV_SET_PHRASEANET_PROJECT_NAME
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    - SESSION_SAVE_HANDLER
+    - SESSION_SAVE_PATH
+    - PHRASEANET_MAINTENANCE
+    - FPM_MEMORY_LIMIT
+    - FPM_PM_TYPE
+    - FPM_MAXCHILDREN
+    - FPM_STARTSERVERS
+    - FPM_MINSPARESERVER
+    - FPM_MAXSPARESERVER
+    - FPM_MAX_REQUESTS
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -139,16 +283,16 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["worker"]
     restart: on-failure
     depends_on:
-    - redis
-    - rabbitmq
-    - elasticsearch
     - phraseanet
     environment:
+    - STACK_NAME
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
     - LC_MESSAGES=C.UTF-8
     - LC_COLLATE=C.UTF-8
     - LC_IDENTIFICATION=C.UTF-8
@@ -164,6 +308,7 @@ services:
     - PHRASEANET_WORKER_deleteRecord
     - PHRASEANET_WORKER_editRecord
     - PHRASEANET_WORKER_exportMail
+    - PHRASEANET_WORKER_downloadAsync
     - PHRASEANET_WORKER_exposeUpload
     - PHRASEANET_WORKER_ftp
     - PHRASEANET_WORKER_mainQueue
@@ -174,6 +319,930 @@ services:
     - PHRASEANET_WORKER_recordsActions
     - PHRASEANET_WORKER_validationReminder
     - PHRASEANET_WORKER_webhook
+    - PHRASEANET_WORKER_writeMetadatas
+    - PHRASEANET_WORKER_shareBasket
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-mainQueue:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "mainQueue"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_mainQueue
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+
+  w-assetsIngest:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "assetsIngest"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_assetsIngest
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-createRecord:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "createRecord"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_createRecord
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+
+  w-deleteRecord:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "deleteRecord"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_deleteRecord
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal    
+
+  w-editRecord:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "editRecord"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_editRecord
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-exportMail:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "exportMail"]
+    restart: on-failure
+    depends_on:
+      - phraseanet
+    environment:
+      - STACK_NAME
+      - OPCACHE_ENABLED
+      - SESSION_CACHE_LIMITER
+      - PHP_LOG_LEVEL
+      - PHP_CLI_MEMORY_LIMIT
+      - LC_MESSAGES=C.UTF-8
+      - LC_COLLATE=C.UTF-8
+      - LC_IDENTIFICATION=C.UTF-8
+      - LANG=C.UTF-8
+      - LC_MEASUREMENT=C.UTF-8
+      - LC_CTYPE=C.UTF-8
+      - LC_TIME=C.UTF-8
+      - LC_NAME=C.UTF-8
+      - PHRASEANET_EXPLODE_WORKER
+      - PHRASEANET_WORKERS_LAUNCH_METHOD
+      - PHRASEANET_WORKER_exportMail
+      - IMAGEMAGICK_POLICY_VERSION
+      - IMAGEMAGICK_POLICY_WIDTH
+      - IMAGEMAGICK_POLICY_HEIGHT
+      - IMAGEMAGICK_POLICY_MAP
+      - IMAGEMAGICK_POLICY_MEMORY
+      - IMAGEMAGICK_POLICY_AREA
+      - IMAGEMAGICK_POLICY_DISK
+      - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+      - NEWRELIC_ENABLED
+      - NEWRELIC_LICENSE_KEY
+      - NEWRELIC_APP_NAME
+    volumes:
+      - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+      - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+      - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+      - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+      - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+      - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+      - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-downloadAsync:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "downloadAsync"]
+    restart: on-failure
+    depends_on:
+      - phraseanet
+    environment:
+      - STACK_NAME
+      - OPCACHE_ENABLED
+      - SESSION_CACHE_LIMITER
+      - PHP_LOG_LEVEL
+      - PHP_CLI_MEMORY_LIMIT
+      - LC_MESSAGES=C.UTF-8
+      - LC_COLLATE=C.UTF-8
+      - LC_IDENTIFICATION=C.UTF-8
+      - LANG=C.UTF-8
+      - LC_MEASUREMENT=C.UTF-8
+      - LC_CTYPE=C.UTF-8
+      - LC_TIME=C.UTF-8
+      - LC_NAME=C.UTF-8
+      - PHRASEANET_EXPLODE_WORKER
+      - PHRASEANET_WORKERS_LAUNCH_METHOD
+      - PHRASEANET_WORKER_downloadAsync
+      - IMAGEMAGICK_POLICY_VERSION
+      - IMAGEMAGICK_POLICY_WIDTH
+      - IMAGEMAGICK_POLICY_HEIGHT
+      - IMAGEMAGICK_POLICY_MAP
+      - IMAGEMAGICK_POLICY_MEMORY
+      - IMAGEMAGICK_POLICY_AREA
+      - IMAGEMAGICK_POLICY_DISK
+      - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+      - NEWRELIC_ENABLED
+      - NEWRELIC_LICENSE_KEY
+      - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-exposeUpload:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "exposeUpload"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_exposeUpload
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-exportftp:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "exportFtp"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_ftp
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-populateIndex:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "populateIndex"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_populateIndex
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-pullAssets:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "pullAssets"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_pullAssets
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-recordsActions:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "recordsActions"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_recordsActions
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-shareBasket:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "shareBasket"]
+    restart: on-failure
+    depends_on:
+      - redis
+      - rabbitmq
+      - elasticsearch
+      - phraseanet
+    environment:
+      - STACK_NAME
+      - OPCACHE_ENABLED
+      - SESSION_CACHE_LIMITER
+      - PHP_LOG_LEVEL
+      - PHP_CLI_MEMORY_LIMIT
+      - LC_MESSAGES=C.UTF-8
+      - LC_COLLATE=C.UTF-8
+      - LC_IDENTIFICATION=C.UTF-8
+      - LANG=C.UTF-8
+      - LC_MEASUREMENT=C.UTF-8
+      - LC_CTYPE=C.UTF-8
+      - LC_TIME=C.UTF-8
+      - LC_NAME=C.UTF-8
+      - PHRASEANET_EXPLODE_WORKER
+      - PHRASEANET_WORKERS_LAUNCH_METHOD
+      - PHRASEANET_WORKER_shareBasket
+      - IMAGEMAGICK_POLICY_VERSION
+      - IMAGEMAGICK_POLICY_WIDTH
+      - IMAGEMAGICK_POLICY_HEIGHT
+      - IMAGEMAGICK_POLICY_MAP
+      - IMAGEMAGICK_POLICY_MEMORY
+      - IMAGEMAGICK_POLICY_AREA
+      - IMAGEMAGICK_POLICY_DISK
+      - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+      - NEWRELIC_ENABLED
+      - NEWRELIC_LICENSE_KEY
+      - NEWRELIC_APP_NAME
+    volumes:
+      - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+      - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+      - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+      - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+      - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+      - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+      - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-subdefCreation:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "subdefCreation"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_subdefCreation
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-subtitle:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["subtitle"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_subtitle
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-validationReminder:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "validationReminder"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_validationReminder
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-webhook:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "webhook"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - PHRASEANET_WORKER_webhook
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+  w-writeMetadatas:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["workers", "writeMetadatas"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
     - PHRASEANET_WORKER_writeMetadatas
     - IMAGEMAGICK_POLICY_VERSION
     - IMAGEMAGICK_POLICY_WIDTH
@@ -186,9 +1255,6 @@ services:
     - NEWRELIC_ENABLED
     - NEWRELIC_LICENSE_KEY
     - NEWRELIC_APP_NAME
-    - BLACKFIRE_ENABLED
-    - BLACKFIRE_SERVER_ID
-    - BLACKFIRE_SERVER_TOKEN
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -200,20 +1266,100 @@ services:
     networks:
       - internal
 
-  redis:
-    image: redis
+  scheduler:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["scheduler"]
     restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_SCHEDULER=1
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_FTP_DIR}:/var/alchemy/Phraseanet/ftp:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+    
+  cmd:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    profiles: ["cmd"]
+    restart: on-failure
+    depends_on:
+    - phraseanet
+    environment:
+    - STACK_NAME
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - PHP_CLI_MEMORY_LIMIT
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_CMD_MODE
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    - ${PHRASEANET_BACKUP_DIR}:/var/alchemy/Phraseanet/backup:rw
     networks:
       - internal
 
-  elasticsearch:
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
-    build: ./docker/elasticsearch
-    restart: on-failure
-    volumes:
-    - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data
-    networks:
-      - internal
 
 volumes:
   config_vol:
@@ -234,6 +1380,7 @@ volumes:
     driver: local
   cache_vol:
     driver: local
+  rabbitmq_vol:
   # to be replacer by stdout/stderr
   logs_vol:
     driver: local

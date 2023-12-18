@@ -11,7 +11,9 @@
 
 namespace Alchemy\Phrasea\Status;
 
-use Symfony\Component\Filesystem\Filesystem;
+// use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
+
 
 /**
  * Provides status structure definition from XML

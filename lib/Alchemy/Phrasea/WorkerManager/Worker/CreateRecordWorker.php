@@ -60,13 +60,19 @@ class CreateRecordWorker implements WorkerInterface
         $em = $this->repoWorkerJob->getEntityManager();
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $payload['base_url']];
+
+        // verify_ssl is getted from config , it depend on the target if we are in pull mode
+        // it is injected from the AssetsIngestWorker
+        $clientOptions = [
+            'base_uri'  => $payload['base_url'],
+            'verify'    => $payload['verify_ssl']
+        ];
 
         // add proxy in each request if defined in configuration
         $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get asset informations
-        $body = $uploaderClient->get('/assets/'.$payload['asset'], [
+        $body = $uploaderClient->get('assets/'.$payload['asset'], [
             'headers' => [
                 'Authorization' => 'AssetToken '.$payload['assetToken']
             ]
@@ -90,7 +96,7 @@ class CreateRecordWorker implements WorkerInterface
         $em->flush();
 
         //download the asset
-        $client = $proxyConfig->getClientWithOptions();
+        $client = $proxyConfig->getClientWithOptions(['verify' => $payload['verify_ssl']]);
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
 
         try {
@@ -149,22 +155,6 @@ class CreateRecordWorker implements WorkerInterface
 
         }
 
-        $canAck = $this->repoWorkerJob->canAckUploader($payload['commit_id']);
-
-        //  if all assets in the commit are downloaded , send ack to the uploader
-        if ($canAck) {
-            //  post ack to the uploader
-            $uploaderClient->post('/commits/' . $payload['commit_id'] . '/ack', [
-                    'headers' => [
-                        'Authorization' => 'AssetToken '.$payload['assetToken']
-                    ],
-                    'json' => [
-                        'acknowledged' => true
-                    ]
-                ]
-            );
-        }
-
         $lazaretSession = new LazaretSession();
 
         $userRepository = $this->getUserRepository();
@@ -208,7 +198,8 @@ class CreateRecordWorker implements WorkerInterface
 
                 $metaField = $collection->get_databox()->get_meta_structure()->get_element($tMeta[1]);
 
-                $packageFile->addAttribute(new MetaField($metaField, [$value]));
+                $value = is_array($value) ? $value : [$value];
+                $packageFile->addAttribute(new MetaField($metaField, $value));
             }
 
             if (strstr($key, 'statusbit')) {
@@ -241,6 +232,7 @@ class CreateRecordWorker implements WorkerInterface
         $this->getBorderManager()->process($lazaretSession, $packageFile, $callback);
 
         if ($elementCreated instanceof \record_adapter) {
+            $this->messagePublisher->pushLog(sprintf("record created databoxname=%s databoxid=%d recordid=%d", $elementCreated->getDatabox()->get_viewname(), $elementCreated->getDataboxId(), $elementCreated->getRecordId()));
             $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
         } else {
             $this->messagePublisher->pushLog(sprintf('The file was moved to the quarantine: %s', json_encode($reasons)));
@@ -253,6 +245,18 @@ class CreateRecordWorker implements WorkerInterface
         if (is_int($payload['storyId']) && $elementCreated instanceof \record_adapter) {
             $this->addRecordInStory($user, $elementCreated, $sbasId, $payload['storyId'], $body['formData']);
         }
+
+        // ack by asset
+        // if all assets of a commit is acknowledge, the commit will automatically acknoledge
+        $uploaderClient->post('assets/' . $payload['asset'] . '/ack', [
+                'headers' => [
+                    'Authorization' => 'AssetToken ' . $payload['assetToken']
+                ],
+                'json' => [
+                    'acknowledged' => true
+                ]
+            ]
+        );
     }
 
     /**
@@ -285,6 +289,7 @@ class CreateRecordWorker implements WorkerInterface
     private function addRecordInStory($user, $elementCreated, $sbasId, $storyId, $formData)
     {
         $story = new \record_adapter($this->app, $sbasId, $storyId);
+        $previousDescription = $story->getRecordDescriptionAsArray();
 
         if (!$this->getAclForUser($user)->has_right_on_base($story->getBaseId(), \ACL::CANMODIFRECORD)) {
             $this->messagePublisher->pushLog(sprintf("The user %s can not add document to the story story_id = %d", $user->getLogin(), $story->getRecordId()));
@@ -320,7 +325,7 @@ class CreateRecordWorker implements WorkerInterface
             }
 
             $this->messagePublisher->pushLog(sprintf('The record record_id= %d was successfully added in the story record_id= %d', $elementCreated->getRecordId(), $story->getRecordId()));
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
         }
     }
 
