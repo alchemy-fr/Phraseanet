@@ -47,7 +47,7 @@ class CleanUsersCommand extends Command
             ->addOption('yes',        'y',  InputOption::VALUE_NONE,                                 'don\'t ask for confirmation')
 
             ->setHelp(
-                ""
+                "example : <info>bin/maintenance clean:user --dry-run --inactivity_period=90 --grace_duration=7 --max_relances=3 --remove_basket -y</info>"
                 . "\<INACTIVITY_PERIOD> <info>integer to specify the number of inactivity days, value not 0 (zero)</info>\n"
                 . "\<USERTYPE>can specify the only type of user to be clean  : \n"
                 . "- <info>admin</info> \n"
@@ -56,6 +56,7 @@ class CleanUsersCommand extends Command
                 . "- <info>basket_owner</info> \n"
                 . "- <info>basket_participant</info> \n"
                 . "- <info>story_owner</info> \n"
+                . "\<MAX_RELANCES><info> number of email reminders before deleting the user, if 0 no email sent</info> "
             );
     }
 
@@ -210,11 +211,12 @@ class CleanUsersCommand extends Command
                     $isValidMail = false;
                 }
 
-                if (empty($lastInactivityEmail) || $lastInactivityEmail < $nowDate) {
+                // compare on the day date
+                if (empty($lastInactivityEmail) || $lastInactivityEmail->format('Y-m-d') <= $nowDate->format('Y-m-d')) {
                     // first, relance the user by email to have a grace period
                     if (($nbRelance < $maxRelances) && $isValidMail) {
                         if (!$dry) {
-                            $this->relanceUser($user, $graceDuration);
+                            $this->relanceUser($user, ($maxRelances - $nbRelance) * $graceDuration);
                             $user->setNbInactivityEmail($nbRelance+1);
                             $user->setLastInactivityEmail(new \DateTime());
                             $userManipulator->updateUser($user);
@@ -298,7 +300,6 @@ class CleanUsersCommand extends Command
                 $mail = MailSuccessAccountInactifDelete::create($this->container, $receiver);
                 $mail->setLastConnection(($user->getLastConnection() == null) ? 'never connected' : $user->getLastConnection()->format('Y-m-d'));
 
-                // if --max_relances=0  there is no inactivity email
                 if ($user->getLastInactivityEmail() !== null) {
                     $mail->setLastInactivityEmail($user->getLastInactivityEmail()->format('Y-m-d'));
                 }
