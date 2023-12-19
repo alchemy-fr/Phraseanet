@@ -144,7 +144,8 @@ class AdminConfigurationController extends Controller
         $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
         $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
         $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
-        $averageDuration = $totalDuration/count($workerRunningJob);
+
+        $averageDuration = (count($workerRunningJob) == 0) ? 0 : $totalDuration/count($workerRunningJob);
 
         // format duration
         $averageDuration = $helpers->getDuration($averageDuration);
