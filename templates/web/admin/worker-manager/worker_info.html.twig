@@ -91,6 +91,10 @@
         </span>
 
         <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="average-duration" style="margin-left: 40px;">{{ averageDuration }}</span> <span style="margin-left: 10px;">{{ "job::tab average duration" | trans }}</span>
+        </span>
+
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
             <span class="total-duration" style="margin-left: 40px;">{{ totalDuration }}</span> <span style="margin-left: 10px;">{{ "job::tab total duration" | trans }}</span>
         </span>
 
@@ -202,6 +206,7 @@
                     $(".result-count").empty().text(data.resultCount + ' / ' + data.resultTotal);
                     $(".total-count").empty().text(data.totalCount);
                     $(".total-duration").empty().text(data.totalDuration);
+                    $(".average-duration").empty().text(data.averageDuration);
                     $(".real-entry-duration").empty().text(data.realEntryDuration);
                 }
             });
