@@ -23,6 +23,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class DownloadController extends Controller
 {
@@ -62,6 +64,9 @@ class DownloadController extends Controller
         );
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
+        $list['include_report'] = $request->request->get('include_report') === 'INCLUDE_REPORT';
+        $list['include_businessfields'] = (bool)$request->request->get('businessfields');
+
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
 
         $this->getDispatcher()->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent(
@@ -73,7 +78,7 @@ class DownloadController extends Controller
             )
         );
 
-        /** @see DoDownloadController::prepareDownload */
+        /** @uses DoDownloadController::prepareDownload */
         return $this->app->redirectPath('prepare_download', ['token' => $token->getValue()]);
     }
 
@@ -134,6 +139,26 @@ class DownloadController extends Controller
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
 
         $pusher_auth_key =$this->getConf()->get(['download_async', 'enabled'], false) ? $this->getConf()->get(['externalservice', 'pusher', 'auth_key'], '') : null;
+
+        $this->getDispatcher()->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent(
+                $this->getAuthenticatedUser(),
+                $ssttid,
+                $lst,
+                $subdefs,
+                $download->getExportName()
+            )
+        );
+
+        $this->getDispatcher()->addListener(KernelEvents::RESPONSE, function (FilterResponseEvent $event) use ($list) {
+            \set_export::log_download(
+                $this->app,
+                $list,
+                $event->getRequest()->get('type'),
+                !!$event->getRequest()->get('anonymous', false),
+                (isset($list['email']) ? $list['email'] : '')
+            );
+        });
+
         return new Response($this->render(
         /** @uses templates/web/prod/actions/Download/prepare_async.html.twig */
             '/prod/actions/Download/prepare_async.html.twig', [
