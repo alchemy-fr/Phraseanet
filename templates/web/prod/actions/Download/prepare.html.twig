@@ -91,6 +91,7 @@
     </div>
 
     <div style="display:none">
+        {# \Alchemy\Phrasea\Controller\Prod\DoDownloadController::downloadDocuments #}
         <form name="download" action="{{ path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}" method="post" target="file_frame">
             {% if anonymous %}
                 <input type="hidden" name="anonymous" value="1" />
@@ -105,6 +106,7 @@
             {% set time = time < 1 ? 2 : (time > 10 ? 10 : time) %}
 
             {% if list['complete'] is not defined %} {# Zip not done #}
+            {# \Alchemy\Phrasea\Controller\Prod\DoDownloadController::downloadExecute #}
                 $.post("{{ path('execute_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}", function(data){
                     if(data.success) {
                         $('form[name=download]').submit();
