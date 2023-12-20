@@ -141,10 +141,14 @@ class AdminConfigurationController extends Controller
         $helpers = new PhraseanetExtension($this->app);
 
         $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
-        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
+        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
         $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
         $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
+
+        $averageDuration = (count($workerRunningJob) == 0) ? 0 : $totalDuration/count($workerRunningJob);
+
         // format duration
+        $averageDuration = $helpers->getDuration($averageDuration);
         $totalDuration  = $helpers->getDuration($totalDuration);
 
         $tFieldTimes = array_column($workerRunningJob, $fieldTimeFilter);
@@ -159,7 +163,7 @@ class AdminConfigurationController extends Controller
         $realEntryDuration = $helpers->getDuration($realEntryDuration);
 
         // get all row count in the table WorkerRunningJob
-        $totalCount = $repoWorker->getJobCount([], null, null , null);
+        $totalCount = $repoWorker->getJobCount([], null, null , null, null, null);
         $totalCount = number_format($totalCount, 0, '.', ' ');
 
         $databoxIds = array_map(function (\databox $databox) {
@@ -186,6 +190,7 @@ class AdminConfigurationController extends Controller
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
                 'totalDuration'    => $totalDuration,
+                'averageDuration'  => $averageDuration,
                 'realEntryDuration'=> $realEntryDuration
             ]);
         } else {
@@ -198,6 +203,7 @@ class AdminConfigurationController extends Controller
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
                 'totalDuration'    => $totalDuration,
+                'averageDuration'  => $averageDuration,
                 'realEntryDuration'=> $realEntryDuration
             ]);
         }

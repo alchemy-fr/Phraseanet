@@ -452,7 +452,7 @@ class WorkerRunningJobRepository extends EntityRepository
         return $q->getResult();
     }
 
-    public function getJobCount(array $status, $jobType, $databoxId, $recordId)
+    public function getJobCount(array $status, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter = null)
     {
         $qb = $this->createQueryBuilder('w');
         $qb->select('count(w)');
@@ -474,6 +474,12 @@ class WorkerRunningJobRepository extends EntityRepository
         if (!empty($recordId)) {
             $qb->andWhere('w.recordId = :recordId')
                 ->setParameter('recordId', $recordId);
+        }
+
+        if ($dateTimeFilter instanceof DateTime) {
+            // published or created column
+            $qb->andWhere('w.' .$fieldTimeFilter. ' >= :dateTimeFilter')
+                ->setParameter('dateTimeFilter', $dateTimeFilter->format('Y-m-d H:i:s'));
         }
 
         return  $qb->getQuery()->getSingleScalarResult();
