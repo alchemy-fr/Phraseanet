@@ -401,7 +401,7 @@ class BuildSubdefs extends Command
 
                 /** @var media_subdef $subdef */
                 $subdefsDeleted = [];
-                foreach ($record->get_subdefs() as $subdef) {
+                foreach ($record->get_subdefs_from_db() as $subdef) {
                     $name = $subdef->get_name();
                     if($name == "document") {
                         continue;
@@ -597,7 +597,7 @@ class BuildSubdefs extends Command
         $sql .= "GROUP BY r.`record_id`";
 
         if(!$this->scheduled && !$this->all) {
-            $sql .= "\nHAVING `exists` != `waited`";
+            $sql .= "\nHAVING (`exists` IS NULL OR `exists` != `waited`)";
         }
 
         $sql .= "\nORDER BY r.`record_id` " . ($this->reverse ? "DESC" : "ASC");
