@@ -589,7 +589,10 @@ class set_export extends set_abstract
                 if ($properties === false || !in_array($subdefName, $wantedSubdefs)) {
                     continue;
                 }
-                if (!in_array($subdefName, ['caption', 'caption-yaml']) && !isset($sd[$subdefName])) {
+
+                if (!in_array($subdefName, ['caption', 'caption-yaml']) &&
+                    !isset($sd[$subdefName]) &&
+                    !is_file(p4string::addEndSlash($sd[$subdefName]->get_path()) . $sd[$subdefName]->get_file())) {
                     continue;
                 }
 
@@ -811,6 +814,11 @@ class set_export extends set_abstract
                         $files[$id]["subdefs"][$subdefName]['businessfields'] = $BF ? '1' : '0';
                     }
                 }
+            }
+
+            if (count($files[$id]["subdefs"]) == 0) {
+                // there is no downloadable file for this record
+                unset($files[$id]);
             }
         }
 

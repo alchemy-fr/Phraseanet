@@ -58,7 +58,8 @@ class ExportSubscriber implements EventSubscriberInterface
                 'emitterUserId'     => $event->getEmitterUserId(),
                 'tokenValue'        => $event->getTokenValue(),
                 'destinationMails'  => serialize($event->getDestinationMails()),
-                'params'            => serialize($event->getParams())
+                'params'            => serialize($event->getParams()),
+                'workerJobId'       => $event->getWorkerJobId()
             ]
         ];
 

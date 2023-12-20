@@ -263,6 +263,13 @@ class ExportController extends Controller
             true
         );
 
+        if ($list['count'] == 0) {
+            return $this->app->json([
+                'success' => false,
+                'message' => $this->app->trans('export:: There is no elligible downloadable file!')
+            ]);
+        }
+
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
 
         $separator = '/\ |\;|\,/';

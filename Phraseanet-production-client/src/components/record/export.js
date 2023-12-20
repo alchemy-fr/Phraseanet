@@ -330,9 +330,32 @@ const exportRecord = services => {
                 );
             }
 
-            $('#sendmail form').submit();
-            humane.infoLarge($('#export-send-mail-notif').val());
-            $dialog.close();
+            let form = $('#sendmail form');
+            $.post(
+                form.attr('action'),
+                form.serializeArray(),
+                function (data) {
+                    if (data.success === true) {
+                        humane.infoLarge($('#export-send-mail-notif').val());
+                        $dialog.close();
+                    } else {
+                        var alert = dialog.create(
+                            services,
+                            {
+                                size: 'Alert',
+                                closeOnEscape: true,
+                                closeButton: true,
+                                title: dataConfig.msg.warning
+                            },
+                            2
+                        );
+
+                        alert.setContent(data.message);
+                    }
+                    return true;
+                },
+                'json'
+            );
         });
 
         $('.datepicker', $dialog.getDomElement())
