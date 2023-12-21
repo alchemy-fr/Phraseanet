@@ -88,6 +88,9 @@ class BuildSubdefs extends Command
     /** @var  array */
     private $subdefsTodoByType;
 
+    /** @var array */
+    private $fileTypes;
+
     public function __construct($name = null)
     {
         parent::__construct($name);
@@ -121,6 +124,7 @@ class BuildSubdefs extends Command
         $this->addOption('partition',          null, InputOption::VALUE_REQUIRED,                             'n/N : work only on records belonging to partition \'n\'');
         $this->addOption('reverse',            null, InputOption::VALUE_NONE,                                 'Build records from the last to the oldest');
         $this->addOption('name',               null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Name(s) of sub-definition(s) to (re)build, ex. "thumbnail,preview", default=ALL');
+        $this->addOption('file_type',          null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Mimetype of the record to (re)build, ex. "image/tiff,image/jpeg", default=ALL');
         $this->addOption('all',                null, InputOption::VALUE_NONE,                                 'Enforce listing of all records');
         $this->addOption('scheduled',          null, InputOption::VALUE_NONE,                                 'Only records flagged with \"jeton\" subdef');
         $this->addOption('with_substituted',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records as well');
@@ -139,6 +143,7 @@ class BuildSubdefs extends Command
         $this->setHelp(""
             . "Record filters :\n"
             . " --record_type=image,video : Select records of those types ('image','video','audio','document','flash').\n"
+            . " --file_type=image/tiff,image/jpeg : Select records with those mimetype.\n"
             . " --min_record_id=100       : Select records with record_id >= 100.\n"
             . " --max_record_id=500       : Select records with record_id <= 500.\n"
             . " --partition=2/5           : Split databox records in 5 buckets, select records in bucket #2.\n"
@@ -280,6 +285,7 @@ class BuildSubdefs extends Command
 
         $types = $this->getOptionAsArray($input, 'record_type', self::OPTION_DISTINT_VALUES);
         $names = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
+        $this->fileTypes = $this->getOptionAsArray($input, 'file_type', self::OPTION_DISTINT_VALUES);
 
         if ($this->with_substituted && $this->substituted_only) {
             $output->writeln("<error>--substituted_only and --with_substituted are mutually exclusive<error>");
@@ -578,6 +584,8 @@ class BuildSubdefs extends Command
         $recordTypes = array_keys($this->subdefsTodoByType);
         $types = array_map(function($v) {return $this->connection->quote($v);}, $recordTypes);
 
+        $fileTypes = array_map(function($v) {return $this->connection->quote($v);}, $this->fileTypes);;
+
         if(!empty($types)) {
             $sql .= " AND r.`type` IN(" . implode(',', $types) . ")\n";
         }
@@ -592,6 +600,9 @@ class BuildSubdefs extends Command
         }
         if($this->scheduled) {
             $sql .= " AND r.`jeton` & " . PhraseaTokens::MAKE_SUBDEF . "\n";
+        }
+        if(!empty($fileTypes)) {
+            $sql .= " AND r.`mime` IN(" . implode(',', $fileTypes) . ")\n";
         }
 
         $sql .= "GROUP BY r.`record_id`";
