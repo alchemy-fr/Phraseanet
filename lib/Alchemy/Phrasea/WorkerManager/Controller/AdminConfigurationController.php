@@ -145,10 +145,9 @@ class AdminConfigurationController extends Controller
         $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
         $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
 
-        $averageDuration = (count($workerRunningJob) == 0) ? 0 : $totalDuration/count($workerRunningJob);
+        $averageDuration = (count($workerRunningJob) == 0) ? 0 : $totalDuration/(float)count($workerRunningJob);
 
         // format duration
-        $averageDuration = $helpers->getDuration($averageDuration);
         $totalDuration  = $helpers->getDuration($totalDuration);
 
         $tFieldTimes = array_column($workerRunningJob, $fieldTimeFilter);
@@ -190,7 +189,7 @@ class AdminConfigurationController extends Controller
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
                 'totalDuration'    => $totalDuration,
-                'averageDuration'  => $averageDuration,
+                'averageDuration'  => number_format($averageDuration, 2, '.', ' ') . ' s',
                 'realEntryDuration'=> $realEntryDuration
             ]);
         } else {
@@ -203,7 +202,7 @@ class AdminConfigurationController extends Controller
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
                 'totalDuration'    => $totalDuration,
-                'averageDuration'  => $averageDuration,
+                'averageDuration'  => number_format($averageDuration, 2, '.', ' ') . ' s',
                 'realEntryDuration'=> $realEntryDuration
             ]);
         }
