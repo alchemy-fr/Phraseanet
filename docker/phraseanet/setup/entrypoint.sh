@@ -58,8 +58,9 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
    fi
 fi
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
-   echo `date +"%Y-%m-%d %H:%M:%S"` " - prepare backup check  db connection"
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing config backup, check connection to db "
    bin/console system:clear-cache
+   bin/console system:clear-session
    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
    timestamp_dir="backup/pre-upgrade/$timestamp"
    mkdir -p "$timestamp_dir"
