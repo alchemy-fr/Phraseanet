@@ -253,6 +253,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "jpeg",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "320 px JPG (thumbnail Phraseanet)" => [
@@ -262,6 +263,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "jpeg",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "640px JPG"                         => [
@@ -271,6 +273,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "jpeg",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "1280px JPG (preview Phraseanet)"   => [
@@ -280,6 +283,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "jpeg",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "2560px JPG"                        => [
@@ -289,6 +293,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "jpeg",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "PNG"                               => null,
@@ -299,6 +304,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "png",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "320px PNG 8 bits"                  => [
@@ -308,6 +314,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "png",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "640px PNG 8 bits"                  => [
@@ -317,6 +324,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "png",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "1280px PNG 8 bits"                 => [
@@ -326,6 +334,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "png",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "2560px PNG 8 bits"                 => [
@@ -335,6 +344,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "png",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "TIFF"                              => null,
@@ -345,6 +355,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "tiff",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                     "2560px TIFF"                       => [
@@ -354,6 +365,7 @@ class SubdefsController extends Controller
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
                         Image::OPTION_ICODEC     => "tiff",
+                        Image::OPTION_BACKGROUNDCOLOR => "",
                         Subdef::OPTION_DEVICE    => ["all"]
                     ],
                 ],
