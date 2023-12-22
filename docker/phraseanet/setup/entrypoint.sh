@@ -51,12 +51,16 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
 
     runuser app -c docker/phraseanet/setup/auto-install.sh
     chmod 600 config/configuration.yml
+    PHRASEANET_UPGRADE=0
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet Installation"
    if [[ $PHRASEANET_MAINTENANCE != 2 ]];then
         echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"
    fi
 fi
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing config backup, check connection to db "
+   bin/console system:clear-cache
+   bin/console system:clear-session
    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
    timestamp_dir="backup/pre-upgrade/$timestamp"
    mkdir -p "$timestamp_dir"
