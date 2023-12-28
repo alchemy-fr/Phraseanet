@@ -168,6 +168,8 @@ spec:
           value: {{ .Values.php.session_save_path | quote }}
         - name: PHRASEANET_TRUSTED_PROXIES
           value: {{ .Values.app.phraseanet_trusted_proxies | quote }}
+        - name: PHRASEANET_MAINTENANCE
+          value: {{ .Values.app.phraseanet_maintenance | quote }}
         - name: XDEBUG
           value: "0"
         - name: LC_MESSAGES

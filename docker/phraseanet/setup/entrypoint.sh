@@ -12,15 +12,38 @@ export PHRASEANET_BASE_URL="$PHRASEANET_SCHEME://$PHRASEANET_HOSTNAME:$PHRASEANE
 echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet BASE URL IS : " $PHRASEANET_BASE_URL
 fi
 
-if [[ $PHRASEANET_MAINTENANCE = 0 ]];then
-        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
-        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
-fi
-if [[ $PHRASEANET_MAINTENANCE = 1 || $PHRASEANET_MAINTENANCE = 2 ]];then
-        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
-        mkdir -p /var/alchemy/Phraseanet/datas/nginx
-        cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
-fi
+maintenance_manager()
+{
+    if [[ $1 = "off" || $1 = "0" ]];then
+            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
+            rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+    
+    elif [[ $1 = "on" || $1 = "1" ]];then
+            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
+            mkdir -p /var/alchemy/Phraseanet/datas/nginx
+            cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+            if [[ $2 != "noexit" ]];then
+                echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in persitent Mode"
+                exit 0
+            else
+                echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in temporary Mode"
+            fi
+    else
+            echo  `date +"%Y-%m-%d %H:%M:%S"` " - /!\ Phraseanet NULL value is not expected /!\ "
+    fi
+}
+
+#if [[ $PHRASEANET_MAINTENANCE = "Off" ]];then
+#        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
+#        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+#fi
+#if [[ $PHRASEANET_MAINTENANCE = "On" ]];then
+#        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
+#        mkdir -p /var/alchemy/Phraseanet/datas/nginx
+#        cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+#fi
+
+maintenance_manager $PHRASEANET_MAINTENANCE
 
 echo "creating config subderectories overwritten by the config pvc"
 
@@ -41,6 +64,8 @@ FILE=config/configuration.yml
 
 if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
     echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet $FILE doesn't exist, Play Phraseanet installation..."
+    maintenance_manager 1 noexit
+
     chown app:app \
         cache \
         config \
@@ -52,12 +77,13 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
     runuser app -c docker/phraseanet/setup/auto-install.sh
     chmod 600 config/configuration.yml
     PHRASEANET_UPGRADE=0
-   echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet Installation"
-   if [[ $PHRASEANET_MAINTENANCE != 2 ]];then
-        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"
-   fi
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet Installation"
+    maintenance_manager 0
+
 fi
+
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
+   maintenance_manager 1 noexit
    echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing config backup, check connection to db "
    bin/console system:clear-cache
    bin/console system:clear-session
@@ -70,11 +96,14 @@ if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
    echo `date +"%Y-%m-%d %H:%M:%S"` " - Start Phraseanet upgrade datas"
    bin/setup system:upgrade -y
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End Phraseanet upgrade datas"
+   maintenance_manager 0
+
 fi
 
 if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     echo `date +"%Y-%m-%d %H:%M:%S"` " - $FILE exists, start setup ."
-    
+    maintenance_manager 1 noexit
+
     if [[ $PHRASEANET_PROJECT_NAME && $ENV_SET_PHRASEANET_PROJECT_NAME == 1 ]]; then
         bin/setup system:config set -q registry.general.title "$PHRASEANET_PROJECT_NAME"
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Title is set to $PHRASEANET_PROJECT_NAME"
@@ -223,7 +252,10 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     fi
     
     echo `date +"%Y-%m-%d %H:%M:%S"` " - config/configuration.yml update by Phraseanet entrypoint.sh Finished !"
+    maintenance_manager 0
 fi
+
+maintenance_manager 1 noexit
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - Init plugin install "
 ./docker/phraseanet/plugins/console init
@@ -260,12 +292,6 @@ echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet setup entrypoint.sh"
 
-if [[ $PHRASEANET_MAINTENANCE = 2 ]];then
-        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Persisting Maintenance Mode"
-else
-        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Removing Maintenance Mode"  
-        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
-fi
-
+maintenance_manager 0
 
 bash -e docker-php-entrypoint $@
