@@ -90,6 +90,8 @@ class BuildSubdefs extends Command
 
     /** @var array */
     private $fileTypes;
+    /** @var bool */
+    private $confirm;
 
     public function __construct($name = null)
     {
@@ -131,6 +133,7 @@ class BuildSubdefs extends Command
         $this->addOption('substituted_only',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records only');
         $this->addOption('missing_only',       null, InputOption::VALUE_NONE,                                 'Regenerate only missing subdefs');
         $this->addOption('prune',              null, InputOption::VALUE_NONE,                                 'Delete subdefs not in structure anymore');
+        $this->addOption('confirm',            null, InputOption::VALUE_NONE,                                 'Must be set to build and prune in the same command');
         $this->addOption('reset_subdef_flag',  null, InputOption::VALUE_NONE,                                 'Reset "make-subdef" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('set_writemeta_flag', null, InputOption::VALUE_NONE,                                 'Set "write-metadata" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('maxrecs',            null, InputOption::VALUE_REQUIRED,                             'Maximum count of records to do.');
@@ -274,6 +277,7 @@ class BuildSubdefs extends Command
         $this->with_substituted   = $input->getOption('with_substituted') ? true : false;
         $this->missing_only       = $input->getOption('missing_only') ? true : false;
         $this->prune              = $input->getOption('prune') ? true : false;
+        $this->confirm            = $input->getOption('confirm') ? true : false;
         $this->all                = $input->getOption('all') ? true : false;
         $this->scheduled          = $input->getOption('scheduled') ? true : false;
         $this->reverse            = $input->getOption('reverse') ? true : false;
@@ -297,8 +301,12 @@ class BuildSubdefs extends Command
         }
 
         $n = ($this->scheduled?1:0) + ($this->missing_only?1:0) + ($this->all?1:0);
-        if($n != 1) {
-            $output->writeln("<error>set one an only one option --scheduled, --missing_only, --all<error>");
+        if($n > 1) {
+            $output->writeln("<error>set only one \"build\" option: --scheduled, --missing_only or --all<error>");
+            $argsOK = false;
+        }
+        if($n == 1 && $this->prune && !$this->confirm) {
+            $output->writeln("<error>to build and prune in the same time (or --mode=repair), confirm with --confirm<error>");
             $argsOK = false;
         }
 
@@ -403,7 +411,10 @@ class BuildSubdefs extends Command
             try {
                 $record = $this->databox->get_record($row['record_id']);
 
-                $subdefNamesToDo = array_flip($this->subdefsTodoByType[$type]);    // do all subdefs ?
+                $subdefNamesToDo = [];
+                if($this->scheduled || $this->missing_only || $this->all) {
+                    $subdefNamesToDo = array_flip($this->subdefsTodoByType[$type]);    // do all subdefs ?
+                }
 
                 /** @var media_subdef $subdef */
                 $subdefsDeleted = [];
@@ -426,6 +437,12 @@ class BuildSubdefs extends Command
                         unset($subdefNamesToDo[$name]);
                         continue;
                     }
+
+                    if(!$this->scheduled && !$this->missing_only && !$this->all) {
+                        // nothing to build
+                        continue;
+                    }
+
                     if($this->missing_only) {
                         unset($subdefNamesToDo[$name]);
                         continue;
