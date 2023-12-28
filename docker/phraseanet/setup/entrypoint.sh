@@ -33,16 +33,6 @@ maintenance_manager()
     fi
 }
 
-#if [[ $PHRASEANET_MAINTENANCE = "Off" ]];then
-#        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
-#        rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
-#fi
-#if [[ $PHRASEANET_MAINTENANCE = "On" ]];then
-#        echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
-#        mkdir -p /var/alchemy/Phraseanet/datas/nginx
-#        cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
-#fi
-
 maintenance_manager $PHRASEANET_MAINTENANCE
 
 echo "creating config subderectories overwritten by the config pvc"
