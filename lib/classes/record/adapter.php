@@ -746,6 +746,19 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @return media_subdef[]
+     */
+    public function get_subdefs_from_db()
+    {
+        $subdefs = [];
+        foreach ($this->getMediaSubdefRepository()->findByRecordIdsAndNames([$this->getRecordId()]) as $subdef) {
+            $subdefs[$subdef->get_name()] = $subdef;
+        }
+
+        return $subdefs;
+    }
+
+    /**
      * @return string[]
      */
     protected function get_available_subdefs()
