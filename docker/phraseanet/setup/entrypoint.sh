@@ -12,6 +12,7 @@ export PHRASEANET_BASE_URL="$PHRASEANET_SCHEME://$PHRASEANET_HOSTNAME:$PHRASEANE
 echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet BASE URL IS : " $PHRASEANET_BASE_URL
 fi
 
+
 maintenance_manager()
 {
     if [[ $1 = "off" || $1 = "0" ]];then
@@ -21,7 +22,11 @@ maintenance_manager()
     elif [[ $1 = "on" || $1 = "1" ]];then
             echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
             mkdir -p /var/alchemy/Phraseanet/datas/nginx
-            cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
+            if [[ ! -n "$PHRASEANET_MAINTENANCE_MESSAGE" ]];then
+                echo "No custom maintenance message"
+                export PHRASEANET_MAINTENANCE_MESSAGE="We are performing scheduled <br />maintenance and will be back <br />online in a few minutes."
+            fi
+            envsubst < "/usr/local/etc/maintenance.html" > /var/alchemy/Phraseanet/datas/nginx/maintenance.html
             if [[ $2 != "noexit" ]];then
                 echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in persitent Mode"
                 exit 0
@@ -260,6 +265,8 @@ rm -Rf cache/*
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repository"
 chown -R app:app cache 
 
+maintenance_manager 0
+
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on config/ repository"
 chown -R app:app config
 
@@ -282,6 +289,5 @@ echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet setup entrypoint.sh"
 
-maintenance_manager 0
 
 bash -e docker-php-entrypoint $@
