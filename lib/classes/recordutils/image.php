@@ -289,11 +289,19 @@ class recordutils_image
                 $txtline = $texts->item($i)->nodeValue;
 
                 if ($txtline != '') {
-                    $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/../../../resources/Fonts/arial.ttf', $txtline, $text_width);
+                    $shadow = $texts->item($i)->getAttribute('shadow');
+                    if($shadow) {
+                        $shadowColor = $xmlToColor($shadow, [0, 0, 0, 127]);
+                        $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/../../../resources/Fonts/arial.ttf', $txtline, $text_width, true);
+                    }
+                    else {
+                        $shadowColor = null;
+                        $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/../../../resources/Fonts/arial.ttf', $txtline, $text_width, false);
+                    }
                     $txtblock[] = [
                         'fontsize'    => $fontsize,
                         'fontcolor'   => $xmlToColor($texts->item($i)->getAttribute('color'), [0, 0, 0]),
-                        'shadowcolor' => $xmlToColor($texts->item($i)->getAttribute('shadow'), [0, 0, 0, 127]),
+                        'shadowcolor' => $shadowColor,
                         'h'           => $wrap['toth'],
                         'lines'       => $wrap['l'],
                     ];
@@ -541,9 +549,10 @@ class recordutils_image
      * @param string $fontFace
      * @param string $string
      * @param int $width
+     * @param bool $withShadow
      * @return array
      */
-    protected static function wrap(ImagineInterface $imagine, $fontSize, $angle, $fontFace, $string, $width)
+    protected static function wrap(ImagineInterface $imagine, $fontSize, $angle, $fontFace, $string, $width, $withShadow)
     {
         static $palette;
 
