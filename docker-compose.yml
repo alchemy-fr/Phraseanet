@@ -16,6 +16,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
     profiles: ["gateway-classic"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${GATEWAY_CPU}
+              memory: ${GATEWAY_MEMORY_LIMIT}
+            reservations:
+              memory: ${GATEWAY_MEMORY_RESERVATION}
     restart: on-failure
     volumes:
     - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
@@ -285,6 +292,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["worker"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
