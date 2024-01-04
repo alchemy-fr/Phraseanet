@@ -24,7 +24,7 @@ server {
 
     location /api {
         if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
-            return 401;
+            return 503;
         }
         rewrite ^(.*)$ /api.php/$1 last;
     }

@@ -93,6 +93,8 @@ app:
   phraseanet_app_port: 80
   phraseanet_scheme: http
   phraseanet_trusted_proxies:
+  phraseanet_maintenance: 0
+  phraseanet_maintenance_message:
   gateway:
     resources:
       requests:
