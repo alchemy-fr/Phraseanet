@@ -93,6 +93,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-setup:$PHRASEANET_DOCKER_TAG
     profiles: ["setup"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     #command: [ "/bin/sh", "-c", "exit" ]
     restart: "on-failure"
     environment:
@@ -217,6 +224,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     profiles: ["app"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${FPM_CPU}
+              memory: ${FPM_MEMORY_LIMIT}
+            reservations:
+              memory: ${FPM_MEMORY_RESERVATION}
     restart: on-failure
     environment:
     - STACK_NAME
@@ -367,6 +381,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "mainQueue"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -419,6 +440,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "assetsIngest"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -470,6 +498,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "createRecord"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -522,6 +557,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "deleteRecord"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -573,6 +615,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "editRecord"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -624,6 +673,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "exportMail"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
       - phraseanet
@@ -675,6 +731,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "downloadAsync"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
       - phraseanet
@@ -726,6 +789,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "exposeUpload"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -777,6 +847,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "exportFtp"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -828,6 +905,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "populateIndex"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -879,6 +963,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "pullAssets"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -930,6 +1021,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "recordsActions"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -981,6 +1079,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "shareBasket"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
       - redis
@@ -1086,6 +1191,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["subtitle"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -1137,6 +1249,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "validationReminder"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -1239,6 +1358,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "writeMetadatas"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -1290,6 +1416,13 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["scheduler"]
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     restart: on-failure
     depends_on:
     - phraseanet
@@ -1339,6 +1472,13 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
     profiles: ["cmd"]
     restart: on-failure
     depends_on:
