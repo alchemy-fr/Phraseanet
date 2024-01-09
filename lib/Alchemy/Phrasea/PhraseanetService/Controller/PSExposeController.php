@@ -81,7 +81,7 @@ class PSExposeController extends Controller
                 'access_token' => $tokenBody['access_token'],
                 'expires_at'   => time() + $tokenBody['expires_in'],
                 'refresh_token'=> $tokenBody['refresh_token'],
-                'refresh_expires_at' => time() + $tokenBody['refresh_expires_in']
+                'refresh_expires_at' => ($tokenBody['refresh_expires_in'] == -1) ? $tokenBody['refresh_expires_in'] : time() + $tokenBody['refresh_expires_in']
             ];
         } else {
             $passSessionNameValue = [
@@ -199,6 +199,9 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$exposeName];
 
+        // it's the entry point on expose cli
+        // so initiate session here
+
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($exposeName);
         $providerId = $session->get('auth_provider.id');
@@ -215,7 +218,9 @@ class PSExposeController extends Controller
             }
         }
 
-        if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        if ((!$session->has($passSessionName) || empty($accessToken)) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
             $this->setSessionFormToken('prodExposeLogin');
 
             return $app->json([
@@ -226,8 +231,6 @@ class PSExposeController extends Controller
                  'nextPage'      => false
             ]);
         }
-
-        $accessToken = $this->getAndSaveToken($exposeName);
 
         if ($exposeConfiguration == null ) {
             return $app->json([
@@ -1352,6 +1355,8 @@ class PSExposeController extends Controller
         if ($config['connection_kind'] == 'password') {
             $tokenInfo = $session->get($passSessionName);
             if (!isset($tokenInfo['expires_at'])) {
+                // case of never expired
+                // eg: with provederID with phraseanet
                 $accessToken = $tokenInfo['access_token'];
             } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
                 $accessToken = $tokenInfo['access_token'];
@@ -1371,7 +1376,7 @@ class PSExposeController extends Controller
                         'access_token' => $refreshtokenBody['access_token'],
                         'expires_at'   => time() + $refreshtokenBody['expires_in'],
                         'refresh_token'=> $refreshtokenBody['refresh_token'],
-                        'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
+                        'refresh_expires_at' => ($refreshtokenBody['refresh_expires_in'] == -1) ? $refreshtokenBody['refresh_expires_in'] : time() + $refreshtokenBody['refresh_expires_in']
                     ];
                 } else {
                     $passSessionNameValue = [
@@ -1391,6 +1396,8 @@ class PSExposeController extends Controller
             if ($session->has($credentialSessionName)) {
                 $tokenInfoCredential = $session->get($credentialSessionName);
                 if (!isset($tokenInfoCredential['expires_at'])) {
+                    // case of never expired
+                    // eg: with provederID with phraseanet
                     $accessToken = $tokenInfoCredential['access_token'];
                 } elseif (is_array($tokenInfoCredential) && $tokenInfoCredential['expires_at'] > time()) {
                     $accessToken = $tokenInfoCredential['access_token'];
