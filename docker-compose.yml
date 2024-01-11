@@ -916,7 +916,6 @@ services:
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     profiles: ["workers", "recordsActions"]
-
     restart: on-failure
     depends_on:
     - phraseanet
