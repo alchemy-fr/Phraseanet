@@ -502,9 +502,7 @@ class LoginController extends Controller
         // does the provider provides a logout redirection ?
         if($providerId && ($provider = $this->findProvider($providerId))) {
             if(method_exists($provider, 'logoutAndRedirect')) {
-                $redirectToPhr = $this->app->url('logout', [
-                    'redirect' => $request->query->get("redirect")
-                ]);
+                $redirectToPhr = $this->app->url('logout');
                 $response = $provider->logoutAndRedirect($redirectToPhr);
             }
             else {
