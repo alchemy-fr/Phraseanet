@@ -339,7 +339,7 @@ class Openid extends AbstractProvider
             'firstname' => isset($data['given_name']) ? $data['given_name'] : '',
             'lastname'  => isset($data['family_name']) ? $data['family_name'] : '' ,
             'email'     => isset($data['email']) ? $data['email'] : '',
-            '_groups'   => ''
+            '_groups'   => isset($data['groups']) ? $data['groups'] : ''
         ]);
 
         $userAuthProviderRepository = $this->getUsrAuthProviderRepository();
