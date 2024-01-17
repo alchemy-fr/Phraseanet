@@ -35,7 +35,8 @@ class FeedbackReportCommand extends phrCommand
         $this->setName('feedback:report')
             ->setDescription('Report ended feedback results (votes) on records (set status-bits)')
             ->addOption('report',    null,  InputOption::VALUE_REQUIRED, "Report output format (all|condensed)", "all")
-            ->addOption('dry',    null,  InputOption::VALUE_NONE, "list translations but don't apply.", null)
+            ->addOption('min_date',    null,  InputOption::VALUE_REQUIRED, "Run only for feedbacks expired from this date (yyyy-mm-dd)", null)
+            ->addOption('dry',    null,  InputOption::VALUE_NONE, "list records but don't apply.", null)
             ->setHelp("")
         ;
     }
@@ -79,32 +80,44 @@ class FeedbackReportCommand extends phrCommand
             return 0;
         }
 
+        $min_date_filter = '';
+        if( ($min_date = $input->getOption('min_date')) !== null) {
+            $matches = [];
+            if(preg_match('/(\d\d\d\d)\D(\d\d)\D(\d\d)/', $min_date, $matches) !== 1) {
+                $output->writeln(sprintf("<error>bad format for --min_date</error>"));
+
+                return -1;
+            }
+
+            $min_date_filter = ' AND b.`created` >= \'' . $matches[1] . '-' . $matches[2] . '-' . $matches[3] . '\'';
+        }
 
         $appbox = $this->getAppBox();
 
         $sql_update = "UPDATE `BasketElements` SET `vote_expired` = :expired WHERE `id` = :id";
         $stmt_update = $appbox->get_connection()->prepare($sql_update);
 
-        $sql_select = "SELECT * FROM (
-    SELECT q1.*,
+        $sql_select = "SELECT q1.*, 
+       b.name, b.`vote_created` AS `created`, b.`vote_expires` AS expired, b.`vote_initiator_id`,
+       be.id AS be_id, be.vote_expired AS be_vote_expired,
         COUNT(bp.id) AS `voters_count`,
         SUM(IF(ISNULL(`agreement`), 1 , 0)) AS `votes_unvoted`,
         SUM(IF((`agreement`=0), 1, 0)) AS `votes_no`,
         SUM(IF((`agreement`=1), 1, 0)) AS `votes_yes`
-    FROM (
-        SELECT SUBSTRING_INDEX(GROUP_CONCAT(b.`id` ORDER BY `vote_expires` DESC), ',', 1) AS `basket_id`,
-            b.`vote_created` AS `created`, b.`vote_initiator_id`,   
-            MAX(b.`vote_expires`) AS `expired`, be.`id` AS `be_id`, be.`vote_expired` AS `be_vote_expired`,
+FROM
+(
+    SELECT SUBSTRING_INDEX(GROUP_CONCAT(b.`id` ORDER BY `vote_expires` DESC), ',', 1) AS `basket_id`,
             be.`sbas_id`, be.`record_id`, CONCAT(be.`sbas_id`, '_', be.`record_id`) AS `sbid_rid`
         FROM `BasketElements` AS be INNER JOIN `Baskets` AS b ON b.`id`=be.`basket_id`
-        WHERE b.`vote_expires` < NOW()
+        WHERE b.`vote_expires` < NOW() " . $min_date_filter . "
         GROUP BY `sbid_rid`
-    ) AS q1
-    INNER JOIN `BasketParticipants` AS bp ON bp.`basket_id`=q1.`basket_id`
-    LEFT JOIN `BasketElementVotes` AS bv ON bv.`participant_id`=bp.`id` AND bv.`basket_element_id`=`be_id`
-    GROUP BY q1.`sbid_rid`
-    HAVING ISNULL(`be_vote_expired`) OR `expired` > `be_vote_expired`
-) AS q2 ORDER BY basket_id, record_id";
+) AS q1
+INNER JOIN `Baskets` AS b ON b.`id`=q1.`basket_id`
+INNER JOIN `BasketElements` AS be ON be.basket_id=b.id AND be.sbas_id=q1.sbas_id AND be.record_id=q1.record_id
+                                     AND (ISNULL(be.`vote_expired`) OR b.`vote_expires` > be.`vote_expired`)
+INNER JOIN `BasketParticipants` AS bp ON bp.`can_agree`=1 AND bp.`basket_id`=b.id
+LEFT JOIN `BasketElementVotes` AS bv ON bv.`participant_id`=bp.`id` AND bv.`basket_element_id`=be.id
+GROUP BY be.id";
 
         $last_basket_id = null;
         $condensed = null;
@@ -123,11 +136,12 @@ class FeedbackReportCommand extends phrCommand
 
                 $vote_initiator = $this->findUser($row['vote_initiator_id']);
 
-                $this->output->writeln(sprintf("basket: %s, initated on %s by %s (%s), expired %s",
-                    $last_basket_id = $row['basket_id'],
+                $this->output->writeln(sprintf("basket \"%s\" (id %s), initiated on %s by %s (id %s), expired %s",
+                        $row['name'],
+                        $last_basket_id = $row['basket_id'],
                         $row['created'],
-                        $row['vote_initiator_id'],
                         $vote_initiator ? $vote_initiator->getEmail() : "<error>unknown</error>",
+                        $row['vote_initiator_id'] ?? 'null',
                         $row['expired'])
                 );
             }

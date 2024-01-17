@@ -165,6 +165,15 @@ Class GlobalConfiguration
             $this->actions[$sbas_id] = [];
 
             foreach($this->configuration['actions'] as $action_name => $action_conf) {
+                if(array_key_exists('databoxes', $action_conf)) {
+                    if(!is_array($action_conf['databoxes'])) {
+                        $action_conf['databoxes'] = [$action_conf['databoxes']];
+                    }
+                    // if the current db is not in databoxes list, ignore ths action for this db
+                    if(!in_array($sbas_id, $action_conf['databoxes']) && !in_array($databox->get_dbname(), $action_conf['databoxes'])) {
+                        continue;
+                    }
+                }
                 if(array_key_exists('status_bit', $action_conf)) {
                     $this->actions[$sbas_id][] = new StatusBitAction($this->twig, $action_conf);
                 }

@@ -104,13 +104,18 @@
                 <li><a href="#ftp">{{ 'export:: FTP' | trans }}</a></li>
             {% endif %}
         </ul>
+
         {% if download.get_total_download() > 0 %}
+
+            {# ##########################################
+            direct / async download
+            ############################################# #}
 
             <div id="download">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: telechargement' | trans }}</h4>
                     {% if app['conf'].get(['download_async', 'enabled'], false) %}
-                        {# \Alchemy\Phrasea\Controller\Prod\DownloadController::checkDownloadAsync #}
+                        {# \Alchemy\Phrasea\Controller\Prod\DownloadController::listDownloadAsync #}
                         {% set download_path = 'list_download_async' %}
                     {% else %}
                         {# \Alchemy\Phrasea\Controller\Prod\DownloadController::checkDownload #}
@@ -145,12 +150,14 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+                        {% if app['conf'].get(['download_async', 'enabled'], false) %}
                         <div class="well-small">
                             <label for="include_report" class="checkbox">
                                 <input class="caption" type="checkbox" id="include_report" name="include_report" value="INCLUDE_REPORT" />
                                 {{ 'prod::download: report as spreadsheet' | trans }}
                             </label>
                         </div>
+                        {% endif %}
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_download" class="checkbox">
@@ -171,9 +178,9 @@
                             </div>
                         {% endif %}
                         {% if removeable_stamp and download.has_stamp_option() == true %}
-                            <div id="stamp_choice" class="well-small" style="margin-left: 20px;" >
-                                <label for="option_stamp" class="checkbox">
-                                    <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                            <div class="well-small" style="margin-left: 20px;" >
+                                <label for="export_stamp_choice" class="checkbox">
+                                    <input class="stamp_choice" type="checkbox" id="export_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
                                     {{ 'prod::download: delete-marking-stamp' | trans }}
                                 </label>
                             </div>
@@ -186,6 +193,10 @@
                     </form>
                 </div>
             </div>
+
+            {# ##########################################
+            email
+            ############################################# #}
 
             <div id="sendmail">
                 <div style="padding:10px; text-align: center;">
@@ -249,6 +260,14 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
+                        {% if removeable_stamp and download.has_stamp_option() == true %}
+                            <div class="well-small" style="margin-left: 20px;" >
+                                <label for="email_stamp_choice" class="checkbox">
+                                    <input class="stamp_choice" type="checkbox" id="email_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                                    {{ 'prod::download: delete-marking-stamp' | trans }}
+                                </label>
+                            </div>
+                        {% endif  %}
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_sendmail" class="checkbox">
@@ -280,6 +299,12 @@
             </div>
         {% endif %}
         {% if download.get_total_order() > 0 %}
+
+
+            {# ##########################################
+            order
+            ############################################# #}
+
             <div id="order">
                 {% for name, values in download.get_display_orderable() %}
                     {% if values.available > 0 %}
@@ -426,6 +451,12 @@
                 </form>
             </div>
         {% endif %}
+
+
+        {# ##########################################
+        ftp
+        ############################################# #}
+
         {% if download.get_total_ftp() > 0 %}
             <div id="ftp">
                 <div style="padding:10px; text-align: center;">
@@ -478,6 +509,14 @@
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                            {% if removeable_stamp and download.has_stamp_option() == true %}
+                                <div class="well-small" style="margin-left: 20px;" >
+                                    <label for="ftp_stamp_choice" class="checkbox">
+                                        <input class="stamp_choice" type="checkbox" id="ftp_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                                        {{ 'prod::download: delete-marking-stamp' | trans }}
+                                    </label>
+                                </div>
+                            {% endif  %}
                         </div>
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields" style="margin-left:20px;display:none;">

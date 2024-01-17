@@ -193,6 +193,13 @@ services:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     networks:
+      - internal
+
+  cmd:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
       - internal    
 
   rabbitmq:

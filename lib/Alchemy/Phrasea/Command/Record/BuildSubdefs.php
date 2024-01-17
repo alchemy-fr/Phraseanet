@@ -88,6 +88,11 @@ class BuildSubdefs extends Command
     /** @var  array */
     private $subdefsTodoByType;
 
+    /** @var array */
+    private $fileTypes;
+    /** @var bool */
+    private $confirm;
+
     public function __construct($name = null)
     {
         parent::__construct($name);
@@ -121,12 +126,14 @@ class BuildSubdefs extends Command
         $this->addOption('partition',          null, InputOption::VALUE_REQUIRED,                             'n/N : work only on records belonging to partition \'n\'');
         $this->addOption('reverse',            null, InputOption::VALUE_NONE,                                 'Build records from the last to the oldest');
         $this->addOption('name',               null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Name(s) of sub-definition(s) to (re)build, ex. "thumbnail,preview", default=ALL');
+        $this->addOption('file_type',          null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Mimetype of the record to (re)build, ex. "image/tiff,image/jpeg", default=ALL');
         $this->addOption('all',                null, InputOption::VALUE_NONE,                                 'Enforce listing of all records');
         $this->addOption('scheduled',          null, InputOption::VALUE_NONE,                                 'Only records flagged with \"jeton\" subdef');
         $this->addOption('with_substituted',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records as well');
         $this->addOption('substituted_only',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records only');
         $this->addOption('missing_only',       null, InputOption::VALUE_NONE,                                 'Regenerate only missing subdefs');
         $this->addOption('prune',              null, InputOption::VALUE_NONE,                                 'Delete subdefs not in structure anymore');
+        $this->addOption('confirm',            null, InputOption::VALUE_NONE,                                 'Must be set to build and prune in the same command');
         $this->addOption('reset_subdef_flag',  null, InputOption::VALUE_NONE,                                 'Reset "make-subdef" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('set_writemeta_flag', null, InputOption::VALUE_NONE,                                 'Set "write-metadata" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('maxrecs',            null, InputOption::VALUE_REQUIRED,                             'Maximum count of records to do.');
@@ -139,6 +146,7 @@ class BuildSubdefs extends Command
         $this->setHelp(""
             . "Record filters :\n"
             . " --record_type=image,video : Select records of those types ('image','video','audio','document','flash').\n"
+            . " --file_type=image/tiff,image/jpeg : Select records with those mimetype.\n"
             . " --min_record_id=100       : Select records with record_id >= 100.\n"
             . " --max_record_id=500       : Select records with record_id <= 500.\n"
             . " --partition=2/5           : Split databox records in 5 buckets, select records in bucket #2.\n"
@@ -269,6 +277,7 @@ class BuildSubdefs extends Command
         $this->with_substituted   = $input->getOption('with_substituted') ? true : false;
         $this->missing_only       = $input->getOption('missing_only') ? true : false;
         $this->prune              = $input->getOption('prune') ? true : false;
+        $this->confirm            = $input->getOption('confirm') ? true : false;
         $this->all                = $input->getOption('all') ? true : false;
         $this->scheduled          = $input->getOption('scheduled') ? true : false;
         $this->reverse            = $input->getOption('reverse') ? true : false;
@@ -280,6 +289,7 @@ class BuildSubdefs extends Command
 
         $types = $this->getOptionAsArray($input, 'record_type', self::OPTION_DISTINT_VALUES);
         $names = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
+        $this->fileTypes = $this->getOptionAsArray($input, 'file_type', self::OPTION_DISTINT_VALUES);
 
         if ($this->with_substituted && $this->substituted_only) {
             $output->writeln("<error>--substituted_only and --with_substituted are mutually exclusive<error>");
@@ -291,8 +301,12 @@ class BuildSubdefs extends Command
         }
 
         $n = ($this->scheduled?1:0) + ($this->missing_only?1:0) + ($this->all?1:0);
-        if($n != 1) {
-            $output->writeln("<error>set one an only one option --scheduled, --missing_only, --all<error>");
+        if($n > 1) {
+            $output->writeln("<error>set only one \"build\" option: --scheduled, --missing_only or --all<error>");
+            $argsOK = false;
+        }
+        if($n == 1 && $this->prune && !$this->confirm) {
+            $output->writeln("<error>to build and prune in the same time (or --mode=repair), confirm with --confirm<error>");
             $argsOK = false;
         }
 
@@ -397,11 +411,14 @@ class BuildSubdefs extends Command
             try {
                 $record = $this->databox->get_record($row['record_id']);
 
-                $subdefNamesToDo = array_flip($this->subdefsTodoByType[$type]);    // do all subdefs ?
+                $subdefNamesToDo = [];
+                if($this->scheduled || $this->missing_only || $this->all) {
+                    $subdefNamesToDo = array_flip($this->subdefsTodoByType[$type]);    // do all subdefs ?
+                }
 
                 /** @var media_subdef $subdef */
                 $subdefsDeleted = [];
-                foreach ($record->get_subdefs() as $subdef) {
+                foreach ($record->get_subdefs_from_db() as $subdef) {
                     $name = $subdef->get_name();
                     if($name == "document") {
                         continue;
@@ -420,6 +437,12 @@ class BuildSubdefs extends Command
                         unset($subdefNamesToDo[$name]);
                         continue;
                     }
+
+                    if(!$this->scheduled && !$this->missing_only && !$this->all) {
+                        // nothing to build
+                        continue;
+                    }
+
                     if($this->missing_only) {
                         unset($subdefNamesToDo[$name]);
                         continue;
@@ -578,6 +601,8 @@ class BuildSubdefs extends Command
         $recordTypes = array_keys($this->subdefsTodoByType);
         $types = array_map(function($v) {return $this->connection->quote($v);}, $recordTypes);
 
+        $fileTypes = array_map(function($v) {return $this->connection->quote($v);}, $this->fileTypes);;
+
         if(!empty($types)) {
             $sql .= " AND r.`type` IN(" . implode(',', $types) . ")\n";
         }
@@ -593,11 +618,14 @@ class BuildSubdefs extends Command
         if($this->scheduled) {
             $sql .= " AND r.`jeton` & " . PhraseaTokens::MAKE_SUBDEF . "\n";
         }
+        if(!empty($fileTypes)) {
+            $sql .= " AND r.`mime` IN(" . implode(',', $fileTypes) . ")\n";
+        }
 
         $sql .= "GROUP BY r.`record_id`";
 
         if(!$this->scheduled && !$this->all) {
-            $sql .= "\nHAVING `exists` != `waited`";
+            $sql .= "\nHAVING (`exists` IS NULL OR `exists` != `waited`)";
         }
 
         $sql .= "\nORDER BY r.`record_id` " . ($this->reverse ? "DESC" : "ASC");

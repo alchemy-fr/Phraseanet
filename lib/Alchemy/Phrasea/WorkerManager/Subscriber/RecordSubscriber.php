@@ -162,50 +162,54 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $databox = $this->getApplicationBox()->get_databox($databoxId);
             $record  = $databox->get_record($recordId);
-            $type    = $record->getType();
 
-            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            // do not try to write meta on non story record
+            if (!$record->isStory()) {
+                $type    = $record->getType();
 
-            if ($subdefGroupe !== null) {
-                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
-            } else {
-                $toWritemetaOriginalDocument = true;
-            }
+                $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
-            foreach ($mediaSubdefs as $subdef) {
-                // check subdefmetadatarequired  from the subview setup in admin
-                // check if we want to write meta in this mime type
-                if (in_array(trim($subdef->get_mime()), $acceptedMimeTypes) &&
-                    (
-                        ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
-                        $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
-                    )
-                ) {
-                    $payload = [
-                        'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                        'payload' => [
-                            'recordId'    => $recordId,
-                            'databoxId'   => $databoxId,
-                            'subdefName'  => $subdef->get_name()
-                        ]
-                    ];
-                    if ($subdef->is_physically_present()) {
-                        $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
-                    }
-                    else {
-                        $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
-                            $subdef->get_name(),
-                            MessagePublisher::WRITE_METADATAS_TYPE,
-                            json_encode($payload)
-                        );
-                        $this->messagePublisher->pushLog($logMessage);
+                if ($subdefGroupe !== null) {
+                    $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+                } else {
+                    $toWritemetaOriginalDocument = true;
+                }
 
-                        $this->messagePublisher->publishRetryMessage(
-                            $payload,
-                            MessagePublisher::WRITE_METADATAS_TYPE,
-                            2,
-                            'Subdef is not physically present!'
-                        );
+                foreach ($mediaSubdefs as $subdef) {
+                    // check subdefmetadatarequired  from the subview setup in admin
+                    // check if we want to write meta in this mime type
+                    if (in_array(trim($subdef->get_mime()), $acceptedMimeTypes) &&
+                        (
+                            ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
+                            $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
+                        )
+                    ) {
+                        $payload = [
+                            'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
+                            'payload' => [
+                                'recordId'    => $recordId,
+                                'databoxId'   => $databoxId,
+                                'subdefName'  => $subdef->get_name()
+                            ]
+                        ];
+                        if ($subdef->is_physically_present()) {
+                            $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
+                        }
+                        else {
+                            $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
+                                $subdef->get_name(),
+                                MessagePublisher::WRITE_METADATAS_TYPE,
+                                json_encode($payload)
+                            );
+                            $this->messagePublisher->pushLog($logMessage);
+
+                            $this->messagePublisher->publishRetryMessage(
+                                $payload,
+                                MessagePublisher::WRITE_METADATAS_TYPE,
+                                2,
+                                'Subdef is not physically present!'
+                            );
+                        }
                     }
                 }
             }

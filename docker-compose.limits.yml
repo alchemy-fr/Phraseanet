@@ -1,0 +1,203 @@
+version: "3.9"
+
+services:
+  gateway:
+    deploy:
+        resources:
+            limits:
+              cpus: ${GATEWAY_CPU}
+              memory: ${GATEWAY_MEMORY_LIMIT}
+            reservations:
+              memory: ${GATEWAY_MEMORY_RESERVATION}
+  gateway-traefik:
+    deploy:
+        resources:
+            limits:
+              cpus: ${GATEWAY_CPU}
+              memory: ${GATEWAY_MEMORY_LIMIT}
+            reservations:
+              memory: ${GATEWAY_MEMORY_RESERVATION}
+  setup:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  phraseanet:
+    deploy:
+        resources:
+            limits:
+              cpus: ${FPM_CPU}
+              memory: ${FPM_MEMORY_LIMIT}
+            reservations:
+              memory: ${FPM_MEMORY_RESERVATION}
+  worker:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-mainQueue:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-assetsIngest:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-createRecord:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-deleteRecord:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-editRecord:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-exportMail:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-downloadAsync:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-exposeUpload:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-exportftp:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-populateIndex:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-pullAssets:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-recordsActions:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-shareBasket:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-subdefCreation:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-subtitle:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-validationReminder:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  w-webhook:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION} 
+  w-writeMetadatas:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}
+  scheduler:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}   
+  cmd:
+    deploy:
+        resources:
+            limits:
+              cpus: ${WORKER_CPU}
+              memory: ${WORKER_MEMORY_LIMIT}
+            reservations:
+              memory: ${WORKER_MEMORY_RESERVATION}

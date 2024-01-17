@@ -66,6 +66,19 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $repository = self::getRepository($app, $databoxId);
         $collection = new CollectionVO($databoxId, 0, $name);
 
+        $dom = new \DOMDocument();
+        try {
+            if(!@$dom->load($app['root.path'] . '/lib/conf.d/collection_settings.xml')) {
+                $dom = null;
+            }
+        }
+        catch (Exception $e) {
+            $dom = null;
+        }
+        if($dom) {
+            $collection->setPreferences($dom->saveXML());
+        }
+
         $repository->save($collection);
 
         $repository = $app['repo.collection-references'];
