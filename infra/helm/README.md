@@ -1,6 +1,16 @@
 # Helm Chart
 
-## Deploy chart
+> [!IMPORTANT]  
+> Helm charts included in this repositorie have been moved here
+> https://github.com/alchemy-fr/alchemy-helm-charts-repo/tree/main/charts/phraseanet
+
+Helm charts and bash script in this repositorie are not maintained anymore
+
+---
+### deprecated Readme 
+---
+
+### Deploy chart
 
 First you should write your own configuration file named `myvalues.yaml` (see [sample.yaml](./sample.yaml))
 
@@ -8,7 +18,7 @@ First you should write your own configuration file named `myvalues.yaml` (see [s
 helm install -f myvalues.yaml phraseanet ./all
 ```
 
-# In case of private registry on minikube
+### In case of private registry on minikube
 
 configure first the registry credential addons
 
