@@ -69,13 +69,15 @@
 * PHRAS-3996_legacy-download-remove-excel by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4449
 * PHRAS-3995: Admin - worker - job queue - average duration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4448
 * PHRAS-3997 clear cache before play upgrade by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4451
-* PHRAS-3999: admin - databases - subdefinition - error 400 and 500 when set a new subdefinition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4452
+* PHRAS-3999: admin - databases - subdefinition - error 400 and 500 when create subdefinition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4452
 * PHRAS-3994: clean user - email send to customer - date is wrong by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4446
 * PHRAS-3722 : bin/console records:build-subdef by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4450
 * PHRAS-3987_stamper-text-shadow by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4454
 * PHRAS-3993-fix-maintenance-mode : set as function by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4453
 * PHRAS-3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4455
 * PHRAS-3403 set docker containers resource limits by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4456
+* PHRAS-3955 release 4.1.8 rc8 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4431
+* PHRAS-4006 : expose-cli should relog if refresh_token expire by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4457
 
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc7...4.1.8-rc8
