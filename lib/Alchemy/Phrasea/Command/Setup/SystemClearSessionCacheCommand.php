@@ -13,7 +13,7 @@ class SystemClearSessionCacheCommand extends Command
     {
         parent::__construct('system:clear-session-cache');
 
-        $this->setDescription('Empties session cache in redis');
+        $this->setDescription('Empties session cache in redis, ends sessions for all users');
 
         return $this;
     }
