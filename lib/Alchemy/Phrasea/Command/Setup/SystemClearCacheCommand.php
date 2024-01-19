@@ -9,19 +9,21 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Command\Setup;
+
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-class module_console_systemClearCache extends Command
+class SystemClearCacheCommand extends Command
 {
 
-    public function __construct($name = null)
+    public function __construct()
     {
-        parent::__construct($name);
+        parent::__construct('system:clear-cache');
 
-        $this->setDescription('Empties cache directories and cache-server data <fg=yellow;>(Deprecated use bin/setup system:clear-cache instead)</>');
+        $this->setDescription('Empties cache directories and cache-server data');
 
         return $this;
     }

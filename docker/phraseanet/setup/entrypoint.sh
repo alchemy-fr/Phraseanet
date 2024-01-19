@@ -80,8 +80,8 @@ fi
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
    maintenance_manager 1 noexit
    echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing config backup, check connection to db "
-   bin/console system:clear-cache
-   bin/console system:clear-session
+   bin/setup system:clear-cache
+   bin/setup system:clear-session
    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
    timestamp_dir="backup/pre-upgrade/$timestamp"
    mkdir -p "$timestamp_dir"
