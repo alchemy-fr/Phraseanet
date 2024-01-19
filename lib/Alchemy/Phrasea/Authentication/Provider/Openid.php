@@ -677,10 +677,10 @@ class Openid extends AbstractProvider
             }
 
             // yes we are logged !
-            /** @var RandomGenerator $randomGenerator */
-            $randomGenerator = $this->getRandomGenerator();
-            $password = $randomGenerator->generateString(16);
-            $userUA->setPassword($password);
+//            /** @var RandomGenerator $randomGenerator */
+//            $randomGenerator = $this->getRandomGenerator();
+//            $password = $randomGenerator->generateString(16);
+//            $userUA->setPassword($password);
 
             $this->debug(sprintf("returning user id=%s", $userUA->getId()));
 
