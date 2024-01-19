@@ -3882,7 +3882,7 @@ var workzoneFacets = function workzoneFacets(services) {
             var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
                 var type = facet.type; // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value, copied from field type
                 // patch "color" type values
-                var textLimit = 15; // cut long values (set to 0 to not cut)
+                var textLimit = 35; // cut long values (set to 0 to not cut)
                 var text = value.value.toString();
                 var label = text;
                 var title = text;
