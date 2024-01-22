@@ -1,17 +1,19 @@
 <?php
 
+namespace Alchemy\Phrasea\Command\Setup;
+
 use Alchemy\Phrasea\Cache\Factory;
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class module_console_systemClearSessionCache extends Command
+class SystemClearSessionCacheCommand extends Command
 {
-    public function __construct($name = null)
+    public function __construct()
     {
-        parent::__construct($name);
+        parent::__construct('system:clear-session-cache');
 
-        $this->setDescription('Empties session cache in redis <fg=yellow;>(Deprecated use bin/setup system:clear-session-cache instead)</>');
+        $this->setDescription('Empties session cache in redis, ends sessions for all users');
 
         return $this;
     }
