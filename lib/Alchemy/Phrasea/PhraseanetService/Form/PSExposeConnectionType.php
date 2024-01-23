@@ -45,7 +45,7 @@ class PSExposeConnectionType extends AbstractType
                 ]
             ])
             ->add('auth_provider_name', ChoiceType::class, [
-                'label'    => 'admin:phrasea-service-setting:tab:expose:: auth provider name with type ps-auth',
+                'label'    => 'admin:phrasea-service-setting:tab:expose:: auth provider name with type openid',
                 'required' => false,
                 'choice_list' => new ArrayChoiceList(
                     $this->getEligibleProvider()
@@ -117,7 +117,7 @@ class PSExposeConnectionType extends AbstractType
         $values = array_keys(
             array_filter($this->app['conf']->get(['authentication', 'providers'], []),
             function ($provider) {
-                return ($provider['type'] == 'ps-auth' || $provider['type'] == 'PsAuth');
+                  return ($provider['type'] == 'openid');
              })
         );
 

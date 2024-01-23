@@ -183,17 +183,16 @@ authentication:
             options:
                 client-id: ''
                 client-secret: ''
-        ps_auth_1:
+        openid-1:
             enabled: false
             display: false
-            title: 'PS Auth 1'
-            type: 'ps-auth'
+            title: 'openid 1'
+            type: openid
             options:
                 client-id: ''
                 client-secret: ''
-                base-url: 'https://api-auth.phrasea.local'
-                provider-type: 'oauth'
-                provider-name: 'v2'
+                base-url: 'https://keycloak.phrasea.local'
+                realm-name: phrasea
                 icon-uri: null
 registration-fields:
     -
