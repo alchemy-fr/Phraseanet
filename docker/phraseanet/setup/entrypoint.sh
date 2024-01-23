@@ -16,11 +16,11 @@ fi
 maintenance_manager()
 {
     if [[ $1 = "off" || $1 = "0" ]];then
-            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
+            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance disabled"
             rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
     
     elif [[ $1 = "on" || $1 = "1" ]];then
-            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
+            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance enabled"
             mkdir -p /var/alchemy/Phraseanet/datas/nginx
             if [[ ! -n "$PHRASEANET_MAINTENANCE_MESSAGE" ]];then
                 echo "No custom maintenance message"
@@ -28,7 +28,7 @@ maintenance_manager()
             fi
             envsubst < "/usr/local/etc/maintenance.html" > /var/alchemy/Phraseanet/datas/nginx/maintenance.html
             if [[ $2 != "noexit" ]];then
-                echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in persitent Mode"
+                echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in persistent Mode"
                 exit 0
             else
                 echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in temporary Mode"
@@ -79,15 +79,15 @@ fi
 
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
    maintenance_manager 1 noexit
-   echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing config backup, check connection to db "
-   bin/console system:clear-cache
-   bin/console system:clear-session
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing Phraseanet configuration backup"
+   bin/setup system:clear-cache
+   bin/setup system:clear-session
    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
    timestamp_dir="backup/pre-upgrade/$timestamp"
    mkdir -p "$timestamp_dir"
    archive_name="$PHRASEANET_HOSTNAME-config.tgz"
    tar -zcf "$timestamp_dir/$archive_name" -C "config" .
-   echo `date +"%Y-%m-%d %H:%M:%S"` " - Pre-upgrade backup done for config  $timestamp_dir/$archive_name"
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - Pre-upgrade backup done for configuration  $timestamp_dir/$archive_name"
    echo `date +"%Y-%m-%d %H:%M:%S"` " - Start Phraseanet upgrade datas"
    bin/setup system:upgrade -y
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End Phraseanet upgrade datas"
