@@ -81,6 +81,7 @@ class patch_418RC9PHRAS4007 implements patchInterface
                     'client-secret' => 'client_secret',
                     'base-url'      => 'https://keycloak.phrasea.local',
                     'realm-name'    => 'phrasea',
+                    'exclusive'     => false,
                     'icon-uri'      => null,
                     'birth-group'   => '_firstlog',
                     'everyone-group' => '_everyone',

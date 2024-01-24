@@ -17,6 +17,9 @@ authentication:
                 client-secret: 'client-secret'
                 base-url: 'https://keycloak.phrasea.local'
                 realm-name: phrasea
+                # if true, can only connect with this provider
+                # the user cannot connect with the default phraseanet login form
+                exclusive: false
                 icon-uri: null
                 birth-group: _firstlog
                 everyone-group: _everyone

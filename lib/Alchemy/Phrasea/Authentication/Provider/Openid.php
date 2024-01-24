@@ -677,10 +677,18 @@ class Openid extends AbstractProvider
             }
 
             // yes we are logged !
-//            /** @var RandomGenerator $randomGenerator */
-//            $randomGenerator = $this->getRandomGenerator();
-//            $password = $randomGenerator->generateString(16);
-//            $userUA->setPassword($password);
+
+            if (isset($this->config['exclusive']) && $this->config['exclusive'] == true) {
+                // reset the password
+                // if it is an existing user, the user cannot login from the default phraseanet login
+                // cannot renew her password
+
+                /** @var RandomGenerator $randomGenerator */
+                $randomGenerator = $this->getRandomGenerator();
+                $password = $randomGenerator->generateString(16);
+                $userUA->setPassword($password);
+                $userUA->setCanRenewPassword(false);
+            }
 
             $this->debug(sprintf("returning user id=%s", $userUA->getId()));
 
