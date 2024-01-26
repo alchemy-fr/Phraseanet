@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
@@ -252,9 +253,21 @@ class WriteMetadatasWorker implements WorkerInterface
 
         $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
 
+        $resolutionXY = [];
+
+        if ($subdef->get_name() != 'document') {
+            $subdefType = $subdef->getDataboxSubdef()->getSubdefType();
+
+            // get the resolution DPI option from the admin configuration if the media type has one
+            if (in_array($subdefType->getType(), [Subdef::TYPE_IMAGE, Subdef::TYPE_ANIMATION, Subdef::TYPE_UNKNOWN])) {
+                $resolution = $subdefType->getOption('resolution')->getValue();
+                $resolutionXY = [$resolution, $resolution];
+            }
+        }
+
         // write meta in file
         try {
-            $this->writer->write($subdef->getRealPath(), $metadata);
+            $this->writer->write($subdef->getRealPath(), $metadata, null, $resolutionXY);
 
             $this->messagePublisher->pushLog(sprintf('metadatas written %s databoxname=%s databoxid=%d recordid=%d',
                 $subdef->get_name(), $databox->get_viewname(), $databox->get_sbas_id(), $recordId), 'info');
