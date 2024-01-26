@@ -59,9 +59,9 @@ class WriteMetadatas extends Command
     {
         parent::__construct('records:writemetadatas');
 
-        $this->setDescription('Write metadatas (taken account admin subview configuration)');
+        $this->setDescription("Publish a message triggering metadata written in the record's document or subdefinitions");
         $this->addOption('databox',            null, InputOption::VALUE_REQUIRED,                             'Mandatory : The id (or dbname or viewname) of the databox');
-        $this->addOption('record_type',        null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Type(s) of records(s) to write metadata ex. "image,video", dafault=ALL');
+        $this->addOption('record_type',        null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Type(s) of records(s) to write metadata ex. "image,video", default=ALL');
         $this->addOption('min_record_id',      null, InputOption::VALUE_OPTIONAL,                             'Min record id');
         $this->addOption('max_record_id',      null, InputOption::VALUE_OPTIONAL,                             'Max record id');
         $this->addOption('reverse',            null, InputOption::VALUE_NONE,                                 'Get records from the last to the oldest');
@@ -70,10 +70,10 @@ class WriteMetadatas extends Command
         $this->addOption('dry',                null, InputOption::VALUE_NONE,                                 'dry run, list but don\'t act');
         $this->addOption('show_sql',           null, InputOption::VALUE_NONE,                                 'show sql pre-selecting records');
 
-        $this->setHelp(""
+        $this->setHelp("Publish a message triggering metadata written in the record's document or subdefinitions, subdefinition settings and mime type in configuration.yml is taken into account (Beta)\n\n"
             . "Record filters :\n"
-            . " --record_type=image,video : Select records of those types ('image','video','audio','document','flash').\n"
-            . " --file_type=image/tiff,image/jpeg : Select records with those mimetype.\n"
+            . " --record_type=image,video : Select records of those types ('image','video','audio','document').\n"
+            . " --file_type=image/tiff,image/jpeg : Select records with those mimetypes.\n"
             . " --min_record_id=100       : Select records with record_id >= 100.\n"
             . " --max_record_id=500       : Select records with record_id <= 500.\n"
             . "Subdef filters :\n"
