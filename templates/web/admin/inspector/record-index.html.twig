@@ -21,6 +21,15 @@
     </pre>
 </div>
 
+<div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+    <button class="btn btn-success get-record-subdef">{{ 'admin:: ger record subdef' | trans }}</button>
+
+    <div style="margin-top:20px;" id="record-subdefs">
+    </div>
+</div>
+
+
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('.find-record-index').on('click', function() {
@@ -40,6 +49,26 @@
                     success: function (data) {
                         $('#right-ajax #admin-es-record-display').empty().html(JSON.stringify(data, null, 2));
 
+                    }
+                });
+            }
+        });
+
+        $('.get-record-subdef').on('click', function() {
+            let recordId = $('input#es-recordId').val();
+            let databoxId = $('select#es-databoxId').val();
+            if (databoxId == '' || recordId < 1) {
+                alert("Wrong databoxId or recordId value !");
+            } else {
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin/inspector/record/subdef/',
+                    data: {
+                        databoxId: databoxId,
+                        recordId: recordId
+                    },
+                    success: function (data) {
+                        $('#right-ajax #record-subdefs').empty().html(data);
                     }
                 });
             }
