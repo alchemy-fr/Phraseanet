@@ -489,7 +489,9 @@ class WorkerRunningJobRepository extends EntityRepository
     {
         $sql = '
             UPDATE WorkerRunningJob w
-            SET w.status = :canceled
+            SET w.status = :canceled,
+            w.finished = NOW(),
+            w.flock = NULL
             WHERE w.status = :running
             AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
         ;
