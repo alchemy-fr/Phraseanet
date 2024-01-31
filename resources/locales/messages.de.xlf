@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2024-01-29T16:57:43Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2024-01-31T09:06:09Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -8225,12 +8225,12 @@
       <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
         <source>admin:: find record</source>
         <target state="translated">Ansehen</target>
-        <jms:reference-file line="15">admin/inspector/record-index.html.twig</jms:reference-file>
+        <jms:reference-file line="39">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bcc22a0b7e01968dca39d5928e486185befad75" resname="admin:: ger record subdef">
-        <source>admin:: ger record subdef</source>
-        <target state="new">admin:: ger record subdef</target>
-        <jms:reference-file line="25">admin/inspector/record-index.html.twig</jms:reference-file>
+      <trans-unit id="45e42a196a0c022d8548c5d23fc85cbec96da9fd" resname="admin:: get record subdef">
+        <source>admin:: get record subdef</source>
+        <target state="new">admin:: get record subdef</target>
+        <jms:reference-file line="32">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
         <source>admin:: object inspector</source>
@@ -8240,7 +8240,7 @@
       <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
         <source>admin:: record index</source>
         <target state="translated">Elastic Datensatz Index</target>
-        <jms:reference-file line="2">admin/inspector/record-index.html.twig</jms:reference-file>
+        <jms:reference-file line="17">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
         <source>admin:: refuser l'acces</source>
@@ -8888,6 +8888,51 @@
         <jms:reference-file line="487">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="53">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="9e75f18ba7036752fcd658dd002c0f48296da912" resname="admin::inspector: api ID">
+        <source>admin::inspector: api ID</source>
+        <target state="new">admin::inspector: api ID</target>
+        <jms:reference-file line="53">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="71de0ea380531f24771c042f88ddbbe9c0918383" resname="admin::inspector: api application type">
+        <source>admin::inspector: api application type</source>
+        <target state="new">admin::inspector: api application type</target>
+        <jms:reference-file line="57">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="36e396a8ec1c9973a40a2245200a1548b917ec6b" resname="admin::inspector: api creation date">
+        <source>admin::inspector: api creation date</source>
+        <target state="new">admin::inspector: api creation date</target>
+        <jms:reference-file line="60">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6e2777d86d73172a0fe0c2d062344632c6d5775c" resname="admin::inspector: api modification date">
+        <source>admin::inspector: api modification date</source>
+        <target state="new">admin::inspector: api modification date</target>
+        <jms:reference-file line="61">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="89b3632f43e1592824fbf1f823a72b8a6b43af7d" resname="admin::inspector: api name">
+        <source>admin::inspector: api name</source>
+        <target state="new">admin::inspector: api name</target>
+        <jms:reference-file line="54">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c79666958ee9bfdb53404e2285c016dd3eb7d57e" resname="admin::inspector: api owner ID">
+        <source>admin::inspector: api owner ID</source>
+        <target state="new">admin::inspector: api owner ID</target>
+        <jms:reference-file line="55">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c76e698d2c22335ba4deaacb0aacefa03228440a" resname="admin::inspector: api password granted">
+        <source>admin::inspector: api password granted</source>
+        <target state="new">admin::inspector: api password granted</target>
+        <jms:reference-file line="56">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="81595985162540d35516df5d75d6fc8774f225fe" resname="admin::inspector: api webhook active">
+        <source>admin::inspector: api webhook active</source>
+        <target state="new">admin::inspector: api webhook active</target>
+        <jms:reference-file line="59">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8553ee4a3a01e7554c7423b6600f98e93b7efd9b" resname="admin::inspector: api webhook url">
+        <source>admin::inspector: api webhook url</source>
+        <target state="new">admin::inspector: api webhook url</target>
+        <jms:reference-file line="58">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="46f83c2a60bf13296db69944899dc0314f5f23fa" resname="admin::inspector: creation date">
         <source>admin::inspector: creation date</source>
         <target state="new">admin::inspector: creation date</target>
@@ -8907,6 +8952,16 @@
         <source>admin::inspector: subdefname</source>
         <target state="new">admin::inspector: subdefname</target>
         <jms:reference-file line="3">admin/inspector/record-subdef.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d00888f0ba59c5f6d6701d852f21b855e473a1b2" resname="admin::inspector:tab api info title">
+        <source>admin::inspector:tab api info title</source>
+        <target state="new">admin::inspector:tab api info title</target>
+        <jms:reference-file line="10">admin/inspector/record-index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c15d466bd6fc239e124d3d5e0093603af0907c89" resname="admin::inspector:tab record info title">
+        <source>admin::inspector:tab record info title</source>
+        <target state="new">admin::inspector:tab record info title</target>
+        <jms:reference-file line="5">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfc904c9a87afe2d3986041a6bdb542298607880" resname="admin::monitor: bases sur lesquelles l'utilisateur est connecte :" approved="yes">
         <source>admin::monitor: bases sur lesquelles l'utilisateur est connecte :</source>
@@ -9325,11 +9380,13 @@
       <trans-unit id="85d760f5a5e3b7c29f17485512d9225ccdd40811" resname="admin::users: password granted">
         <source>admin::users: password granted</source>
         <target state="translated">Ja</target>
+        <jms:reference-file line="77">admin/inspector/record-index.html.twig</jms:reference-file>
         <jms:reference-file line="638">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="74411bbacf01ba76709c7cf0135e7c4aeed0c180" resname="admin::users: password not granted">
         <source>admin::users: password not granted</source>
         <target state="translated">Nein</target>
+        <jms:reference-file line="79">admin/inspector/record-index.html.twig</jms:reference-file>
         <jms:reference-file line="638">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c6e9df1925ca0ae9df114b4c17e7667ec66f5d7" resname="admin::users: provider">
@@ -9505,7 +9562,7 @@
       <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title" approved="yes">
         <source>admin::workermanager:tab:configuration: title</source>
         <target state="translated">Allgemeine Einstellungen</target>
-        <jms:reference-file line="10">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b86a82cd52e1ca2780268cc4bb55a4717bc803d5" resname="admin::workermanager:tab:ftp: Proxy" approved="yes">
         <source>admin::workermanager:tab:ftp: Proxy</source>
@@ -9590,7 +9647,7 @@
       <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: title</source>
         <target state="translated">Warteschlange</target>
-        <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="15">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="422861193dcc4649ea76a8c2dfa4c5760ee1d755" resname="admin::workermanager:tab:recordsActions: description">
         <source>admin::workermanager:tab:recordsActions: description</source>
@@ -9800,7 +9857,7 @@
       <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title" approved="yes">
         <source>admin::workermanager:tab:workerinfo: title</source>
         <target state="translated">Auftragsjournal</target>
-        <jms:reference-file line="15">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="10">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: work</source>
@@ -10525,7 +10582,7 @@
         <source>button::choose databox</source>
         <target state="translated">Alle Databox</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
-        <jms:reference-file line="7">admin/inspector/record-index.html.twig</jms:reference-file>
+        <jms:reference-file line="22">admin/inspector/record-index.html.twig</jms:reference-file>
         <jms:reference-file line="748">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="825">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>

@@ -1,37 +1,115 @@
-<div class="page-header">
-    <h1>{{ 'admin:: record index' | trans }}</h1>
-</div>
+<div id="inspector-tab">
+    <ul>
+        <li class="record-info" role="presentation">
+            <a href="#record-info" aria-controls="record-info" role="tab" data-toggle="tab">
+                {{ 'admin::inspector:tab record info title' |trans }}
+            </a>
+        </li>
+        <li class="api-info" role="presentation">
+            <a href="#api-info" aria-controls="api-info" role="tab" data-toggle="tab">
+                {{ 'admin::inspector:tab api info title' |trans }}
+            </a>
+        </li>
+    </ul>
 
-<div>
-    <select id="es-databoxId" style="margin-left: 30px;">
-        <option value="">{{ 'button::choose databox' | trans }}</option>
-        {% for databoxId in databoxIds %}
-            <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
-        {% endfor %}
-    </select>
+    <div id="record-info">
+        <h1 style=" margin-bottom: 40px; margin-left: 30px;">
+            {{ 'admin:: record index' | trans }}
+        </h1>
 
-    <input id="es-recordId" type="number" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        <div>
+            <select id="es-databoxId" style="margin-left: 30px;">
+                <option value="">{{ 'button::choose databox' | trans }}</option>
+                {% for databoxId in databoxIds %}
+                    <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+                {% endfor %}
+            </select>
 
-    <button class="btn btn-success find-record-index" style="margin-left: 30px;">{{ 'admin:: find record' | trans }}</button>
-</div>
+            <input id="es-recordId" type="number" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        </div>
 
-<div style="margin-top:30px;">
-    <pre id="admin-es-record-display" style="height: 400px;overflow-y: scroll;width: 60%;margin-left: 30px;">
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success get-record-subdef">{{ 'admin:: get record subdef' | trans }}</button>
 
-    </pre>
-</div>
+            <div style="margin-top:20px;" id="record-subdefs">
+            </div>
+        </div>
 
-<div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
-    <button class="btn btn-success get-record-subdef">{{ 'admin:: ger record subdef' | trans }}</button>
+        <div>
+            <button class="btn btn-success find-record-index" style="margin-left: 30px;">{{ 'admin:: find record' | trans }}</button>
+            <div style="margin-top:20px; padding-bottom: 30px;">
+                <pre id="admin-es-record-display" style="height: 400px;overflow-y: scroll;width: 60%;margin-left: 30px;">
 
-    <div style="margin-top:20px;" id="record-subdefs">
+                </pre>
+            </div>
+        </div>
+
     </div>
-</div>
+    <div id="api-info">
+        {% set apiApplications = app['repo.api-applications'].findAll() %}
 
+        <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
+            <thead>
+                <th>{{ 'admin::inspector: api ID' | trans }}</th>
+                <th>{{ 'admin::inspector: api name' | trans }}</th>
+                <th>{{ 'admin::inspector: api owner ID' | trans }}</th>
+                <th>{{ 'admin::inspector: api password granted' | trans }}</th>
+                <th>{{ 'admin::inspector: api application type' | trans }}</th>
+                <th>{{ 'admin::inspector: api webhook url' | trans }}</th>
+                <th>{{ 'admin::inspector: api webhook active' | trans }}</th>
+                <th>{{ 'admin::inspector: api creation date' | trans }}</th>
+                <th>{{ 'admin::inspector: api modification date' | trans }}</th>
+            </thead>
+            <tbody>
+            {% for apiApplication in apiApplications %}
+                <tr>
+                    <td>{{ apiApplication.getId() }}</td>
+                    <td>{{ apiApplication.getName() }}</td>
+                    <td>
+                        {% if apiApplication.getCreator() is not null %}
+                            {{ apiApplication.getCreator().getId() }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if apiApplication.isPasswordGranted() %}
+                            {{ 'admin::users: password granted' | trans }}
+                        {% else %}
+                            {{ 'admin::users: password not granted' | trans }}
+                        {% endif %}
+                    </td>
+                    <td>{{ apiApplication.getType() }}</td>
+                    <td>
+                        {% if apiApplication.getWebhookUrl() is not null %}
+                            {{ apiApplication.getWebhookUrl() }}
+                        {% else %}
+                          -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if apiApplication.isWebhookActive() %}
+                            yes
+                        {% else %}
+                            no
+                        {% endif %}
+                    </td>
+                    <td>{{ apiApplication.getCreated() | date('Y-m-d H:i:s') }}</td>
+                    <td>{{ apiApplication.getUpdated() | date('Y-m-d H:i:s')}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
 
 
 <script type="text/javascript">
     $(document).ready(function() {
+        $('#inspector-tab').tabs();
+
         $('.find-record-index').on('click', function() {
             let recordId = $('input#es-recordId').val();
             let databoxId = $('select#es-databoxId').val();
