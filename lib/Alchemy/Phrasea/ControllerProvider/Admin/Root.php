@@ -86,6 +86,9 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/inspector/record/', 'controller.admin.root:getESRecord')
             ->bind('admin_inspector_record');
 
+        $controllers->get('/inspector/record/subdef/', 'controller.admin.root:getRecordSubdef')
+            ->bind('admin_inspector_record_subdef');
+
         return $controllers;
     }
 }

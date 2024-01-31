@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
@@ -396,6 +397,42 @@ class RootController extends Controller
         }
 
         return json_encode($ret, JSON_PRETTY_PRINT, 512);
+    }
+
+    public function getRecordSubdef(Request $request)
+    {
+        $recordId = $request->query->get('recordId');
+        $databoxId = $request->query->get('databoxId');
+
+        $databox = $this->getApplicationBox()->get_databox($databoxId);
+
+        $record  = $databox->get_record($recordId);
+
+        $databoxSubdefs = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
+
+        $availableSubdefs = [];
+
+        foreach ($databoxSubdefs as $sub) {
+            $availableSubdefs[$sub->get_name()] = $sub->get_name();
+        }
+
+        /** @var MediaSubdefRepository $mediaSubdefRepository */
+        $mediaSubdefRepository = $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($request->query->get('databoxId'));
+
+        $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$request->query->get('recordId')]);
+
+        $notGeneratedSubdefs = $availableSubdefs;
+
+        foreach ($mediaSubdefs as $mediaSubdef) {
+            if (in_array($mediaSubdef->get_name(), $notGeneratedSubdefs)) {
+                unset($notGeneratedSubdefs[$mediaSubdef->get_name()]);
+            }
+        }
+
+        return $this->render('admin/inspector/record-subdef.html.twig', [
+            'mediaSubdefs'          => $mediaSubdefs,
+            'notGeneratedSubdefs'   => $notGeneratedSubdefs
+        ]);
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)
