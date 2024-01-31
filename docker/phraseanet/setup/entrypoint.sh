@@ -160,11 +160,17 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
 
     if [[ $SESSION_SAVE_HANDLER == file ]]; then
         bin/setup system:config set main.session.type "$SESSION_SAVE_HANDLER"
-
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is $SESSION_SAVE_HANDLER"
-    else
+    else if [[ $SESSION_SAVE_HANDLER == redis ]]; then
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Redis : setting Host to $PHRASEANET_SESSION_TYPE"         
+        bin/setup system:config set main.session.type $PHRASEANET_SESSION_TYPE
+        bin/setup system:config set main.session.options.host $PHRASEANET_SESSION_HOST
+        bin/setup system:config set main.session.options.port $PHRASEANET_SESSION_PORT
+        bin/setup system:config set main.session.options.namespace $PHRASEANET_HOSTNAME
+        bin/setup system:config set main.session.ttl $PHRASEANET_USER_SESSION_LIFETIME
+    else 
         bin/setup system:config set main.session.type "native"
-        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native by redis"
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native"
     fi
 
     ## Phraseanet application Database setting
@@ -178,12 +184,18 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set -q main.database.dbname $INSTALL_APPBOX
 
     ## Phraseanet application cache setting
-    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up for Phraseanet cache"
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up Phraseanet cache"
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Cache Type is $PHRASEANET_CACHE_TYPE"
     bin/setup system:config set -q main.cache.options.host $PHRASEANET_CACHE_HOST
     bin/setup system:config set -q main.cache.options.port $PHRASEANET_CACHE_PORT
     bin/setup system:config set -q main.cache.options.namespace $PHRASEANET_HOSTNAME
     bin/setup system:config set -q main.cache.type $PHRASEANET_CACHE_TYPE
+
+    ## Phraseanet application's users session duration
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up Phraseanet user session duration"   
+    bin/setup system:config set -q session.idle $PHRASEANET_USER_SESSION_IDLE
+    bin/setup system:config set -q session.lifetime $PHRASEANET_USER_SESSION_LIFETIME
+
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
