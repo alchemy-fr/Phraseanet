@@ -157,11 +157,12 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     fi
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting session type"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - SESSION_SAVE_HANDLER is $SESSION_SAVE_HANDLER"
 
     if [[ $SESSION_SAVE_HANDLER == file ]]; then
         bin/setup system:config set main.session.type "$SESSION_SAVE_HANDLER"
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is $SESSION_SAVE_HANDLER"
-    else if [[ $SESSION_SAVE_HANDLER == redis ]]; then
+    elif [[ $SESSION_SAVE_HANDLER == redis ]]; then
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Redis : setting Host to $PHRASEANET_SESSION_TYPE"         
         bin/setup system:config set main.session.type $PHRASEANET_SESSION_TYPE
         bin/setup system:config set main.session.options.host $PHRASEANET_SESSION_HOST
