@@ -1,0 +1,83 @@
+{% if type == 'subdef' %}
+    <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
+        <thead>
+            <th>{{ 'admin::inspector: subdefname' | trans }}</th>
+            <th>{{ 'admin::inspector: path' | trans }}</th>
+            <th>{{ 'admin::inspector: creation date' | trans }}</th>
+            <th>{{ 'admin::inspector: modification date' | trans }}</th>
+        </thead>
+        <tbody>
+        {% for mediaSubdef in mediaSubdefs %}
+            <tr>
+                <td>{{ mediaSubdef.get_name() }}</td>
+                <td>{{ mediaSubdef.getRealPath() }}</td>
+                <td>{{ mediaSubdef.get_creation_date() | date('Y-m-d H:i:s') }}</td>
+                <td>{{ mediaSubdef.get_modification_date() | date('Y-m-d H:i:s')}}</td>
+            </tr>
+        {% endfor %}
+
+        {% for notGeneratedSubdef in notGeneratedSubdefs %}
+            <tr>
+                <td>{{ notGeneratedSubdef }}</td>
+                <td> - </td>
+                <td> - </td>
+                <td> - </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endif %}
+
+{% if type == 'basket' %}
+    <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
+        <thead>
+            <th>{{ 'admin::inspector: basket id' | trans }}</th>
+            <th>{{ 'admin::inspector: basket name' | trans }}</th>
+            <th>{{ 'admin::inspector: basket user id' | trans }}</th>
+            <th>{{ 'admin::inspector: basket creation date' | trans }}</th>
+            <th>{{ 'admin::inspector: basket modification date' | trans }}</th>
+            <th>{{ 'admin::inspector: basket archive' | trans }}</th>
+        </thead>
+        <tbody>
+        {% for basketElement in basketElements %}
+            <tr>
+                <td>{{ basketElement.getBasket().getId() }}</td>
+                <td>{{ basketElement.getBasket().getName() }}</td>
+                <td>{{ basketElement.getBasket().getUser().getId() }}</td>
+                <td>{{ basketElement.getBasket().getCreated() | date('Y-m-d H:i:s') }}</td>
+                <td>{{ basketElement.getBasket().getUpdated() | date('Y-m-d H:i:s')}}</td>
+                <td>
+                    {% set archived = basketElement.getBasket().getArchived() %}
+                    {% if archived %}
+                       yes
+                    {% else %}
+                       no
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if type == 'story' %}
+    <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
+        <thead>
+        <th>{{ 'admin::inspector: story id' | trans }}</th>
+        <th>{{ 'admin::inspector: story title' | trans }}</th>
+        <th>{{ 'admin::inspector: story creation date' | trans }}</th>
+        <th>{{ 'admin::inspector: story modification date' | trans }}</th>
+        </thead>
+        <tbody>
+        {% for recordParent in recordParents %}
+            <tr>
+                <td>{{ recordParent.getRecordId() }}</td>
+                <td>{{ recordParent.get_title() }}</td>
+                <td>{{ recordParent.getCreated() | date('Y-m-d H:i:s') }}</td>
+                <td>{{ recordParent.getUpdated() | date('Y-m-d H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
