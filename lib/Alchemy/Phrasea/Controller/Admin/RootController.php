@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use GuzzleHttp\Client;
@@ -399,40 +400,58 @@ class RootController extends Controller
         return json_encode($ret, JSON_PRETTY_PRINT, 512);
     }
 
-    public function getRecordSubdef(Request $request)
+    public function getRecordDetails(Request $request)
     {
         $recordId = $request->query->get('recordId');
         $databoxId = $request->query->get('databoxId');
+        $detailsType = $request->query->get('type');
 
-        $databox = $this->getApplicationBox()->get_databox($databoxId);
+        if ($detailsType == 'subdef') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
 
-        $record  = $databox->get_record($recordId);
+            $record  = $databox->get_record($recordId);
 
-        $databoxSubdefs = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
+            $databoxSubdefs = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
 
-        $availableSubdefs = [];
+            $availableSubdefs = [];
 
-        foreach ($databoxSubdefs as $sub) {
-            $availableSubdefs[$sub->get_name()] = $sub->get_name();
-        }
-
-        /** @var MediaSubdefRepository $mediaSubdefRepository */
-        $mediaSubdefRepository = $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($request->query->get('databoxId'));
-
-        $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$request->query->get('recordId')]);
-
-        $notGeneratedSubdefs = $availableSubdefs;
-
-        foreach ($mediaSubdefs as $mediaSubdef) {
-            if (in_array($mediaSubdef->get_name(), $notGeneratedSubdefs)) {
-                unset($notGeneratedSubdefs[$mediaSubdef->get_name()]);
+            foreach ($databoxSubdefs as $sub) {
+                $availableSubdefs[$sub->get_name()] = $sub->get_name();
             }
+
+            /** @var MediaSubdefRepository $mediaSubdefRepository */
+            $mediaSubdefRepository = $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($request->query->get('databoxId'));
+
+            $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$request->query->get('recordId')]);
+
+            $notGeneratedSubdefs = $availableSubdefs;
+
+            foreach ($mediaSubdefs as $mediaSubdef) {
+                if (in_array($mediaSubdef->get_name(), $notGeneratedSubdefs)) {
+                    unset($notGeneratedSubdefs[$mediaSubdef->get_name()]);
+                }
+            }
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'mediaSubdefs'          => $mediaSubdefs,
+                'notGeneratedSubdefs'   => $notGeneratedSubdefs,
+                'type'                  => 'subdef'
+            ]);
+        } elseif ($detailsType == 'basket') {
+            /** @var BasketElementRepository $basketElementRepository */
+            $basketElementRepository = $this->app['repo.basket-elements'];
+            $basketElements = $basketElementRepository->findBy([
+                'sbas_id'   => $databoxId,
+                'record_id' => $recordId
+                ],  ['basket' => 'asc']
+            );
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'basketElements'  => $basketElements,
+                'type'            => 'basket'
+            ]);
         }
 
-        return $this->render('admin/inspector/record-subdef.html.twig', [
-            'mediaSubdefs'          => $mediaSubdefs,
-            'notGeneratedSubdefs'   => $notGeneratedSubdefs
-        ]);
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)

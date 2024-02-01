@@ -29,14 +29,21 @@
         </div>
 
         <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
-            <button class="btn btn-success get-record-subdef">{{ 'admin:: get record subdef' | trans }}</button>
+            <button class="btn btn-success record-details record-subdefs">{{ 'admin:: get record subdef' | trans }}</button>
 
             <div style="margin-top:20px;" id="record-subdefs">
             </div>
         </div>
 
-        <div>
-            <button class="btn btn-success find-record-index" style="margin-left: 30px;">{{ 'admin:: find record' | trans }}</button>
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success record-details record-baskets">{{ 'admin:: get record basket' | trans }}</button>
+
+            <div style="margin-top:20px;" id="record-baskets">
+            </div>
+        </div>
+
+        <div style="margin-left: 30px; margin-top:40px;">
+            <button class="btn btn-success find-record-index">{{ 'admin:: find record' | trans }}</button>
             <div style="margin-top:20px; padding-bottom: 30px;">
                 <pre id="admin-es-record-display" style="height: 400px;overflow-y: scroll;width: 60%;margin-left: 30px;">
 
@@ -126,27 +133,41 @@
                     },
                     success: function (data) {
                         $('#right-ajax #admin-es-record-display').empty().html(JSON.stringify(data, null, 2));
-
                     }
                 });
             }
         });
 
-        $('.get-record-subdef').on('click', function() {
+        $('.record-details').on('click', function() {
+            let elOut = '';
+            let type = '';
+            if ($(this).hasClass('record-subdefs')) {
+                elOut = $('#right-ajax #record-subdefs');
+                type = 'subdef';
+            } else if ($(this).hasClass('record-baskets')) {
+                elOut = $('#right-ajax #record-baskets');
+                type = 'basket';
+            } else if ($(this).hasClass('record-stories')) {
+                elOut = $('#right-ajax #record-stories');
+                type = 'story';
+            }
+
             let recordId = $('input#es-recordId').val();
             let databoxId = $('select#es-databoxId').val();
+
             if (databoxId == '' || recordId < 1) {
                 alert("Wrong databoxId or recordId value !");
             } else {
                 $.ajax({
                     type: 'GET',
-                    url: '/admin/inspector/record/subdef/',
+                    url: '/admin/inspector/record/details/',
                     data: {
                         databoxId: databoxId,
-                        recordId: recordId
+                        recordId: recordId,
+                        type: type
                     },
                     success: function (data) {
-                        $('#right-ajax #record-subdefs').empty().html(data);
+                        elOut.empty().html(data);
                     }
                 });
             }
