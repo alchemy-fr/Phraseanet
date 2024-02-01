@@ -450,8 +450,16 @@ class RootController extends Controller
                 'basketElements'  => $basketElements,
                 'type'            => 'basket'
             ]);
-        }
+        } elseif ($detailsType == 'story') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+            $recordParents = $databox->getRecordRepository()->findParents([$recordId]);
+            $recordParents = reset($recordParents);
 
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'recordParents'   => $recordParents,
+                'type'            => 'story'
+            ]);
+        }
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)

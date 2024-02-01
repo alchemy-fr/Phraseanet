@@ -61,3 +61,23 @@
     </table>
 {% endif %}
 
+{% if type == 'story' %}
+    <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
+        <thead>
+        <th>{{ 'admin::inspector: story id' | trans }}</th>
+        <th>{{ 'admin::inspector: story title' | trans }}</th>
+        <th>{{ 'admin::inspector: story creation date' | trans }}</th>
+        <th>{{ 'admin::inspector: story modification date' | trans }}</th>
+        </thead>
+        <tbody>
+        {% for recordParent in recordParents %}
+            <tr>
+                <td>{{ recordParent.getRecordId() }}</td>
+                <td>{{ recordParent.get_title() }}</td>
+                <td>{{ recordParent.getCreated() | date('Y-m-d H:i:s') }}</td>
+                <td>{{ recordParent.getUpdated() | date('Y-m-d H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
