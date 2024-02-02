@@ -16,7 +16,12 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
+use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
+use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use GuzzleHttp\Client;
@@ -460,6 +465,41 @@ class RootController extends Controller
                 'type'            => 'story'
             ]);
         }
+    }
+
+    public function renewAccessToken(Request $request, ApiApplication $application)
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        /** @var   ApiAccountRepository $apiAccountRepository */
+        $apiAccountRepository = $this->app['repo.api-accounts'];
+        $user = $userRepository->find($request->query->get('user_id'));
+        $account = $apiAccountRepository->findByUserAndApplication($user, $application);
+
+        if (null !== $devToken = $this->getApiOAuthTokenRepository()->findDeveloperToken($account)) {
+            $this->getApiOAuthTokenManipulator()->renew($devToken);
+        } else {
+            // dev tokens do not expires
+             $this->getApiOAuthTokenManipulator()->create($account);
+        }
+
+        return $this->app->json(['success' => true]);
+    }
+
+    /**
+     * @return ApiOauthTokenRepository
+     */
+    private function getApiOAuthTokenRepository()
+    {
+        return $this->app['repo.api-oauth-tokens'];
+    }
+
+    /**
+     * @return ApiOauthTokenManipulator
+     */
+    private function getApiOAuthTokenManipulator()
+    {
+        return $this->app['manipulator.api-oauth-token'];
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)

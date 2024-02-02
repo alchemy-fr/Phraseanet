@@ -31,21 +31,21 @@
         <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
             <button class="btn btn-success record-details record-subdefs">{{ 'admin:: get record subdefs' | trans }}</button>
 
-            <div style="margin-top:20px;" id="record-subdefs">
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-subdefs">
             </div>
         </div>
 
         <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
             <button class="btn btn-success record-details record-baskets">{{ 'admin:: get record baskets' | trans }}</button>
 
-            <div style="margin-top:20px;" id="record-baskets">
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-baskets">
             </div>
         </div>
 
         <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
             <button class="btn btn-success record-details record-stories">{{ 'admin:: get record stories' | trans }}</button>
 
-            <div style="margin-top:20px;" id="record-stories">
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-stories">
             </div>
         </div>
 
@@ -59,7 +59,7 @@
         </div>
 
     </div>
-    <div id="api-info">
+    <div id="api-info" style="overflow-x: scroll;">
         {% set apiApplications = app['repo.api-applications'].findAll() %}
 
         <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
@@ -73,6 +73,7 @@
                 <th>{{ 'admin::inspector: api webhook active' | trans }}</th>
                 <th>{{ 'admin::inspector: api creation date' | trans }}</th>
                 <th>{{ 'admin::inspector: api modification date' | trans }}</th>
+                <th></th>
             </thead>
             <tbody>
             {% for apiApplication in apiApplications %}
@@ -103,13 +104,20 @@
                     </td>
                     <td>
                         {% if apiApplication.isWebhookActive() %}
-                            yes
+                            <input class="webhook_activation" data-path="/developers/application/{{ apiApplication.getId() }}/active-webhook" type="checkbox"  checked="checked" style="">
+                            <span class="" style="margin-left: 10px;">yes</span>
                         {% else %}
-                            no
+                            <input class="webhook_activation" data-path="/developers/application/{{ apiApplication.getId() }}/active-webhook" type="checkbox" style="">
+                            <span class="" style="margin-left: 10px;">no</span>
                         {% endif %}
                     </td>
                     <td>{{ apiApplication.getCreated() | date('Y-m-d H:i:s') }}</td>
                     <td>{{ apiApplication.getUpdated() | date('Y-m-d H:i:s')}}</td>
+                    <td>
+                        {% if apiApplication.getCreator() is not null %}
+                            <button class="generate_token btn btn-warning btn-small" data-app-id="{{ apiApplication.getId() }}" href="{{ path('admin_inspector_application_token', { 'application' : apiApplication.getId(), 'user_id' : apiApplication.getCreator().getId() }) }}">{{ 'generate token' }}</button>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -177,6 +185,52 @@
                         elOut.empty().html(data);
                     }
                 });
+            }
+        });
+
+        $('.webhook_activation').on('click', function() {
+            let $this = $(this);
+            let action = '';
+            let statusAfter = '';
+
+            if ($this.is(':checked')) {
+                action = 'activate';
+                statusAfter = 'yes'
+            } else {
+                action = 'deactivate';
+                statusAfter = 'no'
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: action
+                },
+                success: function (data) {
+                    if (data.success) {
+                        $this.next('span').text(statusAfter);
+                    }
+                }
+            });
+        });
+
+        $('button.generate_token').bind('click', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            if (confirm('Your are about to generate token for application with ID: ' + $this.data('app-id'))) {
+                $.ajax({
+                    type: 'POST',
+                    url: $this.attr('href'),
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+                return false;
+            } else {
+                return false;
             }
         });
     });

@@ -89,6 +89,11 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/inspector/record/details/', 'controller.admin.root:getRecordDetails')
             ->bind('admin_inspector_record_details');
 
+        $controllers->post('/inspector/application/{application}/access_token/', 'controller.admin.root:renewAccessToken')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
+            ->bind('admin_inspector_application_token');
+
         return $controllers;
     }
 }

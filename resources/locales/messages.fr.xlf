@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2024-02-01T17:18:58Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2024-02-02T15:07:23Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1471,8 +1471,8 @@
         <source>Bad request format, only JSON is allowed</source>
         <target state="translated">Mauvais format de requête. Seul JSON est autorisé.</target>
         <jms:reference-file line="190">Controller/Root/AccountController.php</jms:reference-file>
-        <jms:reference-file line="65">Controller/Admin/RootController.php</jms:reference-file>
-        <jms:reference-file line="227">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="70">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="232">Controller/Admin/RootController.php</jms:reference-file>
         <jms:reference-file line="598">Controller/Admin/DataboxController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa0d7d2cb29f1ca72b4108bfaa0bf5686d3910ff" resname="Bad request, please contact an admin" approved="yes">
@@ -3325,7 +3325,7 @@
       <trans-unit id="3491d2e44dd1896af3411bb1a048847c13647feb" resname="File is too big : 64k max" approved="yes">
         <source>File is too big : 64k max</source>
         <target state="translated">Le poids du fichier ne peut dépasser 64 Ko</target>
-        <jms:reference-file line="185">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="190">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6efbe33ed8bd57bac1e804871a3ba254abe7903c" resname="File upload has been cancelled" approved="yes">
         <source>File upload has been cancelled</source>
@@ -4394,7 +4394,7 @@
       <trans-unit id="815d1b7d85075463e14c340ff9897a6c4af09ec3" resname="Missing &quot;structure&quot; parameter" approved="yes">
         <source>Missing "structure" parameter</source>
         <target state="translated">Le paramètre "structure" est manquant</target>
-        <jms:reference-file line="147">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="152">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9b8f078d07adc678766fb9d2094292080ab3c52" resname="Missing labels parameter" approved="yes">
         <source>Missing labels parameter</source>
@@ -4410,7 +4410,7 @@
       <trans-unit id="0f79e8927b12fa1faaf351996f502775b4642c2d" resname="Missing path parameter" approved="yes">
         <source>Missing path parameter</source>
         <target state="translated">Paramètre Path (Chemin d'accès) manquant</target>
-        <jms:reference-file line="73">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="78">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9321a86c28d944244ce11115d852e79d190b0bcd" resname="Missing target collection" approved="yes">
         <source>Missing target collection</source>
@@ -4420,7 +4420,7 @@
       <trans-unit id="b0def594904c1cbf973fce8978d282a64d446abb" resname="Missing tests parameter" approved="yes">
         <source>Missing tests parameter</source>
         <target state="translated">Paramètre de test manquant</target>
-        <jms:reference-file line="69">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="74">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="80e8b9fbe625ab32ace339346a3721fe143f5c20" resname="Missing view name parameter" approved="yes">
         <source>Missing view name parameter</source>
@@ -6284,7 +6284,7 @@
       <trans-unit id="e348765b45777672fff0436326a7637de0c0f6b4" resname="Something wrong happend" approved="yes">
         <source>Something wrong happend</source>
         <target state="translated">Un problème est survenu</target>
-        <jms:reference-file line="194">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="199">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e4139b4c4a2bc0bf820cebbfa3ac7361a1b1e37" resname="Something wrong happened, please try again or contact an admin." approved="yes">
         <source>Something wrong happened, please try again or contact an admin.</source>
@@ -6373,12 +6373,12 @@
       <trans-unit id="31341706bd5a88f758389de7827bbedddf89f5d5" resname="Status icon upload failed : can not write on disk" approved="yes">
         <source>Status icon upload failed : can not write on disk</source>
         <target state="translated">L'ajout de l'icône de Status a échoué, impossible d'écrire sur le disque</target>
-        <jms:reference-file line="191">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="196">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="28fc4ae94e7aebff81825a9fbc91ba32ac6ad1ff" resname="Status icon upload failed : upload error" approved="yes">
         <source>Status icon upload failed : upload error</source>
         <target state="translated">L'ajout de l'icône de Status a échoué</target>
-        <jms:reference-file line="188">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="193">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9e253470c876ee6d5c720eb777aeb82d4c26e28f" resname="Stop" approved="yes">
         <source>Stop</source>
@@ -7832,7 +7832,7 @@
       <trans-unit id="4faca55769348dcbc9714b19438181057aa2510e" resname="You do not enough rights to update status" approved="yes">
         <source>You do not enough rights to update status</source>
         <target state="translated">Vous ne disposez pas des droits suffisants pour changer les Status</target>
-        <jms:reference-file line="182">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="187">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="97188aa994ca91d6fd389a9a6d282aff57695836" resname="You do not have access to this basket" approved="yes">
         <source>You do not have access to this basket</source>
@@ -9441,13 +9441,13 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="85d760f5a5e3b7c29f17485512d9225ccdd40811" resname="admin::users: password granted">
         <source>admin::users: password granted</source>
         <target state="translated">Oui</target>
-        <jms:reference-file line="91">admin/inspector/record-index.html.twig</jms:reference-file>
+        <jms:reference-file line="92">admin/inspector/record-index.html.twig</jms:reference-file>
         <jms:reference-file line="638">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="74411bbacf01ba76709c7cf0135e7c4aeed0c180" resname="admin::users: password not granted">
         <source>admin::users: password not granted</source>
         <target state="translated">Non</target>
-        <jms:reference-file line="93">admin/inspector/record-index.html.twig</jms:reference-file>
+        <jms:reference-file line="94">admin/inspector/record-index.html.twig</jms:reference-file>
         <jms:reference-file line="638">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c6e9df1925ca0ae9df114b4c17e7667ec66f5d7" resname="admin::users: provider">
