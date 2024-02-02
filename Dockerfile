@@ -45,7 +45,7 @@ RUN composer install --prefer-dist --no-dev --no-progress --classmap-authoritati
 
 COPY --chown=app  . .
 
-# RUN make install
+RUN make install
 
 ADD ./docker/builder/root /
 
