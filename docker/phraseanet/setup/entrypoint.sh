@@ -297,7 +297,7 @@ chown -R app:app backup
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/repository excluding www/thumbnails"
 cd www
-chown -Rv app:app  $(ls -I thumbnails)
+chown -R app:app  $(ls -I thumbnails)
     
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"   
 
