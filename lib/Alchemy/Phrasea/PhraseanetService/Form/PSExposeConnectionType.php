@@ -117,7 +117,7 @@ class PSExposeConnectionType extends AbstractType
         $values = array_keys(
             array_filter($this->app['conf']->get(['authentication', 'providers'], []),
             function ($provider) {
-                  return ($provider['type'] == 'openid');
+                  return ($provider['type'] == 'openid' || $provider['type'] == 'ps-auth' || $provider['type'] == 'PsAuth');
              })
         );
 

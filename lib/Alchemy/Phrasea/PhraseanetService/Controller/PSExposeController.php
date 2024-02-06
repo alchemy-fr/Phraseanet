@@ -210,7 +210,7 @@ class PSExposeController extends Controller
             try {
                 $provider = $this->getAuthenticationProviders()->get($providerId);
                 // class name
-                if ($provider->getType() == 'Openid' && $exposeConfiguration['auth_provider_name'] == $providerId) {
+                if (($provider->getType() == 'Openid' || $provider->getType() == 'PsAuth') && $exposeConfiguration['auth_provider_name'] == $providerId) {
 
                     $session->set($passSessionName, ['access_token' => $provider->getAccessToken()]);
                     $session->set($this->getLoginSessionName($exposeName), $provider->getUserName());
