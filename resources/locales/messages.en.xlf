@@ -8912,12 +8912,12 @@
       </trans-unit>
       <trans-unit id="36e396a8ec1c9973a40a2245200a1548b917ec6b" resname="admin::inspector: api creation date" xml:space="preserve">
         <source>admin::inspector: api creation date</source>
-        <target state="needs-translation">Creation date</target>
+        <target state="needs-translation">Created on</target>
         <jms:reference-file line="74">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e2777d86d73172a0fe0c2d062344632c6d5775c" resname="admin::inspector: api modification date" xml:space="preserve">
         <source>admin::inspector: api modification date</source>
-        <target state="needs-translation">Modification date</target>
+        <target state="needs-translation">Modified on</target>
         <jms:reference-file line="75">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="89b3632f43e1592824fbf1f823a72b8a6b43af7d" resname="admin::inspector: api name" xml:space="preserve">
@@ -8947,22 +8947,22 @@
       </trans-unit>
       <trans-unit id="7f34bddf3eb110c2bcebff3f64c21515c9046f51" resname="admin::inspector: basket archive" xml:space="preserve">
         <source>admin::inspector: basket archive</source>
-        <target state="needs-translation">Basket archive</target>
+        <target state="needs-translation">Basket archived</target>
         <jms:reference-file line="40">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0a5d405fdf79745f82bcdf87f222d326a025bb63" resname="admin::inspector: basket creation date" xml:space="preserve">
         <source>admin::inspector: basket creation date</source>
-        <target state="needs-translation">Creation date</target>
+        <target state="needs-translation">Created on</target>
         <jms:reference-file line="38">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3d437b992adce000cc35b7ada609b3163a3fcc3" resname="admin::inspector: basket id" xml:space="preserve">
         <source>admin::inspector: basket id</source>
-        <target state="needs-translation">Basket id</target>
+        <target state="needs-translation">Basket ID</target>
         <jms:reference-file line="35">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afeb06baa4fd425a47d6012a8341aaf08b926b8b" resname="admin::inspector: basket modification date" xml:space="preserve">
         <source>admin::inspector: basket modification date</source>
-        <target state="needs-translation">Modification date</target>
+        <target state="needs-translation">Modified on</target>
         <jms:reference-file line="39">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d19103b83559254b3f4f6c105afb6e05c6f4ecb" resname="admin::inspector: basket name" xml:space="preserve">
@@ -8972,17 +8972,17 @@
       </trans-unit>
       <trans-unit id="e0741c67620905b912cf6415d0d8de846eac5e44" resname="admin::inspector: basket user id" xml:space="preserve">
         <source>admin::inspector: basket user id</source>
-        <target state="needs-translation">Owner id</target>
+        <target state="needs-translation">Owner ID</target>
         <jms:reference-file line="37">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="46f83c2a60bf13296db69944899dc0314f5f23fa" resname="admin::inspector: creation date" xml:space="preserve">
         <source>admin::inspector: creation date</source>
-        <target state="needs-translation">Creation date</target>
+        <target state="needs-translation">Created on</target>
         <jms:reference-file line="6">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c2d3cd4d3851f4979826938bd3d832615c92355" resname="admin::inspector: modification date" xml:space="preserve">
         <source>admin::inspector: modification date</source>
-        <target state="needs-translation">Modification date</target>
+        <target state="needs-translation">Modified on</target>
         <jms:reference-file line="7">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f73a9f9948192f7486e4de82393608feba144bf0" resname="admin::inspector: path" xml:space="preserve">
@@ -8992,17 +8992,17 @@
       </trans-unit>
       <trans-unit id="32be8001a20977dcbf26841272d1dd727d7e5eb3" resname="admin::inspector: story creation date" xml:space="preserve">
         <source>admin::inspector: story creation date</source>
-        <target state="needs-translation">Creation date</target>
+        <target state="needs-translation">Created on</target>
         <jms:reference-file line="69">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="90a870b45584e1297fed875e00fb85d07847bb07" resname="admin::inspector: story id" xml:space="preserve">
         <source>admin::inspector: story id</source>
-        <target state="needs-translation">Story id (recordId)</target>
+        <target state="needs-translation">Story ID (recordId)</target>
         <jms:reference-file line="67">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c1b6cd2336cd2a703826e33518314529cf377d7" resname="admin::inspector: story modification date" xml:space="preserve">
         <source>admin::inspector: story modification date</source>
-        <target state="needs-translation">Modification date</target>
+        <target state="needs-translation">Modified on</target>
         <jms:reference-file line="70">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="04a18189386265d1929218436c45ae3b5f8899ba" resname="admin::inspector: story title" xml:space="preserve">
@@ -9017,7 +9017,7 @@
       </trans-unit>
       <trans-unit id="d00888f0ba59c5f6d6701d852f21b855e473a1b2" resname="admin::inspector:tab api info title" xml:space="preserve">
         <source>admin::inspector:tab api info title</source>
-        <target state="needs-translation">API informations</target>
+        <target state="needs-translation">API information</target>
         <jms:reference-file line="10">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c15d466bd6fc239e124d3d5e0093603af0907c89" resname="admin::inspector:tab record info title" xml:space="preserve">
