@@ -34,6 +34,7 @@ use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\Record\RecordAdd;
 use Alchemy\Phrasea\Command\Record\RescanFilesMetadata;
 use Alchemy\Phrasea\Command\Record\RescanTechnicalDatas;
+use Alchemy\Phrasea\Command\Record\WriteMetadatas;
 use Alchemy\Phrasea\Command\SearchEngine\Debug\QueryParseCommand;
 use Alchemy\Phrasea\Command\SearchEngine\Debug\QuerySampleCommand;
 use Alchemy\Phrasea\Command\SearchEngine\IndexCreateCommand;
@@ -162,6 +163,7 @@ $cli->command(new BuildPermalinks());
 $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
 $cli->command(new BuildSubdefs('records:build-subdefs'));
 $cli->command(new RescanFilesMetadata());
+$cli->command(new WriteMetadatas());
 
 $cli->command(new AddPlugin());
 $cli->command(new ListPlugin());

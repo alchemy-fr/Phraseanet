@@ -16,11 +16,11 @@ fi
 maintenance_manager()
 {
     if [[ $1 = "off" || $1 = "0" ]];then
-            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet No Maintenance Mode Activated"
+            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance disabled"
             rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html
     
     elif [[ $1 = "on" || $1 = "1" ]];then
-            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Activating Maintenance Mode"
+            echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance enabled"
             mkdir -p /var/alchemy/Phraseanet/datas/nginx
             if [[ ! -n "$PHRASEANET_MAINTENANCE_MESSAGE" ]];then
                 echo "No custom maintenance message"
@@ -28,7 +28,7 @@ maintenance_manager()
             fi
             envsubst < "/usr/local/etc/maintenance.html" > /var/alchemy/Phraseanet/datas/nginx/maintenance.html
             if [[ $2 != "noexit" ]];then
-                echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in persitent Mode"
+                echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in persistent Mode"
                 exit 0
             else
                 echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet Maintenance in temporary Mode"
@@ -79,15 +79,15 @@ fi
 
 if [[ -f "$FILE" && $PHRASEANET_UPGRADE = 1 ]];then
    maintenance_manager 1 noexit
-   echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing config backup, check connection to db "
-   bin/console system:clear-cache
-   bin/console system:clear-session
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - preparing Phraseanet configuration backup"
+   bin/setup system:clear-cache
+   bin/setup system:clear-session
    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
    timestamp_dir="backup/pre-upgrade/$timestamp"
    mkdir -p "$timestamp_dir"
    archive_name="$PHRASEANET_HOSTNAME-config.tgz"
    tar -zcf "$timestamp_dir/$archive_name" -C "config" .
-   echo `date +"%Y-%m-%d %H:%M:%S"` " - Pre-upgrade backup done for config  $timestamp_dir/$archive_name"
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - Pre-upgrade backup done for configuration  $timestamp_dir/$archive_name"
    echo `date +"%Y-%m-%d %H:%M:%S"` " - Start Phraseanet upgrade datas"
    bin/setup system:upgrade -y
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End Phraseanet upgrade datas"
@@ -157,14 +157,21 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     fi
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting session type"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - SESSION_SAVE_HANDLER is $SESSION_SAVE_HANDLER"
 
     if [[ $SESSION_SAVE_HANDLER == file ]]; then
         bin/setup system:config set main.session.type "$SESSION_SAVE_HANDLER"
-
         echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is $SESSION_SAVE_HANDLER"
-    else
+    elif [[ $SESSION_SAVE_HANDLER == redis ]]; then
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Redis : setting Host to $PHRASEANET_SESSION_TYPE"         
+        bin/setup system:config set main.session.type $PHRASEANET_SESSION_TYPE
+        bin/setup system:config set main.session.options.host $PHRASEANET_SESSION_HOST
+        bin/setup system:config set main.session.options.port $PHRASEANET_SESSION_PORT
+        bin/setup system:config set main.session.options.namespace $PHRASEANET_HOSTNAME
+        bin/setup system:config set main.session.ttl $PHRASEANET_USER_SESSION_LIFETIME
+    else 
         bin/setup system:config set main.session.type "native"
-        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native by redis"
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native"
     fi
 
     ## Phraseanet application Database setting
@@ -178,12 +185,18 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set -q main.database.dbname $INSTALL_APPBOX
 
     ## Phraseanet application cache setting
-    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up for Phraseanet cache"
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up Phraseanet cache"
     echo `date +"%Y-%m-%d %H:%M:%S"` - "Cache Type is $PHRASEANET_CACHE_TYPE"
     bin/setup system:config set -q main.cache.options.host $PHRASEANET_CACHE_HOST
     bin/setup system:config set -q main.cache.options.port $PHRASEANET_CACHE_PORT
     bin/setup system:config set -q main.cache.options.namespace $PHRASEANET_HOSTNAME
     bin/setup system:config set -q main.cache.type $PHRASEANET_CACHE_TYPE
+
+    ## Phraseanet application's users session duration
+    echo `date +"%Y-%m-%d %H:%M:%S"` - "Setting up Phraseanet user session duration"   
+    bin/setup system:config set -q session.idle $PHRASEANET_USER_SESSION_IDLE
+    bin/setup system:config set -q session.lifetime $PHRASEANET_USER_SESSION_LIFETIME
+
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
@@ -282,8 +295,9 @@ chown -R app:app ftp
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on backup/ repository"
 chown -R app:app backup
 
-echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/ repository"
-chown -R app:app www
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/repository excluding www/thumbnails"
+cd www
+chown -R app:app  $(ls -I thumbnails)
     
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"   
 

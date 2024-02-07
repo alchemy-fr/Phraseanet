@@ -1,5 +1,88 @@
 # CHANGELOG
 
+## 4.1.8-rc8
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Phraseanet translator thesaurus based improvement 
+ - Photo editor plugin improvement this is now possible to define crop preset setting by databox 
+ - documentary field can be restricted to a suggested values and thesaurus 
+  
+### Stack (docker compose and helm)
+    
+   -  CSP move source of values source from  to gateway container,  now .env (docker compose) and values (helm) are only for override them 
+   -  Download async add setup to Helm 
+   -  Helm deploiement include in this repository is deprecated, the new offical source is here https://github.com/alchemy-fr/alchemy-helm-charts-repo/tree/main/charts/phraseanet
+   - New optional docker-compose file for limiting phraseanet's containers host resources usage with docker compose
+
+## What's Changed
+* PHRAS-3942 fix typo .env documentation  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4404
+* PHRAS-3943_download-report-tabnames by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4406
+* PHRAS-3946_download-async-one-file by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4408
+* PHRAS-3940 translator-group-jobs by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4409
+* PHRAS-3917 Prod - home redirection when session end - catch more 403 by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4399
+* PHRAS-3770 quarantine-enhancement  by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4352
+* PHRAS-3949_photo-editor-cant-save by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4411
+* PHRAS-3950 bin/maintenance clean never connected users by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4412
+* PHRAS-3668 happyscribe autosubtitle by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4405
+* PHRAS-3770: generate translation by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4414
+* PHRAS-3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4415
+* PHRAS-3668 subtitle notification by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4416
+* PHRAS-3520_stamper-enhance by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4385
+* PHRAS-3668 fix incomplete translation by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4418
+* Phras 3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4419
+* PHRAS-3945 move pusher configuration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4413
+* PHRAS-3966 admin - users list - add filter for "users with api application" by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4422
+* PHRAS-3966 admin users filter translation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4424
+* PHRAS-2069 rescan file metadata command by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4420
+* PHRAS-3945 download async config change by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4423
+* PHRAS-3944_malformed-web-vtt by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4407
+* PHRAS-3958_download-one-asset by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4425
+* PHRAS-3777: Cleanup of old keys in configuration.yml - migration patch by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4427
+* PHRAS-3768_feedback-report-per-record by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4421
+* PHRAS-3777 clean unused setting in configuration.yml by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4429
+* PHRAS-3947: Prod - Editing - restrict field content to thesaurus and or suggested values by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4426
+* PHRAS-3967: Translator - Move translator configuration in config/configuration.yml by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4428
+* PHRAS-3997 translation field content restriction option by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4432
+* PHRAS-3976_quickfix_418RC8PHRAS3768 by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4435
+* PHRAS-3195 : Stop to generate metadata writing event on story creation or representation definition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4433
+* PHRAS-3520 : patch for stamp by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4434
+* PHRAS-3976 BasketElements table add column and index by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4436
+* PHRAS-3957: editing: search in thesaurus, from the th zone by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4430
+* PHRAS-3980 custom worker by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4438
+* PHRAS-3981_create-field-fails by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4439
+* PHRAS-3980 cmd container by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4440
+* PHRAS-3982_report-feedback-enhance by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4441
+* PHRAS-3978 phraseanet translation  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4442
+* PHRAS-3974_stamper-enhance-2 by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4437
+* PHRAS-3988_feedback-report-same-record by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4444
+* PHRAS-3991: pre upgrade backup WIP by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4445
+* PHRAS-3979: fix bin/maintenance cleaner  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4443
+* PHRAS-3990_feedbackReport-stamper-doc by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4447
+* PHRAS-3996_legacy-download-remove-excel by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4449
+* PHRAS-3995: Admin - worker - job queue - average duration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4448
+* PHRAS-3997 clear cache before play upgrade by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4451
+* PHRAS-3999: admin - databases - subdefinition - error 400 and 500 when create subdefinition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4452
+* PHRAS-3994: clean user - email send to customer - date is wrong by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4446
+* PHRAS-3722 : bin/console records:build-subdef by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4450
+* PHRAS-3987_stamper-text-shadow by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4454
+* PHRAS-3993-fix-maintenance-mode : set as function by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4453
+* PHRAS-3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4455
+* PHRAS-3403 set docker containers resource limits by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4456
+* PHRAS-3955 release 4.1.8 rc8 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4431
+* PHRAS-4006 : expose-cli should relog if refresh_token expire by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4457
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc7...4.1.8-rc8
+
+
 ## 4.1.8-rc7
 
 ### Update instructions
