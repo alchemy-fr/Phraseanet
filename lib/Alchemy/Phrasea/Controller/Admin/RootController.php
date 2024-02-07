@@ -14,7 +14,14 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
+use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
+use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use GuzzleHttp\Client;
@@ -396,6 +403,103 @@ class RootController extends Controller
         }
 
         return json_encode($ret, JSON_PRETTY_PRINT, 512);
+    }
+
+    public function getRecordDetails(Request $request)
+    {
+        $recordId = $request->query->get('recordId');
+        $databoxId = $request->query->get('databoxId');
+        $detailsType = $request->query->get('type');
+
+        if ($detailsType == 'subdef') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+
+            $record  = $databox->get_record($recordId);
+
+            $databoxSubdefs = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
+
+            $availableSubdefs = [];
+
+            foreach ($databoxSubdefs as $sub) {
+                $availableSubdefs[$sub->get_name()] = $sub->get_name();
+            }
+
+            /** @var MediaSubdefRepository $mediaSubdefRepository */
+            $mediaSubdefRepository = $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($request->query->get('databoxId'));
+
+            $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$request->query->get('recordId')]);
+
+            $notGeneratedSubdefs = $availableSubdefs;
+
+            foreach ($mediaSubdefs as $mediaSubdef) {
+                if (in_array($mediaSubdef->get_name(), $notGeneratedSubdefs)) {
+                    unset($notGeneratedSubdefs[$mediaSubdef->get_name()]);
+                }
+            }
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'mediaSubdefs'          => $mediaSubdefs,
+                'notGeneratedSubdefs'   => $notGeneratedSubdefs,
+                'type'                  => 'subdef'
+            ]);
+        } elseif ($detailsType == 'basket') {
+            /** @var BasketElementRepository $basketElementRepository */
+            $basketElementRepository = $this->app['repo.basket-elements'];
+            $basketElements = $basketElementRepository->findBy([
+                'sbas_id'   => $databoxId,
+                'record_id' => $recordId
+                ],  ['basket' => 'asc']
+            );
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'basketElements'  => $basketElements,
+                'type'            => 'basket'
+            ]);
+        } elseif ($detailsType == 'story') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+            $recordParents = $databox->getRecordRepository()->findParents([$recordId]);
+            $recordParents = reset($recordParents);
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'recordParents'   => $recordParents,
+                'type'            => 'story'
+            ]);
+        }
+    }
+
+    public function renewAccessToken(Request $request, ApiApplication $application)
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        /** @var   ApiAccountRepository $apiAccountRepository */
+        $apiAccountRepository = $this->app['repo.api-accounts'];
+        $user = $userRepository->find($request->query->get('user_id'));
+        $account = $apiAccountRepository->findByUserAndApplication($user, $application);
+
+        if (null !== $devToken = $this->getApiOAuthTokenRepository()->findDeveloperToken($account)) {
+            $this->getApiOAuthTokenManipulator()->renew($devToken);
+        } else {
+            // dev tokens do not expires
+             $this->getApiOAuthTokenManipulator()->create($account);
+        }
+
+        return $this->app->json(['success' => true]);
+    }
+
+    /**
+     * @return ApiOauthTokenRepository
+     */
+    private function getApiOAuthTokenRepository()
+    {
+        return $this->app['repo.api-oauth-tokens'];
+    }
+
+    /**
+     * @return ApiOauthTokenManipulator
+     */
+    private function getApiOAuthTokenManipulator()
+    {
+        return $this->app['manipulator.api-oauth-token'];
     }
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)
