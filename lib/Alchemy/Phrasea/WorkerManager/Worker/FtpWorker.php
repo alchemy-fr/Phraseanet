@@ -376,6 +376,7 @@ class FtpWorker implements WorkerInterface
             try {
                 $workerRunningJob
                     ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
+                    ->setFinished(new \DateTime('now'))
                     ->setStatus(WorkerRunningJob::ERROR)
                 ;
 
