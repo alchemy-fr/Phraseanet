@@ -8222,9 +8222,9 @@
         <jms:reference-file line="248">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="249">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
+      <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record" xml:space="preserve">
         <source>admin:: find record</source>
-        <target state="translated">Ansehen</target>
+        <target state="needs-translation">Elasticsearch index</target>
         <jms:reference-file line="53">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ea710439ba655dbc8373345063af19f77548db06" resname="admin:: get record baskets" xml:space="preserve">
@@ -8247,9 +8247,9 @@
         <target state="translated">Objektinspektor</target>
         <jms:reference-file line="71">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
+      <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index" xml:space="preserve">
         <source>admin:: record index</source>
-        <target state="translated">Elastic Datensatz Index</target>
+        <target state="needs-translation">Datensatz</target>
         <jms:reference-file line="17">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
