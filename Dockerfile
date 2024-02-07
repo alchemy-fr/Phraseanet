@@ -1,5 +1,5 @@
 
-FROM alchemyfr/phraseanet-base:01-dev as builder
+FROM alchemyfr/phraseanet-base:0.1.0-alpha4 as builder
 
 COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 
@@ -72,7 +72,7 @@ CMD []
 # Phraseanet install and setup application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:01-dev as phraseanet-setup
+FROM alchemyfr/phraseanet-base:0.1.0-alpha4 as phraseanet-setup
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -85,7 +85,7 @@ CMD []
 # Phraseanet web application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:01-dev as phraseanet-fpm
+FROM alchemyfr/phraseanet-base:0.1.0-alpha4 as phraseanet-fpm
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -134,7 +134,7 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 # phraseanet adapted simplesaml service provider 
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:01-dev as phraseanet-saml-sp
+FROM alchemyfr/phraseanet-base:0.1.0-alpha4 as phraseanet-saml-sp
 RUN adduser --uid 1000 --disabled-password app
 RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
     && apt-get update \
