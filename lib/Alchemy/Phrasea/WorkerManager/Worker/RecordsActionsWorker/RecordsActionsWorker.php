@@ -56,7 +56,7 @@ class RecordsActionsWorker implements WorkerInterface
         else {
             $sxSettings = simplexml_load_string($xmlSettings);
             if((string)$sxSettings['version'] !== "2") {
-                throw new JsonValidationException(sprintf("bad settings version (%s), should be \"2\"", (string)$sxml['version']));
+                throw new JsonValidationException(sprintf("bad settings version (%s), should be \"2\"", (string)$sxSettings['version']));
             }
             $em = $this->repoWorker->getEntityManager();
             $em->beginTransaction();
@@ -256,7 +256,7 @@ class RecordsActionsWorker implements WorkerInterface
                         $js
                     ));
 
-                    if(!$row|'dry') {
+                    if(!$row['dry']) {
                         $rec->setMetadatasByActions(json_decode($js, false));  // false: setMetadatasByActions expects object, not array !
                     }
                 }
@@ -470,7 +470,7 @@ class RecordsActionsWorker implements WorkerInterface
 
         // action <compute_date direction="dir"...>
         foreach ($sxThen->compute_date as $x) {
-            $this->add_THEN_ComputeDateClause($sqlBuilder, $databox, strtoupper(trim($x['direction'])), trim($x['field']), strtoupper(trim($x['delta'])), trim($x['computed']));
+            $this->add_THEN_ComputeDateClause($sqlBuilder, $databox, trim($x['field']), strtoupper(trim($x['delta'])), trim($x['computed']));
         }
 
         // action <coll id="X" />
@@ -776,7 +776,7 @@ class RecordsActionsWorker implements WorkerInterface
         }
     }
 
-    private function add_THEN_ComputeDateClause(SqlBuilder $sqlBuilder, databox $databox, string $dir, string $fieldName, string $delta, string $computedRefKey)
+    private function add_THEN_ComputeDateClause(SqlBuilder $sqlBuilder, databox $databox, string $fieldName, string $delta, string $computedRefKey)
     {
         $this->checkComputedRefKey($computedRefKey);
 
@@ -802,15 +802,6 @@ class RecordsActionsWorker implements WorkerInterface
             else {
                 throw new Exception(sprintf("bad delta (%s)\n", $delta));
             }
-        }
-
-        $dirop = "";
-        if (in_array($dir, array('BEFORE', 'AFTER'))) {
-            $dirop .= ($dir == 'BEFORE') ? '<' : '>=';
-        }
-        else {
-            // bad direction
-            throw new Exception(sprintf("bad direction (%s)\n", $dir));
         }
 
         switch ($fieldName) {
