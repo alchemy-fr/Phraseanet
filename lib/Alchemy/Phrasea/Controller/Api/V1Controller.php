@@ -317,7 +317,7 @@ class V1Controller extends Controller
                 'description' => $conf->get(['registry', 'general', 'description']),
                 'httpServer' => [
                     'phpTimezone' => ini_get('date.timezone'),
-                    'siteId' => $conf->get(['main', 'key']),
+                    'instanceId' => $conf->get(['main', 'instance_id']),
                     'defaultLanguage' => $conf->get(['languages', 'default']),
                     'allowIndexing' => $conf->get(['registry', 'general', 'allow-indexation']),
                     'modes' => [
