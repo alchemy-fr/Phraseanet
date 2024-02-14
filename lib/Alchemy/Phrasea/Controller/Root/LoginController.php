@@ -190,7 +190,10 @@ class LoginController extends Controller
 
             $provider = null;
 
-            if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+            if(
+                (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+            ) {
                 $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
 
                 $dateError = new FormError("");
@@ -433,7 +436,10 @@ class LoginController extends Controller
                 $form->handleRequest($request);
                 $requestData = $request->request->all();
 
-                if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+                if(
+                    (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                    (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+                ) {
                     $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
 
                     $dataError = new FormError("");
