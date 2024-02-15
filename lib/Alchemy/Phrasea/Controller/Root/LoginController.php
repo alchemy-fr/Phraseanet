@@ -137,10 +137,10 @@ class LoginController extends Controller
     {
         $response =  $this->app->json([
             'validation_blank'          => $this->app->trans('Please provide a value.'),
-            'validation_choice_min'     => $this->app->trans('Please select at least %s choice.'),
+            'validation_choice_min'     => $this->app->trans('Please select at least %s choice.', ['%s' => 1]),
             'validation_email'          => $this->app->trans('Please provide a valid email address.'),
             'validation_ip'             => $this->app->trans('Please provide a valid IP address.'),
-            'validation_length_min'     => $this->app->trans('Please provide a longer value. It should have %s character or more.'),
+            'validation_length_min'     => $this->app->trans('Please provide a longer value. It should have %s character or more.', ['%s' => 5]),
             'password_match'            => $this->app->trans('Please provide the same passwords.'),
             'email_match'               => $this->app->trans('Please provide the same emails.'),
             'accept_tou'                => $this->app->trans('Please accept the terms of use to register.'),
