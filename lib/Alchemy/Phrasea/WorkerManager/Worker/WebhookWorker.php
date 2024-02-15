@@ -240,9 +240,9 @@ class WebhookWorker implements WorkerInterface
 
             // make delivery Id as index
             $requests[$delivery->getId()] = new Request(
-                'POST',
+                'GET',
                 $uniqueUrl,
-                ['Content-Type' => 'application/vnd.phraseanet.event+json'],
+                ['Content-Type' => 'application/json'],
                 json_encode($data)
             );
         }
