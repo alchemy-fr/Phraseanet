@@ -49,6 +49,13 @@
             </div>
         </div>
 
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success record-details record-log-docs">{{ 'Get log docs' | trans }}</button>
+
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-log-docs">
+            </div>
+        </div>
+
         <div style="margin-left: 30px; margin-top:40px;">
             <button class="btn btn-success find-record-index">{{ 'admin:: find record' | trans }}</button>
             <div style="margin-top:20px; padding-bottom: 30px;">
@@ -165,6 +172,9 @@
             } else if ($(this).hasClass('record-stories')) {
                 elOut = $('#right-ajax #record-stories');
                 type = 'story';
+            } else if ($(this).hasClass('record-log-docs')) {
+                elOut = $('#right-ajax #record-log-docs');
+                type = 'log';
             }
 
             let recordId = $('input#es-recordId').val();
