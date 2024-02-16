@@ -47,10 +47,7 @@ const regiser = (services) => {
                 {
                     name: 'password[password]',
                     rules: 'min_length[5]',
-                    message: localeService.t('validation_length_min', {
-                        postProcess: 'sprintf',
-                        sprintf: ['5']
-                    })
+                    message: localeService.t('validation_length_min')
                 },
                 {
                     name: 'password[confirm]',
@@ -66,10 +63,7 @@ const regiser = (services) => {
                 {
                     name: 'collections[]',
                     rules: 'min_length[1]',
-                    message: localeService.t('validation_choice_min', {
-                        postProcess: 'sprintf',
-                        sprintf: ['1']
-                    }),
+                    message: localeService.t('validation_choice_min'),
                     type: 'multiple'
                 }
             ];
