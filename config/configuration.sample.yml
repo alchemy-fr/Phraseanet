@@ -277,6 +277,8 @@ registry:
     actions:
         export-stamp-choice: false
         stamp-subdefs: false
+    webservices:
+        use-h-captcha: false
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
