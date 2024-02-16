@@ -414,27 +414,32 @@ class RootController extends Controller
         if ($detailsType == 'subdef') {
             $databox = $this->getApplicationBox()->get_databox($databoxId);
 
-            $record  = $databox->get_record($recordId);
+            try {
+                $record  = $databox->get_record($recordId);
 
-            $databoxSubdefs = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
+                $databoxSubdefs = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
 
-            $availableSubdefs = [];
+                $availableSubdefs = [];
 
-            foreach ($databoxSubdefs as $sub) {
-                $availableSubdefs[$sub->get_name()] = $sub->get_name();
-            }
-
-            /** @var MediaSubdefRepository $mediaSubdefRepository */
-            $mediaSubdefRepository = $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($request->query->get('databoxId'));
-
-            $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$request->query->get('recordId')]);
-
-            $notGeneratedSubdefs = $availableSubdefs;
-
-            foreach ($mediaSubdefs as $mediaSubdef) {
-                if (in_array($mediaSubdef->get_name(), $notGeneratedSubdefs)) {
-                    unset($notGeneratedSubdefs[$mediaSubdef->get_name()]);
+                foreach ($databoxSubdefs as $sub) {
+                    $availableSubdefs[$sub->get_name()] = $sub->get_name();
                 }
+
+                /** @var MediaSubdefRepository $mediaSubdefRepository */
+                $mediaSubdefRepository = $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($request->query->get('databoxId'));
+
+                $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$request->query->get('recordId')]);
+
+                $notGeneratedSubdefs = $availableSubdefs;
+
+                foreach ($mediaSubdefs as $mediaSubdef) {
+                    if (in_array($mediaSubdef->get_name(), $notGeneratedSubdefs)) {
+                        unset($notGeneratedSubdefs[$mediaSubdef->get_name()]);
+                    }
+                }
+            } catch (\Exception $e) {
+                $mediaSubdefs = [];
+                $notGeneratedSubdefs = [];
             }
 
             return $this->render('admin/inspector/record-detail.html.twig', [
@@ -463,6 +468,22 @@ class RootController extends Controller
             return $this->render('admin/inspector/record-detail.html.twig', [
                 'recordParents'   => $recordParents,
                 'type'            => 'story'
+            ]);
+        } elseif ($detailsType == 'log') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+            $sql = "SELECT d.* , l.usrid
+                    FROM log_docs d
+                    LEFT JOIN  log l ON l.id = d.log_id
+                    WHERE d.record_id =" . $recordId . " ORDER BY date LIMIT 1000";
+
+            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt->execute();
+            $logDocs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'logDocs'   => $logDocs,
+                'type'      => 'log'
             ]);
         }
     }
