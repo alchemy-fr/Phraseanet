@@ -74,6 +74,7 @@
                 <th>{{ 'admin::inspector: api ID' | trans }}</th>
                 <th>{{ 'admin::inspector: api name' | trans }}</th>
                 <th>{{ 'admin::inspector: api owner ID' | trans }}</th>
+                <th>{{ 'Owner login' }}</th>
                 <th>{{ 'admin::inspector: api password granted' | trans }}</th>
                 <th>{{ 'admin::inspector: api application type' | trans }}</th>
                 <th>{{ 'admin::inspector: api webhook url' | trans }}</th>
@@ -90,6 +91,13 @@
                     <td>
                         {% if apiApplication.getCreator() is not null %}
                             {{ apiApplication.getCreator().getId() }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if apiApplication.getCreator() is not null %}
+                            {{ apiApplication.getCreator().getLogin() }}
                         {% else %}
                             -
                         {% endif %}
