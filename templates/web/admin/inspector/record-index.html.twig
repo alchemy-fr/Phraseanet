@@ -49,6 +49,13 @@
             </div>
         </div>
 
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success record-details record-log-docs">{{ 'Get log docs' | trans }}</button>
+
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-log-docs">
+            </div>
+        </div>
+
         <div style="margin-left: 30px; margin-top:40px;">
             <button class="btn btn-success find-record-index">{{ 'admin:: find record' | trans }}</button>
             <div style="margin-top:20px; padding-bottom: 30px;">
@@ -67,6 +74,7 @@
                 <th>{{ 'admin::inspector: api ID' | trans }}</th>
                 <th>{{ 'admin::inspector: api name' | trans }}</th>
                 <th>{{ 'admin::inspector: api owner ID' | trans }}</th>
+                <th>{{ 'Owner login' }}</th>
                 <th>{{ 'admin::inspector: api password granted' | trans }}</th>
                 <th>{{ 'admin::inspector: api application type' | trans }}</th>
                 <th>{{ 'admin::inspector: api webhook url' | trans }}</th>
@@ -83,6 +91,13 @@
                     <td>
                         {% if apiApplication.getCreator() is not null %}
                             {{ apiApplication.getCreator().getId() }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if apiApplication.getCreator() is not null %}
+                            {{ apiApplication.getCreator().getLogin() }}
                         {% else %}
                             -
                         {% endif %}
@@ -165,6 +180,9 @@
             } else if ($(this).hasClass('record-stories')) {
                 elOut = $('#right-ajax #record-stories');
                 type = 'story';
+            } else if ($(this).hasClass('record-log-docs')) {
+                elOut = $('#right-ajax #record-log-docs');
+                type = 'log';
             }
 
             let recordId = $('input#es-recordId').val();
