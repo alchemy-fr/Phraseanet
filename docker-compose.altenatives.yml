@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=$MYSQL_MAX_ALLOWED_PACKET --max_connections=$MYSQL_MAX_CONNECTION --long_query_time=$MYSQL_LONG_QUERY_TIME --sql_mode="NO_ENGINE_SUBSTITUTION"
+    restart: on-failure
+    profiles: ["mysql8"]
+    environment:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_MAX_ALLOWED_PACKET
+    - MYSQL_MAX_CONNECTION
+    - MYSQL_LONG_QUERY_TIME
+    - MYSQL_SLOW_QUERY_LOG
+    - MYSQL_QUERY_CACHE_LIMIT
+    - MYSQL_QUERY_CACHE_SIZE
+    - MYSQL_KEY_BUFFER_SIZE
+    volumes:
+    - ${PHRASEANET_DB_DIR}2:/var/lib/mysql
+    networks:
+      - internal
