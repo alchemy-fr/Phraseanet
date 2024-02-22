@@ -240,7 +240,7 @@ class ApplicationTest extends \PhraseanetTestCase
         $app['conf']
             ->expects($this->any())
             ->method('get')
-            ->with(['registry', 'webservices', 'captchas-enabled'])
+            ->with(['registry', 'webservices', 'captcha-provider'])
             ->will($this->returnValue(true));
 
         $this->assertFalse($app->isCaptchaRequired());

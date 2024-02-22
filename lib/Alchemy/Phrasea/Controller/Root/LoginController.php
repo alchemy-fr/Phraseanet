@@ -109,7 +109,7 @@ class LoginController extends Controller
             'current_url' => $request->getUri(),
             'flash_types' => $this->app->getAvailableFlashTypes(),
             'recaptcha_display' => $this->app->isCaptchaRequired(),
-            'recaptcha_enabled' => $conf->get(['registry', 'webservices', 'captchas-enabled']),
+            'recaptcha_enabled' => ($conf->get(['registry', 'webservices', 'captcha-provider']) != 'none') ? true : false,
             'unlock_usr_id' => $this->app->getUnlockAccountData(),
             'guest_allowed' => $this->app->isGuestAllowed(),
             'register_enable' => $this->getRegistrationManager()->isRegistrationEnabled(),

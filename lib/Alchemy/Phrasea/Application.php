@@ -464,7 +464,7 @@ class Application extends SilexApplication
      */
     public function requireCaptcha()
     {
-        if ($this['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
+        if ($this['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
             $this['session']->set('require_captcha', true);
         }
 
@@ -658,12 +658,12 @@ class Application extends SilexApplication
     private function setupRecaptacha()
     {
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
             }
         });
         $this['recaptcha.private-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
             }
         });

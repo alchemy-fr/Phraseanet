@@ -134,7 +134,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new RepositoriesServiceProvider());
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['conf']->set(['registry', 'webservices', 'captchas-enabled'], true);
+        $app['conf']->set(['registry', 'webservices', 'captcha-provider'], 'reCaptcha');
         $bkp = $app['conf']->get('authentication');
 
         $app['orm.em'] = $this->createEntityManagerMock();
@@ -157,7 +157,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
-        $app['conf']->set(['registry', 'webservices', 'captchas-enabled'], false);
+        $app['conf']->set(['registry', 'webservices', 'captcha-provider'], false);
         $bkp = $app['conf']->get('authentication');
 
         $app['orm.em'] = $this->createEntityManagerMock();

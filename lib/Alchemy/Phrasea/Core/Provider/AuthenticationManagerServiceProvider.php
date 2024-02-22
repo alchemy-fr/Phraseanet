@@ -167,7 +167,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
             $authConf = $app['conf']->get(['registry', 'webservices']);
-            return new FailureManager($app['repo.auth-failures'], $app['orm.em'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9, isset($authConf['use-h-captcha']) ? $authConf['use-h-captcha'] : false, $authConf['recaptcha-private-key']);
+            return new FailureManager($app['repo.auth-failures'], $app['orm.em'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9, isset($authConf['captcha-provider']) ? $authConf['captcha-provider'] : 'none', $authConf['recaptcha-private-key']);
         });
 
         $app['auth.password-checker'] = $app->share(function (Application $app) {
@@ -177,7 +177,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         $app['auth.native'] = $app->share(function (Application $app) {
             $authConf = $app['conf']->get(['registry', 'webservices']);
 
-            if ($authConf['captchas-enabled']) {
+            if ($authConf['captcha-provider'] != 'none') {
                 return new FailureHandledNativeAuthentication(
                     $app['auth.password-checker'],
                     $app['auth.native.failure-manager']

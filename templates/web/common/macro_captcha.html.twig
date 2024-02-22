@@ -3,7 +3,7 @@
         <div class="span12">
             {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
 
-            {% if app["conf"].get(['registry', 'webservices', 'use-h-captcha']) %}
+            {% if app["conf"].get(['registry', 'webservices', 'captcha-provider']) == 'hCaptcha' %}
                 <div class="h-captcha" data-sitekey="{{ public_key }}" style="margin-top:1rem;transform:scale(0.86);-webkit-transform:scale(0.86);transform-origin:0 0;-webkit-transform-origin:0 0;"></div>
                 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
             {% else %}

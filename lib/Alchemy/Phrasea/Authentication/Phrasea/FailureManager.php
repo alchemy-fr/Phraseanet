@@ -42,10 +42,10 @@ class FailureManager
      */
     private $trials;
 
-    private $useHcaptcha;
+    private $captchaProvider;
     private $hCaptchaSecret;
 
-    public function __construct(AuthFailureRepository $repo, EntityManager $em, ReCaptcha $captcha, $trials, $useHcaptcha = false, $hCaptchaSecret = '')
+    public function __construct(AuthFailureRepository $repo, EntityManager $em, ReCaptcha $captcha, $trials, $captchaProvider = false, $hCaptchaSecret = '')
     {
         $this->captcha = $captcha;
         $this->em = $em;
@@ -56,7 +56,7 @@ class FailureManager
         }
 
         $this->trials = (int)$trials;
-        $this->useHcaptcha = $useHcaptcha;
+        $this->captchaProvider = $captchaProvider;
         $this->hCaptchaSecret = $hCaptchaSecret;
     }
 
@@ -148,7 +148,7 @@ class FailureManager
         }
 
         if ($this->trials <= count($failures)) {
-            if ($this->useHcaptcha) {
+            if ($this->captchaProvider == 'hCaptcha') {
                 $captchaResp = $request->get('h-captcha-response');
 
                 if ($captchaResp === null) {

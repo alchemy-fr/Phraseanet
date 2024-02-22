@@ -262,7 +262,7 @@ registry:
     webservices:
         google-charts-enabled: true
         geonames-server: 'http://geonames.alchemyasp.com/'
-        captchas-enabled: false
+        captcha-provider: false
         recaptcha-public-key: ''
         recaptcha-private-key: ''
     executables:
