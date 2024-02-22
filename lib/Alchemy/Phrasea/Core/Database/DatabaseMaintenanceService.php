@@ -296,13 +296,15 @@ class DatabaseMaintenanceService
             $expr = trim((string)$field->type);
 
             $_extra = trim((string)$field->extra);
+            $type = trim(strtolower((string)$field->type));
+            $_default = (string)$field->default;
+
             if ($_extra) {
                 $expr .= ' ' . $_extra;
             }
 
             $collation = trim((string)$field->collation) != '' ? trim((string)$field->collation) : 'utf8_unicode_ci';
 
-            $type = trim(strtolower((string)$field->type));
             if (in_array($type, ['text', 'longtext', 'mediumtext', 'tinytext'])
                 || substr($type, 0, 7) == 'varchar'
                 || in_array(substr($type, 0, 4), ['char', 'enum'])
@@ -322,16 +324,16 @@ class DatabaseMaintenanceService
                 $expr .= ' NOT NULL';
             }
 
-            $_default = (string)$field->default;
             if ($_default && $_default != 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT \'' . $_default . '\'';
             } elseif ($_default == 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT ' . $_default . '';
             }
 
+            $expr8 = preg_replace('/^(\\w*int)(\\(\\d+\\))?(.*)?$/', '$1$3', $expr);
             $correct_table['fields'][trim((string)$field->name)] = [
                 'expr' => $expr,
-                'expr8' => preg_replace('/^(\\w*int)(\\(\\d+\\))?(.*)?$/', '$1$3', $expr)
+                'expr8' => $expr8
             ];
         }
         if ($table->indexes) {
@@ -429,6 +431,12 @@ class DatabaseMaintenanceService
             }
 
             if (isset($correct_table['fields'][$f_name])) {
+
+                $matches = [];
+                if(preg_match("/^timestamp DEFAULT_GENERATED/", $expr_found, $matches) === 1) {
+                    $correct_table['fields'][$f_name] = preg_replace("/^timestamp/", "timestamp DEFAULT_GENERATED", $correct_table['fields'][$f_name]);
+                }
+
                 if (isset($correct_table['collation'][$f_name]) && $correct_table['collation'][$f_name] != $current_collation) {
                     $old_type = mb_strtolower(trim($row2['Type']));
                     $new_type = false;
