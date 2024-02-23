@@ -93,7 +93,7 @@ class DatabaseMaintenanceService
                     $this->alterTableEngine($tableName, $engine, $recommends);
                 }
 
-                $ret = $this->upgradeTable($allTables[$tableName]);
+                $ret = $this->upgradeTable($allTables[$tableName], $output);
                 $recommends = array_merge($recommends, $ret);
 
                 unset($allTables[$tableName]);
@@ -285,7 +285,7 @@ class DatabaseMaintenanceService
         unset($stmt);
     }
 
-    public function upgradeTable(\SimpleXMLElement $table)
+    public function upgradeTable(\SimpleXMLElement $table, OutputInterface $output)
     {
         $this->reconnect();
 
@@ -296,15 +296,18 @@ class DatabaseMaintenanceService
             $expr = trim((string)$field->type);
 
             $_extra = trim((string)$field->extra);
+            $type = trim(strtolower((string)$field->type));
+            $_default = (string)$field->default;
+
             if ($_extra) {
                 $expr .= ' ' . $_extra;
             }
 
             $collation = trim((string)$field->collation) != '' ? trim((string)$field->collation) : 'utf8_unicode_ci';
 
-            if (in_array(strtolower((string)$field->type), ['text', 'longtext', 'mediumtext', 'tinytext'])
-                || substr(strtolower((string)$field->type), 0, 7) == 'varchar'
-                || in_array(substr(strtolower((string)$field->type), 0, 4), ['char', 'enum'])
+            if (in_array($type, ['text', 'longtext', 'mediumtext', 'tinytext'])
+                || substr($type, 0, 7) == 'varchar'
+                || in_array(substr($type, 0, 4), ['char', 'enum'])
             ) {
                 $collations = array_reverse(explode('_', $collation));
                 $code = array_pop($collations);
@@ -321,14 +324,17 @@ class DatabaseMaintenanceService
                 $expr .= ' NOT NULL';
             }
 
-            $_default = (string)$field->default;
             if ($_default && $_default != 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT \'' . $_default . '\'';
             } elseif ($_default == 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT ' . $_default . '';
             }
 
-            $correct_table['fields'][trim((string)$field->name)] = $expr;
+            $expr8 = preg_replace('/^(\\w*int)(\\(\\d+\\))?(.*)?$/', '$1$3', $expr);
+            $correct_table['fields'][trim((string)$field->name)] = [
+                'expr' => $expr,
+                'expr8' => $expr8
+            ];
         }
         if ($table->indexes) {
             foreach ($table->indexes->index as $index) {
@@ -359,6 +365,36 @@ class DatabaseMaintenanceService
 
         foreach ($rs2 as $row2) {
             $f_name = $row2['Field'];
+
+            // accept alias collations as same as in lib/conf.d/bases_structure.xml (utf8_unicode_ci)
+            if(in_array(strtolower($row2['Collation']), ['utf8mb3_unicode_ci', 'utf8mb4_unicode_ci'])) {
+                $row2['Collation'] = 'utf8_unicode_ci';
+            }
+
+            // accept current_timestamp() as result of CURRENT_TIMESTAMP
+            if(strtolower($row2['Default']) === 'current_timestamp()') {
+                $row2['Default'] = "CURRENT_TIMESTAMP";
+            }
+
+            // match integers (https://dev.mysql.com/worklog/task/?id=13127)
+            if(isset($correct_table['fields'][$f_name])) {
+                $matches = [];
+                if(preg_match("/^(\\w*int)(\\(\d+\\))?(.*)?$/", $row2['Type'], $matches) === 1) {
+                    $matches = array_merge($matches, ['', '', '', '']); // set missing matches (easier to test)
+                    if($matches[2] === '') {
+                        // mysql 8 : we must use the expr8
+                        $correct_table['fields'][$f_name] = $correct_table['fields'][$f_name]['expr8'];
+                    }
+                    else {
+                        // mysql 5
+                        $correct_table['fields'][$f_name] = $correct_table['fields'][$f_name]['expr'];
+                    }
+                }
+                else {
+                    $correct_table['fields'][$f_name] = $correct_table['fields'][$f_name]['expr'];
+                }
+            }
+
             $expr_found = trim($row2['Type']);
 
             $_extra = $row2['Extra'];
@@ -395,6 +431,12 @@ class DatabaseMaintenanceService
             }
 
             if (isset($correct_table['fields'][$f_name])) {
+
+                $matches = [];
+                if(preg_match("/^timestamp DEFAULT_GENERATED/", $expr_found, $matches) === 1) {
+                    $correct_table['fields'][$f_name] = preg_replace("/^timestamp/", "timestamp DEFAULT_GENERATED", $correct_table['fields'][$f_name]);
+                }
+
                 if (isset($correct_table['collation'][$f_name]) && $correct_table['collation'][$f_name] != $current_collation) {
                     $old_type = mb_strtolower(trim($row2['Type']));
                     $new_type = false;
@@ -427,11 +469,15 @@ class DatabaseMaintenanceService
                     }
                 }
 
-                if (strtolower($expr_found) !== strtolower($correct_table['fields'][$f_name])) {
-                    $alter[] = "ALTER TABLE `" . $table['name'] . "` CHANGE `$f_name` `$f_name` " . $correct_table['fields'][$f_name];
+                $expected = $correct_table['fields'][$f_name];
+                if (strtolower($expr_found) !== strtolower($expected)) {
+                    $output->writeln(sprintf("expected: <info>%s</info>", $expected));
+                    $output->writeln(sprintf("got     : <info>%s</info>", $expr_found));
+                    $alter[] = "ALTER TABLE `" . $table['name'] . "` CHANGE `$f_name` `$f_name` " . $expected;
                 }
                 unset($correct_table['fields'][$f_name]);
-            } else {
+            }
+            else {
                 $return[] = [
                     'message' => 'Un champ pourrait etre supprime',
                     'sql' => "ALTER TABLE " . $this->connection->getDatabase() . ".`" . $table['name'] . "` DROP `$f_name`;"
@@ -478,6 +524,8 @@ class DatabaseMaintenanceService
             if (isset($correct_table['indexes'][$kIndex])) {
 
                 if (mb_strtolower($expr_found) !== mb_strtolower($correct_table['indexes'][$kIndex])) {
+                    $output->writeln(sprintf("expected: <info>%s</info>", $correct_table['indexes'][$kIndex]));
+                    $output->writeln(sprintf("got     : <info>%s</info>", $expr_found));
                     $alter[] = 'ALTER TABLE `' . $table['name'] . '` DROP ' . $full_name_index . ', ADD ' . $correct_table['indexes'][$kIndex];
                 }
 
@@ -498,6 +546,7 @@ class DatabaseMaintenanceService
             $this->reconnect();
 
             try {
+                $output->writeln(sprintf("%s \n", $a));
                 $this->connection->exec($a);
             } catch (\Exception $e) {
                 $return[] = [
@@ -512,6 +561,7 @@ class DatabaseMaintenanceService
             $this->reconnect();
 
             try {
+                $output->writeln(sprintf("%s \n", $a));
                 $this->connection->exec($a);
             } catch (\Exception $e) {
                 $return[] = [
@@ -541,7 +591,7 @@ class DatabaseMaintenanceService
 
         foreach ($iterator as $fileinfo) {
             if (!$fileinfo->isDot()) {
-// printf("---- [%d]\n", __LINE__);
+
                 if (substr($fileinfo->getFilename(), 0, 1) == '.') {
                     continue;
                 }
@@ -551,7 +601,6 @@ class DatabaseMaintenanceService
                 /** @var \patchAbstract $patch */
                 $patch = new $classname();
 
-// printf("---- [%d]\n", __LINE__);
                 if (!in_array($base->get_base_type(), $patch->concern())) {
                     continue;
                 }
@@ -560,18 +609,15 @@ class DatabaseMaintenanceService
                     continue;
                 }
 
-// printf("---- [%d] %s ; from: %s ; patch: %s; to:%s\n", __LINE__, $classname, $from, $patch->get_release(), $to);
-// printf("---- [%d]\n", __LINE__);
                 // if patch is older than current install
                 if (version::lte($patch->get_release(), $from)) {
                     continue;
                 }
-// printf("---- [%d]\n", __LINE__);
+
                 // if patch is new than current target
                 if (version::gt($patch->get_release(), $to)) {
                     continue;
                 }
-// printf("---- [%d]\n", __LINE__);
 
                 $n = 0;
                 do {
@@ -591,7 +637,7 @@ class DatabaseMaintenanceService
 
         // disable mail
         $this->app['swiftmailer.transport'] = null;
-// var_dump($list_patches);
+
         foreach ($list_patches as $patch) {
 
             $output->writeln(sprintf(" - patch \"%s\" (release %s) should be applied", get_class($patch), $patch->get_release()));
