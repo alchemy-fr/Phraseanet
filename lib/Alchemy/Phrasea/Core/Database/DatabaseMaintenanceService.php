@@ -486,7 +486,7 @@ class DatabaseMaintenanceService
         }
 
         foreach ($correct_table['fields'] as $f_name => $expr) {
-            $alter[] = "ALTER TABLE `" . $table['name'] . "` ADD `$f_name` " . $correct_table['fields'][$f_name];
+            $alter[] = "ALTER TABLE `" . $table['name'] . "` ADD `$f_name` " . $expr['expr'];
         }
 
         $tIndex = [];
