@@ -97,7 +97,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
 
         /** @var  Request $request */
         foreach ($requestResult as $request) {
-            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('http://webhook.com/webhook/'."#".$deliveryId, $request->getUri());
             $this->assertArrayHasKey('Content-Type', $request->getHeaders());
             $this->assertContains('application/json', $request->getHeader('Content-Type'));
