@@ -109,7 +109,7 @@ class LoginController extends Controller
             'current_url' => $request->getUri(),
             'flash_types' => $this->app->getAvailableFlashTypes(),
             'recaptcha_display' => $this->app->isCaptchaRequired(),
-            'recaptcha_enabled' => $conf->get(['registry', 'webservices', 'captchas-enabled']),
+            'recaptcha_enabled' => ($conf->get(['registry', 'webservices', 'captcha-provider']) != 'none') ? true : false,
             'unlock_usr_id' => $this->app->getUnlockAccountData(),
             'guest_allowed' => $this->app->isGuestAllowed(),
             'register_enable' => $this->getRegistrationManager()->isRegistrationEnabled(),
@@ -190,7 +190,10 @@ class LoginController extends Controller
 
             $provider = null;
 
-            if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+            if(
+                (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+            ) {
                 $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
 
                 $dateError = new FormError("");
@@ -433,7 +436,10 @@ class LoginController extends Controller
                 $form->handleRequest($request);
                 $requestData = $request->request->all();
 
-                if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+                if(
+                    (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                    (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+                ) {
                     $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
 
                     $dataError = new FormError("");

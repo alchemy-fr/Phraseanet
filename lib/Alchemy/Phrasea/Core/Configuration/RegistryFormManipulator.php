@@ -151,7 +151,7 @@ class RegistryFormManipulator
             'webservices'  => [
                 'google-charts-enabled' => true,
                 'geonames-server' => 'https://geonames.alchemyasp.com/',
-                'captchas-enabled' => false,
+                'captcha-provider' => 'none',
                 'recaptcha-public-key' => '',
                 'recaptcha-private-key' => '',
                 'trials-before-display' => 5,
