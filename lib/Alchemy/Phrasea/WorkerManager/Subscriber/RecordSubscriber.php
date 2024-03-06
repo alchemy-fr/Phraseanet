@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
@@ -27,6 +28,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordSubscriber implements EventSubscriberInterface
 {
+    use DataboxLoggerAware;
+
     /** @var MessagePublisher $messagePublisher */
     private $messagePublisher;
 
@@ -115,6 +118,9 @@ class RecordSubscriber implements EventSubscriberInterface
         /** @var WorkerRunningJob $workerRunningJob */
         $workerRunningJob = $repoWorker->find($event->getWorkerJobId());
 
+        $databox = $this->getApplicationBox()->get_databox($event->getRecord()->getDataboxId());
+        $record = $databox->getRecordRepository()->find($event->getRecord()->getRecordId());
+
         if ($workerRunningJob) {
             $em->beginTransaction();
             try {
@@ -133,6 +139,8 @@ class RecordSubscriber implements EventSubscriberInterface
             catch (Exception $e) {
                 $em->rollback();
             }
+
+            $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $event->getSubdefName(), \Session_Logger::EVENT_SUBDEFCREATION, new \DateTime('now'), WorkerRunningJob::ERROR);
         }
 
         $this->messagePublisher->publishRetryMessage(

@@ -87,6 +87,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
                 $app['elasticsearch.indexer']
             ))
                 ->setApplicationBox($app['phraseanet.appbox'])
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ;
         }));
 

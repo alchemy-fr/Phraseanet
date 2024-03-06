@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 
 class Session_Logger
 {
@@ -38,6 +39,7 @@ class Session_Logger
     const EVENT_STATUS = 'status';
     const EVENT_SUBSTITUTE = 'substit';
     const EVENT_VALIDATE = 'validate';
+    const EVENT_SUBDEFCREATION = 'subdefCreation';
 
     /**
      *
@@ -63,16 +65,17 @@ class Session_Logger
         return $this->id;
     }
 
-    public function log(record_adapter $record, $action, $final, $comment, $coll_id_from=null)
+    public function log(record_adapter $record, $action, $final, $comment, $coll_id_from = null, DateTime $date = null)
     {
         $sql = 'INSERT INTO log_docs
           (id, log_id, date, record_id, coll_id_from, coll_id, action, final, comment)
-          VALUES (null, :log_id, NOW(), :record_id, :coll_id_from, :coll_id, :action, :final, :comm)';
+          VALUES (null, :log_id, :date, :record_id, :coll_id_from, :coll_id, :action, :final, :comm)';
 
         $stmt = $this->databox->get_connection()->prepare($sql);
 
         $params = [
             ':log_id'    => $this->get_id(),
+            ':date'      => ($date == null ) ? (new \DateTime('now'))->format(DATE_ATOM) : $date->format(DATE_ATOM),
             ':record_id' => $record->getRecordId(),
             ':coll_id_from' => $coll_id_from,
             ':coll_id' => $record->getCollectionId(),
@@ -268,5 +271,56 @@ class Session_Logger
         }
 
         return;
+    }
+
+    public function initOrUpdateLogDocsFromWorker(\record_adapter $record, \databox $databox, WorkerRunningJob $workerRunningJob, $subdefName, $action, DateTime $finished = null, $status = WorkerRunningJob::RUNNING)
+    {
+        $whereClause = ' date=:date AND record_id=:record_id AND action=:action AND final=:final';
+
+        $sqlCount = 'SELECT COUNT(id) as n FROM log_docs WHERE ' . $whereClause;
+
+        $params = [
+            ':date'        => $workerRunningJob->getCreated()->format('Y-m-d H:i:s'),
+            ':record_id'   => $record->getRecordId(),
+            ':action'      => $workerRunningJob->getWork(),
+            ':final'       => $subdefName
+        ];
+
+        $stmt = $databox->get_connection()->prepare($sqlCount);
+        $stmt->execute($params);
+        $count = $stmt->fetchColumn(0);
+        $stmt->closeCursor();
+
+        $comment = json_encode([
+            'finished' => empty($finished) ? '' : $finished->format('Y-m-d H:i:s'),
+            'duration' => empty($finished) ? '' : $finished->getTimestamp() - $workerRunningJob->getCreated()->getTimestamp() ,
+            'status'   => $status
+        ]);
+
+        if ($count > 0) {
+            $sql = "UPDATE log_docs SET comment=:comment WHERE " . $whereClause;
+            $stmt = $databox->get_connection()->prepare($sql);
+
+            $p = [
+                ':comment' =>  $comment,
+                ':date'        => $workerRunningJob->getCreated()->format('Y-m-d H:i:s'),
+                ':record_id'   => $record->getRecordId(),
+                ':action'      => $workerRunningJob->getWork(),
+                ':final'       => $subdefName
+            ];
+
+            $stmt->execute($p);
+            $stmt->closeCursor();
+        } else {
+            // insert to log_docs
+            $this->log(
+                $record,
+                $action,
+                $subdefName,
+                $comment,
+                null,
+                $workerRunningJob->getCreated()
+            );
+        }
     }
 }
