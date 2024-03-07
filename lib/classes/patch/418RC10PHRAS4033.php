@@ -58,7 +58,7 @@ class patch_418RC10PHRAS4033 implements patchInterface
 
     private function patch_databox(databox $databox, Application $app)
     {
-        $sql = "ALTER TABLE log_docs CHANGE action action ENUM('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','subdefCreation','') CHARACTER SET ascii COLLATE ascii_bin NOT NULL";
+        $sql = "ALTER TABLE log_docs CHANGE action action ENUM('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','subdefCreation','writeMetadatas','') CHARACTER SET ascii COLLATE ascii_bin NOT NULL";
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

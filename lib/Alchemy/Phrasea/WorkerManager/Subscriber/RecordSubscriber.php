@@ -282,6 +282,11 @@ class RecordSubscriber implements EventSubscriberInterface
                 catch (Exception $e) {
                     $em->rollback();
                 }
+
+                $databox = $this->getApplicationBox()->get_databox($event->getRecord()->getDataboxId());
+                $record = $databox->getRecordRepository()->find($event->getRecord()->getRecordId());
+
+                $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $event->getSubdefName(), \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
             }
 
             $this->messagePublisher->publishRetryMessage(

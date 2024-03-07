@@ -40,6 +40,7 @@ class Session_Logger
     const EVENT_SUBSTITUTE = 'substit';
     const EVENT_VALIDATE = 'validate';
     const EVENT_SUBDEFCREATION = 'subdefCreation';
+    const EVENT_WRITEMETADATAS = 'writeMetadatas';
 
     /**
      *

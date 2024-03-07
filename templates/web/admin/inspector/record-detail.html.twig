@@ -134,6 +134,9 @@
                     {% elseif logDoc.action == 'subdefCreation' %}
                         {% set comment = logDoc.comment | join(', ') | json_to_array %}
                         {% trans with {'%subdefName%' : logDoc.final | join(', '), '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}create subdefinition during %duration% -- status %status%{% endtrans %}
+                    {% elseif logDoc.action == 'writeMetadatas' %}
+                        {% set comment = logDoc.comment | join(', ') | json_to_array %}
+                        {% trans with {'%subdefName%' : logDoc.final | join(', '), '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}write metadata during %duration% -- status %status%{% endtrans %}
                     {% elseif logDoc.action == 'delete' %}
                         {{ 'report::supression du document' | trans }}
                     {% elseif logDoc.action == 'add' %}

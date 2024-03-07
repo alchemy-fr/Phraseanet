@@ -101,6 +101,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
                 ->setApplicationBox($app['phraseanet.appbox'])
                 ->setDispatcher($app['dispatcher'])
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ;
         }));
 
