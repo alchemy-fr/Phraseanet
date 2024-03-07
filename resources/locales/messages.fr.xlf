@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2024-03-06T10:58:50Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2024-03-07T15:15:10Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -15080,8 +15080,8 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="3c6437e45ebaf5f63fbae739087ecb91b58c0503" resname="report:: par %user_infos%" approved="yes">
         <source>report:: par %user_infos%</source>
         <target state="translated">par %user_infos%</target>
-        <jms:reference-file line="59">prod/preview/short_history.html.twig</jms:reference-file>
-        <jms:reference-file line="148">admin/inspector/record-detail.html.twig</jms:reference-file>
+        <jms:reference-file line="62">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="151">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="45882e1904416b4c1e53b2d47a6f192e4c0e1c14" resname="report:: pays" approved="yes">
         <source>report:: pays</source>
@@ -15227,8 +15227,8 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="b83d61a430562aa03216506b7b3c2d0ba7881112" resname="report::Modification du document -- je ne me souviens plus de quoi..." approved="yes">
         <source>report::Modification du document -- je ne me souviens plus de quoi...</source>
         <target state="translated">Action inconnue sur le document</target>
-        <jms:reference-file line="53">prod/preview/short_history.html.twig</jms:reference-file>
-        <jms:reference-file line="142">admin/inspector/record-detail.html.twig</jms:reference-file>
+        <jms:reference-file line="56">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="145">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="04141c12be7f11b46805e97c0f399934ed84d614" resname="report::Nombre de connexions" approved="yes">
         <source>report::Nombre de connexions</source>
@@ -15288,8 +15288,8 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="002c70f6ab109c3160dc534f93c03d56b342cf10" resname="report::ajout du documentt" approved="yes">
         <source>report::ajout du documentt</source>
         <target state="translated">Ajout du document</target>
-        <jms:reference-file line="51">prod/preview/short_history.html.twig</jms:reference-file>
-        <jms:reference-file line="140">admin/inspector/record-detail.html.twig</jms:reference-file>
+        <jms:reference-file line="54">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="143">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de28bcec9376030978303c519bd3d5ef776ea7bd" resname="report::fonction" approved="yes">
         <source>report::fonction</source>
@@ -15309,8 +15309,8 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="3fc0f2a0d459b0ae67244939abeda1868f5b1a51" resname="report::supression du document" approved="yes">
         <source>report::supression du document</source>
         <target state="translated">Suppression du document</target>
-        <jms:reference-file line="49">prod/preview/short_history.html.twig</jms:reference-file>
-        <jms:reference-file line="138">admin/inspector/record-detail.html.twig</jms:reference-file>
+        <jms:reference-file line="52">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="141">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="386c42eb4d167d87be7f7f68faf1aafce1be237e" resname="reportage" approved="yes">
         <source>reportage</source>
@@ -16639,6 +16639,16 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <source>write metadata in original document</source>
         <target state="translated">Ecrire les métadonnées dans le document original</target>
         <jms:reference-file line="422">web/admin/subdefs.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="17f54b8f56ddf4101b939d608d7c248fffa831ae" resname="write metadatas during %duration% -- status %status%">
+        <source>write metadatas during %duration% -- status %status%</source>
+        <target state="new">write metadatas during %duration% -- status %status%</target>
+        <jms:reference-file line="139">admin/inspector/record-detail.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cffe504be8a027b87d76f2ea5b60ac8a73cc9971" resname="write metadatas: %subdefName% start at %started%  during %duration% -- status %status%">
+        <source>write metadatas: %subdefName% start at %started%  during %duration% -- status %status%</source>
+        <target state="new">write metadatas: %subdefName% start at %started%  during %duration% -- status %status%</target>
+        <jms:reference-file line="50">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
         <source>wz:block_title:my_baskets</source>

@@ -47,7 +47,7 @@
             {% trans with {'%subdefName%' : done['final'] | join(', '), '%started%' : hour, '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%{% endtrans %}
         {% elseif action == 'writeMetadatas' %}
             {% set comment = done['comment'] | join(', ') | json_to_array %}
-            {% trans with {'%subdefName%' : done['final'] | join(', '), '%started%' : hour, '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}write metadata: %subdefName% start at %started%  during %duration% -- status %status%{% endtrans %}
+            {% trans with {'%subdefName%' : done['final'] | join(', '), '%started%' : hour, '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}write metadatas: %subdefName% start at %started%  during %duration% -- status %status%{% endtrans %}
         {% elseif action == 'delete' %}
           {{ 'report::supression du document' | trans }}
         {% elseif action == 'add' %}
