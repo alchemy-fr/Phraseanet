@@ -116,10 +116,12 @@ class Controller
 
     public function setSessionFormToken($formName)
     {
-        $randomValue = bin2hex(random_bytes(35));
-        $this->app['session']->set($formName.'_token', $randomValue);
+        if (!$this->app['session']->has($formName.'_token')) {
+            $randomValue = bin2hex(random_bytes(35));
+            $this->app['session']->set($formName.'_token', $randomValue);
 
-        return $randomValue;
+            return $randomValue;
+        }
     }
 
     public function getSessionFormToken($formName)
