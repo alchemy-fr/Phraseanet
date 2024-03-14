@@ -429,6 +429,7 @@
         $("button.subtitute-lazaret", scope).bind('click', function (event) {
             const that = $(this);
             const $elementRow = that.closest(".lazaretElement");
+            var container = $(this).closest('.wrapper-item');
             if(!$elementRow.attr("hasSelected")) {
                 return false;
             }
