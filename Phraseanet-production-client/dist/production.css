@@ -4456,7 +4456,7 @@ input.checkbox {
 .history-add {
   background-repeat: no-repeat;
   background-position: 3px center;
-  background-size: 24px;
+  background-size: 20px;
   padding-left: 37px;
   min-height: 16px;
 }
@@ -4683,7 +4683,7 @@ td span.text_block_bold {
   .history-edit,
   .history-validate,
   .history-push {
-    background-size: 16px 16px;
+    background-size: 20px 20px;
   }
 }
 
