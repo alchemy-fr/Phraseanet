@@ -240,7 +240,7 @@ class WebhookWorker implements WorkerInterface
 
             // make delivery Id as index
             $requests[$delivery->getId()] = new Request(
-                'GET',
+                'POST',
                 $uniqueUrl,
                 ['Content-Type' => 'application/json'],
                 json_encode($data)

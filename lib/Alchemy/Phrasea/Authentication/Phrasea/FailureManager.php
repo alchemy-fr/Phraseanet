@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
+use GuzzleHttp\Client;
 use ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -41,7 +42,10 @@ class FailureManager
      */
     private $trials;
 
-    public function __construct(AuthFailureRepository $repo, EntityManager $em, ReCaptcha $captcha, $trials)
+    private $captchaProvider;
+    private $hCaptchaSecret;
+
+    public function __construct(AuthFailureRepository $repo, EntityManager $em, ReCaptcha $captcha, $trials, $captchaProvider = false, $hCaptchaSecret = '')
     {
         $this->captcha = $captcha;
         $this->em = $em;
@@ -52,6 +56,8 @@ class FailureManager
         }
 
         $this->trials = (int)$trials;
+        $this->captchaProvider = $captchaProvider;
+        $this->hCaptchaSecret = $hCaptchaSecret;
     }
 
     /**
@@ -136,20 +142,49 @@ class FailureManager
     public function checkFailures($username, Request $request)
     {
         $failures = $this->repository->findLockedFailuresMatching($username, $request->getClientIp());
-        $captchaResp = $request->get('g-recaptcha-response');
 
         if (0 === count($failures)) {
             return $this;
         }
 
         if ($this->trials <= count($failures)) {
-            if ($captchaResp === null) {
-                throw new RequireCaptchaException('Too many failures, require captcha');
-            }
+            if ($this->captchaProvider == 'hCaptcha') {
+                $captchaResp = $request->get('h-captcha-response');
 
-            $response = $this->captcha->verify($captchaResp, $request->getClientIp());
-            if (!$response->isSuccess()) {
-                throw new RequireCaptchaException('Please fill captcha');
+                if ($captchaResp === null) {
+                    throw new RequireCaptchaException('Too many failures, require captcha');
+                }
+
+                $client = new Client();
+                $response = $client->post('https://hcaptcha.com/siteverify',[
+                        'form_params' => [
+                            'response' => $captchaResp,
+                            'secret'   => $this->hCaptchaSecret
+                        ]
+                    ]
+                );
+
+                if ($response->getStatusCode() !== 200) {
+                    throw new RequireCaptchaException($response->getReasonPhrase());
+                }
+
+                $body = $response->getBody()->getContents();
+
+                $body = json_decode($body, true);
+
+                if (!$body['success']) {
+                    throw new RequireCaptchaException('Please fill captcha');
+                }
+            } else {
+                $captchaResp = $request->get('g-recaptcha-response');
+                if ($captchaResp === null) {
+                    throw new RequireCaptchaException('Too many failures, require captcha');
+                }
+
+                $response = $this->captcha->verify($captchaResp, $request->getClientIp());
+                if (!$response->isSuccess()) {
+                    throw new RequireCaptchaException('Please fill captcha');
+                }
             }
 
             foreach ($failures as $failure) {
