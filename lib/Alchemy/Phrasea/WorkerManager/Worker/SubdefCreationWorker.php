@@ -3,9 +3,11 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\SubdefGenerator;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\WorkerManager\Event\StoryCreateCoverEvent;
@@ -21,6 +23,7 @@ use Throwable;
 class SubdefCreationWorker implements WorkerInterface
 {
     use ApplicationBoxAware;
+    use DataboxLoggerAware;
 
     private $subdefGenerator;
 
@@ -97,6 +100,11 @@ class SubdefCreationWorker implements WorkerInterface
         }
 
         // here we can work
+
+        /** @var WorkerRunningJob $workerRunningJob */
+        $workerRunningJob = $this->repoWorker->find($workerRunningJobId);
+
+        $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_SUBDEFCREATION);
 
         $this->subdefGenerator->setLogger($this->logger);
 
@@ -193,6 +201,7 @@ class SubdefCreationWorker implements WorkerInterface
         // tell that we have finished to work on this file (=unlock)
         $this->repoWorker->markFinished($workerRunningJobId);
 
+        $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_SUBDEFCREATION, new \DateTime('now'), WorkerRunningJob::FINISHED);
     }
 
     public static function checkIfFirstChild(\record_adapter $story, \record_adapter $record)

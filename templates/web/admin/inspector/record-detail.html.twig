@@ -131,6 +131,12 @@
                         {% set dest = logDoc.comment | join(', ') %}
                         {% set content = logDoc.final | join(', ') %}
                         {% trans with {'%dest%' : dest, '%content%' : content} %}Envoi par ftp a %dest% de %content%{% endtrans %}
+                    {% elseif logDoc.action == 'subdefCreation' %}
+                        {% set comment = logDoc.comment | join(', ') | json_to_array %}
+                        {% trans with {'%subdefName%' : logDoc.final | join(', '), '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}create subdefinition during %duration% -- status %status%{% endtrans %}
+                    {% elseif logDoc.action == 'writeMetadatas' %}
+                        {% set comment = logDoc.comment | join(', ') | json_to_array %}
+                        {% trans with {'%subdefName%' : logDoc.final | join(', '), '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}write metadatas during %duration% -- status %status%{% endtrans %}
                     {% elseif logDoc.action == 'delete' %}
                         {{ 'report::supression du document' | trans }}
                     {% elseif logDoc.action == 'add' %}
