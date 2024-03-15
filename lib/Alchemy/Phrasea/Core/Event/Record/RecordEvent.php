@@ -16,10 +16,12 @@ use Symfony\Component\EventDispatcher\Event;
 abstract class RecordEvent extends Event
 {
     private $record;
+    private $initiatorId;
 
-    public function __construct(RecordInterface $record)
+    public function __construct(RecordInterface $record, $initiatorId = null)
     {
         $this->record = $record;
+        $this->initiatorId = $initiatorId;
     }
 
     /**
@@ -28,5 +30,10 @@ abstract class RecordEvent extends Event
     public function getRecord()
     {
         return $this->record;
+    }
+
+    public function getInitiatorId()
+    {
+        return $this->initiatorId;
     }
 }

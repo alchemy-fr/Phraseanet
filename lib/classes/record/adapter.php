@@ -1789,7 +1789,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story));
+        $initiatorId = null;
+        if ($app->getAuthenticatedUser() != null) {
+            $initiatorId = $app->getAuthenticatedUser()->getId();
+        }
+
+        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story, $initiatorId));
 
         return $story;
     }
@@ -1902,7 +1907,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $record->insertTechnicalDatas($app['mediavorus']);
 
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+            $initiatorId = null;
+            if ($app->getAuthenticatedUser() != null) {
+                $initiatorId = $app->getAuthenticatedUser()->getId();
+            }
+
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
         }
 
         return $record;
@@ -1920,8 +1930,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public static function create(collection $collection, Application $app)
     {
         $record = self::_create($collection, $app);
+        $initiatorId = null;
         if($record) {
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+            if ($app->getAuthenticatedUser() != null) {
+                $initiatorId = $app->getAuthenticatedUser()->getId();
+            }
+
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
         }
 
         return $record;
