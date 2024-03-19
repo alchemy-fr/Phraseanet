@@ -85,7 +85,7 @@ CMD []
 # Phraseanet web application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.0.1 as phraseanet-fpm
+FROM alchemyfr/phraseanet-base:1.0.0 as phraseanet-fpm
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
