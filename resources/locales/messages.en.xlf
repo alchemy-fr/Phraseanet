@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2024-03-07T15:14:49Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="363">WorkerManager/Worker/DownloadAsyncWorker.php</jms:reference-file>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="269">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -1647,9 +1647,9 @@
         <target state="translated">Cannot upload zero byte files</target>
         <jms:reference-file line="255">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4ad5a8e4c7c46ccda439dc3545f5fb1930dd9183" resname="Captcha provider">
+      <trans-unit id="4ad5a8e4c7c46ccda439dc3545f5fb1930dd9183" resname="Captcha provider" xml:space="preserve">
         <source>Captcha provider</source>
-        <target state="new">Captcha provider</target>
+        <target state="translated">Captcha provider</target>
         <jms:reference-file line="43">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3428d97e666693a76d4421418e2d952d2ac97b1a" resname="Caption" approved="yes">
@@ -2564,7 +2564,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="154">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -3547,9 +3547,9 @@
         <target state="translated">Get notification when e-mail export fails</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs">
+      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs" xml:space="preserve">
         <source>Get log docs</source>
-        <target state="new">Get log docs</target>
+        <target state="translated">Get log docs</target>
         <jms:reference-file line="53">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index" approved="yes">
@@ -8230,24 +8230,24 @@
         <jms:reference-file line="248">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="249">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
+      <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record" xml:space="preserve">
         <source>admin:: find record</source>
-        <target state="needs-translation">Elasticsearch index</target>
+        <target state="translated">Elasticsearch index</target>
         <jms:reference-file line="60">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ea710439ba655dbc8373345063af19f77548db06" resname="admin:: get record baskets">
+      <trans-unit id="ea710439ba655dbc8373345063af19f77548db06" resname="admin:: get record baskets" xml:space="preserve">
         <source>admin:: get record baskets</source>
-        <target state="needs-translation">Get record baskets</target>
+        <target state="translated">Get record baskets</target>
         <jms:reference-file line="39">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22f791b5bf4b5a0d297d69b0875bd91a9180b8d5" resname="admin:: get record stories">
+      <trans-unit id="22f791b5bf4b5a0d297d69b0875bd91a9180b8d5" resname="admin:: get record stories" xml:space="preserve">
         <source>admin:: get record stories</source>
-        <target state="needs-translation">Get record stories</target>
+        <target state="translated">Get record stories</target>
         <jms:reference-file line="46">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e490ae6a270ee5dbad10e4da6eb29506ffc0365e" resname="admin:: get record subdefs">
+      <trans-unit id="e490ae6a270ee5dbad10e4da6eb29506ffc0365e" resname="admin:: get record subdefs" xml:space="preserve">
         <source>admin:: get record subdefs</source>
-        <target state="needs-translation">Get record's subdefinitions</target>
+        <target state="translated">Get record's subdefinitions</target>
         <jms:reference-file line="32">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8928b007d093643be1ac9cdc5d95aabc08c09a8" resname="admin:: object inspector">
@@ -8255,9 +8255,9 @@
         <target state="translated">Object inspector</target>
         <jms:reference-file line="71">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index">
+      <trans-unit id="ef0175ca2ec2d8bad1ca99780042ef38567abbaf" resname="admin:: record index" xml:space="preserve">
         <source>admin:: record index</source>
-        <target state="needs-translation">Record</target>
+        <target state="translated">Record</target>
         <jms:reference-file line="17">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d5f072ef35c5ea59be512da2f20572a19331730f" resname="admin:: refuser l'acces" approved="yes">
@@ -8906,124 +8906,124 @@
         <jms:reference-file line="487">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="53">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9e75f18ba7036752fcd658dd002c0f48296da912" resname="admin::inspector: api ID">
+      <trans-unit id="9e75f18ba7036752fcd658dd002c0f48296da912" resname="admin::inspector: api ID" xml:space="preserve">
         <source>admin::inspector: api ID</source>
-        <target state="needs-translation">Api ID</target>
+        <target state="translated">Api ID</target>
         <jms:reference-file line="74">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="71de0ea380531f24771c042f88ddbbe9c0918383" resname="admin::inspector: api application type">
+      <trans-unit id="71de0ea380531f24771c042f88ddbbe9c0918383" resname="admin::inspector: api application type" xml:space="preserve">
         <source>admin::inspector: api application type</source>
-        <target state="needs-translation">Type</target>
+        <target state="translated">Type</target>
         <jms:reference-file line="79">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="36e396a8ec1c9973a40a2245200a1548b917ec6b" resname="admin::inspector: api creation date">
+      <trans-unit id="36e396a8ec1c9973a40a2245200a1548b917ec6b" resname="admin::inspector: api creation date" xml:space="preserve">
         <source>admin::inspector: api creation date</source>
-        <target state="needs-translation">Created on</target>
+        <target state="translated">Created on</target>
         <jms:reference-file line="82">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6e2777d86d73172a0fe0c2d062344632c6d5775c" resname="admin::inspector: api modification date">
+      <trans-unit id="6e2777d86d73172a0fe0c2d062344632c6d5775c" resname="admin::inspector: api modification date" xml:space="preserve">
         <source>admin::inspector: api modification date</source>
-        <target state="needs-translation">Modified on</target>
+        <target state="translated">Modified on</target>
         <jms:reference-file line="83">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="89b3632f43e1592824fbf1f823a72b8a6b43af7d" resname="admin::inspector: api name">
+      <trans-unit id="89b3632f43e1592824fbf1f823a72b8a6b43af7d" resname="admin::inspector: api name" xml:space="preserve">
         <source>admin::inspector: api name</source>
-        <target state="needs-translation">Name</target>
+        <target state="translated">Name</target>
         <jms:reference-file line="75">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c79666958ee9bfdb53404e2285c016dd3eb7d57e" resname="admin::inspector: api owner ID">
+      <trans-unit id="c79666958ee9bfdb53404e2285c016dd3eb7d57e" resname="admin::inspector: api owner ID" xml:space="preserve">
         <source>admin::inspector: api owner ID</source>
-        <target state="needs-translation">Owner ID</target>
+        <target state="translated">Owner ID</target>
         <jms:reference-file line="76">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c76e698d2c22335ba4deaacb0aacefa03228440a" resname="admin::inspector: api password granted">
+      <trans-unit id="c76e698d2c22335ba4deaacb0aacefa03228440a" resname="admin::inspector: api password granted" xml:space="preserve">
         <source>admin::inspector: api password granted</source>
-        <target state="needs-translation">Password granted</target>
+        <target state="translated">Password granted</target>
         <jms:reference-file line="78">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="81595985162540d35516df5d75d6fc8774f225fe" resname="admin::inspector: api webhook active">
+      <trans-unit id="81595985162540d35516df5d75d6fc8774f225fe" resname="admin::inspector: api webhook active" xml:space="preserve">
         <source>admin::inspector: api webhook active</source>
-        <target state="needs-translation">Webhook active</target>
+        <target state="translated">Webhook active</target>
         <jms:reference-file line="81">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8553ee4a3a01e7554c7423b6600f98e93b7efd9b" resname="admin::inspector: api webhook url">
+      <trans-unit id="8553ee4a3a01e7554c7423b6600f98e93b7efd9b" resname="admin::inspector: api webhook url" xml:space="preserve">
         <source>admin::inspector: api webhook url</source>
-        <target state="needs-translation">Webhook URL</target>
+        <target state="translated">Webhook URL</target>
         <jms:reference-file line="80">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7f34bddf3eb110c2bcebff3f64c21515c9046f51" resname="admin::inspector: basket archive">
+      <trans-unit id="7f34bddf3eb110c2bcebff3f64c21515c9046f51" resname="admin::inspector: basket archive" xml:space="preserve">
         <source>admin::inspector: basket archive</source>
-        <target state="needs-translation">Basket archived</target>
+        <target state="translated">Basket archived</target>
         <jms:reference-file line="40">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0a5d405fdf79745f82bcdf87f222d326a025bb63" resname="admin::inspector: basket creation date">
+      <trans-unit id="0a5d405fdf79745f82bcdf87f222d326a025bb63" resname="admin::inspector: basket creation date" xml:space="preserve">
         <source>admin::inspector: basket creation date</source>
-        <target state="needs-translation">Created on</target>
+        <target state="translated">Created on</target>
         <jms:reference-file line="38">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c3d437b992adce000cc35b7ada609b3163a3fcc3" resname="admin::inspector: basket id">
+      <trans-unit id="c3d437b992adce000cc35b7ada609b3163a3fcc3" resname="admin::inspector: basket id" xml:space="preserve">
         <source>admin::inspector: basket id</source>
-        <target state="needs-translation">Basket ID</target>
+        <target state="translated">Basket ID</target>
         <jms:reference-file line="35">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="afeb06baa4fd425a47d6012a8341aaf08b926b8b" resname="admin::inspector: basket modification date">
+      <trans-unit id="afeb06baa4fd425a47d6012a8341aaf08b926b8b" resname="admin::inspector: basket modification date" xml:space="preserve">
         <source>admin::inspector: basket modification date</source>
-        <target state="needs-translation">Modified on</target>
+        <target state="translated">Modified on</target>
         <jms:reference-file line="39">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3d19103b83559254b3f4f6c105afb6e05c6f4ecb" resname="admin::inspector: basket name">
+      <trans-unit id="3d19103b83559254b3f4f6c105afb6e05c6f4ecb" resname="admin::inspector: basket name" xml:space="preserve">
         <source>admin::inspector: basket name</source>
-        <target state="needs-translation">Name</target>
+        <target state="translated">Name</target>
         <jms:reference-file line="36">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e0741c67620905b912cf6415d0d8de846eac5e44" resname="admin::inspector: basket user id">
+      <trans-unit id="e0741c67620905b912cf6415d0d8de846eac5e44" resname="admin::inspector: basket user id" xml:space="preserve">
         <source>admin::inspector: basket user id</source>
-        <target state="needs-translation">Owner ID</target>
+        <target state="translated">Owner ID</target>
         <jms:reference-file line="37">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="46f83c2a60bf13296db69944899dc0314f5f23fa" resname="admin::inspector: creation date">
+      <trans-unit id="46f83c2a60bf13296db69944899dc0314f5f23fa" resname="admin::inspector: creation date" xml:space="preserve">
         <source>admin::inspector: creation date</source>
-        <target state="needs-translation">Created on</target>
+        <target state="translated">Created on</target>
         <jms:reference-file line="6">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c2d3cd4d3851f4979826938bd3d832615c92355" resname="admin::inspector: modification date">
+      <trans-unit id="3c2d3cd4d3851f4979826938bd3d832615c92355" resname="admin::inspector: modification date" xml:space="preserve">
         <source>admin::inspector: modification date</source>
-        <target state="needs-translation">Modified on</target>
+        <target state="translated">Modified on</target>
         <jms:reference-file line="7">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f73a9f9948192f7486e4de82393608feba144bf0" resname="admin::inspector: path">
+      <trans-unit id="f73a9f9948192f7486e4de82393608feba144bf0" resname="admin::inspector: path" xml:space="preserve">
         <source>admin::inspector: path</source>
-        <target state="needs-translation">Path</target>
+        <target state="translated">Path</target>
         <jms:reference-file line="5">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="32be8001a20977dcbf26841272d1dd727d7e5eb3" resname="admin::inspector: story creation date">
+      <trans-unit id="32be8001a20977dcbf26841272d1dd727d7e5eb3" resname="admin::inspector: story creation date" xml:space="preserve">
         <source>admin::inspector: story creation date</source>
-        <target state="needs-translation">Created on</target>
+        <target state="translated">Created on</target>
         <jms:reference-file line="69">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="90a870b45584e1297fed875e00fb85d07847bb07" resname="admin::inspector: story id">
+      <trans-unit id="90a870b45584e1297fed875e00fb85d07847bb07" resname="admin::inspector: story id" xml:space="preserve">
         <source>admin::inspector: story id</source>
-        <target state="needs-translation">Story ID (recordId)</target>
+        <target state="translated">Story ID (recordId)</target>
         <jms:reference-file line="67">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9c1b6cd2336cd2a703826e33518314529cf377d7" resname="admin::inspector: story modification date">
+      <trans-unit id="9c1b6cd2336cd2a703826e33518314529cf377d7" resname="admin::inspector: story modification date" xml:space="preserve">
         <source>admin::inspector: story modification date</source>
-        <target state="needs-translation">Modified on</target>
+        <target state="translated">Modified on</target>
         <jms:reference-file line="70">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="04a18189386265d1929218436c45ae3b5f8899ba" resname="admin::inspector: story title">
+      <trans-unit id="04a18189386265d1929218436c45ae3b5f8899ba" resname="admin::inspector: story title" xml:space="preserve">
         <source>admin::inspector: story title</source>
-        <target state="needs-translation">Title</target>
+        <target state="translated">Title</target>
         <jms:reference-file line="68">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="290343de2510f25e53b2f8362cf30fa82c624079" resname="admin::inspector: subdefname">
+      <trans-unit id="290343de2510f25e53b2f8362cf30fa82c624079" resname="admin::inspector: subdefname" xml:space="preserve">
         <source>admin::inspector: subdefname</source>
-        <target state="needs-translation">Name</target>
+        <target state="translated">Name</target>
         <jms:reference-file line="4">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d00888f0ba59c5f6d6701d852f21b855e473a1b2" resname="admin::inspector:tab api info title">
+      <trans-unit id="d00888f0ba59c5f6d6701d852f21b855e473a1b2" resname="admin::inspector:tab api info title" xml:space="preserve">
         <source>admin::inspector:tab api info title</source>
-        <target state="needs-translation">API information</target>
+        <target state="translated">API information</target>
         <jms:reference-file line="10">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c15d466bd6fc239e124d3d5e0093603af0907c89" resname="admin::inspector:tab record info title">
@@ -10790,13 +10790,13 @@
         <jms:reference-file line="82">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="18">prod/results/infos.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1e2f274dfeb031213895ff0cfa411ccb51f2c14d" resname="create subdefinition during %duration% -- status %status%">
+      <trans-unit id="1e2f274dfeb031213895ff0cfa411ccb51f2c14d" resname="create subdefinition during %duration% -- status %status%" xml:space="preserve">
         <source>create subdefinition during %duration% -- status %status%</source>
-        <target state="new">create subdefinition during %duration% -- status %status%</target>
+        <target state="translated">create subdefinition during %duration% -- status %status%</target>
         <jms:reference-file line="136">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd3d578c7b2dd2dae6a80fe277e646837914aee7" resname="create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%">
-        <source>create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%</source>
+        <source>create subdefinition: %subdefName% start at %started% during %duration% -- status %status%</source>
         <target state="new">create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%</target>
         <jms:reference-file line="47">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
@@ -11413,9 +11413,9 @@
         <target state="translated">Modifications done</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6ea386d4ce8da2ce6144f4f06043c73a0b817c4c" resname="hCaptcha">
+      <trans-unit id="6ea386d4ce8da2ce6144f4f06043c73a0b817c4c" resname="hCaptcha" xml:space="preserve">
         <source>hCaptcha</source>
-        <target state="new">hCaptcha</target>
+        <target state="translated">hCaptcha</target>
         <jms:reference-file line="44">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0bf89031fb0b79dd308305fa96c6e804bd701c06" resname="help::help-search: OR" approved="yes">
@@ -11961,9 +11961,9 @@
         <jms:reference-file line="54">web/admin/statusbit.html.twig</jms:reference-file>
         <jms:reference-file line="55">web/admin/statusbit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="71f8e7976e4cbc4561c9d62fb283e7f788202acb" resname="none">
+      <trans-unit id="71f8e7976e4cbc4561c9d62fb283e7f788202acb" resname="none" xml:space="preserve">
         <source>none</source>
-        <target state="new">none</target>
+        <target state="translated">none</target>
         <jms:reference-file line="44">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a81b09d9521597ebcaf0cc8b49ad7a8be8e4cc61" resname="notice" approved="yes">
@@ -12009,9 +12009,9 @@
         <target state="translated">Mark all notifications as "Read"</target>
         <jms:reference-file line="4">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="76530655c84498297daae00f2666315dffb4d690" resname="notification:: subtitle">
+      <trans-unit id="76530655c84498297daae00f2666315dffb4d690" resname="notification:: subtitle" xml:space="preserve">
         <source>notification:: subtitle</source>
-        <target state="needs-translation">Subtitle</target>
+        <target state="translated">Subtitle</target>
         <jms:reference-file line="47">eventsmanager/notify/subtitle.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a2bf7781f39380085a90eba4b183c2f9f886633c" resname="notification:: subtitle &quot;%langues%&quot; generated for &quot;%title%&quot; !">
@@ -12638,7 +12638,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13330,9 +13330,9 @@
         <jms:reference-file line="267">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="516">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8099f23dfddf35cb163b263642eb593d4b1db43e" resname="prod::download: report as spreadsheet">
+      <trans-unit id="8099f23dfddf35cb163b263642eb593d4b1db43e" resname="prod::download: report as spreadsheet" xml:space="preserve">
         <source>prod::download: report as spreadsheet</source>
-        <target state="needs-translation">Excel spreadsheet</target>
+        <target state="translated">Excel spreadsheet</target>
         <jms:reference-file line="157">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ffe867917118d6e90dc4430f499ebd75370c51f1" resname="prod::edit cannot edit multiple stories">
@@ -14425,9 +14425,9 @@ It is possible to place several search areas</target>
         <target state="translated">Selected records belong to different databox and cannot be added to the story</target>
         <jms:reference-file line="40">prod/Story/Create.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b7ee9779ae9a09607df07dcc561ef328d7229de2" resname="prod:videoeditor field filled">
+      <trans-unit id="b7ee9779ae9a09607df07dcc561ef328d7229de2" resname="prod:videoeditor field filled" xml:space="preserve">
         <source>prod:videoeditor field filled</source>
-        <target state="needs-translation">Already subtitled</target>
+        <target state="translated">Already subtitled</target>
         <jms:reference-file line="255">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling" approved="yes">
@@ -14706,9 +14706,9 @@ It is possible to place several search areas</target>
         <jms:reference-file line="296">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="89">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="04aecc4b985c76726f9958fc4fe4c7b7386c74e1" resname="reCaptcha">
+      <trans-unit id="04aecc4b985c76726f9958fc4fe4c7b7386c74e1" resname="reCaptcha" xml:space="preserve">
         <source>reCaptcha</source>
-        <target state="new">reCaptcha</target>
+        <target state="translated">reCaptcha</target>
         <jms:reference-file line="44">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0dea865dcd106d77e52ea8bffe6f87e2add0ac53" resname="recordtype" approved="yes">
@@ -15520,9 +15520,9 @@ It is possible to place several search areas</target>
         <target state="translated">Orderable</target>
         <jms:reference-file line="453">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="935ba3960a6cab0e5ddf8eec01521f37f2d81d2e" resname="subdef.substituable">
+      <trans-unit id="935ba3960a6cab0e5ddf8eec01521f37f2d81d2e" resname="subdef.substituable" xml:space="preserve">
         <source>subdef.substituable</source>
-        <target state="needs-translation">Substituable subdefinition</target>
+        <target state="translated">Substituable subdefinition</target>
         <jms:reference-file line="460">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6288710b74b759d2d67d9e644b586815610f65b" resname="substitution" approved="yes">
@@ -15821,7 +15821,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -16642,7 +16642,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="139">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cffe504be8a027b87d76f2ea5b60ac8a73cc9971" resname="write metadatas: %subdefName% start at %started%  during %duration% -- status %status%">
-        <source>write metadatas: %subdefName% start at %started%  during %duration% -- status %status%</source>
+        <source>write metadatas: %subdefName% start at %started% during %duration% -- status %status%</source>
         <target state="new">write metadatas: %subdefName% start at %started%  during %duration% -- status %status%</target>
         <jms:reference-file line="50">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
