@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## 4.1.8-rc10
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Prod (GUI), Built subdefinition and write metadata now appear in record history 
+ - Os Version bump in Phraseanet container to Debian 11
+ - Minor Fix 
+  
+### Stack (docker compose and helm)
+    
+   - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
+
+## What's Changed
+* PHRAS-4039 Webhook - enrich the webhook answer by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4485
+* PHRAS-4031 Prod - Upload - quarantaine tab - substitued image remains in the interface by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4486
+* PHRAS-4005 - update containers os by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4464
+* PHRAS-4038 : Phraseanet - 403 on two prod pages opened simutaniously by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4484
+* PHRAS-4033 Log_docs - log subdefinition build and write metadata - WorkerRunningJobs by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4482
+* PHRAS-3416 translation for 4.1.8-rc10  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4487
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc9...4.1.8-rc10
+
+
 ## 4.1.8-rc9
 
 ### Update instructions
