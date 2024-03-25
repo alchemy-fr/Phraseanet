@@ -62,7 +62,7 @@ RUN ( \
         && chmod 600 ~/.ssh/id_rsa \
     ) || echo "Skip SSH key"
 
-# RUN ./docker/phraseanet/plugins/console install
+RUN ./docker/phraseanet/plugins/console install
 
 ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 
