@@ -1646,9 +1646,9 @@
         <target state="translated">Kann nicht Null-Byte Dateien hochladen</target>
         <jms:reference-file line="255">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4ad5a8e4c7c46ccda439dc3545f5fb1930dd9183" resname="Captcha provider">
+      <trans-unit id="4ad5a8e4c7c46ccda439dc3545f5fb1930dd9183" resname="Captcha provider" xml:space="preserve">
         <source>Captcha provider</source>
-        <target state="new">Captcha provider</target>
+        <target state="needs-translation">Captcha Provider</target>
         <jms:reference-file line="43">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3428d97e666693a76d4421418e2d952d2ac97b1a" resname="Caption" approved="yes">
@@ -3545,9 +3545,9 @@
         <target state="translated">Eine Nachricht erhalten wenn ein Email Export fehlschlägt</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs">
+      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs" xml:space="preserve">
         <source>Get log docs</source>
-        <target state="new">Get log docs</target>
+        <target state="needs-translation">Log-Dokumente sehen</target>
         <jms:reference-file line="53">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index" approved="yes">
@@ -9024,9 +9024,9 @@
         <target state="translated">API-Informationen</target>
         <jms:reference-file line="10">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c15d466bd6fc239e124d3d5e0093603af0907c89" resname="admin::inspector:tab record info title">
+      <trans-unit id="c15d466bd6fc239e124d3d5e0093603af0907c89" resname="admin::inspector:tab record info title" xml:space="preserve">
         <source>admin::inspector:tab record info title</source>
-        <target state="new">admin::inspector:tab record info title</target>
+        <target state="needs-translation">Datensatz Informationen</target>
         <jms:reference-file line="5">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfc904c9a87afe2d3986041a6bdb542298607880" resname="admin::monitor: bases sur lesquelles l'utilisateur est connecte :" approved="yes">
@@ -10788,14 +10788,14 @@
         <jms:reference-file line="82">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="18">prod/results/infos.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1e2f274dfeb031213895ff0cfa411ccb51f2c14d" resname="create subdefinition during %duration% -- status %status%">
+      <trans-unit id="1e2f274dfeb031213895ff0cfa411ccb51f2c14d" resname="create subdefinition during %duration% -- status %status%" xml:space="preserve">
         <source>create subdefinition during %duration% -- status %status%</source>
-        <target state="new">create subdefinition during %duration% -- status %status%</target>
+        <target state="needs-translation">Dauer %duration% -- Status %status%</target>
         <jms:reference-file line="136">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bd3d578c7b2dd2dae6a80fe277e646837914aee7" resname="create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%">
+      <trans-unit id="bd3d578c7b2dd2dae6a80fe277e646837914aee7" resname="create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%" xml:space="preserve">
         <source>create subdefinition: %subdefName% start at %started% during %duration% -- status %status%</source>
-        <target state="new">create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%</target>
+        <target state="needs-translation">Erzeugung von %subdefName%, gestartet am %started%, mit einer Dauer von %duration% -- Status %status%</target>
         <jms:reference-file line="47">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="751a7df4249ede5126600fd5e11560b3300c8dd5" resname="create_subdef_button_label" approved="yes">
@@ -16370,9 +16370,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">aktualisiert am</target>
         <jms:reference-file line="161">Phrasea/Helper/Prod.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e08ad584358135b5587612d4ec46223c2b09e791" resname="upload:: Copy meta">
+      <trans-unit id="e08ad584358135b5587612d4ec46223c2b09e791" resname="upload:: Copy meta" xml:space="preserve">
         <source>upload:: Copy meta</source>
-        <target state="needs-translation">Die gleichen Metadaten wie der ausgewählte Datensatz hinzufügen</target>
+        <target state="needs-translation">Metadaten des ausgewählten Datensatzes kopieren</target>
         <jms:reference-file line="585">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc34ae0ecd7020a2f3f57afaf84d3fea6c3e9c0f" resname="upload:: Destination (collection) :" approved="yes">
@@ -16631,14 +16631,14 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Die Metadaten in das Originaldokument schreiben</target>
         <jms:reference-file line="422">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17f54b8f56ddf4101b939d608d7c248fffa831ae" resname="write metadatas during %duration% -- status %status%">
+      <trans-unit id="17f54b8f56ddf4101b939d608d7c248fffa831ae" resname="write metadatas during %duration% -- status %status%" xml:space="preserve">
         <source>write metadatas during %duration% -- status %status%</source>
-        <target state="new">write metadatas during %duration% -- status %status%</target>
+        <target state="needs-translation">Dauer %duration% -- Status %status%</target>
         <jms:reference-file line="139">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cffe504be8a027b87d76f2ea5b60ac8a73cc9971" resname="write metadatas: %subdefName% start at %started%  during %duration% -- status %status%">
+      <trans-unit id="cffe504be8a027b87d76f2ea5b60ac8a73cc9971" resname="write metadatas: %subdefName% start at %started%  during %duration% -- status %status%" xml:space="preserve">
         <source>write metadatas: %subdefName% start at %started% during %duration% -- status %status%</source>
-        <target state="new">write metadatas: %subdefName% start at %started%  during %duration% -- status %status%</target>
+        <target state="needs-translation">Schreiben der Metadaten in: %subdefName% , gestartet am %started% , mit einer Dauer von %duration% -- Status %status%</target>
         <jms:reference-file line="50">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
