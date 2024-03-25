@@ -317,7 +317,7 @@ class V1Controller extends Controller
                 'description' => $conf->get(['registry', 'general', 'description']),
                 'httpServer' => [
                     'phpTimezone' => ini_get('date.timezone'),
-                    'siteId' => $conf->get(['main', 'key']),
+                    'instanceId' => $conf->get(['main', 'instance_id']),
                     'defaultLanguage' => $conf->get(['languages', 'default']),
                     'allowIndexing' => $conf->get(['registry', 'general', 'allow-indexation']),
                     'modes' => [
@@ -338,7 +338,7 @@ class V1Controller extends Controller
                     'googleAnalyticsId' => $conf->get(['registry', 'general', 'analytics']),
                     'i18nWebService'    => $conf->get(['registry', 'webservices', 'geonames-server']),
                     'recaptacha'        => [
-                        'active'     => $conf->get(['registry', 'webservices', 'captchas-enabled']),
+                        'active'     => ($conf->get(['registry', 'webservices', 'captcha-provider'])) != 'none' ? true : false,
                         'publicKey'  => $conf->get(['registry', 'webservices', 'recaptcha-public-key']),
                         'privateKey' => $conf->get(['registry', 'webservices', 'recaptcha-private-key']),
                     ],

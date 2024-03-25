@@ -1,5 +1,82 @@
 # CHANGELOG
 
+## 4.1.8-rc10
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Prod (GUI), Built subdefinition and write metadata now appear in record history 
+ - Os Version bump in Phraseanet container to Debian 11
+ - Minor Fix 
+  
+### Stack (docker compose and helm)
+    
+   - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
+
+## What's Changed
+* PHRAS-4039 Webhook - enrich the webhook answer by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4485
+* PHRAS-4031 Prod - Upload - quarantaine tab - substitued image remains in the interface by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4486
+* PHRAS-4005 - update containers os by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4464
+* PHRAS-4038 : Phraseanet - 403 on two prod pages opened simutaniously by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4484
+* PHRAS-4033 Log_docs - log subdefinition build and write metadata - WorkerRunningJobs by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4482
+* PHRAS-3416 translation for 4.1.8-rc10  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4487
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc9...4.1.8-rc10
+
+
+## 4.1.8-rc9
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Prod GUI, displayed facets improvements
+ - Fix session duration in redis 
+ - Object inspector improvement
+ - Fix collation for MYSQL8
+  
+### Stack (docker compose and helm)
+    
+   - Add a new docker compose configuration  files `docker-compose-alternatives.yml `to extend testing capabilities
+   - Add mysql8 profiles in docker-compose, for alternatives SGBD for testing.
+
+## What's Changed
+* PHRAS-3975 : Prod - Facets - Facets' values are truncated at the 20th character-extend by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4459
+* PHRAS-4011 : Moving cmd from console to setup - system:clear-cache system:clear-session by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4460
+* PHRAS-4000 : Write meta in subdefinition - DPI define in subdefinition setting is not written by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4461
+* PHRAS-4012 : bin/console records:writemetadatas by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4463
+* PHRAS-4019: Session expires with the php default value by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4466
+* PHRAS-4022 setup optim by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4467
+* PHRAS-4018: admin - object inspector - more informations about a record by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4465
+* PHRAS-4018_object_inspector_translate by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4468
+* PHRAS-4024: worker  - job in error - filling finished column by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4469
+* PHRAS-4025_RecordsActionsWorker-setfield by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4470
+* PHRAS-4019: fix destroy redis session handler by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4471
+* PHRAS-4021: Api - migration script - instance_id - monitor endpoint improvement by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4472
+* PHRAS-4028 Emited webhook content-type application/json by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4474
+* PHRAS-4026 : js error on "change password" by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4475
+* PHRAS-4018: admin inspector log_docs by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4476
+* PHRAS-4010 Add mysql8 as alternative datastore by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4477
+* PHRAS-4010 Fix collation with mysql8  by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4479
+* PHRAS-4028 webhook in POST by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4480
+* PHRAS-4023 hcaptcha in Phraseanet by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4473
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc8...4.1.8-rc9
+
+
 ## 4.1.8-rc8
 
 ### Update instructions

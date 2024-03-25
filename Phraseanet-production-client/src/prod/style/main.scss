@@ -160,6 +160,14 @@
     background-image: url('#{$iconsPath}ppen_history.png');
 }
 
+.history-subdefCreation {
+    background-image: url('#{$iconsPath}subdefCreation.png');
+}
+
+.history-writeMetadatas {
+    background-image: url('#{$iconsPath}writeMetadatas.png');
+}
+
 .history-validate {
     background-image: url('#{$iconsPath}basket_validation.png');
 }
@@ -186,6 +194,8 @@
     background-image: url('#{$iconsPath}add.png');
 }*/
 
+.history-writeMetadatas,
+.history-subdefCreation,
 .history-collection,
 .history-status,
 .history-print,
@@ -200,7 +210,7 @@
 .history-add {
     background-repeat: no-repeat;
     background-position: 3px center;
-    background-size: 24px;
+    background-size: 20px;
     padding-left: 37px;
     min-height: 16px;
 }
@@ -401,6 +411,8 @@ td span.text_block_bold {
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
     only screen and (-o-min-device-pixel-ratio: 13/10),
     only screen and (min-resolution: 120dpi) {
+    .history-writeMetadatas,
+    .history-subdefCreation,
     .history-collection,
     .history-status,
     .history-print,
@@ -412,7 +424,7 @@ td span.text_block_bold {
     .history-edit,
     .history-validate,
     .history-push {
-        background-size: 16px 16px;
+        background-size: 20px 20px;
     }
 }
 .humane.humane-libnotify-info.humane-large {

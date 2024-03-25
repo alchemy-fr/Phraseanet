@@ -26,6 +26,7 @@ class PhraseanetExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFilter('sort_collections', array(CollectionHelper::class, 'sort')),
             new \Twig_SimpleFilter('date_duration', array($this, 'getDuration')),
+            new \Twig_SimpleFilter('json_to_array', array($this, 'jsonToArray')),
         );
     }
 
@@ -62,7 +63,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return [
             // change this version when you change JS file to force the navigation to reload js file
-            'assetFileVersion' => 101
+            'assetFileVersion' => 103
         ];
 
     }
@@ -395,6 +396,11 @@ class PhraseanetExtension extends \Twig_Extension
         }
 
         return $ret;
+    }
+
+    public function jsonToArray($string)
+    {
+        return json_decode($string, true);
     }
 
     public function getUserSetting($setting, $default = null)

@@ -242,7 +242,7 @@ class WebhookWorker implements WorkerInterface
             $requests[$delivery->getId()] = new Request(
                 'POST',
                 $uniqueUrl,
-                ['Content-Type' => 'application/vnd.phraseanet.event+json'],
+                ['Content-Type' => 'application/json'],
                 json_encode($data)
             );
         }

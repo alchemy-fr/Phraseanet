@@ -81,3 +81,82 @@
         </tbody>
     </table>
 {% endif %}
+
+{% if type == 'log' %}
+    <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
+        <thead>
+        <th>{{ 'log_docs id'  }}</th>
+        <th>{{ 'Date'}}</th>
+        <th>{{ 'Action'}}</th>
+        <th>{{ 'Final' }}</th>
+        <th>{{ 'Comment' }}</th>
+        </thead>
+        <tbody>
+        {% for logDoc in logDocs %}
+            <tr>
+                <td>{{ logDoc.id }}</td>
+                <td>{{ logDoc.date | date('Y-m-d H:i:s') }}</td>
+                <td>
+                    {% if logDoc.action == 'push' %}
+                        {% set n_user = logDoc.final | length %}
+                        {% trans with {'%n_user%' : n_user } %}report::Push vers %n_user% utilisateurs depuis lapplication box{% endtrans %}
+                    {% elseif logDoc.action == 'validate' %}
+                        {% set n_user = logDoc.final | length %}
+                        {% trans with {'%n_user%' : n_user } %}report::Demande de validation vers %n_user% utilisateurs depuis lapplication box{% endtrans %}
+                    {% elseif logDoc.action == 'edit' %}
+                        {{ 'report::Edition des meta-donnees' | trans }}
+                    {% elseif logDoc.action == 'collection' %}
+                        {% set dest = logDoc.final | join(', ') %}
+                        {% set coll_name = dest|bas_labels(app) %}
+                        {% trans with {'%coll_name%' : coll_name} %}report::Changement de collection vers : %coll_name%{% endtrans %}
+                    {% elseif logDoc.action == 'status' %}
+                        {{ 'report::Edition des status' | trans }}
+                    {% elseif logDoc.action == 'print' %}
+                        {% set format = logDoc.final | join(', ') %}
+                        {% trans with {'%format%' : format} %}report::Impression des formats : %format%{% endtrans %}
+                    {% elseif logDoc.action == 'substit' %}
+                        {% set dest = logDoc.final | join(', ') %}
+                        {% trans with {'%dest%' : dest} %}report::Substitution de %dest%{% endtrans %}
+                    {% elseif logDoc.action == 'publish' %}
+                        {% set dest = logDoc.final | join(', ') %}
+                        {% trans with {'%dest%' : dest} %}report::Publication de %dest%{% endtrans %}
+                    {% elseif logDoc.action == 'download' %}
+                        {% set dest = logDoc.final | join(', ') %}
+                        {% trans with {'%dest%' : dest} %}report::Telechargement de %dest%{% endtrans %}
+                    {% elseif logDoc.action == 'mail' %}
+                        {% set dest = logDoc.comment | join(', ') %}
+                        {% set content = logDoc.final | join(', ') %}
+                        {% trans with {'%dest%' : dest, '%content%' : content} %}Envoi par mail a %dest% de %content%{% endtrans %}
+                    {% elseif logDoc.action == 'ftp' %}
+                        {% set dest = logDoc.comment | join(', ') %}
+                        {% set content = logDoc.final | join(', ') %}
+                        {% trans with {'%dest%' : dest, '%content%' : content} %}Envoi par ftp a %dest% de %content%{% endtrans %}
+                    {% elseif logDoc.action == 'subdefCreation' %}
+                        {% set comment = logDoc.comment | join(', ') | json_to_array %}
+                        {% trans with {'%subdefName%' : logDoc.final | join(', '), '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}create subdefinition during %duration% -- status %status%{% endtrans %}
+                    {% elseif logDoc.action == 'writeMetadatas' %}
+                        {% set comment = logDoc.comment | join(', ') | json_to_array %}
+                        {% trans with {'%subdefName%' : logDoc.final | join(', '), '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}write metadatas during %duration% -- status %status%{% endtrans %}
+                    {% elseif logDoc.action == 'delete' %}
+                        {{ 'report::supression du document' | trans }}
+                    {% elseif logDoc.action == 'add' %}
+                        {{ 'report::ajout du documentt' | trans }}
+                    {% else %}
+                        {{ 'report::Modification du document -- je ne me souviens plus de quoi...' | trans }}
+                    {% endif %}
+
+                    {% if logDoc.usrid is not null %}
+                        {% set user = app['repo.users'].find(logDoc.usrid) %}
+                        {% set user_infos = user.getDisplayName() | e %}
+                        {% trans with {'%user_infos%' : user_infos} %}report:: par %user_infos%{% endtrans %}
+                    {% endif %}
+
+                </td>
+                <td>{{ logDoc.final }}</td>
+                <td>{{ logDoc.comment }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

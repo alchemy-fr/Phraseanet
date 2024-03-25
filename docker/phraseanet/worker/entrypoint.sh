@@ -115,7 +115,7 @@ else
 
     if [ ! -z "$PHRASEANET_CMD_MODE" ] && [ ${PHRASEANET_CMD_MODE} == "1" ] ; then
       apt update
-      apt install screen
+      apt install screen -y
       echo "Worker are in custom process mode" 
     fi 
     
