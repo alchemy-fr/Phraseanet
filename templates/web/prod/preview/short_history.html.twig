@@ -43,11 +43,27 @@
           {% set content = done['final']|join(', ') %}
           {% trans with {'%dest%' : dest, '%content%' : content} %}Envoi par ftp a %dest% de %content%{% endtrans %}
         {% elseif action == 'subdefCreation' %}
-            {% set comment = done['comment'] | join(', ') | json_to_array %}
-            {% trans with {'%subdefName%' : done['final'] | join(', '), '%started%' : hour, '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%{% endtrans %}
+            {% for  k, comment in done['comment'] %}
+                {% set comment = comment | json_to_array %}
+                {% set subdefName = comment.subdefName is defined ? comment.subdefName : done['final'][k]  %}
+
+                {% trans with {'%subdefName%' : subdefName, '%started%' : hour, '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%{% endtrans %}
+                {% if  done['final']|length > 1  %}
+                   {# separate with line break #}
+                    <br><br>
+                {% endif %}
+            {% endfor %}
         {% elseif action == 'writeMetadatas' %}
-            {% set comment = done['comment'] | join(', ') | json_to_array %}
-            {% trans with {'%subdefName%' : done['final'] | join(', '), '%started%' : hour, '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}write metadatas: %subdefName% start at %started%  during %duration% -- status %status%{% endtrans %}
+            {% for  k, comment in done['comment'] %}
+                {% set comment = comment | json_to_array %}
+                {% set subdefName = comment.subdefName is defined ? comment.subdefName : done['final'][k]  %}
+
+                {% trans with {'%subdefName%' : subdefName, '%started%' : hour, '%duration%' : (comment.duration == '') ? '-' : comment.duration | date_duration , '%status%' : comment.status} %}write metadatas: %subdefName% start at %started%  during %duration% -- status %status%{% endtrans %}
+            {% endfor %}
+            {% if  done['final']|length > 1  %}
+                {# separate with line break #}
+                <br><br>
+            {% endif %}
         {% elseif action == 'delete' %}
           {{ 'report::supression du document' | trans }}
         {% elseif action == 'add' %}

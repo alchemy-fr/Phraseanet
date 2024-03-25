@@ -295,7 +295,8 @@ class Session_Logger
         $comment = json_encode([
             'finished' => empty($finished) ? '' : $finished->format('Y-m-d H:i:s'),
             'duration' => empty($finished) ? '' : $finished->getTimestamp() - $workerRunningJob->getCreated()->getTimestamp() ,
-            'status'   => $status
+            'status'   => $status,
+            'subdefName' => $subdefName
         ]);
 
         if ($count > 0) {
