@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 4.1.8-rc11
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Fix plugin install in new base image
+ - Minor fix 
+  
+### Stack (docker compose and helm)
+    
+   - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
+
+## What's Changed
+* PHRAS-4005 fix missing plugin installation by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4490
+* PHRAS-3416 localisation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4488
+* PHRAS-4033 fix timeline history for writemetadata and subdefinition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4491
+* PHRAS-4033 fix timeline icone position by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4492
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc10...4.1.8-rc11
+
 ## 4.1.8-rc10
 
 ### Update instructions
