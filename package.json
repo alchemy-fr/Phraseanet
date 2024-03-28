@@ -68,7 +68,7 @@
     "npm-modernizr": "^2.8.3",
     "pusher-js": "^8.3.0",
     "requirejs": "^2.3.5",
-    "tinymce": "^4.0.28",
+    "tinymce": "^4.9.7",
     "underscore": "^1.8.3",
     "zxcvbn": "^4.4.2"
   }
