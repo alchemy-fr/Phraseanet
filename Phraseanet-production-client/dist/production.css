@@ -4455,7 +4455,7 @@ input.checkbox {
 .history-push,
 .history-add {
   background-repeat: no-repeat;
-  background-position: 3px center;
+  background-position: 3px top;
   background-size: 20px;
   padding-left: 37px;
   min-height: 16px;
