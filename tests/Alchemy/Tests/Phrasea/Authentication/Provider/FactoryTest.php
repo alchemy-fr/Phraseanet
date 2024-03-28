@@ -98,16 +98,15 @@ class FactoryTest extends \PhraseanetTestCase
                 'Alchemy\Phrasea\Authentication\Provider\Viadeo'
             ],
             [
-                'ps-auth-foo',
-                'ps-auth',
+                'openid-foo',
+                'openid',
                 [
                     'client-id' => 'id',
                     'client-secret' => 'secret',
                     'base-url' => 'https://api-auth.phrasea.local',
-                    'provider-type' => 'oauth',
-                    'provider-name' => 'v2',
+                    'realm-name' => 'phrasea',
                 ],
-                'Alchemy\Phrasea\Authentication\Provider\PsAuth'
+                'Alchemy\Phrasea\Authentication\Provider\Openid'
             ]
         ];
     }

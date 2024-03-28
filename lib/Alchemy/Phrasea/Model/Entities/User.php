@@ -277,6 +277,11 @@ class User
     private $lastInactivityEmail;
 
     /**
+     * @ORM\Column(type="boolean", name="can_renew_password", options={"default" = 1})
+     */
+    private $canRenewPassword = true;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -736,6 +741,25 @@ class User
     public function setGuest($guest)
     {
         $this->guest = (Boolean) $guest;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canRenewPassword()
+    {
+        return $this->canRenewPassword;
+    }
+
+    /**
+     * @param $canRenewPassword
+     * @return $this
+     */
+    public function setCanRenewPassword($canRenewPassword)
+    {
+        $this->canRenewPassword = (Boolean) $canRenewPassword;
 
         return $this;
     }

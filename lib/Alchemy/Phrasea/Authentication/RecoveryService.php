@@ -122,7 +122,7 @@ class RecoveryService
         $receiver = Receiver::fromUser($user);
         $token = $this->tokenManipulator->createResetPasswordToken($user);
 
-        if ($notifyUser) {
+        if ($notifyUser && $user->canRenewPassword()) {
             $url = $this->urlGenerator->generate('login_renew_password', [ 'token' => $token->getValue() ], true);
 
             $mail = MailRequestPasswordUpdate::create($this->application, $receiver);
