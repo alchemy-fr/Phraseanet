@@ -466,30 +466,34 @@ bluebird@^3.5.0, bluebird@^3.5.1, bluebird@^3.5.3:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.4.tgz#d6cc661595de30d5b3af5fcedd3c0b3ef6ec5714"
   integrity sha512-FG+nFEZChJrbQ9tIccIfZJBz3J7mLrAhxakAbnrJWn8d7aKOC+LWifa0G+p4ZqKp4y13T7juYvdhq9NzKdsrjw==
 
-blueimp-canvas-to-blob@>=2.0.7:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/blueimp-canvas-to-blob/-/blueimp-canvas-to-blob-3.14.0.tgz#ea075ffbfb1436607b0c75e951fb1ceb3ca0288e"
-  integrity sha512-i6I2CiX1VR8YwUNYBo+dM8tg89ns4TTHxSpWjaDeHKcYS3yFalpLCwDaY21/EsJMufLy2tnG4j0JN5L8OVNkKQ==
+blueimp-canvas-to-blob@3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/blueimp-canvas-to-blob/-/blueimp-canvas-to-blob-3.5.0.tgz#5679ac32f6a2835821f0c3ad661719ff85a9236b"
+  integrity sha512-1Aq2Yn6SUsOERT4Ng7GUWRy6oRvqeNU2Iwhcq5ZH7aoejFkLEKjRx/XcpepfU7IMmj3sONSmiLmSgzj9umGUPw==
 
-blueimp-file-upload@^8.3.0:
-  version "8.9.0"
-  resolved "https://registry.yarnpkg.com/blueimp-file-upload/-/blueimp-file-upload-8.9.0.tgz#cb8764e1309bcff33d0b0b0b3875359dff7585aa"
-  integrity sha1-y4dk4TCbz/M9CwsLOHU1nf91hao=
-  dependencies:
-    blueimp-canvas-to-blob ">=2.0.7"
-    blueimp-load-image ">=1.9.1"
-    blueimp-tmpl ">=2.3.0"
-    jquery ">=1.6"
+blueimp-file-upload@^9.22.1:
+  version "9.22.1"
+  resolved "https://registry.yarnpkg.com/blueimp-file-upload/-/blueimp-file-upload-9.22.1.tgz#08a9fccbaf1ec930acf6242c217620b057f0ecc6"
+  integrity sha512-ezGkn/agWUWZOw8mYa5yYC9LvUlrT5bN3zk2fPlpLWgyhbBMz8BSGKO3M48BWlXWAeR+lVtEhy9xiG8FLnHEVw==
+  optionalDependencies:
+    blueimp-canvas-to-blob "3.5.0"
+    blueimp-load-image "2.12.2"
+    blueimp-tmpl "3.6.0"
 
-blueimp-load-image@>=1.9.1, blueimp-load-image@^2.17.1:
+blueimp-load-image@2.12.2:
+  version "2.12.2"
+  resolved "https://registry.yarnpkg.com/blueimp-load-image/-/blueimp-load-image-2.12.2.tgz#6a17598aab858d4fbf01543e0631141b51057c87"
+  integrity sha512-o6YeeBo0e6g3/T7mPZtED/y/66VdhMxYVEqE5Owl+9Ew0MpLFgFh6humePBAh0JVRfCtK7CHQ7K84S4GIfaZtg==
+
+blueimp-load-image@^2.17.1:
   version "2.21.0"
   resolved "https://registry.yarnpkg.com/blueimp-load-image/-/blueimp-load-image-2.21.0.tgz#aac5b65e9ed3325af4f4967fecb435cbf0bfe777"
   integrity sha512-A+psaqgeYRepWous4OFL2H8XwonuMRs96JYgC9Ndmmnq+dosmiuReA6A16EpjK1cxntQC/RDWMr3s1sutX9dgg==
 
-blueimp-tmpl@>=2.3.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/blueimp-tmpl/-/blueimp-tmpl-3.11.0.tgz#47e78cbab16770e3922b019a250b4ad9c7b20f8f"
-  integrity sha512-+nzph90GQ7YzYdOJNLm1hHJrzWnWbxUGJyJVrLBD+q7HF6PIIjJVNrJCgLkFmNcNvJRKICvWuItL8NpH9Z8J5A==
+blueimp-tmpl@3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/blueimp-tmpl/-/blueimp-tmpl-3.6.0.tgz#a4910975d042e2bc03ba77f0e62d04f1548a524c"
+  integrity sha512-FPbl2VMophcudvT2Li+y10RtKT4l7wBto1NZycXoVQb1JVlo8QbjDgEqL9Ph41/rUl4dTOv3mqWPoxqCHA1b7A==
 
 bootstrap-multiselect@^0.9.13-1:
   version "0.9.13-1"
@@ -3495,7 +3499,7 @@ jquery.fancytree@^2.27.0:
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
   integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
 
-jquery@>=1.6, jquery@>=1.9, jquery@>=1.9.0:
+jquery@>=1.9, jquery@>=1.9.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
