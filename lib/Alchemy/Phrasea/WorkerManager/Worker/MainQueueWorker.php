@@ -67,7 +67,7 @@ class MainQueueWorker implements WorkerInterface
 
                         return $singleMessage;
                     }, $payload['data']);
-                } else {
+                } elseif ($payload['dataType'] == RecordEditInWorkerEvent::JSON_TYPE) {
                     $data = json_decode($payload['data'], true);
 
                     $payloadData = array_map(function($singleMessage) use ($payload, $data) {
@@ -81,6 +81,8 @@ class MainQueueWorker implements WorkerInterface
 
                         return $singleMessage;
                     }, $data['records']);
+                } elseif ($payload['dataType'] == 'watchdog') {
+                    $payloadData[0] = $payload;
                 }
 
                 $childMessageCount = count($payloadData);
