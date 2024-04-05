@@ -53,6 +53,7 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/delete/', 'controller.admin.users:deleteUserAction');
         $controllers->post('/auth-failure/reset/', 'controller.admin.users:resetAuthFailureAction');
         $controllers->post('/mail-locked/change/', 'controller.admin.users:changeMailLockedAction');
+        $controllers->post('/can-renew-password/change/', 'controller.admin.users:changeCanRenewPasswordAction');
         $controllers->post('/rights/apply/', 'controller.admin.users:applyRightsAction')
             ->bind('admin_users_rights_apply');
         $controllers->post('/rights/quotas/', 'controller.admin.users:editQuotasRightsAction');
