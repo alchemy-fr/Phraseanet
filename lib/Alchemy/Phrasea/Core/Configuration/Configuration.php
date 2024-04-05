@@ -138,11 +138,11 @@ class Configuration implements ConfigurationInterface
             return $this->parser->parse($this->loadFile($this->config));
         }
 
-        if (null !== $this->cache) {
+        if (null !== $this->cache && is_array($this->cache)) {
             return $this->cache;
         }
 
-        if (!is_file($this->compiled) || ($this->isAutoReload() && !$this->isConfigFresh())) {
+        if (!is_file($this->compiled) || ($this->isAutoReload() && !$this->isConfigFresh()) || !is_array($this->cache)) {
             if (!$this->isSetup()) {
                 throw new RuntimeException('Configuration is not set up');
             }
@@ -151,7 +151,13 @@ class Configuration implements ConfigurationInterface
             ));
         }
 
-        return $this->cache = require $this->compiled;
+        $this->cache = require $this->compiled;
+
+        if (is_array($this->cache)) {
+            return $this->cache;
+        } else {
+            throw new RuntimeException('Configuration compiled error');
+        }
     }
 
     /**
