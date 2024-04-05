@@ -35,10 +35,11 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             return new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
         });
 
-        if ($app['configuration.store']->isSetup() && $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']) !== "") {
-            $app['recaptcha'] = $app->share(function (Application $app) {
-                return new ReCaptcha($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']));
-            });
+        if ($app['configuration.store']->isSetup())
+            if ($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']) !== "") {
+                $app['recaptcha'] = $app->share(function (Application $app) {
+                    return new ReCaptcha($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']));
+                });
         }
 
         $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
