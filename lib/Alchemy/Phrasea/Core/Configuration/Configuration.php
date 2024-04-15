@@ -142,7 +142,7 @@ class Configuration implements ConfigurationInterface
             return $this->cache;
         }
 
-        if (!is_file($this->compiled) || ($this->isAutoReload() && !$this->isConfigFresh()) || !is_array($this->cache)) {
+        if (!is_file($this->compiled) || ($this->isAutoReload() && !$this->isConfigFresh())) {
             if (!$this->isSetup()) {
                 throw new RuntimeException('Configuration is not set up');
             }
