@@ -9820,9 +9820,9 @@
         <target state="translated">Abgeschlossene Arbeiten</target>
         <jms:reference-file line="81">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="yes">
+      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="no" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
-        <target state="translated">Arbeiten Unterbrechen</target>
+        <target state="needs-translation">Arbeiten Unterbrechen</target>
         <jms:reference-file line="87">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
@@ -9840,9 +9840,9 @@
         <target state="translated">Alle Arbeiten löschen</target>
         <jms:reference-file line="13">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="yes">
+      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="no" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
-        <target state="translated">Unterbrechen</target>
+        <target state="needs-translation">Unterbrechen</target>
         <jms:reference-file line="152">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list" approved="yes">
