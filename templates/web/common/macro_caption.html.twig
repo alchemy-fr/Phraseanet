@@ -1,9 +1,15 @@
 {% macro caption(record, can_see_business, display_exif, limitedWidth = false) %}
-    <dl class="{% if limitedWidth %}{% else %}dl-horizontal{% endif %}">
+    <dl class="{% if limitedWidth %}dl-horizontal{% else %}dl-horizontal{% endif %}">
         {% for name, value in record.getCaption(caption_field_order(record, can_see_business)) %}
            {% if caption_field_gui_visible(record, name) == 1 %}
                 <dt>{{ caption_field_label(record, name) }}</dt>
-                <dd>{{ caption_field(record, name, value)|e|highlight|linkify|parseColor }}</dd>
+                <dd>
+                    {% if name == 'MatomoMediaMetrics' %}
+                        {{ caption_field(record, name, value)|e|highlight|linkify|parseColor|mediaMetricsInfo }}
+                    {% else %}
+                        {{ caption_field(record, name, value)|e|highlight|linkify|parseColor }}
+                    {% endif %}
+                </dd>
            {% endif %}
         {% endfor %}
     </dl>

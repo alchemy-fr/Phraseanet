@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2024-03-07T15:15:34Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2024-04-17T13:05:47Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -264,7 +264,7 @@
       <trans-unit id="4d90df6ce9691d4bc172b9129250a5af4bef4b7f" resname="%record_count% records match the unique identifier :" approved="yes">
         <source>%record_count% records match the unique identifier :</source>
         <target state="translated">%record_count% records zijn gelijk aan de unieke id :</target>
-        <jms:reference-file line="670">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="671">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1d847e60f4e92e438c94f0eb3176ce96113c63e5" resname="%s field has been created with success." approved="yes">
         <source>%s field has been created with success.</source>
@@ -521,7 +521,7 @@
       <trans-unit id="e6558cad562de9eeae699e5f7fc7c8ae076d38c8" resname="A record matches the unique identifier :" approved="yes">
         <source>A record matches the unique identifier :</source>
         <target state="translated">Een record is gelijk aan de unieke id :</target>
-        <jms:reference-file line="668">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="669">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b73e8cb42d796f56db9989972e41942d9135c2cc" resname="A required field is missing or has an empty value" approved="yes">
         <source>A required field is missing or has an empty value</source>
@@ -701,8 +701,8 @@
         <jms:reference-file line="30">prod/User/Add.html.twig</jms:reference-file>
         <jms:reference-file line="132">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="324">prod/upload/lazaret.html.twig</jms:reference-file>
-        <jms:reference-file line="592">prod/upload/lazaret.html.twig</jms:reference-file>
-        <jms:reference-file line="594">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="593">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="595">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="983c5aed52d2f74bf36e97dc34dbce97fdd43f5b" resname="Add a&#10;                    new field">
         <source>Add a new field</source>
@@ -1885,7 +1885,7 @@
         <source>Collection</source>
         <target state="translated">Collectie</target>
         <jms:reference-file line="4">prod/Story/Create.html.twig</jms:reference-file>
-        <jms:reference-file line="511">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="512">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="17">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="814cd4d896d0d93eac2f4d71dc24c91a46cd5e28" resname="Collection %collection%" approved="yes">
@@ -2272,7 +2272,7 @@
       <trans-unit id="eb9a4bc1c0c153e4e4b042a79113b815b7e3021d" resname="Date" approved="yes">
         <source>Date</source>
         <target state="translated">Datum</target>
-        <jms:reference-file line="504">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="505">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2aafad40063bdb20757ad69b9fc9e0a06d6ca1c1" resname="Date Added">
         <source>Date Added</source>
@@ -2414,8 +2414,8 @@
       <trans-unit id="f6fdbe48dc54dd86f63097a03bd24094dedd713a" resname="Delete" approved="yes">
         <source>Delete</source>
         <target state="translated">Verwijder</target>
-        <jms:reference-file line="596">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="597">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="598">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="25">admin/task-manager/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b5737dea168495fa0495e00ce58b4832772a492" resname="Delete account successfull">
@@ -3364,7 +3364,7 @@
       <trans-unit id="a3cbb98ddf5ee976bc1c3be5221d66ce3ca2e867" resname="Filename" approved="yes">
         <source>Filename</source>
         <target state="translated">Bestandsnaam</target>
-        <jms:reference-file line="503">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="504">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="246a65679a39e030c98cad396903b0a3d8874dbc" resname="Fils disponibles" approved="yes">
         <source>Fils disponibles</source>
@@ -4038,7 +4038,7 @@
       <trans-unit id="73d43eca841fe44e1b9b41795ecbe13ee0772b38" resname="Last uploaded version" approved="yes">
         <source>Last uploaded version</source>
         <target state="translated">Laatst opgeladen versie</target>
-        <jms:reference-file line="497">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="498">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e0925b2bb685e25d3e94442cb0faea41156392b" resname="Le bridge Dailymotion ne prend en charge que les videos" approved="yes">
         <source>Le bridge Dailymotion ne prend en charge que les videos</source>
@@ -4877,7 +4877,7 @@
       <trans-unit id="67dae87be6805795c1648fc4ceb2a11ca939d196" resname="Open the URL in a new window">
         <source>Open the URL in a new window</source>
         <target state="new">Open the URL in a new window</target>
-        <jms:reference-file line="125">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+        <jms:reference-file line="147">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e72184f55cc026514b7160d78c3c5aef63c2a050" resname="Or">
         <source>Or</source>
@@ -6484,8 +6484,8 @@
       <trans-unit id="8017bd7de9961cf42f59abc587d0495a9d25c2a9" resname="Substitute" approved="yes">
         <source>Substitute</source>
         <target state="translated">Vervangen</target>
-        <jms:reference-file line="600">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="601">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="602">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d48a1d66362cef46e567ddf521b0dc3233f57a2" resname="Substitution is not possible for this kind of record" approved="yes">
         <source>Substitution is not possible for this kind of record</source>
@@ -7259,7 +7259,7 @@
       <trans-unit id="a8ddbae32452ce671987065bc29d7ae6685a2b17" resname="Uploaded by : %username%" approved="yes">
         <source>Uploaded by : %username%</source>
         <target state="translated">Opgeladen door : %username%</target>
-        <jms:reference-file line="508">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="509">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ea1fd4c4c366bf2e13d348b67b75e96039d7a1d7" resname="Use Google Chart API">
         <source>Use Google Chart API</source>
@@ -10803,7 +10803,7 @@
       <trans-unit id="bd3d578c7b2dd2dae6a80fe277e646837914aee7" resname="create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%">
         <source>create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%</source>
         <target state="new">create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%</target>
-        <jms:reference-file line="47">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="50">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="751a7df4249ede5126600fd5e11560b3300c8dd5" resname="create_subdef_button_label">
         <source>create_subdef_button_label</source>
@@ -11914,6 +11914,86 @@
         <source>mars</source>
         <target state="translated">maart</target>
         <jms:reference-file line="716">classes/module/report.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e7dba91918aab77502abf6cda3dccb079f80d80d" resname="matomomediametrics:: avg_completion_rate">
+        <source>matomomediametrics:: avg_completion_rate</source>
+        <target state="new">matomomediametrics:: avg_completion_rate</target>
+        <jms:reference-file line="80">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="88256bfedfb8c7f62f699a4567163162d89d079c" resname="matomomediametrics:: avg_media_length">
+        <source>matomomediametrics:: avg_media_length</source>
+        <target state="new">matomomediametrics:: avg_media_length</target>
+        <jms:reference-file line="82">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a795868e40875c48503db1a5fbeaa22a18d437e3" resname="matomomediametrics:: avg_time_to_play">
+        <source>matomomediametrics:: avg_time_to_play</source>
+        <target state="new">matomomediametrics:: avg_time_to_play</target>
+        <jms:reference-file line="81">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="21371180b051604ed3a45346b91fa2b4bfbaa110" resname="matomomediametrics:: avg_time_watched">
+        <source>matomomediametrics:: avg_time_watched</source>
+        <target state="new">matomomediametrics:: avg_time_watched</target>
+        <jms:reference-file line="79">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b04897d3d7972962568acb4972336ae89114838e" resname="matomomediametrics:: finish_rate">
+        <source>matomomediametrics:: finish_rate</source>
+        <target state="new">matomomediametrics:: finish_rate</target>
+        <jms:reference-file line="77">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f8b7ab6dca43c08c9c73d6d9f556b8ad788fd994" resname="matomomediametrics:: fullscreen_rate">
+        <source>matomomediametrics:: fullscreen_rate</source>
+        <target state="new">matomomediametrics:: fullscreen_rate</target>
+        <jms:reference-file line="78">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d20ba3babb729c528e23b2822e29aba041cd4cc2" resname="matomomediametrics:: nb_finishes">
+        <source>matomomediametrics:: nb_finishes</source>
+        <target state="new">matomomediametrics:: nb_finishes</target>
+        <jms:reference-file line="71">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4885f7cbe3ab682c59539be55b790d153a84699d" resname="matomomediametrics:: nb_impressions">
+        <source>matomomediametrics:: nb_impressions</source>
+        <target state="new">matomomediametrics:: nb_impressions</target>
+        <jms:reference-file line="69">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2aa43de106ec66eead3fce32a7472d952083c3cf" resname="matomomediametrics:: nb_plays">
+        <source>matomomediametrics:: nb_plays</source>
+        <target state="new">matomomediametrics:: nb_plays</target>
+        <jms:reference-file line="67">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="28211f26053d817982556d31c1d7426b1ceafdf1" resname="matomomediametrics:: nb_plays_with_ml">
+        <source>matomomediametrics:: nb_plays_with_ml</source>
+        <target state="new">matomomediametrics:: nb_plays_with_ml</target>
+        <jms:reference-file line="74">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e3413a74a6260c6e5a9d68fecf7803d8cf7a2e16" resname="matomomediametrics:: nb_plays_with_tip">
+        <source>matomomediametrics:: nb_plays_with_tip</source>
+        <target state="new">matomomediametrics:: nb_plays_with_tip</target>
+        <jms:reference-file line="73">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1b60ddb8ac540044d57d71dfee5b2e7f0fbf9ed8" resname="matomomediametrics:: nb_unique_visitors_impressions">
+        <source>matomomediametrics:: nb_unique_visitors_impressions</source>
+        <target state="new">matomomediametrics:: nb_unique_visitors_impressions</target>
+        <jms:reference-file line="70">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7079a2b3390797c10b7584421bf49bd28250e95c" resname="matomomediametrics:: nb_unique_visitors_plays">
+        <source>matomomediametrics:: nb_unique_visitors_plays</source>
+        <target state="new">matomomediametrics:: nb_unique_visitors_plays</target>
+        <jms:reference-file line="68">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d75abacf5cb4614397ba2bd2515bf4d0b5b0c5c6" resname="matomomediametrics:: play_rate">
+        <source>matomomediametrics:: play_rate</source>
+        <target state="new">matomomediametrics:: play_rate</target>
+        <jms:reference-file line="76">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b0dd7acb09b1cef0ac4ff2ab143bf5f3196940a8" resname="matomomediametrics:: sum_fullscreen_plays">
+        <source>matomomediametrics:: sum_fullscreen_plays</source>
+        <target state="new">matomomediametrics:: sum_fullscreen_plays</target>
+        <jms:reference-file line="75">Core/Provider/TwigServiceProvider.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="91facb2ef149d6cc1c2a5e65caa46160db438a22" resname="matomomediametrics:: sum_time_progress">
+        <source>matomomediametrics:: sum_time_progress</source>
+        <target state="new">matomomediametrics:: sum_time_progress</target>
+        <jms:reference-file line="72">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="520593b5cc1a6e328e74717650c586fb1dbfa265" resname="maximum : %maxFileSizeReadable%">
         <source>maximum : %maxFileSizeReadable%</source>
@@ -15077,7 +15157,7 @@
       <trans-unit id="3c6437e45ebaf5f63fbae739087ecb91b58c0503" resname="report:: par %user_infos%" approved="yes">
         <source>report:: par %user_infos%</source>
         <target state="translated">per %user_infos%</target>
-        <jms:reference-file line="62">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="78">prod/preview/short_history.html.twig</jms:reference-file>
         <jms:reference-file line="151">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="45882e1904416b4c1e53b2d47a6f192e4c0e1c14" resname="report:: pays" approved="yes">
@@ -15224,7 +15304,7 @@
       <trans-unit id="b83d61a430562aa03216506b7b3c2d0ba7881112" resname="report::Modification du document -- je ne me souviens plus de quoi..." approved="yes">
         <source>report::Modification du document -- je ne me souviens plus de quoi...</source>
         <target state="translated">Bewerking van het document -- ik herrinner mij niet meer wat ...</target>
-        <jms:reference-file line="56">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="72">prod/preview/short_history.html.twig</jms:reference-file>
         <jms:reference-file line="145">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="04141c12be7f11b46805e97c0f399934ed84d614" resname="report::Nombre de connexions" approved="yes">
@@ -15285,7 +15365,7 @@
       <trans-unit id="002c70f6ab109c3160dc534f93c03d56b342cf10" resname="report::ajout du documentt" approved="yes">
         <source>report::ajout du documentt</source>
         <target state="translated">Toevoegen van het document</target>
-        <jms:reference-file line="54">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="70">prod/preview/short_history.html.twig</jms:reference-file>
         <jms:reference-file line="143">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de28bcec9376030978303c519bd3d5ef776ea7bd" resname="report::fonction" approved="yes">
@@ -15306,7 +15386,7 @@
       <trans-unit id="3fc0f2a0d459b0ae67244939abeda1868f5b1a51" resname="report::supression du document" approved="yes">
         <source>report::supression du document</source>
         <target state="translated">Verwijderen van het document</target>
-        <jms:reference-file line="52">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="68">prod/preview/short_history.html.twig</jms:reference-file>
         <jms:reference-file line="141">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="386c42eb4d167d87be7f7f68faf1aafce1be237e" resname="reportage" approved="yes">
@@ -16379,7 +16459,7 @@
       <trans-unit id="e08ad584358135b5587612d4ec46223c2b09e791" resname="upload:: Copy meta">
         <source>upload:: Copy meta</source>
         <target state="new">upload:: Copy meta</target>
-        <jms:reference-file line="585">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="586">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc34ae0ecd7020a2f3f57afaf84d3fea6c3e9c0f" resname="upload:: Destination (collection) :" approved="yes">
         <source>upload:: Destination (collection) :</source>
@@ -16392,12 +16472,12 @@
         <target state="translated">Status</target>
         <jms:reference-file line="81">prod/upload/upload.html.twig</jms:reference-file>
         <jms:reference-file line="75">prod/upload/upload-flash.html.twig</jms:reference-file>
-        <jms:reference-file line="533">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="534">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c5193432f350702a5ed4dc9a8d84b85dab91671" resname="upload:: checkers for this file is disabled in configuration or deleted">
         <source>upload:: checkers for this file is disabled in configuration or deleted</source>
         <target state="new">upload:: checkers for this file is disabled in configuration or deleted</target>
-        <jms:reference-file line="519">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="520">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fea0574cc81b5fd40ab0537b0905cc4c3806039" resname="users rights have been reseted" approved="yes">
         <source>users rights have been reseted</source>
@@ -16645,7 +16725,7 @@
       <trans-unit id="cffe504be8a027b87d76f2ea5b60ac8a73cc9971" resname="write metadatas: %subdefName% start at %started%  during %duration% -- status %status%">
         <source>write metadatas: %subdefName% start at %started%  during %duration% -- status %status%</source>
         <target state="new">write metadatas: %subdefName% start at %started%  during %duration% -- status %status%</target>
-        <jms:reference-file line="50">prod/preview/short_history.html.twig</jms:reference-file>
+        <jms:reference-file line="61">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
         <source>wz:block_title:my_baskets</source>
