@@ -9822,9 +9822,9 @@
         <target state="translated">Display Finished Job(s)</target>
         <jms:reference-file line="81">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="yes">
+      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="no" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
-        <target state="translated">interrupted job</target>
+        <target state="needs-translation">interrupted job</target>
         <jms:reference-file line="87">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
