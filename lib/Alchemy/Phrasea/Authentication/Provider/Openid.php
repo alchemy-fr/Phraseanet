@@ -77,6 +77,9 @@ class Openid extends AbstractProvider
         if(!array_key_exists('auto-logout', $this->config)) {
             $this->config['auto-logout'] = false;
         }
+        if(!array_key_exists('auto-connect-idp-name', $this->config)) {
+            $this->config['auto-connect-idp-name'] = null;
+        }
 
         $this->client  = $client;
         $this->iconUri = array_key_exists('icon-uri', $config) ? $config['icon-uri'] : null; // if not set, will fallback on default icon
@@ -172,11 +175,22 @@ class Openid extends AbstractProvider
             'response_type' => "code"
         ];
 
-        $url = sprintf("%s/realms/%s/protocol/openid-connect/auth?%s",
-            $this->config['base-url'],
-            urlencode($this->config['realm-name']),
-            http_build_query($parms, '', '&')
-        );
+        if($this->config['auto-connect-idp-name']) {
+            $url = sprintf("%s/realms/%s/protocol/openid-connect/auth?kc_idp_hint=%s&%s",
+                $this->config['base-url'],
+                urlencode($this->config['realm-name']),
+                urlencode($this->config['auto-connect-idp-name']),
+                http_build_query($parms, '', '&')
+            );
+        } else {
+            $url = sprintf("%s/realms/%s/protocol/openid-connect/auth?%s",
+                $this->config['base-url'],
+                urlencode($this->config['realm-name']),
+                http_build_query($parms, '', '&')
+            );
+        }
+
+
 
         $this->debug(sprintf("go to url = %s", $url));
 

@@ -31,6 +31,7 @@ authentication:
                 debug: false
                 # logout with phraseanet and also logout with keycloak
                 auto-logout: true  
+                auto-connect-idp-name: null
                 
 ```
 

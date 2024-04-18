@@ -247,6 +247,7 @@ authentication:
                 model-upfx: _U_
                 debug: false
                 auto-logout: false
+                auto-connect-idp-name: null
 registration-fields:
     -
         name: company
