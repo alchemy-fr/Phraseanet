@@ -9843,7 +9843,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="no" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
-        <target state="needs-translation">Interrompre</target>
+        <target state="needs-translation">Marquer "annuler"</target>
         <jms:reference-file line="152">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list" approved="yes">
