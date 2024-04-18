@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2024-04-17T13:05:04Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="363">WorkerManager/Worker/DownloadAsyncWorker.php</jms:reference-file>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="269">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2564,7 +2564,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="154">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -9822,9 +9822,9 @@
         <target state="translated">Display Finished Job(s)</target>
         <jms:reference-file line="81">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="yes">
+      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="no" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
-        <target state="translated">interrupted job</target>
+        <target state="needs-translation">Cancelled jobs</target>
         <jms:reference-file line="87">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
@@ -9862,9 +9862,9 @@
         <target state="translated">Warning! This will delete all jobs logs, including running job(s)</target>
         <jms:reference-file line="16">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled">
+      <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
-        <target state="translated">Mark as "Cancel" running jobs</target>
+        <target state="needs-translation">Mark as "cancel"</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
@@ -11910,84 +11910,84 @@
         <target state="translated">March</target>
         <jms:reference-file line="716">classes/module/report.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e7dba91918aab77502abf6cda3dccb079f80d80d" resname="matomomediametrics:: avg_completion_rate">
+      <trans-unit id="e7dba91918aab77502abf6cda3dccb079f80d80d" resname="matomomediametrics:: avg_completion_rate" xml:space="preserve">
         <source>matomomediametrics:: avg_completion_rate</source>
-        <target state="new">matomomediametrics:: avg_completion_rate</target>
+        <target state="needs-translation">Average completion rate</target>
         <jms:reference-file line="80">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="88256bfedfb8c7f62f699a4567163162d89d079c" resname="matomomediametrics:: avg_media_length">
+      <trans-unit id="88256bfedfb8c7f62f699a4567163162d89d079c" resname="matomomediametrics:: avg_media_length" xml:space="preserve">
         <source>matomomediametrics:: avg_media_length</source>
-        <target state="new">matomomediametrics:: avg_media_length</target>
+        <target state="needs-translation">Average Video Length</target>
         <jms:reference-file line="82">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a795868e40875c48503db1a5fbeaa22a18d437e3" resname="matomomediametrics:: avg_time_to_play">
+      <trans-unit id="a795868e40875c48503db1a5fbeaa22a18d437e3" resname="matomomediametrics:: avg_time_to_play" xml:space="preserve">
         <source>matomomediametrics:: avg_time_to_play</source>
-        <target state="new">matomomediametrics:: avg_time_to_play</target>
+        <target state="needs-translation">Average time before playing the video</target>
         <jms:reference-file line="81">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="21371180b051604ed3a45346b91fa2b4bfbaa110" resname="matomomediametrics:: avg_time_watched">
+      <trans-unit id="21371180b051604ed3a45346b91fa2b4bfbaa110" resname="matomomediametrics:: avg_time_watched" xml:space="preserve">
         <source>matomomediametrics:: avg_time_watched</source>
-        <target state="new">matomomediametrics:: avg_time_watched</target>
+        <target state="needs-translation">Average time play</target>
         <jms:reference-file line="79">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b04897d3d7972962568acb4972336ae89114838e" resname="matomomediametrics:: finish_rate">
+      <trans-unit id="b04897d3d7972962568acb4972336ae89114838e" resname="matomomediametrics:: finish_rate" xml:space="preserve">
         <source>matomomediametrics:: finish_rate</source>
-        <target state="new">matomomediametrics:: finish_rate</target>
+        <target state="needs-translation">Finish rate</target>
         <jms:reference-file line="77">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8b7ab6dca43c08c9c73d6d9f556b8ad788fd994" resname="matomomediametrics:: fullscreen_rate">
+      <trans-unit id="f8b7ab6dca43c08c9c73d6d9f556b8ad788fd994" resname="matomomediametrics:: fullscreen_rate" xml:space="preserve">
         <source>matomomediametrics:: fullscreen_rate</source>
-        <target state="new">matomomediametrics:: fullscreen_rate</target>
+        <target state="needs-translation">Fullscreen rate</target>
         <jms:reference-file line="78">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d20ba3babb729c528e23b2822e29aba041cd4cc2" resname="matomomediametrics:: nb_finishes">
+      <trans-unit id="d20ba3babb729c528e23b2822e29aba041cd4cc2" resname="matomomediametrics:: nb_finishes" xml:space="preserve">
         <source>matomomediametrics:: nb_finishes</source>
-        <target state="new">matomomediametrics:: nb_finishes</target>
+        <target state="needs-translation">Number of complete plays</target>
         <jms:reference-file line="71">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4885f7cbe3ab682c59539be55b790d153a84699d" resname="matomomediametrics:: nb_impressions">
+      <trans-unit id="4885f7cbe3ab682c59539be55b790d153a84699d" resname="matomomediametrics:: nb_impressions" xml:space="preserve">
         <source>matomomediametrics:: nb_impressions</source>
-        <target state="new">matomomediametrics:: nb_impressions</target>
+        <target state="needs-translation">Number of impressions</target>
         <jms:reference-file line="69">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2aa43de106ec66eead3fce32a7472d952083c3cf" resname="matomomediametrics:: nb_plays">
+      <trans-unit id="2aa43de106ec66eead3fce32a7472d952083c3cf" resname="matomomediametrics:: nb_plays" xml:space="preserve">
         <source>matomomediametrics:: nb_plays</source>
-        <target state="new">matomomediametrics:: nb_plays</target>
+        <target state="needs-translation">Number of plays</target>
         <jms:reference-file line="67">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="28211f26053d817982556d31c1d7426b1ceafdf1" resname="matomomediametrics:: nb_plays_with_ml">
+      <trans-unit id="28211f26053d817982556d31c1d7426b1ceafdf1" resname="matomomediametrics:: nb_plays_with_ml" xml:space="preserve">
         <source>matomomediametrics:: nb_plays_with_ml</source>
-        <target state="new">matomomediametrics:: nb_plays_with_ml</target>
+        <target state="needs-translation">Number of plays with ml</target>
         <jms:reference-file line="74">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e3413a74a6260c6e5a9d68fecf7803d8cf7a2e16" resname="matomomediametrics:: nb_plays_with_tip">
+      <trans-unit id="e3413a74a6260c6e5a9d68fecf7803d8cf7a2e16" resname="matomomediametrics:: nb_plays_with_tip" xml:space="preserve">
         <source>matomomediametrics:: nb_plays_with_tip</source>
-        <target state="new">matomomediametrics:: nb_plays_with_tip</target>
+        <target state="needs-translation">Number of plays with tip</target>
         <jms:reference-file line="73">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b60ddb8ac540044d57d71dfee5b2e7f0fbf9ed8" resname="matomomediametrics:: nb_unique_visitors_impressions">
+      <trans-unit id="1b60ddb8ac540044d57d71dfee5b2e7f0fbf9ed8" resname="matomomediametrics:: nb_unique_visitors_impressions" xml:space="preserve">
         <source>matomomediametrics:: nb_unique_visitors_impressions</source>
-        <target state="new">matomomediametrics:: nb_unique_visitors_impressions</target>
+        <target state="needs-translation">Number of impressions by unique visitors</target>
         <jms:reference-file line="70">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7079a2b3390797c10b7584421bf49bd28250e95c" resname="matomomediametrics:: nb_unique_visitors_plays">
+      <trans-unit id="7079a2b3390797c10b7584421bf49bd28250e95c" resname="matomomediametrics:: nb_unique_visitors_plays" xml:space="preserve">
         <source>matomomediametrics:: nb_unique_visitors_plays</source>
-        <target state="new">matomomediametrics:: nb_unique_visitors_plays</target>
+        <target state="needs-translation">Number of plays by unique visitors</target>
         <jms:reference-file line="68">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d75abacf5cb4614397ba2bd2515bf4d0b5b0c5c6" resname="matomomediametrics:: play_rate">
+      <trans-unit id="d75abacf5cb4614397ba2bd2515bf4d0b5b0c5c6" resname="matomomediametrics:: play_rate" xml:space="preserve">
         <source>matomomediametrics:: play_rate</source>
-        <target state="new">matomomediametrics:: play_rate</target>
+        <target state="needs-translation">Play rate</target>
         <jms:reference-file line="76">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b0dd7acb09b1cef0ac4ff2ab143bf5f3196940a8" resname="matomomediametrics:: sum_fullscreen_plays">
+      <trans-unit id="b0dd7acb09b1cef0ac4ff2ab143bf5f3196940a8" resname="matomomediametrics:: sum_fullscreen_plays" xml:space="preserve">
         <source>matomomediametrics:: sum_fullscreen_plays</source>
-        <target state="new">matomomediametrics:: sum_fullscreen_plays</target>
+        <target state="needs-translation">Sum of fullscreen plays</target>
         <jms:reference-file line="75">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="91facb2ef149d6cc1c2a5e65caa46160db438a22" resname="matomomediametrics:: sum_time_progress">
+      <trans-unit id="91facb2ef149d6cc1c2a5e65caa46160db438a22" resname="matomomediametrics:: sum_time_progress" xml:space="preserve">
         <source>matomomediametrics:: sum_time_progress</source>
-        <target state="new">matomomediametrics:: sum_time_progress</target>
+        <target state="needs-translation">Cumulative playback time in seconds</target>
         <jms:reference-file line="72">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="520593b5cc1a6e328e74717650c586fb1dbfa265" resname="maximum : %maxFileSizeReadable%" approved="yes">
@@ -12718,7 +12718,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15901,7 +15901,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
