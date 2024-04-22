@@ -62,8 +62,7 @@ if [ -f /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; the
   sed -i "s/domain=\"resource\" name=\"height\" value=\".*\"/domain=\"resource\" name=\"height\" value=\"$IMAGEMAGICK_POLICY_HEIGHT\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"disk\" value=\".*\"/domain=\"resource\" name=\"disk\" value=\"$IMAGEMAGICK_POLICY_DISK\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"area\" value=\".*\"/domain=\"resource\" name=\"area\" value=\"$IMAGEMAGICK_POLICY_AREA\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
-  sed -i "s/.*domain=\"resource\" name=\"temporary-path\" value=\".*/<domain=\"resource\" name=\"temporary-path\" value=\"\\$IMAGEMAGICK_POLICY_TEMPORARY_PATH\" \/\>/g" 
-/usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i "s/.*domain=\"resource\" name=\"temporary-path\" value=\".*/<domain=\"resource\" name=\"temporary-path\" value=\"\\$IMAGEMAGICK_POLICY_TEMPORARY_PATH\" \/\>/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
 fi
 
 if [[ $NEWRELIC_ENABLED = "true" ]]; then
