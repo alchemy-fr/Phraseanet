@@ -32,26 +32,39 @@ echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on cache/ repository"
 #    logs \
 #    www
 
-
 if [ -d "plugins/" ];then
 chown -R app:app plugins
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on plugins/ repository"
 fi
-/usr/local/etc/ImageMagick-7/policy.xml
+
 if [ -f /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then
   if [ ! -d $IMAGEMAGICK_POLICY_TEMPORARY_PATH ]; then
     echo "$IMAGEMAGICK_POLICY_TEMPORARY_PATH does not exist lets create it"
     mkdir -p $IMAGEMAGICK_POLICY_TEMPORARY_PATH
   fi
+  sed -i '/domain=\"resource\" name=\"memory\"/s/<!--//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"memory\"/s/-->//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"map\"/s/<!--//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"map\"/s/-->//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"width\"/s/<!--//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"width\"/s/-->//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"height\"/s/<!--//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"height\"/s/-->//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"disk\"/s/<!--//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"disk\"/s/-->//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"area\"/s/<!--//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"area\"/s/-->//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"temporary-path\"/s/<!--//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i '/domain=\"resource\" name=\"temporary-path\"/s/-->//g' /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"memory\" value=\".*\"/domain=\"resource\" name=\"memory\" value=\"$IMAGEMAGICK_POLICY_MEMORY\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"map\" value=\".*\"/domain=\"resource\" name=\"map\" value=\"$IMAGEMAGICK_POLICY_MAP\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"width\" value=\".*\"/domain=\"resource\" name=\"width\" value=\"$IMAGEMAGICK_POLICY_WIDTH\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"height\" value=\".*\"/domain=\"resource\" name=\"height\" value=\"$IMAGEMAGICK_POLICY_HEIGHT\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"disk\" value=\".*\"/domain=\"resource\" name=\"disk\" value=\"$IMAGEMAGICK_POLICY_DISK\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
   sed -i "s/domain=\"resource\" name=\"area\" value=\".*\"/domain=\"resource\" name=\"area\" value=\"$IMAGEMAGICK_POLICY_AREA\"/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
-  sed -i "s/.*domain=\"resource\" name=\"temporary-path\" value=\".*/<domain=\"resource\" name=\"temporary-path\" value=\"\\$IMAGEMAGICK_POLICY_TEMPORARY_PATH\" \/\>/g" /usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
+  sed -i "s/.*domain=\"resource\" name=\"temporary-path\" value=\".*/<domain=\"resource\" name=\"temporary-path\" value=\"\\$IMAGEMAGICK_POLICY_TEMPORARY_PATH\" \/\>/g" 
+/usr/local/etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
 fi
-
 
 if [[ $NEWRELIC_ENABLED = "true" ]]; then
   echo `date +"%Y-%m-%d %H:%M:%S"` " - NewRelic daemon and PHP agent setup."
