@@ -191,6 +191,14 @@ class UserController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+    public function changeCanRenewPasswordAction(Request $request)
+    {
+        $helper = $this->getUserManageHelper($request);
+        $helper->setCanRenewPassword();
+
+        return $this->app->json(['success' => true]);
+    }
+
     public function applyRightsAction(Request $request)
     {
         $data = ['error' => true];
