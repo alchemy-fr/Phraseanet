@@ -503,7 +503,7 @@ class WorkerRunningJobRepository extends EntityRepository
         ]);
     }
 
-    public function getRunningSinceCreated($hour = 0)
+    public function getRunningSinceCreated($hour = 0, array $action = null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\WorkerRunningJob', 'w');
@@ -515,6 +515,11 @@ class WorkerRunningJobRepository extends EntityRepository
             WHERE w.status = :running
             AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
         ;
+
+        if ($action != null) {
+            $action = join('" ,"', $action);
+            $sql .= '  AND work IN("' . $action . '")';
+        }
 
         $q = $this->_em->createNativeQuery($sql, $rsm);
         $q->setParameters([
