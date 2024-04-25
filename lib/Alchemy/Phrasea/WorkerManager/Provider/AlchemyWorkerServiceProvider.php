@@ -165,7 +165,10 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::MAIN_QUEUE_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return new MainQueueWorker($app['alchemy_worker.message.publisher'], $app['repo.worker-job']);
+            return (new MainQueueWorker($app['alchemy_worker.message.publisher'], $app['repo.worker-job'], $app['repo.worker-running-job']))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ->setApplicationBox($app['phraseanet.appbox'])
+                ;
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::FTP_TYPE, new CallableWorkerFactory(function () use ($app) {
