@@ -53,6 +53,31 @@ class ApiApplicationManipulator implements ManipulatorInterface
 
     public function delete(ApiApplication $application)
     {
+        // make sure all apiaccounts linked by apiApplication are also deleted
+        $accts = $this->om->getRepository('Phraseanet:ApiAccount')->findBy(['application' => $application]);
+
+        foreach ($accts as $account) {
+            // remove ApiOauthCodes before ApiAccount
+            $oauthCodes = $this->om->getRepository('Phraseanet:ApiOauthCode')->findByAccount($account);
+            foreach ($oauthCodes as $oauthCode) {
+                $this->om->remove($oauthCode);
+            }
+
+            $this->om->remove($account);
+        }
+
+        $deliveries = $this->om->getRepository('Phraseanet:WebhookEventDelivery')->findBy(['application' => $application]);
+
+        foreach ($deliveries as $delivery) {
+            $payloads = $this->om->getRepository('Phraseanet:WebhookEventPayload')->findBy(['delivery' => $delivery]);
+
+            foreach ($payloads as $payload) {
+                $this->om->remove($payload);
+            }
+
+            $this->om->remove($delivery);
+        }
+
         $this->om->remove($application);
         $this->om->flush();
     }
