@@ -367,6 +367,7 @@ geocoding-providers:
         provincefields: Province
         countryfields: Country, Pays
 workers:
+    auto-cancelingJob: 48 # period in hours, not define or null to not execute
     queue:
         worker-queue:
           registry: alchemy_worker.queue_registry
