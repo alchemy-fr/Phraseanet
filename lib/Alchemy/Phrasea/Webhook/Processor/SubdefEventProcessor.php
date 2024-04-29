@@ -24,7 +24,7 @@ class SubdefEventProcessor implements ProcessorInterface
             $record = $this->findDataboxById($data['databox_id'])->get_record($data['record_id']);
             $subdef = $record->get_subdef($data['subdef_name']);
 
-            if (empty($data['permalink'])) {
+            if (empty($data['permalink']) && $subdef->get_permalink() !== null) {
                 $data['permalink'] = $subdef->get_permalink()->get_url()->__toString();
             }
 

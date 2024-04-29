@@ -142,13 +142,10 @@ class RedisCache extends CacheProvider implements Cache
 
     public function removeByPattern($pattern)
     {
-        $keysToremove = [];
         $iterator = null;
         while(false !== ($keys = $this->_redis->scan($iterator, $pattern))) {
-            $keysToremove = array_merge($keysToremove, $keys);
+            $this->_redis->del($keys);
         }
-
-        $this->_redis->del($keysToremove);
 
         return true;
     }
