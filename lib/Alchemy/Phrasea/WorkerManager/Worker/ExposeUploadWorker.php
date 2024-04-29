@@ -149,7 +149,7 @@ class ExposeUploadWorker implements WorkerInterface
             $databox = $record->getDatabox();
             $caption = $record->get_caption();
             $lat = $lng = null;
-            $webVTT = '';
+            $webVTT = [];
 
             if (in_array($payload['databoxId'], $sendGeolocField)) {
                 $latFieldName = $lonFieldName = '';
@@ -189,12 +189,19 @@ class ExposeUploadWorker implements WorkerInterface
 
             if (in_array($payload['databoxId'], $sendVttField)) {
                 foreach ($databox->get_meta_structure() as $meta) {
-                    if (strpos(strtolower($meta->get_name()), strtolower('VideoTextTrack')) !== FALSE  && $caption->has_field($meta->get_name())) {
+                    if (1 === preg_match('#^VideoTextTrack([a-z]{2}(?:[-_]\w+)?)#i', $meta->get_name(), $matches)  && $caption->has_field($meta->get_name())) {
                         // retrieve value for the corresponding field
                         $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
                         $fieldValue = array_pop($fieldValues);
+                        $locale = strtolower($matches[1]);
+                        $content = trim($fieldValue->getValue());
 
-                        $webVTT .= "\n\n" .$fieldValue->getValue();
+                        $webVTT[] = [
+                            'id' => md5($content),
+                            'locale' => $locale,
+                            'label' => $locale,
+                            'content' => $content,
+                        ];
                     }
                 }
             }
@@ -248,7 +255,7 @@ class ExposeUploadWorker implements WorkerInterface
                 $requestBody['lng'] = $lng;
             }
 
-            if ($webVTT !== '') {
+            if (!empty($webVTT)) {
                 $requestBody['webVTT'] = $webVTT;
             }
 
