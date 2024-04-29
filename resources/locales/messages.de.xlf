@@ -1462,9 +1462,9 @@
         <target state="translated">Zurück zur Sammelkörbe Liste</target>
         <jms:reference-file line="8">WorkZone/Browser/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="874df4e774343ace22071f648b6b67d11e21b307" resname="Background Color">
+      <trans-unit id="874df4e774343ace22071f648b6b67d11e21b307" resname="Background Color" xml:space="preserve">
         <source>Background Color</source>
-        <target state="translated">Hintergrundfarbe</target>
+        <target state="needs-translation">Hintergrundfarbe</target>
         <jms:reference-file line="45">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae1378dc6a6f7df2435c398db9e6eac71646092b" resname="Bad request format, only JSON is allowed" approved="yes">
