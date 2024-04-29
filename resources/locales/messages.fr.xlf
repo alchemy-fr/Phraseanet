@@ -9863,7 +9863,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
-        <target state="needs-translation">Marquer "Annuler"</target>
+        <target state="needs-translation">Marquer "Annuler" les travaux démarré depuis ...</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
