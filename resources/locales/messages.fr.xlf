@@ -1462,9 +1462,9 @@
         <target state="translated">Retour à la liste des paniers</target>
         <jms:reference-file line="8">WorkZone/Browser/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="874df4e774343ace22071f648b6b67d11e21b307" resname="Background Color">
+      <trans-unit id="874df4e774343ace22071f648b6b67d11e21b307" resname="Background Color" xml:space="preserve">
         <source>Background Color</source>
-        <target state="translated">Couleur de fond</target>
+        <target state="needs-translation">Couleur de fond (ex: #FFFFFF)</target>
         <jms:reference-file line="45">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae1378dc6a6f7df2435c398db9e6eac71646092b" resname="Bad request format, only JSON is allowed" approved="yes">
@@ -9863,7 +9863,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled" xml:space="preserve">
         <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
-        <target state="needs-translation">Marquer "Annuler"</target>
+        <target state="needs-translation">Marquer "Annuler" les travaux démarrés depuis...</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
