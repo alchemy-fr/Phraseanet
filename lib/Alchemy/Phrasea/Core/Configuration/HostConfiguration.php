@@ -151,7 +151,7 @@ class HostConfiguration implements ConfigurationInterface
      */
     public function getConfig()
     {
-        if (empty($this->cache)) {
+        if (empty($this->cache) || !is_array($this->cache)) {
             throw new RuntimeException('Configuration is not set up.');
         }
 
