@@ -138,7 +138,7 @@ class Configuration implements ConfigurationInterface
             return $this->parser->parse($this->loadFile($this->config));
         }
 
-        if (null !== $this->cache) {
+        if (null !== $this->cache && is_array($this->cache)) {
             return $this->cache;
         }
 
@@ -151,7 +151,13 @@ class Configuration implements ConfigurationInterface
             ));
         }
 
-        return $this->cache = require $this->compiled;
+        $this->cache = require $this->compiled;
+
+        if (is_array($this->cache)) {
+            return $this->cache;
+        } else {
+            throw new RuntimeException('Configuration compiled error');
+        }
     }
 
     /**
