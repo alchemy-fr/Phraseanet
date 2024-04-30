@@ -2,24 +2,38 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
+use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerJob;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 
 class MainQueueWorker implements WorkerInterface
 {
+    use ApplicationBoxAware;
+    use DataboxLoggerAware;
+
     private $messagePublisher;
 
     private $repoWorkerJob;
+    private $repoWorkerRunningJob;
+    private $conf;
 
     public function __construct(
         MessagePublisher $messagePublisher,
-        WorkerJobRepository $repoWorkerJob
+        WorkerJobRepository $repoWorkerJob,
+        WorkerRunningJobRepository $repoWorkerRunningJob,
+        PropertyAccess $conf
     )
     {
         $this->messagePublisher = $messagePublisher;
         $this->repoWorkerJob    = $repoWorkerJob;
+        $this->repoWorkerRunningJob    = $repoWorkerRunningJob;
+        $this->conf = $conf;
     }
 
     public function process(array $payload)
@@ -28,6 +42,31 @@ class MainQueueWorker implements WorkerInterface
             'message_type'  => MessagePublisher::MAIN_QUEUE_TYPE,
             'payload'       => $payload
         ];
+
+        $autoCancelingJob = $this->conf->get(['workers', 'auto-cancelingJob'], null);
+
+        if (!empty($autoCancelingJob)) {
+            $autoCancelingJob = intval($autoCancelingJob);
+
+            // first get the workerRunningJobs for log_docs 'subdefCreation', 'writeMetadatas'
+            $workerRunningJobs = $this->repoWorkerRunningJob->getRunningSinceCreated($autoCancelingJob, ['subdefCreation', 'writeMetadatas']);
+
+            // update the status for table workerRunningJob
+            $this->repoWorkerRunningJob->updateStatusRunningToCanceledSinceCreated($autoCancelingJob);
+
+            // last, treat the log_docs
+            $finishedDate = new \DateTime('now');
+            /** @var WorkerRunningJob $workerRunningJob */
+            foreach ($workerRunningJobs as $workerRunningJob) {
+                $databox    = $this->findDataboxById($workerRunningJob->getDataboxId());
+                $record     = $databox->get_record($workerRunningJob->getRecordId());
+                $subdefName = $workerRunningJob->getWorkOn();
+                $action     = $workerRunningJob->getWork();
+                $status     = 'canceled';
+
+                $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, $action, $finishedDate, $status);
+            }
+        }
 
         $em = $this->repoWorkerJob->getEntityManager();
         $em->getConnection()->beginTransaction();
