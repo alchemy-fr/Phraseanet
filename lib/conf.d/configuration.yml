@@ -228,24 +228,24 @@ authentication:
             options:
                 client-id: ''
                 client-secret: ''
-        ps_auth_1:
+        openid-1:
             enabled: false
             display: false
-            title: 'PS Auth 1'
-            type: 'ps-auth'
+            title: 'openid 1'
+            type: openid
             options:
                 client-id: ''
                 client-secret: ''
-                base-url: 'https://api-auth.phrasea.local'
-                provider-type: 'oauth'
-                provider-name: 'v2'
-                icon-uri: null,
-                debug: false,
-                birth-group: '_firstlog'
-                everyone-group: '_everyone'
-                metamodel: '_metamodel'
-                model-gpfx: '_M_'
-                model-upfx: '_U_'
+                base-url: 'https://keycloak.phrasea.local'
+                realm-name: phrasea
+                exclusive: false
+                icon-uri: null
+                birth-group: _firstlog
+                everyone-group: _everyone
+                metamodel: _metamodel
+                model-gpfx: _M_
+                model-upfx: _U_
+                debug: false
                 auto-logout: false
                 auto-connect-idp-name: null
 registration-fields:
