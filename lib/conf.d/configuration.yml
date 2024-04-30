@@ -364,7 +364,7 @@ video-editor:
         - '1.5'
         - 3
 workers:
-    auto-cancelingJob: 48 # period in hours, not define or null to not execute
+    auto-cancelingJob: 24 # period in hours, not define or null to not execute
     queue:
         worker-queue:
             registry: alchemy_worker.queue_registry
