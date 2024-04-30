@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## 4.1.8-rc12
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - OpenId SSO support
+ - Bug fix 
+ - Record log doc improvement report 
+  
+### Stack (docker compose and helm)
+    
+   - Redis native session support
+
+## What's Changed
+* PHRAS-4041:Prod - matomo - Field display - improve rendering of Matomomediametrics by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4497
+* PHRAS-3416 Local for worker jobs by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4499
+* PHRAS-4056 Change imagemagick version and config file path by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4500
+* PHRAS-4049 Memory allocation error - validation reminder worker in a cron job - Allowed memory size by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4495
+* PHRAS-4042 Multilingue webvtt sent to expose by @4rthem in https://github.com/alchemy-fr/Phraseanet/pull/4502
+* PHRAS-4060 Webhook - error - stay in running status by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4506
+* PHRAS-4059 Prod - user account - application cannot be deleted by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4503
+* PHRAS-4053 Redis native session support by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4505
+* PHRAS-4045 Log - stdout - fix error on worker passed to igorw\get_in() by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4496
+* PHRAS-3960 bin/console clean:user - user deletion issue on --usertype=appowner by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4494
+* PHRAS-4057 Log_doc - report mark as "cancel" for running_job entry by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4501
+* PHRAS-4007 Auth provider - add keycloak provider - openid by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4462
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc11...4.1.8-rc12
+
 ## 4.1.8-rc11
 
 ### Update instructions
@@ -7,7 +42,7 @@
 - Migration patch: 
   - Migration script for configuration file
  
- `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
 
 ### Version summary
   
@@ -34,7 +69,7 @@
 - Migration patch: 
   - Migration script for configuration file
  
- `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
 
 ### Version summary
   
@@ -111,7 +146,7 @@
 - Migration patch: 
   - Migration script for configuration file
  
- `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
 
 ### Version summary
   
@@ -195,7 +230,7 @@
   - Migration script for configuration file, (backup it is  recommended).
   - Doctrine migration for updating databases scheme, (backup it is  recommended). 
  
-`bin/setup system:upgrade`, run by setup container with docker if env `PHRASEANET_UPGRADE=1 ` 
+`bin/setup system:upgrade`, ran by setup container with docker if env `PHRASEANET_UPGRADE=1 ` 
 
 ### Version summary
   
