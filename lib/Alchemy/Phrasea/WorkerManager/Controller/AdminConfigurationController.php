@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
@@ -32,6 +33,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdminConfigurationController extends Controller
 {
+    use DataboxLoggerAware;
+
     public function indexAction(PhraseaApplication $app, Request $request)
     {
         return $this->render('admin/worker-manager/index.html.twig', [
@@ -223,14 +226,20 @@ class AdminConfigurationController extends Controller
         $workerRunningJob = $repoWorker->find($workerId);
 
         $workerRunningJob->setStatus($request->request->get('status'));
+        $finishedDate = new \DateTime('now');
+
         if($request->request->get('finished') == '1') {
-            $workerRunningJob->setFinished(new \DateTime('now'))->setFlock(null);
+            $workerRunningJob->setFinished($finishedDate)->setFlock(null);
         }
 
         $em = $repoWorker->getEntityManager();
         $em->persist($workerRunningJob);
 
         $em->flush();
+
+        if (in_array($workerRunningJob->getWork(), ['subdefCreation', 'writeMetadatas'])) {
+            $this->updateLogDocs($workerRunningJob, $workerRunningJob->getStatus(), $finishedDate);
+        }
 
         return $this->app->json(['success' => true]);
     }
@@ -250,7 +259,15 @@ class AdminConfigurationController extends Controller
     {
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $this->app['repo.worker-running-job'];
+        $workerRunningJobs = $repoWorker->getRunningSinceCreated($request->request->get('hour'), ['subdefCreation', 'writeMetadatas']);
+
         $repoWorker->updateStatusRunningToCanceledSinceCreated($request->request->get('hour'));
+
+        $finishedDate = new \DateTime('now');
+        /** @var WorkerRunningJob $workerRunningJob */
+        foreach ($workerRunningJobs as $workerRunningJob) {
+            $this->updateLogDocs($workerRunningJob, 'canceled', $finishedDate);
+        }
 
         return $this->app->json(['success' => true]);
     }
@@ -555,6 +572,17 @@ class AdminConfigurationController extends Controller
         $repoWorkerJob = $app['repo.worker-running-job'];
 
         return $repoWorkerJob->checkPopulateStatusByDataboxIds($databoxIds);
+    }
+
+    private function updateLogDocs(WorkerRunningJob $workerRunningJob, $status, $finishedDate)
+    {
+        $databox    = $this->findDataboxById($workerRunningJob->getDataboxId());
+        $record     = $databox->get_record($workerRunningJob->getRecordId());
+        $subdefName = $workerRunningJob->getWorkOn();
+        $action     = $workerRunningJob->getWork();
+
+        $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, $action, $finishedDate, $status);
+
     }
 
     private function getDefaultRecordsActionsSettings()
