@@ -158,6 +158,31 @@
 
             $form.submit();
         });
+
+        $("#registrations").on('click', '.cancel-user-request', function() {
+            if(confirm('Do you want to delete this user request ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/users/registrations/delete/",
+                    data: {
+                        userId : $(this).attr('data-user-id'),
+                    },
+                    success: function (data) {
+                        if (data.success == true) {
+                            $.ajax({
+                                type: "GET",
+                                url: "/admin/users/registrations/",
+                                success: function (data) {
+                                }
+                            });
+                        }
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+
     });
 </script>
 
@@ -262,6 +287,9 @@
                                         <option value="{{ user.getId() ~ '_' ~ model.getId() }}">{{ model.getLogin() }}</option>
                                     {% endfor %}
                                 </select>
+                            </td>
+                            <td>
+                                <button data-user-id="{{ user.getId() }}" class="btn btn-danger cancel-user-request">{{ 'admin:: cancel user request' }}</button>
                             </td>
                         </tr>
                     </table>
