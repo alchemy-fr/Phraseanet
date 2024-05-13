@@ -267,6 +267,7 @@ class UserManager
         $this->cleanOauthApplication($user);
         $this->cleanLazarets($user);
         $this->cleanUsrList($user);
+        $this->cleanRegistration($user);
     }
 
     private function cleanLazarets(User $user)
@@ -295,6 +296,15 @@ class UserManager
             $stmt->closeCursor();
         }
     }
+
+    private function cleanRegistration(User $user)
+    {
+        $registrations = $this->objectManager->getRepository('Phraseanet:Registration')->findBy(['user' => $user]);
+        foreach ($registrations as $registration) {
+            $this->objectManager->remove($registration);
+        }
+    }
+
     private function cleanOauthApplication(User $user)
     {
         $accounts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findByUser($user);
