@@ -27,6 +27,11 @@ fi
 chown -R app:app cache
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on cache/ repository"
 
+if [ -d "www/plugins/" ];then
+chown -R app:app www/plugins
+echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on plugins/ repository"
+fi
+
 #    config \
 #    tmp \
 #    logs \
