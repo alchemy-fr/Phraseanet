@@ -97,7 +97,12 @@ CMD ["php-fpm", "-F"]
 # Phraseanet worker application image
 #########################################################################
 
-FROM phraseanet-fpm as phraseanet-worker
+FROM alchemyfr/phraseanet-base:1.0.0 as phraseanet-worker
+
+COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
+ADD ./docker/phraseanet/root /
+WORKDIR /var/alchemy/Phraseanet
+
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends  supervisor
 RUN apt-get install -y --no-install-recommends  logrotate 
