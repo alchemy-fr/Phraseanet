@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\PhraseanetService\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Authentication\Provider\Openid;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
@@ -78,10 +79,10 @@ class PSExposeController extends Controller
 
         if (isset($tokenBody['refresh_expires_in'])) {
             $passSessionNameValue = [
-                'access_token' => $tokenBody['access_token'],
-                'expires_at'   => time() + $tokenBody['expires_in'],
-                'refresh_token'=> $tokenBody['refresh_token'],
-                'refresh_expires_at' => ($tokenBody['refresh_expires_in'] == -1) ? $tokenBody['refresh_expires_in'] : time() + $tokenBody['refresh_expires_in']
+                'access_token'          => $tokenBody['access_token'],
+                'expires_at'            => time() + $tokenBody['expires_in'],
+                'refresh_token'         => $tokenBody['refresh_token'],
+                'refresh_expires_at'    => time() + $tokenBody['refresh_expires_in']
             ];
         } else {
             $passSessionNameValue = [
@@ -204,20 +205,6 @@ class PSExposeController extends Controller
 
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($exposeName);
-        $providerId = $session->get('auth_provider.id');
-
-        if (!$session->has($passSessionName) && $providerId != null) {
-            try {
-                $provider = $this->getAuthenticationProviders()->get($providerId);
-                // class name
-                if (($provider->getType() == 'Openid' || $provider->getType() == 'PsAuth') && $exposeConfiguration['auth_provider_name'] == $providerId) {
-
-                    $session->set($passSessionName, ['access_token' => $provider->getAccessToken()]);
-                    $session->set($this->getLoginSessionName($exposeName), $provider->getUserName());
-                }
-            } catch(\Exception $e) {
-            }
-        }
 
         $accessToken = $this->getAndSaveToken($exposeName);
 
@@ -926,8 +913,19 @@ class PSExposeController extends Controller
             ]);
         }
 
+        $withProviderName = false;
+        try {
+            $providerId = $this->getSession()->get('auth_provider.id');
+            $provider = $this->getAuthenticationProviders()->get($providerId);
+            if (($provider->getType() == 'Openid' || $provider->getType() == 'PsAuth') && $config['auth_provider_name'] == $providerId) {
+                $withProviderName = true;
+            }
+        } catch (\Exception $e){
+            // provider not found
+        }
+
         $accessTokenInfo = [];
-        if ($config['connection_kind'] == 'password') {
+        if ($withProviderName || $config['connection_kind'] == 'password') {
             $accessTokenInfo = $this->getSession()->get($this->getPassSessionName($exposeName));
         } elseif($config['connection_kind'] == 'client_credentials') {
             $accessTokenInfo = $this->getSession()->get($this->getCredentialSessionName($exposeName));
@@ -1344,6 +1342,43 @@ class PSExposeController extends Controller
         $config = $this->getExposeConfiguration($exposeName);
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($exposeName);
+        $providerId = $session->get('auth_provider.id');
+        $withProviderName =  false;
+        $accessToken = '';
+
+        if ($providerId != null ) {
+            try {
+                $provider = $this->getAuthenticationProviders()->get($providerId);
+                // class name
+                if (($provider->getType() == 'Openid' || $provider->getType() == 'PsAuth') && $config['auth_provider_name'] == $providerId) {
+                    $withProviderName = true;
+                    $tokenInfo = $session->get($passSessionName);
+
+                    if (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+                        $accessToken = $tokenInfo['access_token'];
+                    } elseif (empty($tokenInfo) || (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && isset($tokenInfo['refresh_expires_at']) && $tokenInfo['refresh_expires_at'] > time())) {
+                        /** @var $provider Openid */
+                        $provider->getAccessToken(true); // update token info
+
+                        $tokenInfo = $session->get('provider.token_info');
+                        $passSessionNameValue = [
+                            'access_token'      => $tokenInfo['access_token'],
+                            'expires_at'        => time() + $tokenInfo['expires_in'],
+                            'refresh_token'     => $tokenInfo['refresh_token'],
+                            'refresh_expires_at' => time() + $tokenInfo['refresh_expires_in'],
+                            'providerId'        => $providerId
+                        ];
+
+                        $session->set($passSessionName, $passSessionNameValue);
+                        $session->set($this->getLoginSessionName($exposeName), $provider->getUserName());
+                        $accessToken = $tokenInfo['access_token'];
+                    } else {
+                        throw new \Exception("can not have a refresh token");
+                    }
+                }
+            } catch(\Exception $e) {
+            }
+        }
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
         $oauthClient = $proxyConfig->getClientWithOptions([
@@ -1352,63 +1387,60 @@ class PSExposeController extends Controller
 
         $credentialSessionName = $this->getCredentialSessionName($exposeName);
 
-        $accessToken = '';
-        if ($config['connection_kind'] == 'password') {
-            $tokenInfo = $session->get($passSessionName);
-            if (!isset($tokenInfo['expires_at'])) {
-                // case of never expired
-                // eg: with provederID with phraseanet
-                $accessToken = $tokenInfo['access_token'];
-            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
-                $accessToken = $tokenInfo['access_token'];
-            } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && isset($tokenInfo['refresh_expires_at']) && $tokenInfo['refresh_expires_at'] > time()) {
-                $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
+        if (!$withProviderName && $session->has($passSessionName)) {
+            if ($config['connection_kind'] == 'password') {
+                $tokenInfo = $session->get($passSessionName);
+                if (is_array($tokenInfo) && $tokenInfo['expires_at'] > time()) {
+                    $accessToken = $tokenInfo['access_token'];
+                } elseif (is_array($tokenInfo) && $tokenInfo['expires_at'] <= time() && isset($tokenInfo['refresh_expires_at']) && $tokenInfo['refresh_expires_at'] > time()) {
+                    $resToken = $this->refreshToken($oauthClient, $config, $tokenInfo['refresh_token']);
 
-                if ($resToken->getStatusCode() !== 200) {
-                    throw new \Exception("Error when get refresh token with status code: " . $resToken->getStatusCode());
-                }
+                    if ($resToken->getStatusCode() !== 200) {
+                        throw new \Exception("Error when get refresh token with status code: " . $resToken->getStatusCode());
+                    }
 
-                $refreshtokenBody = $resToken->getBody()->getContents();
+                    $refreshtokenBody = $resToken->getBody()->getContents();
 
-                $refreshtokenBody = json_decode($refreshtokenBody,true);
+                    $refreshtokenBody = json_decode($refreshtokenBody,true);
 
-                if (isset($refreshtokenBody['refresh_expires_in'])) {
-                    $passSessionNameValue = [
-                        'access_token' => $refreshtokenBody['access_token'],
-                        'expires_at'   => time() + $refreshtokenBody['expires_in'],
-                        'refresh_token'=> $refreshtokenBody['refresh_token'],
-                        'refresh_expires_at' => ($refreshtokenBody['refresh_expires_in'] == -1) ? $refreshtokenBody['refresh_expires_in'] : time() + $refreshtokenBody['refresh_expires_in']
-                    ];
+                    if (isset($refreshtokenBody['refresh_expires_in'])) {
+                        $passSessionNameValue = [
+                            'access_token' => $refreshtokenBody['access_token'],
+                            'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                            'refresh_token'=> $refreshtokenBody['refresh_token'],
+                            'refresh_expires_at' => time() + $refreshtokenBody['refresh_expires_in']
+                        ];
+                    } else {
+                        $passSessionNameValue = [
+                            'access_token' => $refreshtokenBody['access_token'],
+                            'expires_at'   => time() + $refreshtokenBody['expires_in'],
+                        ];
+                    }
+
+                    $session->set($passSessionName, $passSessionNameValue);
+
+                    $accessToken = $refreshtokenBody['access_token'];
                 } else {
-                    $passSessionNameValue = [
-                        'access_token' => $refreshtokenBody['access_token'],
-                        'expires_at'   => time() + $refreshtokenBody['expires_in'],
-                    ];
+                    $session->remove($passSessionName);
+                    throw new \Exception("can not have a refresh token");
                 }
 
-                $session->set($passSessionName, $passSessionNameValue);
-
-                $accessToken = $refreshtokenBody['access_token'];
-            } else {
-                $session->remove($passSessionName);
-            }
-
-        } elseif ($config['connection_kind'] == 'client_credentials') {
-            if ($session->has($credentialSessionName)) {
-                $tokenInfoCredential = $session->get($credentialSessionName);
-                if (!isset($tokenInfoCredential['expires_at'])) {
-                    // case of never expired
-                    // eg: with provederID with phraseanet
-                    $accessToken = $tokenInfoCredential['access_token'];
-                } elseif (is_array($tokenInfoCredential) && $tokenInfoCredential['expires_at'] > time()) {
-                    $accessToken = $tokenInfoCredential['access_token'];
+            } elseif ($config['connection_kind'] == 'client_credentials') {
+                if ($session->has($credentialSessionName)) {
+                    $tokenInfoCredential = $session->get($credentialSessionName);
+                    if (!isset($tokenInfoCredential['expires_at'])) {
+                        $accessToken = $tokenInfoCredential['access_token'];
+                    } elseif (is_array($tokenInfoCredential) && $tokenInfoCredential['expires_at'] > time()) {
+                        $accessToken = $tokenInfoCredential['access_token'];
+                    } else {
+                        $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
+                    }
                 } else {
                     $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
                 }
-            } else {
-                $accessToken = $this->getTokenByCredential($oauthClient, $config, $credentialSessionName);
             }
         }
+
 
         return $accessToken;
     }
