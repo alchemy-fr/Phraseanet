@@ -838,9 +838,11 @@ class RecordsActionsWorker implements WorkerInterface
                 }
 
                 $sqlBuilder->addFrom(sprintf(
-                    'INNER JOIN metadatas AS p%d ON(p%d.record_id=record.record_id)',
+                    'INNER JOIN metadatas AS p%d ON(p%d.record_id=record.record_id AND p%d.meta_struct_id=%s)',
                     $ijoin,
-                    $ijoin
+                    $ijoin,
+                    $ijoin,
+                    $databox->get_connection()->quote($field->get_id())
                 ));
 
                 break;
