@@ -285,6 +285,21 @@ const workzone = (services) => {
             }
         });
 
+        $('#DIALOG-field-mapping').on('click', '.checkbox-field-mapping', function() {
+            if ($(this).is(":checked")) {
+                let nameEl = $(this).attr('data-field-name');
+                let inputName = $(this).closest('div').find('.name-expose-side');
+                let labelText = $(this).closest('label').find('span').text();
+                inputName.attr('name', nameEl);
+                inputName.attr('value', labelText);
+                inputName.removeClass('hidden');
+            } else {
+                let inputName = $(this).closest('div').find('.name-expose-side');
+                inputName.removeAttr('name');
+                inputName.addClass('hidden');
+            }
+        });
+
         $('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function(event) {
             event.preventDefault();
             if ($('#subdef-profile-mapping').val() == '') {
