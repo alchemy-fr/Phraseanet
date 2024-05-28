@@ -124,9 +124,9 @@ class ExposeUploadWorker implements WorkerInterface
 
             $description = "<dl>";
 
-            foreach ($fieldListToUpload as $value) {
-                // value as databoxId_metaId
-                $t = explode('_', $value);
+            foreach ($fieldListToUpload as $key => $fieldLabel) {
+                // key as databoxId_metaId
+                $t = explode('_', $key);
 
                 // check if it is on the same databox
                 if ($payload['databoxId'] == $t[0]) {
@@ -135,12 +135,10 @@ class ExposeUploadWorker implements WorkerInterface
                         // retrieve value for the corresponding field
                         $captionField =  $record->get_caption()->get_field($fieldName);
                         $fieldValues = $captionField->get_values();
-
                         $fieldType = $captionField->get_databox_field()->get_type();
-                        $fieldLabel = $helpers->getCaptionFieldLabel($record, $fieldName);
 
-                        $description .= "<dt class='field-title field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $fieldLabel. "</dt>";
-                        $description .= "<dd class='field-value field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $helpers->getCaptionField($record, $fieldName, $fieldValues). "</dd>";
+                        $description .= "<dt class='field-title field-type-". $fieldType ." field-name-". $fieldName ."' >" . $fieldLabel. "</dt>";
+                        $description .= "<dd class='field-value field-type-". $fieldType ." field-name-". $fieldName ."' >" . $helpers->getCaptionField($record, $fieldName, $fieldValues). "</dd>";
                     }
                 }
             }

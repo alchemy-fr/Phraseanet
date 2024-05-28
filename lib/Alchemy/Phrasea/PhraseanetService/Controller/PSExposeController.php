@@ -1033,7 +1033,7 @@ class PSExposeController extends Controller
         $sendGeolocField = !empty($request->request->get('sendGeolocField')) ? array_keys($request->request->get('sendGeolocField')): [];
         $sendVttField = !empty($request->request->get('sendVttField')) ? array_keys($request->request->get('sendVttField')) : [];
 
-        $fields = ($request->request->get('fields') === null) ? null : array_keys($request->request->get('fields'));
+        $fields = ($request->request->get('fields') === null) ? null : $request->request->get('fields');
 
         $fieldMapping = [
             'sendGeolocField'   => $sendGeolocField,
@@ -1212,26 +1212,28 @@ class PSExposeController extends Controller
         $databoxes = $this->getApplicationBox()->get_databoxes();
 
         $fieldFromProfile = [];
-        foreach ($actualFieldsList as $value) {
-            $t = explode('_', $value);
+        foreach ($actualFieldsList as $key => $value) {
+            $t = explode('_', $key);
             $databox = $this->getApplicationBox()->get_databox($t[0]);
             $viewName = $t[0]. ':::' .$databox->get_viewname();
 
-            $fieldFromProfile[$viewName][$t[1]]['id']      = $value;
+            $fieldFromProfile[$viewName][$t[1]]['id']      = $key;
             $fieldFromProfile[$viewName][$t[1]]['name']    = $databox->get_meta_structure()->get_element($t[1])->get_label($this->app['locale']);
+            $fieldFromProfile[$viewName][$t[1]]['exposeSideName']    = $value;
             $fieldFromProfile[$viewName][$t[1]]['checked'] = true;
         }
 
         $fields = $fieldFromProfile;
         foreach ($databoxes as $databox) {
+            $viewName = $databox->get_sbas_id().':::'.$databox->get_viewname();
             foreach ($databox->get_meta_structure() as $meta) {
-                $viewName = $databox->get_sbas_id().':::'.$databox->get_viewname();
                 if (!empty($fields[$viewName][$meta->get_id()]) && in_array($databox->get_sbas_id().'_'.$meta->get_id(), $fields[$viewName][$meta->get_id()])) {
                    continue;
                 }
                 // get databoxID_metaID for the checkbox name
                 $fields[$viewName][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
                 $fields[$viewName][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
+                $fields[$viewName][$meta->get_id()]['exposeSideName'] = $meta->get_label($this->app['locale']);;
             }
         }
 
