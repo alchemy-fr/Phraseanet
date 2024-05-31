@@ -44,13 +44,13 @@
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
-                        <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
+                        <div id="publication-list-data" class="ui-widget publication_parent_wrapper" style="margin-top: 10px;margin-left: 2px;">
                             {% if publication.parent.id %}
                                 {% set parentId =  publication.parent.id %}
                             {% endif %}
                             <select id="publication_parent" name="parent" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="">{{ 'prod:expose:publication:Select a parent publication' | trans }}</option>
+                                <option value="">{{ 'prod:expose:publication:Search a parent publication' | trans }}</option>
                                 {% if publication.parent %}
                                     <option value="/publications/{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
                                 {% endif %}
@@ -222,22 +222,30 @@
                 $(this).next("div#moreSettingInner").toggleClass('hidden');
             });
 
-            $.ajax({
-                type: "GET",
-                url: `/prod/expose/list-publication/?format=pub-list&exposeName={{ exposeName }}`,
-                success: function (data) {
-                    publicationParent.empty().html('<option value="">{{ "prod:expose:publication:Select a parent publication" | trans }}</option>');
-                    for (i = 0; i < data.publications.length; i++) {
-                        let selected = '';
-                        if (data.publications[i].id == '{{ parentId }}') {
-                            selected = 'selected="selected"';
-                        }
+            publicationParent.select2({
+                ajax: {
+                    url: `/prod/expose/list-publication/`,
+                    data: function (params) {
+                        let exposeName = $('#expose_list').val();
+                        // Query parameters will be ?title=[term]&exposeName=[exposeName]&format=pub-list&page=[page]
 
-                        if (data.publications[i].id !== '{{ publication.id }}') {
-                            publicationParent.append('<option value='+ data.basePath + '/' + data.publications[i].id+' ' + selected +'>'+data.publications[i].title+'</option>');
-                        }
-                    }
-                }
+                        return {
+                            title: params.term,
+                            exposeName: exposeName,
+                            format: 'pub-list',
+                            editable: 1,
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.publications,
+                            pagination: data.pagination
+                        };
+                    },
+                    delay: 250
+                },
+                dropdownParent: $('#DIALOG-expose-edit')
             });
 
             {% if publication.capabilities.operator %}

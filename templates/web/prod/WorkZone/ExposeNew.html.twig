@@ -20,10 +20,9 @@
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
-                        <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
-                            <select id="publication_parent" name="parent" tabindex="-1" aria-hidden="true"
-                                    class="publication-field">
-                                <option value="">{{ 'prod:expose:publication:Select a parent publication' | trans }}</option>
+                        <div id="publication-list-data" class="ui-widget publication_parent_wrapper" style="margin-top: 10px;margin-left: 2px;">
+                            <select id="publication_parent" name="parent">
+                                <option value="">{{ 'prod:expose:publication:Search a parent publication' | trans }}</option>
                             </select>
                         </div>
                     </div>
@@ -158,6 +157,33 @@
         }
 
         $(document).ready(function () {
+
+            $("#publication_parent").select2({
+                ajax: {
+                    url: `/prod/expose/list-publication/`,
+                    data: function (params) {
+                        let exposeName = $('#expose_list').val();
+                        // Query parameters will be ?title=[term]&exposeName=[exposeName]&format=pub-list&page=[page]
+
+                        return {
+                            title: params.term,
+                            exposeName: exposeName,
+                            format: 'pub-list',
+                            editable: 1,
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.publications,
+                            pagination: data.pagination
+                        };
+                    },
+                    delay: 250
+                },
+                dropdownParent: $('#DIALOG-expose-add')
+            });
+
             $.datetimepicker.setLocale('{{ app['locale'] }}');
 
             $(".new-use-datepicker").datetimepicker({
@@ -345,17 +371,6 @@
             removeSecurityFieldDialogAdd();
         });
 
-        /**Selected Parent info **/
-        $(document).on('change', '#publication_parent', function (e) {
-            var selectedparent = $(this).children('option:selected');
-            if (selectedparent.val() !== "") {
-                $('#parent_info').html('').append('<p>Title : ' + selectedparent.data('title') + '</p><p>Slug: ' + selectedparent.data('slug') + '</p>');
-            } else {
-                $('#parent_info').html('');
-            }
-        });
-
-
         $('#DIALOG-expose-add').on('submit', '#publication-json', function (e) {
             e.preventDefault();
             removeSecurityFieldDialogAdd();
@@ -438,18 +453,6 @@
 
              $.ajax({
                  type: "GET",
-                 url: `/prod/expose/list-publication/?format=pub-list&exposeName=` + exposeName,
-                 success: function (data) {
-                     $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
-                     var i = 0;
-                     for ( ;i < data.publications.length; i++) {
-                         $('#DIALOG-expose-add select#publication_parent').append('<option value=' + data.basePath + '/' + data.publications[i].id+' >'+data.publications[i].title+'</option>');
-                     }
-                 }
-             });
-
-             $.ajax({
-                 type: "GET",
                  url: `/prod/expose/list-profile?exposeName=` + exposeName,
                  success: function (data) {
                      $('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
@@ -477,6 +480,13 @@
         }
         .publication-block .ui-widget.hide {
             display: none;
+        }
+        .select2-dropdown {
+            z-index: 4000;
+        }
+        .select2-container {
+            color: #555;
+            font-size: 14px;
         }
     </style>
 {% endmacro %}
