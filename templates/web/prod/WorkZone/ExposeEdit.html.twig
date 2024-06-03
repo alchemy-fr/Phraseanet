@@ -25,7 +25,7 @@
     <div id="publication-editing">
         <div class="expose-edit-wrapper">
             <br/>
-            <form id="publication-data-form" >
+            <form id="publication-data-form-edit" >
                 <div class="edit-publication-block">
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Name' | trans }}</label>
@@ -48,7 +48,7 @@
                             {% if publication.parent.id %}
                                 {% set parentId =  publication.parent.id %}
                             {% endif %}
-                            <select id="publication_parent" name="parent" tabindex="-1" aria-hidden="true"
+                            <select id="publication_parent_edit" name="parent" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
                                 <option value="">{{ 'prod:expose:publication:Search a parent publication' | trans }}</option>
                                 {% if publication.parent %}
@@ -201,8 +201,8 @@
     <script type="text/javascript">
         var publicationEdit = $(document).find("#DIALOG-expose-edit");
 
-        var publicationForm = publicationEdit.find("#publication-data-form");
-        var publicationParent = publicationEdit.find("#publication_parent");
+        var publicationForm = publicationEdit.find("#publication-data-form-edit");
+        var publicationParent = publicationEdit.find("#publication_parent_edit");
         var securityMethod = publicationEdit.find("#publication_securityMethod");
         var profileField = publicationEdit.find("#profile-field");
         var userList = publicationEdit.find("#user-list");
@@ -245,7 +245,7 @@
                     },
                     delay: 250
                 },
-                dropdownParent: $('#DIALOG-expose-edit')
+                dropdownParent: $('#publication-data-form-edit')
             });
 
             {% if publication.capabilities.operator %}
@@ -396,7 +396,7 @@
                     success: function (data) {
                         if (data.success) {
                             publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
-                            document.getElementById("publication-data-form").reset();
+                            document.getElementById("publication-data-form-edit").reset();
                             setTimeout(function(){
                                     $('#DIALOG-expose-edit').dialog('close');
                                 }
