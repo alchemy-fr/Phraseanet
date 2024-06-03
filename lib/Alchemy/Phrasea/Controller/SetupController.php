@@ -184,9 +184,6 @@ class SetupController extends Controller
             $binaryData = [];
             foreach ([
                 'php_binary'         => $request->request->get('binary_php'),
-                'swf_extract_binary' => $request->request->get('binary_swfextract'),
-                'pdf2swf_binary'     => $request->request->get('binary_pdf2swf'),
-                'swf_render_binary'  => $request->request->get('binary_swfrender'),
                 'unoconv_binary'     => $request->request->get('binary_unoconv'),
                 'ffmpeg_binary'      => $request->request->get('binary_ffmpeg'),
                 'mp4box_binary'      => $request->request->get('binary_MP4Box'),
