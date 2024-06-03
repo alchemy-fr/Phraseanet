@@ -304,6 +304,8 @@ class Openid extends AbstractProvider
         // id_token_hint used when logout
         $this->session->set($this->getId() . '.provider.id_token', $data['id_token']);
 
+        $this->session->set('provider.token_info', $data);
+
         try {
             $this->debug();
 
@@ -325,14 +327,14 @@ class Openid extends AbstractProvider
             throw new NotAuthenticatedException('Guzzle error while authentication', $e->getCode(), $e);
         }
 
-        $this->debug();
-        $data = @json_decode($response->getBody(true), true);
-        $this->debug(var_export($data, true));
-
         if (200 !== $response->getStatusCode()) {
             $this->debug();
             throw new NotAuthenticatedException('Error while retrieving user info, invalid status code.');
         }
+
+        $this->debug();
+        $data = @json_decode($response->getBody(true), true);
+        $this->debug(var_export($data, true));
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             $this->debug();
@@ -803,8 +805,52 @@ class Openid extends AbstractProvider
             . 'XMCV9CQH+wW8/18L/BeSV1YkHS6B9wAAAABJRU5ErkJggg==';
     }
 
-    public function getAccessToken()
+    public function getAccessToken($byRefresh = false)
     {
+        if ($byRefresh) {
+            $tokenInfo = $this->session->get('provider.token_info');
+
+            try {
+                $url = sprintf("%s/realms/%s/protocol/openid-connect/token/",
+                    $this->config['base-url'],
+                    urlencode($this->config['realm-name'])
+                );
+
+                $guzzleRequest = $this->client->post($url);
+
+                $guzzleRequest->addPostFields([
+                    'grant_type'        => "refresh_token",
+                    'refresh_token'     => $tokenInfo['refresh_token'],
+                    'client_id'         => $this->config['client-id'],
+                    'client_secret'     => $this->config['client-secret'],
+                ]);
+
+                $guzzleRequest->setHeader('Accept', 'application/json');
+                $response = $guzzleRequest->send();
+                $this->debug();
+            }
+            catch (\Exception $e) {
+                $this->debug($e->getMessage());
+                throw new NotAuthenticatedException('Guzzle error while authentication', $e->getCode(), $e);
+            }
+
+            if (200 !== $response->getStatusCode()) {
+                $this->debug();
+                throw new NotAuthenticatedException('Error while retrieving user info, invalid status code.');
+            }
+
+            $data = @json_decode($response->getBody(true), true);
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                $this->debug();
+                throw new NotAuthenticatedException('Error while decoding token response, unable to parse JSON.');
+            }
+
+            // override token information
+            $this->session->set('provider.token_info', $data);
+            $this->session->set($this->getId() . '.provider.access_token', $data['access_token']);
+        }
+
         return $this->session->get($this->getId() . '.provider.access_token');
     }
 
