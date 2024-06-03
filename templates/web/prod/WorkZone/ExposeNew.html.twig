@@ -1,6 +1,6 @@
 {% macro add_publication(app) %}
     <div id='DIALOG-expose-add' style="display: none">
-        <div class="expose-edit-wrapper">
+        <div class="expose-edit-wrapper" style="position:relative;">
             <form id="publication-data-form" >
                 <div class="edit-publication-block">
                     <div class="ui-widget">
@@ -181,7 +181,7 @@
                     },
                     delay: 250
                 },
-                dropdownParent: $('#DIALOG-expose-add')
+                dropdownParent: $('#publication-data-form')
             });
 
             $.datetimepicker.setLocale('{{ app['locale'] }}');
@@ -487,6 +487,9 @@
         .select2-container {
             color: #555;
             font-size: 14px;
+        }
+        .select2-container--open .select2-dropdown {
+            left: 220px;
         }
     </style>
 {% endmacro %}
