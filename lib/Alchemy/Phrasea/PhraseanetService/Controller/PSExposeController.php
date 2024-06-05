@@ -958,6 +958,9 @@ class PSExposeController extends Controller
         }
 
         $exposeMappingName = $this->getExposeMappingName('field');
+        $fields = [];
+        $fieldMapping = [];
+
         try {
             $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
@@ -1214,12 +1217,23 @@ class PSExposeController extends Controller
         $fieldFromProfile = [];
         foreach ($actualFieldsList as $key => $value) {
             $t = explode('_', $key);
+
+            $oldFieldMapping = false;
+            if (count($t) == 2) {
+                $id = $key;
+            } else {
+                $oldFieldMapping = true;
+                $t = explode('_', $value);
+                $id = $value;
+            }
+
             $databox = $this->getApplicationBox()->get_databox($t[0]);
             $viewName = $t[0]. ':::' .$databox->get_viewname();
+            $name = $databox->get_meta_structure()->get_element($t[1])->get_label($this->app['locale']);
 
-            $fieldFromProfile[$viewName][$t[1]]['id']      = $key;
-            $fieldFromProfile[$viewName][$t[1]]['name']    = $databox->get_meta_structure()->get_element($t[1])->get_label($this->app['locale']);
-            $fieldFromProfile[$viewName][$t[1]]['exposeSideName']    = $value;
+            $fieldFromProfile[$viewName][$t[1]]['id']      = $id;
+            $fieldFromProfile[$viewName][$t[1]]['name']    = $name;
+            $fieldFromProfile[$viewName][$t[1]]['exposeSideName']    = ($oldFieldMapping) ? $name : $value;
             $fieldFromProfile[$viewName][$t[1]]['checked'] = true;
         }
 
@@ -1231,7 +1245,7 @@ class PSExposeController extends Controller
                    continue;
                 }
                 // get databoxID_metaID for the checkbox name
-                $fields[$viewName][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
+                $fields[$viewName][$meta->get_id()]['id']   = $databox->get_sbas_id().'_'.$meta->get_id();
                 $fields[$viewName][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
                 $fields[$viewName][$meta->get_id()]['exposeSideName'] = $meta->get_label($this->app['locale']);;
             }
