@@ -346,7 +346,8 @@ class PSExposeController extends Controller
             'exposeLogin'   => $session->get($this->getLoginSessionName($exposeName)),
             'basePath'      => $basePath,
             'previousPage'  => $previousPage,
-            'nextPage'      => $nextPage
+            'nextPage'      => $nextPage,
+            'nbItems'       => count($publications) . ' / ' . $totalItems
         ]);
     }
 

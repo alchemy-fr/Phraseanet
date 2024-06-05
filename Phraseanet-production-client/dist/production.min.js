@@ -11155,6 +11155,8 @@ var workzone = function workzone(services) {
                 if ('error' in data) {
                     (0, _jquery2.default)('.publication-list').empty().html(data.error);
                 }
+
+                (0, _jquery2.default)('#expose_workzone .nb_item').text(data.nbItems);
             },
             error: function error(data) {
                 if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {

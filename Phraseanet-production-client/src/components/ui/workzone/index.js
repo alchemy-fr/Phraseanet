@@ -1215,6 +1215,8 @@ const workzone = (services) => {
                 if ('error' in data) {
                     $('.publication-list').empty().html(data.error);
                 }
+
+                $('#expose_workzone .nb_item').text(data.nbItems);
             },
             error: function (data) {
                 if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
