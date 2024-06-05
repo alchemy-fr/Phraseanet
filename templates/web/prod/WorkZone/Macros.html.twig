@@ -689,15 +689,22 @@
                 </a>
             </div>
 
-            <button class="btn btn-secondary btn-sm expose_field_mapping hidden" href="#"
-                    style="margin-left:10px">{{ 'prod:expose field mapping' |trans }}</button>
+            <div style="margin-left:10px; margin-bottom: 10px;">
+                <button class="btn-primary btn-sm expose_field_mapping hidden" href="#" >{{ 'prod:expose field mapping' |trans }}
+                </button>
+            </div>
 
-            <div class="add_expose_block hidden" style="padding:10px;display:flex; align-items: center;">
-                <a id="add_publication" class="add_publication" href="#">
+            <div style="margin-left:10px">
+                <button id="add_publication" class="add_publication btn-primary btn-sm hidden">
                     <span>{{ 'prod:expose:Add publication' | trans }}</span>
                     <img src="/assets/common/images/icons/Basket-New.png"
                          title="{{ 'prod:expose:Add publication' | trans }}">
-                </a>
+                </button>
+            </div>
+
+            <div class="add_expose_block hidden" style="padding:10px;display:flex; align-items: center;">
+
+                <input type="text" value="" name="expose_title_filter" id="expose_title_filter" placeholder="{{ 'prod:expose search' | trans }}" style="max-width: 130px;">
 
                 <label class="checkbox" for="expose_editable_only" style="font-size: 12px; margin-left: auto;">
                     <input type="checkbox" id="expose_editable_only" name="expose_editable_only" value="1">
