@@ -127,6 +127,12 @@ const workzone = (services) => {
             updatePublicationList(exposeName);
         });
 
+        $('#expose_title_filter').on('keyup',function (event) {
+            let exposeName = $('#expose_list').val();
+            $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            updatePublicationList(exposeName);
+        });
+
         $('.refresh-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
             $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
@@ -1129,8 +1135,9 @@ const workzone = (services) => {
             type: 'GET',
             url: '/prod/expose/list-publication/?exposeName=' + exposeName + '&page=' + page,
             data:{
-                mine : $("#expose_mine_only").is(':checked') ? 1 : 0,
-                editable: $("#expose_editable_only").is(':checked') ? 1 : 0
+                mine: $("#expose_mine_only").is(':checked') ? 1 : 0,
+                editable: $("#expose_editable_only").is(':checked') ? 1 : 0,
+                title: $("#expose_title_filter").val()
             },
             success: function (data) {
                 if ('twig' in data) {
@@ -1171,12 +1178,14 @@ const workzone = (services) => {
                     $('.expose_connected').empty().text(loggedMessage);
                     $('.expose_logout_link').removeClass('hidden');
                     $('.expose_field_mapping').removeClass('hidden');
+                    $('.add_publication').removeClass('hidden');
                     $('.add_expose_block').removeClass('hidden');
                     $('.expose-pagination').removeClass('hidden');
                 } else {
                     $('.expose_connected').empty();
                     $('.expose_logout_link').addClass('hidden');
                     $('.expose_field_mapping').addClass('hidden');
+                    $('.add_publication').addClass('hidden');
                     $('.add_expose_block').addClass('hidden');
                     $('.expose-pagination').addClass('hidden');
                 }
@@ -1206,6 +1215,8 @@ const workzone = (services) => {
                 if ('error' in data) {
                     $('.publication-list').empty().html(data.error);
                 }
+
+                $('#expose_workzone .nb_item').text(data.nbItems);
             },
             error: function (data) {
                 if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {

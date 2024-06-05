@@ -63,7 +63,7 @@ class PhraseanetExtension extends \Twig_Extension
     {
         return [
             // change this version when you change JS file to force the navigation to reload js file
-            'assetFileVersion' => 105
+            'assetFileVersion' => 106
         ];
 
     }

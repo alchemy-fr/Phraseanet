@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2024-05-31T18:53:22Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2024-06-05T12:43:51Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -14090,12 +14090,12 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="75526f787066901506eb4ea14d24053e663cdb55" resname="prod:expose Editable only">
         <source>prod:expose Editable only</source>
         <target state="translated">Editable</target>
-        <jms:reference-file line="704">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="711">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0958e6208f4a5eade790de2c2aca7904ab63c8ab" resname="prod:expose Mine only">
         <source>prod:expose Mine only</source>
         <target state="translated">Mine</target>
-        <jms:reference-file line="709">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="716">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
         <source>prod:expose field mapping</source>
@@ -14105,7 +14105,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="0f2a0ac4867805f7f6c861f5e3044b43ce176f1b" resname="prod:expose next">
         <source>prod:expose next</source>
         <target state="translated">next</target>
-        <jms:reference-file line="720">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="727">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17973965f96bc86b5b9dd09879ce96f5d5dbc89a" resname="prod:expose preview">
         <source>prod:expose preview</source>
@@ -14115,7 +14115,12 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="7fb41400e2718d1d271d416d2e679a7b64a89e00" resname="prod:expose previous">
         <source>prod:expose previous</source>
         <target state="translated">previous</target>
-        <jms:reference-file line="718">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="725">prod/WorkZone/Macros.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c5ef10de4c189f1ce70c6112e1341ef5078f71ad" resname="prod:expose search">
+        <source>prod:expose search</source>
+        <target state="new">prod:expose search</target>
+        <jms:reference-file line="707">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
         <source>prod:expose: disabled</source>
@@ -14130,13 +14135,13 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="yes">
         <source>prod:expose:Add publication</source>
         <target state="translated">Add publication</target>
-        <jms:reference-file line="697">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="699">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="701">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f37a39537149886c8fd492dfdbdc596f01e09fd" resname="prod:expose:Refresh" approved="yes">
         <source>prod:expose:Refresh</source>
         <target state="translated">Refresh</target>
-        <jms:reference-file line="713">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="720">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37a8c50528409fa7c358d659ea11c3eb3252760b" resname="prod:expose:connection:Auth connexion" approved="yes">
         <source>prod:expose:connection:Auth connexion</source>
