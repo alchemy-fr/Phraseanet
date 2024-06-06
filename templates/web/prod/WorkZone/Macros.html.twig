@@ -684,9 +684,11 @@
             <div style="padding:10px;">
             <span class="expose_connected">
             </span>
-                <a href="#" class="pull-right expose_logout_link hidden" style="padding-top: 5px;">
-                    <span>{{ 'expose:: logout' | trans }}</span>
-                </a>
+                {% if app['session'].get('auth_provider.id') is null %}
+                    <a href="#" class="pull-right expose_logout_link hidden" style="padding-top: 5px;">
+                        <span>{{ 'expose:: logout' | trans }}</span>
+                    </a>
+                {% endif %}
             </div>
 
             <button class="btn btn-secondary btn-sm expose_field_mapping hidden" href="#"
