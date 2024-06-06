@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
@@ -123,9 +124,9 @@ class ExposeUploadWorker implements WorkerInterface
 
             $description = "<dl>";
 
-            foreach ($fieldListToUpload as $value) {
-                // value as databoxId_metaId
-                $t = explode('_', $value);
+            foreach ($fieldListToUpload as $key => $fieldLabel) {
+                // key as databoxId_metaId
+                $t = explode('_', $key);
 
                 // check if it is on the same databox
                 if ($payload['databoxId'] == $t[0]) {
@@ -134,12 +135,10 @@ class ExposeUploadWorker implements WorkerInterface
                         // retrieve value for the corresponding field
                         $captionField =  $record->get_caption()->get_field($fieldName);
                         $fieldValues = $captionField->get_values();
-
                         $fieldType = $captionField->get_databox_field()->get_type();
-                        $fieldLabel = $helpers->getCaptionFieldLabel($record, $fieldName);
 
-                        $description .= "<dt class='field-title field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $fieldLabel. "</dt>";
-                        $description .= "<dd class='field-value field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $helpers->getCaptionField($record, $fieldName, $fieldValues). "</dd>";
+                        $description .= "<dt class='field-title field-type-". $fieldType ." field-name-". $fieldName ."' >" . $fieldLabel. "</dt>";
+                        $description .= "<dd class='field-value field-type-". $fieldType ." field-name-". $fieldName ."' >" . $helpers->getCaptionField($record, $fieldName, $fieldValues). "</dd>";
                     }
                 }
             }
@@ -477,7 +476,7 @@ class ExposeUploadWorker implements WorkerInterface
 
         $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
-        if ($this->exposeConfiguration['connection_kind'] == 'password') {
+        if (isset($this->accessTokenInfo['providerId']) || $this->exposeConfiguration['connection_kind'] == 'password') {
             if (!isset($this->accessTokenInfo['expires_at'])) {
                 return $this->accessTokenInfo['access_token'];
             } elseif ($this->accessTokenInfo['expires_at'] > time()) {
@@ -543,5 +542,13 @@ class ExposeUploadWorker implements WorkerInterface
                 return $refreshtokenBody['access_token'];
             }
         }
+    }
+
+    /**
+     * @return ProvidersCollection
+     */
+    private function getAuthenticationProviders()
+    {
+        return $this->app['authentication.providers'];
     }
 }

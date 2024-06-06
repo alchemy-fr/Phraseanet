@@ -10239,6 +10239,21 @@ var workzone = function workzone(services) {
             }
         });
 
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '.checkbox-field-mapping', function () {
+            if ((0, _jquery2.default)(this).is(":checked")) {
+                var nameEl = (0, _jquery2.default)(this).attr('data-field-name');
+                var inputName = (0, _jquery2.default)(this).closest('div').find('.name-expose-side');
+                var labelText = (0, _jquery2.default)(this).closest('label').find('span').text();
+                inputName.attr('name', nameEl);
+                inputName.attr('value', labelText);
+                inputName.removeClass('hidden');
+            } else {
+                var _inputName = (0, _jquery2.default)(this).closest('div').find('.name-expose-side');
+                _inputName.removeAttr('name');
+                _inputName.addClass('hidden');
+            }
+        });
+
         (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function (event) {
             event.preventDefault();
             if ((0, _jquery2.default)('#subdef-profile-mapping').val() == '') {
