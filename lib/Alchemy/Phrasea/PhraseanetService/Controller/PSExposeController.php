@@ -186,6 +186,7 @@ class PSExposeController extends Controller
     {
         $exposeName = $request->get('exposeName');
         $page = empty($request->get('page')) ? 1 : $request->get('page');
+        $title = urlencode($request->get('title'));
 
         if ($exposeName == null) {
             return $app->json([
@@ -240,7 +241,8 @@ class PSExposeController extends Controller
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $uri = '/publications?flatten=true&order[createdAt]=desc&page=' . $page;
+            $uri = '/publications?flatten=true&order[createdAt]=desc&page=' . $page . '&title=' . $title;
+
             if ($request->get('mine') && $exposeConfiguration['connection_kind'] === 'password') {
                 $uri .= '&mine=true';
             }
@@ -294,9 +296,27 @@ class PSExposeController extends Controller
         $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
 
         if ($request->get('format') == 'pub-list') {
+            $publicationsList = [];
+            $excludePublication = $request->get('exclude');
+
+            $key = 0;
+            foreach ($publications as $publication) {
+                if ($excludePublication != $publication['id']) {
+                    $publicationsList[$key]['id']   = $basePath . '/' . $publication['id'];
+                    $publicationsList[$key]['text'] = $publication['title'];
+                    $key++;
+                }
+            }
+
+            $pagination = ['more' => false];
+            if ($nextPage) {
+                $pagination = ['more' => true];
+            }
+
             return $app->json([
-                'publications' => $publications,
-                'basePath'     => $basePath
+                'publications' => $publicationsList,
+                'basePath'     => $basePath,
+                'pagination'   => $pagination
             ]);
         }
 
@@ -318,7 +338,8 @@ class PSExposeController extends Controller
             'exposeLogin'   => $session->get($this->getLoginSessionName($exposeName)),
             'basePath'      => $basePath,
             'previousPage'  => $previousPage,
-            'nextPage'      => $nextPage
+            'nextPage'      => $nextPage,
+            'nbItems'       => count($publications) . ' / ' . $totalItems
         ]);
     }
 
