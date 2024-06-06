@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
@@ -475,7 +476,7 @@ class ExposeUploadWorker implements WorkerInterface
 
         $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
-        if ($this->exposeConfiguration['connection_kind'] == 'password') {
+        if (isset($this->accessTokenInfo['providerId']) || $this->exposeConfiguration['connection_kind'] == 'password') {
             if (!isset($this->accessTokenInfo['expires_at'])) {
                 return $this->accessTokenInfo['access_token'];
             } elseif ($this->accessTokenInfo['expires_at'] > time()) {
@@ -541,5 +542,13 @@ class ExposeUploadWorker implements WorkerInterface
                 return $refreshtokenBody['access_token'];
             }
         }
+    }
+
+    /**
+     * @return ProvidersCollection
+     */
+    private function getAuthenticationProviders()
+    {
+        return $this->app['authentication.providers'];
     }
 }

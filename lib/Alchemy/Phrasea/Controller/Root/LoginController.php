@@ -712,6 +712,7 @@ class LoginController extends Controller
     public function authenticationCallback(Request $request, $providerId)
     {
         $this->getSession()->set('auth_provider.id', null);
+        $this->getSession()->set('provider.token_info', null);
 
         $provider = $this->findProvider($providerId);
 
