@@ -127,10 +127,12 @@ const workzone = (services) => {
             updatePublicationList(exposeName);
         });
 
-        $('#expose_title_filter').on('keyup',function (event) {
-            let exposeName = $('#expose_list').val();
-            $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
-            updatePublicationList(exposeName);
+        $('#expose_title_filter').on('keyup', function (event) {
+            if ($(this).val().length > 2) {
+                let exposeName = $('#expose_list').val();
+                $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+                updatePublicationList(exposeName);
+            }
         });
 
         $('.refresh-list').on('click',function (event) {
