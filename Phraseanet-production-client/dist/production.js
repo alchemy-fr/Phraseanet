@@ -10082,9 +10082,11 @@ var workzone = function workzone(services) {
         });
 
         (0, _jquery2.default)('#expose_title_filter').on('keyup', function (event) {
-            var exposeName = (0, _jquery2.default)('#expose_list').val();
-            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
-            updatePublicationList(exposeName);
+            if ((0, _jquery2.default)(this).val().length > 2) {
+                var exposeName = (0, _jquery2.default)('#expose_list').val();
+                (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+                updatePublicationList(exposeName);
+            }
         });
 
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
