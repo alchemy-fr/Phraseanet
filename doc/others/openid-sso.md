@@ -39,7 +39,7 @@ authentication:
 #### keycloak configuration
 
 - create a new client
-- get clien-id and client-secret
+- get client-id and client-secret
 - in the client setting:
    
    set the 'Valid redirect URIs' field with `https://{phraseanet-host}/login/provider/{provider-name}/callback/`
@@ -56,3 +56,13 @@ authentication:
   `Token Claim Name` => groups  
   `Full group path`  => off   
   `Add to userinfo`  => on
+
+#### token expiration
+- we can define token expiration in keycloak
+
+  Choose a client > Advanced (tab) > Advanced Settings (section)
+  
+  define "Access Token Lifespan" for the token expiration
+  
+  and the "Client Session Idle"  for the refresh token expiration
+  
