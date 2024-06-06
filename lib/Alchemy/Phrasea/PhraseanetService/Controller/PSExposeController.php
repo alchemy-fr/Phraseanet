@@ -297,10 +297,15 @@ class PSExposeController extends Controller
 
         if ($request->get('format') == 'pub-list') {
             $publicationsList = [];
+            $excludePublication = $request->get('exclude');
 
-            foreach ($publications as $key => $publication) {
-                $publicationsList[$key]['id']   = $basePath . '/' . $publication['id'];
-                $publicationsList[$key]['text'] = $publication['title'];
+            $key = 0;
+            foreach ($publications as $publication) {
+                if ($excludePublication != $publication['id']) {
+                    $publicationsList[$key]['id']   = $basePath . '/' . $publication['id'];
+                    $publicationsList[$key]['text'] = $publication['title'];
+                    $key++;
+                }
             }
 
             $pagination = ['more' => false];

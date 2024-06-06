@@ -234,7 +234,8 @@
                             exposeName: exposeName,
                             format: 'pub-list',
                             editable: 1,
-                            page: params.page || 1
+                            page: params.page || 1,
+                            exclude: '{{ publication.id }}'
                         };
                     },
                     processResults: function (data) {
@@ -243,9 +244,9 @@
                             pagination: data.pagination
                         };
                     },
-                    delay: 250
+                    delay: 1000,
                 },
-                dropdownParent: $('#publication-data-form-edit')
+                dropdownParent: $('#publication-data-form-edit'),
             });
 
             {% if publication.capabilities.operator %}

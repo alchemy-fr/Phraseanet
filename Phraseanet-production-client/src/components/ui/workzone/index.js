@@ -128,7 +128,7 @@ const workzone = (services) => {
         });
 
         $('#expose_title_filter').on('keyup', function (event) {
-            if ($(this).val().length > 2) {
+            if ($(this).val().length > 2 || $(this).val().length === 0) {
                 let exposeName = $('#expose_list').val();
                 $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
                 updatePublicationList(exposeName);
