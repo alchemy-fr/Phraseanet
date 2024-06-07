@@ -51,6 +51,7 @@ gulp.task('build-vendors', [
     'build-jquery-test-paths',
     'build-simple-colorpicker',
     'build-jquery-datetimepicker',
-    'build-pusher-js'
+    'build-pusher-js',
+    'build-select2'
 ], function () {
 });
