@@ -204,7 +204,7 @@ class RegistrationService
 
         foreach (self::$userPropertySetterMap as $property => $method) {
             if (isset($data[$property])) {
-                $user->$method($data[$property]);
+                $user->$method($this->app['unicode']->remove_nonazAZ09($data[$property], true, true, true, true));
             }
         }
 
