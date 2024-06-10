@@ -13,9 +13,6 @@ class MediaAlchemystServiceProvider implements ServiceProviderInterface
         $app['media-alchemyst.configuration'] = $app->share(function (Application $app) {
             $configuration = [];
             $parameters = [
-                'swftools.pdf2swf.binaries'    => 'pdf2swf_binary',
-                'swftools.swfrender.binaries'  => 'swf_render_binary',
-                'swftools.swfextract.binaries' => 'swf_extract_binary',
                 'unoconv.binaries'             => 'unoconv_binary',
                 'mp4box.binaries'              => 'mp4box_binary',
                 'gs.binaries'                  => 'ghostscript_binary',

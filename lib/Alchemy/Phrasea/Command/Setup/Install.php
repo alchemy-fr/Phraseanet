@@ -429,9 +429,6 @@ class Install extends Command
     {
         return [
             'php_binary'           => $this->executableFinder->find('php'),
-            'pdf2swf_binary'       => $this->executableFinder->find('pdf2swf'),
-            'swf_extract_binary'   => $this->executableFinder->find('swfextract'),
-            'swf_render_binary'    => $this->executableFinder->find('swfrender'),
             'unoconv_binary'       => $this->executableFinder->find('unoconv'),
             'ffmpeg_binary'        => $this->executableFinder->find('ffmpeg', $this->executableFinder->find('avconv')),
             'ffprobe_binary'       => $this->executableFinder->find('ffprobe', $this->executableFinder->find('avprobe')),
