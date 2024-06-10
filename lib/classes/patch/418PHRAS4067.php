@@ -3,10 +3,10 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
-class patch_418RC13PHRAS4067 implements patchInterface
+class patch_418PHRAS4067 implements patchInterface
 {
     /** @var string */
-    private $release = '4.1.8-rc13';
+    private $release = '4.1.8';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];
