@@ -19,7 +19,6 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
 {
     const FILE_VERSION = '5.04';
     const IMAGICK_VERSION = '6.2.9';
-    const SWFTOOLS_VERSION = '0.9.0';
     const UNOCONV_VERSION = '0.5';
     const MP4BOX_VERSION = '0.4.0';
     const EXIFTOOL_VERSION = '9.15';
@@ -79,21 +78,6 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             );
         }
 
-        $pdf2swf = isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : $finder->find('pdf2swf');
-
-        if (null !== $pdf2swf) {
-            $output = null;
-            exec($pdf2swf . ' --version', $output);
-            $data = sscanf($output[0], 'pdf2swf - part of swftools %d.%d.%d');
-            $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
-
-            $this->addRecommendation(
-                version_compare(static::SWFTOOLS_VERSION, $version, '<='),
-                sprintf('SWFTools (pdf2swf) version %s or higher is required (%s provided)', static::SWFTOOLS_VERSION, $version),
-                'Please update to a more recent version.'
-            );
-        }
-
         $unoconv = isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : $finder->find('unoconv');
 
         $this->addRecommendation(
@@ -111,48 +95,6 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             $this->addRecommendation(
                 version_compare(static::UNOCONV_VERSION, $version, '<='),
                 sprintf('Unoconv version %s or higher is required (%s provided)', static::UNOCONV_VERSION, $version),
-                'Please update to a more recent version.'
-            );
-        }
-
-        $swfextract = isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : $finder->find('swfextract');
-
-        $this->addRecommendation(
-            null !== $swfextract && is_executable($swfextract),
-            'SWFTools (swfextract) are required for flash files support',
-            'Please install SWFTools (http://www.swftools.org/)'
-        );
-
-        if (null !== $swfextract) {
-            $output = null;
-            exec($swfextract . ' --version', $output);
-            $data = sscanf($output[0], 'swfextract - part of swftools %d.%d.%d');
-            $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
-
-            $this->addRecommendation(
-                version_compare(static::SWFTOOLS_VERSION, $version, '<='),
-                sprintf('SWFTools (swfextract) version %s or higher is required (%s provided)', static::SWFTOOLS_VERSION, $version),
-                'Please update to a more recent version.'
-            );
-        }
-
-        $swfrender = isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : $finder->find('swfrender');
-
-        $this->addRecommendation(
-            null !== $swfrender && is_executable($swfrender),
-            'SWFTools (swfrender) are required for flash files support',
-            'Please install SWFTools (http://www.swftools.org/)'
-        );
-
-        if (null !== $swfrender) {
-            $output = null;
-            exec($swfrender . ' --version', $output);
-            $data = sscanf($output[0], 'swfrender - part of swftools %d.%d.%d');
-            $version = sprintf('%d.%d.%d', $data[0], $data[1], $data[2]);
-
-            $this->addRecommendation(
-                version_compare(static::SWFTOOLS_VERSION, $version, '<='),
-                sprintf('SWFTools (swfrender) version %s or higher is required (%s provided)', static::SWFTOOLS_VERSION, $version),
                 'Please update to a more recent version.'
             );
         }

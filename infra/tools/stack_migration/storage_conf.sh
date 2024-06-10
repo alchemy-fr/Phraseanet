@@ -6,9 +6,6 @@ echo `date +"%Y-%m-%d %H:%M:%S"` - "update binaries path in accordance of docker
 
 bin/setup system:config -s set main.binaries.php_binary "/usr/local/bin/php"
 bin/setup system:config -s set main.binaries.ghostscript_binary "/usr/bin/gs"
-bin/setup system:config -s set main.binaries.swf_extract_binary "/usr/bin/swfextract"
-bin/setup system:config -s set main.binaries.pdf2swf_binary null
-bin/setup system:config -s set main.binaries.swf_render_binary "/usr/bin/swfrender"
 bin/setup system:config -s set main.binaries.unoconv_binary "/usr/bin/unoconv"
 bin/setup system:config -s set main.binaries.ffmpeg_binary "/usr/local/bin/ffmpeg"
 bin/setup system:config -s set main.binaries.ffprobe_binary "/usr/local/bin/ffprobe"
