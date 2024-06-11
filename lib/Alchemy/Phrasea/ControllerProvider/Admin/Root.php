@@ -94,6 +94,11 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('application', '\d+')
             ->bind('admin_inspector_application_token');
 
+        $controllers->post('/inspector/application/{application}/delete/', 'controller.admin.root:deleteApplication')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
+            ->bind('admin_inspector_application_delete');
+
         return $controllers;
     }
 }
