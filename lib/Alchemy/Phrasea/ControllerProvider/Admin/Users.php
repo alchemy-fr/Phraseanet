@@ -77,6 +77,8 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('users_display_registrations');
         $controllers->post('/registrations/', 'controller.admin.users:submitRegistrationAction')
             ->bind('users_submit_registrations');
+        $controllers->post('/registrations/delete/', 'controller.admin.users:deleteUserRegistrationAction')
+            ->bind('delete_user_registrations');
         $controllers->get('/import/file/', 'controller.admin.users:displayImportFileAction')
             ->bind('users_display_import_file');
         $controllers->post('/import/file/', 'controller.admin.users:submitImportFileAction')
