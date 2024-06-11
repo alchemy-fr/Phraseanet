@@ -1643,7 +1643,7 @@ class unicode
         return $this->convert($string, static::CONVERT_TO_ND);
     }
 
-    public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true, $keep_dot = false)
+    public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true, $keep_dot = false, $keep_space = false)
     {
         $string = $this->remove_diacritics($string);
 
@@ -1652,7 +1652,7 @@ class unicode
         for ($i = 0; $i < $l; $i ++) {
             $c = mb_substr($string, $i, 1);
             if(($c>='a'&&$c<='z')||($c>='A'&&$c<='Z')||($c>='0'&&$c<='9')
-                ||($keep_underscores&&$c=='_')||($keep_dot&&$c=='.')||($keep_minus&&$c=='-')) {
+                ||($keep_underscores&&$c=='_')||($keep_dot&&$c=='.')||($keep_minus&&$c=='-')||($keep_space&&$c==' ')) {
                 $out .= $c;
             }
         }

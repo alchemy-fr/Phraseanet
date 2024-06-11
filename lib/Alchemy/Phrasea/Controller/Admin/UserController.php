@@ -519,6 +519,30 @@ class UserController extends Controller
         ]);
     }
 
+    public function deleteUserRegistrationAction(Request $request)
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->app['orm.em'];
+        /** @var RegistrationRepository $registrationRepository */
+        $registrationRepository = $this->app['repo.registrations'];
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        $registrations = $registrationRepository->findBy(['user' => $userRepository->find($request->request->get('userId'))]);
+
+        if (empty($registrations)) {
+            return $this->app->json(['success'  => false, 'message' => 'registration not found']);
+        }
+
+        foreach ($registrations as $registration) {
+            $manager->remove($registration);
+        }
+
+        $manager->flush();
+
+        return $this->app->json(['success'  => true]);
+    }
+
     public function displayAuthFailureAction(Request $request)
     {
         return $this->render('admin/auth-failure.html.twig', [
