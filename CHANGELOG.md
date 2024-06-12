@@ -1,5 +1,50 @@
 # CHANGELOG
 
+## 4.1.8
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+- This a final release of 4.1.8 
+- expose-cli : search publication
+- expose-cli : label fields override sent to Expose assets description
+- expose-cli : refresh token interval is taken into account for access token 
+- expose-cli: asset description sends webvtt with language tag 
+- multi metadata source for bin/console `records:rescan-files-metadata`
+- auto canceling worker jobs started from 48 hours - cancellation by the record edit worker
+- minor fixes  
+  
+### Stack (docker compose and helm)
+    
+   - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
+
+
+## What's Changed
+* PHRAS-4058 Admin - workermanager default filter since 3 days by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4507
+* PHRAS-4064 Fix worker plugin install as app by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4508
+* PHRAS-4042: Fix language in webvtt field uploaded to expose by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4510
+* PHRAS-4065 Worker record-actions compute date error by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4511
+* PHRAS-4068: Prod - expose-cli - field mapping - store a field label in expose mapping configuration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4514
+* PHRAS-4068 : Expose fix field mapping bc break by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4517
+* PHRAS-4063 Phraseanet - Keycloack - refresh token implementation for expose-cli by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4512
+* PHRAS-4070 Rescan meta multi sources in bin/console records:rescan-files-metadata by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4516
+* PHRAS-4069: Prod - expose cli - search publication and parent publication by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4515
+* PHRAS-4069 Translation for publication search by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4519
+* PHRAS-4073: Register form - improvement -  html sanitization by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4520
+* PHRAS-4067: Admin - dashboard - 500 error by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4513
+* PHRAS-4062: Admin users delete and request improvement by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4509
+* PHRAS-4018 Admin- inspector - delete application by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4521
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc12...4.1.8
+
+___
 ## 4.1.8-rc12
 
 ### Update instructions
@@ -34,7 +79,7 @@
 * PHRAS-4007 Auth provider - add keycloak provider - openid by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4462
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc11...4.1.8-rc12
-
+___
 ## 4.1.8-rc11
 
 ### Update instructions
@@ -61,7 +106,7 @@
 
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc10...4.1.8-rc11
-
+___
 ## 4.1.8-rc10
 
 ### Update instructions
@@ -92,7 +137,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc9...4.1.8-rc10
 
-
+___
 ## 4.1.8-rc9
 
 ### Update instructions
@@ -138,7 +183,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc8...4.1.8-rc9
 
-
+___
 ## 4.1.8-rc8
 
 ### Update instructions
@@ -221,7 +266,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc7...4.1.8-rc8
 
-
+___
 ## 4.1.8-rc7
 
 ### Update instructions
@@ -273,6 +318,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc6...4.1.8-rc7
 
+___
 ## 4.1.8-rc6
 
 ### Update instructions
@@ -307,7 +353,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc5...4.1.8-rc6
 
-
+___
 ## 4.1.8-rc5
 
 ### Update instructions
@@ -340,8 +386,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc4...4.1.8-rc5
 
-
-
+___
 ## 4.1.8-rc4
 
 ### Update instructions
@@ -367,7 +412,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc3...4.1.8-rc4
 
-
+___
 ## 4.1.8-rc3
 
 ### Update instructions
@@ -398,7 +443,7 @@
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc2...4.1.8-rc3
 
 
-
+___
 ## 4.1.8-rc2
 
 ### Update instructions : 
@@ -426,7 +471,7 @@ see .env
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc1...4.1.8-rc2
 
-
+___
 ## 4.1.8-rc1
 
 ### Update instructions : 
@@ -471,7 +516,7 @@ PHRAS-3846 Admin - database -  add the "field id" in field detail
 PHRAS-3848 prod - order manager - cancel an order
 ```
 
-
+___
 ## 4.1.7
 
 ### Update instructions : 
@@ -576,7 +621,7 @@ PHRAS-3817 Webhook - created subdef - permalink is empty
 PHRAS-3314 Prod - Expose - Publication with huge amount of assets - loading assets is very long - wrong UX
 ```
 
-
+___
 ## 4.1.6
 
 ### Update instructions
@@ -696,7 +741,7 @@ PHRAS-2646 Error in 4.1 a feedback with null or empty in Name
 PHRAS-3666 Prod - Print - PDF - Generated pdf can't be printed even if no password is defined
  ```
 
-
+___
 ## 4.1.6-rc2
 
 ### Update instructions
@@ -736,6 +781,7 @@ PHRAS-3651 prod-facets : tech facets "no value" wrongly translated, some always 
 PHRAS-3655 Integrity constraint violation when deleting a user with an entry inside table ApiOauthCodes
  ```
 
+___
 ## 4.1.6-rc1
 
 ### Update instructions
@@ -778,7 +824,7 @@ PHRAS-3619 After record removal, we have an HTTP status 200 on the /records rout
 PHRAS-3285 Thesaurus - candidat panel - The Stock is not available
 PHRAS-3628 API - create record - 500 error if No file
  ```
-
+___
 ## 4.1.5 
 
 ### Version summary :
@@ -951,14 +997,14 @@ PHRAS-3411 Prod - String for Thesaurus as tx windows
 Note : For technical reasons, no Docker image and packaged version have been generated for the 4.1.4 version. Therefore, the release notes below concern both versions 4.1.4 and 4.1.5.
 
 
-
+___
 # 4.1.4
 
 
 ### Version summary : see upper 4.1.5
    
 
-
+___
 ## 4.1.3
 
 Release notes - Phraseanet - Version 4.1.3
@@ -1056,7 +1102,7 @@ Release notes - Phraseanet - Version 4.1.3
     * [PHRAS-2873] - Phraseanet repositories reorganization
     * [PHRAS-3295] - Change method for Playing test (old fashion) on CircleCI with php7
 
-
+___
 ## 4.1.2
 
 Release notes - Phraseanet - Version 4.1.2
@@ -1116,7 +1162,7 @@ Release notes - Phraseanet - Version 4.1.2
     * [PHRAS-3204] - Worker - Add reconnect to db when populate ended
     * [PHRAS-3181] - Worker video build subdefinition  ends with error and tmp file is not copied to destination
 
-
+___
 ## 4.1.1
 
 ###  Change summary
@@ -1188,6 +1234,7 @@ Release notes - Phraseanet - Version 4.1.2
     * [PHRAS-2671] - Change behavior of preview display in audio file case
     * [PHRAS-2879] - Define facets order in GUI and query result
 
+___
 ## 4.0.12 
 
 Release notes - Phraseanet - Version 4.0.12
@@ -1205,12 +1252,12 @@ Release notes - Phraseanet - Version 4.0.12
 ### Bugfix
     * [PHRAS-2979] - The content of a story is not displayed even for users with appropriate on the collection
 
-
+___
 ## 4.1.0 
 
 Pre release of 4.1 
 
-
+___
 ## 4.0.11
 
 Release notes - Phraseanet - Version 4.0.11
@@ -1262,11 +1309,12 @@ Release notes - Phraseanet - Version 4.0.11
     * [PHRAS-2912] - When updating a user informations the wrong field are populated (job and activity inverted)
     * [PHRAS-2811] - Cleanning of bad chars in candidats terms
 
-
+___
 ## 4.0.10
   
   Not publish
-
+  
+___
 ## 4.0.9
 
 ### Adds
@@ -1286,6 +1334,7 @@ Release notes - Phraseanet - Version 4.0.11
   - PHRAS-2154 - Front - Bug on Chrome only - selected 1 document instead of all for the feedback.
   - PHRAS-2538 - Back - Some MP4 files were not correctly detected by Phraseanet.
 
+___
 ## 4.0.8
 
 ### Adds:
@@ -1304,6 +1353,7 @@ Release notes - Phraseanet - Version 4.0.11
   - List of fields was not refreshed in the exported fields section.
   - Push and Feedback fix error when adding a user when Geonames was not set (null value in Geonames).
 
+___
 ## 4.0.7
 
 ### Adds:
@@ -1331,6 +1381,7 @@ Release notes - Phraseanet - Version 4.0.11
   -Vagrant dev environment fix
   - Feedback: Sort assets “Order by best choice” has no effect
 
+___
 ## 4.0.3
 
 ### Adds:
@@ -1358,6 +1409,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Dev: Fix API version returned in answer
   - Dev: Fix vagrant provisioning for Windows
 
+___
 ## 4.0.2
 
 ### Adds:
@@ -1377,7 +1429,8 @@ Release notes - Phraseanet - Version 4.0.11
   - Prod: fix field list in advanced search with Edge browser
   - Upload: fix 500 error when missing collection
   - Install wizard: fix error in graphical installer
- 
+
+___
 ## 4.0.0
 
 ### Adds:
@@ -1402,7 +1455,8 @@ Release notes - Phraseanet - Version 4.0.11
   - Rewriting of the task scheduler based on the web sockets
   - Quarantine enhancement
   - Drag and drop upload
-
+    
+___
 ## 3.8.8 (2015-12-02)
 
   - BugFix: Wrong BaseController used when no plugin installed.
@@ -1410,7 +1464,8 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix: all subdefs are shown when permalink is available in prod imagetools
   - BugFix: Empty labels are considered as valid
   - BugFix: Error 500 on prod imagetools when insufficient rights
-
+  - 
+___
 ## 3.8.7 (2015-11-09)
 
   - NewFeature: Adding public, temporary links (link generation based on JSON Web Token)
@@ -1445,6 +1500,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix: The "flatten" parameter when generating PDF thumbnails is not taken into account
   - Deprecation: Classic application is now obsolete
 
+___
 ## 3.8.6 (2015-01-20)
 
   - BugFix : Fixes the stories editing. When opening an editing form, the style applied to the notice doesn't match its selection
@@ -1500,6 +1556,7 @@ Release notes - Phraseanet - Version 4.0.11
   - NewFeature : Adding a Vagrant VM (for developers and testers). The setup is quicker: development environments made easy.
   - NewFeature : Adding a command for the file generation crossdomain.xml depending on the configuration.
 
+___
 ## 3.8.5 (2014-07-08)
 
   - BugFix : Fix Flickr connexion throught Bridge Application
@@ -1513,6 +1570,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Enhancement : Add the possibility to choose a document or a video as a representative image of a story
   - Enhancement : Titles are truncated but still visible by hovering them
 
+___
 ## 3.8.4 (2014-06-25)
 
   - BC Break : Drop sphinx search engine highlight support
@@ -1560,6 +1618,7 @@ Release notes - Phraseanet - Version 4.0.11
   - NewFeature : Add session idle & life time in configuration
   - NewFeature : Add possibility to search “unknown” type document through API
 
+___
 ## 3.8.3 (2014-02-24)
 
   - BugFix : Fix record type editing.
@@ -1608,10 +1667,12 @@ Release notes - Phraseanet - Version 4.0.11
   - Enhancement : Add option to disable filesystem logs.
   - Enhancement : Add compatibility with PHP 5.6.
 
+___
 ## 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.
 
+___
 ## 3.8.1 (2013-11-15)
 
   - BugFix : IE 6 homepage error message is broken.
@@ -1658,6 +1719,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Enhancement : Add Phraseanet twig namespace.
   - Enhancement : Allow video bitrate up to 12M.
 
+___
 ## 3.8.0 (2013-09-26)
 
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
@@ -1701,10 +1763,12 @@ Release notes - Phraseanet - Version 4.0.11
         host configuration depending on Phraseanet configuration
   - Phraseanet enabled languages is now configurable.
 
+___
 ## 3.7.15 (2013-09-14)
 
   - Add Office Plugin client id and secret.
 
+___
 ## 3.7.14 (2013-07-23)
 
   - BugFix : Multi layered images are not rendered properly.
@@ -1712,6 +1776,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : Records index is not updated after databox structure field rename.
   - Enhancement : Add support for grayscale colorspaces.
 
+___
 ## 3.7.13 (2013-07-04)
 
   - Some users were able to access story creation form whereas they were not allowed to.
@@ -1719,6 +1784,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Update to PHP-FFMpeg 0.2.4, better support for video resizing.
   - BugFix : Unablt to reject a thesaurus term from thesaurus module.
 
+___
 ## 3.7.12 (2013-05-13)
 
   - BugFix : : Removed "required" attribute on non-required fields in order form.
@@ -1726,12 +1792,14 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Grouped status bits are not displayed in advanced search dialog.
   - Enhancement : Locales update.
 
+___
 ## 3.7.11 (2013-04-23)
 
   - Enhancement : Animated Gifs (video support) does not requir Gmagick anymore to work properly.
   - BugFix : : When importing users from CSV file, some properties were missing.
   - BugFix : : In Report, CSV export is limited to 30 lines.
 
+___
 ## 3.7.10 (2013-04-03)
 
   - BugFix : : Permalinks pages may be broken.
@@ -1740,6 +1808,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Phraseanet installation fails.
   - BugFix : : Consecutive calls to image tools may fail.
 
+___
 ## 3.7.9 (2013-03-27)
 
   - BugFix : : Detailed view does not display the right search result.
@@ -1749,6 +1818,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Permalinks returned by the API now embed a download URL.
   - Bump to API version 1.3.1 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html).
 
+___
 ## 3.7.8 (2013-03-22)
 
   - BugFix : : Phraseanet API does not return results at correct offset.
@@ -1759,6 +1829,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Add support for CMYK images.
   - Preserve ICC profiles data in sub-definitions.
 
+___
 ## 3.7.7 (2013-03-08)
 
   - BugFix : : Archive task fails with stories.
@@ -1766,6 +1837,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Fix feeds entry notification display.
   - BugFix : : Read receipts are not associated to email for push and validation.
 
+___
 ## 3.7.6 (2013-02-01)
 
   - BugFix : : Load of a publication entry with a publisher that refers to a deleted users fails.
@@ -1775,6 +1847,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Landscape format images are displayed with a wrong ratio in quarantine.
   - General enhancement of Lightbox display on IE 7/8/9.
 
+___
 ## 3.7.5 (2013-01-09)
 
   - Support of Dailymotion latest API.
@@ -1789,6 +1862,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : XML import to metadata fields that do not have proper source do not work correctly.
   - BugFix : : Databox unmount can provide 500's to users that have attached stories to their work zone.
 
+___
 ## 3.7.4 (2012-12-20)
 
   - BugFix : : Upgrade from 3.5 may lose metadatas.
@@ -1810,6 +1884,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Story thumbnails are not displayed correctly.
   - BugFix : : Add dutch (nl_NL) support.
 
+___
 ## 3.7.3 (2012-11-09)
 
   - BugFix : : Security flaw (thanks TEHTRI-Security http://www.tehtri-security.com/).
@@ -1837,6 +1912,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Mails links are now clickable in Thunderbird and Outlook.
   - Emails list in mail export now supports comma and space separators.
 
+___
 ## 3.7.2 (2012-10-04)
 
   - Significant speed enhancement on thumbnail display.
@@ -1847,6 +1923,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Add option to rotate multiple image.
   - `Remember-me` was applied even if the box was not checked.
 
+___
 ## 3.7.1 (2012-09-18)
 
   - Multiple fixes in archive task.
@@ -1855,6 +1932,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : upgrade from version 3.1 and 3.5.
   - BugFix : : Print tool is not working on IE version 8 and less over HTTPS.
 
+___
 ## 3.7.0 (2012-07-24)
 
   - Lots of graphics enhancements.
@@ -1866,22 +1944,26 @@ Release notes - Phraseanet - Version 4.0.11
   - Upgrade of the Phraseanet API to version 1.2 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html#id1).
   - Phraseanet PHP SDK http://phraseanet-php-sdk.readthedocs.org/.
 
+___
 ## 3.6.5 (2012-05-11)
 
   - BugFix : : Bridge buttons are not visible on some browsers.
   - Youtube and Dailymotion APIs updates.
   - Stories can now be deleted from the work zone.
   - Push and validation logs were missing.
-
+    
+___
 ## 3.6.4 (2012-04-30)
 
   - BugFix : DatePicker menus do not format date correctly.
   - BugFix : Dead records can remain in orders and may broke order window.
 
+___
 ## 3.6.3 (2012-04-26)
 
   - BugFix : selection in webkit based browers.
 
+___
 ## 3.6.2 (2012-04-19)
 
   - BugFix : : Users can be created by some pushers.
@@ -1894,10 +1976,12 @@ Release notes - Phraseanet - Version 4.0.11
   - Document + XML hot folder import produces corrupted files.
   - Enhanced Push list view on small device.
 
+___
 ## 3.6.1 (2012-03-27)
 
   - BugFix : upgrade from 3.5 versions with large datasets.
 
+___
 ## 3.6.0 (2012-03-20)
 
   - Add a Vocabulary mapping to multivalued fields.
