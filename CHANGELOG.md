@@ -28,19 +28,20 @@
 ## What's Changed
 * PHRAS-4058 Admin - workermanager default filter since 3 days by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4507
 * PHRAS-4064 Fix worker plugin install as app by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4508
-* PHRAS-4042: Fix language in webvtt field uploaded to expose by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4510
+* PHRAS-4042 Fix language in webvtt field uploaded to expose by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4510
 * PHRAS-4065 Worker record-actions compute date error by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4511
-* PHRAS-4068: Prod - expose-cli - field mapping - store a field label in expose mapping configuration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4514
-* PHRAS-4068 : Expose fix field mapping bc break by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4517
+* PHRAS-4068 Prod - expose-cli - field mapping - store a field label in expose mapping configuration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4514
+* PHRAS-4068 Expose fix field mapping bc break by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4517
 * PHRAS-4063 Phraseanet - Keycloack - refresh token implementation for expose-cli by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4512
 * PHRAS-4070 Rescan meta multi sources in bin/console records:rescan-files-metadata by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4516
-* PHRAS-4069: Prod - expose cli - search publication and parent publication by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4515
+* PHRAS-4069 Prod - expose cli - search publication and parent publication by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4515
 * PHRAS-4069 Translation for publication search by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4519
-* PHRAS-4073: Register form - improvement -  html sanitization by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4520
-* PHRAS-4067: Admin - dashboard - 500 error by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4513
-* PHRAS-4062: Admin users delete and request improvement by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4509
+* PHRAS-4073 Register form - improvement -  html sanitization by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4520
+* PHRAS-4067 Admin - dashboard - 500 error by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4513
+* PHRAS-4062 Admin users delete and request improvement by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4509
 * PHRAS-4018 Admin- inspector - delete application by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4521
-
+* PHRAS-4056 Fix non escaped path error in sed by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4524
+* PHRAS-4077 bin/report : add group by field into download reports by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4525
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc12...4.1.8
 
