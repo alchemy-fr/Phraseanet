@@ -233,6 +233,25 @@ class ReportActions extends Report
                 ;
                 $this->keyName = 'record_id';
                 break;
+            case 'field':
+                $this->name = "Downloads by field";
+                foreach($this->getDatabox()->get_meta_structure() as $field) {
+                    if ($field->get_id() == $this->parms['meta_struct_id']) {
+                        $this->columnTitles =[$field->get_name()];
+                    }
+                }
+                $this->columnTitles[] = 'nb';
+
+                $sql = "SELECT `m`.`value`, count(`ld`.`record_id`) as `nb`\n"
+                    . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
+                    . " LEFT JOIN `metadatas` AS `m` ON (`ld`.`record_id`=`m`.`record_id` AND `m`.`meta_struct_id`=". $this->parms['meta_struct_id'] .") "
+                    . " WHERE {{GlobalFilter}}\n"
+                    . " GROUP BY `m`.`value`\n"
+                    . " ORDER BY `nb` DESC"
+                ;
+
+                $this->keyName = 'value';
+                break;
             default:
                 throw new InvalidArgumentException('invalid "group" argument');
                 break;
