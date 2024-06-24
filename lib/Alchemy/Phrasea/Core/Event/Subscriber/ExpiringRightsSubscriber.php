@@ -37,7 +37,7 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
 
         if($jobsByName === null) {
             $jobsByName = [];
-            foreach ($this->app['conf']->get(['workers', 'expiring-rights', 'jobs'], []) as $jobname => &$job) {
+            foreach ($this->app['conf']->get(['expiring-rights', 'jobs'], []) as $jobname => &$job) {
                 // nb: we must include inactive jobs so every download is recorded
                 $job['_c'] = $job['collection'];
                 unset($job['collection']);

@@ -6,10 +6,10 @@ use Doctrine\DBAL\Exception\TableExistsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class patch_419RC1PHRAS4078 implements patchInterface
+class patch_419PHRAS4078 implements patchInterface
 {
     /** @var string */
-    private $release = '4.1.9-rc1';
+    private $release = '4.1.9';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];

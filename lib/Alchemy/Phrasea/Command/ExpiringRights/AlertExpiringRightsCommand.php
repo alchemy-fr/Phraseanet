@@ -102,7 +102,7 @@ class AlertExpiringRightsCommand extends Command
 
         // play jobs
         $ret = 0;
-        foreach ($this->container['conf']->get(['workers', 'expiring-rights', 'jobs'], []) as $jobname => &$job) {
+        foreach ($this->container['conf']->get(['expiring-rights', 'jobs'], []) as $jobname => &$job) {
             if($job['active']) {
                 if (!$this->playJob($jobname, $job)) {
                     $this->output->writeln(sprintf("<error>job skipped</error>"));
