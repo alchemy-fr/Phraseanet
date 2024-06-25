@@ -45,6 +45,9 @@ class V3SearchRawController extends Controller
 
         $search_result = $se->queryraw((string)$request->get('query'), $options);
 
+        $search_result['offset'] = $offset;
+        $search_result['limit'] = $limit;
+
         $stopwatch->lap("queryraw");
 
         // queryraw returns also a stopwatch, get and remove it
