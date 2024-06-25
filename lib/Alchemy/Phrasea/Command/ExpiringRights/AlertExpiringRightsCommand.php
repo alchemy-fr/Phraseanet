@@ -469,7 +469,7 @@ class AlertExpiringRightsCommand extends Command
 
         if($n_records['all'] > 0 && !$this->input->getOption('dry')) {
             // build UPDATE sql
-            $sql = "UPDATE " . InstallTableCommand::TABLENAME3 . " SET expire=COALESCE(new_expire, expire), new_expire=NULL, alerted=" . $now . "\n"
+            $sql = "UPDATE `ExpiringRights` SET expire=COALESCE(new_expire, expire), new_expire=NULL, alerted=" . $now . "\n"
                 . " WHERE " . $sql_where;
             $stmt = $this->appbox->get_connection()->prepare($sql);
             $stmt->execute([]);
