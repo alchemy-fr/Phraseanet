@@ -74,7 +74,14 @@ class V3MonitorDataController extends Controller
                     FROM `subdef` AS s
                 GROUP BY s.`name`;";
 
+        $sqlByDb = "SELECT SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
+                    SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
+                    FROM `subdef` AS s";
+
         foreach($this->app->getDataboxes() as $databox) {
+
+            // get volumes grouped by collection and subdef
+
             $collections = [];
             $stmt = $databox->get_connection()->prepare($sqlByColl);
             $stmt->execute();
@@ -88,29 +95,77 @@ class V3MonitorDataController extends Controller
                 }
                 $collections[$row['coll_id']]['subdefs'][$row['name']] = [
                     'count' => (int)$row['n'],
-                    'size' => floatval($row['size']),
-                    'disksize' => floatval($row['disksize'])
+                    'size' => round($row['size'], 2),
+                    'disksize' => round($row['disksize'], 2)
                 ];
             }
             $stmt->closeCursor();
+
+            // get volumes by subdef
 
             $subdefs = [];
             $stmt = $databox->get_connection()->prepare($sqlByName);
             $stmt->execute();
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $subdefs[$row['name']]['count'] = (int)$row['n'];
-                $subdefs[$row['name']]['size'] = floatval($row['size']);
-                $subdefs[$row['name']]['disksize'] = floatval($row['disksize']);
+                $subdefs[$row['name']]['size'] = round($row['size'], 2);
+                $subdefs[$row['name']]['disksize'] = round($row['disksize'], 2);
             }
+            $stmt->closeCursor();
+
+            // get volumes by db
+
+            $stmt = $databox->get_connection()->prepare($sqlByDb);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
             $ret['databoxes'][$databox->get_sbas_id()] = [
                 'sbas_id' => $databox->get_sbas_id(),
                 'viewname' => $databox->get_viewname(),
                 'collections' => $collections,
-                'subdefs' => $subdefs
+                'subdefs' => $subdefs,
+                'count' => (int)$row['n'],
+                'size' => round($row['size'], 2),
+                'disksize' => round($row['disksize'], 2)
             ];
         }
+
+        // get volumes of downloads
+
+        $sql = "SELECT `data` FROM `Tokens` WHERE `type`='download'";
+        $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute();
+        $size = 0;
+        $disksize = 0;
+        $n = 0;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            try {
+                $data = unserialize($row['data']);
+                $size += $data['size'];
+                $disksize += ceil($data['size'] / $blocksize) * $blocksize;
+                $n++;
+            }
+            catch (\Exception $e) {
+                // ignore
+            }
+        }
+        $stmt->closeCursor();
+
+        $sql = "SELECT DATEDIFF(NOW(), MIN(`created`)) AS `oldest`, SUM(IF(NOW()>`expiration`, 1, 0)) AS `expired` FROM `Tokens` WHERE `type`='download'";
+        $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $ret['downloads'] = [
+            'count' => $n,
+            'days_oldest' => (int)$row['oldest'],
+            'expired' => (int)$row['expired'],
+            'size' => round($size / $divider, 2),
+            'disksize' => round($disksize / $divider, 2)
+        ];
+
 
         return Result::create($request, $ret)->createResponse([$stopwatch]);
     }
