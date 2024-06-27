@@ -55,7 +55,12 @@ class V3MonitorDataController extends Controller
         }
         $sqlDivider = $divider === 1 ? '' : (' / ' . $divider);
 
-        $sql = "SELECT COALESCE(r.`coll_id`, '?') AS `coll_id`,
+        $ret = [
+            'unit' => $divider === 1 ? $unit : ucfirst($unit), // octet => octet ; mo => Mo
+            'databoxes' => []
+        ];
+
+        $sqlByColl = "SELECT COALESCE(r.`coll_id`, '?') AS `coll_id`,
                     COALESCE(c.`asciiname`, CONCAT('_',r.`coll_id`), '?') AS `asciiname`, s.`name`,
                     SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
                     SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
@@ -63,14 +68,15 @@ class V3MonitorDataController extends Controller
                     LEFT JOIN `coll` AS c ON r.`coll_id`=c.`coll_id`
                 GROUP BY r.`coll_id`, s.`name`;";
 
-        $ret = [
-            'unit' => ucfirst($unit),
-            'databoxes' => []
-        ];
+        $sqlByName = "SELECT s.`name`,
+                    SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
+                    SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
+                    FROM `subdef` AS s
+                GROUP BY s.`name`;";
+
         foreach($this->app->getDataboxes() as $databox) {
             $collections = [];
-            $subdefs = [];
-            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt = $databox->get_connection()->prepare($sqlByColl);
             $stmt->execute();
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 if(!array_key_exists($row['coll_id'], $collections)) {
@@ -81,21 +87,23 @@ class V3MonitorDataController extends Controller
                     ];
                 }
                 $collections[$row['coll_id']]['subdefs'][$row['name']] = [
-                    'count' => $row['n'],
-                    'size' => $row['size'],
-                    'disksize' => $row['disksize']
+                    'count' => (int)$row['n'],
+                    'size' => floatval($row['size']),
+                    'disksize' => floatval($row['disksize'])
                 ];
-                if(!array_key_exists($row['name'], $subdefs)) {
-                    $subdefs[$row['name']] = [
-                        'count' => 0,
-                        'size' => 0,
-                        'disksize' => 0
-                    ];
-                }
-                $subdefs[$row['name']]['count'] += $row['n'];
-                $subdefs[$row['name']]['size'] += $row['size'];
-                $subdefs[$row['name']]['disksize'] += $row['disksize'];
             }
+            $stmt->closeCursor();
+
+            $subdefs = [];
+            $stmt = $databox->get_connection()->prepare($sqlByName);
+            $stmt->execute();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $subdefs[$row['name']]['count'] = (int)$row['n'];
+                $subdefs[$row['name']]['size'] = floatval($row['size']);
+                $subdefs[$row['name']]['disksize'] = floatval($row['disksize']);
+            }
+            $stmt->closeCursor();
+
             $ret['databoxes'][$databox->get_sbas_id()] = [
                 'sbas_id' => $databox->get_sbas_id(),
                 'viewname' => $databox->get_viewname(),
