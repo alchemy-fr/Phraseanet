@@ -19,6 +19,17 @@ class V3MonitorDataController extends Controller
     use DispatcherAware;
     use InstanceIdAware;
 
+    private function unitToMultiplier(string $unit)
+    {
+        static $map = [''=>1, 'o'=>1, 'ko'=>1<<10, 'mo'=>1<<20, 'go'=>1<<30];
+        try {
+            return $map[strtolower($unit)];
+        }
+        catch (\Exception $e) {
+            return false;
+        }
+    }
+
     /**
      * monitor infos for app
      *
@@ -26,35 +37,33 @@ class V3MonitorDataController extends Controller
      *
      * @return Response
      */
-    private function unitToMultiplier(string $unit)
-    {
-        static $map = ['o', 'ko', 'mo', 'go'];
-        if(($i = array_search(strtolower($unit), $map)) === false) {
-            return false;
-        }
-        return 1 << ($i * 10);
-    }
-
     public function indexAction(Request $request)
     {
         $stopwatch = new Stopwatch("controller");
-        $ret = [
-            'databoxes' => []
-        ];
         $matches = [];
         if(preg_match("/^(\\d+)\\s*(ko|mo|go)?$/i", $request->get('blocksize', '1'), $matches) !== 1) {
             throw new Exception("bad 'blocksize' parameter");
         }
-        $matches[] = 'o';   // if no unit, force
+        $matches[] = '';   // if no unit, force
         $blocksize = (int)($matches[1]) * $this->unitToMultiplier($matches[2]);
+
+        if( ($divider = $this->unitToMultiplier($unit = $request->get('unit', '')) ) === false) {
+            throw new Exception("bad 'unit' parameter");
+        }
+        $sqlDivider = $divider === 1 ? '' : (' / ' . $divider);
 
         $sql = "SELECT COALESCE(r.`coll_id`, '?') AS `coll_id`,
                     COALESCE(c.`asciiname`, CONCAT('_',r.`coll_id`), '?') AS `asciiname`, s.`name`,
-                    SUM(1) AS n, SUM(s.`size`) AS `size`, SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") AS `disksize`
+                    SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
+                    SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
                     FROM `subdef` AS s LEFT JOIN `record` AS r ON r.`record_id`=s.`record_id` 
                     LEFT JOIN `coll` AS c ON r.`coll_id`=c.`coll_id`
                 GROUP BY r.`coll_id`, s.`name`;";
 
+        $ret = [
+            'unit' => ucfirst($unit),
+            'databoxes' => []
+        ];
         foreach($this->app->getDataboxes() as $databox) {
             $collections = [];
             $subdefs = [];
@@ -91,6 +100,7 @@ class V3MonitorDataController extends Controller
                 'subdefs' => $subdefs
             ];
         }
+
         return Result::create($request, $ret)->createResponse([$stopwatch]);
     }
 
