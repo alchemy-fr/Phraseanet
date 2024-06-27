@@ -39,6 +39,8 @@ class V3MonitorDataController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $getDetails = $request->get('details', '0') === '1';
+
         $stopwatch = new Stopwatch("controller");
         $matches = [];
         if(preg_match("/^(\\d+)\\s*([a-z]*)$/i", $request->get('blocksize', '1'), $matches) !== 1) {
@@ -60,7 +62,9 @@ class V3MonitorDataController extends Controller
             'databoxes' => []
         ];
 
-        $sqlByColl = "SELECT COALESCE(r.`coll_id`, '?') AS `coll_id`,
+        if($getDetails) {
+
+            $sqlByColl = "SELECT COALESCE(r.`coll_id`, '?') AS `coll_id`,
                     COALESCE(c.`asciiname`, CONCAT('_',r.`coll_id`), '?') AS `asciiname`, s.`name`,
                     SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
                     SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
@@ -68,50 +72,53 @@ class V3MonitorDataController extends Controller
                     LEFT JOIN `coll` AS c ON r.`coll_id`=c.`coll_id`
                 GROUP BY r.`coll_id`, s.`name`;";
 
-        $sqlByName = "SELECT s.`name`,
+            $sqlByName = "SELECT s.`name`,
                     SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
                     SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
                     FROM `subdef` AS s
                 GROUP BY s.`name`;";
-
+        }
         $sqlByDb = "SELECT SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
                     SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
                     FROM `subdef` AS s";
 
         foreach($this->app->getDataboxes() as $databox) {
 
-            // get volumes grouped by collection and subdef
+            if($getDetails) {
 
-            $collections = [];
-            $stmt = $databox->get_connection()->prepare($sqlByColl);
-            $stmt->execute();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                if(!array_key_exists($row['coll_id'], $collections)) {
-                    $collections[$row['coll_id']] = [
-                        'coll_id' => $row['coll_id'],
-                        'name' => $row['asciiname'],
-                        'subdefs' => []
+                // get volumes grouped by collection and subdef
+
+                $collections = [];
+                $stmt = $databox->get_connection()->prepare($sqlByColl);
+                $stmt->execute();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    if (!array_key_exists($row['coll_id'], $collections)) {
+                        $collections[$row['coll_id']] = [
+                            'coll_id' => $row['coll_id'],
+                            'name'    => $row['asciiname'],
+                            'subdefs' => []
+                        ];
+                    }
+                    $collections[$row['coll_id']]['subdefs'][$row['name']] = [
+                        'count'    => (int)$row['n'],
+                        'size'     => round($row['size'], 2),
+                        'disksize' => round($row['disksize'], 2)
                     ];
                 }
-                $collections[$row['coll_id']]['subdefs'][$row['name']] = [
-                    'count' => (int)$row['n'],
-                    'size' => round($row['size'], 2),
-                    'disksize' => round($row['disksize'], 2)
-                ];
-            }
-            $stmt->closeCursor();
+                $stmt->closeCursor();
 
-            // get volumes by subdef
+                // get volumes by subdef
 
-            $subdefs = [];
-            $stmt = $databox->get_connection()->prepare($sqlByName);
-            $stmt->execute();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $subdefs[$row['name']]['count'] = (int)$row['n'];
-                $subdefs[$row['name']]['size'] = round($row['size'], 2);
-                $subdefs[$row['name']]['disksize'] = round($row['disksize'], 2);
+                $subdefs = [];
+                $stmt = $databox->get_connection()->prepare($sqlByName);
+                $stmt->execute();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $subdefs[$row['name']]['count'] = (int)$row['n'];
+                    $subdefs[$row['name']]['size'] = round($row['size'], 2);
+                    $subdefs[$row['name']]['disksize'] = round($row['disksize'], 2);
+                }
+                $stmt->closeCursor();
             }
-            $stmt->closeCursor();
 
             // get volumes by db
 
@@ -123,12 +130,15 @@ class V3MonitorDataController extends Controller
             $ret['databoxes'][$databox->get_sbas_id()] = [
                 'sbas_id' => $databox->get_sbas_id(),
                 'viewname' => $databox->get_viewname(),
-                'collections' => $collections,
-                'subdefs' => $subdefs,
                 'count' => (int)$row['n'],
                 'size' => round($row['size'], 2),
                 'disksize' => round($row['disksize'], 2)
             ];
+
+            if($getDetails) {
+                $ret['databoxes'][$databox->get_sbas_id()]['collections'] = $collections;
+                $ret['databoxes'][$databox->get_sbas_id()]['subdefs'] = $subdefs;
+            }
         }
 
         // get volumes of downloads
