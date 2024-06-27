@@ -14,6 +14,7 @@ namespace KonsoleKommander;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\ApplyRightsCommand;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
+use Alchemy\Phrasea\Command\ExpiringRights\AlertExpiringRightsCommand;
 use Alchemy\Phrasea\Command\Record\BuildPermalinks;
 use Alchemy\Phrasea\Command\Record\BuildSubdefs;
 use Alchemy\Phrasea\Command\CheckConfig;
@@ -193,6 +194,8 @@ $cli->command(new WorkerShowConfigCommand());
 $cli->command(new SendValidationRemindersCommand());
 
 $cli->command(new NetworkProxiesTestCommand('network-proxies:test'));
+
+$cli->command(new AlertExpiringRightsCommand());
 
 $cli->loadPlugins();
 

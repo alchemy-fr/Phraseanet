@@ -489,3 +489,42 @@ translator:
             # end of job : change coll status
             set_status: 10xxxx
             set_collection: online
+expiring-rights:
+    version: 3
+    jobs:
+        # "I want to alert owners that records have expired"
+        -   rights-expired-owners:
+                active: false
+                target: "owners"
+                databox: "db_with_rights"
+                collection: [ "Promo", "Selections" ]
+                expire_field: ExpireDate
+                prior_notice: -60
+                set_status: 01xxxx
+                alerts:
+                    -   method: webhook
+                        recipient: ["bob@a.fr", "joe@b.com"]
+
+        # "I want to alert users who have downloaded that a document rights will expire in 60 days"
+        -   rights-60-downloaders:
+                active: false
+                target: "downloaders"
+                databox: "db_with_rights"
+                collection: [ "Promo", "Selections" ]
+                downloaded: [ "document", "preview" ]
+                expire_field: "ExpirationDate"
+                prior_notice: -60
+                alerts:
+                    -   method: "webhook"
+
+        # "I want to alert users who have downloaded that a document rights has expired"
+        -   rights-expired-dowloaders:
+                active: false
+                target: "downloaders"
+                databox: "db_with_rights"
+                collection: [ "Promo", "Selections" ]
+                downloaded: [ "document", "preview" ]
+                expire_field: "ExpirationDate"
+                prior_notice: 0
+                alerts:
+                    -   method: "webhook"

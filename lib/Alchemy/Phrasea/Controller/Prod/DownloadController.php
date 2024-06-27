@@ -67,6 +67,12 @@ class DownloadController extends Controller
         $list['include_report'] = $request->request->get('include_report') === 'INCLUDE_REPORT';
         $list['include_businessfields'] = (bool)$request->request->get('businessfields');
 
+        $lst = [];
+        foreach ($list['files'] as $file) {
+            $lst[] = $this->getApplicationBox()->get_collection($file['base_id'])->get_databox()->get_sbas_id() . '_' . $file['record_id'];
+        }
+        $lst = join(';', $lst);
+
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
 
         $this->getDispatcher()->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent(
@@ -135,6 +141,12 @@ class DownloadController extends Controller
 
             $records[sprintf('%s_%s', $sbasId, $file['record_id'])] = $record;
         }
+
+        $lst = [];
+        foreach ($list['files'] as $file) {
+            $lst[] = $this->getApplicationBox()->get_collection($file['base_id'])->get_databox()->get_sbas_id() . '_' . $file['record_id'];
+        }
+        $lst = join(';', $lst);
 
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
 
