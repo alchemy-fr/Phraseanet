@@ -21,7 +21,7 @@ class V3MonitorDataController extends Controller
 
     private function unitToMultiplier(string $unit)
     {
-        static $map = [''=>1, 'o'=>1, 'ko'=>1<<10, 'mo'=>1<<20, 'go'=>1<<30];
+        static $map = [''=>1, 'o'=>1, 'octet'=>1, 'octets'=>1, 'ko'=>1<<10, 'mo'=>1<<20, 'go'=>1<<30];
         try {
             return $map[strtolower($unit)];
         }
@@ -41,11 +41,14 @@ class V3MonitorDataController extends Controller
     {
         $stopwatch = new Stopwatch("controller");
         $matches = [];
-        if(preg_match("/^(\\d+)\\s*(ko|mo|go)?$/i", $request->get('blocksize', '1'), $matches) !== 1) {
+        if(preg_match("/^(\\d+)\\s*([a-z]*)$/i", $request->get('blocksize', '1'), $matches) !== 1) {
             throw new Exception("bad 'blocksize' parameter");
         }
         $matches[] = '';   // if no unit, force
-        $blocksize = (int)($matches[1]) * $this->unitToMultiplier($matches[2]);
+        if(($mutiplier = $this->unitToMultiplier($matches[2])) === false) {
+            throw new Exception("bad 'blocksize' unit");
+        }
+        $blocksize = (int)($matches[1]) * $mutiplier;
 
         if( ($divider = $this->unitToMultiplier($unit = $request->get('unit', '')) ) === false) {
             throw new Exception("bad 'unit' parameter");
