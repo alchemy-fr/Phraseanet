@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
 use Alchemy\Phrasea\Controller\Api\V3\V3Controller;
+use Alchemy\Phrasea\Controller\Api\V3\V3MonitorDataController;
 use Alchemy\Phrasea\Controller\Api\V3\V3RecordController;
 use Alchemy\Phrasea\Controller\Api\V3\V3ResultHelpers;
 use Alchemy\Phrasea\Controller\Api\V3\V3SearchController;
@@ -49,6 +50,9 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
             return (new V3SearchController($app))
                 ->setInstanceId($app['conf'])
                 ;
+        });
+        $app['controller.api.v3.monitorData'] = $app->share(function (PhraseaApplication $app) {
+            return (new V3MonitorDataController($app));
         });
         $app['controller.api.v3.searchraw'] = $app->share(function (PhraseaApplication $app) {
             return (new V3SearchRawController($app));
@@ -95,6 +99,13 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->assert('databox_id', '\d+')
             ->assert('record_id', '\d+')
             ->value('must_be_story', true);
+
+        /**
+         * @uses V3MonitorDataController::indexAction()
+         */
+        $controllers->get('/monitor/data/', 'controller.api.v3.monitorData:indexAction')
+            ->before('controller.api.v1:ensureAdmin')
+        ;
 
         /**
          * @uses V3SearchController::helloAction()
