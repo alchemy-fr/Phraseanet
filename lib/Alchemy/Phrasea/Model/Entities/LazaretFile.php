@@ -97,6 +97,11 @@ class LazaretFile
     private $session;
 
     /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    private $size;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -320,6 +325,29 @@ class LazaretFile
         $this->updated = $updated;
 
         return $this;
+    }
+
+    /**
+     * Set size
+     *
+     * @param  integer     $size
+     * @return LazaretFile
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return integer
+     */
+    public function getSize()
+    {
+        return $this->size;
     }
 
     /**
