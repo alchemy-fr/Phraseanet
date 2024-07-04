@@ -108,6 +108,14 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
         ;
 
         /**
+         * @uses V3MonitorDataController::perDataboxAction()
+         */
+        $controllers->get('databoxes/{databox_id}/monitor/data/', 'controller.api.v3.monitorData:perDataboxAction')
+            ->before('controller.api.v1:ensureAdmin')
+            ->assert('databox_id', '\d+')
+        ;
+
+        /**
          * @uses V3SearchController::helloAction()
          */
         $controllers->match('/hello/', 'controller.api.v3.searchraw:helloAction');
