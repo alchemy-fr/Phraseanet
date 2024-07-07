@@ -18,12 +18,13 @@
             <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.getNumber() }}"/>
         {% endfor %}
         <input type="submit" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}"/>
+        <input type="hidden" name="prodStoryReorder_token" value="{{ app['session'].get('prodStoryReorder_token') }}">
     </form>
 </div>
 <div style="top:45px;overflow:auto;" id="reorder_box" class="row-fluid">
     <div class="elements">
         {% for element in story.get_children() %}
-            <div id="ORDER_{{ element.get_record_id() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
+            <div id="ORDER_{{ element.get_record_id() }}" class="CHIM diapo" style="float:left;height:130px;overflow:hidden;">
                 <div class="title" title="{{ element.get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:hidden;text-align:center;text-overflow: ellipsis; line-height: 15px;">
                     {{ element.get_title() }}
                 </div>

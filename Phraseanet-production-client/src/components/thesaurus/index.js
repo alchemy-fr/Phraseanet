@@ -636,7 +636,9 @@ const thesaurusService = services => {
                 sbas[i].seeker = $.ajax({
                     url: zurl,
                     type: 'POST',
-                    data: [],
+                    data: {
+                        prodTabThesaurus_token: $('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                    },
                     dataType: 'json',
                     success: function (j) {
                         var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -680,7 +682,9 @@ const thesaurusService = services => {
                 sbas[i].seeker = $.ajax({
                     url: zurl,
                     type: 'POST',
-                    data: [],
+                    data: {
+                        prodTabThesaurus_token: $('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                    },
                     dataType: 'json',
                     success: function (j) {
                         var z = '#TX_P\\.' + j.parm.sbid + '\\.T';

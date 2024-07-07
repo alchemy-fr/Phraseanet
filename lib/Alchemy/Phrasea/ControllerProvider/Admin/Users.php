@@ -53,6 +53,7 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/delete/', 'controller.admin.users:deleteUserAction');
         $controllers->post('/auth-failure/reset/', 'controller.admin.users:resetAuthFailureAction');
         $controllers->post('/mail-locked/change/', 'controller.admin.users:changeMailLockedAction');
+        $controllers->post('/can-renew-password/change/', 'controller.admin.users:changeCanRenewPasswordAction');
         $controllers->post('/rights/apply/', 'controller.admin.users:applyRightsAction')
             ->bind('admin_users_rights_apply');
         $controllers->post('/rights/quotas/', 'controller.admin.users:editQuotasRightsAction');
@@ -76,6 +77,8 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('users_display_registrations');
         $controllers->post('/registrations/', 'controller.admin.users:submitRegistrationAction')
             ->bind('users_submit_registrations');
+        $controllers->post('/registrations/delete/', 'controller.admin.users:deleteUserRegistrationAction')
+            ->bind('delete_user_registrations');
         $controllers->get('/import/file/', 'controller.admin.users:displayImportFileAction')
             ->bind('users_display_import_file');
         $controllers->post('/import/file/', 'controller.admin.users:submitImportFileAction')
@@ -90,6 +93,9 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/feed-entry/', 'controller.admin.users:listFeedEntry');
         $controllers->post('/feed-entry/delete/', 'controller.admin.users:deleteFeedEntry');
         $controllers->get('/records-basket/', 'controller.admin.users:listRecordBasket');
+        $controllers->get('/auth-failure/', 'controller.admin.users:displayAuthFailureAction')
+            ->bind('users_display_auth_failure');
+        $controllers->post('/auth-failure/delete/', 'controller.admin.users:deleteAuthFailureAction');
 
         return $controllers;
     }

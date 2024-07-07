@@ -35,7 +35,6 @@ const rangeCapture = (services, datas, activeTab = false) => {
         }
         options.frameRates = {};
         options.ratios = {};
-        const coverUrl = '';
         let generateSourcesTpl = (record) => {
             let recordSources = [];
             _.each(record.sources, (s, i) => {
@@ -50,7 +49,7 @@ const rangeCapture = (services, datas, activeTab = false) => {
         let sources = generateSourcesTpl(record);
         $container.append(
             `<video id="embed-video" class="embed-resource video-js vjs-default-skin vjs-big-play-centered" controls
-               preload="none" width="100%" height="100%" poster="${coverUrl}" data-setup='{"language":"${localeService.getLocale()}"}'>${sources} </video>`);
+               preload="none" width="100%" height="100%"  data-setup='{"language":"${localeService.getLocale()}"}'>${sources} </video>`);
 
         // window.videojs = videojs;
         videojs.addLanguage(localeService.getLocale(), localeService.getTranslations());

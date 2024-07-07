@@ -67,12 +67,14 @@ class ShareBasketWorker implements WorkerInterface
         $shareExpiresDate = $payload['shareExpires'];
         $voteExpiresDate = $payload['voteExpires'];
         $notSendReminder = empty($payload['send_reminder']) ? true : false ;
+        $expireOn = null;
 
         $n_participants = 0;
         // file_put_contents("./tmp/phraseanet-log.txt", sprintf("CWD = %s\n\n%s; %d participants in payload\n", getcwd(), $_t0 = time(), count($participants)), FILE_APPEND);
 
         if (!empty($shareExpiresDate )) {
             $shareExpiresDate = new DateTime($shareExpiresDate);     // d: "Y-m-d"
+            $expireOn = $payload['shareExpires'] . " 23:59:59";
         } else {
             $shareExpiresDate = null;
         }
@@ -99,8 +101,9 @@ class ShareBasketWorker implements WorkerInterface
             'eventsmanager_notify_basketwip',
             // 'eventsmanager_notify_push',
             json_encode([
-                'message' => $this->app->trans('notification:: Sharing basket "%name%"...', ['%name%' => htmlentities($basket->getName())]),
-            ]),
+                'translateMessage' => 'text1',
+                'name'             => htmlentities($basket->getName())
+                ]),
             false
         );
 
@@ -189,7 +192,8 @@ class ShareBasketWorker implements WorkerInterface
                             // $basketElementReference,
                                 $be['ref'],
                                 $authenticatedUser,
-                                ACL::GRANT_ACTION_VALIDATE
+                                ACL::GRANT_ACTION_VALIDATE,
+                                $expireOn
                             );
                         } else {
                             $acl->grant_preview_on(
@@ -249,7 +253,8 @@ class ShareBasketWorker implements WorkerInterface
                             // $basketElementReference,
                             $be['ref'],
                             $authenticatedUser,
-                            ACL::GRANT_ACTION_VALIDATE
+                            ACL::GRANT_ACTION_VALIDATE,
+                            $expireOn
                         );
                     }
                     else {
@@ -391,8 +396,9 @@ class ShareBasketWorker implements WorkerInterface
             'eventsmanager_notify_basketwip',
             // 'eventsmanager_notify_push',
             json_encode([
-                'message' => $this->app->trans('notification:: Basket %name% is shared', ['%name%' => htmlentities($basket->getName())]),
-            ]),
+                'translateMessage' => 'text2',
+                'name'    => htmlentities($basket->getName())
+                ]),
             false
         );
 

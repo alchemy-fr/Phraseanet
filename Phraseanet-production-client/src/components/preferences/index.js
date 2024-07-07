@@ -129,6 +129,15 @@ const preferences = services => {
             }
         );
 
+        $container.on('change', '.preferences-see-real-field-name', event => {
+            let $el = $(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref(
+                'see_real_field_name',
+                $el.prop('checked') ? '1' : '0'
+            );
+        });
+
         $container.on('change', '.preferences-options-basket-status', event => {
             let $el = $(event.currentTarget);
             event.preventDefault();
@@ -198,6 +207,11 @@ const preferences = services => {
                     $('body').removeClass().addClass('PNB ' + color);
                    /* console.log('saved:' + color);*/
                     return;
+                },
+                error: function (data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href);  // refresh will redirect to login
+                    }
                 }
             });
 

@@ -33,8 +33,9 @@
             </div>
 
             <ul class="unstyled">
+                {# @var file \Alchemy\Phrasea\Model\Entities\LazaretFile #}
                 {% for file in lazaretFiles %}
-                    <li class="row-fluid wrapper-item well">
+                    <li class="row-fluid wrapper-item well lazaretElement" data-fileid="{{ file.getId() }}">
                         {{ _self.lazaretElement(app, file) }}
                     </li>
                 {% endfor %}
@@ -73,6 +74,7 @@
             button.closest(".btn-group").removeClass('loading');
         }
 
+
         function reloadContent(force) {
             var nbItems = scope.find(".wrapper-item").length;
 
@@ -92,16 +94,16 @@
             }
         }
 
-        /* $(".records-subititution .diapo", scope)
+        /* $(".record-proposal .diapo", scope)
                  .bind('click', function(e){
                      $(this).closest('.lazaret-proposals').find('.diapo').removeClass('selected');
                      $(this).addClass('selected');
                  }
          );*/
 
-        $(".records-subititution .captionTips", scope).tooltip();
-        $(".records-subititution .infoTips", scope).tooltip();
-        $(".records-subititution .previewTips", scope).tooltip();
+        $(".record-proposal .captionTips", scope).tooltip();
+        $(".record-proposal .infoTips", scope).tooltip();
+        $(".record-proposal .previewTips", scope).tooltip();
 
         var emptying = false;   // true=emptying, set to false to stop
 
@@ -176,17 +178,36 @@
             emptying = true;
             f();
         });
+
+
         var data;
+
+
         //add lazaret file click action
         $("button.add-lazaret", scope).bind('click', function () {
-            var that = $(this);
-            var lazaretId = getLazaretId(that);
+            const that = $(this);
+            const $elementRow = that.closest(".lazaretElement");
+            let $form    = $("FORM", $elementRow);
+            const lazaretId = getLazaretId(that);
+
+            let $selectedProposals = $(".record-proposal .selected");
+            if($selectedProposals.length > 1) {
+                alert(language.onlyOneRecord);
+                return false;
+            }
+            if($selectedProposals.length === 1) {
+                let recordId = $selectedProposals.first().attr("data-record_id");
+                $(".record_id", $form).val(recordId);
+            }
+            else {
+                $(".record_id", $form).val('');
+            }
+
             var destinationCollectionId = getDestinationId(that);
             var container = $(this).closest('.wrapper-item');
-            var form = $(this).closest("form");
 
             /*fix POST on firefox*/
-            data = form.serializeArray();
+            data = $form.serializeArray();
             var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
             that.closest(".form-backup ").append(allData);
             that.parent().closest('.wrapper-item').find(".change-record ").remove();
@@ -237,6 +258,9 @@
                 type: 'POST',
                 url: '/prod/lazaret/' + lazaretId + '/deny/',
                 dataType: 'json',
+                data: {
+                    'prodLazaret_token' : form.find('input[name=prodLazaret_token]').val()
+                },
                 beforeSend: function () {
                     startAjax(that);
                 },
@@ -265,25 +289,66 @@
 
 
         //update status list
-        function resetStatus(that) {
-            that.removeClass('selected');
-            var html = that.parent().closest('.wrapper-item').find(".status-backup").html();
-            that.parent().closest('.wrapper-item').find(".status-container").html('');
-            that.parent().closest('.wrapper-item').find(".status-container").append(html);
-        };
-        $(".span12 img, .reset-status").click(function () {
-            var that = $(this).closest('.wrapper-item').find('.lazaret-proposals .diapo');
-            resetStatus(that);
+        function resetStatus($elementRow) {
+            let html = $(".status-backup", $elementRow).html();
+            $(".status-container", $elementRow).html('');
+            $(".status-container", $elementRow).append(html);
+        }
+
+
+
+
+        function isRecordSelected($elementRow, selected) {
+            if(selected) {
+                $elementRow.attr("hasSelected", true);
+//                $('BUTTON.subtitute-lazaret', $elementRow).removeAttr('disabled');
+//                $('BUTTON.subtitute-lazaret', $elementRow).show();
+                $('.copy_meta', $elementRow).show();
+            }
+            else {
+                $elementRow.removeAttr("hasSelected");
+//                $('BUTTON.subtitute-lazaret', $elementRow).attr('disabled', "true");
+//                $('BUTTON.subtitute-lazaret', $elementRow).hide();
+//                $('.copy_meta', $elementRow).hide();
+                $("INPUT[name=copy_meta]", $elementRow).removeAttr("checked");
+                checkCopyMeta($elementRow, false);
+            }
+        }
+
+        function checkCopyMeta($elementRow, checked) {
+            const $b = $("BUTTON.add-lazaret .b_label", $elementRow);
+            if (checked) {
+                $b.text("{{ "Add with caption" | trans }}")
+            }
+            else {
+                $b.text("{{ "Add" | trans }}")
+            }
+        }
+
+
+
+
+        // $(".span12 img, .reset-status").click(function () {
+        $(".reset-status").click(function () {
+            let $elementRow = $(this).closest(".lazaretElement");
+            resetStatus($elementRow);
         });
-        $(".records-subititution .diapo", scope).bind('click', function () {
+
+        $(".record-proposal .diapo", scope).bind('click', function () {
             var that = $(this);
+            let $elementRow = that.closest(".lazaretElement");
+
             var diapo = that.closest('.lazaret-proposals').find('.diapo');
             var container = that.closest('.wrapper-item');
+
             diapo.not(this).removeClass('selected');
             /*Set selected or not to check for sending ajax request*/
             if (that.hasClass("selected")) {
-                resetStatus(that);
-            } else {
+                that.removeClass('selected');
+                resetStatus($elementRow);
+                isRecordSelected($elementRow, false);
+            }
+            else {
                 that.addClass('selected');
                 var elements = $(".selected", container);
                 var recordId = elements.first().attr("data-record_id");
@@ -317,9 +382,9 @@
                                 html += '<tr>';
                                 html += '<td class="status-tab-left">';
                                 if (value['img_off'] != null) {
-                                    html += '   <img src="{{ value['img_off'] }}" width="16" height="16" />';
+                                    html += '   <img src="' + value['img_off'] + '" width="16" height="16" />';
                                 }
-                                ;
+
                                 html += '<span>' + labelOff + '</span>';
                                 html += '<input type="radio" name="status[' + sBas + '][' + value.bit + ']" value="0" ' + checkValOff + ' />';
                                 html += '</td>';
@@ -329,13 +394,15 @@
                                 if (value['img_on'] != null) {
                                     html += '<img src="' + value['img_on'] + '" width="16" height="16" />';
                                 }
-                                ;
+
                                 html += '</td>';
                                 html += '</tr>';
                             }
-                            ;
-                            that.parent().closest('.wrapper-item').find(".status-container").html('');
-                            that.parent().closest('.wrapper-item').find(".status-container").append(html);
+
+                            $(".status-container", $elementRow).html('');
+                            $(".status-container", $elementRow).append(html);
+
+                            isRecordSelected($elementRow, true);
                         }
                     },
                     complete: function () {
@@ -346,43 +413,40 @@
             }
         });
 
-        //substitute lazaret file click action
-        $("button.subtitute-lazaret", scope).bind('click', function () {
-            var that = $(this);
-            var lazaretId = getLazaretId(that);
-            var container = $(this).closest('.wrapper-item');
-
-            var nbProposals = $('.records-subititution', container).length;
-            var elements = [];
-            var nbElement = 0;
-
-
-
-            if (nbProposals > 1) {
-                elements = $(".selected", container);
-                nbElement = elements.length;
-            } else if (nbProposals == 1) {
-                elements = $(".records-subititution > div", container);
-                } else {
+        $("INPUT[name=copy_meta]", scope).click(
+            function(event) {
+                const that = $(this);
+                const $elementRow = that.closest(".lazaretElement");
+                if(!$elementRow.attr("hasSelected")) {
                     return false;
+                }
+
+                checkCopyMeta($elementRow, event.target.checked);
+            }
+        );
+
+        //substitute lazaret file click action
+        $("button.subtitute-lazaret", scope).bind('click', function (event) {
+            const that = $(this);
+            const $elementRow = that.closest(".lazaretElement");
+            var container = $(this).closest('.wrapper-item');
+            if(!$elementRow.attr("hasSelected")) {
+                return false;
             }
 
-            if (nbElement === 0 && nbProposals > 1) {
-                alert(language.selectOneRecord);
+            var lazaretId = getLazaretId(that);
 
-                return false;
-            } else if (nbElement > 1) {
+            let $selectedProposals = $(".record-proposal .selected");
+            if($selectedProposals.length !== 1) {
                 alert(language.onlyOneRecord);
                 return false;
             }
+            let recordId = $selectedProposals.first().attr("data-record_id");
+            let $form = $("FORM", $elementRow);
 
-            var recordId = elements.first().attr("data-record_id");
-            var form = $(this).closest("form");
-            $(".record_id").val(recordId);
+            $(".record_id", $form).val(recordId);
 
-
-            var form = $(this).closest("form");
-            data = form.serializeArray();
+            data = $form.serializeArray();
             var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
             that.closest(".form-backup ").append(allData);
             that.parent().closest('.wrapper-item').find(".change-record ").remove();
@@ -421,9 +485,11 @@
         $(".toggle-status").click(function () {
             $(this).nextAll('.status-wrapper').first().toggleClass('hidden');
         });
+
     });
 </script>
 
+{# @var file \Alchemy\Phrasea\Model\Entities\LazaretFile #}
 {% macro lazaretElement(app, file) %}
     {% import "common/thumbnail.html.twig" as thumb %}
     {% set records = file.getRecordsToSubstitute(app, true) %}
@@ -446,9 +512,13 @@
                         <p>{{ "Collection" | trans }} : <span class="info">{{ file.getCollection(app).get_label(app['locale']) }}</span></p>
                     </div>
                     <div class="caption">
-                        {% for check in file.getChecks() %}
+                        {% for check in file.getEligibleChecks(app) %}
                             <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
                         {% endfor %}
+
+                        {% if file.getEligibleChecks(app)|length == 0 and file.getChecks()|length > 0 %}
+                            <p>{{ 'upload:: checkers for this file is disabled in configuration or deleted' | trans }}</p>
+                        {% endif %}
                     </div>
                     <form  class="change-record" name="change-records-status" action="/" method="POST">
                         <div class="change-record-wrapper">
@@ -460,7 +530,9 @@
                                 <div class="update-status">
                                     <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
                                         <a href="#" class="reset-status btn">Reset status</a>
+
                                         <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
+
                                         <div class="status-wrapper hidden">
                                             <table style="margin: auto">
                                                 <tbody class="status-container">
@@ -508,24 +580,31 @@
                                                 </tbody>
                                             </table>
                                         </div>
+
+                                        <h5 class="copy_meta disabled-if-no-selection" style="border-top: 1px solid black; margin-top:5px;">
+                                            <input type="checkbox" id="copy_meta" name="copy_meta" />&nbsp;
+                                            <label for="copy_meta" style="color:revert; display:revert;">{{ 'upload:: Copy meta' | trans }}</label>
+                                        </h5>
+
                                     </div>
                                 </div>
                             {% endif %}
-
-                            <div class="btn-group" style="text-align:center; padding:5px;">
-                                <button class="btn add-lazaret" title="{{ "Add" | trans }}">
-                                    <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
+                            <div class="btn-group" style="text-align:left; width:100%;">
+                                <button class="btn add-lazaret" title="{{ "Add" | trans }}" style="width: 33%;">
+                                    <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">
+                                    <span class="b_label">{{ "Add" | trans }}</span>
                                 </button>
-                                <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
+                                <button class="btn delete-lazaret" title="{{ "Delete" | trans }}" style="width: 33%;">
                                     <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
                                 </button>
                                 {% if records|length > 0 %}
-                                    <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
+                                    <button class="btn subtitute-lazaret disabled-if-no-selection" title="{{ "Substitute" | trans }}" style="width: 33%;">
                                         <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
                                     </button>
                                 {% endif %}
                             </div>
                         </div>
+                        <input type="hidden" name="prodLazaret_token" value="{{ app['session'].get('prodLazaret_token') }}">
                     </form>
                     <div class="hidden form-backup"></div>
                     {# bloc to backup initial value of status list#}
@@ -595,10 +674,11 @@
             <ul class="thumbnails">
                 {% for record in records %}
                     {% set reasons = record['reasons'] %}
+                    {# @var record \record_adapter #}
                     {% set record = record['record'] %}
                     {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANADDRECORD'))
                         and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDELETERECORD')) %}
-                        <li class="records-subititution span3" style="width:210px">
+                        <li class="record-proposal span3" style="width:210px">
                             {% include 'prod/results/record.html.twig' with {
                                 'record': record,
                                 'settings': {
@@ -624,6 +704,11 @@
 {% endmacro %}
 
 <style>
+
+    #lazaretBox .lazaretElement:not([hasSelected]) .disabled-if-no-selection {
+        filter: opacity(0.4);grayscale(100%);
+    }
+
     .lazaret-proposals .diapo {
         float:none;
     }
@@ -631,7 +716,7 @@
     .collection-status {
         margin: 0 11px 14px;
         background: #f5f5f5;
-        padding-bottom: 10px;
+        padding-bottom: 4px;
         color: #151515;
     }
     .collection-status h5 {

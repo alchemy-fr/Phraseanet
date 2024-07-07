@@ -811,4 +811,12 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         return $mock;
     }
+
+    protected function setSessionFormToken($formName)
+    {
+        $randomValue = bin2hex(random_bytes(35));
+        self::$DI['app']['session']->set($formName.'_token', $randomValue);
+
+        return $randomValue;
+    }
 }

@@ -56,8 +56,9 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
 use Alchemy\Phrasea\Notification\Receiver;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Neutron\ReCaptcha\ReCaptcha;
 use RandomLib\Generator;
+use ReCaptcha\ReCaptcha;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -94,7 +95,7 @@ class LoginController extends Controller
 
         $conf = $this->getConf();
         $browser = $this->getBrowser();
-        
+
         return [
             'last_publication_items' => $items,
             'instance_title' => $conf->get(['registry', 'general', 'title']),
@@ -108,6 +109,7 @@ class LoginController extends Controller
             'current_url' => $request->getUri(),
             'flash_types' => $this->app->getAvailableFlashTypes(),
             'recaptcha_display' => $this->app->isCaptchaRequired(),
+            'recaptcha_enabled' => ($conf->get(['registry', 'webservices', 'captcha-provider']) != 'none') ? true : false,
             'unlock_usr_id' => $this->app->getUnlockAccountData(),
             'guest_allowed' => $this->app->isGuestAllowed(),
             'register_enable' => $this->getRegistrationManager()->isRegistrationEnabled(),
@@ -135,10 +137,10 @@ class LoginController extends Controller
     {
         $response =  $this->app->json([
             'validation_blank'          => $this->app->trans('Please provide a value.'),
-            'validation_choice_min'     => $this->app->trans('Please select at least %s choice.'),
+            'validation_choice_min'     => $this->app->trans('Please select at least %s choice.', ['%s' => 1]),
             'validation_email'          => $this->app->trans('Please provide a valid email address.'),
             'validation_ip'             => $this->app->trans('Please provide a valid IP address.'),
-            'validation_length_min'     => $this->app->trans('Please provide a longer value. It should have %s character or more.'),
+            'validation_length_min'     => $this->app->trans('Please provide a longer value. It should have %s character or more.', ['%s' => 5]),
             'password_match'            => $this->app->trans('Please provide the same passwords.'),
             'email_match'               => $this->app->trans('Please provide the same emails.'),
             'accept_tou'                => $this->app->trans('Please accept the terms of use to register.'),
@@ -187,6 +189,17 @@ class LoginController extends Controller
             $data = $form->getData();
 
             $provider = null;
+
+            if(
+                (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+            ) {
+                $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
+
+                $dateError = new FormError("");
+                $form->get('captcha')->addError($dateError);
+            }
+
             if ($data['provider-id']) {
                 try {
                     $provider = $this->findProvider($data['provider-id']);
@@ -222,13 +235,6 @@ class LoginController extends Controller
 
             try {
                 if ($form->isValid()) {
-                    $captcha = $this->getRecaptcha()->bind($request);
-
-                    $conf = $this->getConf();
-                    if ($conf->get(['registry', 'webservices', 'captcha-enabled']) && !$captcha->isValid()) {
-                        throw new FormProcessingException($this->app->trans('Invalid captcha answer.'));
-                    }
-
                     $registrationService = $this->getRegistrationService();
                     $providerId = isset($data['provider-id']) ? $data['provider-id'] : null;
                     $selectedCollections = isset($data['collections']) ? $data['collections'] : null;
@@ -423,10 +429,22 @@ class LoginController extends Controller
     {
         $form = $this->app->form(new PhraseaForgotPasswordForm());
         $service = $this->getRecoveryService();
+        $flashMessage = $this->app->trans('login:: request password mail sent');
 
         try {
             if ('POST' === $request->getMethod()) {
                 $form->handleRequest($request);
+                $requestData = $request->request->all();
+
+                if(
+                    (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                    (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+                ) {
+                    $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
+
+                    $dataError = new FormError("");
+                    $form->get('captcha')->addError($dataError);
+                }
 
                 if ($form->isValid()) {
                     $data = $form->getData();
@@ -440,13 +458,13 @@ class LoginController extends Controller
                         throw new FormProcessingException($message, 0, $ex);
                     }
 
-                    $this->app->addFlash('info', $this->app->trans('phraseanet:: Un email vient de vous etre envoye'));
+                    $this->app->addFlash('info', $flashMessage);
 
                     return $this->app->redirectPath('login_forgot_password');
                 }
             }
         } catch (FormProcessingException $e) {
-            $this->app->addFlash('error', $e->getMessage());
+            $this->app->addFlash('info', $flashMessage);
         }
 
         return $this->render('login/forgot-password.html.twig', array_merge(
@@ -490,9 +508,7 @@ class LoginController extends Controller
         // does the provider provides a logout redirection ?
         if($providerId && ($provider = $this->findProvider($providerId))) {
             if(method_exists($provider, 'logoutAndRedirect')) {
-                $redirectToPhr = $this->app->url('logout', [
-                    'redirect' => $request->query->get("redirect")
-                ]);
+                $redirectToPhr = $this->app->url('logout');
                 $response = $provider->logoutAndRedirect($redirectToPhr);
             }
             else {
@@ -696,6 +712,7 @@ class LoginController extends Controller
     public function authenticationCallback(Request $request, $providerId)
     {
         $this->getSession()->set('auth_provider.id', null);
+        $this->getSession()->set('provider.token_info', null);
 
         $provider = $this->findProvider($providerId);
 
@@ -831,7 +848,7 @@ class LoginController extends Controller
             );
         } catch (RequireCaptchaException $e) {
             $this->app->requireCaptcha();
-            $this->app->addFlash('warning', $this->app->trans('Please fill the captcha'));
+            $this->app->addFlash('warning', $e->getMessage());
 
             throw new AuthenticationException(call_user_func($redirector, $params));
         } catch (AccountLockedException $e) {

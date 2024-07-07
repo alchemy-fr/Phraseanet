@@ -101,6 +101,20 @@ interface MailInterface
     public function getLocale();
 
     /**
+     * Display or not the text in email footer
+     *
+     * @return bool
+     */
+    public function getDisplayFooterText();
+
+    /**
+     * Can display or not the text in email footer
+     *
+     * @param bool $hasFooterText
+     */
+    public function setDisplayFooterText(bool $hasFooterText);
+
+    /**
      * Returns an URL for a logo
      *
      * @return string

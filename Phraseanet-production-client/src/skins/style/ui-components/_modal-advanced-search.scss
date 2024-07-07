@@ -203,6 +203,13 @@
         height: 20px;
         padding-left: 10px;
     }
+    input.term_select_value {
+        &:invalid {
+            border-color: #e9322d !important;
+            color: #b94a48 !important;
+            box-shadow: 0 0 6px #f8b9b7;
+        }
+    }
     #ADVSRCH_DATE_ZONE select.input-medium {
         height: 24px;
         color: #000;
@@ -239,7 +246,6 @@
         color: #6e6e6e;
     }
     .add_new_term {
-        width: 54px;
         height: 20px;
         font-size: 12px;
         color: #979797;

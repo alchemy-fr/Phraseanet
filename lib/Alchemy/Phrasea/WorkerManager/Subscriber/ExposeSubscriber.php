@@ -32,7 +32,7 @@ class ExposeSubscriber implements EventSubscriberInterface
                     'databoxId'     => (int) $basrec[0],
                     'exposeName'    => $event->getExposeName(),
                     'publicationId' => $event->getPublicationId(),
-                    'accessToken'   => $event->getAccessToken()
+                    'accessTokenInfo'   => $event->getAccessTokenInfo()
                 ]
             ];
 

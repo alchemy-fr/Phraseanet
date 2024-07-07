@@ -87,6 +87,21 @@ class Order
     private $notificationMethod;
 
     /**
+     * @ORM\Column(name="canceled_on", type="datetime", nullable=true)
+     */
+    private $canceledOn;
+
+    /**
+     * @ORM\Column(name="canceled_by", type="integer", nullable=true)
+     */
+    private $canceledBy;
+
+    /**
+     * @ORM\Column(name="canceled_todo", type="integer", nullable=true)
+     */
+    private $canceledTodo;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -334,5 +349,53 @@ class Order
         }
 
         $this->notificationMethod = $methodName;
+    }
+
+    /**
+     * @param \DateTime $canceledOn
+     * @return $this
+     */
+    public function setCanceledOn($canceledOn)
+    {
+        $this->canceledOn = $canceledOn;
+
+        return $this;
+    }
+
+    public function getCanceledOn()
+    {
+        return $this->canceledOn;
+    }
+
+    /**
+     * @param $canceledBy
+     * @return $this
+     */
+    public function setCanceledBy($canceledBy)
+    {
+        $this->canceledBy = $canceledBy;
+
+        return $this;
+    }
+
+    public function getCanceledBy()
+    {
+        return $this->canceledBy;
+    }
+
+    /**
+     * @param $canceledTodo
+     * @return $this
+     */
+    public function setCanceledTodo($canceledTodo)
+    {
+        $this->canceledTodo = $canceledTodo;
+
+        return $this;
+    }
+
+    public function getCanceledTodo()
+    {
+        return $this->canceledTodo;
     }
 }

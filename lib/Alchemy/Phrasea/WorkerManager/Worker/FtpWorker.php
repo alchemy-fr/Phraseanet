@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPReceiver;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessFTPSender;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Exception;
+use ftpClient;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -83,7 +85,8 @@ class FtpWorker implements WorkerInterface
 
                 $em->flush();
                 $em->commit();
-            } catch (\Exception $e) {
+            }
+            catch (Exception $e) {
                 $em->rollback();
             }
         } else {
@@ -101,7 +104,8 @@ class FtpWorker implements WorkerInterface
                 $em->flush();
 
                 $em->commit();
-            } catch (\Exception $e) {
+            }
+            catch (Exception $e) {
                 $em->rollback();
             }
         }
@@ -146,7 +150,7 @@ class FtpWorker implements WorkerInterface
 
         try {
             $ssl = $export->isSsl();
-            /** @var \ftpClient $ftp_client */
+            /** @var ftpClient $ftp_client */
             $ftp_client = $this->app['phraseanet.ftp.client'](
                 $ftp_server, 21, 300, $ssl, $proxy, $proxyport,
                 $proxyuser, $proxypwd
@@ -156,7 +160,8 @@ class FtpWorker implements WorkerInterface
             if ($export->isPassif()) {
                 try {
                     $ftp_client->passive(true);
-                } catch (\Exception $e) {
+                }
+                catch (Exception $e) {
                     $this->logger->debug($e->getMessage());
                 }
             }
@@ -165,7 +170,8 @@ class FtpWorker implements WorkerInterface
                 try {
                     $ftp_client->chdir($export->getDestFolder());
                     $export->setDestfolder('/' . $export->getDestfolder());
-                } catch (\Exception $e) {
+                }
+                catch (Exception $e) {
                     $this->logger->debug($e->getMessage());
                 }
             } else {
@@ -175,14 +181,16 @@ class FtpWorker implements WorkerInterface
             if (trim($export->getFoldertocreate()) != '') {
                 try {
                     $ftp_client->mkdir($export->getFoldertocreate());
-                } catch (\Exception $e) {
+                }
+                catch (Exception $e) {
                     $this->logger->debug($e->getMessage());
                 }
                 try {
                     $new_dir = $ftp_client->add_end_slash($export->getDestfolder())
                         . $export->getFoldertocreate();
                     $ftp_client->chdir($new_dir);
-                } catch (\Exception $e) {
+                }
+                catch (Exception $e) {
                     $this->logger->debug($e->getMessage());
                 }
             }
@@ -223,25 +231,35 @@ class FtpWorker implements WorkerInterface
 
                         $localfile = sys_get_temp_dir().'/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
-                            throw new \Exception('Impossible de creer un fichier temporaire');
+                            throw new Exception('Impossible de creer un fichier temporaire');
                         }
-                    } elseif ($subdef == 'caption-yaml') {
+                    }
+                    elseif ($subdef == 'caption-yaml') {
                         $desc = $this->app['serializer.caption']->serialize($record->get_caption(), CaptionSerializer::SERIALIZE_YAML, $exportElement->isBusinessfields());
 
                         $localfile = sys_get_temp_dir().'/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
-                            throw new \Exception('Impossible de creer un fichier temporaire');
+                            throw new Exception('Impossible de creer un fichier temporaire');
                         }
-                    } else {
+                    }
+                    else {
                         try {
                             $sd = $record->get_subdef($subdef);
-                        } catch (\Exception_Media_SubdefNotFound $notFount) {
+                            $localfile = $sd->getRealPath();
+
+                            if($exportElement->isToStamp()) {
+                                if (!is_null($path = \recordutils_image::stamp($this->app, $sd))) {
+                                    // stamped !
+                                    $localfile = $path;
+                                }
+                            }
+                        }
+                        catch (\Exception_Media_SubdefNotFound $notFound) {
                             continue;
                         }
 
-                        $localfile = $sd->getRealPath();
-                        if (!file_exists($localfile)) {
-                            throw new \Exception('Le fichier local n\'existe pas');
+                        if (!$localfile || !file_exists($localfile)) {
+                            throw new Exception('Le fichier local n\'existe pas');
                         }
                     }
 
@@ -250,7 +268,8 @@ class FtpWorker implements WorkerInterface
                     if ($ftp_client->pwd() != $current_folder) {
                         try {
                             $ftp_client->chdir($current_folder);
-                        } catch (\Exception $e) {
+                        }
+                        catch (Exception $e) {
                             $this->logger->debug($e->getMessage());
                         }
                     }
@@ -272,7 +291,8 @@ class FtpWorker implements WorkerInterface
                     $this->app['orm.em']->persist($exportElement);
                     $this->app['orm.em']->flush();
                     $this->logexport($this->app, $record, $obj, $ftpLog);
-                } catch (\Exception $e) {
+                }
+                catch (Exception $e) {
                     $state .= $line = $this->translator->trans('task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n\'existe plus)', ['%file%' => basename($localfile), '%record_id%' => $record_id, '%basename%' => \phrasea::sbas_labels(\phrasea::sbasFromBas($this->app, $base_id), $this->app)]) . "\n<br/>";
 
                     $this->logger->debug($line);
@@ -317,7 +337,8 @@ class FtpWorker implements WorkerInterface
             }
 
             $ftp_client->close();
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $state .= $line = $e . "\n";
 
             $this->logger->debug($line);
@@ -342,7 +363,8 @@ class FtpWorker implements WorkerInterface
                 $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();
-            } catch (\Exception $e) {
+            }
+            catch (Exception $e) {
                 $em->rollback();
             }
         } else {
@@ -354,13 +376,15 @@ class FtpWorker implements WorkerInterface
             try {
                 $workerRunningJob
                     ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
+                    ->setFinished(new \DateTime('now'))
                     ->setStatus(WorkerRunningJob::ERROR)
                 ;
 
                 $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();
-            } catch (\Exception $e) {
+            }
+            catch (Exception $e) {
                 $em->rollback();
             }
 
@@ -472,7 +496,9 @@ class FtpWorker implements WorkerInterface
             $mail = MailSuccessFTPSender::create($app, $receiver, null, $sender_message);
             $mail->setServer($ftp_server);
             $this->deliver($mail);
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
+            // no-op
         }
 
         try {
@@ -480,7 +506,8 @@ class FtpWorker implements WorkerInterface
             $mail = MailSuccessFTPReceiver::create($app, $receiver, null, $receiver_message);
             $mail->setServer($ftp_server);
             $this->deliver($mail);
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $this->logger->debug(sprintf('Unable to deliver success message : %s', $e->getMessage()));
         }
     }

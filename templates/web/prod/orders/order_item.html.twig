@@ -21,6 +21,7 @@
             <input type="checkbox" name="lst" value="" id="new_basket_add_sel"/>
             {{ 'Ajouter ma selection courrante' | trans }}
         </label>
+        <input type="hidden" name="prodCreateBasket_token" value="{{ app['session'].get('prodCreateBasket_token') }}">
     </form>
 </div>
 
@@ -109,6 +110,17 @@
                 <td width="20%">
                     <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
                     <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
+                </td>
+                <td>
+                    {% if order.getTodo() == 0 and order.getCanceledOn() is empty %}
+                        <span class="text_block_bold">{{ 'order-manager:: all document treated' | trans }}</span>
+                    {% elseif order.getTodo() != 0 and order.getCanceledOn() is empty  %}
+                        <button class="btn cancel_order" data-order-id="{{ order.getId() }}" style="background-color: #faa732;background-image: linear-gradient(to bottom,#fbb450,#f89406);color: #fff;">
+                            {{ 'order-manager:: cancel' | trans }}
+                        </button>
+                    {% elseif order.getTodo() == 0 and order.getCanceledOn() is not empty  %}
+                        <span class="text_block_bold">{{ 'order-manager:: canceled on %canceled_on% by %canceled_by%, with %n% items not treated' | trans({'%canceled_on%' : order.getCanceledOn() | date('d/m/Y'), '%canceled_by%' : user_display_name(order.getCanceledBy()), '%n%' : order.getCanceledTodo()}) }}</span>
+                    {% endif %}
                 </td>
             </tr>
             <tr>

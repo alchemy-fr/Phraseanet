@@ -104,11 +104,24 @@
                 <li><a href="#ftp">{{ 'export:: FTP' | trans }}</a></li>
             {% endif %}
         </ul>
+
         {% if download.get_total_download() > 0 %}
+
+            {# ##########################################
+            direct / async download
+            ############################################# #}
+
             <div id="download">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: telechargement' | trans }}</h4>
-                    <form method="post" target="_blank" action="{{ path('check_download') }}" style="text-align: left;">
+                    {% if app['conf'].get(['download_async', 'enabled'], false) %}
+                        {# \Alchemy\Phrasea\Controller\Prod\DownloadController::listDownloadAsync #}
+                        {% set download_path = 'list_download_async' %}
+                    {% else %}
+                        {# \Alchemy\Phrasea\Controller\Prod\DownloadController::checkDownload #}
+                        {% set download_path = 'check_download' %}
+                    {% endif %}
+                    <form method="post" target="_blank" name="prodExportDownload" action="{{ path(download_path) }}" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         {% for name, values in download.get_display_download() %}
@@ -137,6 +150,14 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+                        {% if app['conf'].get(['download_async', 'enabled'], false) %}
+                        <div class="well-small">
+                            <label for="include_report" class="checkbox">
+                                <input class="caption" type="checkbox" id="include_report" name="include_report" value="INCLUDE_REPORT" />
+                                {{ 'prod::download: report as spreadsheet' | trans }}
+                            </label>
+                        </div>
+                        {% endif %}
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_download" class="checkbox">
@@ -156,10 +177,10 @@
                                 </label>
                             </div>
                         {% endif %}
-                        {% if app['conf'].get(['registry', 'actions', 'export-stamp-choice']) == true and download.has_stamp_option() == true %}
-                            <div id="download_stamp_choice" class="well-small hide" style="margin-left: 20px;" >
-                                <label for="option_stamp" class="checkbox">
-                                    <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice" value="NO_STAMP" />
+                        {% if removeable_stamp and download.has_stamp_option() == true %}
+                            <div class="well-small" style="margin-left: 20px;" >
+                                <label for="export_stamp_choice" class="checkbox">
+                                    <input class="stamp_choice" type="checkbox" id="export_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
                                     {{ 'prod::download: delete-marking-stamp' | trans }}
                                 </label>
                             </div>
@@ -168,18 +189,25 @@
                             <button type="button" class="download_button btn btn-inverse">{{ 'boutton::telecharger' | trans }}</button>
                             <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                         </div>
+                        <input type="hidden" name="prodExportDownload_token" value="{{ app['session'].get('prodExportDownload_token') }}">
                     </form>
                 </div>
             </div>
+
+            {# ##########################################
+            email
+            ############################################# #}
+
             <div id="sendmail">
                 <div style="padding:10px; text-align: center;">
                     <h4>{{ 'export:: envoi par mail' | trans }}</h4>
-                        <form action="{{ path('export_mail') }}" method="post" target="sendmail_target" style="text-align: left;">
+                    {# \Alchemy\Phrasea\Controller\Prod\ExportController::exportMail #}
+                    <form action="{{ path('export_mail') }}" method="post" name="prodExportEmail" target="sendmail_target" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                            <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px; margin-bottom: 8px;">
-                                <span style="font-style: italic">{{ 'export:email:info:: email addresses separated by commas' | trans }}</span>
-                            </div>
+                        <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px; margin-bottom: 8px;">
+                            <span style="font-style: italic">{{ 'export:email:info:: email addresses separated by commas' | trans }}</span>
+                        </div>
                         <div>
                             <span style="min-width: 21px;display: inline-block; ">
                                 {{ 'export::mail: destinataire' | trans }}</span>
@@ -188,10 +216,10 @@
                             {% set my_email = app.getAuthenticatedUser().getEmail() %}
                             <div class="acceptDl-info">
                                 {% if my_email != '' %}
-                                        <label class="checkbox">
-                                            <input type="checkbox" name="reading_confirm" value="1" />
-                                            {{ "Recevoir un accuse de reception a %my_email%" | trans({'%my_email%' : my_email}) }}
-                                        </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="reading_confirm" value="1" />
+                                        {{ "Recevoir un accuse de reception a %my_email%" | trans({'%my_email%' : my_email}) }}
+                                    </label>
                                 {% else %}
                                     <label class="checkbox">
                                         {{ 'Accuse de reception indisponible, vous n\'avez pas declare d\'adresse email' | trans }}
@@ -232,6 +260,14 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
+                        {% if removeable_stamp and download.has_stamp_option() == true %}
+                            <div class="well-small" style="margin-left: 20px;" >
+                                <label for="email_stamp_choice" class="checkbox">
+                                    <input class="stamp_choice" type="checkbox" id="email_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                                    {{ 'prod::download: delete-marking-stamp' | trans }}
+                                </label>
+                            </div>
+                        {% endif  %}
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_sendmail" class="checkbox">
@@ -257,11 +293,18 @@
                             <img class="sendmail_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
                             <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                         </div>
+                        <input type="hidden" name="prodExportEmail_token" value="{{ app['session'].get('prodExportEmail_token') }}">
                     </form>
                 </div>
             </div>
         {% endif %}
         {% if download.get_total_order() > 0 %}
+
+
+            {# ##########################################
+            order
+            ############################################# #}
+
             <div id="order">
                 {% for name, values in download.get_display_orderable() %}
                     {% if values.available > 0 %}
@@ -296,7 +339,7 @@
                     {% endif %}
                 {% endfor %}
                 <hr />
-                <form class="form-horizontal">
+                <form class="form-horizontal" name="prodExportOrder">
                     <input type="hidden" name="lst" value="{{lst}}"/>
                     <input type="hidden" name="ssel" value="{{ssttid}}"/>
 
@@ -404,9 +447,16 @@
                         <img class="order_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
                         <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                     </div>
+                    <input type="hidden" name="prodExportOrder_token" value="{{ app['session'].get('prodExportOrder_token') }}">
                 </form>
             </div>
         {% endif %}
+
+
+        {# ##########################################
+        ftp
+        ############################################# #}
+
         {% if download.get_total_ftp() > 0 %}
             <div id="ftp">
                 <div style="padding:10px; text-align: center;">
@@ -430,7 +480,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <form id="ftp_joined" class="form-horizontal" style="text-align: left;">
+                    <form id="ftp_joined" class="form-horizontal"  name="prodExportFTP" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <div>
@@ -459,6 +509,14 @@
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                            {% if removeable_stamp and download.has_stamp_option() == true %}
+                                <div class="well-small" style="margin-left: 20px;" >
+                                    <label for="ftp_stamp_choice" class="checkbox">
+                                        <input class="stamp_choice" type="checkbox" id="ftp_stamp_choice" name="stamp_choice" value="REMOVE_STAMP" />
+                                        {{ 'prod::download: delete-marking-stamp' | trans }}
+                                    </label>
+                                </div>
+                            {% endif  %}
                         </div>
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields" style="margin-left:20px;display:none;">
@@ -479,6 +537,7 @@
                                 </label>
                             </div>
                         {% endif %}
+                        <input type="hidden" name="prodExportFTP_token" value="{{ app['session'].get('prodExportFTP_token') }}">
                     </form>
                     <div class="buttons_line">
                         <button type="button" class="tryftp_button btn btn-inverse">{{ 'boutton::essayer' | trans }}</button>
@@ -519,14 +578,6 @@
         $(document).find(".emailslist").on('change', function(e) {
             $(document).find(".tagsinput").tagsinput('add', $(this).val());
             $(this).val('');
-        });
-
-        $('#download_document').click(function(){
-            if($(this).is(':checked')){
-                $('#download_stamp_choice').show();
-            } else{
-                $('#download_stamp_choice').hide();
-            }
         });
     </script>
 {% endif %}

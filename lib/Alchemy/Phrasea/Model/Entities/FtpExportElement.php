@@ -96,6 +96,11 @@ class FtpExportElement
     private $updated;
 
     /**
+     * @ORM\Column(type="boolean", options={"default" = 0})
+     */
+    private $toStamp = false;
+
+    /**
      * Get id
      *
      * @return integer
@@ -367,5 +372,21 @@ class FtpExportElement
     public function getExport()
     {
         return $this->export;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isToStamp(): bool
+    {
+        return $this->toStamp;
+    }
+
+    /**
+     * @param bool $toStamp
+     */
+    public function setToStamp(bool $toStamp)
+    {
+        $this->toStamp = $toStamp;
     }
 }

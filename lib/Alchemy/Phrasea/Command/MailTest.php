@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Alchemy\Phrasea\Notification\Mail\MailTest as Mail;
+use Alchemy\Phrasea\Notification\Mail\MailCheck as Mail;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;

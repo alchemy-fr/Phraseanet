@@ -25,7 +25,6 @@ use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\StructureChangeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\WebhookUserEventSubscriber;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
@@ -95,10 +94,10 @@ use Alchemy\WorkerProvider\WorkerServiceProvider;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Monolog\Handler\ErrorLogHandler;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use Psr\Log\LoggerInterface;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
@@ -203,7 +202,6 @@ class Application extends SilexApplication
         $this->setupGeonames();
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new RepositoriesServiceProvider());
-        $this->register(new ManipulatorServiceProvider());
         $this->register(new TechnicalDataServiceProvider());
         $this->register(new MediaSubdefServiceProvider());
         $this->register(new CaptionServiceProvider());
@@ -211,16 +209,13 @@ class Application extends SilexApplication
         $this->register(new PhraseaVersionServiceProvider());
 
         $this->register(new RandomGeneratorServiceProvider());
-        $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
         $this->register(new ZippyServiceProvider());
-        $this->setupRecaptacha();
 
         if ($this['configuration.store']->isSetup()) {
             $this->register(new SearchEngineServiceProvider());
             $this->register(new BorderManagerServiceProvider());
         }
-
 
         $this->register(new SerializerServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
@@ -261,6 +256,7 @@ class Application extends SilexApplication
         $this->register(new LocaleServiceProvider());
 
         $this->setupEventDispatcher();
+        $this->setupRecaptacha();
 
         $this->register(new DataboxServiceProvider());
         $this->register(new QueueServiceProvider());
@@ -278,15 +274,19 @@ class Application extends SilexApplication
         $this['monolog'] = $this->share(
             $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
 
-                $logger->pushHandler(new ErrorLogHandler(
-                    ErrorLogHandler::SAPI,
-                    Logger::ERROR
-                ));
+                if ($this->getEnvironment() === self::ENV_TEST) {
+                    $logger->pushHandler(new NullHandler());
+                } else {
+                    $logger->pushHandler(new ErrorLogHandler(
+                        ErrorLogHandler::SAPI,
+                        Logger::ERROR
+                    ));
 
-                $logger->pushHandler(new StreamHandler(
-                    fopen('php://stderr', 'w'),
-                    Logger::ERROR
-                ));
+                    $logger->pushHandler(new StreamHandler(
+                        fopen('php://stderr', 'w'),
+                        Logger::ERROR
+                    ));
+                }
 
                 return $logger;
             })
@@ -464,7 +464,7 @@ class Application extends SilexApplication
      */
     public function requireCaptcha()
     {
-        if ($this['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+        if ($this['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
             $this['session']->set('require_captcha', true);
         }
 
@@ -658,12 +658,12 @@ class Application extends SilexApplication
     private function setupRecaptacha()
     {
         $this['recaptcha.public-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
             }
         });
         $this['recaptcha.private-key'] = $this->share(function (Application $app) {
-            if ($app['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+            if ($app['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
             }
         });
@@ -687,9 +687,20 @@ class Application extends SilexApplication
                 );
 
                 $encryption = null;
+                $secureMode = '';
 
-                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls'])) {
-                    $encryption = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
+                if (in_array($app['conf']->get(['registry', 'email', 'smtp-secure-mode']), ['ssl', 'tls', 'tlsv1.1', 'tlsv1.2'])) {
+                    $secureMode = $app['conf']->get(['registry', 'email', 'smtp-secure-mode']);
+
+                    if ($secureMode == 'ssl') {
+                        $encryption = 'ssl';
+                    } else {
+                        $encryption = 'tls';
+                        if ($secureMode == 'tls') {
+                            // by default use tlsv1.2
+                            $secureMode = 'tlsv1.2';
+                        }
+                    }
                 }
 
                 $options = $app['swiftmailer.options'] = array_replace([
@@ -705,6 +716,10 @@ class Application extends SilexApplication
                 $transport->setPort($options['port']);
                 // tls or ssl
                 $transport->setEncryption($options['encryption']);
+
+                if ($options['encryption'] == 'tls') {
+                    $transport->setStreamOptions(['ssl' =>[$secureMode => true]]);
+                }
 
                 if ($app['conf']->get(['registry', 'email', 'smtp-auth-enabled'])) {
                     $transport->setUsername($options['username']);

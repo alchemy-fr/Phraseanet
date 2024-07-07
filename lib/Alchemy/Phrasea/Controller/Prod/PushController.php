@@ -215,6 +215,10 @@ class PushController extends Controller
      */
     public function sharebasketAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodShareBasket')) {
+            return $this->app->json(['success' => false, 'message' => 'invalid form']);
+        }
+
         $ret = [
             'success' => false,
             'message' => $this->app->trans('Unable to send the documents')
@@ -393,6 +397,10 @@ class PushController extends Controller
      */
     public function addUserAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodShareAddUser')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid add user form'], 403);
+        }
+
         $result = ['success' => false, 'message' => '', 'user'    => null];
 
         try {
@@ -469,6 +477,8 @@ class PushController extends Controller
     public function getAddUserFormAction(Request $request)
     {
         $params = ['callback' => $request->query->get('callback')];
+
+        $this->setSessionFormToken('prodShareAddUser');
 
         return $this->render('prod/User/Add.html.twig', $params);
     }
@@ -657,6 +667,15 @@ class PushController extends Controller
                     'message' => $this->app->trans('Expiration date successfully updated!')
                 ];
             }
+
+            // update records_rights expiration
+            foreach ($basket->getParticipants() as $participant) {
+                $userAcl = $this->getAclForUser($participant->getUser());
+                foreach ($basket->getElements() as $bElement) {
+                    $userAcl->update_expire_grant_hd($bElement->getRecord($this->app), \ACL::GRANT_ACTION_VALIDATE, $request->request->get('date') . " 23:59:59");
+                }
+            }
+
         }
         catch (Exception $e) {
             $ret = [
@@ -807,6 +826,8 @@ class PushController extends Controller
 
         $repository = $this->getUserListRepository();
         $recommendedUsers = $this->getUsersInSelectionExtractor($push->get_elements());
+
+        $this->setSessionFormToken('prodShareBasket');
 
         return $this->render(
             'prod/actions/Push.html.twig',

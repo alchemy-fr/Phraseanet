@@ -21,7 +21,7 @@ class module_console_systemClearCache extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Empties cache directories and cache-server data');
+        $this->setDescription('Empties cache directories and cache-server data <fg=yellow;>(Deprecated use bin/setup system:clear-cache instead)</>');
 
         return $this;
     }

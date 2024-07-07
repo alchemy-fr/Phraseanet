@@ -1212,11 +1212,13 @@ class ApiJsonTest extends ApiTestCase
                 $meta_id = null;
             }
 
-            $toupdate[$field->get_id()] = [
-                'meta_id'        => $meta_id
-                , 'meta_struct_id' => $field->get_id()
-                , 'value'          => 'podom pom pom ' . $field->get_id()
-            ];
+            if (!$field->is_multi()) {
+                $toupdate[$field->get_id()] = [
+                    'meta_id'        => $meta_id
+                    , 'meta_struct_id' => $field->get_id()
+                    , 'value'          => 'podom pom pom ' . $field->get_id()
+                ];
+            }
         }
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
@@ -1240,9 +1242,12 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateRecordsMetadataResponse($content);
 
+        $metaStructure = $record->get_databox()->get_meta_structure();
+
         foreach ($content['response']['record_metadatas'] as $metadata) {
-            if (!in_array($metadata['meta_id'], array_keys($toupdate)))
+            if (!$metaStructure->get_element($metadata['meta_structure_id'])->is_multi() || !in_array($metadata['meta_structure_id'], array_keys($toupdate))) {
                 continue;
+            }
             $saved_value = $toupdate[$metadata['meta_structure_id']]['value'];
             $this->assertEquals($saved_value, $metadata['value']);
         }

@@ -5,6 +5,8 @@ namespace Alchemy\Phrasea\Core\Database;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\DoctrineMigrations\AbstractMigration;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use vierbergenlars\SemVer\version;
 
 class DatabaseMaintenanceService
@@ -63,9 +65,11 @@ class DatabaseMaintenanceService
         $this->connection = $connection;
     }
 
-    public function upgradeDatabase(\base $base, $applyPatches)
+    public function upgradeDatabase(\base $base, $applyPatches, InputInterface $input, OutputInterface $output)
     {
-       $this->reconnect();
+        $dry = !!$input->getOption('dry');
+
+        $this->reconnect();
 
         $recommends = [];
         $allTables = [];
@@ -89,7 +93,7 @@ class DatabaseMaintenanceService
                     $this->alterTableEngine($tableName, $engine, $recommends);
                 }
 
-                $ret = $this->upgradeTable($allTables[$tableName]);
+                $ret = $this->upgradeTable($allTables[$tableName], $output);
                 $recommends = array_merge($recommends, $ret);
 
                 unset($allTables[$tableName]);
@@ -102,18 +106,26 @@ class DatabaseMaintenanceService
         }
 
         foreach ($allTables as $tableName => $table) {
-            $this->createTable($table);
+            if($dry) {
+                $output->writeln(sprintf("dry : NOT creating table \"%s\"", $tableName));
+            }
+            else {
+                $this->createTable($table);
+            }
         }
 
         $current_version = $base->get_version();
 
         if ($applyPatches) {
+            $version = $this->app['phraseanet.version']->getNumber();
             $this->applyPatches(
                 $base,
                 $current_version,
-                $this->app['phraseanet.version']->getNumber(),
+                $version,
                 false,
-                $this->app);
+                $input,
+                $output
+            );
         }
 
         return $recommends;
@@ -273,7 +285,7 @@ class DatabaseMaintenanceService
         unset($stmt);
     }
 
-    public function upgradeTable(\SimpleXMLElement $table)
+    public function upgradeTable(\SimpleXMLElement $table, OutputInterface $output)
     {
         $this->reconnect();
 
@@ -284,15 +296,18 @@ class DatabaseMaintenanceService
             $expr = trim((string)$field->type);
 
             $_extra = trim((string)$field->extra);
+            $type = trim(strtolower((string)$field->type));
+            $_default = (string)$field->default;
+
             if ($_extra) {
                 $expr .= ' ' . $_extra;
             }
 
             $collation = trim((string)$field->collation) != '' ? trim((string)$field->collation) : 'utf8_unicode_ci';
 
-            if (in_array(strtolower((string)$field->type), ['text', 'longtext', 'mediumtext', 'tinytext'])
-                || substr(strtolower((string)$field->type), 0, 7) == 'varchar'
-                || in_array(substr(strtolower((string)$field->type), 0, 4), ['char', 'enum'])
+            if (in_array($type, ['text', 'longtext', 'mediumtext', 'tinytext'])
+                || substr($type, 0, 7) == 'varchar'
+                || in_array(substr($type, 0, 4), ['char', 'enum'])
             ) {
                 $collations = array_reverse(explode('_', $collation));
                 $code = array_pop($collations);
@@ -309,14 +324,17 @@ class DatabaseMaintenanceService
                 $expr .= ' NOT NULL';
             }
 
-            $_default = (string)$field->default;
             if ($_default && $_default != 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT \'' . $_default . '\'';
             } elseif ($_default == 'CURRENT_TIMESTAMP') {
                 $expr .= ' DEFAULT ' . $_default . '';
             }
 
-            $correct_table['fields'][trim((string)$field->name)] = $expr;
+            $expr8 = preg_replace('/^(\\w*int)(\\(\\d+\\))?(.*)?$/', '$1$3', $expr);
+            $correct_table['fields'][trim((string)$field->name)] = [
+                'expr' => $expr,
+                'expr8' => $expr8
+            ];
         }
         if ($table->indexes) {
             foreach ($table->indexes->index as $index) {
@@ -347,6 +365,36 @@ class DatabaseMaintenanceService
 
         foreach ($rs2 as $row2) {
             $f_name = $row2['Field'];
+
+            // accept alias collations as same as in lib/conf.d/bases_structure.xml (utf8_unicode_ci)
+            if(in_array(strtolower($row2['Collation']), ['utf8mb3_unicode_ci', 'utf8mb4_unicode_ci'])) {
+                $row2['Collation'] = 'utf8_unicode_ci';
+            }
+
+            // accept current_timestamp() as result of CURRENT_TIMESTAMP
+            if(strtolower($row2['Default']) === 'current_timestamp()') {
+                $row2['Default'] = "CURRENT_TIMESTAMP";
+            }
+
+            // match integers (https://dev.mysql.com/worklog/task/?id=13127)
+            if(isset($correct_table['fields'][$f_name])) {
+                $matches = [];
+                if(preg_match("/^(\\w*int)(\\(\d+\\))?(.*)?$/", $row2['Type'], $matches) === 1) {
+                    $matches = array_merge($matches, ['', '', '', '']); // set missing matches (easier to test)
+                    if($matches[2] === '') {
+                        // mysql 8 : we must use the expr8
+                        $correct_table['fields'][$f_name] = $correct_table['fields'][$f_name]['expr8'];
+                    }
+                    else {
+                        // mysql 5
+                        $correct_table['fields'][$f_name] = $correct_table['fields'][$f_name]['expr'];
+                    }
+                }
+                else {
+                    $correct_table['fields'][$f_name] = $correct_table['fields'][$f_name]['expr'];
+                }
+            }
+
             $expr_found = trim($row2['Type']);
 
             $_extra = $row2['Extra'];
@@ -383,6 +431,12 @@ class DatabaseMaintenanceService
             }
 
             if (isset($correct_table['fields'][$f_name])) {
+
+                $matches = [];
+                if(preg_match("/^timestamp DEFAULT_GENERATED/", $expr_found, $matches) === 1) {
+                    $correct_table['fields'][$f_name] = preg_replace("/^timestamp/", "timestamp DEFAULT_GENERATED", $correct_table['fields'][$f_name]);
+                }
+
                 if (isset($correct_table['collation'][$f_name]) && $correct_table['collation'][$f_name] != $current_collation) {
                     $old_type = mb_strtolower(trim($row2['Type']));
                     $new_type = false;
@@ -415,11 +469,15 @@ class DatabaseMaintenanceService
                     }
                 }
 
-                if (strtolower($expr_found) !== strtolower($correct_table['fields'][$f_name])) {
-                    $alter[] = "ALTER TABLE `" . $table['name'] . "` CHANGE `$f_name` `$f_name` " . $correct_table['fields'][$f_name];
+                $expected = $correct_table['fields'][$f_name];
+                if (strtolower($expr_found) !== strtolower($expected)) {
+                    $output->writeln(sprintf("expected: <info>%s</info>", $expected));
+                    $output->writeln(sprintf("got     : <info>%s</info>", $expr_found));
+                    $alter[] = "ALTER TABLE `" . $table['name'] . "` CHANGE `$f_name` `$f_name` " . $expected;
                 }
                 unset($correct_table['fields'][$f_name]);
-            } else {
+            }
+            else {
                 $return[] = [
                     'message' => 'Un champ pourrait etre supprime',
                     'sql' => "ALTER TABLE " . $this->connection->getDatabase() . ".`" . $table['name'] . "` DROP `$f_name`;"
@@ -428,7 +486,7 @@ class DatabaseMaintenanceService
         }
 
         foreach ($correct_table['fields'] as $f_name => $expr) {
-            $alter[] = "ALTER TABLE `" . $table['name'] . "` ADD `$f_name` " . $correct_table['fields'][$f_name];
+            $alter[] = "ALTER TABLE `" . $table['name'] . "` ADD `$f_name` " . $expr['expr'];
         }
 
         $tIndex = [];
@@ -466,6 +524,8 @@ class DatabaseMaintenanceService
             if (isset($correct_table['indexes'][$kIndex])) {
 
                 if (mb_strtolower($expr_found) !== mb_strtolower($correct_table['indexes'][$kIndex])) {
+                    $output->writeln(sprintf("expected: <info>%s</info>", $correct_table['indexes'][$kIndex]));
+                    $output->writeln(sprintf("got     : <info>%s</info>", $expr_found));
                     $alter[] = 'ALTER TABLE `' . $table['name'] . '` DROP ' . $full_name_index . ', ADD ' . $correct_table['indexes'][$kIndex];
                 }
 
@@ -486,6 +546,7 @@ class DatabaseMaintenanceService
             $this->reconnect();
 
             try {
+                $output->writeln(sprintf("%s \n", $a));
                 $this->connection->exec($a);
             } catch (\Exception $e) {
                 $return[] = [
@@ -500,6 +561,7 @@ class DatabaseMaintenanceService
             $this->reconnect();
 
             try {
+                $output->writeln(sprintf("%s \n", $a));
                 $this->connection->exec($a);
             } catch (\Exception $e) {
                 $return[] = [
@@ -513,8 +575,12 @@ class DatabaseMaintenanceService
         return $return;
     }
 
-    public function applyPatches(\base $base, $from, $to, $post_process)
+    public function applyPatches(\base $base, $from, $to, $post_process, InputInterface $input, OutputInterface $output)
     {
+        $dry = !!$input->getOption('dry');
+
+        $output->writeln(sprintf("into applyPatches(from=%s, to=%s, post_process=%s) on base \"%s\"", $from, $to, $post_process?'true':'false', $base->get_dbname()));
+
         if (version::eq($from, $to)) {
             return true;
         }
@@ -525,10 +591,10 @@ class DatabaseMaintenanceService
 
         foreach ($iterator as $fileinfo) {
             if (!$fileinfo->isDot()) {
+
                 if (substr($fileinfo->getFilename(), 0, 1) == '.') {
                     continue;
                 }
-
                 $versions = array_reverse(explode('.', $fileinfo->getFilename()));
                 $classname = 'patch_' . array_pop($versions);
 
@@ -547,6 +613,7 @@ class DatabaseMaintenanceService
                 if (version::lte($patch->get_release(), $from)) {
                     continue;
                 }
+
                 // if patch is new than current target
                 if (version::gt($patch->get_release(), $to)) {
                     continue;
@@ -573,6 +640,7 @@ class DatabaseMaintenanceService
 
         foreach ($list_patches as $patch) {
 
+            $output->writeln(sprintf(" - patch \"%s\" (release %s) should be applied", get_class($patch), $patch->get_release()));
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
                 /** @var \Doctrine\DBAL\Migrations\Version $version */
@@ -591,25 +659,48 @@ class DatabaseMaintenanceService
 
                     // Execute migration if not marked as migrated and not already applied by an older patch
                     if (!$migration->isAlreadyApplied()) {
-                        $this->reconnect();
-
-                        $version->execute('up');
+                        if($dry) {
+                            $output->writeln(sprintf("    dry : NOT executing(up) legacy migration \"%s\"", get_class($migration)));
+                        }
+                        else {
+                            $output->writeln(sprintf("    executing(up) legacy migration \"%s\"", get_class($migration)));
+                            $this->reconnect();
+                            $version->execute('up');
+                        }
                         continue;
                     }
 
                     // Or mark it as migrated
-                    $version->markMigrated();
-                } else {
-                    $this->reconnect();
-
-                    $version->execute('up');
+                    if($dry) {
+                        $output->writeln(sprintf("    dry : NOT marking migrated legacy migration \"%s\"", get_class($migration)));
+                    }
+                    else {
+                        $output->writeln(sprintf("    marking migrated legacy migration \"%s\"", get_class($migration)));
+                        $version->markMigrated();
+                    }
+                }
+                else {
+                    if($dry) {
+                        $output->writeln(sprintf("    dry : NOT executing(up) doctrine migration \"%s\"", get_class($migration)));
+                    }
+                    else {
+                        $output->writeln(sprintf("    executing(up) migration doctrine \"%s\"", get_class($migration)));
+                        $this->reconnect();
+                        $version->execute('up');
+                    }
                 }
             }
 
             $this->reconnect();
 
-            if (false === $patch->apply($base, $this->app)) {
-                $success = false;
+            if($dry) {
+                $output->writeln(sprintf("    dry : NOT applying patch \"%s\"", get_class($patch)));
+            }
+            else {
+                $output->writeln(sprintf("    applying patch \"%s\"", get_class($patch)));
+                if (false === $patch->apply($base, $this->app)) {
+                    $success = false;
+                }
             }
         }
 

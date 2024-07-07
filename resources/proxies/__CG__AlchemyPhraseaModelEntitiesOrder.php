@@ -64,10 +64,10 @@ class Order extends \Alchemy\Phrasea\Model\Entities\Order implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'orderUsage', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'todo', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'deadline', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'basket', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'notificationMethod'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'orderUsage', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'todo', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'deadline', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'basket', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'notificationMethod', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'canceledOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'canceledBy', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'canceledTodo'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'orderUsage', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'todo', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'deadline', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'basket', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'notificationMethod'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'user', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'orderUsage', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'todo', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'deadline', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'elements', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'basket', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'notificationMethod', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'canceledOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'canceledBy', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\Order' . "\0" . 'canceledTodo'];
     }
 
     /**
@@ -406,6 +406,72 @@ class Order extends \Alchemy\Phrasea\Model\Entities\Order implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotificationMethod', [$methodName]);
 
         return parent::setNotificationMethod($methodName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCanceledOn($canceledOn)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCanceledOn', [$canceledOn]);
+
+        return parent::setCanceledOn($canceledOn);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCanceledOn()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCanceledOn', []);
+
+        return parent::getCanceledOn();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCanceledBy($canceledBy)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCanceledBy', [$canceledBy]);
+
+        return parent::setCanceledBy($canceledBy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCanceledBy()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCanceledBy', []);
+
+        return parent::getCanceledBy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCanceledTodo($canceledTodo)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCanceledTodo', [$canceledTodo]);
+
+        return parent::setCanceledTodo($canceledTodo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCanceledTodo()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCanceledTodo', []);
+
+        return parent::getCanceledTodo();
     }
 
 }

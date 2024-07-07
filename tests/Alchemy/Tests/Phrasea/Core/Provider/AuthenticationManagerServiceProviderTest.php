@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Neutron\ReCaptcha\ReCaptcha;
+use ReCaptcha\ReCaptcha;
 
 /**
  * @group functional
@@ -32,6 +32,10 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 {
     public function provideServiceDescription()
     {
+        $app = $this->loadApp();
+
+        $app['conf']->set(['registry', 'webservices', 'recaptcha-private-key'], '123');
+
         return [
             [
                 AuthenticationManagerServiceProvider::class,
@@ -97,7 +101,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $bkp = $app['conf']->get('authentication');
 
-        $app['conf']->set(['authentication', 'captcha', 'trials-before-display'], 42);
+        $app['conf']->set(['registry', 'webservices', 'trials-before-display'], 42);
 
         //$app['orm.em'] = $this->createEntityManagerMock();
         $app['recaptcha'] = $this->createReCaptchaMock();
@@ -130,9 +134,8 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new RepositoriesServiceProvider());
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
+        $app['conf']->set(['registry', 'webservices', 'captcha-provider'], 'reCaptcha');
         $bkp = $app['conf']->get('authentication');
-
-        $app['conf']->set(['authentication', 'captcha'], ['enabled' => true]);
 
         $app['orm.em'] = $this->createEntityManagerMock();
         $app['repo.users'] = $this->createUserRepositoryMock();
@@ -154,9 +157,8 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new ConfigurationServiceProvider());
         $app['phraseanet.appbox'] = self::$DI['app']['phraseanet.appbox'];
 
+        $app['conf']->set(['registry', 'webservices', 'captcha-provider'], 'none');
         $bkp = $app['conf']->get('authentication');
-
-        $app['conf']->set(['authentication', 'captcha'], ['enabled' => false]);
 
         $app['orm.em'] = $this->createEntityManagerMock();
         $app['repo.users'] = $this->createUserRepositoryMock();
@@ -199,7 +201,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
      */
     protected function createReCaptchaMock()
     {
-        return $this->getMockBuilder(ReCaptcha::class)
+        return $this->getMockBuilder(\ReCaptcha\ReCaptcha::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
+use record_adapter;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -79,7 +80,7 @@ class StoryWZRepository extends EntityRepository
 
         if ($story) {
             try {
-                $story->getRecord($app)->get_title();
+                $story->getRecord($app)->get_title(['encode'=> record_adapter::ENCODE_NONE]);
             } catch (NotFoundHttpException $e) {
                 $this->getEntityManager()->remove($story);
                 throw new NotFoundHttpException('Story not found');
@@ -95,7 +96,7 @@ class StoryWZRepository extends EntityRepository
         return $story;
     }
 
-    public function findUserStory(Application $app, User $user, \record_adapter $Story)
+    public function findUserStory(Application $app, User $user, record_adapter $Story)
     {
         $story = $this->findOneBy([
             'user'    => $user->getId(),
@@ -118,10 +119,10 @@ class StoryWZRepository extends EntityRepository
 
     /**
      * @param Application     $app
-     * @param \record_adapter $Story
+     * @param record_adapter $Story
      * @return StoryWZ[]
      */
-    public function findByRecord(Application $app, \record_adapter $Story)
+    public function findByRecord(Application $app, record_adapter $Story)
     {
         $dql = 'SELECT s FROM Phraseanet:StoryWZ s
                 WHERE s.sbas_id = :sbas_id

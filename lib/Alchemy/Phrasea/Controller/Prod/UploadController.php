@@ -28,6 +28,7 @@ use DataURI\Exception\Exception as DataUriException;
 use DataURI\Parser;
 use GuzzleHttp\Client as Guzzle;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -56,6 +57,8 @@ class UploadController extends Controller
 
     public function getHtml5UploadForm()
     {
+        $this->setSessionFormToken('prodUpload');
+
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $this->render('prod/upload/upload.html.twig', [
@@ -68,6 +71,8 @@ class UploadController extends Controller
 
     public function getUploadForm()
     {
+        $this->setSessionFormToken('prodUpload');
+
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $this->render('prod/upload/upload.html.twig', [
@@ -125,6 +130,10 @@ class UploadController extends Controller
             'reasons' => [],
             'id'      => '',
         ];
+
+        if (!$this->isCrsfValid($request, 'prodUpload')) {
+            throw new AccessDeniedHttpException('Invalid prodUpload token');
+        }
 
         if (null === $request->files->get('files')) {
             throw new BadRequestHttpException('Missing file parameter');

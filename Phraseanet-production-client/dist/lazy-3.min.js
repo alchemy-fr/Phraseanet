@@ -899,7 +899,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 
 const projectVersion = __webpack_require__(450).version;
 const _ = __webpack_require__(451);
-const EventEmitter = __webpack_require__(93);
+const EventEmitter = __webpack_require__(92);
 const turfCircle = __webpack_require__(452);
 const turfBbox = __webpack_require__(453);
 const turfBboxPoly = __webpack_require__(454);
@@ -2555,8 +2555,8 @@ module.exports = interceptor;
 
 
 var corslite = __webpack_require__(399),
-    strict = __webpack_require__(82).strict,
-    config = __webpack_require__(86);
+    strict = __webpack_require__(81).strict,
+    config = __webpack_require__(85);
 
 var protocol = /^(https?:)?(?=\/\/(.|api)\.tiles\.mapbox\.com\/)/;
 
@@ -3142,8 +3142,8 @@ module.exports = {
 
 
 var request = __webpack_require__(309),
-    format_url = __webpack_require__(84),
-    util = __webpack_require__(82);
+    format_url = __webpack_require__(83),
+    util = __webpack_require__(81);
 
 module.exports = {
     _loadTileJSON: function(_) {
@@ -13082,8 +13082,8 @@ L.Map.include({
 
 
 var isArray = __webpack_require__(398),
-    util = __webpack_require__(82),
-    format_url = __webpack_require__(84),
+    util = __webpack_require__(81),
+    format_url = __webpack_require__(83),
     feedback = __webpack_require__(317),
     request = __webpack_require__(309);
 
@@ -13230,7 +13230,7 @@ module.exports = function(url, options) {
 "use strict";
 
 
-var util = __webpack_require__(82),
+var util = __webpack_require__(81),
     Mustache = __webpack_require__(336);
 
 var GridControl = L.Control.extend({
@@ -13238,7 +13238,7 @@ var GridControl = L.Control.extend({
     options: {
         pinnable: true,
         follow: false,
-        sanitizer: __webpack_require__(83),
+        sanitizer: __webpack_require__(82),
         touchTeaser: true,
         location: true
     },
@@ -14073,10 +14073,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 "use strict";
 
 
-var util = __webpack_require__(82),
-    format_url = __webpack_require__(84),
+var util = __webpack_require__(81),
+    format_url = __webpack_require__(83),
     request = __webpack_require__(309),
-    marker = __webpack_require__(85),
+    marker = __webpack_require__(84),
     simplestyle = __webpack_require__(338);
 
 // # featureLayer
@@ -14086,7 +14086,7 @@ var util = __webpack_require__(82),
 var FeatureLayer = L.FeatureGroup.extend({
     options: {
         filter: function() { return true; },
-        sanitizer: __webpack_require__(83),
+        sanitizer: __webpack_require__(82),
         style: simplestyle.style,
         popupOptions: { closeButton: false }
     },
@@ -14263,7 +14263,7 @@ var LegendControl = L.Control.extend({
 
     options: {
         position: 'bottomright',
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     initialize: function(options) {
@@ -14333,7 +14333,7 @@ module.exports.legendControl = function(options) {
 "use strict";
 
 
-var format_url = __webpack_require__(84);
+var format_url = __webpack_require__(83);
 
 var ShareControl = L.Control.extend({
     includes: [__webpack_require__(312)],
@@ -14461,14 +14461,14 @@ module.exports.shareControl = function(_, options) {
 "use strict";
 
 
-var util = __webpack_require__(82);
+var util = __webpack_require__(81);
 var formatPattern = /\.((?:png|jpg)\d*)(?=$|\?)/;
 
 var TileLayer = L.TileLayer.extend({
     includes: [__webpack_require__(312)],
 
     options: {
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     // http://mapbox.com/developers/api/#image_quality
@@ -14569,7 +14569,7 @@ module.exports.tileLayer = function(_, options) {
 var InfoControl = L.Control.extend({
     options: {
         position: 'bottomright',
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     initialize: function(options) {
@@ -14688,7 +14688,7 @@ module.exports.infoControl = function(options) {
 "use strict";
 
 
-var util = __webpack_require__(82),
+var util = __webpack_require__(81),
     request = __webpack_require__(309),
     grid = __webpack_require__(401);
 
@@ -16563,9 +16563,9 @@ var geocoderControl = __webpack_require__(397),
     styleLayer = __webpack_require__(403);
 
 L.mapbox = module.exports = {
-    VERSION: __webpack_require__(87).version,
+    VERSION: __webpack_require__(86).version,
     geocoder: __webpack_require__(334),
-    marker: __webpack_require__(85),
+    marker: __webpack_require__(84),
     simplestyle: __webpack_require__(338),
     tileLayer: tileLayer.tileLayer,
     TileLayer: tileLayer.TileLayer,
@@ -16587,8 +16587,8 @@ L.mapbox = module.exports = {
     FeatureLayer: featureLayer.FeatureLayer,
     map: map.map,
     Map: map.Map,
-    config: __webpack_require__(86),
-    sanitize: __webpack_require__(83),
+    config: __webpack_require__(85),
+    sanitize: __webpack_require__(82),
     template: __webpack_require__(336).to_html,
     feedback: __webpack_require__(317)
 };
@@ -16602,7 +16602,7 @@ window.L.Icon.Default.imagePath =
     ((document.location.protocol === 'https:' ||
     document.location.protocol === 'http:') ? '' : 'https:') +
     '//api.tiles.mapbox.com/mapbox.js/' + 'v' +
-    __webpack_require__(87).version + '/images';
+    __webpack_require__(86).version + '/images';
 
 
 /***/ }),
@@ -16613,7 +16613,7 @@ window.L.Icon.Default.imagePath =
 
 
 var geocoder = __webpack_require__(334),
-    util = __webpack_require__(82);
+    util = __webpack_require__(81);
 
 var GeocoderControl = L.Control.extend({
     includes: L.Mixin.Events,
@@ -16958,7 +16958,7 @@ var LMap = L.Map.extend({
         gridControl: {},
         infoControl: false,
         shareControl: false,
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     _tilejson: {},
@@ -17234,14 +17234,14 @@ module.exports.mapboxLogoControl = function(options) {
 "use strict";
 
 
-var util = __webpack_require__(82);
-var format_url = __webpack_require__(84);
+var util = __webpack_require__(81);
+var format_url = __webpack_require__(83);
 var request = __webpack_require__(309);
 
 var StyleLayer = L.TileLayer.extend({
 
     options: {
-        sanitizer: __webpack_require__(83)
+        sanitizer: __webpack_require__(82)
     },
 
     initialize: function(_, options) {
@@ -27569,7 +27569,7 @@ MapboxTokens.prototype.listScopes = function(callback) {
 /* 450 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox-gl-circle@1.6.5","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox-gl-circle@1.6.5","_id":"mapbox-gl-circle@1.6.5","_inBundle":false,"_integrity":"sha512-VHA6lgxZE/WFtBXmMveU2zt7ZeVcBHe42k4U4b8xGEnrDSQs4/++EBPVywEMNqi01XQrbf1eiAhsIDZasR4drw==","_location":"/mapbox-gl-circle","_phantomChildren":{"@mapbox/geojson-area":"0.2.2","@mapbox/gl-matrix":"0.0.1","@mapbox/mapbox-gl-supported":"1.4.0","@mapbox/point-geometry":"0.1.0","@mapbox/shelf-pack":"3.2.0","@mapbox/tiny-sdf":"1.1.0","@mapbox/unitbezier":"0.0.0","@mapbox/vector-tile":"1.3.1","@mapbox/whoots-js":"3.1.0","brfs":"1.6.1","bubleify":"0.7.0","concat-stream":"1.6.2","csscolorparser":"1.0.3","earcut":"2.1.3","geojson-vt":"3.2.1","gray-matter":"3.1.1","grid-index":"1.1.0","jsonlint-lines-primitives":"1.6.0","minimist":"0.0.8","package-json-versionify":"1.0.4","pbf":"3.2.0","quickselect":"1.1.1","rw":"1.3.3","sharkdown":"0.1.1","shuffle-seed":"1.1.6","sort-object":"0.3.2","through2":"2.0.3","tinyqueue":"1.2.3","unassertify":"2.1.1","unflowify":"1.0.1","vt-pbf":"3.1.1","webworkify":"1.5.0"},"_requested":{"type":"version","registry":true,"raw":"mapbox-gl-circle@1.6.5","name":"mapbox-gl-circle","escapedName":"mapbox-gl-circle","rawSpec":"1.6.5","saveSpec":null,"fetchSpec":"1.6.5"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox-gl-circle/-/mapbox-gl-circle-1.6.5.tgz","_spec":"1.6.5","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Smith Micro Software, Inc."},"browserify":{"transform":["babelify"]},"bugs":{"url":"https://github.com/smithmicro/mapbox-gl-circle/issues"},"dependencies":{"@turf/bbox":"^4.7.3","@turf/bbox-polygon":"^4.7.3","@turf/bearing":"^4.5.2","@turf/circle":"^4.7.3","@turf/destination":"^4.7.3","@turf/distance":"^4.7.3","@turf/helpers":"^4.7.3","@turf/truncate":"^4.7.3","core-util-is":"^1.0.2","debug":"^3.0.0","events":"^1.1.1","fsevents":"^1.1.2","glob":"^7.1.2","inflight":"^1.0.6","inherits":"^2.0.3","jsonparse":"^1.3.1","lodash":"^4.17.5","lodash.debounce":"^4.0.8","mapbox-gl":"^0.44.1","minimatch":"^3.0.4","once":"^1.4.0","punycode":"^2.1.0","readable-stream":"^2.3.3","string_decoder":"^1.0.3","through2":"^2.0.3","util-deprecate":"^1.0.2","wrappy":"^1.0.2","xtend":"^4.0.1","yarn":"^0.27.5"},"description":"A google.maps.Circle replacement for Mapbox GL JS API","devDependencies":{"async-each":"^1.0.1","babel-preset-es2015":"^6.24.1","babelify":"^7.3.0","brfs":"^1.4.4","browserify":"^14.5.0","buble":"^0.15.2","budo":"^10.0.4","documentation":"^5.1.0","eslint":"^4.18.1","eslint-config-google":"^0.9.1","esutils":"^2.0.2","magic-string":"^0.22.4","uglify-js":"^3.3.12","vlq":"^0.2.3","watchify":"^3.10.0"},"directories":{"example":"example","lib":"lib"},"engines":{"node":">=7.6.0","npm":">=5.3.0"},"files":["lib/","example/","dist/"],"homepage":"https://github.com/smithmicro/mapbox-gl-circle#readme","keywords":["mapbox","circle","osm","gl"],"license":"ISC","main":"lib/main.js","name":"mapbox-gl-circle","optionalDependencies":{"core-util-is":"^1.0.2","debug":"^3.0.0","fsevents":"^1.1.2","glob":"^7.1.2","inflight":"^1.0.6","inherits":"^2.0.3","jsonparse":"^1.3.1","minimatch":"^3.0.4","once":"^1.4.0","punycode":"^2.1.0","readable-stream":"^2.3.3","string_decoder":"^1.0.3","through2":"^2.0.3","util-deprecate":"^1.0.2","wrappy":"^1.0.2","xtend":"^4.0.1","yarn":"^0.27.5"},"repository":{"type":"git","url":"git+ssh://git@github.com/smithmicro/mapbox-gl-circle.git"},"scripts":{"browserify":"mkdir -p dist && browserify lib/main.js -o dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.js --debug --delay=0 -v","docs":"documentation lint lib/main.js && documentation readme lib/main.js --access public --section=Usage","lint":"eslint lib","prepare":"mkdir -p dist && browserify --standalone MapboxCircle -t [ babelify --presets [ es2015 ] ] lib/main.js | uglifyjs -c -m > dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.min.js && cp -f dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.min.js dist/mapbox-gl-circle.min.js","start":"budo example/index.js --live --force-default-index --title budo/mapbox-gl-circle --verbose -- -t brfs","watchify":"mkdir -p dist && watchify lib/main.js -o dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.js --debug -v"},"version":"1.6.5"}
+module.exports = {"_args":[["mapbox-gl-circle@1.6.5","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox-gl-circle@1.6.5","_id":"mapbox-gl-circle@1.6.5","_inBundle":false,"_integrity":"sha512-VHA6lgxZE/WFtBXmMveU2zt7ZeVcBHe42k4U4b8xGEnrDSQs4/++EBPVywEMNqi01XQrbf1eiAhsIDZasR4drw==","_location":"/mapbox-gl-circle","_phantomChildren":{"@mapbox/geojson-area":"0.2.2","@mapbox/gl-matrix":"0.0.1","@mapbox/mapbox-gl-supported":"1.4.0","@mapbox/point-geometry":"0.1.0","@mapbox/shelf-pack":"3.2.0","@mapbox/tiny-sdf":"1.1.0","@mapbox/unitbezier":"0.0.0","@mapbox/vector-tile":"1.3.1","@mapbox/whoots-js":"3.1.0","brfs":"1.6.1","bubleify":"0.7.0","concat-stream":"1.6.2","csscolorparser":"1.0.3","earcut":"2.1.3","geojson-vt":"3.2.1","gray-matter":"3.1.1","grid-index":"1.1.0","jsonlint-lines-primitives":"1.6.0","minimist":"0.0.8","package-json-versionify":"1.0.4","pbf":"3.2.0","quickselect":"1.1.1","rw":"1.3.3","sharkdown":"0.1.1","shuffle-seed":"1.1.6","sort-object":"0.3.2","through2":"2.0.3","tinyqueue":"1.2.3","unassertify":"2.1.1","unflowify":"1.0.1","vt-pbf":"3.1.1","webworkify":"1.5.0"},"_requested":{"type":"version","registry":true,"raw":"mapbox-gl-circle@1.6.5","name":"mapbox-gl-circle","escapedName":"mapbox-gl-circle","rawSpec":"1.6.5","saveSpec":null,"fetchSpec":"1.6.5"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox-gl-circle/-/mapbox-gl-circle-1.6.5.tgz","_spec":"1.6.5","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Smith Micro Software, Inc."},"browserify":{"transform":["babelify"]},"bugs":{"url":"https://github.com/smithmicro/mapbox-gl-circle/issues"},"dependencies":{"@turf/bbox":"^4.7.3","@turf/bbox-polygon":"^4.7.3","@turf/bearing":"^4.5.2","@turf/circle":"^4.7.3","@turf/destination":"^4.7.3","@turf/distance":"^4.7.3","@turf/helpers":"^4.7.3","@turf/truncate":"^4.7.3","core-util-is":"^1.0.2","debug":"^3.0.0","events":"^1.1.1","fsevents":"^1.1.2","glob":"^7.1.2","inflight":"^1.0.6","inherits":"^2.0.3","jsonparse":"^1.3.1","lodash":"^4.17.5","lodash.debounce":"^4.0.8","mapbox-gl":"^0.44.1","minimatch":"^3.0.4","once":"^1.4.0","punycode":"^2.1.0","readable-stream":"^2.3.3","string_decoder":"^1.0.3","through2":"^2.0.3","util-deprecate":"^1.0.2","wrappy":"^1.0.2","xtend":"^4.0.1","yarn":"^0.27.5"},"description":"A google.maps.Circle replacement for Mapbox GL JS API","devDependencies":{"async-each":"^1.0.1","babel-preset-es2015":"^6.24.1","babelify":"^7.3.0","brfs":"^1.4.4","browserify":"^14.5.0","buble":"^0.15.2","budo":"^10.0.4","documentation":"^5.1.0","eslint":"^4.18.1","eslint-config-google":"^0.9.1","esutils":"^2.0.2","magic-string":"^0.22.4","uglify-js":"^3.3.12","vlq":"^0.2.3","watchify":"^3.10.0"},"directories":{"example":"example","lib":"lib"},"engines":{"node":">=7.6.0","npm":">=5.3.0"},"files":["lib/","example/","dist/"],"homepage":"https://github.com/smithmicro/mapbox-gl-circle#readme","keywords":["mapbox","circle","osm","gl"],"license":"ISC","main":"lib/main.js","name":"mapbox-gl-circle","optionalDependencies":{"core-util-is":"^1.0.2","debug":"^3.0.0","fsevents":"^1.1.2","glob":"^7.1.2","inflight":"^1.0.6","inherits":"^2.0.3","jsonparse":"^1.3.1","minimatch":"^3.0.4","once":"^1.4.0","punycode":"^2.1.0","readable-stream":"^2.3.3","string_decoder":"^1.0.3","through2":"^2.0.3","util-deprecate":"^1.0.2","wrappy":"^1.0.2","xtend":"^4.0.1","yarn":"^0.27.5"},"repository":{"type":"git","url":"git+ssh://git@github.com/smithmicro/mapbox-gl-circle.git"},"scripts":{"browserify":"mkdir -p dist && browserify lib/main.js -o dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.js --debug --delay=0 -v","docs":"documentation lint lib/main.js && documentation readme lib/main.js --access public --section=Usage","lint":"eslint lib","prepare":"mkdir -p dist && browserify --standalone MapboxCircle -t [ babelify --presets [ es2015 ] ] lib/main.js | uglifyjs -c -m > dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.min.js && cp -f dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.min.js dist/mapbox-gl-circle.min.js","start":"budo example/index.js --live --force-default-index --title budo/mapbox-gl-circle --verbose -- -t brfs","watchify":"mkdir -p dist && watchify lib/main.js -o dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.js --debug -v"},"version":"1.6.5"}
 
 /***/ }),
 /* 451 */

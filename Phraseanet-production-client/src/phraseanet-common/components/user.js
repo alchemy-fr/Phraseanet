@@ -22,7 +22,6 @@ function setPref(name, value) {
         },
         dataType: 'json',
         timeout: $.data[prefName] = false,
-        error: $.data[prefName] = false,
         success: (data) => {
             if (data.success) {
                 humane.info(data.message);
@@ -31,6 +30,12 @@ function setPref(name, value) {
             }
             $.data[prefName] = false;
             return data;
+        },
+        error: function (data) {
+            $.data[prefName] = false;
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href);  // refresh will redirect to login
+            }
         }
     });
     return $.data[prefName];

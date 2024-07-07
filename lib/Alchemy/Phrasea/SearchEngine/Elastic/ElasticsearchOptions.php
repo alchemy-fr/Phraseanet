@@ -54,7 +54,7 @@ class ElasticsearchOptions
     public static function fromArray(array $options)
     {
         $defaultOptions = [
-            'host' => '127.0.0.1',
+            'host' => 'elasticsearch',
             'port' => 9200,
             'index' => '',
             'shards' => 3,

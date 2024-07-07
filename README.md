@@ -1,7 +1,7 @@
 Phraseanet 4.1 - Digital Asset Management application
 =====================================================
 
-[![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master)
+[![CI](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml)
 
 # Main Features :
 
@@ -45,7 +45,7 @@ https://www.phraseanet.com/en/download/
 You can also ```git clone``` this repository for dev and/or test. 
 
 
-In each case, Phraseanet includes Dockerfile for building images and Docker-compose deployment.
+In each case, Phraseanet includes Dockerfile for building images and ```Docker compose``` deployment.
 
 
 See below for more information about Prerequisites and how to personalize the stack deployed. 
@@ -57,8 +57,8 @@ In a terminal from the Phraseanet repository launch
 
 
     
-    docker-compose build
-    docker-compose up -d 
+    docker compose build
+    docker compose up -d 
      
 
 After installation process, the default parameters allow you to reach the app on : `http://localhost:8082`
@@ -96,10 +96,10 @@ Get official support : https://www.alchemy.fr/en/rubrique/services/
 
 ## Prerequisites
 
-- docker-compose >=v1.29.2
-- docker >=v19.03.13
 
-In the stack Docker, Docker-Compose included in this repo starts by default in test mode. 
+- docker >=v20.10.24
+
+In the stack Docker, Docker Compose included in this repo starts by default in test mode. 
 All services are launched in a separate container and except "Phraseanet app" and "workers" containers, 
 it can be replaced by an external service.
 This is especially recommended to use your SGBD (Mariadb or MySql) service for a production use. 
@@ -120,7 +120,7 @@ eg :
 
  - Pma etc...
 
-Refer to .env file and docker-compose files or on documentation for stack compositing.
+Refer to ```.env``` file and ```docker compose``` files or on documentation for stack compositing.
 
 https://docs.phraseanet.com/4.1/en/Admin/EnvironnementVariables.html
 
@@ -154,7 +154,7 @@ Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 ## Stack description and customization
 
-We provide a Dockerfile for build images and docker-compose for deployment 
+We provide a Dockerfile for build images and several ```docker-compose...``` for deployment. 
 
 Use ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` env variables for composing this deployment.
 
@@ -205,32 +205,28 @@ You can add your `env.local` at the root of this project and define a command fu
 
 ```bash
 #######################################
-# Docker-compose helper:
+# Docker compose helper:
 #   Locate first defined environment
 #   file and inject variables found in
-#   docker-compose command.
+#   docker compose command.
 # Arguments:
 #   command (string)
 # Usage example:
 #   dc up -d
 #######################################
-dc()
-{
-  local envFilesSearchList=(".env.local" "env.local")
 
-  for i in "${envFilesSearchList[@]}"; do
-    if [[ -f "$i" ]]; then
-      echo -e "\nEnvironment file: \e[107m\e[42m $i \e[0m\n"
-      eval env "$(cat < $i | grep -v '#' | sed -e 's/=\([^\x27"].*[^\x27"]\)/="\1"/g' | tr '\n' ' ' )" docker-compose "$@"
-      return 1
+function dc() {
+  for envFile in {".env.local","env.local"}; do
+    if [ -f ${envFile} ]; then
+      docker compose --env-file=.env --env-file=${envFile} $@
+      return
     fi
   done
 
-  echo -e "\n\e[107m\e[41m No Environment file \e[0m\n"
-  docker-compose "$@"
+  docker compose $@
 }
 ```
-> Note that helper function only works with `"docker-compose"` (and not `"docker compose"`).
+> Note that helper function only works with `"docker compose"` .
 
 ### Phraseanet Docker Images
 
@@ -248,7 +244,7 @@ PHRASEANET_DOCKER_REGISTRY=alchemyfr
 ```
 and launch
 
-```docker-compose pull```
+```docker compose pull```
 
 > Pulling images from Docker Hub takes ~ 3 minutes, depending on your bandwith
 
@@ -257,7 +253,7 @@ and launch
 
 launch 
 
-```docker-compose build```
+```docker compose build```
 
 
 > The first build takes ~ 30 minutes on host without any Docker building cache, depending on your bandwith and the host capacity.
@@ -266,7 +262,7 @@ launch
 ### Running the application
 
 
-    docker-compose up -d
+    docker compose up -d
 
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
@@ -319,13 +315,13 @@ COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,workers
 
 You can run it with:
 
-    docker-compose up -d
+    docker compose up -d
 
 The environment is not ready yet: you have to fetch all dependencies.
 
 This can be made easily from the builder container:
 
-    docker-compose run --rm -u app builder make install install_composer_dev
+    docker compose run --rm -u app builder make install install_composer_dev
 
 > Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allows the final image to be light.
 > If you need to use dev tools, ensure you are running the `builder` image!
@@ -336,9 +332,9 @@ This can be made easily from the builder container:
 You can also obtain a shell access in builder container:
 
 ```bash
-docker-compose run --rm builder /bin/bash
+docker compose run --rm builder /bin/bash
 # or
-docker-compose run --rm builder /bin/zsh
+docker compose run --rm builder /bin/zsh
 ```
 
 In this container you will have the same libraries (PHP, Node, composer, ...) that are used to build images.
@@ -370,7 +366,7 @@ You have to set the following env:
 XDEBUG_REMOTE_HOST=host.docker.internal
 ```
 
-> Don't forget to recreate your container (`docker-compose up -d phraseanet`)
+> Don't forget to recreate your container (`docker compose up -d phraseanet`)
 
 ### Build images with plugins
 
@@ -400,7 +396,7 @@ export PHRASEANET_SSH_PRIVATE_KEY=$(openssl rsa -in ~/.ssh/id_rsa -out /tmp/id_r
 #### Running workers
 
 ```bash
-docker-compose -f docker-compose.yml run --rm worker <command>
+docker compose -f docker-compose.yml run --rm worker <command>
 ```
 
 Where `<command>` can be:

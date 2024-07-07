@@ -62,6 +62,8 @@ class MoveCollectionController extends Controller
             // sort the collections
             array_multisort($aName, $uorder, SORT_REGULAR, $collections);
 
+            $this->setSessionFormToken('prodMoveCollection');
+
             $parameters = [
               'records' => $records,
               'message' => '',
@@ -81,6 +83,10 @@ class MoveCollectionController extends Controller
 
     public function apply(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodMoveCollection')) {
+            return $this->app->json(['success' => false, 'message' => 'invalid move collection form']);
+        }
+
         /** @var \record_adapter[] $records */
         $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANDELETERECORD]);
 

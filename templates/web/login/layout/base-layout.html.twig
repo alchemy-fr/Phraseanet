@@ -39,7 +39,6 @@
                 <script type="text/javascript" src="/assets/vendors/json2/json2{% if not app.debug %}.min{% endif %}.js"></script>
                 <![endif]-->
                 <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
-
                 {# include backbone templates #}
                 {% include "login/common/templates.html.twig" %}
             <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
@@ -104,5 +103,7 @@
         {% endblock analytics %}
 
         {% block scripts %}{% endblock scripts %}
+
+        {% include 'common/axeptio.html.twig' %}
     </body>
 </html>

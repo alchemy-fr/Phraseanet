@@ -34,6 +34,7 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
@@ -96,6 +97,7 @@ use GuzzleHttp\Client as Guzzle;
 use League\Fractal\Resource\Item;
 use media_subdef;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
+use record_adapter;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,6 +113,7 @@ class V1Controller extends Controller
     use DispatcherAware;
     use FilesystemAware;
     use JsonBodyAware;
+    use InstanceIdAware;
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
@@ -314,7 +317,7 @@ class V1Controller extends Controller
                 'description' => $conf->get(['registry', 'general', 'description']),
                 'httpServer' => [
                     'phpTimezone' => ini_get('date.timezone'),
-                    'siteId' => $conf->get(['main', 'key']),
+                    'instanceId' => $conf->get(['main', 'instance_id']),
                     'defaultLanguage' => $conf->get(['languages', 'default']),
                     'allowIndexing' => $conf->get(['registry', 'general', 'allow-indexation']),
                     'modes' => [
@@ -335,7 +338,7 @@ class V1Controller extends Controller
                     'googleAnalyticsId' => $conf->get(['registry', 'general', 'analytics']),
                     'i18nWebService'    => $conf->get(['registry', 'webservices', 'geonames-server']),
                     'recaptacha'        => [
-                        'active'     => $conf->get(['registry', 'webservices', 'captcha-enabled']),
+                        'active'     => ($conf->get(['registry', 'webservices', 'captcha-provider'])) != 'none' ? true : false,
                         'publicKey'  => $conf->get(['registry', 'webservices', 'recaptcha-public-key']),
                         'privateKey' => $conf->get(['registry', 'webservices', 'recaptcha-private-key']),
                     ],
@@ -376,9 +379,6 @@ class V1Controller extends Controller
                 'binary'            => [
                     'phpCli'      => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
                     'phpIni'      => $conf->get(['registry', 'executables', 'php-conf-path']),
-                    'swfExtract'  => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
-                    'pdf2swf'     => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
-                    'swfRender'   => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,
                     'unoconv'     => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null,
                     'ffmpeg'      => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
                     'ffprobe'     => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
@@ -626,6 +626,7 @@ class V1Controller extends Controller
                 'gui_editable'     => $databox_field->get_gui_editable(),
                 'gui_visible'      => $databox_field->get_gui_visible(),
                 'printable'        => $databox_field->get_printable(),
+                'input_disable'    => $databox_field->get_input_disable(),
                 'type'             => $databox_field->get_type(),
                 'indexable'        => $databox_field->is_indexable(),
                 'multivalue'       => $databox_field->is_multi(),
@@ -723,8 +724,11 @@ class V1Controller extends Controller
 
         $checks = array_map(function (LazaretCheck $checker) use ($manager, $translator) {
             $checkerFQCN = $checker->getCheckClassname();
+            try {
+                return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
+            } catch (RuntimeException $e) {
+            }
 
-            return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
         }, $file->getChecksWhithNameKey());
 
         $recordsMatch = array_map(function ($recordsTab){
@@ -1052,7 +1056,7 @@ class V1Controller extends Controller
 
         $ret = ['entity' => null];
 
-        if ($output instanceof \record_adapter) {
+        if ($output instanceof record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
             $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
@@ -1129,7 +1133,7 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
-    private function listEmbeddableMedia(Request $request, \record_adapter $record, \media_subdef $media)
+    private function listEmbeddableMedia(Request $request, record_adapter $record, \media_subdef $media)
     {
         if (!$media->is_physically_present()) {
             return null;
@@ -1211,7 +1215,7 @@ class V1Controller extends Controller
     {
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
         $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
         $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
@@ -1270,7 +1274,7 @@ class V1Controller extends Controller
     {
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
 
         $transformerResolver = new SearchResultTransformerResolver([
@@ -1649,21 +1653,24 @@ class V1Controller extends Controller
      * Retrieve detailed information about one record
      *
      * @param Request          $request
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @return array
      */
-    private function listRecord(Request $request, \record_adapter $record)
+    private function listRecord(Request $request, record_adapter $record)
     {
         $technicalInformation = [];
         foreach ($record->get_technical_infos()->getValues() as $name => $value) {
             $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 
+        $resourceId = $this->getResourceIdResolver()($record);
+
         $data = [
             'databox_id'             => $record->getDataboxId(),
             'record_id'              => $record->getRecordId(),
+            'resource_id'            => $resourceId,
             'mime_type'              => $record->getMimeType(),
-            'title'                  => $record->get_title(),
+            'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),
             'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
             'created_on'             => $record->getCreated()->format(DATE_ATOM),
@@ -1692,11 +1699,11 @@ class V1Controller extends Controller
      * Retrieve detailed information about one story
      *
      * @param Request         $request
-     * @param \record_adapter $story
+     * @param record_adapter $story
      * @return array
      * @throws \Exception
      */
-    private function listStory(Request $request, \record_adapter $story)
+    private function listStory(Request $request, record_adapter $story)
     {
         if (!$story->isStory()) {
             return Result::createError($request, 404, 'Story not found')->createResponse();
@@ -1715,18 +1722,21 @@ class V1Controller extends Controller
             return $field->get_serialized_values();
         };
 
+        $resourceId = $this->getResourceIdResolver()($story);
+
         return [
-            '@entity@'      => self::OBJECT_TYPE_STORY,
-            'databox_id'    => $story->getDataboxId(),
-            'story_id'      => $story->getRecordId(),
+            '@entity@'        => self::OBJECT_TYPE_STORY,
+            'databox_id'      => $story->getDataboxId(),
+            'story_id'        => $story->getRecordId(),
+            'resource_id'     => $resourceId,
             'cover_record_id' => $story->getCoverRecordId(),
-            'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
-            'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => $story->getCollectionId(),
-            'base_id'       => $story->getBaseId(),
-            'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
-            'uuid'          => $story->getUuid(),
-            'metadatas'     => [
+            'updated_on'      => $story->getUpdated()->format(DATE_ATOM),
+            'created_on'      => $story->getCreated()->format(DATE_ATOM),
+            'collection_id'   => $story->getCollectionId(),
+            'base_id'         => $story->getBaseId(),
+            'thumbnail'       => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
+            'uuid'            => $story->getUuid(),
+            'metadatas'       => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
                 'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),
                 'dc:coverage'    => $format($caption, \databox_Field_DCESAbstract::Coverage),
@@ -1744,7 +1754,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
+            'records'         => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
         ];
     }
 
@@ -1792,10 +1802,10 @@ class V1Controller extends Controller
     /**
      * List all fields of given record
      *
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @return array
      */
-    private function listRecordMetadata(\record_adapter $record)
+    private function listRecordMetadata(record_adapter $record)
     {
         $includeBusiness = $this->getAclForUser()->can_see_business_fields($record->getDatabox());
 
@@ -1858,10 +1868,10 @@ class V1Controller extends Controller
     /**
      * Retrieve detailed information about one status
      *
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @return array
      */
-    private function listRecordStatus(\record_adapter $record)
+    private function listRecordStatus(record_adapter $record)
     {
         $ret = [];
         foreach ($record->getStatusStructure() as $bit => $status) {
@@ -1892,7 +1902,7 @@ class V1Controller extends Controller
         }, (array) $record->get_container_baskets($this->app['orm.em'], $this->getAuthenticatedUser()));
 
 
-        $stories = array_map(function (\record_adapter $story) use ($request) {
+        $stories = array_map(function (record_adapter $story) use ($request) {
             return $this->listStory($request, $story);
         }, array_values($record->get_grouping_parents()->get_elements()));
 
@@ -2547,7 +2557,7 @@ class V1Controller extends Controller
             $stories[] = $this->createStory($data);
         }
 
-        $result = Result::create($request, array('stories' => array_map(function(\record_adapter $story) {
+        $result = Result::create($request, array('stories' => array_map(function(record_adapter $story) {
             return sprintf('/stories/%s/%s/', $story->getDataboxId(), $story->getRecordId());
         }, $stories)));
 
@@ -2556,7 +2566,7 @@ class V1Controller extends Controller
 
     /**
      * @param object $data
-     * @return \record_adapter
+     * @return record_adapter
      * @throws \Exception
      */
     protected function createStory($data)
@@ -2567,7 +2577,7 @@ class V1Controller extends Controller
             $this->app->abort(403, sprintf('You can not create a story on this collection %s', $collection->get_base_id()));
         }
 
-        $story = \record_adapter::createStory($this->app, $collection);
+        $story = record_adapter::createStory($this->app, $collection);
 
         if (isset($data->{'title'})) {
             $story->set_original_name((string) $data->{'title'});
@@ -2629,7 +2639,7 @@ class V1Controller extends Controller
     private function addOrDelStoryRecordsFromRequest(Request $request, $databox_id, $story_id, $action)
     {
         $data = $this->decodeJsonBody($request, 'story_records.json');
-        $story = new \record_adapter($this->app, $databox_id, $story_id);
+        $story = new record_adapter($this->app, $databox_id, $story_id);
         $previousDescriptions = $story->getRecordDescriptionAsArray();
 
         $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
@@ -2640,7 +2650,7 @@ class V1Controller extends Controller
         return $result->createResponse();
     }
 
-    private function addOrDelStoryRecordsFromData(\record_adapter $story, array $recordsData, $action)
+    private function addOrDelStoryRecordsFromData(record_adapter $story, array $recordsData, $action)
     {
         $records = array();
         $cover_set = false;
@@ -2666,7 +2676,7 @@ class V1Controller extends Controller
         return $records;
     }
 
-    private function addOrDelStoryRecord(\record_adapter $story, $data, $action)
+    private function addOrDelStoryRecord(record_adapter $story, $data, $action)
     {
         $databox_id = $data->{'databox_id'};
         $record_id = $data->{'record_id'};
@@ -2681,7 +2691,7 @@ class V1Controller extends Controller
         }
 
         try {
-            $record = new \record_adapter($this->app, $databox_id, $record_id);
+            $record = new record_adapter($this->app, $databox_id, $record_id);
         } catch (\Exception_Record_AdapterNotFound $e) {
             $record = null;
             $this->app->abort(404, sprintf('Record identified by databox_is %s and record_id %s could not be found', $databox_id, $record_id));
@@ -2711,7 +2721,7 @@ class V1Controller extends Controller
     {
         $data = $this->decodeJsonBody($request, 'story_cover.json');
 
-        $story = new \record_adapter($this->app, $databox_id, $story_id);
+        $story = new record_adapter($this->app, $databox_id, $story_id);
 
         $coverSource = [];
 
@@ -2729,7 +2739,7 @@ class V1Controller extends Controller
         return Result::create($request, array($record_key))->createResponse();
     }
 
-    protected function setStoryCover(\record_adapter $story, $fromChildRecordId, $can_fail=false, $coverSources = [])
+    protected function setStoryCover(record_adapter $story, $fromChildRecordId, $can_fail=false, $coverSources = [])
     {
         $coverSources = array_merge(['thumbnail_cover_source' => 'thumbnail', 'preview_cover_source' => 'preview'], $coverSources);
 
@@ -3335,10 +3345,10 @@ class V1Controller extends Controller
 
     /**
      * @param Request $request
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @return array
      */
-    private function listRecordEmbeddableMedias(Request $request, \record_adapter $record)
+    private function listRecordEmbeddableMedias(Request $request, record_adapter $record)
     {
         $subdefs = [];
 
@@ -3352,10 +3362,10 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @return array
      */
-    private function listRecordCaption(\record_adapter $record)
+    private function listRecordCaption(record_adapter $record)
     {
         $includeBusiness = $this->getAclForUser()->can_see_business_fields($record->getDatabox());
 
@@ -3391,7 +3401,7 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param RecordCollection|\record_adapter[] $references
+     * @param RecordCollection|record_adapter[] $references
      * @return RecordView[]
      */
     private function buildRecordViews($references)

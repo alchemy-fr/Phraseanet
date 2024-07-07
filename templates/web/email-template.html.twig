@@ -54,6 +54,8 @@
                                             "background: linear-gradient(to bottom, #ee5f5b, #bd362f)"
                                         {% elseif mailSkin == constant('Alchemy\\Phrasea\\Notification\\Mail\\AbstractMail::MAIL_SKIN') %}
                                             "background-color:#a6aab0"
+                                        {% elseif mailSkin == constant('Alchemy\\Phrasea\\Notification\\Mail\\MailReport::MAIL_SKIN') %}
+                                            "background-color:#df7923"
                                         {% endif %}
                                     >
                                         <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:16px;  line-height:19px; font-weight:bold; color:#ffffff;">
@@ -120,15 +122,20 @@
                                 <!-- End of content table -->
                             </td>
                         </tr>
+
                         <tr>
                             <td height="60" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:13px; font-style:italic; color:#dc4848;">
+                                {% if hasFooterText %}
                                 {{ 'Le contenu de cet email est confidentiel, ne le divulguez pas.' | trans({}, "messages", emailLocale) }}
+                                {% endif %}
                             </td>
                         </tr>
+
                     </table>
                     <!-- End of wrapper table -->
                 </td>
             </tr>
+            {% if hasFooterText %}
             <tr>
                 <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; line-height: 15px; color:#999999;">
                     {{ 'Message automatique de Phraseanet' | trans({}, "messages", emailLocale) }}<br />
@@ -140,6 +147,7 @@
                     {% trans with {'%link%' : link} from 'messages' into emailLocale %}Pour gérer l'envoi d'email automatique, connectez-vous à %link%{% endtrans %}
                 </td>
             </tr>
+            {% endif %}
         </table>
     </body>
 </html>

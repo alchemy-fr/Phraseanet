@@ -7,15 +7,15 @@ webpackJsonpapp([1],{
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_global_window__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_global_window___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_global_window__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_global_document__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_global_document__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_global_document___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_global_document__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_tsml__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_tsml__ = __webpack_require__(88);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_tsml___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_tsml__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_safe_json_parse_tuple__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_safe_json_parse_tuple__ = __webpack_require__(89);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_safe_json_parse_tuple___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_safe_json_parse_tuple__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_keycode__ = __webpack_require__(358);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_keycode___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_keycode__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_xhr__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_xhr__ = __webpack_require__(90);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_xhr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_xhr__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_videojs_vtt_js__ = __webpack_require__(326);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_videojs_vtt_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_videojs_vtt_js__);
@@ -63970,7 +63970,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* videojs-hotke
 
 /***/ }),
 
-/***/ 92:
+/***/ 91:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64036,7 +64036,6 @@ var rangeCapture = function rangeCapture(services, datas) {
         }
         options.frameRates = {};
         options.ratios = {};
-        var coverUrl = '';
         var generateSourcesTpl = function generateSourcesTpl(record) {
             var recordSources = [];
             _underscore2.default.each(record.sources, function (s, i) {
@@ -64049,7 +64048,7 @@ var rangeCapture = function rangeCapture(services, datas) {
         };
 
         var sources = generateSourcesTpl(record);
-        $container.append('<video id="embed-video" class="embed-resource video-js vjs-default-skin vjs-big-play-centered" controls\n               preload="none" width="100%" height="100%" poster="' + coverUrl + '" data-setup=\'{"language":"' + localeService.getLocale() + '"}\'>' + sources + ' </video>');
+        $container.append('<video id="embed-video" class="embed-resource video-js vjs-default-skin vjs-big-play-centered" controls\n               preload="none" width="100%" height="100%"  data-setup=\'{"language":"' + localeService.getLocale() + '"}\'>' + sources + ' </video>');
 
         // window.videojs = videojs;
         _video2.default.addLanguage(localeService.getLocale(), localeService.getTranslations());

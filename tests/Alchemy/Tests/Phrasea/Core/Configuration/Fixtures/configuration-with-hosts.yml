@@ -59,9 +59,6 @@ main:
     binaries:
         ghostscript_binary: null
         php_binary: null
-        swf_extract_binary: null
-        pdf2swf_binary: null
-        swf_render_binary: null
         unoconv_binary: null
         ffmpeg_binary: null
         ffprobe_binary: null
@@ -183,17 +180,16 @@ authentication:
             options:
                 client-id: ''
                 client-secret: ''
-        ps_auth_1:
+        openid-1:
             enabled: false
             display: false
-            title: 'PS Auth 1'
-            type: 'ps-auth'
+            title: 'openid 1'
+            type: openid
             options:
                 client-id: ''
                 client-secret: ''
-                base-url: 'https://api-auth.phrasea.local'
-                provider-type: 'oauth'
-                provider-name: 'v2'
+                base-url: 'https://keycloak.phrasea.local'
+                realm-name: phrasea
                 icon-uri: null
 registration-fields:
     -
@@ -262,10 +258,9 @@ registry:
     webservices:
         google-charts-enabled: true
         geonames-server: 'http://geonames.alchemyasp.com/'
-        captchas-enabled: false
+        captcha-provider: 'none'
         recaptcha-public-key: ''
         recaptcha-private-key: ''
-        captcha-enabled: false
     executables:
         h264-streaming-enabled: false
         auth-token-directory: ''

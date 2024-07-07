@@ -10,7 +10,6 @@ const feedbackReminder = (services) => {
         let dialogOptions = merge({
             size: '558x415',
             loading: false,
-            title: localeService.t('feedbackReminderTitle'),
             closeButton: true,
         }, options);
 

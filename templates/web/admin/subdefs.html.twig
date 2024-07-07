@@ -62,7 +62,6 @@
             $("#slidervalue" + section + name + defType + fieldname).val(value);
         }
 
-
         function populate_values(section, name) {
 
             var config = JSON.parse('{{ config |json_encode|raw }}'),
@@ -378,7 +377,7 @@
                 <label for="subviewType">{{ 'create_subdef_modal_record_phraseanet_type' | trans }}</label>
                 <div class="selectdiv">
                     <select name="subviewType" id="subviewType" onchange="subview_type(this)">
-                        <option>{{ 'Choisir' | trans }}</option>
+                        <option value="Choose">{{ 'Choisir' | trans }}</option>
                         <option value="image">{{ 'image' | trans }}</option>
                         <option value="video">{{ 'video' | trans }}</option>
                         <option value="audio">{{ 'audio' | trans }}</option>
@@ -389,13 +388,13 @@
                 <label for="mediaType">{{ 'create_subdef_modal_preview_mediatype' | trans }}</label>
                 <div class="selectdiv">
                     <select name="mediaType" id="mediaType" onchange="media_type(this)">
-                        <option>{{ 'Choisir' | trans }}</option>
+                        <option value="Choose">{{ 'Choisir' | trans }}</option>
                     </select>
                 </div>
                 <label for="presets">{{ 'create_subdef_modal_presets' | trans }}</label>
                 <div class="selectdiv">
                     <select name="presets" id="presets">
-                        <option>{{ 'Choisir' | trans }}</option>
+                        <option value="Choose">{{ 'Choisir' | trans }}</option>
                     </select>
                 </div>
                 <label for="subviewPath">{{ 'Path' | trans }}</label>
@@ -454,6 +453,13 @@
                                     <td>{{ 'subdef.orderable' | trans }}</td>
                                     <td><input type="checkbox" name="{{ subdefgroup }}_{{ subdefname }}_orderable"
                                                {% if subdef.isOrderable() %}checked="checked"{% endif %} value="1"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ 'subdef.substituable' | trans }}</td>
+                                    <td><input type="checkbox" name="{{ subdefgroup }}_{{ subdefname }}_substituable"
+                                               {% if subdef.isSubstituable() %}checked="checked"{% endif %} value="1"/>
                                     </td>
                                     <td></td>
                                 </tr>
@@ -620,6 +626,13 @@
                                                                        {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
                                                             </label>
                                                             {% endfor %}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM_BUTTON') %}
+                                                        <div style="padding: 5px 0px;">
+                                                            {% for label, pot_value in option.getAvailableValues() %}
+                                                                <input name="{{ varname }}" type="radio" value="{{ pot_value }}"
+                                                                       {% if pot_value == option.getValue() %}checked="checked"{% endif %} /> {{ label }}
+                                                            {% endfor %}
+                                                        </div>
                                                     {% endif %}
                                                 </td>
                                                 <td>

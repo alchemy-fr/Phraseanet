@@ -14,8 +14,18 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Exception\SessionNotFound;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
+use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
+use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
+use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
+use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -251,8 +261,8 @@ class RootController extends Controller
             'searchable' => $request->request->get('searchable') ? '1' : '0',
             'printable'  => $request->request->get('printable') ? '1' : '0',
             'name'       => $request->request->get('name', ''),
-            'labelon'    => htmlentities($request->request->get('label_on', '')),
-            'labeloff'   => htmlentities($request->request->get('label_off', '')),
+            'labelon'    => $request->request->get('label_on', ''),
+            'labeloff'   => $request->request->get('label_off', ''),
             'labels_on'  => $request->request->get('labels_on', []),
             'labels_off' => $request->request->get('labels_off', []),
         ];
@@ -360,6 +370,167 @@ class RootController extends Controller
         return $this->app->redirectPath('database_display_statusbit', ['databox_id' => $databox_id, 'success' => 1]);
     }
 
+    public function displayInspector(Request $request)
+    {
+        $databoxIds = array_map(function (\databox $databox) {
+            return $databox->get_sbas_id();
+        },
+            $this->app->getApplicationBox()->get_databoxes()
+        );
+
+        return $this->render('admin/inspector/record-index.html.twig', ['databoxIds' => $databoxIds]);
+    }
+
+    public function getESRecord(Request $request)
+    {
+        $client = new Client();
+
+        /** @var ElasticsearchOptions $options */
+        $options = $this->app['elasticsearch.options'];
+
+        $uri = $options->getHost() . ":" . $options->getPort() . "/" . urlencode($options->getIndexName()) . "/record/" . urlencode($request->query->get('databoxId')) . "_" . urlencode($request->query->get('recordId'));
+
+        $ret = [
+            'uri' => $uri
+        ];
+        $js = $client->get($uri, ['http_errors' => false])->getBody()->getContents();
+        $arr = json_decode($js,true);
+        if(is_null($arr)) {
+            $ret['result'] = "*** error decoding json ***";
+            $ret['raw'] = $js;
+        }
+        else {
+            $ret['result'] = $arr;
+        }
+
+        return json_encode($ret, JSON_PRETTY_PRINT, 512);
+    }
+
+    public function getRecordDetails(Request $request)
+    {
+        $recordId = $request->query->get('recordId');
+        $databoxId = $request->query->get('databoxId');
+        $detailsType = $request->query->get('type');
+
+        if ($detailsType == 'subdef') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+
+            try {
+                $record  = $databox->get_record($recordId);
+
+                $databoxSubdefs = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
+
+                $availableSubdefs = [];
+
+                foreach ($databoxSubdefs as $sub) {
+                    $availableSubdefs[$sub->get_name()] = $sub->get_name();
+                }
+
+                /** @var MediaSubdefRepository $mediaSubdefRepository */
+                $mediaSubdefRepository = $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($request->query->get('databoxId'));
+
+                $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$request->query->get('recordId')]);
+
+                $notGeneratedSubdefs = $availableSubdefs;
+
+                foreach ($mediaSubdefs as $mediaSubdef) {
+                    if (in_array($mediaSubdef->get_name(), $notGeneratedSubdefs)) {
+                        unset($notGeneratedSubdefs[$mediaSubdef->get_name()]);
+                    }
+                }
+            } catch (\Exception $e) {
+                $mediaSubdefs = [];
+                $notGeneratedSubdefs = [];
+            }
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'mediaSubdefs'          => $mediaSubdefs,
+                'notGeneratedSubdefs'   => $notGeneratedSubdefs,
+                'type'                  => 'subdef'
+            ]);
+        } elseif ($detailsType == 'basket') {
+            /** @var BasketElementRepository $basketElementRepository */
+            $basketElementRepository = $this->app['repo.basket-elements'];
+            $basketElements = $basketElementRepository->findBy([
+                'sbas_id'   => $databoxId,
+                'record_id' => $recordId
+                ],  ['basket' => 'asc']
+            );
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'basketElements'  => $basketElements,
+                'type'            => 'basket'
+            ]);
+        } elseif ($detailsType == 'story') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+            $recordParents = $databox->getRecordRepository()->findParents([$recordId]);
+            $recordParents = reset($recordParents);
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'recordParents'   => $recordParents,
+                'type'            => 'story'
+            ]);
+        } elseif ($detailsType == 'log') {
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+            $sql = "SELECT d.* , l.usrid
+                    FROM log_docs d
+                    LEFT JOIN  log l ON l.id = d.log_id
+                    WHERE d.record_id =" . $recordId . " ORDER BY date LIMIT 1000";
+
+            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt->execute();
+            $logDocs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $this->render('admin/inspector/record-detail.html.twig', [
+                'logDocs'   => $logDocs,
+                'type'      => 'log'
+            ]);
+        }
+    }
+
+    public function renewAccessToken(Request $request, ApiApplication $application)
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        /** @var   ApiAccountRepository $apiAccountRepository */
+        $apiAccountRepository = $this->app['repo.api-accounts'];
+        $user = $userRepository->find($request->query->get('user_id'));
+        $account = $apiAccountRepository->findByUserAndApplication($user, $application);
+
+        if (null !== $devToken = $this->getApiOAuthTokenRepository()->findDeveloperToken($account)) {
+            $this->getApiOAuthTokenManipulator()->renew($devToken);
+        } else {
+            // dev tokens do not expires
+             $this->getApiOAuthTokenManipulator()->create($account);
+        }
+
+        return $this->app->json(['success' => true]);
+    }
+
+    public function deleteApplication(Request $request, ApiApplication $application)
+    {
+        $this->getApiApplicationManipulator()->delete($application);
+
+        return $this->app->json(['success' => true]);
+    }
+
+    /**
+     * @return ApiOauthTokenRepository
+     */
+    private function getApiOAuthTokenRepository()
+    {
+        return $this->app['repo.api-oauth-tokens'];
+    }
+
+    /**
+     * @return ApiOauthTokenManipulator
+     */
+    private function getApiOAuthTokenManipulator()
+    {
+        return $this->app['manipulator.api-oauth-token'];
+    }
+
     private function dispatchEvent($eventName, StatusBitEvent $event = null)
     {
         $this->app['dispatcher']->dispatch($eventName, $event);
@@ -418,5 +589,13 @@ class RootController extends Controller
             'databoxes'     => $databoxes,
             'off_databoxes' => $off_databoxes,
         ];
+    }
+
+    /**
+     * @return ApiApplicationManipulator
+     */
+    private function getApiApplicationManipulator()
+    {
+        return $this->app['manipulator.api-application'];
     }
 }

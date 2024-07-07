@@ -69,7 +69,7 @@ const workzoneFacets = services => {
             var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
                 var type = facet.type;     // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value, copied from field type
                 // patch "color" type values
-                var textLimit = 15;     // cut long values (set to 0 to not cut)
+                var textLimit = 35;     // cut long values (set to 0 to not cut)
                 var text = (value.value).toString();
                 var label = text;
                 var title = text;
@@ -78,7 +78,6 @@ const workzoneFacets = services => {
                 if(match && match[2] != null) {
                     // text looks like a color !
                     var colorCode = '#' + match[2];
-                    // add color circle and remove color code from text;
                     var textWithoutColorCode = text.replace('[' + colorCode + ']', '');
                     if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                         textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
@@ -86,7 +85,9 @@ const workzoneFacets = services => {
                     // patch
                     type = "COLOR-AGGREGATE";
                     label = textWithoutColorCode;
+                    textWithoutColorCode = $('<div/>').text(textWithoutColorCode).html();   // escape html
                     tooltip = _.escape(textWithoutColorCode);
+
                     title = '<span class="color-dot" style="background-color: ' + colorCode + ';"></span> ' + tooltip;
                 }
                 else {
@@ -95,7 +96,7 @@ const workzoneFacets = services => {
                         text = text.substring(0, textLimit) + '…';
                     }
                     label = text;
-                    /*title = tooltip = _.escape(text);*/
+                    title = $('<div/>').text(text).html();   // escape html
                 }
 
                 return {
@@ -154,8 +155,6 @@ const workzoneFacets = services => {
             treeSource = _shouldMaskNodes(treeSource, hiddenFacetsList);
         }
 
-        treeSource = _parseColors(treeSource);
-
         treeSource = _colorUnsetText(treeSource);
 
         return _getFacetsTree().reload(treeSource)
@@ -172,7 +171,7 @@ const workzoneFacets = services => {
                                 $(el).hide();
                             }
                         });
-                        ul.append('<button class="see_more_btn">See more</button>');
+                        ul.append('<button class="see_more_btn">' + localeService.t('seeMore') + '</button>');
                     }
                 });
                 $('.see_more_btn').on('click', function () {
@@ -183,22 +182,11 @@ const workzoneFacets = services => {
             });
     };
 
-    function _parseColors(source) {
-        _.forEach(source, function (facet) {
-            if (!_.isUndefined(facet.children) && (facet.children.length > 0)) {
-                _.forEach(facet.children, function (child) {
-                    var title = child.title;
-                    child.title = _formatColorText(title.toString());
-                });
-            }
-        });
-        return source;
-    }
+    function _formatColorText(string) {
+        var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-    function _formatColorText(string, textLimit = 0) {
         //get color code from text if exist
         var regexp = /^(.*)\[#([0-9a-fA-F]{6})].*$/;
-
 
         var match = string.match(regexp);
         if (match && match[2] != null) {
@@ -208,11 +196,13 @@ const workzoneFacets = services => {
             if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                 textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
             }
+            textWithoutColorCode = $('<div/>').text(textWithoutColorCode).html();   // escape html
             return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
         } else {
             if (textLimit > 0 && string.length > textLimit) {
                 string = string.substring(0, textLimit) + '…';
             }
+            string = $('<div/>').text(string).html();   // escape html
             return string;
         }
     }
