@@ -68,6 +68,8 @@
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/production/production{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
     <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/production/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
+    <link href="/assets/vendors/select2/dist/css/select2.min.css" rel="stylesheet" />
+
     <style title="color_selection" type="text/css">
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
@@ -85,6 +87,7 @@
     <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
     <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
     <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="/assets/vendors/select2/dist/js/select2.min.js"></script>
 
     <script type="text/javascript">
 
@@ -565,6 +568,13 @@
                                                 <div id="ADVSRCH_FIELDS_ZONE">
                                                     <label class="status-section-title">
                                                         <span class="danger_indicator">{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
+                                                        <span><input type="checkbox" class="preferences-see-real-field-name see-real-field-name" style="margin-top: 0px;margin-left: 27px; margin-right: 5px;"
+                                                            {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'see_real_field_name') != '1' %}
+                                                                data-real-field="field_without_real_name"
+                                                            {% else %}
+                                                                data-real-field="field_with_real_name" checked
+                                                            {% endif %}
+                                                            >{{ 'prod::advancesearch see real field name' | trans }}</span>
                                                         <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
                                                         <div id="info-box">
                                                             <p>{{ 'prod::advancesearch:tooltips:field_restriction_explanation' | trans }}</p>
@@ -585,10 +595,16 @@
                                                         <div class="term_select_wrapper_template" style="display: none;">
                                                             <select class="term_select_field" style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
-                                                                {% for field_id, field in search_datas['fields'] %}
-                                                                   {# {% if field['type'] != 'date' %}#}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{ field['label'] | join(' - ') }}</option>
-                                                                    {#{% endif %}#}
+                                                                {% for label, field in search_datas['fields'] %}
+                                                                    <option class="field_without_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{ field['fieldname'] }}">
+                                                                        {{ label }}
+                                                                    </option>
+                                                                {% endfor %}
+
+                                                                {% for label, field in search_datas['fieldsWithName'] %}
+                                                                    <option class="field_with_real_name dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{ field['fieldname'] }}" style="display:none;">
+                                                                        {{ label }}
+                                                                    </option>
                                                                 {% endfor %}
                                                             </select>
                                                             <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
@@ -605,7 +621,7 @@
                                                             <input class="term_deleter" style="margin-bottom: 4px;">
                                                         </div>
 
-                                                        <button class="add_new_term"><span>&plus;</span> Add</button>
+                                                        <button class="add_new_term"><span>&plus;</span>{{ 'prod::advancesearch: Add' | trans }}</button>
                                                     </div>
 
                                                    {# <div style="display:none;">
@@ -636,9 +652,16 @@
                                                         <select name="date_field" class="date-field input-medium check-filters" data-save="true" style="width: 166px;">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
-                                                            {% for fieldname, date in search_datas['dates'] %}
-                                                                <option
-                                                                    class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ date['label'] | join(' - ') }}</option>
+                                                            {% for label, date in search_datas['dates'] %}
+                                                                <option class="field_without_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ date['fieldname'] }}">
+                                                                    {{ label }}
+                                                                </option>
+                                                            {% endfor %}
+
+                                                            {% for label, date in search_datas['datesWithName'] %}
+                                                                <option class="field_with_real_name dbx db_{{date['sbas']|join(' db_')}}" value="{{ date['fieldname'] }}" style="display:none;">
+                                                                    {{ label }}
+                                                                </option>
                                                             {% endfor %}
                                                         </select>
                                                     </span>
@@ -724,6 +747,7 @@
                                 </tr>
                             </table>
                         </div>
+                        <input type="hidden" name="searchForm_token" value="{{ app['session'].get('searchForm_token') }}">
                     </form>
                     <div id="facet_filter_in_search" style="width:100%;height:40px;overflow-y: scroll;">
                     </div>

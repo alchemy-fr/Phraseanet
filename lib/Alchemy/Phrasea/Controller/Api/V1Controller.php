@@ -113,6 +113,7 @@ class V1Controller extends Controller
     use DispatcherAware;
     use FilesystemAware;
     use JsonBodyAware;
+    use InstanceIdAware;
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
@@ -316,7 +317,7 @@ class V1Controller extends Controller
                 'description' => $conf->get(['registry', 'general', 'description']),
                 'httpServer' => [
                     'phpTimezone' => ini_get('date.timezone'),
-                    'siteId' => $conf->get(['main', 'key']),
+                    'instanceId' => $conf->get(['main', 'instance_id']),
                     'defaultLanguage' => $conf->get(['languages', 'default']),
                     'allowIndexing' => $conf->get(['registry', 'general', 'allow-indexation']),
                     'modes' => [
@@ -337,7 +338,7 @@ class V1Controller extends Controller
                     'googleAnalyticsId' => $conf->get(['registry', 'general', 'analytics']),
                     'i18nWebService'    => $conf->get(['registry', 'webservices', 'geonames-server']),
                     'recaptacha'        => [
-                        'active'     => $conf->get(['registry', 'webservices', 'captchas-enabled']),
+                        'active'     => ($conf->get(['registry', 'webservices', 'captcha-provider'])) != 'none' ? true : false,
                         'publicKey'  => $conf->get(['registry', 'webservices', 'recaptcha-public-key']),
                         'privateKey' => $conf->get(['registry', 'webservices', 'recaptcha-private-key']),
                     ],
@@ -378,9 +379,6 @@ class V1Controller extends Controller
                 'binary'            => [
                     'phpCli'      => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
                     'phpIni'      => $conf->get(['registry', 'executables', 'php-conf-path']),
-                    'swfExtract'  => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
-                    'pdf2swf'     => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
-                    'swfRender'   => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,
                     'unoconv'     => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null,
                     'ffmpeg'      => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
                     'ffprobe'     => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,
@@ -628,6 +626,7 @@ class V1Controller extends Controller
                 'gui_editable'     => $databox_field->get_gui_editable(),
                 'gui_visible'      => $databox_field->get_gui_visible(),
                 'printable'        => $databox_field->get_printable(),
+                'input_disable'    => $databox_field->get_input_disable(),
                 'type'             => $databox_field->get_type(),
                 'indexable'        => $databox_field->is_indexable(),
                 'multivalue'       => $databox_field->is_multi(),
@@ -1216,7 +1215,7 @@ class V1Controller extends Controller
     {
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
         $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
         $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
@@ -1275,7 +1274,7 @@ class V1Controller extends Controller
     {
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
 
         $transformerResolver = new SearchResultTransformerResolver([
@@ -1664,9 +1663,12 @@ class V1Controller extends Controller
             $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 
+        $resourceId = $this->getResourceIdResolver()($record);
+
         $data = [
             'databox_id'             => $record->getDataboxId(),
             'record_id'              => $record->getRecordId(),
+            'resource_id'            => $resourceId,
             'mime_type'              => $record->getMimeType(),
             'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),
@@ -1720,18 +1722,21 @@ class V1Controller extends Controller
             return $field->get_serialized_values();
         };
 
+        $resourceId = $this->getResourceIdResolver()($story);
+
         return [
-            '@entity@'      => self::OBJECT_TYPE_STORY,
-            'databox_id'    => $story->getDataboxId(),
-            'story_id'      => $story->getRecordId(),
+            '@entity@'        => self::OBJECT_TYPE_STORY,
+            'databox_id'      => $story->getDataboxId(),
+            'story_id'        => $story->getRecordId(),
+            'resource_id'     => $resourceId,
             'cover_record_id' => $story->getCoverRecordId(),
-            'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
-            'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => $story->getCollectionId(),
-            'base_id'       => $story->getBaseId(),
-            'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
-            'uuid'          => $story->getUuid(),
-            'metadatas'     => [
+            'updated_on'      => $story->getUpdated()->format(DATE_ATOM),
+            'created_on'      => $story->getCreated()->format(DATE_ATOM),
+            'collection_id'   => $story->getCollectionId(),
+            'base_id'         => $story->getBaseId(),
+            'thumbnail'       => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
+            'uuid'            => $story->getUuid(),
+            'metadatas'       => [
                 '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
                 'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),
                 'dc:coverage'    => $format($caption, \databox_Field_DCESAbstract::Coverage),
@@ -1749,7 +1754,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
+            'records'         => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
         ];
     }
 

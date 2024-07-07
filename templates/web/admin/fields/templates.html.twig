@@ -216,6 +216,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>
+                        <label for="input_disable" class="checkbox">
+                            <input id="input_disable" type="checkbox" <%= field.input_disable ? "checked='checked'" : "" %> />
+                            {% trans %}input-disable{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="3">
                         <label for="business" class="checkbox">
                             <input id="business" type="checkbox" <%= field.business ? "checked='checked'" : "" %> />

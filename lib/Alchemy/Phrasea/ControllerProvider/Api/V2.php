@@ -104,13 +104,16 @@ class V2 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->match('/search/', 'controller.api.v2.search:searchAction');
 
+        /** @uses LazaretController::quarantineItemEmptyAction */
         $controllers->delete('/quarantine/', 'controller.api.v2.lazaret:quarantineItemEmptyAction')
             ->bind('api_v2_quarantine_empty');
 
+        /** @uses LazaretController::quarantineItemDeleteAction */
         $controller = $controllers->delete('/quarantine/item/{lazaret_id}/', 'controller.api.v2.lazaret:quarantineItemDeleteAction')
             ->bind('api_v2_quarantine_item_delete');
         $this->addQuarantineMiddleware($controller);
 
+        /** @uses LazaretController::quarantineItemAddAction */
         $controller = $controllers->post('/quarantine/item/{lazaret_id}/add/', 'controller.api.v2.lazaret:quarantineItemAddAction')
             ->bind('api_v2_quarantine_item_add');
         $this->addQuarantineMiddleware($controller);

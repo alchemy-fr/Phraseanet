@@ -22,6 +22,8 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDownloadRecords()
     {
         $triggered = false;
+        $randomValue = $this->setSessionFormToken('prodExportDownload');
+
         self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
             $triggered = true;
         });
@@ -30,7 +32,8 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
             'ssttid'            => '',
             'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
-            'businessfields'    => '1'
+            'businessfields'    => '1',
+            'prodExportDownload_token' => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -46,6 +49,8 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDownloadRestricted()
     {
         $triggered = false;
+        $randomValue = $this->setSessionFormToken('prodExportDownload');
+
         self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
             $triggered = true;
         });
@@ -84,7 +89,8 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
             'ssttid'            => '',
             'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
-            'businessfields'    => '1'
+            'businessfields'    => '1',
+            'prodExportDownload_token' => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -100,6 +106,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDownloadBasket()
     {
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
+        $randomValue = $this->setSessionFormToken('prodExportDownload');
 
         $triggered = false;
         self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
@@ -111,7 +118,8 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
             'ssttid'            => $basket->getId(),
             'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
-            'businessfields'    => '1'
+            'businessfields'    => '1',
+            'prodExportDownload_token' => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();
@@ -127,6 +135,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDownloadBasketValidation()
     {
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
+        $randomValue = $this->setSessionFormToken('prodExportDownload');
 
         $triggered = false;
         self::$DI['app']['dispatcher']->addListener(PhraseaEvents::EXPORT_CREATE, function (Event $event) use (&$triggered) {
@@ -138,7 +147,8 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
             'ssttid'            => $basket->getId(),
             'obj'               => ['preview', 'document'],
             'title'             => 'export_title_test',
-            'businessfields'    => '1'
+            'businessfields'    => '1',
+            'prodExportDownload_token' => $randomValue
         ]);
 
         $response = self::$DI['client']->getResponse();

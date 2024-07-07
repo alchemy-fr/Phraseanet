@@ -57,9 +57,11 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/image/', 'controller.prod.tools:imageAction')
             ->bind('prod_tools_image');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\ToolsController::hddocAction */
         $controllers->post('/hddoc/', 'controller.prod.tools:hddocAction')
             ->bind('prod_tools_hd_substitution');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\ToolsController::changeThumbnailAction */
         $controllers->post('/chgthumb/', 'controller.prod.tools:changeThumbnailAction')
             ->bind('prod_tools_thumbnail_substitution');
 

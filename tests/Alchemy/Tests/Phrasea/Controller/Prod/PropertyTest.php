@@ -100,6 +100,7 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue($acl));
 
         self::$DI['app']['acl'] = $aclProvider;
+        $randomValue = $this->setSessionFormToken('prodPropertyStatus');
 
         self::$DI['client']->request('POST', '/prod/records/property/status/', [
             'apply_to_children' => [$story->getDataboxId() => true],
@@ -108,8 +109,10 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
             ],
             'lst' => implode(';', [
                 $record->getId(),$story->getId()
-            ])
+            ]),
+            'prodPropertyStatus_token' => $randomValue
         ]);
+
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
@@ -152,6 +155,7 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
         $record2 = \record_adapter::createFromFile($file, self::$DI['app']);
+        $randomValue = $this->setSessionFormToken('prodPropertyType');
 
         self::$DI['client']->request('POST', '/prod/records/property/type/',  [
             'lst' => implode(';', [
@@ -160,7 +164,8 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
             'types' => [
                 $record->getId() => 'document',
                 $record2->getId() => 'flash',
-            ]
+            ],
+            'prodPropertyType_token' => $randomValue
         ]);
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());

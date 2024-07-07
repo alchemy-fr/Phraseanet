@@ -401,7 +401,7 @@ max_input_vars = $MAX_INPUT_VARS
 
 ; Maximum amount of memory a script may consume (128MB)
 ; http://php.net/memory-limit
-memory_limit = 2048M
+memory_limit = $FPM_MEMORY_LIMIT
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Error handling and logging ;
@@ -1330,6 +1330,9 @@ session.save_handler = $SESSION_SAVE_HANDLER
 ; http://php.net/session.save-path
 session.save_path = $SESSION_SAVE_PATH
 
+session.hash_bits_per_character = 6
+session.hash_function = 1
+
 ; Whether to use strict session mode.
 ; Strict session mode does not accept uninitialized session ID and regenerate
 ; session ID if browser sends uninitialized session ID. Strict mode protects
@@ -1343,7 +1346,7 @@ session.use_strict_mode = 0
 session.use_cookies = 1
 
 ; http://php.net/session.cookie-secure
-;session.cookie_secure =
+session.cookie_secure = $COOKIE_SECURE
 
 ; This option forces PHP to fetch and use a cookie for storing and maintaining
 ; the session id. We encourage this operation as it's very helpful in combating
@@ -1374,7 +1377,7 @@ session.cookie_domain =
 
 ; Whether or not to add the httpOnly flag to the cookie, which makes it inaccessible to browser scripting languages such as JavaScript.
 ; http://php.net/session.cookie-httponly
-session.cookie_httponly =
+session.cookie_httponly = 1
 
 ; Handler used to serialize data.  php is the standard serializer of PHP.
 ; http://php.net/session.serialize-handler
@@ -1409,7 +1412,7 @@ session.gc_divisor = 1000
 ; After this number of seconds, stored data will be seen as 'garbage' and
 ; cleaned up by the garbage collection process.
 ; http://php.net/session.gc-maxlifetime
-session.gc_maxlifetime = 1440
+session.gc_maxlifetime = $PHRASEANET_USER_SESSION_LIFETIME
 
 ; NOTE: If you are using the subdirectory option for storing session files
 ;       (see session.save_path above), then garbage collection does *not*

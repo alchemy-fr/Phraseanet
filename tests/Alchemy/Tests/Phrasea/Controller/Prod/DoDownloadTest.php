@@ -79,12 +79,16 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testOneDocumentsDownload()
     {
+        $this->markTestSkipped("direct download removed by PHRAS-3958");
+
+        /*
         $nbRowLogsBefore = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $thumbnail = self::$DI['record_1']->get_thumbnail();
 
         $token = $this->getToken([
             'export_name' => 'Export_2012-10-23_621.zip',
             'count' => 1,
+            'cgu' => false,
             'files' => [
                 [
                     'base_id' => self::$DI['record_1']->get_base_id(),
@@ -118,6 +122,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $nbRowLogsAfter = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $this->assertGreaterThan($nbRowLogsBefore, $nbRowLogsAfter);
         unset($response);
+        */
     }
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
@@ -202,6 +207,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $token = $this->getToken([
             'export_name' => 'Export_2012-10-23_621.zip',
             'count' => 1,
+            'cgu' => false,
             'files' => [
                 [
                     'base_id' => 1,

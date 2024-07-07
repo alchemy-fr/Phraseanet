@@ -56,6 +56,12 @@ class WebhookWorker implements WorkerInterface
     public function process(array $payload)
     {
         if (isset($payload['id'])) {
+            $webhookEventId = $payload['id'];
+
+            /** @var WebhookEvent|null $webhookevent */
+            $webhookevent = $this->app['repo.webhook-event']->find($webhookEventId);
+            $wData = $webhookevent->getData();
+
             $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
             $em = $this->repoWorkerJob->getEntityManager();
             $em->beginTransaction();
@@ -70,11 +76,19 @@ class WebhookWorker implements WorkerInterface
                 $workerRunningJob = new WorkerRunningJob();
                 $workerRunningJob
                     ->setWork(MessagePublisher::WEBHOOK_TYPE)
-                    ->setWorkOn('WebhookEventId: '. $payload['id'])
+                    ->setWorkOn($webhookevent->getName() . ' , WebhookEventId: '. $payload['id'])
                     ->setPayload($message)
                     ->setPublished($date->setTimestamp($payload['published']))
                     ->setStatus(WorkerRunningJob::RUNNING)
                 ;
+
+                if (isset($wData['databox_id'])) {
+                    $workerRunningJob->setDataboxId($wData['databox_id']);
+                }
+
+                if (isset($wData['record_id'])) {
+                    $workerRunningJob->setRecordId($wData['record_id']);
+                }
 
                 $em->persist($workerRunningJob);
 
@@ -85,7 +99,6 @@ class WebhookWorker implements WorkerInterface
                 $em->rollback();
             }
 
-            $webhookEventId = $payload['id'];
             $app = $this->app;
 
             $version = new Version();
@@ -106,9 +119,6 @@ class WebhookWorker implements WorkerInterface
             $httpClient = $proxyConfig->getClientWithOptions($clientOptions);
 
             $thirdPartyApplications = $this->app['repo.api-applications']->findWithDefinedWebhookCallback();
-
-            /** @var WebhookEvent|null $webhookevent */
-            $webhookevent = $this->app['repo.webhook-event']->find($webhookEventId);
 
             if ($webhookevent !== null) {
                 $app['manipulator.webhook-event']->processed($webhookevent);
@@ -242,7 +252,7 @@ class WebhookWorker implements WorkerInterface
             $requests[$delivery->getId()] = new Request(
                 'POST',
                 $uniqueUrl,
-                ['Content-Type' => 'application/vnd.phraseanet.event+json'],
+                ['Content-Type' => 'application/json'],
                 json_encode($data)
             );
         }

@@ -19,7 +19,7 @@ class FilesystemProbe extends FilesystemRequirements implements ProbeInterface
 {
     public function __construct(PropertyAccess $conf)
     {
-        parent::__construct();
+        parent::__construct($conf);
 
         $baseDir = realpath(__DIR__ . '/../../../../../');
 

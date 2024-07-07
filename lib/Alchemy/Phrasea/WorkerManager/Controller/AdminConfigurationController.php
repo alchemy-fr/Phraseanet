@@ -3,9 +3,11 @@
 namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
@@ -17,8 +19,9 @@ use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker\RecordsActionsWorker;
 use Doctrine\ORM\OptimisticLockException;
+use Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
@@ -30,11 +33,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdminConfigurationController extends Controller
 {
+    use DataboxLoggerAware;
+
     public function indexAction(PhraseaApplication $app, Request $request)
     {
         return $this->render('admin/worker-manager/index.html.twig', [
             'isConnected'       => $this->getAMQPConnection()->getChannel() != null,
-            '_fragment' => $request->get('_fragment') ?? 'worker-configuration',
+            '_fragment' => $request->get('_fragment') ?? 'worker-info',
         ]);
     }
 
@@ -117,7 +122,7 @@ class AdminConfigurationController extends Controller
         if ($timeFilter != null) {
             try {
                 $dateTimeFilter = (new \DateTime())->sub(new \DateInterval($timeFilter));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
             }
         }
 
@@ -139,9 +144,12 @@ class AdminConfigurationController extends Controller
         $helpers = new PhraseanetExtension($this->app);
 
         $workerRunningJob = $repoWorker->findByFilter($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
-        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId);
+        $workerRunningJobTotalCount = $repoWorker->getJobCount($filterStatus, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter);
         $workerRunningJobTotalCount = number_format($workerRunningJobTotalCount, 0, '.', ' ');
         $totalDuration = array_sum(array_column($workerRunningJob, 'duration'));
+
+        $averageDuration = (count($workerRunningJob) == 0) ? 0 : $totalDuration/(float)count($workerRunningJob);
+
         // format duration
         $totalDuration  = $helpers->getDuration($totalDuration);
 
@@ -157,7 +165,7 @@ class AdminConfigurationController extends Controller
         $realEntryDuration = $helpers->getDuration($realEntryDuration);
 
         // get all row count in the table WorkerRunningJob
-        $totalCount = $repoWorker->getJobCount([], null, null , null);
+        $totalCount = $repoWorker->getJobCount([], null, null , null, null, null);
         $totalCount = number_format($totalCount, 0, '.', ' ');
 
         $databoxIds = array_map(function (\databox $databox) {
@@ -184,6 +192,7 @@ class AdminConfigurationController extends Controller
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
                 'totalDuration'    => $totalDuration,
+                'averageDuration'  => number_format($averageDuration, 2, '.', ' ') . ' s',
                 'realEntryDuration'=> $realEntryDuration
             ]);
         } else {
@@ -196,6 +205,7 @@ class AdminConfigurationController extends Controller
                 'resultTotal'      => $workerRunningJobTotalCount,
                 'totalCount'       => $totalCount,
                 'totalDuration'    => $totalDuration,
+                'averageDuration'  => number_format($averageDuration, 2, '.', ' ') . ' s',
                 'realEntryDuration'=> $realEntryDuration
             ]);
         }
@@ -216,14 +226,20 @@ class AdminConfigurationController extends Controller
         $workerRunningJob = $repoWorker->find($workerId);
 
         $workerRunningJob->setStatus($request->request->get('status'));
+        $finishedDate = new \DateTime('now');
+
         if($request->request->get('finished') == '1') {
-            $workerRunningJob->setFinished(new \DateTime('now'))->setFlock(null);
+            $workerRunningJob->setFinished($finishedDate)->setFlock(null);
         }
 
         $em = $repoWorker->getEntityManager();
         $em->persist($workerRunningJob);
 
         $em->flush();
+
+        if (in_array($workerRunningJob->getWork(), ['subdefCreation', 'writeMetadatas'])) {
+            $this->updateLogDocs($workerRunningJob, $workerRunningJob->getStatus(), $finishedDate);
+        }
 
         return $this->app->json(['success' => true]);
     }
@@ -243,7 +259,15 @@ class AdminConfigurationController extends Controller
     {
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $this->app['repo.worker-running-job'];
+        $workerRunningJobs = $repoWorker->getRunningSinceCreated($request->request->get('hour'), ['subdefCreation', 'writeMetadatas']);
+
         $repoWorker->updateStatusRunningToCanceledSinceCreated($request->request->get('hour'));
+
+        $finishedDate = new \DateTime('now');
+        /** @var WorkerRunningJob $workerRunningJob */
+        foreach ($workerRunningJobs as $workerRunningJob) {
+            $this->updateLogDocs($workerRunningJob, 'canceled', $finishedDate);
+        }
 
         return $this->app->json(['success' => true]);
     }
@@ -264,6 +288,7 @@ class AdminConfigurationController extends Controller
     {
         $reload = ($request->query->get('reload') == 1);
         $hideEmptyQ = $request->query->get('hide-empty-queue');
+        $consumedQ = $request->query->get('consumed-queue');
 
         if ($hideEmptyQ === null || $hideEmptyQ == 1) {
             $hideEmptyQ = true;
@@ -271,9 +296,15 @@ class AdminConfigurationController extends Controller
             $hideEmptyQ = false;
         }
 
+        if ($consumedQ === null || $consumedQ == 1) {
+            $consumedQ = true;
+        } else {
+            $consumedQ = false;
+        }
+
         $this->getAMQPConnection()->getChannel();
         $this->getAMQPConnection()->declareExchange();
-        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus($hideEmptyQ);
+        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus($hideEmptyQ, $consumedQ);
 
         return $this->render('admin/worker-manager/worker_queue_monitor.html.twig', [
             'queuesStatus' => $queuesStatus,
@@ -422,7 +453,7 @@ class AdminConfigurationController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::VALIDATION_REMINDER_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::VALIDATION_REMINDER_TYPE)
@@ -484,7 +515,7 @@ class AdminConfigurationController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::RECORDS_ACTIONS_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::RECORDS_ACTIONS_TYPE)
@@ -502,28 +533,32 @@ class AdminConfigurationController extends Controller
 
     public function recordsActionsFacilityAction(PhraseaApplication $app, Request $request)
     {
-        $ret = ['tasks' => []];
-        $job = new RecordsActionsWorker($app);
-        switch ($request->get('ACT')) {
-            case 'PLAYTEST':
-                $sxml = simplexml_load_string($request->get('xml'));
-                if (isset($sxml->tasks->task)) {
-                    foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, true);
+        $ret = [
+            'error' => null,
+            'tasks' => []
+        ];
+        try {
+            $job = new RecordsActionsWorker($app);
+            switch ($request->get('ACT')) {
+                case 'PLAYTEST':
+                case 'CALCTEST':
+                case 'CALCSQL':
+                    $sxml = simplexml_load_string($request->get('xml'));
+                    if ((string)$sxml['version'] !== '2') {
+                        throw new JsonValidationException(sprintf("bad settings version (%s), should be \"2\"", (string)$sxml['version']));
                     }
-                }
-                break;
-            case 'CALCTEST':
-            case 'CALCSQL':
-                $sxml = simplexml_load_string($request->get('xml'));
-                if (isset($sxml->tasks->task)) {
-                    foreach ($sxml->tasks->task as $sxtask) {
-                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, false);
+                    if (isset($sxml->tasks->task)) {
+                        foreach ($sxml->tasks->task as $sxtask) {
+                            $ret['tasks'][] = $job->calcSQL($sxtask, $request->get('ACT') === 'PLAYTEST');
+                        }
                     }
-                }
-                break;
-            default:
-                throw new NotFoundHttpException('Route not found.');
+                    break;
+                default:
+                    throw new NotFoundHttpException('Route not found.');
+            }
+        }
+        catch (Exception $e) {
+            $ret['error'] = $e->getMessage();
         }
 
         return $app->json($ret);
@@ -539,6 +574,17 @@ class AdminConfigurationController extends Controller
         return $repoWorkerJob->checkPopulateStatusByDataboxIds($databoxIds);
     }
 
+    private function updateLogDocs(WorkerRunningJob $workerRunningJob, $status, $finishedDate)
+    {
+        $databox    = $this->findDataboxById($workerRunningJob->getDataboxId());
+        $record     = $databox->get_record($workerRunningJob->getRecordId());
+        $subdefName = $workerRunningJob->getWorkOn();
+        $action     = $workerRunningJob->getWork();
+
+        $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, $action, $finishedDate, $status);
+
+    }
+
     private function getDefaultRecordsActionsSettings()
     {
         return <<<EOF
@@ -550,73 +596,134 @@ class AdminConfigurationController extends Controller
     -->
     <tasks>
 
-        <comment> keep offline (sb4 = 1) all docs before their "go online" date and after credate (record column) </comment>
+        <!-- SANITY CHECK ON DOCUMENT SIZE workflow
 
-        <task active="0" name="stay offline" action="update" databoxId="1">
-            <from>
-                <date direction="before" field="GO_ONLINE"/>
-                <date direction="after" field="#credate" />
-            </from>
-            <to>
-                <status mask="x1xxxx"/>
-            </to>
+        - trash records with documents > 10Mo
+        -->
+
+        <!-- trash jpeg files > 10Mo -->
+        <task active="0" name="reject too big files " action="update" databoxId="db_databox1">
+            <if>
+                <number field="#filesize" compare=">" value="10485760" />
+            </if>
+            <then>
+                <coll id="_TRASH_" />
+            </then>
         </task>
 
 
-        <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
 
-        <task active="0" name="go online" action="update" databoxId="1">
-            <from>
-                <comment> 5, 6, 7 are "public" collections </comment>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="GO_ONLINE"/>
-                <date direction="before" field="TO_ARCHIVE"/>
-            </from>
-            <to>
-                <status mask="x0xxxx"/>
-            </to>
+        <!-- EXPIRATION workflow
+
+        from "test" collection :
+        - records having Source = "internal" will expire after 1 month
+        - other records will expire after 10 days
+        - records go to "Public" collection
+        - we want a "last days" status-bit to be set 2 days before expiration
+        - Expired documents from "Public" collection will go to trash
+        -->
+
+
+        <!-- set the ExpireDate to (create + 1 month) for source="internal, go public -->
+        <task active="0" name="compute expiring date for internal" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="test" />
+                <text field="Source" compare="=" value="internal" />
+                <is_unset field="ExpireDate" />
+            </if>
+            <then>
+                <compute_date direction="after" field="#credate" delta="+1 month" computed="exp" />
+                <set_field field="ExpireDate" value="" />
+                <coll id="Public" />
+            </then>
+        </task>
+
+        <!-- set the ExpireDate to (create + 10 days) for others -->
+        <task active="0" name="compute expiring date for others" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="test" />
+                <text field="Source" compare="!=" value="internal" />
+                <is_unset field="ExpireDate" />
+            </if>
+            <then>
+                <compute_date direction="after" field="#credate" delta="+10 days" computed="exp" />
+                <set_field field="ExpireDate" value="" />
+                <coll id="Public" />
+            </then>
+        </task>
+
+        <!-- if set the "last days" sb 2 days before expiration-->
+        <task active="0" name="will expire in 2 days" action="update" databoxId="db_databox1">
+            <if>
+                <date direction="after" field="ExpireDate" delta="-2 days" />
+            </if>
+            <then>
+                <status mask="1xxxxxx"/>
+            </then>
+        </task>
+
+        <!-- if Public, move to trash after expiration -->
+        <task active="0"  name="expire" action="update" databoxId="db_databox1">
+            <if>
+                <coll compare="=" id="Public" />
+                <date direction="after" field="ExpireDate" />
+            </if>
+            <then>
+                <coll id="_TRASH_" />
+            </then>
         </task>
 
 
-        <comment> Warn 10 days before archiving (raise sb5) </comment>
 
-        <task active="0" name="almost the end" action="update" databoxId="1">
-            <from>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="TO_ARCHIVE" delta="-10"/>
-            </from>
-            <to>
-                <status mask="1xxxxx"/>
-            </to>
+        <!-- EMPTY TRASH workflow -->
+
+        <task active="0" name="clean trash" action="delete" databoxId="db_databox1">
+            <!-- Delete the records that are in the trash collection, unmodified from 3 months -->
+            <if>
+                <coll compare="=" id="_TRASH_"/>
+                <date direction="after" field="#moddate" delta="+3 months" />
+            </if>
         </task>
 
 
-        <comment> Move to 'archive' collection </comment>
 
-        <task active="0" name="archivage" action="update" databoxId="1">
-            <from>
-                <coll compare="=" id="5,6,7"/>
-                <date direction="after" field="TO_ARCHIVE" />
-            </from>
-            <to>
-                <comment> reset status of archived documents </comment>
-                <status mask="00xxxx"/>
-                <comment> 666 is the "archive" collection </comment>
-                <coll id="666" />
-            </to>
+        <!-- SANITY CHECK ON FIELDS workflow
+
+        we want a status to show if "Title" and "Description" are filled
+        -->
+
+        <!-- set sb "caption filled" (sb4=1) when both title and Description are set -->
+        <task active="0" name="Title and Description set" action="update" databoxId="db_databox1">
+            <if>
+                <is_set field="Title"/>
+                <is_set field="Description"/>
+            </if>
+            <then>
+                <status mask="1xxxx"/>
+            </then>
         </task>
 
-
-        <comment> Delete the documents that are in the trash collection unmodified from 3 months </comment>
-
-        <task active="0" name="trash" action="delete" databoxId="1">
-            <from>
-                <coll compare="=" id="666"/>
-                <date direction="after" field="#moddate" delta="+90" />
-            </from>
+        <!-- reset sb "caption filled" (sb4=0) when title is not set -->
+        <task active="0" name="Title not set" action="update" databoxId="db_databox1">
+            <if>
+                <is_unset field="Title"/>
+            </if>
+            <then>
+                <status mask="0xxxx"/>
+            </then>
         </task>
+
+        <!-- reset sb "caption filled" (sb4=0) when caption is not set -->
+        <task active="0" name="Description not set" action="update" databoxId="db_databox1">
+            <if>
+                <is_unset field="Description"/>
+            </if>
+            <then>
+                <status mask="0xxxx"/>
+            </then>
+        </task>
+
     </tasks>
-
 </tasksettings>
 EOF;
     }

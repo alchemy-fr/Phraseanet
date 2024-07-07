@@ -5,14 +5,14 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" id="configurationTabs">
 
-            <li class="worker-configuration" role="presentation">
-                <a href="#worker-configuration" aria-controls="worker-configuration" role="tab" data-toggle="tab" data-url="/admin/worker-manager/configuration">
-                    {{ "admin::workermanager:tab:configuration: title" | trans }}
+            <li class="worker-info" role="presentation">
+                <a href="#worker-info" aria-controls="worker-info" role="tab" data-toggle="tab" data-url="/admin/worker-manager/info?running=1&timeFilter=P3D">
+                    {{ 'admin::workermanager:tab:workerinfo: title' |trans }}
                 </a>
             </li>
-            <li class="worker-info" role="presentation">
-                <a href="#worker-info" aria-controls="worker-info" role="tab" data-toggle="tab" data-url="/admin/worker-manager/info?running=1">
-                    {{ 'admin::workermanager:tab:workerinfo: title' |trans }}
+            <li class="worker-queue-monitor" role="presentation">
+                <a href="#worker-queue-monitor" aria-controls="worker-queue-monitor" role="tab" data-toggle="tab" data-url="/admin/worker-manager/queue-monitor">
+                    {{ 'admin::workermanager:tab:queueMonitor: title' |trans }}
                 </a>
             </li>
             <li class="worker-searchengine" role="presentation">
@@ -45,9 +45,9 @@
                     {{ 'admin::workermanager:tab:recordsActions: title' |trans }}
                 </a>
             </li>
-            <li class="worker-queue-monitor" role="presentation">
-                <a href="#worker-queue-monitor" aria-controls="worker-queue-monitor" role="tab" data-toggle="tab" data-url="/admin/worker-manager/queue-monitor">
-                    {{ 'admin::workermanager:tab:queueMonitor: title' |trans }}
+            <li class="worker-configuration" role="presentation">
+                <a href="#worker-configuration" aria-controls="worker-configuration" role="tab" data-toggle="tab" data-url="/admin/worker-manager/configuration">
+                    {{ "admin::workermanager:tab:configuration: title" | trans }}
                 </a>
             </li>
 

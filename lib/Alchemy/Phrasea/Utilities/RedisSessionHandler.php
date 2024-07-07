@@ -80,7 +80,21 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function destroy($sessionId)
     {
-        return 1 === $this->redis->del($this->prefix.$sessionId);
+        static $unlink = true;
+
+        if ($unlink) {
+            try {
+                $unlink = false !== $this->redis->unlink($this->prefix.$sessionId);
+            } catch (\Throwable $e) {
+                $unlink = false;
+            }
+        }
+
+        if (!$unlink) {
+            $this->redis->del($this->prefix.$sessionId);
+        }
+
+        return true;
     }
 
     /**

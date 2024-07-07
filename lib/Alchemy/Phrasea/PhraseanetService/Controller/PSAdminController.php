@@ -28,21 +28,12 @@ class PSAdminController extends Controller
     {
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service'], null);
 
-        $form = $app->form(new PSExposeConfigurationType(), $exposeConfiguration);
+        $form = $app->form(new PSExposeConfigurationType($this->app), $exposeConfiguration);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $app['conf']->set(['phraseanet-service', 'expose-service'], $form->getData());
-
-            // generate a uniq key between phraseanet service and the phraseanet instance if not exist
-            if(!$app['conf']->has(['phraseanet-service', 'phraseanet_local_id'])) {
-                $instanceKey = $this->app['conf']->get(['main', 'key']);
-
-                $phraseanetLocalId = md5($instanceKey);
-
-                $app['conf']->set(['phraseanet-service', 'phraseanet_local_id'], $phraseanetLocalId);
-            }
 
             return $app->redirectPath('ps_admin', ['_fragment'=>'expose']);
         }
@@ -108,7 +99,7 @@ class PSAdminController extends Controller
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus(false, false);
         foreach([
                     MessagePublisher::PULL_ASSETS_TYPE,
                     $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::PULL_ASSETS_TYPE)

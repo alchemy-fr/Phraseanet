@@ -1617,7 +1617,6 @@ function setPref(name, value) {
         },
         dataType: 'json',
         timeout: _jquery2.default.data[prefName] = false,
-        error: _jquery2.default.data[prefName] = false,
         success: function success(data) {
             if (data.success) {
                 humane.info(data.message);
@@ -1626,6 +1625,12 @@ function setPref(name, value) {
             }
             _jquery2.default.data[prefName] = false;
             return data;
+        },
+        error: function error(data) {
+            _jquery2.default.data[prefName] = false;
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         }
     });
     return _jquery2.default.data[prefName];
@@ -3503,6 +3508,10 @@ var publication = function publication(services) {
         _jquery2.default.post(url + 'prod/feeds/requestavailable/', options, function (data) {
 
             return openModal(data);
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return;
@@ -3873,7 +3882,7 @@ var workzoneFacets = function workzoneFacets(services) {
             var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
                 var type = facet.type; // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value, copied from field type
                 // patch "color" type values
-                var textLimit = 15; // cut long values (set to 0 to not cut)
+                var textLimit = 35; // cut long values (set to 0 to not cut)
                 var text = value.value.toString();
                 var label = text;
                 var title = text;
@@ -3882,7 +3891,6 @@ var workzoneFacets = function workzoneFacets(services) {
                 if (match && match[2] != null) {
                     // text looks like a color !
                     var colorCode = '#' + match[2];
-                    // add color circle and remove color code from text;
                     var textWithoutColorCode = text.replace('[' + colorCode + ']', '');
                     if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
                         textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
@@ -3890,7 +3898,9 @@ var workzoneFacets = function workzoneFacets(services) {
                     // patch
                     type = "COLOR-AGGREGATE";
                     label = textWithoutColorCode;
+                    textWithoutColorCode = (0, _jquery2.default)('<div/>').text(textWithoutColorCode).html(); // escape html
                     tooltip = _.escape(textWithoutColorCode);
+
                     title = '<span class="color-dot" style="background-color: ' + colorCode + ';"></span> ' + tooltip;
                 } else {
                     // keep text as it is, just cut if too long
@@ -3898,7 +3908,7 @@ var workzoneFacets = function workzoneFacets(services) {
                         text = text.substring(0, textLimit) + '…';
                     }
                     label = text;
-                    /*title = tooltip = _.escape(text);*/
+                    title = (0, _jquery2.default)('<div/>').text(text).html(); // escape html
                 }
 
                 return {
@@ -3952,8 +3962,6 @@ var workzoneFacets = function workzoneFacets(services) {
             treeSource = _shouldMaskNodes(treeSource, hiddenFacetsList);
         }
 
-        treeSource = _parseColors(treeSource);
-
         treeSource = _colorUnsetText(treeSource);
 
         return _getFacetsTree().reload(treeSource).done(function () {
@@ -3969,7 +3977,7 @@ var workzoneFacets = function workzoneFacets(services) {
                             (0, _jquery2.default)(el).hide();
                         }
                     });
-                    ul.append('<button class="see_more_btn">See more</button>');
+                    ul.append('<button class="see_more_btn">' + localeService.t('seeMore') + '</button>');
                 }
             });
             (0, _jquery2.default)('.see_more_btn').on('click', function () {
@@ -3979,18 +3987,6 @@ var workzoneFacets = function workzoneFacets(services) {
             });
         });
     };
-
-    function _parseColors(source) {
-        _.forEach(source, function (facet) {
-            if (!_.isUndefined(facet.children) && facet.children.length > 0) {
-                _.forEach(facet.children, function (child) {
-                    var title = child.title;
-                    child.title = _formatColorText(title.toString());
-                });
-            }
-        });
-        return source;
-    }
 
     function _formatColorText(string) {
         var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -4404,6 +4400,10 @@ var sharebasketModal = function sharebasketModal(services, datas) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return true;
@@ -5534,6 +5534,13 @@ var editRecord = function editRecord(services) {
             success: function success(data) {
                 (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').empty().html(data);
 
+                // if the user have not "edit" right in all selected document
+                if (window.recordEditorConfig.state.T_records.length === 0) {
+                    (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 if (window.recordEditorConfig.hasMultipleDatabases === true) {
                     (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
 
@@ -5549,8 +5556,11 @@ var editRecord = function editRecord(services) {
                 (0, _jquery2.default)('#tooltip').hide();
                 return;
             },
-            error: function error(XHR, textStatus, errorThrown) {
-                if (XHR.status === 0) {
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
+                if (data.status === 0) {
                     return false;
                 }
             }
@@ -7493,6 +7503,11 @@ var exportRecord = function exportRecord(services) {
                 } else {
                     _onExportReady($dialog, window.exportConfig);
                 }
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
@@ -7721,10 +7736,10 @@ var exportRecord = function exportRecord(services) {
             return false;
         });
 
-        (0, _jquery2.default)('input[name="obj[]"]', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
+        (0, _jquery2.default)('input.caption', (0, _jquery2.default)('#download, #sendmail, #ftp')).bind('change', function () {
             var $form = (0, _jquery2.default)(this).closest('form');
 
-            if ((0, _jquery2.default)('input.caption[name="obj[]"]:checked', $form).length > 0) {
+            if ((0, _jquery2.default)('input.caption:checked', $form).length > 0) {
                 (0, _jquery2.default)('div.businessfields', $form).show();
             } else {
                 (0, _jquery2.default)('div.businessfields', $form).hide();
@@ -7825,7 +7840,10 @@ var exportRecord = function exportRecord(services) {
         return true;
     }
 
-    return { initialize: initialize, openModal: openModal };
+    return {
+        initialize: initialize,
+        openModal: openModal
+    };
 };
 
 exports.default = exportRecord;
@@ -7914,6 +7932,11 @@ var printRecord = function printRecord(services) {
             success: function success(data) {
                 (0, _jquery2.default)('#DIALOG').removeClass('loading').empty().append(data);
                 return;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     }
@@ -10058,10 +10081,33 @@ var workzone = function workzone(services) {
             updatePublicationList(exposeName);
         });
 
+        (0, _jquery2.default)('#expose_title_filter').on('keyup', function (event) {
+            if ((0, _jquery2.default)(this).val().length > 2 || (0, _jquery2.default)(this).val().length === 0) {
+                var exposeName = (0, _jquery2.default)('#expose_list').val();
+                (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+                updatePublicationList(exposeName);
+            }
+        });
+
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(exposeName);
+        });
+
+        (0, _jquery2.default)('.publication-pagination').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            var pageEl = (0, _jquery2.default)('#expose_workzone .publication-page');
+            var page = pageEl.text();
+
+            if ((0, _jquery2.default)(this).hasClass('previous-publication')) {
+                page = parseInt(page) - 1;
+            } else if ((0, _jquery2.default)(this).hasClass('next-publication')) {
+                page = parseInt(page) + 1;
+            }
+
+            updatePublicationList(exposeName, page);
         });
 
         (0, _jquery2.default)('#expose_list').on('change', function () {
@@ -10126,6 +10172,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -10197,6 +10247,21 @@ var workzone = function workzone(services) {
             }
         });
 
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '.checkbox-field-mapping', function () {
+            if ((0, _jquery2.default)(this).is(":checked")) {
+                var nameEl = (0, _jquery2.default)(this).attr('data-field-name');
+                var inputName = (0, _jquery2.default)(this).closest('div').find('.name-expose-side');
+                var labelText = (0, _jquery2.default)(this).closest('label').find('span').text();
+                inputName.attr('name', nameEl);
+                inputName.attr('value', labelText);
+                inputName.removeClass('hidden');
+            } else {
+                var _inputName = (0, _jquery2.default)(this).closest('div').find('.name-expose-side');
+                _inputName.removeAttr('name');
+                _inputName.addClass('hidden');
+            }
+        });
+
         (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function (event) {
             event.preventDefault();
             if ((0, _jquery2.default)('#subdef-profile-mapping').val() == '') {
@@ -10212,6 +10277,10 @@ var workzone = function workzone(services) {
                 data: formData,
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function error(xhr, status, _error2) {
+                    var err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -10444,6 +10513,11 @@ var workzone = function workzone(services) {
                 },
                 success: function success(data) {
                     return;
+                },
+                error: function error(data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href); // refresh will redirect to login
+                    }
                 }
             });
         });
@@ -10972,7 +11046,8 @@ var workzone = function workzone(services) {
                 dataType: 'json',
                 data: {
                     exposeName: '' + exposeName,
-                    publicationData: publicationData
+                    publicationData: publicationData,
+                    prodExposeEdit_token: (0, _jquery2.default)(this).find('input[name="prodExposeEdit_token"]').val()
                 },
                 success: function success(data) {
                     if (data.success) {
@@ -10997,13 +11072,15 @@ var workzone = function workzone(services) {
     }
 
     function updatePublicationList(exposeName) {
+        var page = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
         _jquery2.default.ajax({
             type: 'GET',
-            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName + '&page=' + page,
             data: {
                 mine: (0, _jquery2.default)("#expose_mine_only").is(':checked') ? 1 : 0,
-                editable: (0, _jquery2.default)("#expose_editable_only").is(':checked') ? 1 : 0
+                editable: (0, _jquery2.default)("#expose_editable_only").is(':checked') ? 1 : 0,
+                title: (0, _jquery2.default)("#expose_title_filter").val()
             },
             success: function success(data) {
                 if ('twig' in data) {
@@ -11043,19 +11120,54 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
                     (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
+                    (0, _jquery2.default)('.add_publication').removeClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').removeClass('hidden');
+                    (0, _jquery2.default)('.expose-pagination').removeClass('hidden');
                 } else {
                     (0, _jquery2.default)('.expose_connected').empty();
                     (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
+                    (0, _jquery2.default)('.add_publication').addClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').addClass('hidden');
+                    (0, _jquery2.default)('.expose-pagination').addClass('hidden');
+                }
+
+                if ('previousPage' in data) {
+                    if (data.previousPage) {
+                        (0, _jquery2.default)('#expose_workzone .previous-publication').removeClass('hidden');
+                        (0, _jquery2.default)('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        (0, _jquery2.default)('#expose_workzone .previous-publication').addClass('hidden');
+                    }
+                }
+
+                if ('nextPage' in data) {
+                    if (data.nextPage) {
+                        (0, _jquery2.default)('#expose_workzone .next-publication').removeClass('hidden');
+                        (0, _jquery2.default)('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        (0, _jquery2.default)('#expose_workzone .next-publication').addClass('hidden');
+                    }
+                }
+
+                if ('previousPage' in data && 'nextPage' in data && !data.previousPage && !data.nextPage) {
+                    (0, _jquery2.default)('#expose_workzone .publication-page').addClass('hidden');
                 }
 
                 if ('error' in data) {
                     (0, _jquery2.default)('.publication-list').empty().html(data.error);
                 }
+
+                (0, _jquery2.default)('#expose_workzone .nb_item').text(data.nbItems);
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
+
+        (0, _jquery2.default)('#expose_workzone .publication-page').text(page);
     }
 
     function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
@@ -11483,11 +11595,13 @@ var workzone = function workzone(services) {
                     },
                     dataType: 'json',
                     success: function success(data) {
-                        setTimeout(function () {
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                        }, 6000);
-
-                        console.log(data.message);
+                        if (data.success) {
+                            setTimeout(function () {
+                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                            }, 6000);
+                        } else {
+                            (0, _jquery2.default)('.refresh-list').trigger('click');
+                        }
                     }
                 });
             }
@@ -12246,7 +12360,9 @@ var thesaurusService = function thesaurusService(services) {
                     sbas[i].seeker = _jquery2.default.ajax({
                         url: _zurl,
                         type: 'POST',
-                        data: [],
+                        data: {
+                            prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                        },
                         dataType: 'json',
                         success: function success(j) {
                             var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -12283,7 +12399,9 @@ var thesaurusService = function thesaurusService(services) {
                 sbas[i].seeker = _jquery2.default.ajax({
                     url: zurl,
                     type: 'POST',
-                    data: [],
+                    data: {
+                        prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                    },
                     dataType: 'json',
                     success: function success(j) {
                         var z = '#TX_P\\.' + j.parm.sbid + '\\.T';
@@ -17865,6 +17983,11 @@ var deleteBasket = function deleteBasket(services) {
                 }
 
                 return false;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     };
@@ -19815,6 +19938,11 @@ var archiveBasket = function archiveBasket(services) {
                     alert(data.message);
                 }
                 return;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     }
@@ -19890,6 +20018,10 @@ var basketCreate = function basketCreate(services) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -20005,7 +20137,7 @@ var storyCreate = function storyCreate(services) {
 
 
         var dialogOptions = (0, _lodash2.default)({
-            size: 'Small',
+            size: 'Medium',
             loading: false
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
@@ -20022,6 +20154,11 @@ var storyCreate = function storyCreate(services) {
                 _onDialogReady();
 
                 return;
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
     };
@@ -20029,6 +20166,7 @@ var storyCreate = function storyCreate(services) {
     var _onDialogReady = function _onDialogReady() {
         var $dialog = _dialog2.default.get(1);
         var $dialogBox = $dialog.getDomElement();
+        var $selectCollection = (0, _jquery2.default)('select[name="base_id"]', $dialogBox);
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).val(searchSelectionSerialized);
 
@@ -20052,6 +20190,29 @@ var storyCreate = function storyCreate(services) {
 
         $dialog.setOption('buttons', buttons);
 
+        if ($selectCollection.val() == '') {
+            (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+            (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+        }
+
+        $selectCollection.change(function () {
+            var that = (0, _jquery2.default)(this);
+            if (that.val() != '') {
+                // first hide all input and show only the corresponding field for the selected db
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                // mark as disabled to no process the hidden field when submit
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                var sbasId = that.find('option:selected').data('sbas');
+                (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+            } else {
+                (0, _jquery2.default)('.create-story-name-title', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+            }
+        });
+
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
             var that = this;
             if ((0, _jquery2.default)(that).is(":checked")) {
@@ -20062,10 +20223,18 @@ var storyCreate = function storyCreate(services) {
                 if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
                     alert(localeService.t('warning-multiple-databoxes'));
 
-                    (0, _jquery2.default)(that).prop("checked", false);
+                    (0, _jquery2.default)(that).prop('checked', false);
                 }
             } else {
                 (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
+                if ($selectCollection.val() != '') {
+                    (0, _jquery2.default)('.create-story-name', $dialogBox).hide();
+                    (0, _jquery2.default)('.create-story-name input', $dialogBox).prop('disabled', true);
+                    var sbasId = $selectCollection.find('option:selected').data('sbas');
+                    (0, _jquery2.default)('.sbas-' + sbasId, $dialogBox).show();
+                    (0, _jquery2.default)('.sbas-' + sbasId + ' input', $dialogBox).prop('disabled', false);
+                    (0, _jquery2.default)('.create-story-name-title', $dialogBox).show();
+                }
             }
         });
 
@@ -20079,7 +20248,7 @@ var storyCreate = function storyCreate(services) {
                 return;
             }
 
-            if ((0, _jquery2.default)('select[name="base_id"]', $dialogBox).val() == '') {
+            if ($selectCollection.val() == '') {
                 alert(localeService.t('choose-collection'));
                 event.preventDefault();
 
@@ -20197,6 +20366,10 @@ var basketUpdate = function basketUpdate(services) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -20620,7 +20793,12 @@ var basketReorderContent = function basketReorderContent(services) {
         return _jquery2.default.get(url + 'prod/baskets/' + basketId + '/reorder/', function (data) {
             $dialog.setContent(data);
             _onDialogReady();
+
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -20898,7 +21076,12 @@ var storyReorderContent = function storyReorderContent(services) {
         return _jquery2.default.get(url + 'prod/story/' + dbId + '/' + recordId + '/reorder/', function (data) {
             $dialog.setContent(data);
             _onDialogReady();
+
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -21972,7 +22155,8 @@ var moveRecord = function moveRecord(services) {
             var datas = {
                 lst: (0, _jquery2.default)('input[name="lst"]', $form).val(),
                 base_id: (0, _jquery2.default)('select[name="base_id"]', $form).val(),
-                chg_coll_son: coll_son
+                chg_coll_son: coll_son,
+                prodMoveCollection_token: (0, _jquery2.default)('input[name="prodMoveCollection_token"]', $form).val()
             };
 
             var buttonPanel = $dialog.getDomElement().closest('.ui-dialog').find('.ui-dialog-buttonpane');
@@ -21999,7 +22183,12 @@ var moveRecord = function moveRecord(services) {
         return _jquery2.default.ajax({
             type: 'POST',
             url: url + 'prod/records/movecollection/',
-            data: datas
+            data: datas,
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
+            }
         });
     };
 
@@ -22119,6 +22308,7 @@ var recordEditorService = function recordEditorService(services) {
     var $editTimeArea = void 0;
     var $editMonoValTextArea = void 0;
     var $editMultiValTextArea = void 0;
+    var $searchThesaurus = void 0;
     var $toolsTabs = void 0;
     var $idExplain = void 0;
     var $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
@@ -22146,6 +22336,7 @@ var recordEditorService = function recordEditorService(services) {
         $editMultiValTextArea = (0, _jquery2.default)('#EditTextMultiValued', options.$container);
         $toolsTabs = (0, _jquery2.default)('#EDIT_MID_R .tabs', options.$container);
         $idExplain = (0, _jquery2.default)('#idExplain', options.$container);
+        $searchThesaurus = (0, _jquery2.default)('.editor-thesaurus-search', options.$container);
 
         $toolsTabs.tabs({
             activate: function activate(event, ui) {
@@ -22280,6 +22471,10 @@ var recordEditorService = function recordEditorService(services) {
                 $editTimeArea.hide();
                 $editDateArea.css('width', 210);
             }
+        }).on('mouseup mousedown keyup keydown', '.editor-thesaurus-search', function (event) {
+            var currentField = options.fieldCollection.getActiveField();
+
+            onUserInputComplete(event, $searchThesaurus.val(), currentField);
         });
     };
 
@@ -22525,6 +22720,8 @@ var recordEditorService = function recordEditorService(services) {
     function onSelectField(evt, fieldIndex) {
         $editTextArea.blur();
         $editMultiValTextArea.blur();
+        $searchThesaurus.blur();
+
         (0, _jquery2.default)('.editDiaButtons', options.$container).hide();
 
         (0, _jquery2.default)($editTextArea, $editMultiValTextArea).unbind('keyup.maxLength');
@@ -22641,6 +22838,8 @@ var recordEditorService = function recordEditorService(services) {
                     if (field.type === 'date') {
                         $editTextArea.hide();
                         $editDateArea.show();
+                        $searchThesaurus.hide();
+
                         (0, _jquery2.default)('#idEditDateZone', options.$container).show();
                         $editDateArea.val(field._value);
 
@@ -22657,12 +22856,25 @@ var recordEditorService = function recordEditorService(services) {
                             $editTimeArea.hide();
                             $editDateArea.css('width', 210);
                         }
+
+                        if (field.input_disable) {
+                            $editDateArea.prop('disabled', true);
+                        } else {
+                            $editDateArea.prop('disabled', false);
+                        }
                     } else {
                         $editDateArea.hide();
                         $editTimeArea.hide();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).hide();
                         $editTextArea.show();
                         $editTextArea.css('height', '100%');
+                        $searchThesaurus.show();
+
+                        if (field.input_disable) {
+                            $editTextArea.prop('disabled', true);
+                        } else {
+                            $editTextArea.prop('disabled', false);
+                        }
                     }
 
                     $ztextStatus.hide();
@@ -22723,9 +22935,17 @@ var recordEditorService = function recordEditorService(services) {
 
                     $editMultiValTextArea.trigger('keyup.maxLength');
 
+                    if (field.input_disable) {
+                        $editMultiValTextArea.prop('disabled', true);
+                    } else {
+                        $editMultiValTextArea.prop('disabled', false);
+                    }
+
                     self.setTimeout(function () {
                         return $editMultiValTextArea.focus();
                     }, 50);
+
+                    $searchThesaurus.show();
 
                     //      reveal_mval();
                 }
@@ -22854,6 +23074,9 @@ var recordEditorService = function recordEditorService(services) {
 
         $editTextArea.blur();
         $editMultiValTextArea.blur();
+        $searchThesaurus.blur();
+
+        $searchThesaurus.hide();
 
         (0, _jquery2.default)('#idFieldNameEdit', options.$container).html('[STATUS]');
         $idExplain.html('&nbsp;');
@@ -62179,6 +62402,11 @@ var deleteRecord = function deleteRecord(services) {
                 //reset top position of dialog
                 $dialog.getDomElement().offsetParent().css('top', ((0, _jquery2.default)(window).height() - $dialog.getDomElement()[0].clientHeight) / 2);
                 _onDialogReady();
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
@@ -62230,6 +62458,7 @@ var deleteRecord = function deleteRecord(services) {
                 $trash_counter = $form.find(".to_trash_count"),
                 $loader = $form.find(".form-action-loader");
             var lst = (0, _jquery2.default)("input[name='lst']", $form).val().split(';');
+            var csrfToken = (0, _jquery2.default)("input[name='prodDeleteRecord_token']", $form).val();
 
             /**
              *  same parameters for every delete call, except the list of (CHUNKSIZE) records
@@ -62239,9 +62468,10 @@ var deleteRecord = function deleteRecord(services) {
                 type: $form.attr("method"),
                 url: $form.attr("action"),
                 data: {
-                    'lst': "" // set in f
+                    lst: '', // set in f
+                    prodDeleteRecord_token: csrfToken
                 },
-                dataType: "json"
+                dataType: 'json'
             };
 
             var runningTasks = 0,
@@ -62267,7 +62497,11 @@ var deleteRecord = function deleteRecord(services) {
                 }
                 // pop & truncate
                 ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
-                _jquery2.default.ajax(ajaxParms).success(function (data) {
+                _jquery2.default.ajax(ajaxParms).error(function (data) {
+                    fCancel();
+                    $dialog.close();
+                    alert('invalid csrf token delete form');
+                }).success(function (data) {
                     // prod feedback only if result ok
                     _jquery2.default.each(data, function (i, n) {
                         var imgt = (0, _jquery2.default)('#IMGT_' + n),
@@ -62376,6 +62610,11 @@ var propertyRecord = function propertyRecord(services) {
             success: function success(data) {
                 $dialog.setContent(data);
                 _onPropertyReady($dialog);
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
@@ -62534,6 +62773,10 @@ var pushbasketModal = function pushbasketModal(services, datas) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return true;
@@ -62593,6 +62836,10 @@ var recordPublishModal = function recordPublishModal(services, datas) {
         _jquery2.default.post(url + 'prod/feeds/requestavailable/', datas, function (data) {
 
             return (0, _publication2.default)(services).openModal(data);
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
 
         return true;
@@ -62668,6 +62915,10 @@ var recordToolsModal = function recordToolsModal(services, datas) {
             $dialog.setOption('contextArgs', datas);
             _onModalReady(data, window.toolsConfig, activeTab);
             return;
+        }).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
         });
     };
 
@@ -62682,6 +62933,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
         (0, _jquery2.default)('.iframe_submiter', $scope).bind('click', function () {
             var form = (0, _jquery2.default)(this).closest('form');
             form.submit();
+            form.find('.resultAction').empty();
             form.find('.load').empty().html(localeService.t('loading') + ' ...');
             (0, _jquery2.default)('#uploadHdsub').contents().find('.content').empty();
             (0, _jquery2.default)('#uploadHdsub').load(function () {
@@ -63539,7 +63791,6 @@ var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
             openModal(datas, activeTab);
         });
     };
-    initialize();
 
     toolsStream.subscribe(function (params) {
         switch (params.action) {
@@ -64523,7 +64774,7 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
             // if(isNaN(hours) && isNaN(minutes) && isNaN(seconds) && isNaN(milliseconds) ) {
-            return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+            return hours + ":" + minutes + ":" + seconds + "." + ('000' + milliseconds).slice(-3);
             //}
         }
 
@@ -64560,11 +64811,14 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     var captionText = "WEBVTT - with cue identifier\n\n";
                     while (i <= countSubtitle * 3) {
                         j = j + 1;
-                        captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        // save only wich with value not empty
+                        if (allData[i + 2].value.length != 0) {
+                            captionText += j + "\n" + allData[i].value + " --> " + allData[i + 1].value + "\n" + allData[i + 2].value + "\n\n";
+                        }
+
                         i = i + 3;
                         if (i == countSubtitle * 3 - 3) {
                             (0, _jquery2.default)('#record-vtt').val(captionText);
-                            console.log(captionText);
                             if (btn == 'save') {
                                 //send data
                                 _jquery2.default.ajax({
@@ -64669,7 +64923,6 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     ResValue = fieldvalue.split("WEBVTT - with cue identifier\n\n");
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
-                    console.log(captionValue);
                     for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
@@ -64771,7 +65024,6 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
             try {
                 var requestData = (0, _jquery2.default)('#video-subtitle-request').serializeArray();
                 requestData = JSON.parse(JSON.stringify(requestData));
-                console.log(requestData);
             } catch (err) {
                 return;
             }
@@ -65020,6 +65272,12 @@ var preferences = function preferences(services) {
             appEvents.emit('search.doRefreshState');
         });
 
+        $container.on('change', '.preferences-see-real-field-name', function (event) {
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref('see_real_field_name', $el.prop('checked') ? '1' : '0');
+        });
+
         $container.on('change', '.preferences-options-basket-status', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
             event.preventDefault();
@@ -65069,6 +65327,11 @@ var preferences = function preferences(services) {
                     (0, _jquery2.default)('body').removeClass().addClass('PNB ' + color);
                     /* console.log('saved:' + color);*/
                     return;
+                },
+                error: function error(data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href); // refresh will redirect to login
+                    }
                 }
             });
         });
@@ -65948,6 +66211,22 @@ var orderItem = function orderItem(services) {
         (0, _jquery2.default)('button.deny', $dialog.getDomElement()).bind('click', function () {
             updateValidation(ELEMENT_TYPE.DENIED);
             //deny_documents(order_id);
+        });
+
+        (0, _jquery2.default)('button.cancel_order', $dialog.getDomElement()).bind('click', function (event) {
+            var order_id = (0, _jquery2.default)(this).data('order-id');
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '../prod/order/' + order_id + '/cancel/',
+                success: function success(data) {
+                    var url = '../prod/order/' + order_id + '/';
+
+                    reloadDialog(url);
+                }
+            });
+
+            return false;
         });
 
         (0, _jquery2.default)('button.reset', $dialog.getDomElement()).bind('click', function () {
@@ -68166,6 +68445,8 @@ var uploader = function uploader(services) {
             params.push((0, _jquery2.default)('input', (0, _jquery2.default)('.collection-status:visible', uploaderInstance.getSettingsBox())).serializeArray());
             params.push((0, _jquery2.default)('select', uploaderInstance.getSettingsBox()).serializeArray());
 
+            params.push([{ name: 'prodUpload_token', value: (0, _jquery2.default)('input[name=prodUpload_token]').val() }]);
+
             _jquery2.default.each(params, function (i, p) {
                 _jquery2.default.each(p, function (i, f) {
                     data.formData.push(f);
@@ -69630,6 +69911,15 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
         checkFilters(true);
     });
 
+    (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE input.see-real-field-name').change(function () {
+        if ((0, _jquery2.default)(this).prop('checked') === true) {
+            (0, _jquery2.default)(this).data('real-field', 'field_with_real_name');
+        } else {
+            (0, _jquery2.default)(this).data('real-field', 'field_without_real_name');
+        }
+        checkFilters(true);
+    });
+
     var checkFilters = function checkFilters(save) {
         var danger = false;
         var search = {
@@ -69746,13 +70036,15 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
                 // at least one coll checked for this databox
                 // show again the relevant fields in "sort by" select
                 (0, _jquery2.default)('.db_' + sbas_id, fieldsSort).show().prop('disabled', false);
+
+                var realFieldClass = (0, _jquery2.default)('input.preferences-see-real-field-name').data('real-field');
                 // show again the relevant fields in "from fields" select
                 (0, _jquery2.default)('.db_' + sbas_id, fieldsSelect).show().prop('disabled', false);
-                (0, _jquery2.default)('.db_' + sbas_id, fieldsSelectFake).show().prop('disabled', false);
+                (0, _jquery2.default)('.db_' + sbas_id + '.' + realFieldClass, fieldsSelectFake).show().prop('disabled', false);
                 // show the sb
                 (0, _jquery2.default)('#ADVSRCH_SB_ZONE_' + sbas_id, container).show();
                 // show again the relevant fields in "date field" select
-                (0, _jquery2.default)('.db_' + sbas_id, dateFilterSelect).show().prop('disabled', false);
+                (0, _jquery2.default)('.db_' + sbas_id + '.' + realFieldClass, dateFilterSelect).show().prop('disabled', false);
             }
         });
 
@@ -70191,7 +70483,7 @@ var searchGeoForm = function searchGeoForm(services) {
 
     var renderModal = function renderModal() {
         // @TODO cleanup styles
-        return '\n        <div style="overflow:hidden">\n        <div id="' + mapContainerName + '" style="top: 0px; left: 0;    bottom: 42px;    position: absolute;height: auto;width: 100%;overflow: hidden;"></div>\n        <div style="position: absolute;bottom: 0; text-align:center; height: 35px; width: 98%;overflow: hidden;"><button class="submit-geo-search-action btn map-geo-btn" style="font-size: 14px">' + localeService.t('Valider') + '</button></div>\n        </div>';
+        return '\n        <div style="overflow:hidden">\n        <div id="' + mapContainerName + '" style="top: 0px; left: 0;    bottom: 42px;    position: absolute;height: auto;width: 100%;overflow: hidden;"></div>\n        <div style="position: absolute;bottom: 0; text-align:center; height: 35px; width: 98%;overflow: hidden;"><button class="submit-geo-search-action btn map-geo-btn" style="font-size: 14px">' + localeService.t('valider') + '</button></div>\n        </div>';
     };
 
     var updateCircleGeo = function updateCircleGeo(params) {

@@ -140,7 +140,7 @@
                         {# download box #}
                         <div class="download-box"></div>
                     </div>
-
+                    <input type="hidden" name="prodUpload_token" value="{{ app['session'].get('prodUpload_token') }}">
                 </form>
             {% else %}
                 {{ 'You can not upload files' | trans }}

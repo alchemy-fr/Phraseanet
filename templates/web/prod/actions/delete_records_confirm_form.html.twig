@@ -37,6 +37,7 @@
                 <img src="/assets/common/images/icons/loader000.gif"/>
             </span>
         </div>
+        <input type="hidden" name="prodDeleteRecord_token" value="{{ app['session'].get('prodDeleteRecord_token') }}">
     </form>
 {% elseif records.received().count() == 0 %}
     <div class="well-small" style="text-align:center;">

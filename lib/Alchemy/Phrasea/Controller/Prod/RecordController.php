@@ -224,6 +224,10 @@ class RecordController extends Controller
      */
     public function doDeleteRecords(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodDeleteRecord')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid delete form'], 403);
+        }
+
         $records = RecordsRequest::fromRequest(
             $this->app,
             $request,
@@ -350,6 +354,8 @@ class RecordController extends Controller
             'trashableCount' => count($filteredRecords['trash']),
             'deletableCount' => count($filteredRecords['delete'])
         ];
+
+        $this->setSessionFormToken('prodDeleteRecord');
 
         return $this->render(
             'prod/actions/delete_records_confirm.html.twig',

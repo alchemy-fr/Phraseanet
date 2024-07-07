@@ -1,7 +1,523 @@
 # CHANGELOG
 
-# CHANGELOG
+## 4.1.8
 
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+- This a final release of 4.1.8 
+- expose-cli : search publication
+- expose-cli : label fields override sent to Expose assets description
+- expose-cli : refresh token interval is taken into account for access token 
+- expose-cli: asset description sends webvtt with language tag 
+- multi metadata source for bin/console `records:rescan-files-metadata`
+- auto canceling worker jobs started from 48 hours - cancellation by the record edit worker
+- minor fixes  
+  
+### Stack (docker compose and helm)
+    
+   - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
+
+
+## What's Changed
+* PHRAS-4058 Admin - workermanager default filter since 3 days by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4507
+* PHRAS-4064 Fix worker plugin install as app by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4508
+* PHRAS-4042 Fix language in webvtt field uploaded to expose by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4510
+* PHRAS-4065 Worker record-actions compute date error by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4511
+* PHRAS-4068 Prod - expose-cli - field mapping - store a field label in expose mapping configuration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4514
+* PHRAS-4068 Expose fix field mapping bc break by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4517
+* PHRAS-4063 Phraseanet - Keycloack - refresh token implementation for expose-cli by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4512
+* PHRAS-4070 Rescan meta multi sources in bin/console records:rescan-files-metadata by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4516
+* PHRAS-4069 Prod - expose cli - search publication and parent publication by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4515
+* PHRAS-4069 Translation for publication search by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4519
+* PHRAS-4073 Register form - improvement -  html sanitization by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4520
+* PHRAS-4067 Admin - dashboard - 500 error by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4513
+* PHRAS-4062 Admin users delete and request improvement by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4509
+* PHRAS-4018 Admin- inspector - delete application by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4521
+* PHRAS-4056 Fix non escaped path error in sed by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4524
+* PHRAS-4077 bin/report : add group by field into download reports by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4525
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc12...4.1.8
+
+___
+## 4.1.8-rc12
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - OpenId SSO support
+ - Bug fix 
+ - Record log doc improvement report 
+  
+### Stack (docker compose and helm)
+    
+   - Redis native session support
+
+## What's Changed
+* PHRAS-4041:Prod - matomo - Field display - improve rendering of Matomomediametrics by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4497
+* PHRAS-3416 Local for worker jobs by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4499
+* PHRAS-4056 Change imagemagick version and config file path by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4500
+* PHRAS-4049 Memory allocation error - validation reminder worker in a cron job - Allowed memory size by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4495
+* PHRAS-4042 Multilingue webvtt sent to expose by @4rthem in https://github.com/alchemy-fr/Phraseanet/pull/4502
+* PHRAS-4060 Webhook - error - stay in running status by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4506
+* PHRAS-4059 Prod - user account - application cannot be deleted by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4503
+* PHRAS-4053 Redis native session support by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4505
+* PHRAS-4045 Log - stdout - fix error on worker passed to igorw\get_in() by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4496
+* PHRAS-3960 bin/console clean:user - user deletion issue on --usertype=appowner by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4494
+* PHRAS-4057 Log_doc - report mark as "cancel" for running_job entry by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4501
+* PHRAS-4007 Auth provider - add keycloak provider - openid by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4462
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc11...4.1.8-rc12
+___
+## 4.1.8-rc11
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Fix plugin install in new base image
+ - Minor fix 
+  
+### Stack (docker compose and helm)
+    
+   - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
+
+## What's Changed
+* PHRAS-4005 fix missing plugin installation by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4490
+* PHRAS-3416 localisation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4488
+* PHRAS-4033 fix timeline history for writemetadata and subdefinition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4491
+* PHRAS-4033 fix timeline icone position by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4492
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc10...4.1.8-rc11
+___
+## 4.1.8-rc10
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Prod (GUI), Built subdefinition and write metadata now appear in record history 
+ - Os Version bump in Phraseanet container to Debian 11
+ - Minor Fix 
+  
+### Stack (docker compose and helm)
+    
+   - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
+
+## What's Changed
+* PHRAS-4039 Webhook - enrich the webhook answer by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4485
+* PHRAS-4031 Prod - Upload - quarantaine tab - substitued image remains in the interface by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4486
+* PHRAS-4005 - update containers os by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4464
+* PHRAS-4038 : Phraseanet - 403 on two prod pages opened simutaniously by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4484
+* PHRAS-4033 Log_docs - log subdefinition build and write metadata - WorkerRunningJobs by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4482
+* PHRAS-3416 translation for 4.1.8-rc10  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4487
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc9...4.1.8-rc10
+
+___
+## 4.1.8-rc9
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, run by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Prod GUI, displayed facets improvements
+ - Fix session duration in redis 
+ - Object inspector improvement
+ - Fix collation for MYSQL8
+  
+### Stack (docker compose and helm)
+    
+   - Add a new docker compose configuration  files `docker-compose-alternatives.yml `to extend testing capabilities
+   - Add mysql8 profiles in docker-compose, for alternatives SGBD for testing.
+
+## What's Changed
+* PHRAS-3975 : Prod - Facets - Facets' values are truncated at the 20th character-extend by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4459
+* PHRAS-4011 : Moving cmd from console to setup - system:clear-cache system:clear-session by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4460
+* PHRAS-4000 : Write meta in subdefinition - DPI define in subdefinition setting is not written by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4461
+* PHRAS-4012 : bin/console records:writemetadatas by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4463
+* PHRAS-4019: Session expires with the php default value by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4466
+* PHRAS-4022 setup optim by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4467
+* PHRAS-4018: admin - object inspector - more informations about a record by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4465
+* PHRAS-4018_object_inspector_translate by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4468
+* PHRAS-4024: worker  - job in error - filling finished column by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4469
+* PHRAS-4025_RecordsActionsWorker-setfield by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4470
+* PHRAS-4019: fix destroy redis session handler by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4471
+* PHRAS-4021: Api - migration script - instance_id - monitor endpoint improvement by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4472
+* PHRAS-4028 Emited webhook content-type application/json by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4474
+* PHRAS-4026 : js error on "change password" by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4475
+* PHRAS-4018: admin inspector log_docs by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4476
+* PHRAS-4010 Add mysql8 as alternative datastore by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4477
+* PHRAS-4010 Fix collation with mysql8  by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4479
+* PHRAS-4028 webhook in POST by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4480
+* PHRAS-4023 hcaptcha in Phraseanet by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4473
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc8...4.1.8-rc9
+
+___
+## 4.1.8-rc8
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Phraseanet translator thesaurus based improvement 
+ - Photo editor plugin improvement this is now possible to define crop preset setting by databox 
+ - documentary field can be restricted to a suggested values and thesaurus 
+  
+### Stack (docker compose and helm)
+    
+   -  CSP move source of values source from  to gateway container,  now .env (docker compose) and values (helm) are only for override them 
+   -  Download async add setup to Helm 
+   -  Helm deploiement include in this repository is deprecated, the new offical source is here https://github.com/alchemy-fr/alchemy-helm-charts-repo/tree/main/charts/phraseanet
+   - New optional docker-compose file for limiting phraseanet's containers host resources usage with docker compose
+
+## What's Changed
+* PHRAS-3942 fix typo .env documentation  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4404
+* PHRAS-3943_download-report-tabnames by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4406
+* PHRAS-3946_download-async-one-file by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4408
+* PHRAS-3940 translator-group-jobs by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4409
+* PHRAS-3917 Prod - home redirection when session end - catch more 403 by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4399
+* PHRAS-3770 quarantine-enhancement  by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4352
+* PHRAS-3949_photo-editor-cant-save by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4411
+* PHRAS-3950 bin/maintenance clean never connected users by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4412
+* PHRAS-3668 happyscribe autosubtitle by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4405
+* PHRAS-3770: generate translation by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4414
+* PHRAS-3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4415
+* PHRAS-3668 subtitle notification by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4416
+* PHRAS-3520_stamper-enhance by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4385
+* PHRAS-3668 fix incomplete translation by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4418
+* Phras 3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4419
+* PHRAS-3945 move pusher configuration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4413
+* PHRAS-3966 admin - users list - add filter for "users with api application" by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4422
+* PHRAS-3966 admin users filter translation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4424
+* PHRAS-2069 rescan file metadata command by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4420
+* PHRAS-3945 download async config change by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4423
+* PHRAS-3944_malformed-web-vtt by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4407
+* PHRAS-3958_download-one-asset by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4425
+* PHRAS-3777: Cleanup of old keys in configuration.yml - migration patch by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4427
+* PHRAS-3768_feedback-report-per-record by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4421
+* PHRAS-3777 clean unused setting in configuration.yml by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4429
+* PHRAS-3947: Prod - Editing - restrict field content to thesaurus and or suggested values by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4426
+* PHRAS-3967: Translator - Move translator configuration in config/configuration.yml by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4428
+* PHRAS-3997 translation field content restriction option by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4432
+* PHRAS-3976_quickfix_418RC8PHRAS3768 by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4435
+* PHRAS-3195 : Stop to generate metadata writing event on story creation or representation definition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4433
+* PHRAS-3520 : patch for stamp by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4434
+* PHRAS-3976 BasketElements table add column and index by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4436
+* PHRAS-3957: editing: search in thesaurus, from the th zone by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4430
+* PHRAS-3980 custom worker by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4438
+* PHRAS-3981_create-field-fails by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4439
+* PHRAS-3980 cmd container by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4440
+* PHRAS-3982_report-feedback-enhance by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4441
+* PHRAS-3978 phraseanet translation  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4442
+* PHRAS-3974_stamper-enhance-2 by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4437
+* PHRAS-3988_feedback-report-same-record by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4444
+* PHRAS-3991: pre upgrade backup WIP by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4445
+* PHRAS-3979: fix bin/maintenance cleaner  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4443
+* PHRAS-3990_feedbackReport-stamper-doc by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4447
+* PHRAS-3996_legacy-download-remove-excel by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4449
+* PHRAS-3995: Admin - worker - job queue - average duration by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4448
+* PHRAS-3997 clear cache before play upgrade by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4451
+* PHRAS-3999: admin - databases - subdefinition - error 400 and 500 when create subdefinition by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4452
+* PHRAS-3994: clean user - email send to customer - date is wrong by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4446
+* PHRAS-3722 : bin/console records:build-subdef by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4450
+* PHRAS-3987_stamper-text-shadow by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4454
+* PHRAS-3993-fix-maintenance-mode : set as function by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4453
+* PHRAS-3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4455
+* PHRAS-3403 set docker containers resource limits by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4456
+* PHRAS-3955 release 4.1.8 rc8 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4431
+* PHRAS-4006 : expose-cli should relog if refresh_token expire by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4457
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc7...4.1.8-rc8
+
+___
+## 4.1.8-rc7
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file, (backup it is  recommended).
+  - Doctrine migration for updating databases scheme, (backup it is  recommended). 
+ 
+`bin/setup system:upgrade`, ran by setup container with docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+  
+ - Matomo Media metrics integration.
+ - Phrasea Expose client improvements. 
+ - CSRF Security fix.
+ - Substitution is now available for all sub definitions.
+ - SMTP, TLS 1.0 deprecation, TLS is now the version by default in version 1.2.
+ - When image contains transparency, background color can be forced to a specific color.
+  
+### Stack (docker compose)
+    
+   -  It is not possible to define Custom CSP
+
+### What's Changed
+
+* PHRAS-3914 Lightbox - mobile fix matomo url by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4377
+* PHRAS-3892 set content security policies (csp) as env vars by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4375
+* PHRAS-3852_tiff-background-color by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4376
+* PHRAS-3909 : Prod - Expose cli - load more publications - add pagination by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4379
+* PHRAS-3416 phraseanet-localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4380
+* PHRAS-3913 Prod - Shared Baskets - validation - Need to apply rights twice by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4378
+* PHRAS-3857 Check CSRF token on Prod and Admin forms by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4361
+* PHRAS-3061 Admin - subview definition - missmatch error between value set in form and slider limit by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4389
+* PHRAS-3894 : bin/maintenance clean: - Removing BETA prefix and Memory leak by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4391
+* PHRAS-3921 prod - expose-cli - became compatible with Phrasea V3 keycloak and fix by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4384
+* PHRAS-3929  Compose Set redis version For SAML container by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4390
+* PHRAS-3930 matomo media tracking by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4393
+* PHRAS-3921 expose-cli oauth token uri compatibility v2 v3 and asset title set  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4392
+* PHRAS-3933 prod - 403 "invalide search token" - after "video tools" openning by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4394
+* PHRAS-3922 show the button stop on phraseanet service pull process and feedback reminder by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4397
+* PHRAS-3928_download_async by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4386
+* PHRAS-3939 : fix order create basket by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4401
+* PHRAS-3900 Check TLS version use for email SMTP sending - TLS 1.0 of 1.1 deprecation by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4382
+* PHRAS-3931_phraseanet_local_id_in_api by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4400
+* PHRAS-3934 fix videotools subtitle timeline by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4398
+* PHRAS-3935 :  phraseanet_local_id became instance_id by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4396
+* PHRAS-3918_subdef-substituable-setting by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4381
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc6...4.1.8-rc7
+
+___
+## 4.1.8-rc6
+
+### Update instructions
+
+- Migration patch: yes, so primary datastore require a backup before performing an update
+- Elasticsearch index action : a "drop", "create", "populate" of elasticsearch index can be usefull.
+
+### Version summary
+  
+ - bugfix an minor improvement (todo)
+
+### Stack (docker compose)
+
+ - PHP setting improvement 
+ - FPM setting improvement 
+ 
+### What's Changed
+
+* PHRAS-3893 prod - advanced search - control calendar missing for created_on and updated_on by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4360
+* PHRAS-3785 update composer dependencies for imagine by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4362
+* PHRAS-3252 Prod - Export - The captions are not being sent when doing an export by email by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4363
+* PHRAS-3387 php fpm optimization by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4364
+* PHRAS-3890: Admin - add "auth failure" - display and purge auth failure - only for super U by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4368
+* PHRAS-3903 Admin - object inspector - record index debug tools by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4369
+* PHRAS-3904 Add server port on fastcgi https conf by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4370
+* PHRAS-3416 phraseanet localization by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4371
+* PHRAS-3826 add mask password argument by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4372
+* PHRAS-3889 Worker - metadata write - mime/type whitelist - write metadatas only on whitelisted files by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4366
+* PHRAS-3901 release version 4.1.8-rc6 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4365
+* PHRAS-3910 fix redis php extension build by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4373
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc5...4.1.8-rc6
+
+___
+## 4.1.8-rc5
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none
+
+### Version summary
+  
+ - bugfix an minor improvement (todo)
+
+### Stack (docker compose)
+
+ - Extend csp for GA-4 (todo)
+ 
+### What's Changed
+
+* PHRAS-3882 admin - workers - filter "consumed queue" in https://github.com/alchemy-fr/Phraseanet/pull/4347
+* PHRAS-3884 translation and advanced search field name in https://github.com/alchemy-fr/Phraseanet/pull/4348
+* PHRAS-3416 phraseanet localization in https://github.com/alchemy-fr/Phraseanet/pull/4350
+* PHRAS-3796 bin/setup check:system - download , lazaret, wrong repo is checked in https://github.com/alchemy-fr/Phraseanet/pull/4349
+* PHRAS-3851 Untranslated terms : in Notifications, Detailed View, Map by in https://github.com/alchemy-fr/Phraseanet/pull/4351
+* PHRAS-3416 phraseanet localization in https://github.com/alchemy-fr/Phraseanet/pull/4353
+* PHRAS-3887 google analytics 4 by in https://github.com/alchemy-fr/Phraseanet/pull/4354
+* PHRAS-3884 advanced search sort field by label by in https://github.com/alchemy-fr/Phraseanet/pull/4355
+* PHRAS-3870_record-action-example by in https://github.com/alchemy-fr/Phraseanet/pull/4334
+* PHRAS-3891 CSP policies for matomo cloud  and newrelic by in https://github.com/alchemy-fr/Phraseanet/pull/4358
+* PHRAS-3891 adding CSP in https://github.com/alchemy-fr/Phraseanet/pull/4359
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc4...4.1.8-rc5
+
+___
+## 4.1.8-rc4
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary
+  
+- bugfix an minor improvement 
+
+### Stack (docker compose)
+
+ - Extend csp for geolocalisation
+
+
+ ## What's Changed
+* PHRAS-3877 Fix csp for geonames, mapbox , prod  in https://github.com/alchemy-fr/Phraseanet/pull/4339
+* PHRAS-3878 fix jq to latest working commit by in https://github.com/alchemy-fr/Phraseanet/pull/4340
+* PHRAS-3881_browse-thesaurus-in-editing in https://github.com/alchemy-fr/Phraseanet/pull/4342
+* PHRAS-3876 Prod - Create - Story Title fix in https://github.com/alchemy-fr/Phraseanet/pull/4343
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc3...4.1.8-rc4
+
+___
+## 4.1.8-rc3
+
+### Update instructions
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary
+  
+- bugfix an minor improvement
+
+### Stack (docker compose)
+
+ - no change
+   
+## What's Changed
+* PHRAS-3859 fix gateway fastcgi https default value in https://github.com/alchemy-fr/Phraseanet/pull/4329
+* PHRAS-3860 bin/console user:edit in https://github.com/alchemy-fr/Phraseanet/pull/4328
+* PHRAS-3855 Prod - Facettes : color html tags in https://github.com/alchemy-fr/Phraseanet/pull/4330
+* PHRAS-3860 Sync phraseanet root account info in https://github.com/alchemy-fr/Phraseanet/pull/4331
+* PHRAS-3409: Prod - Edit : A user that have no right is bloqued when trying to edit in https://github.com/alchemy-fr/Phraseanet/pull/4332
+* PHRAS-3872 prod- printed pdf - title content encoding in https://github.com/alchemy-fr/Phraseanet/pull/4336
+* PHRAS-3873: prod -advance search - field , leave only label and real field name in https://github.com/alchemy-fr/Phraseanet/pull/4335
+* PHRAS-3869: secure locale cookie in https://github.com/alchemy-fr/Phraseanet/pull/4333
+* PHRAS-3874 Prod - tools - subdefinition tab - use subdefintion label in https://github.com/alchemy-fr/Phraseanet/pull/4337
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc2...4.1.8-rc3
+
+
+___
+## 4.1.8-rc2
+
+### Update instructions : 
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary :
+  
+- Docker Nginx vhost,  set security headers 
+- and allow secure cookies 
+
+### Stack (docker compose, helm)
+
+It is now possible to use secure cookies with an env variable
+
+ - `COOKIE_SECURE`  true | false , true activates cookie secure when https is setup
+
+see .env
+
+## What's New
+* PHRAS-3859 set security headers and allow secure cookies by in https://github.com/alchemy-fr/Phraseanet/pull/4324
+* PHRAS-3859 increased security with headers by in https://github.com/alchemy-fr/Phraseanet/pull/4325
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8-rc1...4.1.8-rc2
+
+___
+## 4.1.8-rc1
+
+### Update instructions : 
+
+- Migration patch: no patch to play, just run upgrade for bump version 
+- Elasticsearch index action : none  
+
+### Version summary :
+  
+- Auto-translate keywords using thesaurus : this feature is in beta
+   this features translating a field content using the thesaurus content 
+ 
+
+### Stack (docker compose, helm)
+
+It is now possible to define http access restriction based on 3 new environments variables
+
+ - `GATEWAY_ALLOWED_IPS` , limit access to some IP addresses
+ - `GATEWAY_ALLOWED_IPS`,  block access to some IP addresses  
+ - `GATEWAY_USERS` add an http authentication 
+
+see .env for setting example 
+
+### Release notes - Phraseanet - 4.1.8-rc1
+
+
+### New Features
+
+```
+PHRAS-3805 Auto-translate keywords using thesaurus
+```
+
+### Improvements
+
+```
+PHRAS-3844 docker - gateway container \(nginx\) -  http access restriction - IP address - user:password 
+
+PHRAS-3845 prod - expose cli - subdef mapping - adding poster 
+
+PHRAS-3846 Admin - database -  add the "field id" in field detail 
+
+PHRAS-3848 prod - order manager - cancel an order
+```
+
+___
 ## 4.1.7
 
 ### Update instructions : 
@@ -16,7 +532,7 @@
   - Adding log cleaning feature
 
 
-# Release notes - Phraseanet - 4.1.7
+## Release notes - Phraseanet - 4.1.7
   
 
 ### Stack (docker compose, helm)
@@ -106,7 +622,7 @@ PHRAS-3817 Webhook - created subdef - permalink is empty
 PHRAS-3314 Prod - Expose - Publication with huge amount of assets - loading assets is very long - wrong UX
 ```
 
-
+___
 ## 4.1.6
 
 ### Update instructions
@@ -226,7 +742,7 @@ PHRAS-2646 Error in 4.1 a feedback with null or empty in Name
 PHRAS-3666 Prod - Print - PDF - Generated pdf can't be printed even if no password is defined
  ```
 
-
+___
 ## 4.1.6-rc2
 
 ### Update instructions
@@ -266,6 +782,7 @@ PHRAS-3651 prod-facets : tech facets "no value" wrongly translated, some always 
 PHRAS-3655 Integrity constraint violation when deleting a user with an entry inside table ApiOauthCodes
  ```
 
+___
 ## 4.1.6-rc1
 
 ### Update instructions
@@ -308,7 +825,7 @@ PHRAS-3619 After record removal, we have an HTTP status 200 on the /records rout
 PHRAS-3285 Thesaurus - candidat panel - The Stock is not available
 PHRAS-3628 API - create record - 500 error if No file
  ```
-
+___
 ## 4.1.5 
 
 ### Version summary :
@@ -481,14 +998,14 @@ PHRAS-3411 Prod - String for Thesaurus as tx windows
 Note : For technical reasons, no Docker image and packaged version have been generated for the 4.1.4 version. Therefore, the release notes below concern both versions 4.1.4 and 4.1.5.
 
 
-
+___
 # 4.1.4
 
 
 ### Version summary : see upper 4.1.5
    
 
-
+___
 ## 4.1.3
 
 Release notes - Phraseanet - Version 4.1.3
@@ -586,7 +1103,7 @@ Release notes - Phraseanet - Version 4.1.3
     * [PHRAS-2873] - Phraseanet repositories reorganization
     * [PHRAS-3295] - Change method for Playing test (old fashion) on CircleCI with php7
 
-
+___
 ## 4.1.2
 
 Release notes - Phraseanet - Version 4.1.2
@@ -646,7 +1163,7 @@ Release notes - Phraseanet - Version 4.1.2
     * [PHRAS-3204] - Worker - Add reconnect to db when populate ended
     * [PHRAS-3181] - Worker video build subdefinition  ends with error and tmp file is not copied to destination
 
-
+___
 ## 4.1.1
 
 ###  Change summary
@@ -718,6 +1235,7 @@ Release notes - Phraseanet - Version 4.1.2
     * [PHRAS-2671] - Change behavior of preview display in audio file case
     * [PHRAS-2879] - Define facets order in GUI and query result
 
+___
 ## 4.0.12 
 
 Release notes - Phraseanet - Version 4.0.12
@@ -735,12 +1253,12 @@ Release notes - Phraseanet - Version 4.0.12
 ### Bugfix
     * [PHRAS-2979] - The content of a story is not displayed even for users with appropriate on the collection
 
-
+___
 ## 4.1.0 
 
 Pre release of 4.1 
 
-
+___
 ## 4.0.11
 
 Release notes - Phraseanet - Version 4.0.11
@@ -792,11 +1310,12 @@ Release notes - Phraseanet - Version 4.0.11
     * [PHRAS-2912] - When updating a user informations the wrong field are populated (job and activity inverted)
     * [PHRAS-2811] - Cleanning of bad chars in candidats terms
 
-
+___
 ## 4.0.10
   
   Not publish
-
+  
+___
 ## 4.0.9
 
 ### Adds
@@ -816,6 +1335,7 @@ Release notes - Phraseanet - Version 4.0.11
   - PHRAS-2154 - Front - Bug on Chrome only - selected 1 document instead of all for the feedback.
   - PHRAS-2538 - Back - Some MP4 files were not correctly detected by Phraseanet.
 
+___
 ## 4.0.8
 
 ### Adds:
@@ -834,6 +1354,7 @@ Release notes - Phraseanet - Version 4.0.11
   - List of fields was not refreshed in the exported fields section.
   - Push and Feedback fix error when adding a user when Geonames was not set (null value in Geonames).
 
+___
 ## 4.0.7
 
 ### Adds:
@@ -861,6 +1382,7 @@ Release notes - Phraseanet - Version 4.0.11
   -Vagrant dev environment fix
   - Feedback: Sort assets “Order by best choice” has no effect
 
+___
 ## 4.0.3
 
 ### Adds:
@@ -888,6 +1410,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Dev: Fix API version returned in answer
   - Dev: Fix vagrant provisioning for Windows
 
+___
 ## 4.0.2
 
 ### Adds:
@@ -907,7 +1430,8 @@ Release notes - Phraseanet - Version 4.0.11
   - Prod: fix field list in advanced search with Edge browser
   - Upload: fix 500 error when missing collection
   - Install wizard: fix error in graphical installer
- 
+
+___
 ## 4.0.0
 
 ### Adds:
@@ -932,7 +1456,8 @@ Release notes - Phraseanet - Version 4.0.11
   - Rewriting of the task scheduler based on the web sockets
   - Quarantine enhancement
   - Drag and drop upload
-
+    
+___
 ## 3.8.8 (2015-12-02)
 
   - BugFix: Wrong BaseController used when no plugin installed.
@@ -940,7 +1465,8 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix: all subdefs are shown when permalink is available in prod imagetools
   - BugFix: Empty labels are considered as valid
   - BugFix: Error 500 on prod imagetools when insufficient rights
-
+  - 
+___
 ## 3.8.7 (2015-11-09)
 
   - NewFeature: Adding public, temporary links (link generation based on JSON Web Token)
@@ -975,6 +1501,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix: The "flatten" parameter when generating PDF thumbnails is not taken into account
   - Deprecation: Classic application is now obsolete
 
+___
 ## 3.8.6 (2015-01-20)
 
   - BugFix : Fixes the stories editing. When opening an editing form, the style applied to the notice doesn't match its selection
@@ -1030,6 +1557,7 @@ Release notes - Phraseanet - Version 4.0.11
   - NewFeature : Adding a Vagrant VM (for developers and testers). The setup is quicker: development environments made easy.
   - NewFeature : Adding a command for the file generation crossdomain.xml depending on the configuration.
 
+___
 ## 3.8.5 (2014-07-08)
 
   - BugFix : Fix Flickr connexion throught Bridge Application
@@ -1043,6 +1571,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Enhancement : Add the possibility to choose a document or a video as a representative image of a story
   - Enhancement : Titles are truncated but still visible by hovering them
 
+___
 ## 3.8.4 (2014-06-25)
 
   - BC Break : Drop sphinx search engine highlight support
@@ -1090,6 +1619,7 @@ Release notes - Phraseanet - Version 4.0.11
   - NewFeature : Add session idle & life time in configuration
   - NewFeature : Add possibility to search “unknown” type document through API
 
+___
 ## 3.8.3 (2014-02-24)
 
   - BugFix : Fix record type editing.
@@ -1138,10 +1668,12 @@ Release notes - Phraseanet - Version 4.0.11
   - Enhancement : Add option to disable filesystem logs.
   - Enhancement : Add compatibility with PHP 5.6.
 
+___
 ## 3.8.2 (2013-11-15)
 
   - BugFix : Locale translation may block administration module load.
 
+___
 ## 3.8.1 (2013-11-15)
 
   - BugFix : IE 6 homepage error message is broken.
@@ -1188,6 +1720,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Enhancement : Add Phraseanet twig namespace.
   - Enhancement : Allow video bitrate up to 12M.
 
+___
 ## 3.8.0 (2013-09-26)
 
   - BC Break : Removed `bin/console check:system` command, replaced by `bin/setup check:system`.
@@ -1231,10 +1764,12 @@ Release notes - Phraseanet - Version 4.0.11
         host configuration depending on Phraseanet configuration
   - Phraseanet enabled languages is now configurable.
 
+___
 ## 3.7.15 (2013-09-14)
 
   - Add Office Plugin client id and secret.
 
+___
 ## 3.7.14 (2013-07-23)
 
   - BugFix : Multi layered images are not rendered properly.
@@ -1242,6 +1777,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : Records index is not updated after databox structure field rename.
   - Enhancement : Add support for grayscale colorspaces.
 
+___
 ## 3.7.13 (2013-07-04)
 
   - Some users were able to access story creation form whereas they were not allowed to.
@@ -1249,6 +1785,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Update to PHP-FFMpeg 0.2.4, better support for video resizing.
   - BugFix : Unablt to reject a thesaurus term from thesaurus module.
 
+___
 ## 3.7.12 (2013-05-13)
 
   - BugFix : : Removed "required" attribute on non-required fields in order form.
@@ -1256,12 +1793,14 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Grouped status bits are not displayed in advanced search dialog.
   - Enhancement : Locales update.
 
+___
 ## 3.7.11 (2013-04-23)
 
   - Enhancement : Animated Gifs (video support) does not requir Gmagick anymore to work properly.
   - BugFix : : When importing users from CSV file, some properties were missing.
   - BugFix : : In Report, CSV export is limited to 30 lines.
 
+___
 ## 3.7.10 (2013-04-03)
 
   - BugFix : : Permalinks pages may be broken.
@@ -1270,6 +1809,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Phraseanet installation fails.
   - BugFix : : Consecutive calls to image tools may fail.
 
+___
 ## 3.7.9 (2013-03-27)
 
   - BugFix : : Detailed view does not display the right search result.
@@ -1279,6 +1819,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Permalinks returned by the API now embed a download URL.
   - Bump to API version 1.3.1 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html).
 
+___
 ## 3.7.8 (2013-03-22)
 
   - BugFix : : Phraseanet API does not return results at correct offset.
@@ -1289,6 +1830,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Add support for CMYK images.
   - Preserve ICC profiles data in sub-definitions.
 
+___
 ## 3.7.7 (2013-03-08)
 
   - BugFix : : Archive task fails with stories.
@@ -1296,6 +1838,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Fix feeds entry notification display.
   - BugFix : : Read receipts are not associated to email for push and validation.
 
+___
 ## 3.7.6 (2013-02-01)
 
   - BugFix : : Load of a publication entry with a publisher that refers to a deleted users fails.
@@ -1305,6 +1848,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Landscape format images are displayed with a wrong ratio in quarantine.
   - General enhancement of Lightbox display on IE 7/8/9.
 
+___
 ## 3.7.5 (2013-01-09)
 
   - Support of Dailymotion latest API.
@@ -1319,6 +1863,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : XML import to metadata fields that do not have proper source do not work correctly.
   - BugFix : : Databox unmount can provide 500's to users that have attached stories to their work zone.
 
+___
 ## 3.7.4 (2012-12-20)
 
   - BugFix : : Upgrade from 3.5 may lose metadatas.
@@ -1340,6 +1885,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : : Story thumbnails are not displayed correctly.
   - BugFix : : Add dutch (nl_NL) support.
 
+___
 ## 3.7.3 (2012-11-09)
 
   - BugFix : : Security flaw (thanks TEHTRI-Security http://www.tehtri-security.com/).
@@ -1367,6 +1913,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Mails links are now clickable in Thunderbird and Outlook.
   - Emails list in mail export now supports comma and space separators.
 
+___
 ## 3.7.2 (2012-10-04)
 
   - Significant speed enhancement on thumbnail display.
@@ -1377,6 +1924,7 @@ Release notes - Phraseanet - Version 4.0.11
   - Add option to rotate multiple image.
   - `Remember-me` was applied even if the box was not checked.
 
+___
 ## 3.7.1 (2012-09-18)
 
   - Multiple fixes in archive task.
@@ -1385,6 +1933,7 @@ Release notes - Phraseanet - Version 4.0.11
   - BugFix : upgrade from version 3.1 and 3.5.
   - BugFix : : Print tool is not working on IE version 8 and less over HTTPS.
 
+___
 ## 3.7.0 (2012-07-24)
 
   - Lots of graphics enhancements.
@@ -1396,22 +1945,26 @@ Release notes - Phraseanet - Version 4.0.11
   - Upgrade of the Phraseanet API to version 1.2 (see https://docs.phraseanet.com/3.7/en/Devel/API/Changelog.html#id1).
   - Phraseanet PHP SDK http://phraseanet-php-sdk.readthedocs.org/.
 
+___
 ## 3.6.5 (2012-05-11)
 
   - BugFix : : Bridge buttons are not visible on some browsers.
   - Youtube and Dailymotion APIs updates.
   - Stories can now be deleted from the work zone.
   - Push and validation logs were missing.
-
+    
+___
 ## 3.6.4 (2012-04-30)
 
   - BugFix : DatePicker menus do not format date correctly.
   - BugFix : Dead records can remain in orders and may broke order window.
 
+___
 ## 3.6.3 (2012-04-26)
 
   - BugFix : selection in webkit based browers.
 
+___
 ## 3.6.2 (2012-04-19)
 
   - BugFix : : Users can be created by some pushers.
@@ -1424,10 +1977,12 @@ Release notes - Phraseanet - Version 4.0.11
   - Document + XML hot folder import produces corrupted files.
   - Enhanced Push list view on small device.
 
+___
 ## 3.6.1 (2012-03-27)
 
   - BugFix : upgrade from 3.5 versions with large datasets.
 
+___
 ## 3.6.0 (2012-03-20)
 
   - Add a Vocabulary mapping to multivalued fields.

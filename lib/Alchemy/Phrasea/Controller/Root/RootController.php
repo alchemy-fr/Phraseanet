@@ -37,7 +37,7 @@ class RootController extends Controller
     public function setLocale($locale)
     {
         $response = $this->app->redirectPath('root');
-        $response->headers->setCookie(new Cookie('locale', $locale));
+        $response->headers->setCookie(new Cookie('locale', $locale, 0, '/', null, true, false));
 
         $authenticatedUser = $this->getAuthenticatedUser();
 

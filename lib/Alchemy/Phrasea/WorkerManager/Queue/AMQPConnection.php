@@ -69,6 +69,11 @@ class AMQPConnection
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
+        MessagePublisher::DOWNLOAD_ASYNC_TYPE         => [
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+        ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
             'with'            => self::WITH_RETRY,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
@@ -573,7 +578,7 @@ class AMQPConnection
      * @return array
      * @throws Exception
      */
-    public function getQueuesStatus($hideEmptyQ = true)
+    public function getQueuesStatus($hideEmptyQ = true, $consumedQ = true)
     {
         $this->getChannel();
         $queuesStatus = [];
@@ -589,6 +594,10 @@ class AMQPConnection
             try {
                 list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($name, true);
                 if ($hideEmptyQ && $messageCount == 0) {
+                    continue;
+                }
+
+                if ($consumedQ && $consumerCount == 0) {
                     continue;
                 }
 

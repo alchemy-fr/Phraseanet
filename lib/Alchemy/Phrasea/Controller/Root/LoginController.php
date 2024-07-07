@@ -109,7 +109,7 @@ class LoginController extends Controller
             'current_url' => $request->getUri(),
             'flash_types' => $this->app->getAvailableFlashTypes(),
             'recaptcha_display' => $this->app->isCaptchaRequired(),
-            'recaptcha_enabled' => $conf->get(['registry', 'webservices', 'captchas-enabled']),
+            'recaptcha_enabled' => ($conf->get(['registry', 'webservices', 'captcha-provider']) != 'none') ? true : false,
             'unlock_usr_id' => $this->app->getUnlockAccountData(),
             'guest_allowed' => $this->app->isGuestAllowed(),
             'register_enable' => $this->getRegistrationManager()->isRegistrationEnabled(),
@@ -137,10 +137,10 @@ class LoginController extends Controller
     {
         $response =  $this->app->json([
             'validation_blank'          => $this->app->trans('Please provide a value.'),
-            'validation_choice_min'     => $this->app->trans('Please select at least %s choice.'),
+            'validation_choice_min'     => $this->app->trans('Please select at least %s choice.', ['%s' => 1]),
             'validation_email'          => $this->app->trans('Please provide a valid email address.'),
             'validation_ip'             => $this->app->trans('Please provide a valid IP address.'),
-            'validation_length_min'     => $this->app->trans('Please provide a longer value. It should have %s character or more.'),
+            'validation_length_min'     => $this->app->trans('Please provide a longer value. It should have %s character or more.', ['%s' => 5]),
             'password_match'            => $this->app->trans('Please provide the same passwords.'),
             'email_match'               => $this->app->trans('Please provide the same emails.'),
             'accept_tou'                => $this->app->trans('Please accept the terms of use to register.'),
@@ -190,7 +190,10 @@ class LoginController extends Controller
 
             $provider = null;
 
-            if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+            if(
+                (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+            ) {
                 $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
 
                 $dateError = new FormError("");
@@ -433,7 +436,10 @@ class LoginController extends Controller
                 $form->handleRequest($request);
                 $requestData = $request->request->all();
 
-                if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+                if(
+                    (isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") ||
+                    (isset($requestData['h-captcha-response']) && $requestData['h-captcha-response'] == "")
+                ) {
                     $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
 
                     $dataError = new FormError("");
@@ -502,9 +508,7 @@ class LoginController extends Controller
         // does the provider provides a logout redirection ?
         if($providerId && ($provider = $this->findProvider($providerId))) {
             if(method_exists($provider, 'logoutAndRedirect')) {
-                $redirectToPhr = $this->app->url('logout', [
-                    'redirect' => $request->query->get("redirect")
-                ]);
+                $redirectToPhr = $this->app->url('logout');
                 $response = $provider->logoutAndRedirect($redirectToPhr);
             }
             else {
@@ -708,6 +712,7 @@ class LoginController extends Controller
     public function authenticationCallback(Request $request, $providerId)
     {
         $this->getSession()->set('auth_provider.id', null);
+        $this->getSession()->set('provider.token_info', null);
 
         $provider = $this->findProvider($providerId);
 

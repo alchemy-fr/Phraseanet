@@ -96,7 +96,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		if (__webpack_require__.nc) {
 /******/ 			script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 		}
-/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=86";
+/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=106";
 /******/ 		var timeout = setTimeout(onScriptComplete, 120000);
 /******/ 		script.onerror = script.onload = onScriptComplete;
 /******/ 		function onScriptComplete() {
@@ -4558,7 +4558,7 @@ var ErrorView = _backbone2.default.View.extend({
     },
     render: function render() {
         if (this.errors.length > 0) {
-            var template = _underscore2.default.template((0, _jquery2.default)(this.errorTemplate).html(), {
+            var template = _underscore2.default.template((0, _jquery2.default)(this.errorTemplate).html())({
                 errors: this.errors
             });
 
@@ -4740,10 +4740,7 @@ var renewPassword = function renewPassword(services) {
                 }, {
                     name: 'password[password]',
                     rules: 'min_length[5]',
-                    message: localeService.t('validation_length_min', {
-                        postProcess: 'sprintf',
-                        sprintf: ['5']
-                    })
+                    message: localeService.t('validation_length_min')
                 }, {
                     name: 'password[confirm]',
                     rules: 'matches[password[password]]',
@@ -4828,10 +4825,7 @@ var regiser = function regiser(services) {
             }, {
                 name: 'password[password]',
                 rules: 'min_length[5]',
-                message: localeService.t('validation_length_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['5']
-                })
+                message: localeService.t('validation_length_min')
             }, {
                 name: 'password[confirm]',
                 rules: 'matches[password[password]]',
@@ -4844,10 +4838,7 @@ var regiser = function regiser(services) {
             }, {
                 name: 'collections[]',
                 rules: 'min_length[1]',
-                message: localeService.t('validation_choice_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['1']
-                }),
+                message: localeService.t('validation_choice_min'),
                 type: 'multiple'
             }];
 
@@ -4964,10 +4955,7 @@ var registerProvider = function registerProvider(services) {
             }, {
                 name: 'password',
                 rules: 'min_length[5]',
-                message: localeService.t('validation_length_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['5']
-                })
+                message: localeService.t('validation_length_min')
             }, {
                 name: 'passwordConfirm',
                 rules: 'matches[password]',
@@ -4980,10 +4968,7 @@ var registerProvider = function registerProvider(services) {
             }, {
                 name: 'collections[]',
                 rules: 'min_length[1]',
-                message: localeService.t('validation_choice_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['1']
-                }),
+                message: localeService.t('validation_choice_min'),
                 type: 'multiple'
             }];
 
@@ -5317,10 +5302,7 @@ var changePassword = function changePassword(services) {
                 }, {
                     name: 'password[password]',
                     rules: 'min_length[5]',
-                    message: localeService.t('validation_length_min', {
-                        postProcess: 'sprintf',
-                        sprintf: ['5']
-                    })
+                    message: localeService.t('validation_length_min')
                 }, {
                     name: 'password[confirm]',
                     rules: 'matches[password[password]]',

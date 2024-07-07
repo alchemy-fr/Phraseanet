@@ -50,6 +50,8 @@ gulp.task('build-vendors', [
     'build-jquery-lazyload',
     'build-jquery-test-paths',
     'build-simple-colorpicker',
-    'build-jquery-datetimepicker'
+    'build-jquery-datetimepicker',
+    'build-pusher-js',
+    'build-select2'
 ], function () {
 });

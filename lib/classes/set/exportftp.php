@@ -83,7 +83,8 @@ class set_exportftp extends set_export
                     ->setFilename($filename)
                     ->setFolder($properties['folder'])
                     ->setRecordId($file['record_id'])
-                    ->setSubdef($subdef);
+                    ->setSubdef($subdef)
+                    ->setToStamp($file['to_stamp'] !== set_export::NO_STAMP);
                 $export->addElement($element);
 
                 $this->app['orm.em']->persist($element);

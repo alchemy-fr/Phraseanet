@@ -11,7 +11,7 @@ class module_console_systemClearSessionCache extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Empties session cache in redis');
+        $this->setDescription('Empties session cache in redis <fg=yellow;>(Deprecated use bin/setup system:clear-session-cache instead)</>');
 
         return $this;
     }

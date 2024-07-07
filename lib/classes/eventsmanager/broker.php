@@ -47,6 +47,7 @@ class eventsmanager_broker
                 'eventsmanager_notify_push',
                 'eventsmanager_notify_basketwip',
                 'eventsmanager_notify_register',
+                'eventsmanager_notify_subtitle',
                 'eventsmanager_notify_uploadquarantine',
                 'eventsmanager_notify_validate',
                 'eventsmanager_notify_validationdone',

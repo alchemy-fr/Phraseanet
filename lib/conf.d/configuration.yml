@@ -89,9 +89,6 @@ main:
     binaries:
         ghostscript_binary: null
         php_binary: null
-        swf_extract_binary: null
-        pdf2swf_binary: null
-        swf_render_binary: null
         unoconv_binary: null
         ffmpeg_binary: null
         ffprobe_binary: null
@@ -177,6 +174,9 @@ border-manager:
 registry:
     api-clients:
         api-subdef_service: false
+    actions:
+        export-stamp-choice: false
+        stamp-subdefs: false
 user_account:
     deleting_policies:
         email_confirmation: true
@@ -225,24 +225,24 @@ authentication:
             options:
                 client-id: ''
                 client-secret: ''
-        ps_auth_1:
+        openid-1:
             enabled: false
             display: false
-            title: 'PS Auth 1'
-            type: 'ps-auth'
+            title: 'openid 1'
+            type: openid
             options:
                 client-id: ''
                 client-secret: ''
-                base-url: 'https://api-auth.phrasea.local'
-                provider-type: 'oauth'
-                provider-name: 'v2'
-                icon-uri: null,
-                debug: false,
-                birth-group: '_firstlog'
-                everyone-group: '_everyone'
-                metamodel: '_metamodel'
-                model-gpfx: '_M_'
-                model-upfx: '_U_'
+                base-url: 'https://keycloak.phrasea.local'
+                realm-name: phrasea
+                exclusive: false
+                icon-uri: null
+                birth-group: _firstlog
+                everyone-group: _everyone
+                metamodel: _metamodel
+                model-gpfx: _M_
+                model-upfx: _U_
+                debug: false
                 auto-logout: false
                 auto-connect-idp-name: null
 registration-fields:
@@ -258,6 +258,9 @@ registration-fields:
     -
         name: geonameid
         required: true
+download_async:
+    enabled: false
+
 xsendfile:
     enabled: false
     type: nginx
@@ -358,6 +361,7 @@ video-editor:
         - '1.5'
         - 3
 workers:
+    auto-cancelingJob: 24 # period in hours, not define or null to not execute
     queue:
         worker-queue:
             registry: alchemy_worker.queue_registry
@@ -382,6 +386,9 @@ workers:
             max_retry: 3
             ttl_retry: 10000
         exportMail:
+            max_retry: 3
+            ttl_retry: 10000
+        downloadAsync:
             max_retry: 3
             ttl_retry: 10000
         exposeUpload:
@@ -416,14 +423,81 @@ workers:
             max_retry: 3
             ttl_retry: 10000
             ttl_delayed: 5000
+    writeMetadatas:
+        acceptedMimeType:
+            - image/jpeg
+            - image/png
+            - application/postscript
+            - application/pdf
+            - image/tiff
 externalservice:
-    ginger:
-        AutoSubtitling:
-            service_base_url: https://base.uri
-            token: 39c6011d
-            transcript_format: text/vtt
-            subdef_source: preview
+    pusher:
+        auth_key: 'pusher-auth_key'
+        secret: 'pusher-secret'
+        app_id: 'pusher-app_id'
+    happyscribe:
+        token: token
+        organization_id: 123456
+        transcript_format: vtt
+        subdef_source: preview
 
 
 Console_logger_enabled_environments: [test]
 
+feedback-report:
+    enabled: false
+    actions:
+        action_unvoted:
+            status_bit: 8
+            value: '{% if vote.votes_unvoted > 0 %} 1 {% else %} 0 {% endif %}'
+        action_red:
+            status_bit: 9
+            value: '{% if vote.votes_no > 0 %} 1 {% else %} 0 {% endif %}'
+        action_green:
+            status_bit: 10
+            value: '{% if vote.votes_no == 0 %} 1 {% else %} 0 {% endif %}'
+        action_log:
+            metadata: Validations
+            method: prepend
+            delimiter: "\n"
+            value: 'Vote initated on {{ vote.created }} by {{ initiator ? initiator.getEmail() : "?" }} expired {{ vote.expired }} : {{ vote.voters_count }} participants, {{ vote.votes_unvoted }} unvoted, {{ vote.votes_no }} "no", {{ vote.votes_yes}} "yes".'
+
+translator:
+    jobs:
+        #
+        # - translate EN keywords to FR and EN
+        #       nb: since we clean the destination fields, we MUST (re)write EN to EN
+        # - add country to keywords, both FR/EN
+        keywords:
+            active: false
+            databox: my_databox
+            if_collection: to_translate
+            if_status: x1xxxx
+            actions:
+
+                KeywordsENtoFREN:
+                    active: true
+                    source_field: KeywordsEN
+                    source_lng: en
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 1 cleans the destination fields
+                    cleanup_destination: true
+
+                CountryENtoKeywordsFREN:
+                    active: true
+                    source_field: CountryEN
+                    source_lng: en
+                    # add translated country to the keywords
+                    destination_fields:
+                        - fr:keywordsFR
+                        - en:keywordsEN
+                    cleanup_source: if_translated
+                    # action 2 must NOT erase what action 1 did
+                    cleanup_destination: false
+
+            # end of job : change coll status
+            set_status: 10xxxx
+            set_collection: online

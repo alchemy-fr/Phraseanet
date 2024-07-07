@@ -1,0 +1,286 @@
+<div id="inspector-tab">
+    <ul>
+        <li class="record-info" role="presentation">
+            <a href="#record-info" aria-controls="record-info" role="tab" data-toggle="tab">
+                {{ 'admin::inspector:tab record info title' |trans }}
+            </a>
+        </li>
+        <li class="api-info" role="presentation">
+            <a href="#api-info" aria-controls="api-info" role="tab" data-toggle="tab">
+                {{ 'admin::inspector:tab api info title' |trans }}
+            </a>
+        </li>
+    </ul>
+
+    <div id="record-info">
+        <h1 style=" margin-bottom: 40px; margin-left: 30px;">
+            {{ 'admin:: record index' | trans }}
+        </h1>
+
+        <div>
+            <select id="es-databoxId" style="margin-left: 30px;">
+                <option value="">{{ 'button::choose databox' | trans }}</option>
+                {% for databoxId in databoxIds %}
+                    <option value="{{ databoxId }}">{{ databoxId | sbas_labels(app) }}</option>
+                {% endfor %}
+            </select>
+
+            <input id="es-recordId" type="number" placeholder="recordId" style="margin-bottom: 0px;margin-left: 30px;">
+        </div>
+
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success record-details record-subdefs">{{ 'admin:: get record subdefs' | trans }}</button>
+
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-subdefs">
+            </div>
+        </div>
+
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success record-details record-baskets">{{ 'admin:: get record baskets' | trans }}</button>
+
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-baskets">
+            </div>
+        </div>
+
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success record-details record-stories">{{ 'admin:: get record stories' | trans }}</button>
+
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-stories">
+            </div>
+        </div>
+
+        <div style="margin-top:40px; margin-left: 30px; padding-bottom: 30px;">
+            <button class="btn btn-success record-details record-log-docs">{{ 'Get log docs' | trans }}</button>
+
+            <div style="margin-top:20px; overflow-x: scroll;" id="record-log-docs">
+            </div>
+        </div>
+
+        <div style="margin-left: 30px; margin-top:40px;">
+            <button class="btn btn-success find-record-index">{{ 'admin:: find record' | trans }}</button>
+            <div style="margin-top:20px; padding-bottom: 30px;">
+                <pre id="admin-es-record-display" style="height: 400px;overflow-y: scroll;width: 60%;margin-left: 30px;">
+
+                </pre>
+            </div>
+        </div>
+
+    </div>
+    <div id="api-info" style="overflow-x: scroll;">
+        {% set apiApplications = app['repo.api-applications'].findAll() %}
+
+        <table class="admintable" style="border:1px solid #a5a0a0; width:90%">
+            <thead>
+                <th>{{ 'admin::inspector: api ID' | trans }}</th>
+                <th>{{ 'admin::inspector: api name' | trans }}</th>
+                <th>{{ 'admin::inspector: api owner ID' | trans }}</th>
+                <th>{{ 'Owner login' }}</th>
+                <th>{{ 'admin::inspector: api password granted' | trans }}</th>
+                <th>{{ 'admin::inspector: api application type' | trans }}</th>
+                <th>{{ 'admin::inspector: api webhook url' | trans }}</th>
+                <th>{{ 'admin::inspector: api webhook active' | trans }}</th>
+                <th>{{ 'admin::inspector: api creation date' | trans }}</th>
+                <th>{{ 'admin::inspector: api modification date' | trans }}</th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+            {% for apiApplication in apiApplications %}
+                <tr>
+                    <td>{{ apiApplication.getId() }}</td>
+                    <td>{{ apiApplication.getName() }}</td>
+                    <td>
+                        {% if apiApplication.getCreator() is not null %}
+                            {{ apiApplication.getCreator().getId() }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if apiApplication.getCreator() is not null %}
+                            {{ apiApplication.getCreator().getLogin() }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if apiApplication.isPasswordGranted() %}
+                            {{ 'admin::users: password granted' | trans }}
+                        {% else %}
+                            {{ 'admin::users: password not granted' | trans }}
+                        {% endif %}
+                    </td>
+                    <td>{{ apiApplication.getType() }}</td>
+                    <td>
+                        {% if apiApplication.getWebhookUrl() is not null %}
+                            {{ apiApplication.getWebhookUrl() }}
+                        {% else %}
+                          -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if apiApplication.isWebhookActive() %}
+                            <input class="webhook_activation" data-path="/developers/application/{{ apiApplication.getId() }}/active-webhook" type="checkbox"  checked="checked" style="">
+                            <span class="" style="margin-left: 10px;">yes</span>
+                        {% else %}
+                            <input class="webhook_activation" data-path="/developers/application/{{ apiApplication.getId() }}/active-webhook" type="checkbox" style="">
+                            <span class="" style="margin-left: 10px;">no</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ apiApplication.getCreated() | date('Y-m-d H:i:s') }}</td>
+                    <td>{{ apiApplication.getUpdated() | date('Y-m-d H:i:s')}}</td>
+                    <td>
+                        {% if apiApplication.getCreator() is not null %}
+                            <button class="generate_token btn btn-warning btn-small" data-app-id="{{ apiApplication.getId() }}" href="{{ path('admin_inspector_application_token', { 'application' : apiApplication.getId(), 'user_id' : apiApplication.getCreator().getId() }) }}">{{ 'generate token' }}</button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="delete_application btn btn-danger btn-small" data-app-id="{{ apiApplication.getId() }}" href="{{ path('admin_inspector_application_delete', { 'application' : apiApplication.getId() }) }}">{{ 'delete' }}</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#inspector-tab').tabs();
+
+        $('.find-record-index').on('click', function() {
+            let recordId = $('input#es-recordId').val();
+            let databoxId = $('select#es-databoxId').val();
+            if (databoxId == '' || recordId < 1) {
+                alert("Wrong databoxId or recordId value !");
+            } else {
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin/inspector/record/',
+                    dataType: 'json',
+                    data: {
+                        databoxId: databoxId,
+                        recordId: recordId
+                    },
+                    success: function (data) {
+                        $('#right-ajax #admin-es-record-display').empty().html(JSON.stringify(data, null, 2));
+                    }
+                });
+            }
+        });
+
+        $('.record-details').on('click', function() {
+            let elOut = '';
+            let type = '';
+            if ($(this).hasClass('record-subdefs')) {
+                elOut = $('#right-ajax #record-subdefs');
+                type = 'subdef';
+            } else if ($(this).hasClass('record-baskets')) {
+                elOut = $('#right-ajax #record-baskets');
+                type = 'basket';
+            } else if ($(this).hasClass('record-stories')) {
+                elOut = $('#right-ajax #record-stories');
+                type = 'story';
+            } else if ($(this).hasClass('record-log-docs')) {
+                elOut = $('#right-ajax #record-log-docs');
+                type = 'log';
+            }
+
+            let recordId = $('input#es-recordId').val();
+            let databoxId = $('select#es-databoxId').val();
+
+            if (databoxId == '' || recordId < 1) {
+                alert("Wrong databoxId or recordId value !");
+            } else {
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin/inspector/record/details/',
+                    data: {
+                        databoxId: databoxId,
+                        recordId: recordId,
+                        type: type
+                    },
+                    success: function (data) {
+                        elOut.empty().html(data);
+                    }
+                });
+            }
+        });
+
+        $('.webhook_activation').on('click', function() {
+            let $this = $(this);
+            let action = '';
+            let statusAfter = '';
+
+            if ($this.is(':checked')) {
+                action = 'activate';
+                statusAfter = 'yes'
+            } else {
+                action = 'deactivate';
+                statusAfter = 'no'
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: action
+                },
+                success: function (data) {
+                    if (data.success) {
+                        $this.next('span').text(statusAfter);
+                    }
+                }
+            });
+        });
+
+        $('button.generate_token').bind('click', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            if (confirm('You are about to generate token for application with ID: ' + $this.data('app-id'))) {
+                $.ajax({
+                    type: 'POST',
+                    url: $this.attr('href'),
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+                return false;
+            } else {
+                return false;
+            }
+        });
+
+        $('button.delete_application').bind('click', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            if (confirm('You are about to delete application with ID: ' + $this.data('app-id'))) {
+                $.ajax({
+                    type: 'POST',
+                    url: $this.attr('href'),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success) {
+                            $('#tree li.selected a').trigger('click');
+
+                            setTimeout(function(){
+                                    $('li a[href="#api-info"]').trigger('click');
+                                }
+                                , 500
+                            );
+
+                        }
+                    }
+                });
+                return false;
+            } else {
+                return false;
+            }
+        });
+    });
+</script>

@@ -45,6 +45,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
+use Monolog\Logger;
+use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Reader;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
@@ -743,6 +746,19 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @return media_subdef[]
+     */
+    public function get_subdefs_from_db()
+    {
+        $subdefs = [];
+        foreach ($this->getMediaSubdefRepository()->findByRecordIdsAndNames([$this->getRecordId()]) as $subdef) {
+            $subdefs[$subdef->get_name()] = $subdef;
+        }
+
+        return $subdefs;
+    }
+
+    /**
      * @return string[]
      */
     protected function get_available_subdefs()
@@ -1266,6 +1282,45 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @param $tag
+     * @return array|null
+     * @throws \PHPExiftool\Exception\EmptyCollectionException
+     */
+    public function getFileMetadataByTag($tags)
+    {
+        $logger = new Logger('exif-tool');
+        $reader = Reader::create($logger);
+
+        if(!is_array($tags)) {
+            $tags = [$tags];
+        }
+        $tags = array_fill_keys($tags, null);
+
+        // throw exception
+        $documentSubdef = $this->get_subdef('document');
+
+        $metadatas = $reader->files($documentSubdef->getRealPath())->first();
+
+        /** @var Metadata $metadata */
+        foreach ($metadatas as $metadata) {
+            /** @var string $t */
+            $t = (string)$metadata->getTag();
+            if (array_key_exists($t, $tags)) {
+                $tags[$t] = explode(";", $metadata->getValue());
+                break;
+            }
+        }
+
+        foreach($tags as $tag => $value) {
+            if($value !== null) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
 
     /*
      * =============================================================================
@@ -1308,9 +1363,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @param $metadatas
-     * @throws Exception
+     * @throws Exception|Exception_InvalidArgument
      *
-     *  nb : use of "silent" @ operator on stdClass member access (equals null in not defined) is more simple than "iseet()" or "empty()"
+     *  nb : use of "silent" @ operator on stdClass member access (equals null if not defined) is more simple than "isset()" or "empty()"
      */
     private function do_metadatas(array $metadatas)
     {
@@ -1490,7 +1545,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 foreach ($values as $value) {
                     if ($value) {
                         $ops[] = [
-                            'expain'         => sprintf('set:: adding value "%s" to "%s" (multi)', $value, $sf->get_name()),
+                            'explain'         => sprintf('set:: adding value "%s" to "%s" (multi)', $value, $sf->get_name()),
                             'meta_struct_id' => $sf->get_id(),
                             'meta_id'        => $meta_id,  // can be null
                             'value'          => $value
@@ -1505,7 +1560,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 }
                 if( ($value = $values[0]) ) {
                     $ops[] = [
-                        'expain' => sprintf('adding value "%s" to "%s" (mono)', $value, $sf->get_name()),
+                        'explain' => sprintf('adding value "%s" to "%s" (mono)', $value, $sf->get_name()),
                         'meta_struct_id' => $sf->get_id(),
                         'meta_id'        => $meta_id,  // probably null,
                         'value'          => $value
@@ -1522,7 +1577,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param string[] $values
      *
      * @return array                            ops to execute
-     * @throws Exception
      */
     private function metadata_add($struct_fields, $values)
     {
@@ -1531,11 +1585,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // now set values to matching struct_fields
         foreach ($struct_fields as $sf) {
             if(!$sf->is_multi()) {
-                throw new Exception(sprintf("can't \"add\" to mono-valued (%s).", $sf->get_name()));
+                // easy support "add" on mono : join values...
+                $values = [ join(' ; ', $values) ];
             }
             foreach ($values as $value) {
                 $ops[] = [
-                    'expain'         => sprintf('add:: adding value "%s" to "%s"', $value, $sf->get_name()),
+                    'explain'         => sprintf('add:: adding value "%s" to "%s"', $value, $sf->get_name()),
                     'meta_struct_id' => $sf->get_id(),
                     'meta_id'        => null,
                     'value'          => $value
@@ -1577,7 +1632,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 }
                 // then add the replacing value
                 $ops[] = [
-                    'expain' => sprintf('rpl::match_all: adding value "%s" to "%s"', $replace_with, $cf->get_name()),
+                    'explain' => sprintf('rpl::match_all: adding value "%s" to "%s"', $replace_with, $cf->get_name()),
                     'meta_struct_id' => $cf->get_meta_struct_id(),
                     'meta_id'        => null,
                     'value'          => $replace_with
@@ -1590,7 +1645,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 foreach ($cf->get_values() as $field_value) {
                     if ($field_value->getId() === $meta_id) {
                         $ops[] = [
-                            'expain' => sprintf('rpl::match_meta_id %s (field "%s") set value "%s"', $field_value->getId(), $cf->get_name(), $replace_with),
+                            'explain' => sprintf('rpl::match_meta_id %s (field "%s") set value "%s"', $field_value->getId(), $cf->get_name(), $replace_with),
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
                             'value'          => $replace_with
@@ -1609,7 +1664,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     }
                     if ($this->match($value, $match_method, $field_value->getValue())) {
                         $ops[] = [
-                            'expain' => sprintf('rpl::match_value "%s" (field "%s") set value "%s"', $field_value->getValue(), $cf->get_name(), $rw),
+                            'explain' => sprintf('rpl::match_value "%s" (field "%s") set value "%s"', $field_value->getValue(), $cf->get_name(), $rw),
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
                             'value'          => $rw
@@ -1745,7 +1800,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story));
+        $initiatorId = null;
+        if ($app->getAuthenticatedUser() != null) {
+            $initiatorId = $app->getAuthenticatedUser()->getId();
+        }
+
+        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story, $initiatorId));
 
         return $story;
     }
@@ -1858,7 +1918,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $record->insertTechnicalDatas($app['mediavorus']);
 
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+            $initiatorId = null;
+            if ($app->getAuthenticatedUser() != null) {
+                $initiatorId = $app->getAuthenticatedUser()->getId();
+            }
+
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
         }
 
         return $record;
@@ -1876,8 +1941,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public static function create(collection $collection, Application $app)
     {
         $record = self::_create($collection, $app);
+        $initiatorId = null;
         if($record) {
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+            if ($app->getAuthenticatedUser() != null) {
+                $initiatorId = $app->getAuthenticatedUser()->getId();
+            }
+
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
         }
 
         return $record;

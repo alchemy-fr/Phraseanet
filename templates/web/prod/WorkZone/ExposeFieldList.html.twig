@@ -25,10 +25,13 @@
 
         <div class="field-list" style="margin-top:30px;">
             {% for metaField in field %}
-                <label class="checkbox" for="fields[{{ metaField.id }}]" style="margin:5px 0">
-                    <input type="checkbox" id="fields[{{ metaField.id }}]" name="fields[{{ metaField.id }}]" {% if metaField.checked %} checked {% endif %} value="1">
-                    {{ metaField.name }}
-                </label>
+                <div>
+                    <label class="checkbox" for="fields[{{ metaField.id }}]" style="margin:5px 0; min-width: 250px; display: inline-block;">
+                        <input class="checkbox-field-mapping" type="checkbox" id="fields[{{ metaField.id }}]" {% if metaField.checked %} checked {% endif %} value="1" data-field-name="fields[{{ metaField.id }}]">
+                        <span>{{ metaField.name }}</span>
+                    </label>
+                    <input type="text" {% if metaField.checked %} value="{{ metaField.exposeSideName }}" name="fields[{{ metaField.id }}]" {% endif %} class="name-expose-side {% if not metaField.checked %} hidden {% endif %}">
+                </div>
             {% endfor %}
         </div>
     </fieldset>

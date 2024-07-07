@@ -271,6 +271,7 @@
                 </ul>
                 {% if thesaurus %}
                     <div id='TH_Ofull'>
+                        <input type="text" class="editor-thesaurus-search" style="margin-top: 10px; margin-left: 10px; display: none;">
                         <div class='thesaurus edit-thesaurus-action'>
                             <p id='TH_T.{{ databox.get_sbas_id() }}.T' class="thesaurus-db-root">
                                 <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale']) }}</a>
@@ -427,7 +428,7 @@
 <input type="hidden" id="dialog-edit-no" value="{{ 'prod::edit:confirm: No' | trans }}" />
 
 <script type="text/javascript">
-    {% if multipleDataboxes == 1 or multipleStories == 1 %}
+    {% if multipleDataboxes == 1 or multipleStories == 1 or databox is empty %}
         $(function() {
             $('#EDITWINDOW').hide();
             // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
@@ -452,8 +453,8 @@
     {% endif %}
 
     var recordEditorConfig = {
-        hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
-        databoxId: {% if multipleDataboxes %}0{% else %}{{ databox.get_sbas_id }}{% endif %},
+        hasMultipleDatabases: {% if multipleDataboxes %}true{% else %}false{% endif %},
+        databoxId: {% if multipleDataboxes or databox is empty %}null{% else %}{{ databox.get_sbas_id }}{% endif %},
         mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
         notActionable: {{ not_actionable }},
         notActionableMsg: '{{notActionableMsg}}',

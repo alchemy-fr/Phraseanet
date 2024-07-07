@@ -80,6 +80,25 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('bit', '\d+')
             ->bind('database_submit_statusbit');
 
+        $controllers->get('/inspector/', 'controller.admin.root:displayInspector')
+            ->bind('admin_inspector');
+
+        $controllers->get('/inspector/record/', 'controller.admin.root:getESRecord')
+            ->bind('admin_inspector_record');
+
+        $controllers->get('/inspector/record/details/', 'controller.admin.root:getRecordDetails')
+            ->bind('admin_inspector_record_details');
+
+        $controllers->post('/inspector/application/{application}/access_token/', 'controller.admin.root:renewAccessToken')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
+            ->bind('admin_inspector_application_token');
+
+        $controllers->post('/inspector/application/{application}/delete/', 'controller.admin.root:deleteApplication')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
+            ->bind('admin_inspector_application_delete');
+
         return $controllers;
     }
 }

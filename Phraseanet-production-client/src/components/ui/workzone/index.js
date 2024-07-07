@@ -127,10 +127,33 @@ const workzone = (services) => {
             updatePublicationList(exposeName);
         });
 
+        $('#expose_title_filter').on('keyup', function (event) {
+            if ($(this).val().length > 2 || $(this).val().length === 0) {
+                let exposeName = $('#expose_list').val();
+                $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+                updatePublicationList(exposeName);
+            }
+        });
+
         $('.refresh-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
             $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(exposeName);
+        });
+
+        $('.publication-pagination').on('click', function (event) {
+            let exposeName = $('#expose_list').val();
+            $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+            let pageEl = $('#expose_workzone .publication-page');
+            let page = pageEl.text();
+
+            if ($(this).hasClass('previous-publication')) {
+                page = parseInt(page) - 1;
+            } else if ($(this).hasClass('next-publication')) {
+                page = parseInt(page) + 1;
+            }
+
+            updatePublicationList(exposeName, page);
         });
 
         $('#expose_list').on('change', function () {
@@ -195,6 +218,10 @@ const workzone = (services) => {
                 data: formData,
                 success: function (data) {
                     $('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function (xhr, status, error) {
+                    let err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
         });
@@ -266,6 +293,21 @@ const workzone = (services) => {
             }
         });
 
+        $('#DIALOG-field-mapping').on('click', '.checkbox-field-mapping', function() {
+            if ($(this).is(":checked")) {
+                let nameEl = $(this).attr('data-field-name');
+                let inputName = $(this).closest('div').find('.name-expose-side');
+                let labelText = $(this).closest('label').find('span').text();
+                inputName.attr('name', nameEl);
+                inputName.attr('value', labelText);
+                inputName.removeClass('hidden');
+            } else {
+                let inputName = $(this).closest('div').find('.name-expose-side');
+                inputName.removeAttr('name');
+                inputName.addClass('hidden');
+            }
+        });
+
         $('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function(event) {
             event.preventDefault();
             if ($('#subdef-profile-mapping').val() == '') {
@@ -281,6 +323,10 @@ const workzone = (services) => {
                 data: formData,
                 success: function (data) {
                     $('#DIALOG-field-mapping').dialog('close');
+                },
+                error: function (xhr, status, error) {
+                    let err = JSON.parse(xhr.responseText);
+                    alert(err.message);
                 }
             });
 
@@ -515,6 +561,11 @@ const workzone = (services) => {
                 },
                 success: function (data) {
                     return;
+                },
+                error: function (data) {
+                    if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                        self.location.replace(self.location.href);  // refresh will redirect to login
+                    }
                 }
             });
         });
@@ -1053,7 +1104,8 @@ const workzone = (services) => {
                 dataType: 'json',
                 data: {
                     exposeName: `${exposeName}`,
-                    publicationData: publicationData
+                    publicationData: publicationData,
+                    prodExposeEdit_token: $(this).find('input[name="prodExposeEdit_token"]').val()
                 },
                 success: function (data) {
                     if (data.success) {
@@ -1079,15 +1131,15 @@ const workzone = (services) => {
 
     }
 
-    function updatePublicationList(exposeName)
+    function updatePublicationList(exposeName, page = 1)
     {
-
         $.ajax({
             type: 'GET',
-            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName + '&page=' + page,
             data:{
-                mine : $("#expose_mine_only").is(':checked') ? 1 : 0,
-                editable: $("#expose_editable_only").is(':checked') ? 1 : 0
+                mine: $("#expose_mine_only").is(':checked') ? 1 : 0,
+                editable: $("#expose_editable_only").is(':checked') ? 1 : 0,
+                title: $("#expose_title_filter").val()
             },
             success: function (data) {
                 if ('twig' in data) {
@@ -1128,19 +1180,54 @@ const workzone = (services) => {
                     $('.expose_connected').empty().text(loggedMessage);
                     $('.expose_logout_link').removeClass('hidden');
                     $('.expose_field_mapping').removeClass('hidden');
+                    $('.add_publication').removeClass('hidden');
                     $('.add_expose_block').removeClass('hidden');
+                    $('.expose-pagination').removeClass('hidden');
                 } else {
                     $('.expose_connected').empty();
                     $('.expose_logout_link').addClass('hidden');
                     $('.expose_field_mapping').addClass('hidden');
+                    $('.add_publication').addClass('hidden');
                     $('.add_expose_block').addClass('hidden');
+                    $('.expose-pagination').addClass('hidden');
+                }
+
+                if ('previousPage' in data) {
+                    if (data.previousPage) {
+                        $('#expose_workzone .previous-publication').removeClass('hidden');
+                        $('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        $('#expose_workzone .previous-publication').addClass('hidden');
+                    }
+                }
+
+                if ('nextPage' in data) {
+                    if (data.nextPage) {
+                        $('#expose_workzone .next-publication').removeClass('hidden');
+                        $('#expose_workzone .publication-page').removeClass('hidden');
+                    } else {
+                        $('#expose_workzone .next-publication').addClass('hidden');
+                    }
+                }
+
+                if ('previousPage' in data  && 'nextPage' in data && !data.previousPage && !data.nextPage) {
+                    $('#expose_workzone .publication-page').addClass('hidden');
                 }
 
                 if ('error' in data) {
                     $('.publication-list').empty().html(data.error);
                 }
+
+                $('#expose_workzone .nb_item').text(data.nbItems);
+            },
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
             }
         });
+
+        $('#expose_workzone .publication-page').text(page);
     }
 
 
@@ -1592,12 +1679,15 @@ const workzone = (services) => {
                     },
                     dataType: 'json',
                     success: function (data) {
-                        setTimeout(function(){
-                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                            }
-                            , 6000);
+                        if (data.success) {
+                            setTimeout(function () {
+                                    getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                                }
+                                , 6000);
+                        } else {
+                            $('.refresh-list').trigger('click');
+                        }
 
-                        console.log(data.message);
                     }
                 });
             }

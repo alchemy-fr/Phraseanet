@@ -9,6 +9,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -183,7 +185,7 @@ class set_export extends set_abstract
 
         /** @var record_exportElement $download_element */
         foreach ($this->get_elements() as $download_element) {
-            if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($download_element->getBaseId(), \ACL::CANMODIFRECORD)) {
+            if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($download_element->getBaseId(), ACL::CANMODIFRECORD)) {
                 $this->businessFieldsAccess = true;
             }
 
@@ -235,11 +237,11 @@ class set_export extends set_abstract
 
         $display_ftp = [];
 
-        $hasadminright = $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANADDRECORD)
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANDELETERECORD)
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANMODIFRECORD)
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::COLL_MANAGE)
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::COLL_MODIFY_STRUCT);
+        $hasadminright = $app->getAclForUser($app->getAuthenticatedUser())->has_right(ACL::CANADDRECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(ACL::CANDELETERECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(ACL::CANMODIFRECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(ACL::COLL_MANAGE)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(ACL::COLL_MODIFY_STRUCT);
 
         $this->ftp_datas = [];
 
@@ -391,6 +393,35 @@ class set_export extends set_abstract
         return $this->total_ftp;
     }
 
+    /**
+     * @return ACLProvider
+     */
+    private function getAclProvider()
+    {
+        return $this->app['acl'];
+    }
+
+    /**
+     * Gets ACL for user.
+     *
+     * @param User $user
+     *
+     * @return ACL
+     */
+    private function getAclForUser(User $user)
+    {
+        return $this->getAclProvider()->get($user);
+    }
+
+    /**
+     * @return PropertyAccess
+     */
+    protected function getConf()
+    {
+        return $this->app['conf'];
+    }
+
+
     const NO_STAMP = 'NO_STAMP';
     const STAMP_SYNC = 'STAMP_SYNC';
     const STAMP_ASYNC = 'STAMP_ASYNC';
@@ -404,7 +435,7 @@ class set_export extends set_abstract
      * @return array
      * @throws Exception
      */
-    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod, $removeStamp, $exportEmail = false)
     {
         if (!is_array($wantedSubdefs)) {
             throw new Exception('No subdefs given');
@@ -416,10 +447,21 @@ class set_export extends set_abstract
 
         $includeBusinessFields = (bool) $includeBusinessFields;
         $files = [];
+        $captions = [];
         $n_files = 0;
         $file_names = [];
         $size = 0;
         $unicode = $this->app['unicode'];
+        $hasCgu = false;
+
+        // we must propose "do not stamp" when at least one collection is stamped AND the user has right to
+        // remove stamp on this collection
+        $stamp_by_base = [];     // unset: no stamp ; false: stamp not "unstampable" ; true: stamp "unstampable"
+
+        $colls_manageable   = array_keys($this->getAclForUser($user)->get_granted_base([ACL::COLL_MANAGE]) ?? []);
+        $colls_editable     = array_keys($this->getAclForUser($user)->get_granted_base([ACL::CANMODIFRECORD]) ?? []);
+        $colls_imgtoolsable = array_keys($this->getAclForUser($user)->get_granted_base([ACL::IMGTOOLS]) ?? []);
+        $dbox_manageable    = array_keys($this->getAclForUser($user)->get_granted_sbas([ACL::BAS_MANAGE]) ?? []);
 
         /** @var record_exportElement $download_element */
         foreach ($this->elements as $download_element) {
@@ -435,11 +477,64 @@ class set_export extends set_abstract
                 'subdefs'       => [],
             ];
 
+            if (!$hasCgu && !PDFCgu::isDataboxCguEmpty($this->app, $download_element->getDataboxId())) {
+                $hasCgu = true;
+            }
+
             $BF = false;
 
-            if ($includeBusinessFields && $this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::CANMODIFRECORD)) {
+            if ($includeBusinessFields && $this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), ACL::CANMODIFRECORD)) {
                 $BF = true;
             }
+
+            // check if stamp can be removed
+            // check collection only once
+            if(!array_key_exists($bid = $download_element->getCollection()->get_base_id(), $stamp_by_base)) {
+                // check stamp
+                $stamp_by_base[$bid] = self::NO_STAMP;
+
+                $domprefs = new DOMDocument();
+                if ($domprefs->loadXML($download_element->getCollection()->get_prefs())) {
+                    $xpprefs = new DOMXPath($domprefs);
+                    if ($xpprefs->query('/baseprefs/stamp')->length != 0) {
+                        // the collection has stamp settings
+                        unset($domprefs);
+
+                        // the collection has stamp, check user's right to remove it
+                        $stamp_by_base[$bid] = $stampMethod;
+                        if($removeStamp) {   // user asked to remove stamp
+                            switch ((string)$this->getConf()->get(['registry', 'actions', 'export-stamp-choice'], false)) {
+                                case '1':       // == (string)true
+                                    // everybody can remove stamp (bc)
+                                    $stamp_by_base[$bid] = self::NO_STAMP;
+                                    break;
+                                case 'manage_collection':
+                                    if (in_array($bid, $colls_manageable)) {
+                                        $stamp_by_base[$bid] = self::NO_STAMP;
+                                    }
+                                    break;
+                                case 'record_edit':
+                                    if (in_array($bid, $colls_editable)) {
+                                        $stamp_by_base[$bid] = self::NO_STAMP;
+                                    }
+                                    break;
+                                case 'image_tools':
+                                    if (in_array($bid, $colls_imgtoolsable)) {
+                                        $stamp_by_base[$bid] = self::NO_STAMP;
+                                    }
+                                    break;
+                                case 'manage_databox':
+                                    if (in_array($download_element->getDatabox()->get_sbas_id(), $dbox_manageable)) {
+                                        $stamp_by_base[$bid] = self::NO_STAMP;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            $files[$id]['to_stamp'] = $stamp_by_base[$bid];
+
 
             // $original_name : the original_name WITHOUT extension (ex. "DSC_1234")
             // $extension     : the extension WITHOUT DOT (ex. "jpg")
@@ -466,7 +561,7 @@ class set_export extends set_abstract
             // build the export_name
             //
             if ($rename_title) {
-                // use the title (may be a concat of fields)
+                // use the title (can be a concat of fields)
                 $export_name = strip_tags($download_element->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI]));
                 // if the "title" ends up with a "filename-like" field, remove extension
                 if (strtolower(substr($export_name, -strlen($extension)-1)) === '.'.strtolower($extension)) {
@@ -533,9 +628,9 @@ class set_export extends set_abstract
                             'to_watermark' => false
                         ];
 
-                        if($this->app['conf']->get(['registry', 'actions', 'export-stamp-choice']) !== true || $stampMethod !== self::NO_STAMP ){
+                        if($files[$id]['to_stamp'] !== self::NO_STAMP){
                             // stamp is mandatory, or user did not check "no stamp" : we must apply stamp
-                            if($stampMethod === self::STAMP_SYNC) {
+                            if($files[$id]['to_stamp'] === self::STAMP_SYNC) {
                                 // we prepare a direct download, we must stamp now
                                 $path = \recordutils_image::stamp($this->app, $sd[$subdefName]);
                                 if ($path && file_exists($path)) {
@@ -562,18 +657,32 @@ class set_export extends set_abstract
                             'to_watermark' => false
                         ];
 
-                        if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::NOWATERMARK)
+                        $stampedPath = null;
+                        if($files[$id]['to_stamp'] !== self::NO_STAMP && $this->getConf()->get(['registry', 'actions', 'stamp-subdefs'], false) === true){
+                            // stamp is mandatory, or user did not check "no stamp" : we must apply stamp
+                            if($files[$id]['to_stamp'] === self::STAMP_SYNC) {
+                                // we prepare a direct download, we must stamp now
+                                $path = \recordutils_image::stamp($this->app, $sd[$subdefName]);
+                                if ($path && file_exists($path)) {
+                                    $stampedPath = $path;
+                                    $tmp_pathfile['path'] = dirname($path);
+                                    $tmp_pathfile['file'] = basename($path);
+                                }
+                            }
+                            else {
+                                // we prepare an email or ftp download : the worker will apply stamp
+                                $tmp_pathfile ['to_stamp'] = true;
+                            }
+                        }
+
+                        if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), ACL::NOWATERMARK)
                             && !$this->app->getAclForUser($user)->has_preview_grant($download_element)
                             && $sd[$subdefName]->get_type() == media_subdef::TYPE_IMAGE )
                         {
-                            $path = recordutils_image::watermark($this->app, $sd[$subdefName]);
+                            $path = recordutils_image::watermark($this->app, $sd[$subdefName], $stampedPath);
                             if (file_exists($path)) {
-                                $tmp_pathfile = [
-                                    'path' => dirname($path),
-                                    'file' => basename($path),
-                                    'to_stamp' => false,
-                                    'to_watermark' => false
-                                ];
+                                $tmp_pathfile['path'] = dirname($path);
+                                $tmp_pathfile['file'] = basename($path);
                                 $subdef_ok = true;
                             }
                         }
@@ -672,32 +781,46 @@ class set_export extends set_abstract
                     as $subdefName => $serializeMethod)
             {
                 if (in_array($subdefName, $wantedSubdefs)) {
-                    if (!$caption_dir) {
-                        // do this only once
-                        $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $this->app->getAuthenticatedUser()->getId() . '/';
-                        $filesystem->mkdir($caption_dir, 0750);
+                    if ($exportEmail) {
+                        // for the export mail , add files in the worker not here like direct export
+                        $captions[] = [
+                            'fileId'            => $id,
+                            'subdefName'        => $subdefName,
+                            'businessFields'    => $BF ? '1' : '0',
+                            'serializeMethod'   => $serializeMethod,
+                            'elementDirectory'  => $download_element->get_directory(),
+                            'remain_hd'         => $download_element->get_remain_hd() // need when create exportElement
+                        ];
+                    } else {
+                        if (!$caption_dir) {
+                            // do this only once
+                            $caption_dir = $this->app['tmp.caption.path'] . '/' . time() . $this->app->getAuthenticatedUser()->getId() . '/';
+                            $filesystem->mkdir($caption_dir, 0750);
+                        }
+
+                        $file = $files[$id]["export_name"]
+                            . $files[$id]["subdefs"][$subdefName]["ajout"] . '.'
+                            . $files[$id]["subdefs"][$subdefName]["exportExt"];
+
+                        $desc = $this->getCaptionSerializer()->serialize($download_element->get_caption(), $serializeMethod, $BF);
+                        file_put_contents($caption_dir . $file, $desc);
+
+                        $files[$id]["subdefs"][$subdefName]["path"] = $caption_dir;
+                        $files[$id]["subdefs"][$subdefName]["file"] = $file;
+                        $files[$id]["subdefs"][$subdefName]["size"] = filesize($caption_dir . $file);
+                        $files[$id]["subdefs"][$subdefName]['businessfields'] = $BF ? '1' : '0';
                     }
-
-                    $file = $files[$id]["export_name"]
-                        . $files[$id]["subdefs"][$subdefName]["ajout"] . '.'
-                        . $files[$id]["subdefs"][$subdefName]["exportExt"];
-
-                    $desc = $this->app['serializer.caption']->serialize($download_element->get_caption(), $serializeMethod, $BF);
-                    file_put_contents($caption_dir . $file, $desc);
-
-                    $files[$id]["subdefs"][$subdefName]["path"] = $caption_dir;
-                    $files[$id]["subdefs"][$subdefName]["file"] = $file;
-                    $files[$id]["subdefs"][$subdefName]["size"] = filesize($caption_dir . $file);
-                    $files[$id]["subdefs"][$subdefName]['businessfields'] = $BF ? '1' : '0';
                 }
             }
         }
 
         $this->list = [
             'files' => $files,
+            'captions' => $captions,
             'names' => $file_names,
             'size'  => $size,
             'count' => $n_files,
+            'cgu'   => $hasCgu,
         ];
 
         return $this->list;
@@ -731,7 +854,9 @@ class set_export extends set_abstract
 
         // group recordId per databoxId
         foreach ($files as $file) {
-            $recordIdsPerDatabox[$file['databox_id']][] = $file['record_id'];
+            if(array_key_exists('databox_id', $file)) {
+                $recordIdsPerDatabox[$file['databox_id']][] = $file['record_id'];
+            }
         }
 
         foreach ($files as $record) {
@@ -752,7 +877,7 @@ class set_export extends set_abstract
                             $toRemove[] = $path;
                         }
 
-                        if (!in_array($record['databox_id'], $databoxIds)) {
+                        if (array_key_exists('databox_id', $record) && !in_array($record['databox_id'], $databoxIds)) {
                             // add also the databox cgu in the zip
                             $databoxIds[] = $record['databox_id'];
 
@@ -813,6 +938,10 @@ class set_export extends set_abstract
         ]) ? $type : Session_Logger::EVENT_EXPORTDOWNLOAD;
 
         foreach ($files as $record) {
+            if(!array_key_exists('base_id', $record)) {
+                // a "non-record" file, like xlsx report
+                continue;
+            }
             foreach ($record["subdefs"] as $o => $obj) {
                 $sbas_id = phrasea::sbasFromBas($app, $record['base_id']);
 
@@ -879,5 +1008,13 @@ class set_export extends set_abstract
         }
 
         return false;
+    }
+
+    /**
+     * @return CaptionSerializer
+     */
+    private function getCaptionSerializer()
+    {
+        return $this->app['serializer.caption'];
     }
 }

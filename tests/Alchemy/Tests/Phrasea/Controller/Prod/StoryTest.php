@@ -15,6 +15,8 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRootPost()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
+        $randomValue = $this->setSessionFormToken('prodCreateStory');
+
         $route = "/prod/story/";
 
         $collections = self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
@@ -25,7 +27,8 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request(
             'POST', $route, [
             'base_id' => $collection->get_base_id(),
-            'name'    => 'test story'
+            'name'    => ['1-1' => 'test story'],    //db-metastructId => storyname
+            'prodCreateStory_token'  => $randomValue
             ]
         );
 
@@ -44,6 +47,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRootPostJSON()
     {
+        $randomValue = $this->setSessionFormToken('prodCreateStory');
         $route = "/prod/story/";
 
         $collections = self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
@@ -52,10 +56,17 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         $collection = array_shift($collections);
 
         $crawler = self::$DI['client']->request(
-            'POST', $route, [
-            'base_id' => $collection->get_base_id(),
-            'name'    => 'test story'], [], [
-            "HTTP_ACCEPT" => "application/json"]
+            'POST',
+            $route,
+            [
+                'base_id' => $collection->get_base_id(),
+                'name'    => 'test story',
+                'prodCreateStory_token' => $randomValue
+            ],
+            [],
+            [
+                "HTTP_ACCEPT" => "application/json"
+            ]
         );
 
         $response = self::$DI['client']->getResponse();

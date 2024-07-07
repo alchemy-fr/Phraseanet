@@ -9,14 +9,14 @@ class ExposeUploadEvent extends SfEvent
     private $lst;
     private $exposeName;
     private $publicationId;
-    private $accessToken;
+    private $accessTokenInfo;
 
-    public function __construct($lst, $exposeName, $publicationId, $accessToken)
+    public function __construct($lst, $exposeName, $publicationId, $accessTokenInfo)
     {
         $this->lst              = $lst;
         $this->exposeName       = $exposeName;
         $this->publicationId    = $publicationId;
-        $this->accessToken      = $accessToken;
+        $this->accessTokenInfo  = $accessTokenInfo;
     }
 
     public function getLst()
@@ -34,8 +34,8 @@ class ExposeUploadEvent extends SfEvent
         return $this->publicationId;
     }
 
-    public function getAccessToken()
+    public function getAccessTokenInfo()
     {
-        return $this->accessToken;
+        return $this->accessTokenInfo;
     }
 }

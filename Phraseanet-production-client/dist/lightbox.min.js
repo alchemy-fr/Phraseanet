@@ -1064,7 +1064,8 @@ var lightbox = function lightbox(services) {
             url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
             dataType: 'json',
             data: {
-                note: note
+                note: note,
+                lightbox_token: (0, _jquery2.default)(button).closest('form').find('input[name=lightbox_token]').val()
             },
             success: function success(datas) {
                 _hideNotes(container);
@@ -1248,6 +1249,11 @@ var download = function download(services) {
             success: function success(data) {
                 $dialog.setContent(data);
                 _onDownloadReady($dialog, window.exportConfig);
+            },
+            error: function error(data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             }
         });
 
