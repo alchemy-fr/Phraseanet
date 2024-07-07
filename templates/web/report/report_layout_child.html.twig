@@ -20,6 +20,7 @@
                         <option value="res" id="connections_res">{{ 'report:: (connexions) res' | trans }}</option>
                 </select>
             </div>
+            <input type="hidden" name="reportConnection_token" value="{{ app['session'].get('reportConnection_token') }}">
             {% endblock form_connexion %}
         </form>
 
@@ -45,6 +46,19 @@
                         <option value="record" id="downloads_record">{{ 'report:: (downloads) record' | trans }}</option>
                 </select>
             </div>
+
+            <div class="form2 form_content">
+                <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
+                <select name="permalink">
+                    <option value>{{ "report:: choose subdef permalink" }}</option>
+                    {% for sbas_id,subdefs in availableSubdefName %}
+                        {% for subdefName in subdefs %}
+                            <option class="subdeflist subdeflist-{{ sbas_id }}" value="{{ subdefName }}">{{ subdefName }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="hidden" name="reportDownload_token" value="{{ app['session'].get('reportDownload_token') }}">
         </form>
 
         <div class="form_submit">
@@ -90,6 +104,20 @@
                 {% endfor %}
             </div>
             {% endblock form_records %}
+
+            <div class="form2 form_content">
+                <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
+                <select name="permalink">
+                        <option value>{{ "report:: choose subdef permalink" }}</option>
+                    {% for sbas_id,subdefs in availableSubdefName %}
+                        {% for subdefName in subdefs %}
+                            <option class="subdeflist subdeflist-{{ sbas_id }}" value="{{ subdefName }}">{{ subdefName }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <input type="hidden" name="reportRecord_token" value="{{ app['session'].get('reportRecord_token') }}">
         </form>
 
         <div class="form_submit">

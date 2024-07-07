@@ -59,12 +59,12 @@ class patch_390alpha6a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
-        $sql = 'DELETE FROM FtpExports';
+        $sql = 'DELETE FROM FtpExportElements';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'DELETE FROM FtpExportElements';
+        $sql = 'DELETE FROM FtpExports';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();

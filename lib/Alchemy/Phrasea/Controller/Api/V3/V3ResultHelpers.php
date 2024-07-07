@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Controller\Api\V3;
 
 use ACL;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Controller\Api\InstanceIdAware;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use databox_status;
@@ -17,6 +18,8 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class V3ResultHelpers
 {
+    use InstanceIdAware;
+
     /** @var PropertyAccess */
     private $conf;
 
@@ -148,11 +151,14 @@ class V3ResultHelpers
             $technicalInformation[] = ['name' => $name, 'value' => $value];
         }
 
+        $resourceId = $this->getResourceIdResolver()($record);
+
         $data = [
             'databox_id'             => $record->getDataboxId(),
             'record_id'              => $record->getRecordId(),
+            'resource_id'            => $resourceId,
             'mime_type'              => $record->getMimeType(),
-            'title'                  => $record->get_title(),
+            'title'                  => $record->get_title(['encode'=> record_adapter::ENCODE_NONE]),
             'original_name'          => $record->get_original_name(),
             'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
             'created_on'             => $record->getCreated()->format(DATE_ATOM),

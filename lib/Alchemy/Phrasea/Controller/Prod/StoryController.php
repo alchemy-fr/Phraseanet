@@ -32,16 +32,36 @@ class StoryController extends Controller
         $databoxes = $records->databoxes();
         $collections = $records->collections();
 
+        $storyTitleMetaStructIds = [];
+        foreach ($this->getApplicationBox()->get_databoxes() as $db) {
+            foreach ($db->get_meta_structure() as $metaStruct) {
+                if ($metaStruct->get_thumbtitle() == "1" &&
+                    !$metaStruct->is_readonly() &&
+                    $metaStruct->get_gui_editable() &&
+                    $metaStruct->get_type() == \databox_field::TYPE_STRING
+                ) {
+                    $storyTitleMetaStructIds[$db->get_sbas_id()][] = ['meta_struct_id' => $metaStruct->get_id(), 'label' => $metaStruct->get_label($this->app['locale'])];
+                }
+            }
+        }
+
+        $this->setSessionFormToken('prodCreateStory');
+
         return $this->render('prod/Story/Create.html.twig', [
             'isMultipleDataboxes'   => count($databoxes) > 1 ? 1 : 0,
             'isMultipleCollections' => count($collections) > 1 ? 1 : 0,
             'databoxId'             => count($databoxes) == 1 ? current($databoxes)->get_sbas_id() : 0,
-            'collectionId'          => count($collections) == 1 ? current($collections)->get_base_id() : 0
+            'collectionId'          => count($collections) == 1 ? current($collections)->get_base_id() : 0,
+            'storyTitleMetaStructIds'   => $storyTitleMetaStructIds
         ]);
     }
 
     public function postCreateFormAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodCreateStory')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         $collection = \collection::getByBaseId($this->app, $request->request->get('base_id'));
 
         if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), \ACL::CANADDRECORD)) {
@@ -58,6 +78,23 @@ class StoryController extends Controller
 
             $story->appendChild($record);
         }
+
+        $metadatas = [];
+
+        $titleFields = $request->request->get('name');
+
+        foreach ($titleFields as $db_metastructId => $value) {
+            $t = explode('-', $db_metastructId);
+            if ($t[0] == $collection->get_databox()->get_sbas_id()) {
+                $metadatas[] = [
+                    'meta_struct_id' => $t[1],
+                    'meta_id'        => null,
+                    'value'          => $value,
+                ];
+            }
+        }
+
+        $recordAdapter = $story->set_metadatas($metadatas);
 
         $storyWZ = new StoryWZ();
         $storyWZ->setUser($this->getAuthenticatedUser());
@@ -178,6 +215,8 @@ class StoryController extends Controller
             throw new \Exception('This is not a story');
         }
 
+        $this->setSessionFormToken('prodStoryReorder');
+
         return $this->renderResponse('prod/Story/Reorder.html.twig', [
             'story' => $story,
         ]);
@@ -185,6 +224,10 @@ class StoryController extends Controller
 
     public function reorderAction(Request $request, $sbas_id, $record_id)
     {
+        if (!$this->isCrsfValid($request, 'prodStoryReorder')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid form'], 403);
+        }
+
         try {
             $story = new \record_adapter($this->app, $sbas_id, $record_id);
             $previousDescription = $story->getRecordDescriptionAsArray();

@@ -22,7 +22,9 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
     public function register(Application $app)
     {
         $app['controller.worker.admin.configuration'] = $app->share(function (PhraseaApplication $app) {
-            return new AdminConfigurationController($app);
+            return (new AdminConfigurationController($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ;
         });
 
         // example of route to check webhook

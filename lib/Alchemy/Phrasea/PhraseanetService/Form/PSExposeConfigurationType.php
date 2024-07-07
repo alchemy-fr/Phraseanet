@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\PhraseanetService\Form;
 
+use Silex\Application;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception;
@@ -12,6 +13,13 @@ use Symfony\Component\Form\FormInterface;
 
 class PSExposeConfigurationType extends AbstractType implements DataMapperInterface
 {
+    private $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -26,7 +34,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
             ])
             ->add('exposes', CollectionType::class, [
                 'label'         => false,
-                'entry_type'    => PSExposeConnectionType::class,
+                'entry_type'    => new PSExposeConnectionType($this->app),
                 'prototype'     => true,
                 'allow_add'     => true,
                 'allow_delete'  => true,
@@ -67,7 +75,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
      *       exposes:
      *              expose_test:
      *                  activate_expose: true
-     *                  connection_kind: account
+     *                  connection_kind: password
      *                  expose_front_uri: 'localhost:8080'
      *                  expose_base_uri: 'localhost:8082'
      *                  client_secret: secret

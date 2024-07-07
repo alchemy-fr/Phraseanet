@@ -34,8 +34,9 @@ class EventProcessorFactory
         $this->registerFactory(WebhookEvent::ORDER_TYPE, new OrderNotificationProcessorFactory($app));
 
         $this->registerFactory(WebhookEvent::USER_TYPE, new UserProcessorFactory());
-        $this->registerCallableFactory(WebhookEvent::RECORD_SUBDEF_TYPE, function () {
-            return new SubdefEventProcessor();
+        $this->registerCallableFactory(WebhookEvent::RECORD_SUBDEF_TYPE, function ()  use ($app) {
+            return (new SubdefEventProcessor())
+                ->setApplicationBox($app['phraseanet.appbox']);
         });
         $this->registerCallableFactory(WebhookEvent::RECORD_TYPE, function () {
             return new RecordEventProcessor();

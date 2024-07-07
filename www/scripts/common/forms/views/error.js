@@ -33,7 +33,7 @@ define([
         },
         render: function () {
             if (this.errors.length > 0) {
-                var template = _.template($(this.errorTemplate).html(), {
+                var template = _.template($(this.errorTemplate).html())({
                     errors: this.errors
                 });
 

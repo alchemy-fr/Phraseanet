@@ -53,6 +53,10 @@
                     {{ 'admin::userlist: user in grace period only' | trans }}
                     <input type="checkbox"  name="filter_grace_period_only" {% if parm['filter_grace_period_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
                 </label>
+                <label class="checkbox">
+                    {{ 'admin::userlist: user with api application' | trans }}
+                    <input type="checkbox"  name="filter_with_api_only" {% if parm['filter_with_api_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                </label>
                 <br/><br/>
                 <span style="width:130px;display:inline-block;">{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
@@ -172,7 +176,7 @@
             </thead>
             <tbody>
                 {% for usr in users.get_results %}
-                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.getId()}}">
+                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %} {% if usr.getId() in previousSelectedUsers %} selected {% endif %}" id="user_{{usr.getId()}}">
                         <td style="text-align: center;">
                             {% if usr.isTemplate() %}
                                 <img title="{{ 'This is a template' | trans }}" src="/assets/common/images/icons/template.png"/>
@@ -240,6 +244,7 @@
             <input name="filter_model_only" value="{{parm.filter_model_only}}" type="hidden" />
             <input name="filter_mail_locked_only" value="{{parm.filter_mail_locked_only}}" type="hidden" />
             <input name="filter_grace_period_only" value="{{ parm.filter_grace_period_only }}" type="hidden" />
+            <input name="filter_with_api_only" value="{{ parm.filter_with_api_only }}" type="hidden" />
             <input name="inactives" value="{{parm.inactives}}" type="hidden" />
         </form>
 
@@ -301,6 +306,7 @@
                 <input name="filter_model_only" value="{{parm.filter_model_only}}" type="hidden" />
                 <input name="filter_mail_locked_only" value="{{parm.filter_mail_locked_only}}" type="hidden" />
                 <input name="filter_grace_period_only" value="{{ parm.filter_grace_period_only }}" type="hidden" />
+                <input name="filter_with_api_only" value="{{ parm.filter_with_api_only }}" type="hidden" />
                 <input name="inactives" value="{{parm.inactives}}" type="hidden" />
                 <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
             </fieldset>
@@ -324,6 +330,11 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            {% if previousSelectedUsers|length > 0 %}
+                var previousSelectedUsers = JSON.parse('{{ previousSelectedUsers | json_encode | raw | e('js')}}');
+                p4.users.sel = previousSelectedUsers;
+            {% endif %}
+
             $('.date_value').datepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -631,14 +642,15 @@
                     return false;
                 }
 
+                let withPreviousdatas = $('#users_page_form').serializeArray();
+                withPreviousdatas.push({name : 'users', value : users});
+
                 $('#right-ajax').empty().addClass('loading');
                 p4.users.sel = [];
                 $.ajax({
                     type: 'POST',
                     url: '../admin/users/rights/',
-                    data: {
-                        users: users
-                    },
+                    data: withPreviousdatas,
                     success: function (data) {
                         $('#right-ajax').removeClass('loading').html(data);
                     }

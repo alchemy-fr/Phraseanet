@@ -49,10 +49,13 @@ class StoryTransformer extends TransformerAbstract
     {
         $story = $storyView->getStory();
 
+        $resourceId = $this->recordTransformer->getResourceIdResolver()($story);
+
         return [
             '@entity@' => 'http://api.phraseanet.com/api/objects/story',
             'databox_id' => $story->getDataboxId(),
             'story_id' => $story->getRecordId(),
+            'resource_id' => $resourceId,
             'cover_record_id' => $story->getCoverRecordId(),
             'updated_on' => NullableDateTime::format($story->getUpdated()),
             'created_on' => NullableDateTime::format($story->getUpdated()),

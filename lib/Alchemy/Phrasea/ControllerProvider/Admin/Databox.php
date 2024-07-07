@@ -72,6 +72,7 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
             ->before([$this, 'requireManageRightOnSbas'])
             ->bind('admin_database_submit_collections_order');
 
+        /** @uses DataboxController::createCollection */
         $controllers->post('/{databox_id}/collection/', 'controller.admin.databox:createCollection')
             ->before([$this, 'requireManageRightOnSbas'])
             ->bind('admin_database_submit_collection');
@@ -97,6 +98,7 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
             ->before([$this, 'requireManageRightOnSbas'])
             ->bind('admin_database_display_document_details');
 
+        /** @uses DataboxController::mountCollection */
         $controllers->post('/{databox_id}/collection/{collection_id}/mount/', 'controller.admin.databox:mountCollection')
             ->assert('collection_id', '\d+')
             ->before([$this, 'requireManageRightOnSbas'])

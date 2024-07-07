@@ -36,7 +36,11 @@ const recordToolsModal = (services, datas, activeTab = false) => {
                 _onModalReady(data, window.toolsConfig, activeTab);
                 return;
             }
-        );
+        ).fail(function (data) {
+            if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                self.location.replace(self.location.href); // refresh will redirect to login
+            }
+        });
     };
 
 
@@ -51,6 +55,7 @@ const recordToolsModal = (services, datas, activeTab = false) => {
         $('.iframe_submiter', $scope).bind('click', function () {
             var form = $(this).closest('form');
             form.submit();
+            form.find('.resultAction').empty();
             form.find('.load').empty().html(localeService.t('loading') + ' ...');
             $('#uploadHdsub').contents().find('.content').empty();
             $('#uploadHdsub').load(function () {

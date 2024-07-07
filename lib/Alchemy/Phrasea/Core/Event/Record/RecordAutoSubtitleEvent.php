@@ -7,27 +7,21 @@ use Alchemy\Phrasea\Model\RecordInterface;
 class RecordAutoSubtitleEvent extends RecordEvent
 {
     private $languageSource;
-    private $metaStructureIdSource;
     private $languageDestination;
-    private $metaStructureIdDestination;
-    private $permalinkUrl;
+    private $authenticatedUserId;
 
     public function __construct(
         RecordInterface $record,
-        $permalinkUrl,
         $languageSource,
-        $metaStructureIdSource,
         $languageDestination,
-        $metaStructureIdDestination
+        $authenticatedUserId
     )
     {
         parent::__construct($record);
 
         $this->languageSource               = $languageSource;
-        $this->metaStructureIdSource        = $metaStructureIdSource;
         $this->languageDestination          = $languageDestination;
-        $this->metaStructureIdDestination   = $metaStructureIdDestination;
-        $this->permalinkUrl                 = $permalinkUrl;
+        $this->authenticatedUserId          = $authenticatedUserId;
     }
 
     public function getLanguageSource()
@@ -35,23 +29,13 @@ class RecordAutoSubtitleEvent extends RecordEvent
         return $this->languageSource;
     }
 
-    public function getMetaStructureIdSource()
-    {
-        return $this->metaStructureIdSource;
-    }
-
     public function getLanguageDestination()
     {
         return $this->languageDestination;
     }
 
-    public function getMetaStructureIdDestination()
+    public function getAuthenticatedUserId()
     {
-        return $this->metaStructureIdDestination;
-    }
-
-    public function getPermalinkUrl()
-    {
-        return $this->permalinkUrl;
+        return $this->authenticatedUserId;
     }
 }

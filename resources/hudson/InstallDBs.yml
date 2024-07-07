@@ -1,7 +1,7 @@
 database:
-  host: 127.0.0.1
+  host: db
   port: 3306
-  user: phraseanet
-  password: phraseanet
+  user: root
+  password: root
   ab_name: ab_setup_test
   db_name: db_setup_test

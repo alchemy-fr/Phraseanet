@@ -79,6 +79,23 @@ const searchAdvancedForm = (services) => {
             // if option is selected
             if ($this.val()) {
                 $this.siblings().prop('disabled', false);
+                let operatorEl = $this.siblings(".term_select_op");
+                let valueEl = $this.siblings(".term_select_value");
+
+                if ($this.find("option:selected").attr("data-fieldtype") == "number-FIELD") {
+                    operatorEl.find("option.number-operator").show();
+                    operatorEl.find("option.string-operator").hide();
+                    operatorEl.val('=');// set default operator
+                    valueEl.attr('type', "number");
+                    valueEl.attr('placeholder', 'Ex: 249');
+                } else {
+                    operatorEl.find("option.number-operator").hide();
+                    operatorEl.find("option.string-operator").show();
+                    operatorEl.val(':');// set default operator
+                    valueEl.removeAttr('pattern');
+                    valueEl.removeAttr('type');
+                    valueEl.attr('placeholder', 'Ex : Paris, bleu, montagne');
+                }
 
                 $('.term_select_multiple option').each((index, el) => {
                     let $el = $(el);
@@ -100,6 +117,15 @@ const searchAdvancedForm = (services) => {
             }
             $this.blur();
             checkFilters(true);
+        });
+
+        $(document).on('change', 'select.term_select_op', (event) => {
+            const $this = $(event.currentTarget);
+            if ($this.val() === 'set' || $this.val() === 'unset') {
+                $this.siblings('.term_select_value').prop('disabled', 'disabled');
+            } else {
+                $this.siblings('.term_select_value').prop('disabled', false);
+            }
         });
 
         $(document).on('click', '.term_deleter', (event) => {
@@ -176,6 +202,15 @@ const searchAdvancedForm = (services) => {
     };
 
     $('#ADVSRCH_DATE_SELECTORS input').change(function () {
+        checkFilters(true);
+    });
+
+    $('#ADVSRCH_FIELDS_ZONE input.see-real-field-name').change(function () {
+        if ($(this).prop('checked') === true) {
+            $(this).data('real-field', 'field_with_real_name');
+        } else {
+            $(this).data('real-field', 'field_without_real_name');
+        }
         checkFilters(true);
     });
 
@@ -297,13 +332,15 @@ const searchAdvancedForm = (services) => {
                 // at least one coll checked for this databox
                 // show again the relevant fields in "sort by" select
                 $('.db_' + sbas_id, fieldsSort).show().prop('disabled', false);
+
+                let realFieldClass = $('input.preferences-see-real-field-name').data('real-field');
                 // show again the relevant fields in "from fields" select
                 $('.db_' + sbas_id, fieldsSelect).show().prop('disabled', false);
-                $('.db_' + sbas_id, fieldsSelectFake).show().prop('disabled', false);
+                $('.db_' + sbas_id + '.' + realFieldClass, fieldsSelectFake).show().prop('disabled', false);
                 // show the sb
                 $('#ADVSRCH_SB_ZONE_' + sbas_id, container).show();
                 // show again the relevant fields in "date field" select
-                $('.db_' + sbas_id, dateFilterSelect).show().prop('disabled', false);
+                $('.db_' + sbas_id + '.' + realFieldClass, dateFilterSelect).show().prop('disabled', false);
             }
         });
 
@@ -537,8 +574,10 @@ const searchAdvancedForm = (services) => {
                 f.data('fieldtype', clause.clauses[j].type);
                 $('option[value="' + clause.clauses[j].field + '"]', f).prop('selected', true);
                 $('option[value="' + clause.clauses[j].operator + '"]', o).prop('selected', true);
-                o.prop('disabled', false);
-                v.val(clause.clauses[j].value).prop('disabled', false);
+                if (clause.clauses[j].operator === ":" || clause.clauses[j].operator === "=") {
+                    o.prop('disabled', false);
+                    v.val(clause.clauses[j].value).prop('disabled', false);
+                }
             }
         }
 

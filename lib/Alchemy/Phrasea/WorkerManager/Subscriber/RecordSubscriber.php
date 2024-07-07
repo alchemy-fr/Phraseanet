@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
@@ -27,6 +28,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordSubscriber implements EventSubscriberInterface
 {
+    use DataboxLoggerAware;
+
     /** @var MessagePublisher $messagePublisher */
     private $messagePublisher;
 
@@ -115,6 +118,9 @@ class RecordSubscriber implements EventSubscriberInterface
         /** @var WorkerRunningJob $workerRunningJob */
         $workerRunningJob = $repoWorker->find($event->getWorkerJobId());
 
+        $databox = $this->getApplicationBox()->get_databox($event->getRecord()->getDataboxId());
+        $record = $databox->getRecordRepository()->find($event->getRecord()->getRecordId());
+
         if ($workerRunningJob) {
             $em->beginTransaction();
             try {
@@ -122,6 +128,7 @@ class RecordSubscriber implements EventSubscriberInterface
                 $workerRunningJob
                     ->setInfo(WorkerRunningJob::ATTEMPT. ($event->getCount() - 1))
                     ->setStatus(WorkerRunningJob::ERROR)
+                    ->setFinished(new \DateTime('now'))
                     ->setFlock(null)            // unlock !
                 ;
 
@@ -132,6 +139,8 @@ class RecordSubscriber implements EventSubscriberInterface
             catch (Exception $e) {
                 $em->rollback();
             }
+
+            $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $event->getSubdefName(), \Session_Logger::EVENT_SUBDEFCREATION, new \DateTime('now'), WorkerRunningJob::ERROR);
         }
 
         $this->messagePublisher->publishRetryMessage(
@@ -154,6 +163,7 @@ class RecordSubscriber implements EventSubscriberInterface
     {
         $databoxId = $event->getDataboxId();
         $recordIds = $event->getRecordIds();
+        $acceptedMimeTypes = $this->app['conf']->get(['workers', 'writeMetadatas', 'acceptedMimeType'], []);
 
         foreach ($recordIds as $recordId) {
             $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
@@ -161,45 +171,54 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $databox = $this->getApplicationBox()->get_databox($databoxId);
             $record  = $databox->get_record($recordId);
-            $type    = $record->getType();
 
-            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            // do not try to write meta on non story record
+            if (!$record->isStory()) {
+                $type    = $record->getType();
 
-            if ($subdefGroupe !== null) {
-                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
-            } else {
-                $toWritemetaOriginalDocument = true;
-            }
+                $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
-            foreach ($mediaSubdefs as $subdef) {
-                // check subdefmetadatarequired  from the subview setup in admin
-                if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
-                    $payload = [
-                        'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                        'payload' => [
-                            'recordId'    => $recordId,
-                            'databoxId'   => $databoxId,
-                            'subdefName'  => $subdef->get_name()
-                        ]
-                    ];
+                if ($subdefGroupe !== null) {
+                    $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+                } else {
+                    $toWritemetaOriginalDocument = true;
+                }
 
-                    if ($subdef->is_physically_present()) {
-                        $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
-                    }
-                    else {
-                        $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
-                            $subdef->get_name(),
-                            MessagePublisher::WRITE_METADATAS_TYPE,
-                            json_encode($payload)
-                        );
-                        $this->messagePublisher->pushLog($logMessage);
+                foreach ($mediaSubdefs as $subdef) {
+                    // check subdefmetadatarequired  from the subview setup in admin
+                    // check if we want to write meta in this mime type
+                    if (in_array(trim($subdef->get_mime()), $acceptedMimeTypes) &&
+                        (
+                            ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
+                            $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
+                        )
+                    ) {
+                        $payload = [
+                            'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
+                            'payload' => [
+                                'recordId'    => $recordId,
+                                'databoxId'   => $databoxId,
+                                'subdefName'  => $subdef->get_name()
+                            ]
+                        ];
+                        if ($subdef->is_physically_present()) {
+                            $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
+                        }
+                        else {
+                            $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
+                                $subdef->get_name(),
+                                MessagePublisher::WRITE_METADATAS_TYPE,
+                                json_encode($payload)
+                            );
+                            $this->messagePublisher->pushLog($logMessage);
 
-                        $this->messagePublisher->publishRetryMessage(
-                            $payload,
-                            MessagePublisher::WRITE_METADATAS_TYPE,
-                            2,
-                            'Subdef is not physically present!'
-                        );
+                            $this->messagePublisher->publishRetryMessage(
+                                $payload,
+                                MessagePublisher::WRITE_METADATAS_TYPE,
+                                2,
+                                'Subdef is not physically present!'
+                            );
+                        }
                     }
                 }
             }
@@ -252,6 +271,7 @@ class RecordSubscriber implements EventSubscriberInterface
                     // count-1  for the number of finished attempt
                     $workerRunningJob
                         ->setInfo(WorkerRunningJob::ATTEMPT. ($event->getCount() - 1))
+                        ->setFinished(new \DateTime('now'))
                         ->setStatus(WorkerRunningJob::ERROR)
                     ;
 
@@ -262,6 +282,11 @@ class RecordSubscriber implements EventSubscriberInterface
                 catch (Exception $e) {
                     $em->rollback();
                 }
+
+                $databox = $this->getApplicationBox()->get_databox($event->getRecord()->getDataboxId());
+                $record = $databox->getRecordRepository()->find($event->getRecord()->getRecordId());
+
+                $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $event->getSubdefName(), \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
             }
 
             $this->messagePublisher->publishRetryMessage(
@@ -273,6 +298,8 @@ class RecordSubscriber implements EventSubscriberInterface
 
         }
         else {
+            $acceptedMimeTypes = $this->app['conf']->get(['workers', 'writeMetadatas', 'acceptedMimeType'], []);
+
             $databoxId = $event->getRecord()->getDataboxId();
             $recordId = $event->getRecord()->getRecordId();
 
@@ -291,7 +318,13 @@ class RecordSubscriber implements EventSubscriberInterface
             }
 
             //  only the required writemetadata from admin > subview setup is to be writing
-            if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+            //  check if we want to write meta in this mime type
+            if (in_array($subdef->get_mime(), $acceptedMimeTypes) &&
+                (
+                    ($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) ||
+                    $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())
+                )
+            ) {
                 $payload = [
                     'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                     'payload' => [

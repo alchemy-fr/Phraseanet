@@ -18,6 +18,7 @@ interface OptionType
     const TYPE_BOOLEAN = 'Boolean';
     const TYPE_MULTI = 'Multi';
     const TYPE_TEXT = 'Text';
+    const TYPE_ENUM_BUTTON = 'EnumButton';
 
     public function getDisplayName();
 

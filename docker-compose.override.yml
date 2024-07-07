@@ -5,8 +5,11 @@ services:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
-    networks:
-      - internal
+  gateway-traefik:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
   builder:
     build:
       context: .
@@ -96,8 +99,15 @@ services:
 
   w-exportMail:
     volumes:
-    - ../:/var/alchemy
-    - .:/var/alchemy/Phraseanet
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  w-downloadAsync:
+    volumes:
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
     networks:
       - internal
 
@@ -179,6 +189,13 @@ services:
       - internal
 
   scheduler:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
+  cmd:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet

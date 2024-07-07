@@ -719,6 +719,17 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function isShareExpires()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isShareExpires', []);
+
+        return parent::isShareExpires();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getVoteString(\Alchemy\Phrasea\Application $app, \Alchemy\Phrasea\Model\Entities\User $user)
     {
 

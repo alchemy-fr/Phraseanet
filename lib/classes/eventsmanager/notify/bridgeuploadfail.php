@@ -44,7 +44,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 
         $ret = [
             'text'  => $this->app->trans("L'upload concernant le record %title% sur le compte %bridge_name% a echoue pour les raisons suivantes : %reason%", [
-                '%title%' => $record->get_title(),
+                '%title%' => $record->get_title(['encode'=> record_adapter::ENCODE_FOR_HTML]),
                 '%bridge_name%' => $account->get_api()->get_connector()->get_name(),
                 '%reason%' => $reason
             ])

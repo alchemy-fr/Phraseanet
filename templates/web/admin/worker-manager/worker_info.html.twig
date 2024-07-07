@@ -62,11 +62,11 @@
                 <a data-value="PT3H">{{ '3h' | trans }}</a>-
                 <a data-value="PT12H">{{ '12h' | trans }}</a>-
                 <a data-value="P1D">{{ '1d' | trans }}</a>-
-                <a data-value="P3D">{{ '3d' | trans }}</a>-
+                <a data-value="P3D" class="active">{{ '3d' | trans }}</a>-
                 <a data-value="P7D">{{ '1w' | trans }}</a>-
                 <a data-value="P14D">{{ '2w' | trans }}</a>-
                 <a data-value="P1M">{{ '1m' | trans }}</a>-
-                <a data-value="" class="active">{{ 'all' | trans }}</a>
+                <a data-value="">{{ 'all' | trans }}</a>
             </span>
             <span class="real-entry-duration" style="color:#2d7979;">{{ realEntryDuration }}</span>
         </div>
@@ -88,6 +88,10 @@
         </label>
         <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
             <span class="result-count" style="margin-left: 40px;">{{ resultCount }} / {{ resultTotal }}</span> <span style="margin-left: 10px;">{{ "job::tab results" | trans }}</span>
+        </span>
+
+        <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
+            <span class="average-duration" style="margin-left: 40px;">{{ averageDuration }}</span> <span style="margin-left: 10px;">{{ "job::tab average duration" | trans }}</span>
         </span>
 
         <span class="pull-right" style="margin-top: 5px;margin-right: 20px;">
@@ -202,6 +206,7 @@
                     $(".result-count").empty().text(data.resultCount + ' / ' + data.resultTotal);
                     $(".total-count").empty().text(data.totalCount);
                     $(".total-duration").empty().text(data.totalDuration);
+                    $(".average-duration").empty().text(data.averageDuration);
                     $(".real-entry-duration").empty().text(data.realEntryDuration);
                 }
             });

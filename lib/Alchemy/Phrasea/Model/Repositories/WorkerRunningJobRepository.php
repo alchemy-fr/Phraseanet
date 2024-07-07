@@ -452,7 +452,7 @@ class WorkerRunningJobRepository extends EntityRepository
         return $q->getResult();
     }
 
-    public function getJobCount(array $status, $jobType, $databoxId, $recordId)
+    public function getJobCount(array $status, $jobType, $databoxId, $recordId, $fieldTimeFilter, $dateTimeFilter = null)
     {
         $qb = $this->createQueryBuilder('w');
         $qb->select('count(w)');
@@ -476,6 +476,12 @@ class WorkerRunningJobRepository extends EntityRepository
                 ->setParameter('recordId', $recordId);
         }
 
+        if ($dateTimeFilter instanceof DateTime) {
+            // published or created column
+            $qb->andWhere('w.' .$fieldTimeFilter. ' >= :dateTimeFilter')
+                ->setParameter('dateTimeFilter', $dateTimeFilter->format('Y-m-d H:i:s'));
+        }
+
         return  $qb->getQuery()->getSingleScalarResult();
     }
 
@@ -483,7 +489,9 @@ class WorkerRunningJobRepository extends EntityRepository
     {
         $sql = '
             UPDATE WorkerRunningJob w
-            SET w.status = :canceled
+            SET w.status = :canceled,
+            w.finished = NOW(),
+            w.flock = NULL
             WHERE w.status = :running
             AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
         ;
@@ -495,7 +503,7 @@ class WorkerRunningJobRepository extends EntityRepository
         ]);
     }
 
-    public function getRunningSinceCreated($hour = 0)
+    public function getRunningSinceCreated($hour = 0, array $action = null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\WorkerRunningJob', 'w');
@@ -507,6 +515,11 @@ class WorkerRunningJobRepository extends EntityRepository
             WHERE w.status = :running
             AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
         ;
+
+        if ($action != null) {
+            $action = join('" ,"', $action);
+            $sql .= '  AND work IN("' . $action . '")';
+        }
 
         $q = $this->_em->createNativeQuery($sql, $rsm);
         $q->setParameters([

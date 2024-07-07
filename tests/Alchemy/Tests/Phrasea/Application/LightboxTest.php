@@ -292,13 +292,15 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $validationBasket = $app['orm.em']->find('Phraseanet:Basket', 4);
         $validationBasketElement = $validationBasket->getElements()->first();
 
-        $client->request('POST', '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/');
+        $randomValue = $this->setSessionFormToken('lightbox');
+
+        $client->request('POST', '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/', ['lightbox_token'  => $randomValue]);
         $this->assertEquals(400, $client->getResponse()->getStatusCode());
 
         $client->request(
             'POST'
             , '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/'
-            , ['note' => 'une jolie note']
+            , ['note' => 'une jolie note', 'lightbox_token'  => $randomValue]
         );
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));

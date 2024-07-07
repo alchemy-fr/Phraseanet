@@ -1,0 +1,16 @@
+{% if app['conf'].get(['main', 'cookieconsent', 'axeptio', 'enabled']) %}
+    <script>
+        window.axeptioSettings = {
+            clientId: "{{ app['conf'].get(['main', 'cookieconsent', 'axeptio', 'axeptio_id']) }}",
+            {% if app['conf'].get(['main', 'cookieconsent', 'axeptio', 'axeptio_version_' ~ app['locale']]) %}
+            cookiesVersion: "{{ app['conf'].get(['main', 'cookieconsent', 'axeptio', 'axeptio_version_' ~ app['locale']]) }}"
+            {% endif %}
+        };
+
+        (function(d, s) {
+            var t = d.getElementsByTagName(s)[0], e = d.createElement(s);
+            e.async = true; e.src = "//static.axept.io/sdk.js";
+            t.parentNode.insertBefore(e, t);
+        })(document, "script");
+    </script>
+{% endif %}

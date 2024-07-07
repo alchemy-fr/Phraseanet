@@ -2073,6 +2073,14 @@
             <default>1</default>
             <comment></comment>
           </field>
+          <field>
+            <name>input_disable</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -2572,7 +2580,7 @@
           </field>
           <field>
             <name>action</name>
-            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','')</type>
+            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','subdefCreation','writeMetadatas','')</type>
             <null></null>
             <extra></extra>
             <default></default>

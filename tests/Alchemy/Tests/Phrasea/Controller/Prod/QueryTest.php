@@ -29,11 +29,12 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
             ->getMock();
 
         self::$DI['app']['manipulator.user'] = $userManipulator;
+        $randomValue = $this->setSessionFormToken('searchForm');
 
         $userManipulator->expects($this->once())->method('logQuery');
 
         $client = $this->getClient();
-        $client->request('POST', $route);
+        $client->request('POST', $route, ['searchForm_token' => $randomValue]);
 
         $response = $client->getResponse();
         $this->assertEquals('application/json', $response->headers->get('Content-type'));

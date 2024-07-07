@@ -111,7 +111,8 @@
 
 <div>
   {% if main_user is not empty %}
-    <h4>{{ main_user.getDisplayName() ~ ' ( ' ~ main_user.getId() ~' )'}}</h4>
+    {% set lastConnection = main_user.getLastConnection() is not null ? main_user.getLastConnection() | date('Y-m-d  H:i:s') : ' - ' %}
+    <h4>{{ main_user.getDisplayName() ~ ' ( id : ' ~ main_user.getId() ~' )   ' ~  'admin::compte-utilisateur derniere connexion' | trans ~ ' :  ' ~ lastConnection }}</h4>
   {% endif %}
 
   <div class="tabs PNB" style="bottom:40px;">
@@ -581,12 +582,21 @@
         </form>
 
         <div>
-          <label for="lock" style="margin-right: 20px;display:inline-block;">Email locked</label>
+          <label for="lock" style="margin-right: 20px;display:inline-block;min-width: 150px;">Email locked</label>
           <input type="radio" id="lock" name="email-locked" value="locked" style="margin-right: 10px;"
                   {% if main_user.isMailLocked() %} checked {% endif %}>
           <input type="radio" id="unlock" name="email-locked" value="unlock" style="margin-left: 10px;"
                   {% if not main_user.isMailLocked() %} checked {% endif %}>
           <label for="unlock" style="margin-left: 20px;display:inline-block;">Email unlocked</label>
+        </div>
+
+        <div style="margin-top: 15px;">
+          <label for="can-renew" style="margin-right: 20px;display:inline-block;min-width: 150px;">can renew password</label>
+          <input type="radio" id="can-renew" name="can-renew-password" value="can-renew" style="margin-right: 10px;"
+                  {% if main_user.canRenewPassword() %} checked {% endif %}>
+          <input type="radio" id="cannot-renew" name="can-renew-password" value="cannot-renew" style="margin-left: 10px;"
+                  {% if not main_user.canRenewPassword() %} checked {% endif %}>
+          <label for="cannot-renew" style="margin-left: 20px;display:inline-block;">can not renew password</label>
         </div>
 
         <div style="margin-top: 20px;">
@@ -929,6 +939,25 @@
         $element.removeClass('mixed checked unchecked').addClass(newclass);
       }
 
+      function getPreviousPageAfterEdit() {
+        let previousDatas = JSON.parse('{{ previousParam | json_encode | raw }}');
+        // if there is no previousData.page so it's from connected user
+        if (previousDatas.page === undefined) {
+          $.get("{{ path('admin_connected_users') }}", function (data) {
+            $('#right-ajax').removeClass('loading').html(data);
+          });
+        } else {
+          $.ajax({
+            type: 'POST',
+            url:  "{{ path('admin_users_search') }}",
+            data: previousDatas,
+            success: function (data) {
+              $('#right-ajax').removeClass('loading').empty().html(data);
+            }
+          });
+        }
+      }
+
       $('#users_rights_form div.switch_right').bind('click', function (event) {
         user_click_box(event, $(this));
       });
@@ -948,10 +977,11 @@
             dataType: 'json',
             data: datas,
             success: function (data) {
-              if (!data.error)
-                $('a.zone_editusers').trigger('click');
-              else
+              if (!data.error) {
+                getPreviousPageAfterEdit();
+              } else {
                 alert(data.message);
+              }
             }
           });
         };
@@ -966,12 +996,10 @@
       });
 
       $('#right-ajax .users_rights_cancel').bind('click', function () {
-        var $this = $(this);
         $('#right-ajax').empty().addClass('loading').parent().show();
         $('#right').hide();
-        $.get($this.attr('href'), function (data) {
-          $('#right-ajax').removeClass('loading').html(data);
-        });
+
+        getPreviousPageAfterEdit();
 
         return false;
       });
@@ -1479,6 +1507,21 @@
         $.ajax({
           type: 'POST',
           url: '/admin/users/mail-locked/change/',
+          dataType: 'json',
+          data: {
+            user_id: {{ main_user.getId() }},
+            action: $this.val()
+          },
+          success: function (data) {
+          }
+        });
+      });
+
+      $('input[type=radio][name="can-renew-password"]').change( function() {
+        let $this = $(this);
+        $.ajax({
+          type: 'POST',
+          url: '/admin/users/can-renew-password/change/',
           dataType: 'json',
           data: {
             user_id: {{ main_user.getId() }},

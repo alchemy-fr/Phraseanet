@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Alchemy\Phrasea\Out\Module\PDFRecords;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -43,9 +44,11 @@ class PrinterController extends Controller
         $r = RecordsRequest::fromRequest($this->app, $request, false);
 
         if ($r->isSingleStory()) {
-            $pdfTitle = $r->singleStory()->get_title();
+            $pdfTitle = $r->singleStory()->get_title(['encode'=> record_adapter::ENCODE_NONE]);
             $storyId = $r->singleStory()->getId();
         }
+
+        $this->setSessionFormToken('prodPrint');
 
         return $this->render('prod/actions/printer_default.html.twig', [
             'printer' => $printer,
@@ -58,6 +61,10 @@ class PrinterController extends Controller
 
     public function printAction(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodPrint')) {
+            $this->app->abort(403);
+        }
+
         $printer = new RecordHelper\Printer($this->app, $request);
         $printer->setThumbnailName($request->request->get('thumbnail-chosen'));
         $printer->setPreviewName($request->request->get('preview-chosen'));

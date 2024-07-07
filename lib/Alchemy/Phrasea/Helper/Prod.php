@@ -91,19 +91,27 @@ class Prod extends Helper
                 $id = $fieldMeta->get_id();
                 $name = $fieldMeta->get_name();
                 $type = $fieldMeta->get_type();
+                $label = $fieldMeta->get_label($this->app['locale']);
 
                 $data = array(
                     'sbas' => array($sbasId),
                     'fieldname' => $name,
                     'type' => $type,
+                    'label' => ($name === $label) ? [] : [trim($label)],
                     'id' => $id
                 );
 
                 if ($fieldMeta->get_type() === \databox_field::TYPE_DATE) {
                     if (!array_key_exists($name, $dates)) {
                         $dates[$name] = array('sbas' => array());
+                        $dates[$name]['fieldname'] = $name;
                     }
                     $dates[$name]['sbas'][] = $sbasId;
+
+                    // add different label for the same field if exist
+                    if ($name !== $label && (!isset($dates[$name]['label']) || !in_array(strtolower($label), array_map('strtolower', $dates[$name]['label'])))) {
+                        $dates[$name]['label'][] = trim($label);
+                    }
                 }
 
                 if (array_key_exists($type, $sort)) {  // TYPE_STRING, TYPE_NUMBER or TYPE_DATE
@@ -117,6 +125,11 @@ class Prod extends Helper
 
                 if (isset($fields[$name])) {
                     $fields[$name]['sbas'][] = $sbasId;
+
+                    // add different label for the same field if exist
+                    if ($name !== $label && (!in_array(strtolower($label), array_map('strtolower', $fields[$name]['label'])))) {
+                        $fields[$name]['label'][] = trim($label);
+                    }
                 } else {
                     $fields[$name] = $data;
                 }
@@ -138,8 +151,25 @@ class Prod extends Helper
             $elasticSort = $searchSet['elasticSort'];
         }
 
-        $searchData['fields'] = $fields;
-        $searchData['dates'] = $dates;
+        $allSbasId = array_map(function ($db) {
+            return $db->get_sbas_id();
+        }, $acl->get_granted_sbas());
+
+        // add default field date
+        $dates['updated_on']['sbas'] = $allSbasId;
+        $dates['updated_on']['fieldname'] = 'updated_on';
+        $dates['updated_on']['label'][] = $this->app->trans('updated_on');
+        $dates['created_on']['sbas'] = $allSbasId;
+        $dates['created_on']['fieldname'] = 'created_on';
+        $dates['created_on']['label'][] = $this->app->trans('created_on');
+
+        $f = $this->getLabels($fields);
+        $d = $this->getLabels($dates);
+
+        $searchData['fields'] = $f['labelWithoutName'];
+        $searchData['fieldsWithName'] = $f['labelWithName'];
+        $searchData['dates'] = $d['labelWithoutName'];
+        $searchData['datesWithName'] = $d['labelWithName'];
         $searchData['bases'] = $bases;
         $searchData['sort'] = array_map(function($v){ksort($v, SORT_NATURAL);return $v;}, $sort); // sort by name of field
         $searchData['elasticSort'] = $elasticSort;
@@ -150,5 +180,29 @@ class Prod extends Helper
     public function getRandom()
     {
         return md5(time() . mt_rand(100000, 999999));
+    }
+
+    private function getLabels($fields)
+    {
+        $labelWithName = $labelWithoutName = [];
+
+        foreach ($fields as $name => $field) {
+            if (empty($field['label'])) {
+                $labelWithoutName[$name] =  $field;
+                $labelWithName[$name] = $field;
+            } else {
+                $labelWithoutName[implode('  |  ', $field['label'])] =  $field;
+                $labelWithName[implode('  |  ', $field['label']) . ' ( '. $name . ' ) '] = $field;
+            }
+        }
+
+        // sort ASC by label merged
+        ksort($labelWithName, SORT_STRING | SORT_FLAG_CASE);
+        ksort($labelWithoutName, SORT_STRING | SORT_FLAG_CASE);
+
+        return [
+            'labelWithName' => $labelWithName,
+            'labelWithoutName' => $labelWithoutName
+        ];
     }
 }

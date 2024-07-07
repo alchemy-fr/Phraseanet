@@ -72,6 +72,7 @@ class SearchengineSubscriber implements EventSubscriberInterface
                 // count-1  for the number of finished attempt
                 $workerRunningJob
                     ->setInfo(WorkerRunningJob::ATTEMPT. ($event->getCount() - 1))
+                    ->setFinished(new \DateTime('now'))
                     ->setStatus(WorkerRunningJob::ERROR)
                 ;
 

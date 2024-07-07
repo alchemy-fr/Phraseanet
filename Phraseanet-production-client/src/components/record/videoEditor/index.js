@@ -26,7 +26,6 @@ const recordVideoEditorModal = (services, datas, activeTab = false) => {
             openModal(datas, activeTab);
         });
     };
-    initialize();
 
     toolsStream.subscribe((params) => {
         switch (params.action) {
@@ -88,7 +87,7 @@ const recordVideoEditorModal = (services, datas, activeTab = false) => {
         }
     };
 
-    return {openModal};
+    return { initialize, openModal };
 };
 
 export default recordVideoEditorModal;

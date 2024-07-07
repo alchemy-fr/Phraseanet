@@ -1,11 +1,11 @@
-<form method="POST" action="{{ path('prod_stories_do_create') }}">
+<form method="POST" action="{{ path('prod_stories_do_create') }}" style="height:400px;overflow-y: scroll;">
     <input type="hidden" id="multiple_databox" value="{{ isMultipleDataboxes }}" />
 
     <label>{{ 'Collection' | trans }}</label>
     <select name="base_id">
         <option value="">{{ 'prod::story select collection ...' | trans }}</option>
         {% for collection in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADDRECORD')]) %}
-            <option
+            <option data-sbas="{{ collection.get_databox().get_sbas_id() }}"
                     {% if not ismultipleDataboxes and databoxId != collection.get_databox().get_sbas_id() and databoxId != 0 %}
                         class="not-selected-db"
                     {% endif %}
@@ -21,6 +21,21 @@
         {% endfor %}
     </select>
 
+    <label class="create-story-name-title" style="margin-top: 30px;margin-bottom: 30px; {% if databoxId == 0 %} display:none; {% endif %}">
+        {{ 'Story name field' | trans }}
+    </label>
+
+    {% for sbasId, fieldList in storyTitleMetaStructIds %}
+        {% for field in fieldList %}
+            <div class="create-story-name sbas-{{ sbasId }} {% if databoxId != 0 and databoxId != sbasId %} not-selected-db {% endif %}" >
+                <label style="width: 150px;display: inline-block;">
+                    {{ field.label }}
+                </label>
+                <input name="name[{{ sbasId ~ '-' ~ field.meta_struct_id }}]" value="" type="text" style="width: 382px;"/>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     {% if isMultipleDataboxes %}
         <div style="margin-top: 20px;margin-bottom: 5px;">{{ 'prod:story:selected elements are from different databox and cannot be added to the story' | trans }}</div>
     {% endif %}
@@ -28,5 +43,5 @@
         <input {% if isMultipleDataboxes %} disabled {% endif %} type="checkbox" name="lst" value="" id="new_story_add_sel"/>
         {{ 'Ajouter ma selection courrante' | trans }}
     </label>
-
+    <input type="hidden" name="prodCreateStory_token" value="{{ app['session'].get('prodCreateStory_token') }}">
 </form>

@@ -23,7 +23,9 @@ use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
+use record_adapter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,12 +33,14 @@ class RecordController extends Controller
 {
     use EntityManagerAware;
     use SearchEngineAware;
+
     /**
      * Get record detailed view
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
+     * @throws \Exception
      */
     public function getRecord(Request $request)
     {
@@ -92,14 +96,7 @@ class RecordController extends Controller
         }
         $recordCaptions["technicalInfo"] = $record->getPositionFromTechnicalInfos();
 
-        //  escape record title before rendering
-        $recordTitle = explode("</span>", $record->get_title());
-        if (count($recordTitle) >1) {
-            $recordTitle[1] = htmlspecialchars($recordTitle[1]);
-            $recordTitle = implode("</span>", $recordTitle);
-        } else {
-            $recordTitle = htmlspecialchars($record->get_title());
-        }
+        $recordTitle = $this->render('prod/preview/title.html.twig', ['record' => $record]);
 
         $containerType = null;
 
@@ -207,7 +204,7 @@ class RecordController extends Controller
 
     public function getRecordById($sbasId, $recordId)
     {
-        $record = new \record_adapter($this->app, $sbasId, $recordId);
+        $record = new record_adapter($this->app, $sbasId, $recordId);
         return $this->app->json([
             "html_preview"  => $this->render('common/preview.html.twig', [
                 'record'        => $record
@@ -227,6 +224,10 @@ class RecordController extends Controller
      */
     public function doDeleteRecords(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'prodDeleteRecord')) {
+            return $this->app->json(['success' => false , 'message' => 'invalid delete form'], 403);
+        }
+
         $records = RecordsRequest::fromRequest(
             $this->app,
             $request,
@@ -244,7 +245,7 @@ class RecordController extends Controller
 
         $manager = $this->getEntityManager();
 
-        /** @var \record_adapter $record */
+        /** @var record_adapter $record */
         foreach ($records as $record) {
             try {
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
@@ -354,6 +355,8 @@ class RecordController extends Controller
             'deletableCount' => count($filteredRecords['delete'])
         ];
 
+        $this->setSessionFormToken('prodDeleteRecord');
+
         return $this->render(
             'prod/actions/delete_records_confirm.html.twig',
             $viewParms
@@ -378,7 +381,7 @@ class RecordController extends Controller
 
         $trashCollectionsBySbasId = [];
         foreach ($records as $record) {
-            /** @var \record_adapter $record */
+            /** @var record_adapter $record */
             $sbasId = $record->getDatabox()->get_sbas_id();
             if (!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
                 $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
@@ -407,7 +410,7 @@ class RecordController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      * @throws \Alchemy\Phrasea\Cache\Exception
      */
     public function renewUrl(Request $request)

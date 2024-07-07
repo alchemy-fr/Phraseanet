@@ -63,6 +63,9 @@ rabbitmq:
 http:
   max_body_size: 2G
   max_input_vars: 12000
+  gateway_allowed_ips:
+  gateway_denied_ips:
+  gateway_users:
 
 php:
   opcache_enabled: 1
@@ -90,6 +93,8 @@ app:
   phraseanet_app_port: 80
   phraseanet_scheme: http
   phraseanet_trusted_proxies:
+  phraseanet_maintenance: 0
+  phraseanet_maintenance_message:
   gateway:
     resources:
       requests:

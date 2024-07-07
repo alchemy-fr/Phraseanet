@@ -104,6 +104,10 @@ class RootController extends Controller
             'actionbar' => $filter('actionbar'),
         ];
 
+        $this->setSessionFormToken('searchForm');
+        $this->setSessionFormToken('prodExposeNew');
+        $this->setSessionFormToken('prodTabThesaurus');
+
         return $this->render('prod/index.html.twig', [
             'module_name'          => 'Production',
             'WorkZone'             => new WorkzoneHelper($this->app, $request),

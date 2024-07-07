@@ -11,7 +11,6 @@ import recordPublish from '../../record/publish';
 import recordToolsModal from '../../record/tools/index';
 import printRecord from '../../record/print';
 import bridgeRecord from '../../record/bridge';
-import videoToolsModal from '../../record/videoEditor/index';
 import merge from 'lodash.merge';
 import * as _ from "underscore";
 
@@ -165,13 +164,6 @@ const toolbar = (services) => {
                 default:
             }
             $el.data('action-state', !state);
-        });
-
-        /**
-         * tools > Edit > VideoEditor
-         */
-        $container.on('click', '.video-tools-record-action', function (event) {
-            _triggerModal(event, videoToolsModal(services).openModal, false);
         });
 
         /**

@@ -13,6 +13,7 @@ use Symfony\Component\Yaml\Yaml;
 class ConfigurationEditor extends Command
 {
     private $noCompile = false;
+    private $quiet = false;
 
     public function __construct($name)
     {
@@ -47,6 +48,7 @@ class ConfigurationEditor extends Command
         $command = $input->getArgument('operation');
         $parameter = $input->getArgument('parameter');
         $this->noCompile = $input->getOption('no-compile');
+        $this->quiet = $input->getOption('quiet');
 
         $parameterNodes = explode('.', $parameter);
 
@@ -86,7 +88,9 @@ class ConfigurationEditor extends Command
             $current = $current[$paramName];
         }
 
-        $output->writeln('<info>Getting configuration entry</info> ' . $parameter);
+        if (!$this->quiet) {
+            $output->writeln('<info>Getting configuration entry</info> ' . $parameter);
+        }
 
         $this->printConfigurationValue($output, $parameter, $current);
     }
@@ -102,7 +106,9 @@ class ConfigurationEditor extends Command
         $configurationRoot = $configurationStore->getConfig();
         $configurationCurrent = & $configurationRoot;
 
-        $output->writeln('<info>Writing value to configuration entry</info> ' . $parameter);
+        if (!$this->quiet) {
+            $output->writeln('<info>Writing value to configuration entry</info> ' . $parameter);
+        }
 
         foreach ($parameterNodes as $paramName) {
             if (! isset($configurationCurrent[$paramName])) {
@@ -123,7 +129,9 @@ class ConfigurationEditor extends Command
             $configurationStore->compileAndWrite();
         }
 
-        $output->writeln('<comment>Reading updated configuration value</comment>');
+        if (!$this->quiet) {
+            $output->writeln('<comment>Reading updated configuration value</comment>');
+        }
 
         $this->readConfigurationValue($output, $parameter, $parameterNodes);
     }
@@ -139,7 +147,9 @@ class ConfigurationEditor extends Command
         $configurationRoot = $configurationStore->getConfig();
         $configurationCurrent = & $configurationRoot;
 
-        $output->writeln('<info>Appending value to configuration entry</info> ' . $parameter);
+        if (!$this->quiet) {
+            $output->writeln('<info>Appending value to configuration entry</info> ' . $parameter);
+        }
 
         foreach ($parameterNodes as $paramName) {
             if (! isset($configurationCurrent[$paramName])) {
@@ -170,21 +180,25 @@ class ConfigurationEditor extends Command
             $configurationStore->compileAndWrite();
         }
 
-        $output->writeln('<comment>Reading updated configuration value</comment>');
+        if (!$this->quiet) {
+            $output->writeln('<comment>Reading updated configuration value</comment>');
+        }
 
         $this->readConfigurationValue($output, $parameter, $parameterNodes);
     }
 
     private function printConfigurationValue(OutputInterface $output, $name, $value, $indent = 0)
     {
-        if ($indent > 0) {
+        if ($indent > 0 && !$this->quiet) {
             $output->write(PHP_EOL);
         }
 
-        $output->write(str_repeat(' ', $indent * 4) . (is_numeric($name) ? '- ' : $name . ': '));
+        if (!$this->quiet) {
+            $output->write(str_repeat(' ', $indent * 4) . (is_numeric($name) ? '- ' : $name . ': '));
+        }
 
         if (is_array($value)) {
-            if (empty($value)) {
+            if (empty($value) && !$this->quiet) {
                 $output->write('[]');
             }
 
@@ -193,7 +207,9 @@ class ConfigurationEditor extends Command
             }
         }
         else {
-            $output->write(var_export($value));
+            if (!$this->quiet) {
+                $output->write(var_export($value));
+            }
         }
 
         if ($indent == 0) {

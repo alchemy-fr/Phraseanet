@@ -36,18 +36,18 @@ class CleanUsersCommand extends Command
         parent::__construct('clean:users');
 
         $this
-            ->setDescription('ALPHA - Delete "sleepy" users (not connected since a long time)')
+            ->setDescription('BETA - Delete "sleepy" users (not connected since a long time)')
             ->addOption('inactivity_period', null, InputOption::VALUE_REQUIRED,                             'cleanup older than \<inactivity_period> days')
             ->addOption('usertype',       null, InputOption::VALUE_REQUIRED,                             'can specify type of user to clean, if not set types ghost, basket_owner, basket_participant, story_owner are included')
             ->addOption('grace_duration',       null, InputOption::VALUE_REQUIRED,                             'grace period in days after sending email')
-            ->addOption('max_relances',       null, InputOption::VALUE_REQUIRED,                             'number of email relance')
+            ->addOption('max_relances',       null, InputOption::VALUE_REQUIRED,                             'number of email reminders, if 0 no email sent, no grace email, no account deletion confirmation email')
             ->addOption('remove_basket', null, InputOption::VALUE_NONE,                                 'remove basket for user')
             ->addOption('dry-run',        null, InputOption::VALUE_NONE,                                 'dry run, list result users')
             ->addOption('show_sql',   null, InputOption::VALUE_NONE,                                 'show sql pre-selecting users')
             ->addOption('yes',        'y',  InputOption::VALUE_NONE,                                 'don\'t ask for confirmation')
 
             ->setHelp(
-                ""
+                "example : <info>bin/maintenance clean:user --dry-run --inactivity_period=90 --grace_duration=7 --max_relances=3 --remove_basket -y</info>"
                 . "\<INACTIVITY_PERIOD> <info>integer to specify the number of inactivity days, value not 0 (zero)</info>\n"
                 . "\<USERTYPE>can specify the only type of user to be clean  : \n"
                 . "- <info>admin</info> \n"
@@ -56,6 +56,7 @@ class CleanUsersCommand extends Command
                 . "- <info>basket_owner</info> \n"
                 . "- <info>basket_participant</info> \n"
                 . "- <info>story_owner</info> \n"
+                . "\<MAX_RELANCES><info> number of email reminders before deleting the user, if 0 no email sent</info> "
             );
     }
 
@@ -93,7 +94,7 @@ class CleanUsersCommand extends Command
             return 1;
         }
 
-        $clauses[] = sprintf("`last_connection` < DATE_SUB(NOW(), INTERVAL %d day)", $inactivityPeriod);
+        $clauses[] = sprintf("((`last_connection` IS NULL AND `Users`.`created` <  DATE_SUB(NOW(), INTERVAL %d day)) OR (`last_connection` < DATE_SUB(NOW(), INTERVAL %d day)))", $inactivityPeriod, $inactivityPeriod);
 
         $sql_where_u = 1;
         $sql_where_ub = 1;
@@ -210,11 +211,12 @@ class CleanUsersCommand extends Command
                     $isValidMail = false;
                 }
 
-                if (empty($lastInactivityEmail) || $lastInactivityEmail < $nowDate) {
+                // compare on the day date
+                if (empty($lastInactivityEmail) || $lastInactivityEmail->format('Y-m-d') <= $nowDate->format('Y-m-d')) {
                     // first, relance the user by email to have a grace period
                     if (($nbRelance < $maxRelances) && $isValidMail) {
                         if (!$dry) {
-                            $this->relanceUser($user, $graceDuration);
+                            $this->relanceUser($user, ($maxRelances - $nbRelance) * $graceDuration);
                             $user->setNbInactivityEmail($nbRelance+1);
                             $user->setLastInactivityEmail(new \DateTime());
                             $userManipulator->updateUser($user);
@@ -228,7 +230,7 @@ class CleanUsersCommand extends Command
                                 $this->getBasketManipulator()->removeBaskets($baskets);
                             }
                             // delete user and notify by mail
-                            $this->doDelete($user, $userManipulator, $isValidMail);
+                            $this->doDelete($user, $userManipulator, $isValidMail, $maxRelances);
 
                             $output->write(sprintf("%s : %s / %s (%s)", $row['usr_id'], $row['login'], $row['email'], $row['last_connection']));
 
@@ -249,7 +251,7 @@ class CleanUsersCommand extends Command
                 $usersList[] = [
                     $user->getId(),
                     $user->getLogin(),
-                    $user->getLastConnection()->format('Y-m-d h:m:s'),
+                    ($user->getLastConnection() == null) ? 'never connected' : $user->getLastConnection()->format('Y-m-d h:m:s'),
                     $action
                 ];
             }
@@ -280,7 +282,7 @@ class CleanUsersCommand extends Command
 
             $mail->setLogin($user->getLogin());
             $mail->setLocale($user->getLocale());
-            $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
+            $mail->setLastConnection(($user->getLastConnection() == null) ? 'never connected': $user->getLastConnection()->format('Y-m-d'));
             $mail->setDeleteDate((new \DateTime("+{$graceDuration} day"))->format('Y-m-d'));
 
             // return 0 on failure
@@ -290,21 +292,25 @@ class CleanUsersCommand extends Command
         }
     }
 
-    private function doDelete(User $user, UserManipulator $userManipulator, $validMail)
+    private function doDelete(User $user, UserManipulator $userManipulator, $validMail, $maxRelances)
     {
         try {
-            if ($validMail) {
+            if ($validMail && !empty($maxRelances)) {
                 $receiver = Receiver::fromUser($user);
                 $mail = MailSuccessAccountInactifDelete::create($this->container, $receiver);
-                $mail->setLastConnection($user->getLastConnection()->format('Y-m-d'));
-                $mail->setLastInactivityEmail($user->getLastInactivityEmail()->format('Y-m-d'));
+                $mail->setLastConnection(($user->getLastConnection() == null) ? 'never connected' : $user->getLastConnection()->format('Y-m-d'));
+
+                if ($user->getLastInactivityEmail() !== null) {
+                    $mail->setLastInactivityEmail($user->getLastInactivityEmail()->format('Y-m-d'));
+                }
+
                 $mail->setLocale($user->getLocale());
                 $mail->setDisplayFooterText(false);
             }
 
             $userManipulator->delete($user);
 
-            if ($validMail) {
+            if ($validMail && !empty($maxRelances)) {
                 // return 0 on failure
                 $this->deliver($mail);
             }

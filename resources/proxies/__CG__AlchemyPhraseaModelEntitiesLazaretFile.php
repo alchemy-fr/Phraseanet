@@ -477,6 +477,17 @@ class LazaretFile extends \Alchemy\Phrasea\Model\Entities\LazaretFile implements
     /**
      * {@inheritDoc}
      */
+    public function getEligibleChecks(\Alchemy\Phrasea\Application $app)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEligibleChecks', [$app]);
+
+        return parent::getEligibleChecks($app);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getChecksWhithNameKey()
     {
 

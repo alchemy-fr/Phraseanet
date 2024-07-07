@@ -24,6 +24,7 @@ services:
     image: rabbitmq:3.6.16-management
     profiles: ["rabbitmq"]
     restart: on-failure
+    hostname: $RABBITMQ_HOSTNAME
     environment:
     - RABBITMQ_DEFAULT_USER
     - RABBITMQ_DEFAULT_PASS

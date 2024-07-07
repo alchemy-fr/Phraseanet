@@ -48,7 +48,8 @@ const moveRecord = (services) => {
             var datas = {
                 lst: $('input[name="lst"]', $form).val(),
                 base_id: $('select[name="base_id"]', $form).val(),
-                chg_coll_son: coll_son
+                chg_coll_son: coll_son,
+                prodMoveCollection_token: $('input[name="prodMoveCollection_token"]', $form).val()
             };
 
             var buttonPanel = $dialog.getDomElement()
@@ -85,7 +86,12 @@ const moveRecord = (services) => {
         return $.ajax({
             type: 'POST',
             url: `${url}prod/records/movecollection/`,
-            data: datas
+            data: datas,
+            error: function (data) {
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
+            }
         });
     };
 

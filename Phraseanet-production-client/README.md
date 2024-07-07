@@ -23,11 +23,11 @@ Node `^5.0.0`.
  - Go to Phraseanet-production-client folder ```cd Phraseanet-production-client```
  - Generate dist ```npm run dist```
  - Go back to Phraseanet folder : ```cd ..```
- - Copy assets in www/assets folder ```make install_asset```
+ - Copy assets in www/assets folder ```make install_assets```
  - ... or simply one cmd : ```cd Phraseanet-production-client && npm run dist && cd .. && make install_assets && rm -rf cache/*```
 
 ### Push
- - If features is finished ```dist``` folder is to be commited with sources.
+ - If features is finished ```dist``` folder is to be committed with sources.
 
 ## Available commands
 

@@ -3,10 +3,13 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Phrasea\Metadata\TagFactory;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
@@ -29,6 +32,7 @@ class WriteMetadatasWorker implements WorkerInterface
     use ApplicationBoxAware;
     use DispatcherAware;
     use EntityManagerAware;
+    use DataboxLoggerAware;
 
     /** @var Logger  */
     private $logger;
@@ -97,12 +101,20 @@ class WriteMetadatasWorker implements WorkerInterface
             return;
         }
 
+        /** @var WorkerRunningJob $workerRunningJob */
+        $workerRunningJob = $this->repoWorker->find($workerRunningJobId);
+
+        $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS);
+
+
         if ($record->getMimeType() == 'image/svg+xml') {
 
             $this->logger->error("Can't write meta on svg file!");
 
             // tell that we have finished to work on this file ("unlock")
             $this->repoWorker->markFinished($workerRunningJobId, "Can't write meta on svg file!");
+
+            $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
 
             return;
         }
@@ -252,9 +264,21 @@ class WriteMetadatasWorker implements WorkerInterface
 
         $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
 
+        $resolutionXY = [];
+
+        if ($subdef->get_name() != 'document') {
+            $subdefType = $subdef->getDataboxSubdef()->getSubdefType();
+
+            // get the resolution DPI option from the admin configuration if the media type has one
+            if (in_array($subdefType->getType(), [Subdef::TYPE_IMAGE, Subdef::TYPE_ANIMATION, Subdef::TYPE_UNKNOWN])) {
+                $resolution = $subdefType->getOption('resolution')->getValue();
+                $resolutionXY = [$resolution, $resolution];
+            }
+        }
+
         // write meta in file
         try {
-            $this->writer->write($subdef->getRealPath(), $metadata);
+            $this->writer->write($subdef->getRealPath(), $metadata, null, $resolutionXY);
 
             $this->messagePublisher->pushLog(sprintf('metadatas written %s databoxname=%s databoxid=%d recordid=%d',
                 $subdef->get_name(), $databox->get_viewname(), $databox->get_sbas_id(), $recordId), 'info');
@@ -300,6 +324,7 @@ class WriteMetadatasWorker implements WorkerInterface
 
                 // tell that we have finished to work on this file (=unlock)
                 $this->repoWorker->markFinished($workerRunningJobId, $stopInfo);
+                $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
             }
             return ;
         }
@@ -309,6 +334,8 @@ class WriteMetadatasWorker implements WorkerInterface
 
         // tell that we have finished to work on this file (=unlock)
         $this->repoWorker->markFinished($workerRunningJobId);
+
+        $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::FINISHED);
     }
 
     private function removeNulChar($value)

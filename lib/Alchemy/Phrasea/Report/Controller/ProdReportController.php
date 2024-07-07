@@ -12,10 +12,11 @@ namespace Alchemy\Phrasea\Report\Controller;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Report\Report;
 use Alchemy\Phrasea\Report\ReportConnections;
-use Alchemy\Phrasea\Report\ReportDownloads;
+use Alchemy\Phrasea\Report\ReportActions;
 use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportRecords;
-use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -41,6 +42,7 @@ class ProdReportController extends Controller
     private $reportFactory;
     private $anonymousReport;
     private $acl;
+    private $appbox;
 
     private $extension = null;
 
@@ -50,11 +52,14 @@ class ProdReportController extends Controller
      * @param Bool $anonymousReport
      * @param \ACL $acl
      */
-    public function __construct(ReportFactory $reportFactory, $anonymousReport, \ACL $acl)
+    public function __construct(ReportFactory $reportFactory, $anonymousReport, \ACL $acl, \appbox $appbox)
     {
         $this->reportFactory   = $reportFactory;
         $this->anonymousReport = $anonymousReport;
         $this->acl             = $acl;
+        $this->appbox          = $appbox;
+
+        parent::__construct($appbox->getPhraseApplication());
     }
 
     /**
@@ -75,41 +80,49 @@ class ProdReportController extends Controller
      *
      * @param Request $request
      * @param $sbasId
-     * @return StreamedResponse
+     * @return RedirectResponse|StreamedResponse|JsonResponse
      */
     public function connectionsAction(Request $request, $sbasId)
     {
-        if(!($extension = $request->get('format'))) {
-            $extension = 'csv';
+        if ($request->isMethod("POST")) {
+            if (!$this->isCrsfValid($request, 'reportConnection')) {
+                return new JsonResponse(['message' => 'invalid report connection token'], 403);
+            }
+
+            if (!($extension = $request->get('format'))) {
+                $extension = 'csv';
+            }
+            if (!array_key_exists($extension, self::$mapFromExtension)) {
+                throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
+            }
+            $this->extension = $extension;
+
+            /** @var ReportConnections $report */
+            $report = $this->reportFactory->createReport(
+                ReportFactory::CONNECTIONS,
+                $sbasId,
+                [
+                    'dmin' => $request->get('dmin'),
+                    'dmax' => $request->get('dmax'),
+                    'group' => $request->get('group'),
+                    'anonymize' => $this->anonymousReport,
+                ]
+            );
+
+            $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
+
+            $response = new StreamedResponse();
+
+            $this->setHeadersFromFormat($response, $report);
+
+            $response->setCallback(function () use ($report) {
+                $report->render();
+            });
+
+            return $response;
+        } else {
+            return new RedirectResponse($this->appbox->getPhraseApplication()->path('report_dashboard'). "#report-connections");
         }
-        if(!array_key_exists($extension, self::$mapFromExtension)) {
-            throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
-        }
-        $this->extension = $extension;
-
-        /** @var ReportConnections $report */
-        $report = $this->reportFactory->createReport(
-            ReportFactory::CONNECTIONS,
-            $sbasId,
-            [
-                'dmin'      => $request->get('dmin'),
-                'dmax'      => $request->get('dmax'),
-                'group'     => $request->get('group'),
-                'anonymize' => $this->anonymousReport,
-            ]
-        );
-
-        $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
-
-        $response = new StreamedResponse();
-
-        $this->setHeadersFromFormat($response, $report);
-
-        $response->setCallback(function() use($report) {
-            $report->render();
-        });
-
-        return $response;
     }
 
     /**
@@ -117,42 +130,52 @@ class ProdReportController extends Controller
      *
      * @param Request $request
      * @param $sbasId
-     * @return StreamedResponse
+     * @return RedirectResponse|StreamedResponse|JsonResponse
      */
     public function downloadsAction(Request $request, $sbasId)
     {
-        if(!($extension = $request->get('format'))) {
-            $extension = 'csv';
+        if ($request->isMethod("POST")) {
+            if (!$this->isCrsfValid($request, 'reportDownload')) {
+                return new JsonResponse(['message' => 'invalid report download token'], 403);
+            }
+
+            if(!($extension = $request->get('format'))) {
+                $extension = 'csv';
+            }
+
+            if(!array_key_exists($extension, self::$mapFromExtension)) {
+                throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
+            }
+            $this->extension = $extension;
+
+            /** @var ReportActions $report */
+            $report = $this->reportFactory->createReport(
+                ReportFactory::DOWNLOADS,
+                $sbasId,
+                [
+                    'dmin'      => $request->get('dmin'),
+                    'dmax'      => $request->get('dmax'),
+                    'group'     => $request->get('group'),
+                    'bases'     => $request->get('base'),
+                    'anonymize' => $this->anonymousReport,
+                ]
+            );
+
+            $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
+            $report->setPermalink($request->get('permalink'));
+
+            $response = new StreamedResponse();
+
+            $this->setHeadersFromFormat($response, $report);
+
+            $response->setCallback(function() use($report) {
+                $report->render();
+            });
+
+            return $response;
+        } else {
+            return new RedirectResponse($this->appbox->getPhraseApplication()->path('report_dashboard'). "#report-downloads");
         }
-        if(!array_key_exists($extension, self::$mapFromExtension)) {
-            throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
-        }
-        $this->extension = $extension;
-
-        /** @var ReportDownloads $report */
-        $report = $this->reportFactory->createReport(
-            ReportFactory::DOWNLOADS,
-            $sbasId,
-            [
-                'dmin'      => $request->get('dmin'),
-                'dmax'      => $request->get('dmax'),
-                'group'     => $request->get('group'),
-                'bases'     => $request->get('base'),
-                'anonymize' => $this->anonymousReport,
-            ]
-        );
-
-        $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
-
-        $response = new StreamedResponse();
-
-        $this->setHeadersFromFormat($response, $report);
-
-        $response->setCallback(function() use($report) {
-            $report->render();
-        });
-
-        return $response;
     }
 
     /**
@@ -160,43 +183,52 @@ class ProdReportController extends Controller
      *
      * @param Request $request
      * @param $sbasId
-     * @return StreamedResponse
+     * @return RedirectResponse|StreamedResponse|JsonResponse
      */
     public function recordsAction(Request $request, $sbasId)
     {
-        if(!($extension = $request->get('format'))) {
-            $extension = 'csv';
+        if ($request->isMethod("POST")) {
+            if (!$this->isCrsfValid($request, 'reportRecord')) {
+                return new JsonResponse(['message' => 'invalid report record token'], 403);
+            }
+
+            if (!($extension = $request->get('format'))) {
+                $extension = 'csv';
+            }
+            if (!array_key_exists($extension, self::$mapFromExtension)) {
+                throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
+            }
+            $this->extension = $extension;
+
+            /** @var ReportRecords $report */
+            $report = $this->reportFactory->createReport(
+                ReportFactory::RECORDS,
+                $sbasId,
+                [
+                    'dmin' => $request->get('dmin'),
+                    'dmax' => $request->get('dmax'),
+                    'group' => $request->get('group'),
+                    'base' => $request->get('base'),
+                    'meta' => $request->get('meta'),
+                ]
+            );
+
+            $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
+            $report->setPermalink($request->get('permalink'));
+
+            set_time_limit(600);
+            $response = new StreamedResponse();
+
+            $this->setHeadersFromFormat($response, $report);
+
+            $response->setCallback(function () use ($report) {
+                $report->render();
+            });
+
+            return $response;
+        } else {
+            return new RedirectResponse($this->appbox->getPhraseApplication()->path('report_dashboard'). "#report-records");
         }
-        if(!array_key_exists($extension, self::$mapFromExtension)) {
-            throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
-        }
-        $this->extension = $extension;
-
-        /** @var ReportRecords $report */
-        $report = $this->reportFactory->createReport(
-            ReportFactory::RECORDS,
-            $sbasId,
-            [
-                'dmin'  => $request->get('dmin'),
-                'dmax'  => $request->get('dmax'),
-                'group' => $request->get('group'),
-                'base'  => $request->get('base'),
-                'meta'  => $request->get('meta'),
-            ]
-        );
-
-        $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
-
-set_time_limit(600);
-        $response = new StreamedResponse();
-
-        $this->setHeadersFromFormat($response, $report);
-
-        $response->setCallback(function() use($report) {
-            $report->render();
-        });
-
-        return $response;
     }
 
 
