@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
 use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
@@ -507,6 +508,13 @@ class RootController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+    public function deleteApplication(Request $request, ApiApplication $application)
+    {
+        $this->getApiApplicationManipulator()->delete($application);
+
+        return $this->app->json(['success' => true]);
+    }
+
     /**
      * @return ApiOauthTokenRepository
      */
@@ -581,5 +589,13 @@ class RootController extends Controller
             'databoxes'     => $databoxes,
             'off_databoxes' => $off_databoxes,
         ];
+    }
+
+    /**
+     * @return ApiApplicationManipulator
+     */
+    private function getApiApplicationManipulator()
+    {
+        return $this->app['manipulator.api-application'];
     }
 }

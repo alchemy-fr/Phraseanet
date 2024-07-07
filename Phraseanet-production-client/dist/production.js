@@ -10081,6 +10081,14 @@ var workzone = function workzone(services) {
             updatePublicationList(exposeName);
         });
 
+        (0, _jquery2.default)('#expose_title_filter').on('keyup', function (event) {
+            if ((0, _jquery2.default)(this).val().length > 2 || (0, _jquery2.default)(this).val().length === 0) {
+                var exposeName = (0, _jquery2.default)('#expose_list').val();
+                (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+                updatePublicationList(exposeName);
+            }
+        });
+
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
@@ -10236,6 +10244,21 @@ var workzone = function workzone(services) {
                 var _selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
                 _selectBox.removeAttr('name');
                 _selectBox.addClass('hidden');
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '.checkbox-field-mapping', function () {
+            if ((0, _jquery2.default)(this).is(":checked")) {
+                var nameEl = (0, _jquery2.default)(this).attr('data-field-name');
+                var inputName = (0, _jquery2.default)(this).closest('div').find('.name-expose-side');
+                var labelText = (0, _jquery2.default)(this).closest('label').find('span').text();
+                inputName.attr('name', nameEl);
+                inputName.attr('value', labelText);
+                inputName.removeClass('hidden');
+            } else {
+                var _inputName = (0, _jquery2.default)(this).closest('div').find('.name-expose-side');
+                _inputName.removeAttr('name');
+                _inputName.addClass('hidden');
             }
         });
 
@@ -11056,7 +11079,8 @@ var workzone = function workzone(services) {
             url: '/prod/expose/list-publication/?exposeName=' + exposeName + '&page=' + page,
             data: {
                 mine: (0, _jquery2.default)("#expose_mine_only").is(':checked') ? 1 : 0,
-                editable: (0, _jquery2.default)("#expose_editable_only").is(':checked') ? 1 : 0
+                editable: (0, _jquery2.default)("#expose_editable_only").is(':checked') ? 1 : 0,
+                title: (0, _jquery2.default)("#expose_title_filter").val()
             },
             success: function success(data) {
                 if ('twig' in data) {
@@ -11096,12 +11120,14 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
                     (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
+                    (0, _jquery2.default)('.add_publication').removeClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').removeClass('hidden');
                     (0, _jquery2.default)('.expose-pagination').removeClass('hidden');
                 } else {
                     (0, _jquery2.default)('.expose_connected').empty();
                     (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
+                    (0, _jquery2.default)('.add_publication').addClass('hidden');
                     (0, _jquery2.default)('.add_expose_block').addClass('hidden');
                     (0, _jquery2.default)('.expose-pagination').addClass('hidden');
                 }
@@ -11131,6 +11157,8 @@ var workzone = function workzone(services) {
                 if ('error' in data) {
                     (0, _jquery2.default)('.publication-list').empty().html(data.error);
                 }
+
+                (0, _jquery2.default)('#expose_workzone .nb_item').text(data.nbItems);
             },
             error: function error(data) {
                 if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {

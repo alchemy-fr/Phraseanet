@@ -11,14 +11,13 @@
 
 namespace Alchemy\Phrasea\Model\Manager;
 
+use Alchemy\Phrasea\Model\Entities\ApiAccount;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\ApiLog;
-use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\UserSetting;
 use Doctrine\DBAL\Driver\Connection;
-use Doctrine\ORM\UnitOfWork AS UOW;
 
 class UserManager
 {
@@ -268,6 +267,7 @@ class UserManager
         $this->cleanOauthApplication($user);
         $this->cleanLazarets($user);
         $this->cleanUsrList($user);
+        $this->cleanRegistration($user);
     }
 
     private function cleanLazarets(User $user)
@@ -296,10 +296,49 @@ class UserManager
             $stmt->closeCursor();
         }
     }
+
+    private function cleanRegistration(User $user)
+    {
+        $registrations = $this->objectManager->getRepository('Phraseanet:Registration')->findBy(['user' => $user]);
+        foreach ($registrations as $registration) {
+            $this->objectManager->remove($registration);
+        }
+    }
+
     private function cleanOauthApplication(User $user)
     {
         $accounts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findByUser($user);
 
+        $this->cleanByAccounts($accounts);
+
+        $apps = $this->objectManager->getRepository('Phraseanet:ApiApplication')->findByCreator($user);
+
+        /** @var ApiApplication $app */
+        foreach ($apps as $app) {
+            // make sure all apiaccounts linked by apiApplication are also deleted
+            $accts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findBy(['application' => $app]);
+
+            $this->cleanByAccounts($accts);
+
+            $deliveries = $this->objectManager->getRepository('Phraseanet:WebhookEventDelivery')->findBy(['application' => $app]);
+
+            foreach ($deliveries as $delivery) {
+                $payloads = $this->objectManager->getRepository('Phraseanet:WebhookEventPayload')->findBy(['delivery' => $delivery]);
+
+                foreach ($payloads as $payload) {
+                    $this->objectManager->remove($payload);
+                }
+
+                $this->objectManager->remove($delivery);
+            }
+
+            $this->objectManager->remove($app);
+        }
+    }
+
+    private function cleanByAccounts(array $accounts)
+    {
+        /** @var ApiAccount $account */
         foreach ($accounts as $account) {
             // remove ApiOauthCodes before ApiAccount
             $oauthCodes = $this->objectManager->getRepository('Phraseanet:ApiOauthCode')->findByAccount($account);
@@ -307,13 +346,13 @@ class UserManager
                 $this->objectManager->remove($oauthCode);
             }
 
+            // remove ApiOauthToken before ApiAccount
+            $oauthTokens = $this->objectManager->getRepository('Phraseanet:ApiOauthToken')->findOauthTokens($account);
+            foreach ($oauthTokens as $oauthToken) {
+                $this->objectManager->remove($oauthToken);
+            }
+
             $this->objectManager->remove($account);
-        }
-
-        $apps = $this->objectManager->getRepository('Phraseanet:ApiApplication')->findByCreator($user);
-
-        foreach ($apps as $app) {
-            $this->objectManager->remove($app);
         }
     }
 }

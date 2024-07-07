@@ -379,9 +379,6 @@ class V1Controller extends Controller
                 'binary'            => [
                     'phpCli'      => isset($binaries['php_binary']) ? $binaries['php_binary'] : null,
                     'phpIni'      => $conf->get(['registry', 'executables', 'php-conf-path']),
-                    'swfExtract'  => isset($binaries['swf_extract_binary']) ? $binaries['swf_extract_binary'] : null,
-                    'pdf2swf'     => isset($binaries['pdf2swf_binary']) ? $binaries['pdf2swf_binary'] : null,
-                    'swfRender'   => isset($binaries['swf_render_binary']) ? $binaries['swf_render_binary'] : null,
                     'unoconv'     => isset($binaries['unoconv_binary']) ? $binaries['unoconv_binary'] : null,
                     'ffmpeg'      => isset($binaries['ffmpeg_binary']) ? $binaries['ffmpeg_binary'] : null,
                     'ffprobe'     => isset($binaries['ffprobe_binary']) ? $binaries['ffprobe_binary'] : null,

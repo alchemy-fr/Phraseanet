@@ -508,9 +508,7 @@ class LoginController extends Controller
         // does the provider provides a logout redirection ?
         if($providerId && ($provider = $this->findProvider($providerId))) {
             if(method_exists($provider, 'logoutAndRedirect')) {
-                $redirectToPhr = $this->app->url('logout', [
-                    'redirect' => $request->query->get("redirect")
-                ]);
+                $redirectToPhr = $this->app->url('logout');
                 $response = $provider->logoutAndRedirect($redirectToPhr);
             }
             else {
@@ -714,6 +712,7 @@ class LoginController extends Controller
     public function authenticationCallback(Request $request, $providerId)
     {
         $this->getSession()->set('auth_provider.id', null);
+        $this->getSession()->set('provider.token_info', null);
 
         $provider = $this->findProvider($providerId);
 

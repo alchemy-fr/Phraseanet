@@ -38,7 +38,43 @@ class WebhookRecordEventSubscriber implements EventSubscriberInterface
 
     public function onRecordCreated(RecordEvent $event)
     {
-        $this->createWebhookEvent($event, WebhookEvent::RECORD_CREATED);
+        $record = $this->convertToRecordAdapter($event->getRecord());
+
+        if ($record !== null) {
+            $permalinkUrl = '';
+
+            try {
+                $permalink = $record->get_subdef('document')->get_permalink();
+                if ($permalink != null) {
+                    $permalinkUrl = $permalink->get_url()->__toString();
+                }
+            } catch (\Exception $e) {
+                // there is no subdef 'document'
+            } catch (\Throwable $e) {
+            }
+
+            $eventData = [
+                'databox_id'        => $event->getRecord()->getDataboxId(),
+                'record_id'         => $event->getRecord()->getRecordId(),
+                'collection_name'   => $record->getCollection()->get_name(),
+                'base_id'           => $record->getBaseId(),
+                'record_type'       => $event->getRecord()->isStory() ? "story" : "record",
+                'media_type'        => $record->getType(),
+                'type'              => $record->getMimeType(),
+                'original_name'     => $record->getOriginalName(),
+                'initiator_user_id' => $event->getInitiatorId(),
+                'permalink'         => $permalinkUrl
+            ];
+
+            $this->app['manipulator.webhook-event']->create(
+                WebhookEvent::RECORD_CREATED,
+                WebhookEvent::RECORD_TYPE,
+                $eventData,
+                [$event->getRecord()->getBaseId()]
+            );
+        } else {
+            $this->app['logger']->error("Record not found when wanting to create webhook data!");
+        }
     }
 
     public function onRecordEdit(RecordEdit $event)

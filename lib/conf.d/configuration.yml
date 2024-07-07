@@ -89,9 +89,6 @@ main:
     binaries:
         ghostscript_binary: null
         php_binary: null
-        swf_extract_binary: null
-        pdf2swf_binary: null
-        swf_render_binary: null
         unoconv_binary: null
         ffmpeg_binary: null
         ffprobe_binary: null
@@ -228,24 +225,24 @@ authentication:
             options:
                 client-id: ''
                 client-secret: ''
-        ps_auth_1:
+        openid-1:
             enabled: false
             display: false
-            title: 'PS Auth 1'
-            type: 'ps-auth'
+            title: 'openid 1'
+            type: openid
             options:
                 client-id: ''
                 client-secret: ''
-                base-url: 'https://api-auth.phrasea.local'
-                provider-type: 'oauth'
-                provider-name: 'v2'
-                icon-uri: null,
-                debug: false,
-                birth-group: '_firstlog'
-                everyone-group: '_everyone'
-                metamodel: '_metamodel'
-                model-gpfx: '_M_'
-                model-upfx: '_U_'
+                base-url: 'https://keycloak.phrasea.local'
+                realm-name: phrasea
+                exclusive: false
+                icon-uri: null
+                birth-group: _firstlog
+                everyone-group: _everyone
+                metamodel: _metamodel
+                model-gpfx: _M_
+                model-upfx: _U_
+                debug: false
                 auto-logout: false
                 auto-connect-idp-name: null
 registration-fields:
@@ -364,6 +361,7 @@ video-editor:
         - '1.5'
         - 3
 workers:
+    auto-cancelingJob: 24 # period in hours, not define or null to not execute
     queue:
         worker-queue:
             registry: alchemy_worker.queue_registry

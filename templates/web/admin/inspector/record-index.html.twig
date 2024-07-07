@@ -82,6 +82,7 @@
                 <th>{{ 'admin::inspector: api creation date' | trans }}</th>
                 <th>{{ 'admin::inspector: api modification date' | trans }}</th>
                 <th></th>
+                <th></th>
             </thead>
             <tbody>
             {% for apiApplication in apiApplications %}
@@ -132,6 +133,9 @@
                         {% if apiApplication.getCreator() is not null %}
                             <button class="generate_token btn btn-warning btn-small" data-app-id="{{ apiApplication.getId() }}" href="{{ path('admin_inspector_application_token', { 'application' : apiApplication.getId(), 'user_id' : apiApplication.getCreator().getId() }) }}">{{ 'generate token' }}</button>
                         {% endif %}
+                    </td>
+                    <td>
+                        <button class="delete_application btn btn-danger btn-small" data-app-id="{{ apiApplication.getId() }}" href="{{ path('admin_inspector_application_delete', { 'application' : apiApplication.getId() }) }}">{{ 'delete' }}</button>
                     </td>
                 </tr>
             {% endfor %}
@@ -237,13 +241,40 @@
         $('button.generate_token').bind('click', function (e) {
             e.preventDefault();
             var $this = $(this);
-            if (confirm('Your are about to generate token for application with ID: ' + $this.data('app-id'))) {
+            if (confirm('You are about to generate token for application with ID: ' + $this.data('app-id'))) {
                 $.ajax({
                     type: 'POST',
                     url: $this.attr('href'),
                     dataType: 'json',
                     success: function (data) {
                         console.log(data);
+                    }
+                });
+                return false;
+            } else {
+                return false;
+            }
+        });
+
+        $('button.delete_application').bind('click', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            if (confirm('You are about to delete application with ID: ' + $this.data('app-id'))) {
+                $.ajax({
+                    type: 'POST',
+                    url: $this.attr('href'),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success) {
+                            $('#tree li.selected a').trigger('click');
+
+                            setTimeout(function(){
+                                    $('li a[href="#api-info"]').trigger('click');
+                                }
+                                , 500
+                            );
+
+                        }
                     }
                 });
                 return false;

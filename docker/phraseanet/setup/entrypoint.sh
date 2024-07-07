@@ -157,21 +157,16 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     fi
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting session type"
-    echo `date +"%Y-%m-%d %H:%M:%S"` " - SESSION_SAVE_HANDLER is $SESSION_SAVE_HANDLER"
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - PHRASEANET_SESSION_TYPE is $PHRASEANET_SESSION_TYPE"
 
-    if [[ $SESSION_SAVE_HANDLER == file ]]; then
-        bin/setup system:config set main.session.type "$SESSION_SAVE_HANDLER"
-        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is $SESSION_SAVE_HANDLER"
-    elif [[ $SESSION_SAVE_HANDLER == redis ]]; then
-        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Redis : setting Host to $PHRASEANET_SESSION_TYPE"         
-        bin/setup system:config set main.session.type $PHRASEANET_SESSION_TYPE
+        bin/setup system:config set main.session.type "$PHRASEANET_SESSION_TYPE"
+
+    if [[ $PHRASEANET_SESSION_TYPE == redis ]]; then
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Redis : setting redis connexion parameters"         
         bin/setup system:config set main.session.options.host $PHRASEANET_SESSION_HOST
         bin/setup system:config set main.session.options.port $PHRASEANET_SESSION_PORT
         bin/setup system:config set main.session.options.namespace $PHRASEANET_HOSTNAME
         bin/setup system:config set main.session.ttl $PHRASEANET_USER_SESSION_LIFETIME
-    else 
-        bin/setup system:config set main.session.type "native"
-        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native"
     fi
 
     ## Phraseanet application Database setting

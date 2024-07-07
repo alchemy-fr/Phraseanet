@@ -582,12 +582,21 @@
         </form>
 
         <div>
-          <label for="lock" style="margin-right: 20px;display:inline-block;">Email locked</label>
+          <label for="lock" style="margin-right: 20px;display:inline-block;min-width: 150px;">Email locked</label>
           <input type="radio" id="lock" name="email-locked" value="locked" style="margin-right: 10px;"
                   {% if main_user.isMailLocked() %} checked {% endif %}>
           <input type="radio" id="unlock" name="email-locked" value="unlock" style="margin-left: 10px;"
                   {% if not main_user.isMailLocked() %} checked {% endif %}>
           <label for="unlock" style="margin-left: 20px;display:inline-block;">Email unlocked</label>
+        </div>
+
+        <div style="margin-top: 15px;">
+          <label for="can-renew" style="margin-right: 20px;display:inline-block;min-width: 150px;">can renew password</label>
+          <input type="radio" id="can-renew" name="can-renew-password" value="can-renew" style="margin-right: 10px;"
+                  {% if main_user.canRenewPassword() %} checked {% endif %}>
+          <input type="radio" id="cannot-renew" name="can-renew-password" value="cannot-renew" style="margin-left: 10px;"
+                  {% if not main_user.canRenewPassword() %} checked {% endif %}>
+          <label for="cannot-renew" style="margin-left: 20px;display:inline-block;">can not renew password</label>
         </div>
 
         <div style="margin-top: 20px;">
@@ -1498,6 +1507,21 @@
         $.ajax({
           type: 'POST',
           url: '/admin/users/mail-locked/change/',
+          dataType: 'json',
+          data: {
+            user_id: {{ main_user.getId() }},
+            action: $this.val()
+          },
+          success: function (data) {
+          }
+        });
+      });
+
+      $('input[type=radio][name="can-renew-password"]').change( function() {
+        let $this = $(this);
+        $.ajax({
+          type: 'POST',
+          url: '/admin/users/can-renew-password/change/',
           dataType: 'json',
           data: {
             user_id: {{ main_user.getId() }},

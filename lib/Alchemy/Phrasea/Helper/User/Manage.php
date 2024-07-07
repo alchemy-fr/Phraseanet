@@ -262,6 +262,17 @@ class Manage extends Helper
         $this->getObjectManager()->flush();
     }
 
+    public function setCanRenewPassword()
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        $user = $userRepository->find($this->request->request->get('user_id'));
+        $status = $this->request->request->get('action') == 'can-renew' ? true : false;
+        $user->setCanRenewPassword($status);
+        $this->getObjectManager()->persist($user);
+        $this->getObjectManager()->flush();
+    }
+
     /**
      * @return ObjectManager
      */

@@ -33,7 +33,7 @@ class RescanFilesMetadata extends Command
             ->addOption('min_record_id', null, InputOption::VALUE_REQUIRED, "lowest record_id value")
             ->addOption('record_type',        null, InputOption::VALUE_REQUIRED, 'Type of records(s) to scan.')
             ->addOption('partition',          null, InputOption::VALUE_REQUIRED, 'n/N : work only on records belonging to partition')
-            ->addOption('source', null, InputOption::VALUE_REQUIRED, 'tag to search exemple IPTC:KEYWORD')
+            ->addOption('source', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'tag to search exemple IPTC:KEYWORD')
             ->addOption('destination', null, InputOption::VALUE_REQUIRED, "ID of the field de fill")
             ->addOption('overwrite', null, InputOption::VALUE_NONE, "act even if the destination field has a value in databox")
             ->addOption('method', null, InputOption::VALUE_REQUIRED, "replace or merge for multi value field")

@@ -22,6 +22,8 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension;
 class TwigServiceProvider implements ServiceProviderInterface
 {
 
+    private $metricTrans;
+
     /**
      * Registers services on the given app.
      *
@@ -61,7 +63,27 @@ class TwigServiceProvider implements ServiceProviderInterface
 
             $twig->addGlobal('current_date', new \DateTime());
 
+            $this->metricTrans = [
+                'nb_plays'                      => $app['translator']->trans('matomomediametrics:: nb_plays'),
+                'nb_unique_visitors_plays'      => $app['translator']->trans('matomomediametrics:: nb_unique_visitors_plays'),
+                'nb_impressions'                => $app['translator']->trans('matomomediametrics:: nb_impressions'),
+                'nb_unique_visitors_impressions'=> $app['translator']->trans('matomomediametrics:: nb_unique_visitors_impressions'),
+                'nb_finishes'                   => $app['translator']->trans('matomomediametrics:: nb_finishes'),
+                'sum_time_progress'             => $app['translator']->trans('matomomediametrics:: sum_time_progress'),
+                'nb_plays_with_tip'             => $app['translator']->trans('matomomediametrics:: nb_plays_with_tip'),
+                'nb_plays_with_ml'              => $app['translator']->trans('matomomediametrics:: nb_plays_with_ml'),
+                'sum_fullscreen_plays'          => $app['translator']->trans('matomomediametrics:: sum_fullscreen_plays'),
+                'play_rate'                     => $app['translator']->trans('matomomediametrics:: play_rate'),
+                'finish_rate'                   => $app['translator']->trans('matomomediametrics:: finish_rate'),
+                'fullscreen_rate'               => $app['translator']->trans('matomomediametrics:: fullscreen_rate'),
+                'avg_time_watched'              => $app['translator']->trans('matomomediametrics:: avg_time_watched'),
+                'avg_completion_rate'           => $app['translator']->trans('matomomediametrics:: avg_completion_rate'),
+                'avg_time_to_play'              => $app['translator']->trans('matomomediametrics:: avg_time_to_play'),
+                'avg_media_length'              => $app['translator']->trans('matomomediametrics:: avg_media_length'),
+            ];
+
             $this->registerExtensions($twig, $app);
+
             $this->registerFilters($twig, $app);
 
             return $twig;
@@ -142,6 +164,25 @@ class TwigServiceProvider implements ServiceProviderInterface
             }
 
             return implode('; ', $stringArr);
+        }, ['needs_environment' => true, 'is_safe' => ['html']]));
+
+        $twig->addFilter(new \Twig_SimpleFilter('mediaMetricsInfo', function (\Twig_Environment $twig, $string) use ($app) {
+            $metricInfo = $string;
+
+            if (!empty($string)) {
+                $metricsInfos = json_decode(html_entity_decode(trim($string)), true);
+                if ($metricsInfos != null) {
+                    $metricInfo = [];
+                    foreach ($metricsInfos as $key => $value) {
+                        if (isset($this->metricTrans[trim($key)])) {
+                            $metricInfo[] = '<i>' .$this->metricTrans[trim($key)] . ' </i>: ' . $value;
+                        }
+                    }
+                    $metricInfo = implode('<br>', $metricInfo);
+                }
+            }
+
+            return $metricInfo;
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
         $twig->addFilter(new \Twig_SimpleFilter('bounce',

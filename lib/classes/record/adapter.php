@@ -1287,12 +1287,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return array|null
      * @throws \PHPExiftool\Exception\EmptyCollectionException
      */
-    public function getFileMetadataByTag($tag)
+    public function getFileMetadataByTag($tags)
     {
         $logger = new Logger('exif-tool');
         $reader = Reader::create($logger);
 
-        $value = null;
+        if(!is_array($tags)) {
+            $tags = [$tags];
+        }
+        $tags = array_fill_keys($tags, null);
 
         // throw exception
         $documentSubdef = $this->get_subdef('document');
@@ -1301,13 +1304,21 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         /** @var Metadata $metadata */
         foreach ($metadatas as $metadata) {
-            if ($metadata->getTag() == $tag) {
-                $value = explode(";", $metadata->getValue());
+            /** @var string $t */
+            $t = (string)$metadata->getTag();
+            if (array_key_exists($t, $tags)) {
+                $tags[$t] = explode(";", $metadata->getValue());
                 break;
             }
         }
 
-        return $value;
+        foreach($tags as $tag => $value) {
+            if($value !== null) {
+                return $value;
+            }
+        }
+
+        return null;
     }
 
 
@@ -1789,7 +1800,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             unset($e);
         }
 
-        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story));
+        $initiatorId = null;
+        if ($app->getAuthenticatedUser() != null) {
+            $initiatorId = $app->getAuthenticatedUser()->getId();
+        }
+
+        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story, $initiatorId));
 
         return $story;
     }
@@ -1902,7 +1918,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $record->insertTechnicalDatas($app['mediavorus']);
 
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+            $initiatorId = null;
+            if ($app->getAuthenticatedUser() != null) {
+                $initiatorId = $app->getAuthenticatedUser()->getId();
+            }
+
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
         }
 
         return $record;
@@ -1920,8 +1941,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public static function create(collection $collection, Application $app)
     {
         $record = self::_create($collection, $app);
+        $initiatorId = null;
         if($record) {
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+            if ($app->getAuthenticatedUser() != null) {
+                $initiatorId = $app->getAuthenticatedUser()->getId();
+            }
+
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
         }
 
         return $record;
