@@ -71,7 +71,7 @@ class AssetsIngestWorker implements WorkerInterface
                 $count
             ));
 
-            return;
+            return 0;
         }
 
         $body = json_decode($body,true);
@@ -111,6 +111,8 @@ class AssetsIngestWorker implements WorkerInterface
             unset($workerRunningJob);
         }
         $em->flush();
+
+        return 0;
     }
 
     private function createStory(array $body)

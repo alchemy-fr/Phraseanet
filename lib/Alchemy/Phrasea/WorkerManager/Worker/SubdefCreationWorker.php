@@ -61,7 +61,7 @@ class SubdefCreationWorker implements WorkerInterface
         if (!isset($payload['recordId']) || !isset($payload['databoxId']) || !isset($payload['subdefName'])) {
             // bad payload
             $this->logger->error(sprintf("%s (%s) : bad payload", __FILE__, __LINE__));
-            return;
+            return 0;
         }
 
         $recordId       = $payload['recordId'];
@@ -74,11 +74,11 @@ class SubdefCreationWorker implements WorkerInterface
         } catch (\Exception $e) {
             $this->logger->error(sprintf("%s (%s) : record not found %s", __FILE__, __LINE__, $e->getMessage()));
 
-            return;
+            return 0;
         }
 
         if ($record->isStory()) {
-            return;
+            return 0;
         }
 
         $oldLogger = $this->subdefGenerator->getLogger();
@@ -96,7 +96,7 @@ class SubdefCreationWorker implements WorkerInterface
                 MessagePublisher::SUBDEF_CREATION_TYPE
             );
 
-            return ;
+            return 0;
         }
 
         // here we can work
@@ -130,7 +130,7 @@ class SubdefCreationWorker implements WorkerInterface
             ));
 
             // the subscriber will "unlock" the row, no need to do it here
-            return ;
+            return 0;
         }
 
         // begin to check if the subdef is successfully generated
@@ -158,7 +158,7 @@ class SubdefCreationWorker implements WorkerInterface
             $this->subdefGenerator->setLogger($oldLogger);
 
             // the subscriber will "unlock" the row, no need to do it here
-            return ;
+            return 0;
         }
 
         // checking ended
@@ -202,6 +202,8 @@ class SubdefCreationWorker implements WorkerInterface
         $this->repoWorker->markFinished($workerRunningJobId);
 
         $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_SUBDEFCREATION, new \DateTime('now'), WorkerRunningJob::FINISHED);
+
+        return 0;
     }
 
     public static function checkIfFirstChild(\record_adapter $story, \record_adapter $record)

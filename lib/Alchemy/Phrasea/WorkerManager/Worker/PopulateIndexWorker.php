@@ -45,7 +45,7 @@ class PopulateIndexWorker implements WorkerInterface
             if ($workerRunningJob == null) {
                 $this->messagePublisher->pushLog("Given workerJobId not found !", "error");
 
-                return ;
+                return 0;
             }
 
             $workerRunningJob
@@ -155,6 +155,8 @@ class PopulateIndexWorker implements WorkerInterface
 
             $em->flush();
         }
+
+        return 0;
     }
 
 }

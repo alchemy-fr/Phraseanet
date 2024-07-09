@@ -116,7 +116,7 @@ class CreateRecordWorker implements WorkerInterface
                 $workerRunningJob->getId()
             ));
 
-            return;
+            return 0;
         }
 
 
@@ -134,7 +134,7 @@ class CreateRecordWorker implements WorkerInterface
                 $workerRunningJob->getId()
             ));
 
-            return;
+            return 0;
         }
 
         if ($workerRunningJob != null) {
@@ -181,7 +181,7 @@ class CreateRecordWorker implements WorkerInterface
         if (!isset($body['formData']['collection_destination'])) {
             $this->messagePublisher->pushLog("The collection_destination is not defined");
 
-            return ;
+            return 0;
         }
 
         $base_id = $body['formData']['collection_destination'];
@@ -257,6 +257,8 @@ class CreateRecordWorker implements WorkerInterface
                 ]
             ]
         );
+
+        return 0;
     }
 
     /**
