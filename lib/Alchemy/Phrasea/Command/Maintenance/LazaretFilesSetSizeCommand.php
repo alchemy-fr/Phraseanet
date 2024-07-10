@@ -18,7 +18,7 @@ class LazaretFilesSetSizeCommand extends Command
 
         $this
             ->setDescription('Set the null size in the LazaretFiles table')
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'dry run, count')
+            ->addOption('dry', null, InputOption::VALUE_NONE, 'dry run, count')
 
             ->setHelp('');
     }
@@ -34,13 +34,18 @@ class LazaretFilesSetSizeCommand extends Command
         /** @var EntityManager $em */
         $em = $this->container['orm.em'];
 
-        if (!$input->getOption('dry-run')) {
+        if (!$input->getOption('dry')) {
             /** @var LazaretFile $lazaretNullSize */
             foreach ($lazaretNullSizes as $lazaretNullSize) {
-                $lazaretFileName = $path .'/'.$lazaretNullSize->getFilename();
-                $media = $this->container->getMediaFromUri($lazaretFileName);
+                try {
+                    $lazaretFileName = $path .'/'.$lazaretNullSize->getFilename();
+                    $media = $this->container->getMediaFromUri($lazaretFileName);
+                    $size = $media->getFile()->getSize();
+                } catch (\Exception $e) {
+                    $size = 0;
+                }
 
-                $lazaretNullSize->setSize($media->getFile()->getSize());
+                $lazaretNullSize->setSize($size);
                 $em->persist($lazaretNullSize);
             }
 

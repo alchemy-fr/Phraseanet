@@ -41,7 +41,7 @@ class V3MonitorDataController extends Controller
     {
         $stopwatch = new Stopwatch("controller");
 
-        list($getDetails, $blocksize, $divider, $unit, $sqlByColl, $sqlByName, $sqlByDb) = $this->getParamsFromRequest($request);
+        list($getDetails, $blocksize, $divider, $sqlDivider, $unit, $sqlByColl, $sqlByName, $sqlByDb) = $this->getParamsFromRequest($request);
 
         $ret = [
             'unit' => $divider === 1 ? $unit : ucfirst($unit), // octet => octet ; mo => Mo
@@ -107,19 +107,20 @@ class V3MonitorDataController extends Controller
             'disksize'      => round($disksize / $divider, 2)
         ];
 
-        $sql = "SELECT count(*) AS n , SUM(`size`) AS size FROM `LazaretFiles` WHERE size IS NOT NULL";
+        $sql = "SELECT count(*) AS n , SUM(`size`) " . $sqlDivider . " AS size, "
+            . " SUM(CEIL(`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS disksize"
+            . " FROM `LazaretFiles` WHERE size IS NOT NULL";
+
         $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $disksize = ceil($row['size'] / $blocksize) * $blocksize;;
-
         $ret['lazaret'] = [
             'count'     => $row['n'],
-            'size'      => round($row['size'] / $divider, 2),
-            'disksize'  => round($disksize / $divider, 2)
+            'size'      => round($row['size'], 2),
+            'disksize'  => round($row['disksize'], 2),
         ];
 
         return Result::create($request, $ret)->createResponse([$stopwatch]);
@@ -134,7 +135,7 @@ class V3MonitorDataController extends Controller
         $stopwatch = new Stopwatch("controller");
         $databoxId = $request->get('databox_id');
 
-        list($getDetails, $blocksize, $divider, $unit, $sqlByColl, $sqlByName, $sqlByDb) = $this->getParamsFromRequest($request);
+        list($getDetails, $blocksize, $divider, $sqlDivider, $unit, $sqlByColl, $sqlByName, $sqlByDb) = $this->getParamsFromRequest($request);
 
         $ret = [
             'unit' => $divider === 1 ? $unit : ucfirst($unit), // octet => octet ; mo => Mo
@@ -208,7 +209,8 @@ class V3MonitorDataController extends Controller
 
         // get lazaret volume for the databox
 
-        $sql = "SELECT count(*) AS n , SUM(`size`) AS size ".
+        $sql = "SELECT count(*) AS n , SUM(`L`.`size`) " . $sqlDivider . " AS size, ".
+            " SUM(CEIL(`L`.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS disksize" .
             " FROM `LazaretFiles` AS L ".
             " LEFT JOIN `bas` AS b ON L.`base_id`=b.`base_id`".
             " WHERE L.`size` IS NOT NULL AND b.`sbas_id`=". $databoxId;
@@ -220,13 +222,11 @@ class V3MonitorDataController extends Controller
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $disksize = ceil($row['size'] / $blocksize) * $blocksize;;
-
         $ret['lazaret'] = [
             'sbas_id'   => $databoxId,
             'count'     => $row['n'],
-            'size'      => round($row['size'] / $divider, 2),
-            'disksize'  =>  round($disksize / $divider, 2)
+            'size'      => round($row['size'], 2),
+            'disksize'  => round($row['disksize'], 2),
         ];
 
         return Result::create($request, $ret)->createResponse([$stopwatch]);
@@ -270,11 +270,12 @@ class V3MonitorDataController extends Controller
                     FROM `subdef` AS s
                 GROUP BY s.`name`;";
         }
+
         $sqlByDb = "SELECT SUM(1) AS n, SUM(s.`size`) " . $sqlDivider . " AS `size`,
                     SUM(CEIL(s.`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS `disksize`
                     FROM `subdef` AS s";
 
-        return [$getDetails, $blocksize, $divider, $unit, $sqlByColl, $sqlByName, $sqlByDb];
+        return [$getDetails, $blocksize, $divider, $sqlDivider, $unit, $sqlByColl, $sqlByName, $sqlByDb];
     }
 
     private function getVolumeDetails(\databox $databox, $sqlByColl, $sqlByName)
