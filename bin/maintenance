@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanWebhookLogsCommand;
 use Alchemy\Phrasea\Command\Maintenance\CleanWorkerRunningJobCommand;
 use Alchemy\Phrasea\Command\Maintenance\SessionsCommand;
+use Alchemy\Phrasea\Command\Maintenance\LazaretFilesSetSizeCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -58,5 +59,7 @@ $cli->command(new CleanLogSearchCommand());
 $cli->command(new CleanLogViewCommand());
 
 $cli->command(new CleanWebhookLogsCommand());
+
+$cli->command(new LazaretFilesSetSizeCommand());
 
 $cli->run();

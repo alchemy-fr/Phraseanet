@@ -406,6 +406,8 @@ class Manager
 
         $lazaretFile->setSession($session);
 
+        $lazaretFile->setSize($file->getFile()->getSize());
+
         $this->app['orm.em']->persist($lazaretFile);
 
         foreach ($file->getAttributes() as $fileAttribute) {
