@@ -31,6 +31,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Exception;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Driver\Value\Multi;
@@ -447,11 +448,16 @@ class Manager
      */
     protected function addMediaAttributes(File $file)
     {
-        $metadataCollection = $this->app['phraseanet.metadata-reader']->read($file->getMedia());
+        try {
+            $metadataCollection = $this->app['phraseanet.metadata-reader']->read($file->getMedia());
 
-        array_walk($metadataCollection, function (Metadata $metadata) use ($file) {
-            $file->addAttribute(new MetadataAttr($metadata));
-        });
+            array_walk($metadataCollection, function (Metadata $metadata) use ($file) {
+                $file->addAttribute(new MetadataAttr($metadata));
+            });
+        }
+        catch (Exception $e) {
+            // ingore
+        }
 
         return $this;
     }
