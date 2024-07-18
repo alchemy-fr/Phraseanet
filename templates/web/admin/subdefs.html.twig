@@ -257,7 +257,7 @@
                 if (o.val().match(reg)[0].length !== o.val().length) {
                     ok = false;
                     o.addClass("ui-state-error");
-                    updateTips("Special characters (except minus) or espaces are not authorized");
+                    updateTips('{{ 'Allowed caracteres are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01' | trans }}');
                 }
 
                 return ok;
@@ -359,7 +359,7 @@
         </p>
     </div>
 
-    <div id="dialog-form" title="Create new subdef">
+    <div id="dialog-form" title="{{ 'Create new subdef' | trans  }}">
         <p class="validateTips"></p>
         <form>
             <fieldset>
