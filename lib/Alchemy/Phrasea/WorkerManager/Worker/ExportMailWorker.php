@@ -216,16 +216,7 @@ class ExportMailWorker implements WorkerInterface
         }
 
         if ($workerRunningJob != null) {
-            $this->repoWorkerJob->reconnect();
-            $workerRunningJob
-                ->setWorkOn(implode(',', $deliverEmails))
-                ->setStatus(WorkerRunningJob::FINISHED)
-                ->setFinished(new \DateTime('now'))
-            ;
-
-            $em->persist($workerRunningJob);
-
-            $em->flush();
+            $this->repoWorkerJob->markFinished($workerRunningJob->getId(), $this->getMessagePublisher(), MessagePublisher::EXPORT_MAIL_TYPE);
         }
 
         sleep(30);
@@ -249,5 +240,13 @@ class ExportMailWorker implements WorkerInterface
     private function getWorkerRunningJobRepository()
     {
         return $this->app['repo.worker-running-job'];
+    }
+
+    /**
+     * @return MessagePublisher
+     */
+    private function getMessagePublisher()
+    {
+        return $this->app['alchemy_worker.message.publisher'];
     }
 }

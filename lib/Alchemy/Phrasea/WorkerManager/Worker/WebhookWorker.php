@@ -137,14 +137,7 @@ class WebhookWorker implements WorkerInterface
             }
 
             if ($workerRunningJob != null) {
-                $workerRunningJob
-                    ->setStatus(WorkerRunningJob::FINISHED)
-                    ->setFinished(new \DateTime('now'))
-                ;
-
-                $em->persist($workerRunningJob);
-
-                $em->flush();
+                $this->repoWorkerJob->markFinished($workerRunningJob->getId(), $this->messagePublisher, MessagePublisher::WEBHOOK_TYPE);
             }
         }
     }
