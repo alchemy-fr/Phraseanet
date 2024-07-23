@@ -397,9 +397,9 @@
                     success: function (data) {
                         if (data.success) {
                             publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
-                            document.getElementById("publication-data-form-edit").reset();
                             setTimeout(function(){
                                     $('#DIALOG-expose-edit').dialog('close');
+                                    publicationEdit.find("#pub-success").addClass("hidden");
                                 }
                                 , 2000
                             );

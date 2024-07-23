@@ -394,9 +394,11 @@
                 success: function (data) {
                     if (data.success) {
                         $("#DIALOG-expose-add #pub-success").removeClass("hidden").html(data.message + ": " + data.link);
-                        document.getElementById("publication-data-form").reset();
+
                         setTimeout(function(){
+                                document.getElementById("publication-data-form").reset();
                                 $('#DIALOG-expose-add').dialog('close');
+                                $("#DIALOG-expose-add #pub-success").addClass("hidden");
                             }
                             , 2000
                         );
