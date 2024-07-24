@@ -47,8 +47,10 @@ class FtpWorker implements WorkerInterface
         $export = $repoFtpExport->find($payload['ftpExportId']);
 
         if ($export !== null) {
-            $this->doExport($export, $payload);
+            return $this->doExport($export, $payload);
         }
+
+        return 0;
     }
 
     private function doExport(FtpExport $export, array $payload)
@@ -73,7 +75,7 @@ class FtpWorker implements WorkerInterface
                 if ($workerRunningJob == null) {
                     $this->logger->error("Given workerJobId not found !");
 
-                    return ;
+                    return 0;
                 }
 
                 $workerRunningJob
@@ -401,6 +403,8 @@ class FtpWorker implements WorkerInterface
                 $workerMessage
             );
         }
+
+        return 0;
     }
 
     private function finalize(Application $app, FtpExport $export)

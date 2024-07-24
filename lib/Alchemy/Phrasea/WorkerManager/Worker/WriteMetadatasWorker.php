@@ -64,7 +64,7 @@ class WriteMetadatasWorker implements WorkerInterface
         if (!isset($payload['recordId']) || !isset($payload['databoxId']) || !isset($payload['subdefName'])) {
             // bad payload
             $this->logger->error(sprintf("%s (%s) : bad payload", __FILE__, __LINE__));
-            return;
+            return 0;
         }
 
         $databoxId   = $payload['databoxId'];
@@ -88,7 +88,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 MessagePublisher::WRITE_METADATAS_TYPE
             );
 
-            return ;
+            return 0;
         }
 
         // here we can work
@@ -98,7 +98,7 @@ class WriteMetadatasWorker implements WorkerInterface
         } catch (\Exception $e) {
             $this->repoWorker->markFinished($workerRunningJobId, "error " . $e->getMessage());
 
-            return;
+            return 0;
         }
 
         /** @var WorkerRunningJob $workerRunningJob */
@@ -116,7 +116,7 @@ class WriteMetadatasWorker implements WorkerInterface
 
             $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
 
-            return;
+            return 0;
         }
 
         $this->repoWorker->reconnect();
@@ -141,7 +141,7 @@ class WriteMetadatasWorker implements WorkerInterface
             ));
 
             // the subscriber will mark the job as errored, no need to do it here
-            return ;
+            return 0;
         }
 
         if (!$subdef->is_physically_present()) {
@@ -158,7 +158,7 @@ class WriteMetadatasWorker implements WorkerInterface
             ));
 
             // the subscriber will mark the job as errored, no need to do it here
-            return ;
+            return 0;
         }
 
         // here we can try to do the job
@@ -326,7 +326,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 $this->repoWorker->markFinished($workerRunningJobId, $stopInfo);
                 $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
             }
-            return ;
+            return 0;
         }
 
         // mark write metas finished
@@ -336,6 +336,8 @@ class WriteMetadatasWorker implements WorkerInterface
         $this->repoWorker->markFinished($workerRunningJobId);
 
         $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::FINISHED);
+
+        return 0;
     }
 
     private function removeNulChar($value)
