@@ -2,10 +2,18 @@ version: "3.9"
 
 services: 
   db:
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
-    build: ./docker/db
+    image: mariadb:10.4.33
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=$MYSQL_MAX_ALLOWED_PACKET --max_connections=$MYSQL_MAX_CONNECTION --long_query_time=$MYSQL_LONG_QUERY_TIME --sql_mode="NO_ENGINE_SUBSTITUTION"
     restart: on-failure
     profiles: ["db"]
+    entrypoint:
+      sh -c "
+        echo 'CREATE DATABASE IF NOT EXISTS ab_master CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;CREATE DATABASE IF NOT EXISTS db_databox1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;CREATE DATABASE IF NOT EXISTS db_unitTest CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;CREATE DATABASE IF NOT EXISTS db_dataset1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;CREATE DATABASE IF NOT EXISTS db_dataset2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE USER `$PHRASEANET_DB_USER`@`%` IDENTIFIED BY \"$PHRASEANET_DB_PASSWORD\";GRANT ALL PRIVILEGES ON *.* to `$PHRASEANET_DB_USER`@`%`;' > /docker-entrypoint-initdb.d/init.sql;
+        chmod +x /usr/local/bin/docker-entrypoint.sh /docker-entrypoint-initdb.d/init.sql;
+        /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql_mode="NO_ENGINE_SUBSTITUTION" --max_allowed_packet=$MYSQL_MAX_ALLOWED_PACKET --max_connections=$MYSQL_MAX_CONNECTION --long_query_time=$MYSQL_LONG_QUERY_TIME --slow_query_log=$MYSQL_SLOW_QUERY_LOG
+      "
     environment:
     - MYSQL_ROOT_PASSWORD
     - MYSQL_MAX_ALLOWED_PACKET
@@ -15,8 +23,9 @@ services:
     - MYSQL_QUERY_CACHE_LIMIT
     - MYSQL_QUERY_CACHE_SIZE
     - MYSQL_KEY_BUFFER_SIZE
+#    - MARIADB_AUTO_UPGRADE=1
     volumes:
-    - ${PHRASEANET_DB_DIR}:/var/lib/mysql
+    - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
     networks:
       - internal
 
