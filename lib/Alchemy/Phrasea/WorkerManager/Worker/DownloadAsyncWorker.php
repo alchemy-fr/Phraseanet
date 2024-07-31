@@ -385,15 +385,7 @@ class DownloadAsyncWorker implements WorkerInterface
         );
 
         if ($workerRunningJob != null) {
-            $this->repoWorkerJob->reconnect();
-            $workerRunningJob
-                ->setStatus(WorkerRunningJob::FINISHED)
-                ->setFinished(new \DateTime('now'))
-            ;
-
-            $em->persist($workerRunningJob);
-
-            $em->flush();
+            $this->repoWorkerJob->markFinished($workerRunningJob->getId(), $this->getMessagePublisher(),MessagePublisher::DOWNLOAD_ASYNC_TYPE);
         }
 
         sleep(1);
@@ -434,6 +426,11 @@ class DownloadAsyncWorker implements WorkerInterface
     private function getWorkerRunningJobRepository()
     {
         return $this->app['repo.worker-running-job'];
+    }
+
+    private function getMessagePublisher()
+    {
+        return $this->app['alchemy_worker.message.publisher'];
     }
 
     private function cellRefFromColumnAndRow(int $col, int $row = null)

@@ -355,18 +355,7 @@ class FtpWorker implements WorkerInterface
 
         if (!$processError && $workerRunningJob) {
             // tell that we have finished to work on this file
-            $this->repoWorker->reconnect();
-            $em->beginTransaction();
-            try {
-                $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-                $workerRunningJob->setFinished(new \DateTime('now'));
-                $em->persist($workerRunningJob);
-                $em->flush();
-                $em->commit();
-            }
-            catch (Exception $e) {
-                $em->rollback();
-            }
+            $this->repoWorker->markFinished($workerRunningJob->getId(), $this->getMessagePublisher(), MessagePublisher::FTP_TYPE);
         } else {
             // if there is an error
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
@@ -537,5 +526,4 @@ class FtpWorker implements WorkerInterface
     {
         return $this->app['alchemy_worker.message.publisher'];
     }
-
 }
