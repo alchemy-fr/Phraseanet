@@ -28,22 +28,22 @@
             <form id="publication-data-form-edit" >
                 <div class="edit-publication-block">
                     <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Name' | trans }}</label>
-                        <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
+                        <label for="expose-edit-title">{{ 'prod:expose:publication:Name' | trans }}</label>
+                        <input id="expose-edit-title" type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
                     </div>
                     <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
+                        <label for="slug-field">{{ 'prod:expose:publication:Slug' | trans }}</label>
                         <input type="text" data-actual-slug="{{ publication.slug }}" value="{{ publication.slug }}" name="slug" class="publication-field" id="slug-field"/>
                         <input type="button" class="slug-availability" style="height: 31px;" value="{{ 'prod:expose:publication:check slug' | trans }}">
                         <img class="expose-slug-ok" src="/assets/common/images/icons/ok.png" style="height: 32px;display:none;" >
                         <img class="expose-slug-nok" src="/assets/common/images/icons/red-cross.png" style="height: 32px;display:none;">
                     </div>
                     <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Description' | trans }}</label>
+                        <label for="description">{{ 'prod:expose:publication:Description' | trans }}</label>
                         <textarea class="publication-field description-field-edit" name="description" id="description" cols="250" rows="5" style="width: 530px;">{{ publication.description }}</textarea>
                     </div>
                     <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
+                        <label for="publication_parent_edit">{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
                         <div id="publication-list-data" class="ui-widget publication_parent_wrapper" style="margin-top: 10px;margin-left: 2px;">
                             {% if publication.parent.id %}
                                 {% set parentId =  publication.parent.id %}
@@ -60,7 +60,7 @@
 
                     {% if publication.capabilities.operator %}
                         <div class="ui-widget profile-wrapper hide">
-                            <label>{{ 'prod:expose:publication:Profile' | trans }}</label>
+                            <label for="profile-field">{{ 'prod:expose:publication:Profile' | trans }}</label>
                             {% set nbProfile =  publication.profile|length %}
 
                             <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
@@ -150,7 +150,7 @@
                 </div>
             </form>
 
-            <form name="publication-json" id="publication-json" class="text-center">
+            <form autofocus name="publication-json" id="publication-json" class="text-center">
                 <div id="advancedSettingBlock">
 {#                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>#}
                     <div id="advancedSettingInner" class="hidden">
@@ -397,9 +397,9 @@
                     success: function (data) {
                         if (data.success) {
                             publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
-                            document.getElementById("publication-data-form-edit").reset();
                             setTimeout(function(){
                                     $('#DIALOG-expose-edit').dialog('close');
+                                    publicationEdit.find("#pub-success").addClass("hidden");
                                 }
                                 , 2000
                             );
