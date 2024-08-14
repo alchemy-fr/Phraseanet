@@ -199,7 +199,7 @@ $cli->command(new SendValidationRemindersCommand());
 $cli->command(new NetworkProxiesTestCommand('network-proxies:test'));
 
 $cli->command(new AlertExpiringRightsCommand());
-$cli->command(new PlayRecordsActionsCommand());
+// $cli->command(new PlayRecordsActionsCommand());
 
 $cli->command(new PocParent());
 $cli->command(new PocChild());
