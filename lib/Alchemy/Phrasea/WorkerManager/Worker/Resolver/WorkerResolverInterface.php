@@ -11,5 +11,5 @@ interface WorkerResolverInterface
      * @param array $message
      * @return WorkerInterface
      */
-    public function getWorker($messageType, array $message);
+    public function getWorker($messageType);
 }

@@ -31,7 +31,7 @@ class TypeBasedWorkerResolver implements WorkerResolverInterface
         return $this->factories;
     }
 
-    public function getWorker($messageType, array $message)
+    public function getWorker($messageType)
     {
         if (isset($this->workers[$messageType])) {
             return $this->workers[$messageType];

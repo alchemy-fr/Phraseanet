@@ -24,6 +24,8 @@ RUN cd /tmp \
         libtool \
         python3 \
         pkg-config \
+    # && docker-php-ext-install gmagick \
+    # && docker-php-ext-enable gmagick \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh \
@@ -106,6 +108,15 @@ WORKDIR /var/alchemy/Phraseanet
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends  supervisor
 RUN apt-get install -y --no-install-recommends  logrotate 
+RUN apt-get install -y --no-install-recommends  dumb-init
+
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc /tini.asc
+RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+ && gpg --batch --verify /tini.asc /tini
+RUN chmod +x /tini
+
 RUN mkdir -p /var/log/supervisor \
     && chown -R app: /var/log/supervisor \
     && apt-get clean \
@@ -116,8 +127,11 @@ COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
 
 RUN chmod 644 /etc/logrotate.d/worker
 
-ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
-CMD ["/bin/bash", "bin/run-worker.sh"]
+ENTRYPOINT ["dumb-init", "-v", "--"]
+CMD ["docker/phraseanet/worker/entrypoint.sh", "/bin/bash", "bin/run-worker.sh"]
+
+#ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
+#CMD ["/bin/bash", "bin/run-worker.sh"]
 
 #########################################################################
 # phraseanet-nginx

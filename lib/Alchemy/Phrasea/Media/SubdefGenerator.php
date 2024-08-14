@@ -70,32 +70,38 @@ class SubdefGenerator
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
+        pcntl_signal_dispatch();
         if ($record->get_hd_file() !== null && $record->get_hd_file()->getMimeType() == "application/x-indesign") {
             $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());
             $metadatas = $mediaSource->getMetadatas();
 
             if ($metadatas->containsKey('XMP-xmp:PageImage')) {
+                pcntl_signal_dispatch();
                 if(!isset($this->tmpFilesystem)){
                     $this->tmpFilesystem = Manager::create();
                 }
                 $tmpDir = $this->tmpFilesystem->createTemporaryDirectory(0777, 500);
 
+                pcntl_signal_dispatch();
                 $files = $this->app['exiftool.preview-extractor']->extract($record->get_hd_file()->getPathname(), $tmpDir);
 
                 $selected = null;
                 $size = null;
 
+                pcntl_signal_dispatch();
                 foreach ($files as $file) {
                     if ($file->isDir() || $file->isDot()) {
                         continue;
                     }
 
+                    pcntl_signal_dispatch();
                     if (is_null($selected) || $file->getSize() > $size) {
                         $selected = $file->getPathname();
                         $size = $file->getSize();
                     }
                 }
 
+                pcntl_signal_dispatch();
                 if ($selected) {
                     $this->tmpFilePath =  $selected;
                 }
@@ -107,6 +113,7 @@ class SubdefGenerator
             $subdefs = [];
         }
 
+        pcntl_signal_dispatch();
         $this->dispatch(
             RecordEvents::SUB_DEFINITIONS_CREATION,
             new SubDefinitionsCreationEvent(
@@ -115,14 +122,17 @@ class SubdefGenerator
             )
         );
 
+        pcntl_signal_dispatch();
         if(!is_null($hd = $record->get_hd_file())) {
             $hd = $hd->getRealPath();
 
             clearstatcache(true, $hd);
         }
 
+        pcntl_signal_dispatch();
         $mediaCreated = [];
         foreach ($subdefs as $subdef) {
+            pcntl_signal_dispatch();
             $subdefname = $subdef->get_name();
 
             if ($wanted_subdefs && !in_array($subdefname, $wanted_subdefs)) {
@@ -132,15 +142,18 @@ class SubdefGenerator
             $pathdest = null;
 
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
+                pcntl_signal_dispatch();
 
                 $pathdest = $record->get_subdef($subdefname)->getRealPath();
 
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));
+//                sleep(5);
                 $record->clearSubdefCache($subdefname);
             }
 
             $pathdest = $this->filesystem->generateSubdefPathname($record, $subdef, $pathdest);
+            pcntl_signal_dispatch();
 
             $this->dispatch(
                 RecordEvents::SUB_DEFINITION_CREATION,
@@ -150,10 +163,12 @@ class SubdefGenerator
                 )
             );
 
+            pcntl_signal_dispatch();
             $this->logger->info(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
             $this->generateSubdef($record, $subdef, $pathdest);
 
             if ($this->filesystem->exists($pathdest)) {
+                pcntl_signal_dispatch();
                 $media = $this->mediavorus->guess($pathdest);
 
                 \media_subdef::create($this->app, $record, $subdef->get_name(), $media);
@@ -168,6 +183,7 @@ class SubdefGenerator
                 );
             }
             else {
+                pcntl_signal_dispatch();
                 $this->dispatch(
                     RecordEvents::SUB_DEFINITION_CREATION_FAILED,
                     new SubDefinitionCreationFailedEvent(
@@ -188,7 +204,9 @@ class SubdefGenerator
         }
 
         // if we created subdef one by one
+        pcntl_signal_dispatch();
         if (count($wanted_subdefs) == 1) {
+            pcntl_signal_dispatch();
             $mediaSubdefRepository = $this->getMediaSubdefRepository($record->getDataboxId());
             $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$record->getRecordId()]);
             $medias = [];
@@ -199,6 +217,7 @@ class SubdefGenerator
 
                 }
             }
+            pcntl_signal_dispatch();
 
             $this->dispatch(
                 RecordEvents::SUB_DEFINITIONS_CREATED,
@@ -208,6 +227,7 @@ class SubdefGenerator
                 )
             );
         } else {
+            pcntl_signal_dispatch();
             $this->dispatch(
                 RecordEvents::SUB_DEFINITIONS_CREATED,
                 new SubDefinitionsCreatedEvent(
@@ -247,6 +267,7 @@ class SubdefGenerator
 
                 return;
             }
+       //     sleep(5);
 
             if($subdef_class->getSpecs() instanceof Video && !empty($this->tmpDirectory)){
                 $destFile = $pathdest;

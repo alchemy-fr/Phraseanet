@@ -7,6 +7,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Process\Exception\RuntimeException as ProcessRuntimeException;
+use Symfony\Component\Process\Process;
 
 class WorkerInvoker implements LoggerAwareInterface
 {
@@ -14,11 +15,6 @@ class WorkerInvoker implements LoggerAwareInterface
      * @var string
      */
     private $environment;
-
-    /**
-     * @var string
-     */
-    private $command = 'worker:run-service';
 
     /**
      * @var string
@@ -36,6 +32,11 @@ class WorkerInvoker implements LoggerAwareInterface
     private $processPool;
 
     /**
+     * @var Process
+     */
+    private $process;
+
+    /**
      * @var bool
      */
     private $preservePayloads = false;
@@ -46,6 +47,13 @@ class WorkerInvoker implements LoggerAwareInterface
      * @var string
      */
     private $prefix = 'alchemy_wk_';
+
+    private $recordId = '-';
+    private $subdefName = '-';
+    private $wec_upid = '-';
+    private $wrsc_upid = '-';
+
+    private $processes = [];
 
     /**
      * WorkerInvoker constructor.
@@ -82,18 +90,58 @@ class WorkerInvoker implements LoggerAwareInterface
         $this->prefix = $prefix;
     }
 
+    private function log($s = '', $depth=0)
+    {
+        static $t0 = null;
+        $t = microtime(true);
+        if($t0 === null) {
+            $t0 = $t;
+        }
+        $dt = (int)(1000000.0*($t - $t0));
+        $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $depth+1);
+        $line = array_key_exists($depth, $bt) && array_key_exists('line', $bt[$depth]) ? $bt[$depth]['line'] : -1;
+        $s = sprintf("%s , %s , %s , %s , %d , pid=%-5d ppid=%-5d line=%d , %s\n", $this->wec_upid, $this->wrsc_upid, $this->recordId, $this->subdefName, $dt, getmypid(), posix_getppid(), $line, var_export($s, true));
+        file_put_contents("/var/alchemy/Phraseanet/logs/trace_workerinvoker.txt", $s . "\n", FILE_APPEND);
+        pcntl_signal_dispatch();
+    }
+
+
     /**
      * @param string $messageType
      * @param string $payload
      */
-    public function invokeWorker($messageType, $payload, AMQPChannel $channel)
+    public function invokeWorker(string $messageType, string $payload, AMQPChannel $channel, string $wec_upid = '', string $wrsc_upid = '')
     {
+        pcntl_signal_dispatch();
+        $this->wec_upid = $wec_upid;
+        $this->wrsc_upid = $wrsc_upid;
+
+        $this->recordId = 0;
+        $this->subdefName = '-';
+        $this->log("invokeWorker");
+        try {
+            pcntl_signal_dispatch();
+            $jsp = @json_decode($payload, true);
+            if($jsp) {
+                $this->recordId = $jsp['recordId'] ?: 0;
+                $this->subdefName = $jsp['subdefName'] ?: '-';
+            }
+            pcntl_signal_dispatch();
+        }
+        catch (\Exception $e) {
+            pcntl_signal_dispatch();
+            // nop
+        }
+
         $args = [
+            "exec",
             $this->binaryPath,
-            $this->command,
+            'worker:run-service',
             '-vv',
             $messageType,
-            $this->createPayloadFile($payload)
+            $this->createPayloadFile($payload),
+            '--wec_upid=' . $wec_upid,
+            '--wrsc_upid=' . $wrsc_upid,
         ];
 
         if ($this->environment) {
@@ -103,17 +151,25 @@ class WorkerInvoker implements LoggerAwareInterface
         if ($this->preservePayloads) {
             $args[] = '--preserve-payload';
         }
+        pcntl_signal_dispatch();
 
-        $process = $this->processPool->getWorkerProcess($args, $channel, getcwd());
+        $this->process = $this->processPool->getWorkerProcess($args, $channel, getcwd());
+        pcntl_signal_dispatch();
+        $this->processes[] = $this->process;
 
-        $this->logger->debug('Invoking shell command: ' . $process->getCommandLine());
+
+        $this->log('Invoking shell command: ' . $this->process->getCommandLine());
+        $this->logger->debug('Invoking shell command: ' . $this->process->getCommandLine());
 
         try {
-            $process->start([$this, 'logWorkerOutput']);
+            pcntl_signal_dispatch();
+            $this->process->start([$this, 'logWorkerOutput']);
+            pcntl_signal_dispatch();
         } catch (ProcessRuntimeException $e) {
-            $process->stop();
+            $this->process->stop();
+            pcntl_signal_dispatch();
 
-            throw new \RuntimeException(sprintf('Command "%s" failed: %s', $process->getCommandLine(),
+            throw new \RuntimeException(sprintf('Command "%s" failed: %s', $this->process->getCommandLine(),
                 $e->getMessage()), 0, $e);
         }
     }
@@ -134,12 +190,22 @@ class WorkerInvoker implements LoggerAwareInterface
 
     private function createPayloadFile($payload)
     {
+        pcntl_signal_dispatch();
         $path = tempnam(sys_get_temp_dir(), $this->prefix);
 
         if (file_put_contents($path, $payload) === false) {
             throw new \RuntimeException('Cannot write payload file to path: ' . $path);
         }
+        pcntl_signal_dispatch();
 
         return $path;
+    }
+
+    /**
+     * @return Process[]
+     */
+    public function getProcesses(): array
+    {
+        return $this->processes;
     }
 }

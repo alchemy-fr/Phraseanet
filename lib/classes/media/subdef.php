@@ -637,6 +637,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     {
         $path = $media->getFile()->getPath();
         $newname = $media->getFile()->getFilename();
+        pcntl_signal_dispatch();
 
         $params = [
             'record_id' => $record->getRecordId(),
@@ -651,6 +652,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             'is_substituted' => false,
         ];
 
+        pcntl_signal_dispatch();
         if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
             $params['width'] = $media->getWidth();
         }
@@ -662,29 +664,36 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $factoryProvider = $app['provider.factory.media_subdef'];
         $factory = $factoryProvider($record->getDataboxId());
 
+        pcntl_signal_dispatch();
         $subdef = $factory($params);
 
         Assertion::isInstanceOf($subdef, \media_subdef::class);
 
+        pcntl_signal_dispatch();
         $repository = self::getMediaSubdefRepository($app, $record->getDataboxId());
         $repository->save($subdef);
 
         // Refresh from Database.
+        pcntl_signal_dispatch();
         $subdef = $repository->findOneByRecordIdAndName($record->getRecordId(), $name);
 
+        pcntl_signal_dispatch();
         $permalink = $subdef->get_permalink();
 
         if ($permalink instanceof media_Permalink_Adapter) {
+            pcntl_signal_dispatch();
             $permalink->delete_data_from_cache();
         }
 
         if ($name === 'thumbnail') {
+            pcntl_signal_dispatch();
             /** @var SymLinker $symlinker */
             $symlinker = $app['phraseanet.thumb-symlinker'];
             $symlinker->symlink($subdef->getRealPath());
         }
 
         // delete from cache the list of available subdef for the record to taken account the new subdef
+        pcntl_signal_dispatch();
         $subdef->get_record()->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
 
         return $subdef;

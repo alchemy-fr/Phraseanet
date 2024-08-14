@@ -111,6 +111,16 @@ class WorkerRunningJob
     private $status;
 
     /**
+     * @ORM\Column(type="string", name="wec_upid", nullable=true)
+     */
+    private $wecUpid;
+
+    /**
+     * @ORM\Column(type="string", name="wrsc_upid", nullable=true)
+     */
+    private $wrscUpid;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -352,4 +362,37 @@ class WorkerRunningJob
     {
         return $this->status;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getWecUpid()
+    {
+        return $this->wecUpid;
+    }
+
+    /**
+     * @param mixed $wecUpid
+     */
+    public function setWecUpid($wecUpid)
+    {
+        $this->wecUpid = $wecUpid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWrscUpid()
+    {
+        return $this->wrscUpid;
+    }
+
+    /**
+     * @param mixed $wrscUpid
+     */
+    public function setWrscUpid($wrscUpid)
+    {
+        $this->wrscUpid = $wrscUpid;
+    }
+
 }

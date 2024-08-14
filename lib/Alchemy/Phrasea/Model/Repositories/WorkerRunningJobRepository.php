@@ -169,7 +169,10 @@ class WorkerRunningJobRepository extends EntityRepository
                     . " `payload` = " . $cnx->quote($pl) . ",\n"
                     . " `created` = NOW(),\n"
                     . " `published` = " . $cnx->quote($datePublished->format('Y-m-d H:i:s')) . ",\n"
-                    . " `status` = " . $cnx->quote(WorkerRunningJob::RUNNING);
+                    . " `status` = " . $cnx->quote(WorkerRunningJob::RUNNING). ",\n"
+                    . " `wec_upid` = " . $cnx->quote($payload['wec_upid'] ?? '-', PDO::PARAM_STR). ",\n"
+                    . " `wrsc_upid` = " . $cnx->quote($payload['wrsc_upid'] ?? '-', PDO::PARAM_STR)
+                ;
 
                 if ($cnx->exec($sql) === 1) {
                     // went well, the row is inserted
@@ -393,8 +396,10 @@ class WorkerRunningJobRepository extends EntityRepository
         $rsm->addScalarResult('finished', 'finished');
         $rsm->addScalarResult('duration', 'duration');
         $rsm->addScalarResult('status', 'status');
+        $rsm->addScalarResult('wecUpid', 'wecUpid');
+        $rsm->addScalarResult('wrscUpid', 'wrscUpid');
 
-        $sql = "SELECT id, info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, \n"
+        $sql = "SELECT id, info, databox_id as databoxId, record_id as recordId, work, work_on as workOn, published, created, finished, status, wec_upid AS wecUpid, wrsc_upid AS wrscUpid, \n"
             . "IF(w.finished IS NULL, TIMESTAMPDIFF(SECOND, w.created, NOW()), TIMESTAMPDIFF(SECOND, w.created, w.finished))  as duration \n"
             . "FROM WorkerRunningJob w \n"
             . "WHERE 1";

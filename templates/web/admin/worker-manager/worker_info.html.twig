@@ -104,6 +104,9 @@
 <table class="admintable">
     <thead>
     <tr>
+        <th class="sortable">id</th>
+        <th class="sortable">wecUpid</th>
+        <th class="sortable">wrscUpid</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: databox_name' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: record_id' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work' | trans }}</th>
@@ -120,9 +123,17 @@
     </thead>
         <tbody class="work-list">
 {% endif %}
-
 {% for workerRow in workerRunningJob %}
     <tr title="{{ workerRow.info }}">
+        <td>
+            {{ workerRow.id }}
+        </td>
+        <td>
+            {{ workerRow.wecUpid }}
+        </td>
+        <td>
+            {{ workerRow.wrscUpid }}
+        </td>
         <td>
             {% if workerRow.databoxId %}
                 {{ workerRow.databoxId | sbas_labels(app) }}
@@ -313,6 +324,7 @@
                 },
                 success: function (data) {
                     $('#change_status_job_dialog').dialog('close');
+                    refreshJobList();
                 }
             });
         }
@@ -323,6 +335,7 @@
                     type: 'POST',
                     url: '/admin/worker-manager/truncate',
                     success: function (data) {
+                        refreshJobList();
                     }
                 });
             }
@@ -334,6 +347,7 @@
                     type: 'POST',
                     url: '/admin/worker-manager/delete-finished',
                     success: function (data) {
+                        refreshJobList();
                     }
                 });
             }

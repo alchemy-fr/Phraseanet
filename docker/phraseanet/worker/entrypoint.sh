@@ -114,15 +114,20 @@ else
       echo "Multiples Phraseanet workers will be launched with bin/console worker:execute"
       NBR_WORKERS=0
 
-      echo "bin/console worker:heartbeat --heartbeat ${HEARTBEAT_INTERVAL} &" >> bin/run-worker.sh
+      echo "exec bin/console worker:heartbeat --heartbeat ${HEARTBEAT_INTERVAL} &" >> bin/run-worker.sh
 
       for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
       do
         queue_name="$(echo $i | cut -d'_' -f3)"
         m=$i
+        echo \# queue-name=$queue_name >> bin/run-worker.sh
+        echo "pid=(\$$)" >> bin/run-worker.sh
+        echo "wec_upid=\$(date +%s%6N)" >> bin/run-worker.sh
+        echo "# trap \"echo !!!!!!!! SIGNAL 3  RECEIVED for wec_upid=\$wec_upid pid=\$pid cpid=\$cpid !!!!!!!! >> /var/alchemy/Phraseanet/logs/trace_sh.txt; kill -10 \$pid\" 3" >> bin/run-worker.sh
         if [ ${!m} -gt "0" ] ; then
-          command="bin/console worker:execute --queue-name=$queue_name -m ${!m} &"
+          command="exec bin/console worker:execute --queue-name=$queue_name -m ${!m} --wec_upid=\$wec_upid &"
           echo $command >> bin/run-worker.sh
+          echo "cpid=(\$!)" >> bin/run-worker.sh
           echo "Worker " $queue_name " defined with parallelism " ${!m}
           NBR_WORKERS=$(expr $NBR_WORKERS + 1)
         else
