@@ -140,9 +140,7 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 #########################################################################
 
 FROM alchemyfr/phraseanet-base:1.0.0 as phraseanet-saml-sp
-RUN adduser --uid 1000 --disabled-password app
-RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
-    && apt-get update \
+RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -159,15 +157,10 @@ RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt
         gettext \
         mcrypt \
         libldap2-dev \
-    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/ \
-    && docker-php-ext-install zip mbstring pdo_mysql gettext mcrypt \
-    && pecl install \
-        redis-5.3.7 \
-    && docker-php-ext-enable redis \
-    && pecl clear-cache \
-    && docker-php-source delete
+    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/
 ADD ./docker/phraseanet/saml-sp/root /
 ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 CMD ["/bootstrap/bin/start-servers.sh"]
-HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit
+
 
