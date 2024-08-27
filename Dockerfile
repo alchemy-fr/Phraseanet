@@ -103,13 +103,18 @@ COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
 
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends  supervisor
-RUN apt-get install -y --no-install-recommends  logrotate 
-RUN mkdir -p /var/log/supervisor \
-    && chown -R app: /var/log/supervisor \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends supervisor \
+    && apt-get install -y --no-install-recommends logrotate \
+    && mkdir -p /var/log/supervisor \
+    && chown -R app: /var/log/supervisor
+
+RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list.d/archive-debian.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends ufraw \
+    && rm -fr /etc/apt/sources.list.d/archive-debian.list \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
+    && rm -rf /var/lib/apt/lists/*
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
 COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
