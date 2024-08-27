@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2024-06-07T03:59:03Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2024-07-18T14:57:31Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -940,6 +940,11 @@
         <target state="translated">Erlaubt</target>
         <jms:reference-file line="37">web/account/authorized_apps.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="4d417e1abf31cc77ce9ad9af1f2d04530fb1539f" resname="Allowed caracteres are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01" xml:space="preserve">
+        <source>Allowed caracteres are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01</source>
+        <target state="needs-translation">Erlaubt sind nur die Zeichen A-Z, a-z, 0-9 und Bindestriche. z.B: Preview-mobile-01</target>
+        <jms:reference-file line="260">web/admin/subdefs.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="c264a7efdbe0e0af2a6fe69e2bc9a89b90c5ec0e" resname="Allowed to access report" approved="yes">
         <source>Allowed to access report</source>
         <target state="translated">Zugriff auf Report wird erlaubt</target>
@@ -1083,8 +1088,8 @@
         <target state="translated">Ein Fehler ist aufgetreten</target>
         <jms:reference-file line="81">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="298">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="2094">Controller/Api/V1Controller.php</jms:reference-file>
-        <jms:reference-file line="2548">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2091">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2545">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="136">Controller/Admin/SearchEngineController.php</jms:reference-file>
         <jms:reference-file line="544">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="127">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -1462,7 +1467,7 @@
         <target state="translated">Zurück zur Sammelkörbe Liste</target>
         <jms:reference-file line="8">WorkZone/Browser/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="874df4e774343ace22071f648b6b67d11e21b307" resname="Background Color" xml:space="preserve">
+      <trans-unit id="874df4e774343ace22071f648b6b67d11e21b307" resname="Background Color">
         <source>Background Color</source>
         <target state="translated">Hintergrundfarbe (z.B: #FFFFFF)</target>
         <jms:reference-file line="45">Media/Subdef/Image.php</jms:reference-file>
@@ -1471,8 +1476,8 @@
         <source>Bad request format, only JSON is allowed</source>
         <target state="translated">Bad Request Format, nur JSON wird erlaubt</target>
         <jms:reference-file line="190">Controller/Root/AccountController.php</jms:reference-file>
-        <jms:reference-file line="70">Controller/Admin/RootController.php</jms:reference-file>
-        <jms:reference-file line="232">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="71">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="233">Controller/Admin/RootController.php</jms:reference-file>
         <jms:reference-file line="598">Controller/Admin/DataboxController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa0d7d2cb29f1ca72b4108bfaa0bf5686d3910ff" resname="Bad request, please contact an admin" approved="yes">
@@ -2083,6 +2088,11 @@
         <source>Create index</source>
         <target state="translated">Index erstellen</target>
         <jms:reference-file line="67">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="384422e656d8a4d803155efc371754913755a4b0" resname="Create new subdef" xml:space="preserve">
+        <source>Create new subdef</source>
+        <target state="needs-translation">Neue Unterauflösung erzeugen</target>
+        <jms:reference-file line="362">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c175379b0389b2d6057b0b7db996720f1fb92fc7" resname="Creation date" approved="yes">
         <source>Creation date</source>
@@ -3213,8 +3223,8 @@
       <trans-unit id="f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c" resname="Export" approved="yes">
         <source>Export</source>
         <target state="translated">Exportieren</target>
-        <jms:reference-file line="165">Controller/Prod/DownloadController.php</jms:reference-file>
-        <jms:reference-file line="166">Controller/Prod/DownloadController.php</jms:reference-file>
+        <jms:reference-file line="177">Controller/Prod/DownloadController.php</jms:reference-file>
+        <jms:reference-file line="178">Controller/Prod/DownloadController.php</jms:reference-file>
         <jms:reference-file line="74">Controller/Prod/DoDownloadController.php</jms:reference-file>
         <jms:reference-file line="75">Controller/Prod/DoDownloadController.php</jms:reference-file>
         <jms:reference-file line="124">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -3332,7 +3342,7 @@
       <trans-unit id="3491d2e44dd1896af3411bb1a048847c13647feb" resname="File is too big : 64k max" approved="yes">
         <source>File is too big : 64k max</source>
         <target state="translated">Datei ist gross: 64k max.</target>
-        <jms:reference-file line="190">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="191">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6efbe33ed8bd57bac1e804871a3ba254abe7903c" resname="File upload has been cancelled" approved="yes">
         <source>File upload has been cancelled</source>
@@ -4406,7 +4416,7 @@
       <trans-unit id="815d1b7d85075463e14c340ff9897a6c4af09ec3" resname="Missing &quot;structure&quot; parameter" approved="yes">
         <source>Missing "structure" parameter</source>
         <target state="translated">Fehlende "Struktur" Parameter</target>
-        <jms:reference-file line="152">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="153">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9b8f078d07adc678766fb9d2094292080ab3c52" resname="Missing labels parameter" approved="yes">
         <source>Missing labels parameter</source>
@@ -4422,7 +4432,7 @@
       <trans-unit id="0f79e8927b12fa1faaf351996f502775b4642c2d" resname="Missing path parameter" approved="yes">
         <source>Missing path parameter</source>
         <target state="translated">Path Parameter fehlen</target>
-        <jms:reference-file line="78">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="79">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9321a86c28d944244ce11115d852e79d190b0bcd" resname="Missing target collection" approved="yes">
         <source>Missing target collection</source>
@@ -4432,7 +4442,7 @@
       <trans-unit id="b0def594904c1cbf973fce8978d282a64d446abb" resname="Missing tests parameter" approved="yes">
         <source>Missing tests parameter</source>
         <target state="translated">Tests Parameter fehlen</target>
-        <jms:reference-file line="74">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="75">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="80e8b9fbe625ab32ace339346a3721fe143f5c20" resname="Missing view name parameter" approved="yes">
         <source>Missing view name parameter</source>
@@ -5608,7 +5618,7 @@
       <trans-unit id="3cd74928930cda94205568949be186e4cae37119" resname="Record Not Found" approved="yes">
         <source>Record Not Found</source>
         <target state="translated">Datensatz wurde nicht gefunden</target>
-        <jms:reference-file line="2092">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2089">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0112aa634cbad5a586b72e4befe1ab1a39e73f" resname="Record removed from basket" approved="yes">
         <source>Record removed from basket</source>
@@ -6295,7 +6305,7 @@
       <trans-unit id="e348765b45777672fff0436326a7637de0c0f6b4" resname="Something wrong happend" approved="yes">
         <source>Something wrong happend</source>
         <target state="translated">Es ist etwas schief gelaufen !</target>
-        <jms:reference-file line="199">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="200">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e4139b4c4a2bc0bf820cebbfa3ac7361a1b1e37" resname="Something wrong happened, please try again or contact an admin." approved="yes">
         <source>Something wrong happened, please try again or contact an admin.</source>
@@ -6384,12 +6394,12 @@
       <trans-unit id="31341706bd5a88f758389de7827bbedddf89f5d5" resname="Status icon upload failed : can not write on disk" approved="yes">
         <source>Status icon upload failed : can not write on disk</source>
         <target state="translated">Status Ikone Upload ist fehlgeschlagen: kann nicht auf die Platte beschreiben</target>
-        <jms:reference-file line="196">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="197">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="28fc4ae94e7aebff81825a9fbc91ba32ac6ad1ff" resname="Status icon upload failed : upload error" approved="yes">
         <source>Status icon upload failed : upload error</source>
         <target state="translated">Status Ikone Upload ist fehlgeschlagen: Upload Fehler</target>
-        <jms:reference-file line="193">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="194">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9e253470c876ee6d5c720eb777aeb82d4c26e28f" resname="Stop" approved="yes">
         <source>Stop</source>
@@ -6416,7 +6426,7 @@
       <trans-unit id="315bc332aafca63cad8ac042c2e2f5111544fe9d" resname="Story Not Found" approved="yes">
         <source>Story Not Found</source>
         <target state="translated">Bericht wurde nicht gefunden</target>
-        <jms:reference-file line="2546">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2543">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="94e347da85f4797810ed7987973c8ef79092057e" resname="Story created" approved="yes">
         <source>Story created</source>
@@ -7838,7 +7848,7 @@
       <trans-unit id="4faca55769348dcbc9714b19438181057aa2510e" resname="You do not enough rights to update status" approved="yes">
         <source>You do not enough rights to update status</source>
         <target state="translated">Sie haben nicht die genügende Rechte, um den Status zu aktualisieren</target>
-        <jms:reference-file line="187">Controller/Admin/RootController.php</jms:reference-file>
+        <jms:reference-file line="188">Controller/Admin/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="97188aa994ca91d6fd389a9a6d282aff57695836" resname="You do not have access to this basket" approved="yes">
         <source>You do not have access to this basket</source>
@@ -8209,7 +8219,7 @@
         <target state="translated">Authentifizierungsfehler Liste</target>
         <jms:reference-file line="2">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cb694e3d8d99c309e819406d454fcc53858c94ab" resname="admin:: cancel user request" xml:space="preserve">
+      <trans-unit id="cb694e3d8d99c309e819406d454fcc53858c94ab" resname="admin:: cancel user request">
         <source>admin:: cancel user request</source>
         <target state="needs-translation">Benutzeranfrage abbrechen</target>
         <jms:reference-file line="292">admin/user/registrations.html.twig</jms:reference-file>
@@ -9451,13 +9461,13 @@
       <trans-unit id="85d760f5a5e3b7c29f17485512d9225ccdd40811" resname="admin::users: password granted">
         <source>admin::users: password granted</source>
         <target state="translated">Ja</target>
-        <jms:reference-file line="107">admin/inspector/record-index.html.twig</jms:reference-file>
+        <jms:reference-file line="108">admin/inspector/record-index.html.twig</jms:reference-file>
         <jms:reference-file line="647">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="74411bbacf01ba76709c7cf0135e7c4aeed0c180" resname="admin::users: password not granted">
         <source>admin::users: password not granted</source>
         <target state="translated">Nein</target>
-        <jms:reference-file line="109">admin/inspector/record-index.html.twig</jms:reference-file>
+        <jms:reference-file line="110">admin/inspector/record-index.html.twig</jms:reference-file>
         <jms:reference-file line="647">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c6e9df1925ca0ae9df114b4c17e7667ec66f5d7" resname="admin::users: provider">
@@ -9825,7 +9835,7 @@
         <target state="translated">Abgeschlossene Arbeiten</target>
         <jms:reference-file line="81">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" xml:space="preserve">
+      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
         <target state="translated">Stornierte Aufträge</target>
         <jms:reference-file line="87">admin/worker-manager/worker_info.html.twig</jms:reference-file>
@@ -9845,7 +9855,7 @@
         <target state="translated">Alle Arbeiten löschen</target>
         <jms:reference-file line="13">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" xml:space="preserve">
+      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
         <target state="translated">Unterbrechen</target>
         <jms:reference-file line="152">admin/worker-manager/worker_info.html.twig</jms:reference-file>
@@ -9865,7 +9875,7 @@
         <target state="translated">Vorsicht! Es wird alle Informationen auf abgeschlossene, einschliesslich laufende Arbeiten,  löschen</target>
         <jms:reference-file line="16">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled" xml:space="preserve">
+      <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled">
         <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
         <target state="translated">Die gestartete Jobs als "Abbrechen" markieren, die seit</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
@@ -10069,7 +10079,7 @@
       </trans-unit>
       <trans-unit id="e247d6ed88683925b4f13f7cc2c4d6b97d1efa9e" resname="admin:phrasea-service-setting:tab:expose:: auth provider name with type openid" xml:space="preserve">
         <source>admin:phrasea-service-setting:tab:expose:: auth provider name with type openid</source>
-        <target state="needs-translation">Auth provider name with type openid</target>
+        <target state="needs-translation">Name des Auth-Providers mit openid-Typ</target>
         <jms:reference-file line="48">PhraseanetService/Form/PSExposeConnectionType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="efcf63b34a4b02de67804c139282d1c5d3d05b0b" resname="admin:phrasea-service-setting:tab:expose:: verify ssl">
@@ -10192,7 +10202,7 @@
       <trans-unit id="feab893253be204583342aa21a1c6e355f805969" resname="an error occured : %message%" approved="yes">
         <source>an error occured : %message%</source>
         <target state="translated">Ein Fehler ist aufgetreten : %message%</target>
-        <jms:reference-file line="214">Phrasea/Controller/SetupController.php</jms:reference-file>
+        <jms:reference-file line="211">Phrasea/Controller/SetupController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1ef7d963f55e35dd090b87b48313d191a01a4cdb" resname="an error occured while exporting records" approved="yes">
         <source>an error occured while exporting records</source>
@@ -10793,12 +10803,12 @@
         <jms:reference-file line="82">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="18">prod/results/infos.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1e2f274dfeb031213895ff0cfa411ccb51f2c14d" resname="create subdefinition during %duration% -- status %status%" xml:space="preserve">
+      <trans-unit id="1e2f274dfeb031213895ff0cfa411ccb51f2c14d" resname="create subdefinition during %duration% -- status %status%">
         <source>create subdefinition during %duration% -- status %status%</source>
         <target state="translated">Dauer %duration% -- Status %status%</target>
         <jms:reference-file line="136">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bd3d578c7b2dd2dae6a80fe277e646837914aee7" resname="create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%" xml:space="preserve">
+      <trans-unit id="bd3d578c7b2dd2dae6a80fe277e646837914aee7" resname="create subdefinition: %subdefName% start at %started%  during %duration% -- status %status%">
         <source>create subdefinition: %subdefName% start at %started% during %duration% -- status %status%</source>
         <target state="translated">Erzeugung von %subdefName%, gestartet am %started%, mit einer Dauer von %duration% -- Status %status%</target>
         <jms:reference-file line="50">prod/preview/short_history.html.twig</jms:reference-file>
@@ -11918,7 +11928,7 @@
         <target state="needs-translation">Durchschnittliche Abschlussrate</target>
         <jms:reference-file line="80">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="88256bfedfb8c7f62f699a4567163162d89d079c" resname="matomomediametrics:: avg_media_length" xml:space="preserve">
+      <trans-unit id="88256bfedfb8c7f62f699a4567163162d89d079c" resname="matomomediametrics:: avg_media_length">
         <source>matomomediametrics:: avg_media_length</source>
         <target state="translated">Durchschnittliche Video-Länge</target>
         <jms:reference-file line="82">Core/Provider/TwigServiceProvider.php</jms:reference-file>
@@ -11928,32 +11938,32 @@
         <target state="needs-translation">Durchschnittliche Zeit bis zum Abspielen des Videos</target>
         <jms:reference-file line="81">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="21371180b051604ed3a45346b91fa2b4bfbaa110" resname="matomomediametrics:: avg_time_watched" xml:space="preserve">
+      <trans-unit id="21371180b051604ed3a45346b91fa2b4bfbaa110" resname="matomomediametrics:: avg_time_watched">
         <source>matomomediametrics:: avg_time_watched</source>
         <target state="translated">Durchschnittliche Spielzeit</target>
         <jms:reference-file line="79">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b04897d3d7972962568acb4972336ae89114838e" resname="matomomediametrics:: finish_rate" xml:space="preserve">
+      <trans-unit id="b04897d3d7972962568acb4972336ae89114838e" resname="matomomediametrics:: finish_rate">
         <source>matomomediametrics:: finish_rate</source>
         <target state="translated">Abschlussrate</target>
         <jms:reference-file line="77">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8b7ab6dca43c08c9c73d6d9f556b8ad788fd994" resname="matomomediametrics:: fullscreen_rate" xml:space="preserve">
+      <trans-unit id="f8b7ab6dca43c08c9c73d6d9f556b8ad788fd994" resname="matomomediametrics:: fullscreen_rate">
         <source>matomomediametrics:: fullscreen_rate</source>
         <target state="translated">Vollbildrate</target>
         <jms:reference-file line="78">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d20ba3babb729c528e23b2822e29aba041cd4cc2" resname="matomomediametrics:: nb_finishes" xml:space="preserve">
+      <trans-unit id="d20ba3babb729c528e23b2822e29aba041cd4cc2" resname="matomomediametrics:: nb_finishes">
         <source>matomomediametrics:: nb_finishes</source>
         <target state="translated">Anzahl der Wiedergaben von vollständigen Videos</target>
         <jms:reference-file line="71">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4885f7cbe3ab682c59539be55b790d153a84699d" resname="matomomediametrics:: nb_impressions" xml:space="preserve">
+      <trans-unit id="4885f7cbe3ab682c59539be55b790d153a84699d" resname="matomomediametrics:: nb_impressions">
         <source>matomomediametrics:: nb_impressions</source>
         <target state="translated">Anzahl der Ausdrucke</target>
         <jms:reference-file line="69">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2aa43de106ec66eead3fce32a7472d952083c3cf" resname="matomomediametrics:: nb_plays" xml:space="preserve">
+      <trans-unit id="2aa43de106ec66eead3fce32a7472d952083c3cf" resname="matomomediametrics:: nb_plays">
         <source>matomomediametrics:: nb_plays</source>
         <target state="translated">Anzahl der Videowiedergaben</target>
         <jms:reference-file line="67">Core/Provider/TwigServiceProvider.php</jms:reference-file>
@@ -11968,27 +11978,27 @@
         <target state="needs-translation">Anzahl der Videowiedergaben mit tip</target>
         <jms:reference-file line="73">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b60ddb8ac540044d57d71dfee5b2e7f0fbf9ed8" resname="matomomediametrics:: nb_unique_visitors_impressions" xml:space="preserve">
+      <trans-unit id="1b60ddb8ac540044d57d71dfee5b2e7f0fbf9ed8" resname="matomomediametrics:: nb_unique_visitors_impressions">
         <source>matomomediametrics:: nb_unique_visitors_impressions</source>
         <target state="translated">Anzahl der Impressionen pro eindeutigem Besucher</target>
         <jms:reference-file line="70">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7079a2b3390797c10b7584421bf49bd28250e95c" resname="matomomediametrics:: nb_unique_visitors_plays" xml:space="preserve">
+      <trans-unit id="7079a2b3390797c10b7584421bf49bd28250e95c" resname="matomomediametrics:: nb_unique_visitors_plays">
         <source>matomomediametrics:: nb_unique_visitors_plays</source>
         <target state="translated">Anzahl der Videowiedergaben pro eindeutigem Besucher</target>
         <jms:reference-file line="68">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d75abacf5cb4614397ba2bd2515bf4d0b5b0c5c6" resname="matomomediametrics:: play_rate" xml:space="preserve">
+      <trans-unit id="d75abacf5cb4614397ba2bd2515bf4d0b5b0c5c6" resname="matomomediametrics:: play_rate">
         <source>matomomediametrics:: play_rate</source>
         <target state="translated">Spielrate</target>
         <jms:reference-file line="76">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b0dd7acb09b1cef0ac4ff2ab143bf5f3196940a8" resname="matomomediametrics:: sum_fullscreen_plays" xml:space="preserve">
+      <trans-unit id="b0dd7acb09b1cef0ac4ff2ab143bf5f3196940a8" resname="matomomediametrics:: sum_fullscreen_plays">
         <source>matomomediametrics:: sum_fullscreen_plays</source>
         <target state="translated">Summe der Vollbildwiedergaben</target>
         <jms:reference-file line="75">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="91facb2ef149d6cc1c2a5e65caa46160db438a22" resname="matomomediametrics:: sum_time_progress" xml:space="preserve">
+      <trans-unit id="91facb2ef149d6cc1c2a5e65caa46160db438a22" resname="matomomediametrics:: sum_time_progress">
         <source>matomomediametrics:: sum_time_progress</source>
         <target state="translated">Kumulierte Wiedergabedauer in Sekunden</target>
         <jms:reference-file line="72">Core/Provider/TwigServiceProvider.php</jms:reference-file>
@@ -14120,9 +14130,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">letzte</target>
         <jms:reference-file line="727">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c5ef10de4c189f1ce70c6112e1341ef5078f71ad" resname="prod:expose search">
+      <trans-unit id="c5ef10de4c189f1ce70c6112e1341ef5078f71ad" resname="prod:expose search" xml:space="preserve">
         <source>prod:expose search</source>
-        <target state="needs-translation">Suche nach Veröffentlichung</target>
+        <target state="needs-translation">Nach Veröffentlichung suchen</target>
         <jms:reference-file line="709">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
@@ -14316,7 +14326,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="e4cd6e2a9f2d698993a5176bf01d48e48fe6fdc7" resname="prod:expose:publication:Search a parent publication" xml:space="preserve">
         <source>prod:expose:publication:Search a parent publication</source>
-        <target state="needs-translation">forschen</target>
+        <target state="needs-translation">Suchen</target>
         <jms:reference-file line="25">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="53">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -15614,7 +15624,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Ersetzung</target>
         <jms:reference-file line="40">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="562b96b35799ccfc2a2105d23659f281da860595" resname="substitution of %sd%" xml:space="preserve">
+      <trans-unit id="562b96b35799ccfc2a2105d23659f281da860595" resname="substitution of %sd%">
         <source>substitution of %sd%</source>
         <target state="translated">Ersetzung von %sd%</target>
         <jms:reference-file line="170">actions/Tools/index.html.twig</jms:reference-file>
@@ -16459,7 +16469,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">aktualisiert am</target>
         <jms:reference-file line="161">Phrasea/Helper/Prod.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e08ad584358135b5587612d4ec46223c2b09e791" resname="upload:: Copy meta" xml:space="preserve">
+      <trans-unit id="e08ad584358135b5587612d4ec46223c2b09e791" resname="upload:: Copy meta">
         <source>upload:: Copy meta</source>
         <target state="translated">Metadaten des ausgewählten Datensatzes kopieren</target>
         <jms:reference-file line="586">prod/upload/lazaret.html.twig</jms:reference-file>
@@ -16720,12 +16730,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Die Metadaten in das Originaldokument schreiben</target>
         <jms:reference-file line="422">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17f54b8f56ddf4101b939d608d7c248fffa831ae" resname="write metadatas during %duration% -- status %status%" xml:space="preserve">
+      <trans-unit id="17f54b8f56ddf4101b939d608d7c248fffa831ae" resname="write metadatas during %duration% -- status %status%">
         <source>write metadatas during %duration% -- status %status%</source>
         <target state="translated">Dauer %duration% -- Status %status%</target>
         <jms:reference-file line="139">admin/inspector/record-detail.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cffe504be8a027b87d76f2ea5b60ac8a73cc9971" resname="write metadatas: %subdefName% start at %started%  during %duration% -- status %status%" xml:space="preserve">
+      <trans-unit id="cffe504be8a027b87d76f2ea5b60ac8a73cc9971" resname="write metadatas: %subdefName% start at %started%  during %duration% -- status %status%">
         <source>write metadatas: %subdefName% start at %started% during %duration% -- status %status%</source>
         <target state="translated">Schreiben der Metadaten in: %subdefName% , gestartet am %started% , mit einer Dauer von %duration% -- Status %status%</target>
         <jms:reference-file line="61">prod/preview/short_history.html.twig</jms:reference-file>

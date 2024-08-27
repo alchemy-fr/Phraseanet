@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 4.1.9
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+ - Fix for Verisign PDF 
+ - Expiring right to core 
+ - New Api endpoint admin 
+  
+### Stack (docker compose and helm)
+
+ - No change
+
+## What's Changed
+* PHRAS-4083_searchraw-limit-offset-to-result by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4528
+* PHRAS-4082: Github action - Check the push image method by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4530
+* PHRAS-4086_pdftotext-exception by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4532
+* PHRAS-4078_ExpiringRight-to-core by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4526
+* PHRAS-4085_data-volumes-api by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4529
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.8...4.1.9
+
+___
 ## 4.1.8
 
 ### Update instructions

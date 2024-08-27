@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Application\RouteLoader;
 use Alchemy\Phrasea\Authorization\AuthorizationServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\BasketSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\ExpiringRightsSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
@@ -27,6 +28,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\WebhookUserEventSubscriber;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\HttpStackMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\MediaUtilitiesMetaServiceProvider;
@@ -766,6 +768,8 @@ class Application extends SilexApplication
                 if ($this['configuration.store']->isSetup()) {
                     $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
                 }
+
+                $dispatcher->addSubscriber(new ExpiringRightsSubscriber($app, new LazyLocator($app, 'phraseanet.appbox')));
 
                 return $dispatcher;
             })
