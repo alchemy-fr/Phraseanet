@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 4.1.10
+
+### Update instructions
+
+- Migration patch: 
+  - Migration script for configuration file
+ 
+ `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+
+### Version summary
+ - Bump rabbitMQ version 
+ - fixing  translations
+
+  
+### Stack (docker compose and helm)
+
+ - Bump RabbitMQ version
+
+
+## What's Changed
+* PHRAS-3416 : fix string in admin create subdef by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4534
+* PHRAS-3416 create subdefinition localisation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4537
+* PHRAS-4094 Bump rabbitMQ version to 3.8.34 by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4546
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.9...4.1.10
+
 ## 4.1.9
 
 ### Update instructions
