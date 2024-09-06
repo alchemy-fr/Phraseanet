@@ -137,24 +137,6 @@ class CreateRecordWorker implements WorkerInterface
             return;
         }
 
-        if ($workerRunningJob != null) {
-            $em->beginTransaction();
-            try {
-                $workerRunningJob
-                    ->setStatus(WorkerRunningJob::FINISHED)
-                    ->setFinished(new \DateTime('now'))
-                ;
-
-                $em->persist($workerRunningJob);
-
-                $em->flush();
-                $em->commit();
-            } catch (\Exception $e) {
-                $em->rollback();
-            }
-
-        }
-
         $lazaretSession = new LazaretSession();
 
         $userRepository = $this->getUserRepository();
@@ -257,6 +239,11 @@ class CreateRecordWorker implements WorkerInterface
                 ]
             ]
         );
+
+        if ($workerRunningJob != null) {
+            $this->repoWorkerJob->markFinished($workerRunningJob->getId(), $this->messagePublisher, MessagePublisher::CREATE_RECORD_TYPE);
+        }
+
     }
 
     /**

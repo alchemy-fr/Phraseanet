@@ -38,13 +38,19 @@ class SubtitleWorker implements WorkerInterface
     private $workerRunningJob;
     private $transcriptionsId;
 
-    public function __construct(WorkerRunningJobRepository $repoWorker, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger, EventDispatcherInterface $dispatcher)
+    /**
+     * @var MessagePublisher
+     */
+    private $messagePublisher;
+
+    public function __construct(WorkerRunningJobRepository $repoWorker, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger, EventDispatcherInterface $dispatcher, $messagePublisher)
     {
         $this->repoWorker    = $repoWorker;
         $this->conf          = $conf;
         $this->appboxLocator = $appboxLocator;
         $this->logger        = $logger;
         $this->dispatcher    = $dispatcher;
+        $this->messagePublisher = $messagePublisher;
     }
 
     public function process(array $payload)
@@ -265,7 +271,7 @@ class SubtitleWorker implements WorkerInterface
 //            $this->deleteTranscription($transcriptionId);
 //        }
 
-        $this->jobFinished();
+        $this->repoWorker->markFinished($this->workerRunningJob->getId(), $this->messagePublisher, MessagePublisher::SUBTITLE_TYPE);
 
         return 0;
     }
