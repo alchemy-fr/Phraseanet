@@ -8,14 +8,11 @@ use PhpAmqpLib\Connection\AbstractConnection;
 
 class HeartbeatHandler
 {
-    /**
-     * @var AbstractConnection
-     */
-    private $connection;
+    private $messagePublisher;
 
-    public function __construct(AbstractConnection $connection)
+    public function __construct(MessagePublisher $messagePublisher)
     {
-        $this->connection = $connection;
+        $this->messagePublisher = $messagePublisher;
     }
 
     /**
@@ -23,14 +20,35 @@ class HeartbeatHandler
      */
     public function run($interval)
     {
+        $fileDir = $_SERVER['PWD'] .'/tmp/watchdog';
+
         while (true) {
-            if (!$this->connection->isConnected()) {
-                return;
+            $filename = $_SERVER['PWD'] .'/tmp/watchdog/edit.watchdog';
+            if (!file_exists($filename)) {
+                if (!is_dir($fileDir)) {
+                    mkdir($fileDir, 0775, true);
+                }
+
+                file_put_contents($filename, 'watchdog_edit_ping');
+
+                $payload = [
+                    'message_type' => MessagePublisher::MAIN_QUEUE_TYPE,
+                    'payload' => [
+                        'type'           => MessagePublisher::EDIT_RECORD_TYPE, // used to specify the final Q to publish message
+                        'dataType'       => 'watchdog',
+                        'data'           => 'watchdog_edit_ping'
+                    ]
+                ];
+
+                $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
+            } else {
+                $this->messagePublisher->pushLog("Edit record worker do not consume message! check if consumer is running ,busy , or to be restart!", "warning");
+
+                @unlink($_SERVER['PWD'] . '/tmp/watchdog/edit.watchdog'); // unlink, so to be able to re-check after
             }
 
-            sleep((int) $interval / 2);
-
-            $this->connection->checkHeartBeat();
+            // each 5 minutes
+            sleep(300);
         }
     }
 }
