@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Plugin\Exception\JsonValidationException;
@@ -224,12 +225,34 @@ class AdminConfigurationController extends Controller
 
         /** @var WorkerRunningJob $workerRunningJob */
         $workerRunningJob = $repoWorker->find($workerId);
-
-        $workerRunningJob->setStatus($request->request->get('status'));
+        $subdefOK = false;
         $finishedDate = new \DateTime('now');
 
-        if($request->request->get('finished') == '1') {
-            $workerRunningJob->setFinished($finishedDate)->setFlock(null);
+        if ($workerRunningJob->getWork() == 'subdefCreation') {
+            try {
+                $databox = $this->findDataboxById($workerRunningJob->getDataboxId());
+                $record = $databox->get_record($workerRunningJob->getRecordId());
+                if ($record->has_subdef($workerRunningJob->getWorkOn()) ) {
+                    $filePathToCheck = $record->get_subdef($workerRunningJob->getWorkOn())->getRealPath();
+                    if ($this->getFileSystem()->exists($filePathToCheck)) {
+                        // the subdefinition exist
+                        // so mark as finished
+                        $subdefOK = true;
+                        $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                        $workerRunningJob->setFinished($finishedDate)->setFlock(null);
+                    }
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
+        if (!$subdefOK || $workerRunningJob->getWork() != 'subdefCreation') {
+            $workerRunningJob->setStatus($request->request->get('status'));
+
+
+            if($request->request->get('finished') == '1') {
+                $workerRunningJob->setFinished($finishedDate)->setFlock(null);
+            }
         }
 
         $em = $repoWorker->getEntityManager();
@@ -259,14 +282,48 @@ class AdminConfigurationController extends Controller
     {
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $this->app['repo.worker-running-job'];
-        $workerRunningJobs = $repoWorker->getRunningSinceCreated($request->request->get('hour'), ['subdefCreation', 'writeMetadatas']);
+        $finishedDate = new \DateTime('now');
+        $em = $repoWorker->getEntityManager();
 
+        $workerRunningJobs = $repoWorker->getRunningSinceCreated($request->request->get('hour'), ['subdefCreation', 'writeMetadatas']);
+        $workerRunningJobsForOnlySubdefcreation = $repoWorker->getRunningSinceCreated($request->request->get('hour'), ['subdefCreation']);
+
+        // treat the subdefinition case
+        /** @var WorkerRunningJob $ws */
+        foreach ($workerRunningJobsForOnlySubdefcreation as $ws) {
+            $subdefOK = false;
+            try {
+                $databox = $this->findDataboxById($ws->getDataboxId());
+                $record = $databox->get_record($ws->getRecordId());
+                if ($record->has_subdef($ws->getWorkOn()) ) {
+                    $filePathToCheck = $record->get_subdef($ws->getWorkOn())->getRealPath();
+                    if ($this->getFileSystem()->exists($filePathToCheck)) {
+                        // the subdefinition exist
+                        // so mark as finished
+                        $subdefOK = true;
+                        $ws->setStatus(WorkerRunningJob::FINISHED);
+                        $ws->setFinished($finishedDate)->setFlock(null);
+                    }
+                }
+
+            } catch (\Exception $e) {
+            }
+
+            if (!$subdefOK) {
+                $ws->setStatus(WorkerRunningJob::INTERRUPT);
+                $ws->setFinished($finishedDate)->setFlock(null);
+            }
+            $em->persist($ws);
+        }
+        $em->flush();
+
+        // treat all the rest case
         $repoWorker->updateStatusRunningToCanceledSinceCreated($request->request->get('hour'));
 
-        $finishedDate = new \DateTime('now');
+        // "log docs" the subdefCreation and writeMetadatas action
         /** @var WorkerRunningJob $workerRunningJob */
         foreach ($workerRunningJobs as $workerRunningJob) {
-            $this->updateLogDocs($workerRunningJob, 'canceled', $finishedDate);
+            $this->updateLogDocs($workerRunningJob, $workerRunningJob->getStatus(), $finishedDate);
         }
 
         return $this->app->json(['success' => true]);
@@ -791,4 +848,11 @@ EOF;
         return $this->app['url_generator'];
     }
 
+    /**
+     * @return FilesystemService
+     */
+    private function getFileSystem()
+    {
+        return $this->app['phraseanet.filesystem'];
+    }
 }
