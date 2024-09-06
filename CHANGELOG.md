@@ -18,15 +18,18 @@
 
  - Bump RabbitMQ version
 
-
 ## What's Changed
+
 * PHRAS-3416 : fix string in admin create subdef by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4534
 * PHRAS-3416 create subdefinition localisation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4537
 * PHRAS-4094 Bump rabbitMQ version to 3.8.34 by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4546
+* PHRAS-4090:Prod - expose-cli - publication - publication description is Nok by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4536
+* Fix for phraseanet-saml-sp image build in Dockerfile by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4543
 
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.9...4.1.10
 
+___
 ## 4.1.9
 
 ### Update instructions
