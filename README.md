@@ -7,7 +7,7 @@ Phraseanet 4.1 - Digital Asset Management application
 
  - Several GUI : Prod, Admin, Thesaurus, Lightbox, Report,    
  - Metadata Management (includes Thesaurus and DublinCore Mapping)
- - RestFull APIS
+ - RESTful APIS
  - Elasticsearch search engine
  - Multiple resolution assets generation
  - Advanced Rights Management
