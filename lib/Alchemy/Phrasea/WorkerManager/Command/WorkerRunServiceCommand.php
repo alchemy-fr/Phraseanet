@@ -39,14 +39,14 @@ class WorkerRunServiceCommand extends Command
             if ($body === false) {
                 $output->writeln(sprintf('<error>Unable to read payload file %s</error>', $input->getArgument('body')));
 
-                return;
+                return 0;
             }
 
             $body = json_decode($body, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $output->writeln('<error>Invalid message body</error>');
 
-                return;
+                return 0;
             }
         }
 
@@ -58,5 +58,6 @@ class WorkerRunServiceCommand extends Command
             @unlink($input->getArgument('body'));
         }
 
+        return 0;
     }
 }

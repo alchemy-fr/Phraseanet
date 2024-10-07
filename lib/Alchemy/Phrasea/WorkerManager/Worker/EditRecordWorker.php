@@ -34,7 +34,7 @@ class EditRecordWorker implements WorkerInterface
         try {
             $databox = $this->findDataboxById($payload['databoxId']);
         } catch(\Exception $e) {
-            return;
+            return 0;
         }
 
         $recordIds = [];
@@ -49,7 +49,7 @@ class EditRecordWorker implements WorkerInterface
             if ($workerRunningJob == null) {
                 $this->messagePublisher->pushLog("Given workerJobId not found !", 'error');
 
-                return ;
+                return 0;
             }
 
             $workerRunningJob
@@ -191,7 +191,7 @@ class EditRecordWorker implements WorkerInterface
                 $workerMessage
             );
 
-            return;
+            return 0;
         }
 
         // order to write metas for those records
@@ -213,5 +213,7 @@ class EditRecordWorker implements WorkerInterface
         }
 
         $this->messagePublisher->pushLog(sprintf("record edited databoxname=%s databoxid=%d recordid=%d", $databox->get_viewname(), $payload['databoxId'], $payload['record_id']));
+
+        return 0;
     }
 }
