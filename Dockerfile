@@ -1,5 +1,5 @@
 
-FROM alchemyfr/phraseanet-base:1.0.0 as builder
+FROM alchemyfr/phraseanet-base:1.0.0 AS builder
 
 COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 
@@ -72,7 +72,7 @@ CMD []
 # Phraseanet install and setup application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.0.0 as phraseanet-setup
+FROM alchemyfr/phraseanet-base:1.0.0 AS phraseanet-setup
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -85,7 +85,7 @@ CMD []
 # Phraseanet web application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.0.0 as phraseanet-fpm
+FROM alchemyfr/phraseanet-base:1.0.0 AS phraseanet-fpm
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -97,7 +97,7 @@ CMD ["php-fpm", "-F"]
 # Phraseanet worker application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.0.0 as phraseanet-worker
+FROM alchemyfr/phraseanet-base:1.0.0 AS phraseanet-worker
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -123,7 +123,7 @@ CMD ["/bin/bash", "bin/run-worker.sh"]
 # phraseanet-nginx
 #########################################################################
 
-FROM nginx:1.17.8-alpine as phraseanet-nginx
+FROM nginx:1.17.8-alpine AS phraseanet-nginx
 RUN adduser --uid 1000 --disabled-password app
 RUN apk add --update apache2-utils \
     && rm -rf /var/cache/apk/*
@@ -139,10 +139,8 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 # phraseanet adapted simplesaml service provider 
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.0.0 as phraseanet-saml-sp
-RUN adduser --uid 1000 --disabled-password app
-RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
-    && apt-get update \
+FROM alchemyfr/phraseanet-base:1.0.0 AS phraseanet-saml-sp
+RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -159,15 +157,10 @@ RUN echo "deb http://archive.debian.org/debian stretch main non-free" > /etc/apt
         gettext \
         mcrypt \
         libldap2-dev \
-    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/ \
-    && docker-php-ext-install zip mbstring pdo_mysql gettext mcrypt \
-    && pecl install \
-        redis-5.3.7 \
-    && docker-php-ext-enable redis \
-    && pecl clear-cache \
-    && docker-php-source delete
+    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/
 ADD ./docker/phraseanet/saml-sp/root /
 ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 CMD ["/bootstrap/bin/start-servers.sh"]
-HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit
+
 
