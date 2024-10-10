@@ -4,6 +4,20 @@ set -e
 envsubst < "docker/phraseanet/php.ini.worker.sample" > /usr/local/etc/php/php.ini
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
+if [ -d "$PHP_UPLOAD_TMP_DIR" ]; then
+  echo `date +"%Y-%m-%d %H:%M:%S"` " - The directory: $PHP_UPLOAD_TMP_DIR already exists."
+else
+  echo `date +"%Y-%m-%d %H:%M:%S"` " - The directory: $PHP_UPLOAD_TMP_DIR does not exist. Creating the directory..."
+  mkdir -p "$PHP_UPLOAD_TMP_DIR"
+
+  if [ $? -eq 0 ]; then
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - The directory: $PHP_UPLOAD_TMP_DIR was successfully created."
+  else
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Failed to create directory: $PHP_UPLOAD_TMP_DIR."
+    exit 1
+  fi
+fi
+
 if [[ -z "$PHRASEANET_APP_PORT" || $PHRASEANET_APP_PORT = "80" || $PHRASEANET_APP_PORT = "443" ]];then
 export PHRASEANET_BASE_URL="$PHRASEANET_SCHEME://$PHRASEANET_HOSTNAME"
 echo  `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet BASE URL IS : " $PHRASEANET_BASE_URL 
@@ -293,8 +307,13 @@ chown -R app:app backup
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on www/repository excluding www/thumbnails"
 cd www
 chown -R app:app  $(ls -I thumbnails)
-    
+
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of chown!"   
+
+if [ -d "$PHP_UPLOAD_TMP_DIR" ]; then
+  echo `date +"%Y-%m-%d %H:%M:%S"` " - Cleaning files older than 2 days in $PHP_UPLOAD_TMP_DIR "
+  find "$PHP_UPLOAD_TMP_DIR" -type f -mtime +2 -exec rm -f {} \;
+fi
 
 echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet setup entrypoint.sh"
 
