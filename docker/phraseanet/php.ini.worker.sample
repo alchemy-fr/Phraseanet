@@ -817,7 +817,7 @@ file_uploads = On
 ; Temporary directory for HTTP uploaded files (will use system default if not
 ; specified).
 ; http://php.net/upload-tmp-dir
-upload_tmp_dir = $PHP_UPLOAD_TMP_DIR
+; upload_tmp_dir = $PHP_UPLOAD_TMP_DIR
 
 ; Maximum allowed size for uploaded files.
 ; http://php.net/upload-max-filesize
