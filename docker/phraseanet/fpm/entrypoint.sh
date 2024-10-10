@@ -5,7 +5,6 @@ set -e
 envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 envsubst < "docker/phraseanet/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
 envsubst < "docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf" > /usr/local/etc/php-fpm.d/zz-docker.conf
-# cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 if [ ${XDEBUG_ENABLED} == "1" ]; then
     echo "XDEBUG is enabled. YOU MAY KEEP THIS FEATURE DISABLED IN PRODUCTION."
@@ -34,12 +33,6 @@ fi
 
 chown -R app:app cache
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repository"
-
-#    config \
-#    tmp \
-#    logs \
-#    www
-
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins
