@@ -5,9 +5,11 @@ namespace Alchemy\Phrasea\WorkerManager\Command;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessageHandler;
+use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Doctrine\DBAL\Connection;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Exception\AMQPTimeoutException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,6 +27,7 @@ class WorkerExecuteCommand extends Command
             ->addOption('preserve-payload', 'p', InputOption::VALUE_NONE, 'Preserve temporary payload file')
             ->addOption('queue-name', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The name of queues to be consuming')
             ->addOption('max-processes', 'm', InputOption::VALUE_REQUIRED, 'The max number of process allow to run (default 1) ')
+            ->addOption('wait-message-timeout', 't', InputOption::VALUE_REQUIRED, 'specify number in second to wait message from Q (default infini =0)')
 //            ->addOption('MWG', '', InputOption::VALUE_NONE, 'Enable MWG metadata compatibility (use only for write metadata service)')
 //            ->addOption('clear-metadatas', '', InputOption::VALUE_NONE, 'Remove metadatas from documents if not compliant with Database structure (use only for write metadata service)')
             ->setHelp('');
@@ -74,6 +77,11 @@ class WorkerExecuteCommand extends Command
             $workerInvoker->preservePayloads();
         }
 
+        $waitTimeout = 0; // infini
+        if ($input->getOption('wait-message-timeout') != null) {
+            $waitTimeout = $input->getOption('wait-message-timeout');
+        }
+
         /** @var MessageHandler $messageHandler */
         $messageHandler = $this->container['alchemy_worker.message.handler'];
         $messageHandler->consume($channel, $serverConnection, $workerInvoker, $argQueueName, $maxProcesses);
@@ -97,7 +105,24 @@ class WorkerExecuteCommand extends Command
                     return 1;
                 }
             }
-            $channel->wait();
+
+            try {
+                $channel->wait(null, false, $waitTimeout);
+            } catch (AMQPTimeoutException $e) {
+                // we are in wait timeout,
+                // immediately close the rabbit connection to avoid Missed server heartbeat exception after this timeout
+                $serverConnection->connectionClose();
+
+                /** @var ProcessPool $processPool */
+                $processPool = $this->container['alchemy_worker.process_pool'];
+                $processPool->setLogger($this->container['alchemy_worker.logger']);
+
+                // and wait until all process generated are finished
+                $processPool->waitForAllJobProcessFinished();
+
+                // exit with 1
+                return 1;
+            }
         }
 
         $serverConnection->connectionClose();

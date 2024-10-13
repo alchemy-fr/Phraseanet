@@ -121,7 +121,7 @@ else
         queue_name="$(echo $i | cut -d'_' -f3)"
         m=$i
         if [ ${!m} -gt "0" ] ; then
-          command="bin/console worker:execute --queue-name=$queue_name -m ${!m} &"
+          command="bin/console worker:execute --queue-name=$queue_name -m ${!m} -t ${PHRASEANET_WAIT_MESSAGE_TIMEOUT} &"
           echo $command >> bin/run-worker.sh
           echo "Worker " $queue_name " defined with parallelism " ${!m}
           NBR_WORKERS=$(expr $NBR_WORKERS + 1)

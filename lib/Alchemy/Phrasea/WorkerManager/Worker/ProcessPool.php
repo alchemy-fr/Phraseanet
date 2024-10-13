@@ -67,6 +67,22 @@ class ProcessPool implements LoggerAwareInterface
         return ($this->processes[] = $builder->getProcess());
     }
 
+    public function waitForAllJobProcessFinished()
+    {
+        $interval = 1;
+        while (count($this->processes) > 0) {
+            if (count($this->processes) == 1) {
+                $process = $this->processes[0];
+                $this->logger->info("only 1 process remaining before exit 1 : " . $process->getCommandLine() . "\n");
+            }
+
+            sleep($interval);
+
+            $this->detachFinishedProcesses();
+            $interval = min(10, $interval + 1);
+        }
+    }
+
     private function detachFinishedProcesses()
     {
         $runningProcesses = [];
