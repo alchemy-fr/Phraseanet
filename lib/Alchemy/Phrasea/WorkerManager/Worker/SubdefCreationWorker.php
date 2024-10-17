@@ -199,7 +199,7 @@ class SubdefCreationWorker implements WorkerInterface
             $payload['subdefName'], $databox->get_viewname(), $databoxId, $recordId));
 
         // tell that we have finished to work on this file (=unlock)
-        $this->repoWorker->markFinished($workerRunningJobId);
+        $this->repoWorker->markFinished($workerRunningJobId, $this->messagePublisher, MessagePublisher::SUBDEF_CREATION_TYPE);
 
         $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_SUBDEFCREATION, new \DateTime('now'), WorkerRunningJob::FINISHED);
     }

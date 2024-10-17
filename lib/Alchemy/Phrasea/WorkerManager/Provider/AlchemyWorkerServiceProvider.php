@@ -159,7 +159,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SUBTITLE_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new SubtitleWorker($app['repo.worker-running-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger'], $app['dispatcher']))
+            return (new SubtitleWorker($app['repo.worker-running-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger'], $app['dispatcher'], $app['alchemy_worker.message.publisher']))
                 ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setTemporaryFileSystemLocator(new LazyLocator($app, 'temporary-filesystem'));
         }));

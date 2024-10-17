@@ -200,17 +200,7 @@ class EditRecordWorker implements WorkerInterface
         );
 
         // tell that we have finished to work on edit
-        $this->repoWorker->reconnect();
-        $em->getConnection()->beginTransaction();
-        try {
-            $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-            $workerRunningJob->setFinished(new \DateTime('now'));
-            $em->persist($workerRunningJob);
-            $em->flush();
-            $em->commit();
-        } catch (\Exception $e) {
-            $em->rollback();
-        }
+        $this->repoWorker->markFinished($workerRunningJob->getId(), $this->messagePublisher, MessagePublisher::EDIT_RECORD_TYPE);
 
         $this->messagePublisher->pushLog(sprintf("record edited databoxname=%s databoxid=%d recordid=%d", $databox->get_viewname(), $payload['databoxId'], $payload['record_id']));
     }
