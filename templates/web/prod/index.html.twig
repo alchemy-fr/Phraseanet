@@ -986,7 +986,7 @@
                                     {{ 'Aide' | trans }}
                                 </option>
                             </select>
-                            <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
+                            <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query') | raw }}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
                             <input type="button" class="btn btn-inverse preferences-options-submit" value="{{'boutton::valider'  | trans }}" />
                         </form>
                     </div>

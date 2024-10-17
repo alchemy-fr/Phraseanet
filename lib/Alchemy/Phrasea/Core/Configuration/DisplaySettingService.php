@@ -98,6 +98,10 @@ class DisplaySettingService
             return array_key_exists($name, $this->usersSettings) ? $this->usersSettings[$name] : $default;
         }
 
+        if ($name == 'start_page_query') {
+            return htmlentities($user->getSettings()->get($name)->getValue());
+        }
+
         return $user->getSettings()->get($name)->getValue();
     }
 
