@@ -384,6 +384,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $client = $this->getClient();
         $bases = $notifs = [];
+        $randomValue = $this->setSessionFormToken('userAccount');
 
         foreach ($app->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
@@ -424,7 +425,8 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
             'form_retryFTP'        => '',
             'notifications'        => $notifs,
             'form_defaultdataFTP'  => ['document', 'preview', 'caption'],
-            'mail_notifications' => '1'
+            'mail_notifications' => '1',
+            'userAccount_token'    => $randomValue
         ]);
 
         $response = $client->getResponse();
