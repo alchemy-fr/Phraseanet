@@ -39,6 +39,8 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testPostNewAppInvalidArguments()
     {
+        $randomValue = $this->setSessionFormToken('newApplication');
+
         $crawler = self::$DI['client']->request('POST', '/developers/application/', [
             'type'            => ApiApplication::WEB_TYPE,
             'name'            => '',
@@ -46,7 +48,8 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
             'website'         => 'my.website.com',
             'callback'        => 'my.callback.com',
             'scheme-website'  => 'http://',
-            'scheme-callback' => 'http://'
+            'scheme-callback' => 'http://',
+            'newApplication_token' => $randomValue
             ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -63,6 +66,7 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);
         $nbApp = count($apps);
+        $randomValue = $this->setSessionFormToken('newApplication');
 
         self::$DI['client']->request('POST', '/developers/application/', [
             'type'            => ApiApplication::WEB_TYPE,
@@ -71,7 +75,8 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
             'website'         => 'my.website.com',
             'callback'        => 'my.callback.com',
             'scheme-website'  => 'http://',
-            'scheme-callback' => 'http://'
+            'scheme-callback' => 'http://',
+            'newApplication_token' => $randomValue
         ]);
 
         $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);
