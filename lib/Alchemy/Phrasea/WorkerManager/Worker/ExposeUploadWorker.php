@@ -373,7 +373,7 @@ class ExposeUploadWorker implements WorkerInterface
         }
 
         // tell that the upload is finished
-        $this->finishedJob($workerRunningJob, $em);
+        $this->repoWorker->markFinished($workerRunningJob->getId(), $this->messagePublisher, MessagePublisher::EXPOSE_UPLOAD_TYPE);
     }
 
     private function getClientAnnotationProfile(Client $exposeClient, $publicationId)
