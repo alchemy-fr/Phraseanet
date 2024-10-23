@@ -318,6 +318,8 @@ class AccountController extends Controller
 
         $initiatedValidations = $this->getBasketRepository()->findby(['vote_initiator' => $user, ]);
 
+        $this->setSessionFormToken('userAccount');
+
         return $this->render('account/account.html.twig', [
             'user'                  => $user,
             'evt_mngr'              => $manager,
@@ -417,6 +419,10 @@ class AccountController extends Controller
      */
     public function updateAccount(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'userAccount')) {
+            return new Response('invalid crsf token form', 403);
+        }
+
         $registrations = $request->request->get('registrations', []);
 
         if (false === is_array($registrations)) {
