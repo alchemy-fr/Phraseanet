@@ -49,7 +49,7 @@ class ExposeUploadWorker implements WorkerInterface
             if ($workerRunningJob == null) {
                 $this->messagePublisher->pushLog("Given workerJobId not found !", 'error');
 
-                return ;
+                return 0;
             }
 
             $workerRunningJob
@@ -243,7 +243,7 @@ class ExposeUploadWorker implements WorkerInterface
                 $this->messagePublisher->pushLog(sprintf("subdefinition %s or file as document mapping not found", $phraseanetSubdefAsDocument));
                 $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
 
-                return ;
+                return 0;
             }
 
             if ($lat !== null) {
@@ -271,7 +271,7 @@ class ExposeUploadWorker implements WorkerInterface
                 $this->messagePublisher->pushLog("An error occurred when creating asset: status-code " . $response->getStatusCode());
                 $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
 
-                return ;
+                return 0;
             }
 
             $assetsResponse = json_decode($response->getBody(),true);
@@ -369,11 +369,13 @@ class ExposeUploadWorker implements WorkerInterface
             $this->messagePublisher->pushLog("An error occurred when creating asset!: ". $e->getMessage());
             $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
 
-            return;
+            return 0;
         }
 
         // tell that the upload is finished
         $this->finishedJob($workerRunningJob, $em);
+
+        return 0;
     }
 
     private function getClientAnnotationProfile(Client $exposeClient, $publicationId)
