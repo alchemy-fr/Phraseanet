@@ -171,6 +171,10 @@ class DeveloperController extends Controller
      */
     public function newApp(Request $request)
     {
+        if (!$this->isCrsfValid($request, 'newApplication')) {
+            return new Response('invalid crsf token form', 403);
+        }
+
         if ($request->request->get('type') === ApiApplication::DESKTOP_TYPE) {
             $form = new \API_OAuth2_Form_DevAppDesktop($request);
         } else {
@@ -223,6 +227,8 @@ class DeveloperController extends Controller
      */
     public function displayFormApp(Request $request)
     {
+        $this->setSessionFormToken('newApplication');
+
         return $this->render('developers/application_form.html.twig', [
             "violations" => null,
             'form'       => null,
