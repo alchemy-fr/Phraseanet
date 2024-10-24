@@ -2,30 +2,60 @@
 
 ## 4.1.10
 
-### Update instructions
+### Update Instructions
 
-- Migration patch: 
-  - Migration script for configuration file
- 
- `bin/setup system:upgrade`, ran by setup container with Docker if env `PHRASEANET_UPGRADE=1 ` 
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
 
-### Version summary
- - Bump rabbitMQ version 
- - fixing  translations
+### Version Summary
 
-  
-### Stack (docker compose and helm)
+- **Bump Phraseanet Base Image to 1.1.0**:
+  - OS version updated.
+  - Bumped `Popeler` dependency .
+  - Added missing `ufraw` dependency .
 
- - Bump RabbitMQ version
+- **Updated Components**:
+  - **RabbitMQ**: Upgraded to version 3.8.34.
+  - **Nginx**: Updated to the latest stable release, 1.27.2.
+
+- **Security Fixes**:
+  - Fixed CSRF vulnerability in the userProfile endpoint.
+  - Addressed XSS injection vulnerability in the user profile.
+  - Corrected HTML injection in notification emails.
+
+- **Other Updates**:
+  - Updated translations.
+
+### Stack (Docker Compose and Helm)
+
+- **Phraseanet Base Image**: Version bumped.
+- **RabbitMQ**: Version bumped.
+- **Nginx**: Version bumped.
+- **Helm Updates**:
+  - Added `nodeSelector` property to all charts except for the DB pod.
+  - `imagePullPolicy` can now be set from `values.yaml`.
+  - Release details: [Helm chart release 0.47.0](https://github.com/alchemy-fr/alchemy-helm-charts-repo/releases/tag/phraseanet-0.47.0)
 
 ## What's Changed
-
 * PHRAS-3416 : fix string in admin create subdef by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4534
 * PHRAS-3416 create subdefinition localisation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4537
 * PHRAS-4094 Bump rabbitMQ version to 3.8.34 by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4546
 * PHRAS-4090:Prod - expose-cli - publication - publication description is Nok by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4536
 * Fix for phraseanet-saml-sp image build in Dockerfile by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4543
+* PHRAS-4100 Php upload tmp directory  by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4553
+* PHRAS-4079 Bump base image 1.1.0 by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4554
+* PHRAS-3857 : Check CSRF token on account by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4556
+* PHRAS-4103 Prod xss check by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4555
+* PHRAS-4088: improving Job ack in workerRunningJob  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4535
+* fix typo by @tacman in https://github.com/alchemy-fr/Phraseanet/pull/4552
+* PHRAS-4104 Nginx bump 1.27.2 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4557
+* PHRAS-4101: Update Range for Subdefinition Image Sizes by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4558
 
+## New Contributors
+* @tacman made their first contribution in https://github.com/alchemy-fr/Phraseanet/pull/4552
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.9...4.1.10
 
