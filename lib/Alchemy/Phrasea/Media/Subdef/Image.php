@@ -33,7 +33,7 @@ class Image extends Provider
     {
         $this->translator = $translator;
 
-        $this->registerOption(new OptionType\Range($this->translator->trans('Dimension'), self::OPTION_SIZE, 20, 5000, 800));
+        $this->registerOption(new OptionType\Range($this->translator->trans('Dimension'), self::OPTION_SIZE, 20, 10000, 800));
         $this->registerOption(new OptionType\Range($this->translator->trans('Resolution'), self::OPTION_RESOLUTION, 50, 1000, 72));
         $this->registerOption(new OptionType\Boolean($this->translator->trans('Remove ICC Profile'), self::OPTION_STRIP, false));
         $this->registerOption(new OptionType\Boolean($this->translator->trans('Flatten layers'), self::OPTION_FLATTEN, true));
