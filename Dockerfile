@@ -123,7 +123,7 @@ CMD ["/bin/bash", "bin/run-worker.sh"]
 # phraseanet-nginx
 #########################################################################
 
-FROM nginx:1.17.8-alpine AS phraseanet-nginx
+FROM nginx:1.27.2-alpine AS phraseanet-nginx
 RUN adduser --uid 1000 --disabled-password app
 RUN apk add --update apache2-utils \
     && rm -rf /var/cache/apk/*
