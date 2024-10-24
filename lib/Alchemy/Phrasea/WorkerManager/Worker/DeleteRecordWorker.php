@@ -69,14 +69,7 @@ class DeleteRecordWorker implements WorkerInterface
 
         // tell that the delete is finished
         if ($workerRunningJob != null) {
-            $workerRunningJob
-                ->setStatus(WorkerRunningJob::FINISHED)
-                ->setFinished(new \DateTime('now'))
-            ;
-
-            $em->persist($workerRunningJob);
-
-            $em->flush();
+            $this->repoWorker->markFinished($workerRunningJob->getId(), $this->messagePublisher, MessagePublisher::DELETE_RECORD_TYPE);
         }
     }
 }

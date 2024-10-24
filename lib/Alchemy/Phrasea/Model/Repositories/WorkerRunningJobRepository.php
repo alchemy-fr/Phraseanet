@@ -328,14 +328,16 @@ class WorkerRunningJobRepository extends EntityRepository
      * mark a job a "finished"
      * nb : after a long job, connection may be lost so we reconnect.
      *      But sometimes (?) a first commit fails (due to reconnect ?), while the second one is ok.
-     *      So here we try 2 times, just in case...
+     *      So here we try 4 times, just in case...
      *
      * @param int $workerRunningJobId
+     * @param MessagePublisher $messagePublisher
+     * @param $jobType
      * @param null $info
      */
-    public function markFinished(int $workerRunningJobId, $info = null)
+    public function markFinished(int $workerRunningJobId, MessagePublisher $messagePublisher, $jobType, $info = null)
     {
-        for($tryout=1; $tryout<=2; $tryout++) {
+        for($wait = 2, $tryout=1; $tryout<=4; $tryout++) {
             try {
                 $this->reconnect();
                 $cnx = $this->getEntityManager()->getConnection()->getWrappedConnection();
@@ -356,8 +358,10 @@ class WorkerRunningJobRepository extends EntityRepository
                 throw new Exception(sprintf("updating WorkerRunningJob should return 1 row affected, got %s", $a));
             }
             catch (Exception $e) {
-                if($tryout < 2) {
-                    sleep(1);   // retry in 1 sec
+                if($tryout < 4) {
+                    $messagePublisher->pushLog(sprintf("failed updating WorkerRunningJob to finished with id=%d for %s, attempt %d", $workerRunningJobId, $jobType, $tryout));
+                    sleep($wait);   // retry after more sec
+                    $wait *= 2;
                 }
             }
         }
