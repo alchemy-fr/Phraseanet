@@ -30,8 +30,8 @@ services:
     restart: on-failure
     ports:
       - ${PHRASEANET_PHPMYADMIN_PORT}:80
-    depends_on:
-      - db
+#    depends_on:
+#      - db
     networks:
       - internal
 
