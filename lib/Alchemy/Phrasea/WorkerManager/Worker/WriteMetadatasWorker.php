@@ -96,7 +96,7 @@ class WriteMetadatasWorker implements WorkerInterface
         try {
             $record  = $databox->get_record($recordId);
         } catch (\Exception $e) {
-            $this->repoWorker->markFinished($workerRunningJobId, "error " . $e->getMessage());
+            $this->repoWorker->markFinished($workerRunningJobId, $this->messagePublisher, MessagePublisher::WRITE_METADATAS_TYPE, "error " . $e->getMessage());
 
             return;
         }
@@ -112,7 +112,7 @@ class WriteMetadatasWorker implements WorkerInterface
             $this->logger->error("Can't write meta on svg file!");
 
             // tell that we have finished to work on this file ("unlock")
-            $this->repoWorker->markFinished($workerRunningJobId, "Can't write meta on svg file!");
+            $this->repoWorker->markFinished($workerRunningJobId, $this->messagePublisher, MessagePublisher::WRITE_METADATAS_TYPE, "Can't write meta on svg file!");
 
             $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
 
@@ -323,7 +323,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 $this->updateJeton($record);
 
                 // tell that we have finished to work on this file (=unlock)
-                $this->repoWorker->markFinished($workerRunningJobId, $stopInfo);
+                $this->repoWorker->markFinished($workerRunningJobId, $this->messagePublisher, MessagePublisher::WRITE_METADATAS_TYPE, $stopInfo);
                 $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::ERROR);
             }
             return ;
@@ -333,7 +333,7 @@ class WriteMetadatasWorker implements WorkerInterface
         $this->updateJeton($record);
 
         // tell that we have finished to work on this file (=unlock)
-        $this->repoWorker->markFinished($workerRunningJobId);
+        $this->repoWorker->markFinished($workerRunningJobId, $this->messagePublisher, MessagePublisher::WRITE_METADATAS_TYPE);
 
         $this->getDataboxLogger($databox)->initOrUpdateLogDocsFromWorker($record, $databox, $workerRunningJob, $subdefName, \Session_Logger::EVENT_WRITEMETADATAS, new \DateTime('now'), WorkerRunningJob::FINISHED);
     }

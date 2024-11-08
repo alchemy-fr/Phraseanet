@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DateTime;
@@ -405,14 +406,7 @@ class ShareBasketWorker implements WorkerInterface
         $this->getLogger()->info("Basket with Id " . $basket->getId() . " successfully shared !");
 
         if ($workerRunningJob != null) {
-            $workerRunningJob
-                ->setStatus(WorkerRunningJob::FINISHED)
-                ->setFinished(new \DateTime('now'))
-            ;
-
-            $manager->persist($workerRunningJob);
-
-            $manager->flush();
+            $this->getRepoWorkerRunningJob()->markFinished($workerRunningJob->getId(), $this->getMessagePublisher(), MessagePublisher::SHARE_BASKET_TYPE);
         }
 
         // file_put_contents("./tmp/phraseanet-log.txt", sprintf("\n%s; ==== END (N = %d ; dT = %d ==> %0.2f / sec) ====\n\n", time(), $n_participants, time()-$_t0, $n_participants/(max(time()-$_t0, 0.001))), FILE_APPEND);
@@ -499,5 +493,21 @@ class ShareBasketWorker implements WorkerInterface
     private function getLogger()
     {
         return $this->app['alchemy_worker.logger'];
+    }
+
+    /**
+     * @return WorkerRunningJobRepository
+     */
+    private function getRepoWorkerRunningJob()
+    {
+        return $this->app['repo.worker-running-job'];
+    }
+
+    /**
+     * @return MessagePublisher
+     */
+    private function getMessagePublisher()
+    {
+        return $this->app['alchemy_worker.message.publisher'];
     }
 }

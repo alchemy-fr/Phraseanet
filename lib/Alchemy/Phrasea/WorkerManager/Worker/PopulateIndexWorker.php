@@ -145,15 +145,7 @@ class PopulateIndexWorker implements WorkerInterface
 
         // tell that the populate is finished
         if ($workerRunningJob != null) {
-            $this->repoWorker->reconnect();
-            $workerRunningJob
-                ->setStatus(WorkerRunningJob::FINISHED)
-                ->setFinished(new \DateTime('now'))
-            ;
-
-            $em->persist($workerRunningJob);
-
-            $em->flush();
+            $this->repoWorker->markFinished($workerRunningJob->getId(), $this->messagePublisher, MessagePublisher::POPULATE_INDEX_TYPE);
         }
     }
 
