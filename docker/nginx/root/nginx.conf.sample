@@ -1,3 +1,4 @@
+
 send_timeout $GATEWAY_SEND_TIMEOUT;
 keepalive_timeout           $GATEWAY_SEND_TIMEOUT;
 proxy_connect_timeout       $GATEWAY_PROXY_TIMEOUT;
@@ -5,6 +6,9 @@ proxy_send_timeout          $GATEWAY_PROXY_TIMEOUT;
 client_header_timeout       $GATEWAY_SEND_TIMEOUT;
 client_body_timeout         $GATEWAY_SEND_TIMEOUT;
 fastcgi_read_timeout        $GATEWAY_FASTCGI_TIMEOUT;
+limit_req_status 429;
+limit_req_zone $binary_remote_addr zone=readlimitsbyip:$HTTP_READ_REQUEST_LIMIT_MEMORY rate=$HTTP_READ_REQUEST_LIMIT_RATE;
+limit_req_zone $binary_remote_addr zone=writelimitsbyip:$HTTP_WRITE_REQUEST_LIMIT_MEMORY rate=$HTTP_WRITE_REQUEST_LIMIT_RATE;
 resolver $NEW_RESOLVER;
 
 upstream backend {
@@ -53,6 +57,12 @@ server {
         include        fastcgi_params;
         $GATEWAY_FASTCGI_HTTPS
         include        restrictions;
+        if ($request_method ~ ^(GET|HEAD)$) {
+            limit_req zone=readlimitsbyip;
+        }
+        if ($request_method ~ ^(POST|PUT|DELETE|PATCH)$) {
+            limit_req zone=writelimitsbyip;
+        }
     }
 
     location ~ ^/(status|ping)$ {
