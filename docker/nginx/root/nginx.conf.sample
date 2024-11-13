@@ -6,9 +6,20 @@ proxy_send_timeout          $GATEWAY_PROXY_TIMEOUT;
 client_header_timeout       $GATEWAY_SEND_TIMEOUT;
 client_body_timeout         $GATEWAY_SEND_TIMEOUT;
 fastcgi_read_timeout        $GATEWAY_FASTCGI_TIMEOUT;
+
+map $request_method $postlimit {
+  default         "";
+  POST            $binary_remote_addr;
+}
+
+map $request_method $getlimit {
+  default         "";
+  GET            $binary_remote_addr;
+}
+
 limit_req_status 429;
-limit_req_zone $binary_remote_addr zone=readlimitsbyip:$HTTP_READ_REQUEST_LIMIT_MEMORY rate=$HTTP_READ_REQUEST_LIMIT_RATE;
-limit_req_zone $binary_remote_addr zone=writelimitsbyip:$HTTP_WRITE_REQUEST_LIMIT_MEMORY rate=$HTTP_WRITE_REQUEST_LIMIT_RATE;
+limit_req_zone $getlimit zone=readlimitsbyip:$HTTP_READ_REQUEST_LIMIT_MEMORYm rate=$HTTP_READ_REQUEST_LIMIT_RATEr/s;
+limit_req_zone $postlimit zone=writelimitsbyip:$HTTP_WRITE_REQUEST_LIMIT_MEMORYm rate=$HTTP_WRITE_REQUEST_LIMIT_RATEr/s;
 resolver $NEW_RESOLVER;
 
 upstream backend {
@@ -40,7 +51,6 @@ server {
         if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
             return 503;
         }
-
         # First attempt to serve request as file, then
         # as directory, then fall back to index.html
         try_files $uri $uri/ @rewriteapp;
@@ -57,12 +67,8 @@ server {
         include        fastcgi_params;
         $GATEWAY_FASTCGI_HTTPS
         include        restrictions;
-        if ($request_method ~ ^(GET|HEAD)$) {
             limit_req zone=readlimitsbyip;
-        }
-        if ($request_method ~ ^(POST|PUT|DELETE|PATCH)$) {
             limit_req zone=writelimitsbyip;
-        }
     }
 
     location ~ ^/(status|ping)$ {
