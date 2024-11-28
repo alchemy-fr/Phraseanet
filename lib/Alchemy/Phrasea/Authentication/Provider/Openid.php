@@ -349,7 +349,7 @@ class Openid extends AbstractProvider
             $userName = $data['email'];// login to be an email
         }
 
-        $usegroups = isset($this->config['usegroups']) ? $this->config['usegroups'] : true;
+        $usegroups = isset($this->config['usegroups']) ? $this->config['usegroups'] : false;
         $userUA = $this->CreateUser([
             'id'        => $distantUserId = $data['sub'],
             'login'     => $userName,
