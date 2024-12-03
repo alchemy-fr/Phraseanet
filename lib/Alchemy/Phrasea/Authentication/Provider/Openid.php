@@ -349,13 +349,14 @@ class Openid extends AbstractProvider
             $userName = $data['email'];// login to be an email
         }
 
+        $usegroups = isset($this->config['usegroups']) ? $this->config['usegroups'] : false;
         $userUA = $this->CreateUser([
             'id'        => $distantUserId = $data['sub'],
             'login'     => $userName,
             'firstname' => isset($data['given_name']) ? $data['given_name'] : '',
             'lastname'  => isset($data['family_name']) ? $data['family_name'] : '' ,
             'email'     => isset($data['email']) ? $data['email'] : '',
-            '_groups'   => isset($data['groups']) ? $data['groups'] : ''
+            '_groups'   => isset($data['groups']) && $usegroups ? $data['groups'] : ''
         ]);
 
         $userAuthProviderRepository = $this->getUsrAuthProviderRepository();
@@ -488,8 +489,8 @@ class Openid extends AbstractProvider
                 $this->debug(sprintf("found user \"%s\" with id=%s \n", $login, $userUA->getId()));
 
                 // if the id provider does NOT return groups, the new user will get "birth" privileges
-                if (!is_array($data['_groups']) && array_key_exists('birth-group', $this->config)) {
-                    $data['_groups'] = [$this->config['birth-group']];
+                if (!is_array($data['_groups']) && array_key_exists('birth-group', $this->config) && trim($this->config['birth-group']) !== '') {
+                    $data['_groups'] = [trim($this->config['birth-group'])];
                 }
             }
             else {
@@ -534,8 +535,8 @@ class Openid extends AbstractProvider
                 }
 
                 // add "everyone-group"
-                if(array_key_exists('everyone-group', $this->config)) {
-                    $models[] = ['name' => $this->config['model-gpfx'] . $this->config['everyone-group'], 'autocreate' => true];
+                if(array_key_exists('everyone-group', $this->config) && trim($this->config['everyone-group']) !== '') {
+                    $models[] = ['name' => $this->config['model-gpfx'] . trim($this->config['everyone-group']), 'autocreate' => true];
                 }
 
                 // add a specific model for the user

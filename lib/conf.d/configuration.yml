@@ -237,6 +237,7 @@ authentication:
                 realm-name: phrasea
                 exclusive: false
                 icon-uri: null
+                usegroups: false
                 birth-group: _firstlog
                 everyone-group: _everyone
                 metamodel: _metamodel
