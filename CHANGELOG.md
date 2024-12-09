@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 4.1.11
+
+### Update Instructions
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Version Summary
+  - Base image bump
+  - Openid ignore IDP group to Phraseanet model mapping when groups is not defined
+  - Nginx Http request quota Can be set
+
+__
 ## 4.1.10
 
 ### Update Instructions
