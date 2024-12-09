@@ -246,6 +246,14 @@ authentication:
                 debug: false
                 auto-logout: false
                 auto-connect-idp-name: null
+                groupmask: "/phraseanet_([^,]+)/i"
+                fieldmap:
+                    id: sub
+                    login: email
+                    firstname: given_name
+                    lastname: family_name
+                    email: email
+                    groups: group
 registration-fields:
     -
         name: company
