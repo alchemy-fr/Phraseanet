@@ -57,6 +57,7 @@ fi
 #GATEWAY_DENIED_IPS="172.1.0.1,172.1.0.2"
 #GATEWAY_USERS="user1(password1),user2(password2)
 touch /etc/nginx/restrictions
+touch /etc/nginx/apirestrictions
 touch /etc/nginx/.htpasswd
 
 if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z $GATEWAY_USERS ]]; then
@@ -81,6 +82,37 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
             echo "deny all;" >> /etc/nginx/restrictions
     fi
 fi
+
+echo "limit_req_status 429;" > /etc/nginx/conf.d/limits.conf
+
+if [[ ! -z $GLOBAL_REQUEST_LIMIT_ACTIVATE ]] &&  [[ "$GLOBAL_REQUEST_LIMIT_ACTIVATE" = "1" ]]; then
+  echo "limit_req_zone \$binary_remote_addr zone=globaliplimits:$GLOBAL_REQUEST_LIMIT_MEMORY rate=$GLOBAL_REQUEST_LIMIT_RATE;" >> /etc/nginx/conf.d/limits.conf
+  if [[ ! -z $GLOBAL_REQUEST_LIMIT_BURST ]]; then
+    if [ "$GLOBAL_REQUEST_LIMIT_NODELAY" = "on" ] || [ "$GLOBAL_REQUEST_LIMIT_NODELAY" = "1" ];then
+      export GLOBAL_REQUEST_LIMITS="limit_req zone=globaliplimits burst=$GLOBAL_REQUEST_LIMIT_BURST nodelay;"     
+    else
+      export GLOBAL_REQUEST_LIMITS="limit_req zone=globaliplimits burst=$GLOBAL_REQUEST_LIMIT_BURST;"
+    fi  
+  else
+    export GLOBAL_REQUEST_LIMITS="limit_req zone=globaliplimits;" 
+  fi
+  echo $GLOBAL_REQUEST_LIMITS >> /etc/nginx/restrictions 
+fi
+
+if [[ ! -z $API_REQUEST_LIMIT_ACTIVATE ]] &&  [[ "$API_REQUEST_LIMIT_ACTIVATE" = "1" ]]; then
+  echo "limit_req_zone \$binary_remote_addr zone=apiiplimits:$API_REQUEST_LIMIT_MEMORY rate=$API_REQUEST_LIMIT_RATE;" >> /etc/nginx/conf.d/limits.conf
+  if [[ ! -z $API_REQUEST_LIMIT_BURST ]]; then
+    if [ "$API_REQUEST_LIMIT_NODELAY" = "on" ] || [ "$API_REQUEST_LIMIT_NODELAY" = "1" ];then
+      export API_REQUEST_LIMITS="limit_req zone=apiiplimits burst=$API_REQUEST_LIMIT_BURST nodelay;"
+    else
+      export API_REQUEST_LIMITS="limit_req zone=apiiplimits burst=$API_REQUEST_LIMIT_BURST;"        
+    fi
+  else
+    export API_REQUEST_LIMITS="limit_req zone=apiiplimits;"                                  
+  fi
+    echo $API_REQUEST_LIMITS >> /etc/nginx/apirestrictions
+fi
+
 unset GATEWAY_USERS
 unset GATEWAY_DENIED_IPS
 unset GATEWAY_ALLOWED_IPS
