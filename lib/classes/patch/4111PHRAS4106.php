@@ -50,8 +50,31 @@ class patch_4111PHRAS4106 implements patchInterface
         $conf = $app['conf'];
         foreach ($app['conf']->get(['authentication', 'providers'], []) as $providerId => $data) {
             if ($data['type'] === "openid") {
-                if(!isset($data['options']['usegroups'])) {
+                if (!isset($data['options']['usegroups'])) {
                     $data['options']['usegroups'] = false;
+
+                    $providerConfig[$providerId] = $data;
+
+                    $conf->merge(['authentication', 'providers'], $providerConfig);
+                }
+
+                if (!isset($data['options']['fieldmap'])) {
+                    $data['options']['fieldmap'] = [
+                        'id'        => 'sub',
+                        'login'     => 'email',
+                        'firstname' => 'given_name',
+                        'lastname'  => 'family_name',
+                        'email'     => 'email',
+                        'groups'    => 'group',
+                    ];
+
+                    $providerConfig[$providerId] = $data;
+
+                    $conf->merge(['authentication', 'providers'], $providerConfig);
+                }
+
+                if (!isset($data['options']['groupmask'])) {
+                    $data['options']['groupmask'] = "/phraseanet_([^,]+)/i";
 
                     $providerConfig[$providerId] = $data;
 
