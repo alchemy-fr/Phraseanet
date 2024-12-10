@@ -54,6 +54,8 @@ server {
         # First attempt to serve request as file, then
         # as directory, then fall back to index.html
         try_files $uri $uri/ @rewriteapp;
+        limit_req zone=readlimitsbyip burst=$HTTP_READ_REQUEST_LIMIT_BURST nodelay;
+        limit_req zone=writelimitsbyip burst=$HTTP_WRITE_REQUEST_LIMIT_BURST nodelay;
     }
 
     location @rewriteapp {
@@ -67,8 +69,6 @@ server {
         include        fastcgi_params;
         $GATEWAY_FASTCGI_HTTPS
         include        restrictions;
-            limit_req zone=readlimitsbyip;
-            limit_req zone=writelimitsbyip;
     }
 
     location ~ ^/(status|ping)$ {
