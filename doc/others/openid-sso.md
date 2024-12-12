@@ -32,6 +32,14 @@ authentication:
                 # logout with phraseanet and also logout with keycloak
                 auto-logout: true  
                 auto-connect-idp-name: null
+                groupmask: "/cn=phraseanet_([^,]+),cn=users,ou=alchemy$/i"
+                fieldmap:
+                  id: sub
+                  login: email
+                  firstname: given_name
+                  lastname: family_name
+                  email: email
+                  groups: group
                 
 ```
 
@@ -47,15 +55,18 @@ authentication:
      
    set the 'Valid post logout redirect URIs' field with `https://{phraseanet-host}/login/logout/` eg: https://phraseanet.phrasea.local/login/logout/
 
-- Choose a client > client scopes >  '.... dedicated'
-  
-  add a 'groups' mapper if not exist,  > Add mapper > by configuration  
-  
+- if not exist create a client scope with mapper type  Group Membership
   `Mapper type` => Group Membership  
-  `Name` => groups  
-  `Token Claim Name` => groups  
+  `Name` => group 
+  `Token Claim Name` => group  
   `Full group path`  => off   
   `Add to userinfo`  => on
+
+- Add the created client scope to the client
+
+  Choose a client > client scopes >  Add client scope > choose the scope
+  
+  
 
 #### token expiration
 - we can define token expiration in keycloak
