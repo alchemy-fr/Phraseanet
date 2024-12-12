@@ -343,20 +343,26 @@ class Openid extends AbstractProvider
 
         $this->debug();
 
-        $userName = $data['preferred_username'];
+        $usegroups = isset($this->config['usegroups']) ? $this->config['usegroups'] : false;
+        $idKey = isset($this->config['fieldmap']['id']) ? $this->config['fieldmap']['id'] : 'sub';
+        $loginKey = isset($this->config['fieldmap']['login']) ? $this->config['fieldmap']['login'] : 'email';
+        $firstnameKey = isset($this->config['fieldmap']['firstname']) ? $this->config['fieldmap']['firstname'] : 'given_name';
+        $lastnameKey = isset($this->config['fieldmap']['lastname']) ? $this->config['fieldmap']['lastname'] : 'family_name';
+        $emailKey = isset($this->config['fieldmap']['email']) ? $this->config['fieldmap']['email'] : 'email';
+        $groupsKey = isset($this->config['fieldmap']['groups']) ? $this->config['fieldmap']['groups'] : 'groups';
+        $distantUserId = $data['sub'];
 
-        if (!\Swift_Validate::email($userName) && isset($data['email'])) {
-            $userName = $data['email'];// login to be an email
+        if (!\Swift_Validate::email($data[$loginKey]) && isset($data['email'])) {
+            $loginKey = 'email';// login to be an email
         }
 
-        $usegroups = isset($this->config['usegroups']) ? $this->config['usegroups'] : false;
         $userUA = $this->CreateUser([
-            'id'        => $distantUserId = $data['sub'],
-            'login'     => $userName,
-            'firstname' => isset($data['given_name']) ? $data['given_name'] : '',
-            'lastname'  => isset($data['family_name']) ? $data['family_name'] : '' ,
-            'email'     => isset($data['email']) ? $data['email'] : '',
-            '_groups'   => isset($data['groups']) && $usegroups ? $data['groups'] : ''
+            'id'        => $data[$idKey],
+            'login'     => $userName = $data[$loginKey],
+            'firstname' => isset($data[$firstnameKey]) ? $data[$firstnameKey] : '',
+            'lastname'  => isset($data[$lastnameKey]) ? $data[$lastnameKey] : '' ,
+            'email'     => isset($data[$emailKey]) ? $data[$emailKey] : '',
+            '_groups'   => isset($data[$groupsKey]) && $usegroups ?  $this->filterGroups($data[$groupsKey]) : ''
         ]);
 
         $userAuthProviderRepository = $this->getUsrAuthProviderRepository();
@@ -713,6 +719,36 @@ class Openid extends AbstractProvider
         }
 
         return $ret;
+    }
+
+    private function filterGroups($groups)
+    {
+        $this->debug(sprintf("filtering openid groups :\n%s", print_r($groups, true)));
+
+        $ret = [];
+        if ($this->config['groupmask']) {
+            $this->debug(sprintf("filtering groups with regexp : \"%s\"", $this->config['groupmask']));
+            foreach ($groups as $grp) {
+                $matches = [];
+                $retpreg = preg_match_all($this->config['groupmask'], $grp, $matches, PREG_SET_ORDER);
+
+                $this->debug(sprintf("preg_match('%s', '%s', ...)\n - returned %s \n - matches = %s "
+                    , $this->config['groupmask'], $grp
+                    , print_r($retpreg, true), print_r($matches, true)));
+
+                foreach ($matches as $match) {
+                    if (count($match)>0 && isset($match[1]) && !array_key_exists($match[1], $ret)) {
+                        $ret[] = $match[1];
+                    }
+                }
+            }
+        } else {
+            $this->debug(sprintf("no groupmask defined, openid groups ignored"));
+        }
+
+        $this->debug(sprintf("filtered groups :\n%s", print_r($ret, true)));
+
+        return empty($ret) ? '' : $ret ;
     }
 
 
