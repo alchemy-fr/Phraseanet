@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 4.1.11
+
+### Update Instructions
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Version Summary
+  - Base image bump
+  - Openid ignore IDP group to Phraseanet model mapping when groups is not defined
+  - Nginx Http request quota Can be set
+
+### Stack (Docker Compose and Helm)
+
+- **Phraseanet Base Image**: Bumped to 1.2.0.
+- **Nginx**:  adding quota on https requests, set it with environnements variables.
+
+## What's Changed
+* PHRAS-4106 ignore openid groups by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4561
+* PHRAS-4093  Adding in UFRAW in Phraseanet base Image by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4562
+* PHRAS-3588 Implement http request quota by type by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4564
+* PHRAS-4108 Openid : add claims mapping and groups filtering by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4563
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.10...4.1.11
+__
 ## 4.1.10
 
 ### Update Instructions
