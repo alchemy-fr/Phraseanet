@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 4.1.12
+
+### Update Instructions
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Version Summary
+  - Base image bump for Video encoding fix and newrelic agent installation.
+  - take in account default language setup in configuration.
+  - `.env`file documentation improvement.
+
+### Stack (Docker Compose and Helm)
+
+- **Phraseanet Base Image**: Bumped to 1.2.2
+
+## What's Changed
+* PHRAS-4109: Language : Secure cookie seems to be always needing HTTPS by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4566
+* PHRAS-4112 bump base image to 1.2.1 / fix MP4Box by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4567
+* PHRAS-4114 newrelic install fix by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4569
+* PHRAS-4111: Default language in the configuration file not taken into account on the homepage. by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4570
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.11...4.1.12
+__
 ## 4.1.11
 
 ### Update Instructions
