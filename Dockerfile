@@ -1,5 +1,5 @@
 
-FROM alchemyfr/phraseanet-base:1.2.1 AS builder
+FROM alchemyfr/phraseanet-base:1.2.2 AS builder
 
 COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 
@@ -72,7 +72,7 @@ CMD []
 # Phraseanet install and setup application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.1 AS phraseanet-setup
+FROM alchemyfr/phraseanet-base:1.2.2 AS phraseanet-setup
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -85,7 +85,7 @@ CMD []
 # Phraseanet web application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.1 AS phraseanet-fpm
+FROM alchemyfr/phraseanet-base:1.2.2 AS phraseanet-fpm
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -97,7 +97,7 @@ CMD ["php-fpm", "-F"]
 # Phraseanet worker application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.1 AS phraseanet-worker
+FROM alchemyfr/phraseanet-base:1.2.2 AS phraseanet-worker
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -139,7 +139,7 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 # phraseanet adapted simplesaml service provider 
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.1 AS phraseanet-saml-sp
+FROM alchemyfr/phraseanet-base:1.2.2 AS phraseanet-saml-sp
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \

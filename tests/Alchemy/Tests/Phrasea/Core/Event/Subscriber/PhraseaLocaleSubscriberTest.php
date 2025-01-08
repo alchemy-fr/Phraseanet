@@ -48,7 +48,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $client = new Client($app);
         $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'fr_FR,fr;q=0.9']);
 
-        $this->assertEquals('fr', $client->getResponse()->getContent());
+        $this->assertEquals('en', $client->getResponse()->getContent());
     }
 
     public function testWithHeadersUsingMinus()
@@ -58,7 +58,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $client = new Client($app);
         $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9']);
 
-        $this->assertEquals('fr', $client->getResponse()->getContent());
+        $this->assertEquals('en', $client->getResponse()->getContent());
     }
 
     public function testCookieIsSet()
@@ -75,7 +75,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         }
 
         $this->assertNotNull($settedCookie);
-        $this->assertEquals('fr', $settedCookie->getValue());
+        $this->assertEquals('en', $settedCookie->getValue());
     }
 
     /**

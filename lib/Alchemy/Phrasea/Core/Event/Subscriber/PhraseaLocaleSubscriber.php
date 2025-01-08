@@ -64,13 +64,6 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         if ($event->getRequest()->cookies->has('locale')
             && isset($this->app['locales.available'][$event->getRequest()->cookies->get('locale')])) {
             $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
-        } else {
-            foreach ($event->getRequest()->getLanguages() as $code) {
-                $data = preg_split('/[-_]/', $code);
-                if (in_array($data[0], array_keys($this->app['locales.available']), true)) {
-                    $event->getRequest()->setLocale($data[0]);
-                }
-            }
         }
 
         $this->locale = $this->app['locale'] = $event->getRequest()->getLocale();
