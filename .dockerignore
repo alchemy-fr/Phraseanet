@@ -36,4 +36,5 @@
 /www/custom
 /www/plugins
 /www/thumbnails
+/www/.htaccess
 npm-debug.log
