@@ -94,7 +94,7 @@ fi
 if [[ ! -z $GATEWAY_STATUS_ALLOWED_IPS ]]; then
     for status_ip_allowed in $(echo $GATEWAY_STATUS_ALLOWED_IPS | sed "s/,/ /g")
         do
-            echo "allow $ip_allowed;" >> /etc/nginx/status_allowed_ip
+            echo "allow $status_ip_allowed;" >> /etc/nginx/status_allowed_ip
         done
 fi
 
