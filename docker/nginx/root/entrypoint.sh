@@ -65,6 +65,7 @@ fi
 #GATEWAY_DENIED_IPS="172.1.0.1,172.1.0.2"
 #GATEWAY_USERS="user1(password1),user2(password2)
 touch /etc/nginx/restrictions
+touch /etc/nginx/status_allowed_ip
 touch /etc/nginx/.htpasswd
 
 if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z $GATEWAY_USERS ]]; then
@@ -89,7 +90,16 @@ if [[ ! -z $GATEWAY_ALLOWED_IPS ]] || [[ ! -z $GATEWAY_DENIED_IPS ]] || [[ ! -z 
             echo "deny all;" >> /etc/nginx/restrictions
     fi
 fi
+
+if [[ ! -z $GATEWAY_STATUS_ALLOWED_IPS ]]; then
+    for status_ip_allowed in $(echo $GATEWAY_STATUS_ALLOWED_IPS | sed "s/,/ /g")
+        do
+            echo "allow $ip_allowed;" >> /etc/nginx/status_allowed_ip
+        done
+fi
+
 unset GATEWAY_USERS
 unset GATEWAY_DENIED_IPS
 unset GATEWAY_ALLOWED_IPS
+unset GATEWAY_STATUS_ALLOWED_IPS
 exec "$@"
