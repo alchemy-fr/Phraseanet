@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## 4.1.13
+
+### Update Instructions
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Version Summary
+  - `.env` documentation improvements.
+  - Remove www/.htacess from docker stack.
+  - Remove Nginx access status.
+
+## What's Changed
+* PHRAS-4117 remove gateway /status and /ping page direct access by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4571
+* PHRAS-4119 exclude www/.htaccess file form docker stack in https://github.com/alchemy-fr/Phraseanet/pull/4573
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.12...4.1.13
+
+
+__
 ## 4.1.12
 
 ### Update Instructions
@@ -11,7 +35,7 @@
     ```
 
 ### Version Summary
-  - Base image bump for Video encoding fix and newrelic agent installation.
+  - Base image bump for Video encoding fix and newrelic agent installation
   - take in account default language setup in configuration.
   - `.env`file documentation improvement.
 
