@@ -63,7 +63,7 @@ server {
         include fastcgi_extended_params;
         fastcgi_pass backend;
         deny  all;
-        include status_allowed_ip
+        include status_allowed_ip;
     }
 
     location  /simplesaml/ {
