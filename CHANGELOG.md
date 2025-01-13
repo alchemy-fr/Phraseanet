@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 4.1.14
+
+### Update Instructions
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Version Summary
+  - Correcting issue in patch 4111phras4106 where an error occurs if type is absent in IDP providers.
+
+
+## What's Changed
+* PHRAS-4120: bin/system upgrade - Upgrade fails on 4111phras4106 patch by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4574
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.13...4.1.14
+
+
+__
 ## 4.1.13
 
 ### Update Instructions
