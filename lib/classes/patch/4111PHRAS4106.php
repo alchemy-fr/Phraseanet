@@ -49,7 +49,7 @@ class patch_4111PHRAS4106 implements patchInterface
         /** @var PropertyAccess $conf */
         $conf = $app['conf'];
         foreach ($app['conf']->get(['authentication', 'providers'], []) as $providerId => $data) {
-            if ($data['type'] === "openid") {
+            if (isset($data['type']) && $data['type'] === "openid") {
                 if (!isset($data['options']['usegroups'])) {
                     $data['options']['usegroups'] = false;
 
