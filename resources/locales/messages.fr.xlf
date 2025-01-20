@@ -13417,9 +13417,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Panier Partagé</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
+      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp" xml:space="preserve">
         <source>prod::download: delete-marking-stamp</source>
-        <target state="translated">prod::download: delete-marking-stamp</target>
+        <target state="needs-translation">Retirer le bandeau de notice</target>
         <jms:reference-file line="184">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="267">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="516">web/common/dialog_export.html.twig</jms:reference-file>
