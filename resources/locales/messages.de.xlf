@@ -942,7 +942,7 @@
       </trans-unit>
       <trans-unit id="4d417e1abf31cc77ce9ad9af1f2d04530fb1539f" resname="Allowed caracteres are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01" xml:space="preserve">
         <source>Allowed caracteres are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01</source>
-        <target state="needs-translation">Erlaubt sind nur die Zeichen A-Z, a-z, 0-9 und Bindestriche. z.B: Preview-mobile-01</target>
+        <target state="translated">Erlaubt sind nur die Zeichen A-Z, a-z, 0-9 und Bindestriche. z.B: Preview-mobile-01</target>
         <jms:reference-file line="260">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c264a7efdbe0e0af2a6fe69e2bc9a89b90c5ec0e" resname="Allowed to access report" approved="yes">
@@ -1651,9 +1651,9 @@
         <target state="translated">Kann nicht Null-Byte Dateien hochladen</target>
         <jms:reference-file line="255">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4ad5a8e4c7c46ccda439dc3545f5fb1930dd9183" resname="Captcha provider">
+      <trans-unit id="4ad5a8e4c7c46ccda439dc3545f5fb1930dd9183" resname="Captcha provider" xml:space="preserve">
         <source>Captcha provider</source>
-        <target state="needs-translation">Captcha-Anbieter</target>
+        <target state="translated">Captcha-Anbieter</target>
         <jms:reference-file line="43">Form/Configuration/WebservicesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3428d97e666693a76d4421418e2d952d2ac97b1a" resname="Caption" approved="yes">
@@ -2091,7 +2091,7 @@
       </trans-unit>
       <trans-unit id="384422e656d8a4d803155efc371754913755a4b0" resname="Create new subdef" xml:space="preserve">
         <source>Create new subdef</source>
-        <target state="needs-translation">Neue Unterauflösung erzeugen</target>
+        <target state="translated">Neue Unterauflösung erzeugen</target>
         <jms:reference-file line="362">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c175379b0389b2d6057b0b7db996720f1fb92fc7" resname="Creation date" approved="yes">
@@ -3555,9 +3555,9 @@
         <target state="translated">Eine Nachricht erhalten wenn ein Email Export fehlschlägt</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs">
+      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs" xml:space="preserve">
         <source>Get log docs</source>
-        <target state="needs-translation">Log-Dokumente sehen</target>
+        <target state="translated">Log-Dokumente sehen</target>
         <jms:reference-file line="53">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index" approved="yes">
@@ -8219,9 +8219,9 @@
         <target state="translated">Authentifizierungsfehler Liste</target>
         <jms:reference-file line="2">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cb694e3d8d99c309e819406d454fcc53858c94ab" resname="admin:: cancel user request">
+      <trans-unit id="cb694e3d8d99c309e819406d454fcc53858c94ab" resname="admin:: cancel user request" xml:space="preserve">
         <source>admin:: cancel user request</source>
-        <target state="needs-translation">Benutzeranfrage abbrechen</target>
+        <target state="translated">Benutzeranfrage abbrechen</target>
         <jms:reference-file line="292">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26486e6d7e272de63a46c52bb7deea3dcd3b55b5" resname="admin:: demandes en cours" approved="yes">
@@ -8243,9 +8243,9 @@
         <jms:reference-file line="273">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="274">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record">
+      <trans-unit id="68545de2a3d15eeabd40e750112fcdb80b114e48" resname="admin:: find record" xml:space="preserve">
         <source>admin:: find record</source>
-        <target state="needs-translation">Elasticsearch Index</target>
+        <target state="translated">Elasticsearch Index</target>
         <jms:reference-file line="60">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ea710439ba655dbc8373345063af19f77548db06" resname="admin:: get record baskets">
@@ -9039,9 +9039,9 @@
         <target state="translated">API-Informationen</target>
         <jms:reference-file line="10">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c15d466bd6fc239e124d3d5e0093603af0907c89" resname="admin::inspector:tab record info title">
+      <trans-unit id="c15d466bd6fc239e124d3d5e0093603af0907c89" resname="admin::inspector:tab record info title" xml:space="preserve">
         <source>admin::inspector:tab record info title</source>
-        <target state="needs-translation">Datensatz Informationen</target>
+        <target state="translated">Datensatz Informationen</target>
         <jms:reference-file line="5">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfc904c9a87afe2d3986041a6bdb542298607880" resname="admin::monitor: bases sur lesquelles l'utilisateur est connecte :" approved="yes">
@@ -11569,9 +11569,9 @@
         <target state="translated">Trunkierung aktivieren</target>
         <jms:reference-file line="479">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="484db3d45053a06d362ea0cf0c31ba8ca406001e" resname="input-disable">
+      <trans-unit id="484db3d45053a06d362ea0cf0c31ba8ca406001e" resname="input-disable" xml:space="preserve">
         <source>input-disable</source>
-        <target state="needs-translation">Feldinhalte auf vorgeschlagene Werte und Thesaurus beschränken (Beta-Funktion)</target>
+        <target state="translated">Feldinhalte auf vorgeschlagene Werte und Thesaurus beschränken (Beta-Funktion)</target>
         <jms:reference-file line="222">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
@@ -11923,9 +11923,9 @@
         <target state="translated">März</target>
         <jms:reference-file line="716">classes/module/report.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e7dba91918aab77502abf6cda3dccb079f80d80d" resname="matomomediametrics:: avg_completion_rate">
+      <trans-unit id="e7dba91918aab77502abf6cda3dccb079f80d80d" resname="matomomediametrics:: avg_completion_rate" xml:space="preserve">
         <source>matomomediametrics:: avg_completion_rate</source>
-        <target state="needs-translation">Durchschnittliche Abschlussrate</target>
+        <target state="translated">Durchschnittliche Abschlussrate</target>
         <jms:reference-file line="80">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="88256bfedfb8c7f62f699a4567163162d89d079c" resname="matomomediametrics:: avg_media_length">
@@ -11933,9 +11933,9 @@
         <target state="translated">Durchschnittliche Video-Länge</target>
         <jms:reference-file line="82">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a795868e40875c48503db1a5fbeaa22a18d437e3" resname="matomomediametrics:: avg_time_to_play">
+      <trans-unit id="a795868e40875c48503db1a5fbeaa22a18d437e3" resname="matomomediametrics:: avg_time_to_play" xml:space="preserve">
         <source>matomomediametrics:: avg_time_to_play</source>
-        <target state="needs-translation">Durchschnittliche Zeit bis zum Abspielen des Videos</target>
+        <target state="translated">Durchschnittliche Zeit bis zum Abspielen des Videos</target>
         <jms:reference-file line="81">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="21371180b051604ed3a45346b91fa2b4bfbaa110" resname="matomomediametrics:: avg_time_watched">
@@ -11968,14 +11968,14 @@
         <target state="translated">Anzahl der Videowiedergaben</target>
         <jms:reference-file line="67">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="28211f26053d817982556d31c1d7426b1ceafdf1" resname="matomomediametrics:: nb_plays_with_ml">
+      <trans-unit id="28211f26053d817982556d31c1d7426b1ceafdf1" resname="matomomediametrics:: nb_plays_with_ml" xml:space="preserve">
         <source>matomomediametrics:: nb_plays_with_ml</source>
-        <target state="needs-translation">Anzahl der Videowiedergaben mit ml</target>
+        <target state="translated">Anzahl der Videowiedergaben mit ml</target>
         <jms:reference-file line="74">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e3413a74a6260c6e5a9d68fecf7803d8cf7a2e16" resname="matomomediametrics:: nb_plays_with_tip">
+      <trans-unit id="e3413a74a6260c6e5a9d68fecf7803d8cf7a2e16" resname="matomomediametrics:: nb_plays_with_tip" xml:space="preserve">
         <source>matomomediametrics:: nb_plays_with_tip</source>
-        <target state="needs-translation">Anzahl der Videowiedergaben mit tip</target>
+        <target state="translated">Anzahl der Videowiedergaben mit tip</target>
         <jms:reference-file line="73">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b60ddb8ac540044d57d71dfee5b2e7f0fbf9ed8" resname="matomomediametrics:: nb_unique_visitors_impressions">
@@ -13416,9 +13416,9 @@
         <target state="translated">Geteilter Sammelkorb</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
+      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp" xml:space="preserve">
         <source>prod::download: delete-marking-stamp</source>
-        <target state="translated">prod::download: delete-marking-stamp</target>
+        <target state="needs-translation">Stempel entfernen</target>
         <jms:reference-file line="184">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="267">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="516">web/common/dialog_export.html.twig</jms:reference-file>
@@ -14132,7 +14132,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="c5ef10de4c189f1ce70c6112e1341ef5078f71ad" resname="prod:expose search" xml:space="preserve">
         <source>prod:expose search</source>
-        <target state="needs-translation">Nach Veröffentlichung suchen</target>
+        <target state="translated">Nach Veröffentlichung suchen</target>
         <jms:reference-file line="709">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">

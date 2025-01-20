@@ -943,7 +943,7 @@
       </trans-unit>
       <trans-unit id="4d417e1abf31cc77ce9ad9af1f2d04530fb1539f" resname="Allowed caracteres are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01" xml:space="preserve">
         <source>Allowed caracteres are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01</source>
-        <target state="needs-translation">Allowed characters are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01</target>
+        <target state="translated">Allowed characters are only A-Z, a-z, 0-9 and hyphens eg: Preview-mobile-01</target>
         <jms:reference-file line="260">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c264a7efdbe0e0af2a6fe69e2bc9a89b90c5ec0e" resname="Allowed to access report" approved="yes">
@@ -2092,7 +2092,7 @@
       </trans-unit>
       <trans-unit id="384422e656d8a4d803155efc371754913755a4b0" resname="Create new subdef" xml:space="preserve">
         <source>Create new subdef</source>
-        <target state="needs-translation">Create new subdefinition</target>
+        <target state="translated">Create new subdefinition</target>
         <jms:reference-file line="362">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c175379b0389b2d6057b0b7db996720f1fb92fc7" resname="Creation date" approved="yes">
@@ -8221,9 +8221,9 @@
         <target state="translated">Authentication failure list</target>
         <jms:reference-file line="2">web/admin/auth-failure.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cb694e3d8d99c309e819406d454fcc53858c94ab" resname="admin:: cancel user request">
+      <trans-unit id="cb694e3d8d99c309e819406d454fcc53858c94ab" resname="admin:: cancel user request" xml:space="preserve">
         <source>admin:: cancel user request</source>
-        <target state="needs-translation">Cancel user request</target>
+        <target state="translated">Cancel user request</target>
         <jms:reference-file line="292">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26486e6d7e272de63a46c52bb7deea3dcd3b55b5" resname="admin:: demandes en cours" approved="yes">
@@ -11935,9 +11935,9 @@
         <target state="translated">Average Video Length</target>
         <jms:reference-file line="82">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a795868e40875c48503db1a5fbeaa22a18d437e3" resname="matomomediametrics:: avg_time_to_play">
+      <trans-unit id="a795868e40875c48503db1a5fbeaa22a18d437e3" resname="matomomediametrics:: avg_time_to_play" xml:space="preserve">
         <source>matomomediametrics:: avg_time_to_play</source>
-        <target state="needs-translation">Average time before playing the video</target>
+        <target state="translated">Average time before playing the video</target>
         <jms:reference-file line="81">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="21371180b051604ed3a45346b91fa2b4bfbaa110" resname="matomomediametrics:: avg_time_watched">
@@ -11970,14 +11970,14 @@
         <target state="translated">Number of plays</target>
         <jms:reference-file line="67">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="28211f26053d817982556d31c1d7426b1ceafdf1" resname="matomomediametrics:: nb_plays_with_ml">
+      <trans-unit id="28211f26053d817982556d31c1d7426b1ceafdf1" resname="matomomediametrics:: nb_plays_with_ml" xml:space="preserve">
         <source>matomomediametrics:: nb_plays_with_ml</source>
-        <target state="needs-translation">Number of plays with ml</target>
+        <target state="translated">Number of plays with ml</target>
         <jms:reference-file line="74">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e3413a74a6260c6e5a9d68fecf7803d8cf7a2e16" resname="matomomediametrics:: nb_plays_with_tip">
+      <trans-unit id="e3413a74a6260c6e5a9d68fecf7803d8cf7a2e16" resname="matomomediametrics:: nb_plays_with_tip" xml:space="preserve">
         <source>matomomediametrics:: nb_plays_with_tip</source>
-        <target state="needs-translation">Number of plays with tip</target>
+        <target state="translated">Number of plays with tip</target>
         <jms:reference-file line="73">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b60ddb8ac540044d57d71dfee5b2e7f0fbf9ed8" resname="matomomediametrics:: nb_unique_visitors_impressions">
@@ -13418,9 +13418,9 @@
         <target state="translated">Shared basket</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
+      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp" xml:space="preserve">
         <source>prod::download: delete-marking-stamp</source>
-        <target state="translated">prod::download: delete-marking-stamp</target>
+        <target state="needs-translation">Remove marking stamp</target>
         <jms:reference-file line="184">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="267">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="516">web/common/dialog_export.html.twig</jms:reference-file>
@@ -14132,9 +14132,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">previous</target>
         <jms:reference-file line="727">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c5ef10de4c189f1ce70c6112e1341ef5078f71ad" resname="prod:expose search">
+      <trans-unit id="c5ef10de4c189f1ce70c6112e1341ef5078f71ad" resname="prod:expose search" xml:space="preserve">
         <source>prod:expose search</source>
-        <target state="needs-translation">Search for publication</target>
+        <target state="translated">Search for publication</target>
         <jms:reference-file line="709">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69da622f86c7f8cbea7dc4ba6589aef247e8cb11" resname="prod:expose: disabled">
