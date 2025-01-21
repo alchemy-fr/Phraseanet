@@ -491,7 +491,7 @@ const search = services => {
         _.each(_tmpStat, function (v, sbas_id) {
             var status = [];
             _.each(v, function (v, sb_index) {
-                if (v !== -1) {
+                if (!_.isUndefined(v) && v !== -1) {
                     // ignore both checked
                     status.push({
                         'index': sb_index,
