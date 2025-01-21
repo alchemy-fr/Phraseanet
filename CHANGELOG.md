@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 4.1.15
+
+### Update Instructions
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Version Summary
+  - The naming preference of exported file names is preserved in the session.
+  - Fix statusbit on persited user's query
+  - Fix on expose enabled publication. 
+
+
+## What's Changed
+* PHRAS-3416 Phraseanet Translation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4578
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.14...4.1.15
+
+__
 ## 4.1.14
 
 ### Update Instructions
