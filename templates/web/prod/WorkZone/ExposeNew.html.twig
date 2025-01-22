@@ -34,11 +34,11 @@
                         </select>
                     </div>
                     <div class="ui-widget">
-                        <label for="enabled_combobox">{{ 'prod:expose:publication:Enabled' | trans }}</label>
-                        <span class="switch">
+                        <label>{{ 'prod:expose:publication:Enabled' | trans }}</label>
+                        <label class="switch">
                             <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
                             <span class="slider round"></span>
-                        </span>
+                        </label>
                     </div>
                     <div class="ui-widget available-wrapper">
                         <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
@@ -57,7 +57,7 @@
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
-                        <label for="publication_publiclyListed" class="switch">
+                        <label class="switch">
                             <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed">
                             <span class="slider round"></span>
                         </label>
