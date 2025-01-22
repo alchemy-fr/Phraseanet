@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## 4.1.15
+
+### Update Instructions
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Version Summary
+- The naming preference of exported file names is preserved in the session.
+- Fixed status bit on persisted user's query.
+- Fixed issue with expose enabled publication during creation.
+
+## What's Changed
+* PHRAS-3416 Phraseanet Translation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4578
+* PHRAS-4123 : Prod - status preference saved : gives wrong answer after re-authentication by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4579
+* PHRAS-4115 Prod - Export window - Save File name choice made by the user by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4577
+* PHRAS-4126 : Prod - Expose-cli - This not possible to "enabled" a publication during publication creation by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4580
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.14...4.1.15
+
+__
 ## 4.1.14
 
 ### Update Instructions
