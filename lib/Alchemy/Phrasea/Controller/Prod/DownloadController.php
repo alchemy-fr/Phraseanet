@@ -105,6 +105,10 @@ class DownloadController extends Controller
             $this->app->abort(403);
         }
 
+        if (!empty($request->request->get('type'))) {
+            $this->app['session']->set('download_name_type', $request->request->get('type'));
+        }
+
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
         $subdefs = $request->request->get('obj', []);
