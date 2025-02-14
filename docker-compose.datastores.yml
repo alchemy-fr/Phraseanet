@@ -15,6 +15,7 @@ services:
     - MYSQL_QUERY_CACHE_LIMIT
     - MYSQL_QUERY_CACHE_SIZE
     - MYSQL_KEY_BUFFER_SIZE
+    - MARIADB_AUTO_UPGRADE
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql
     networks:
