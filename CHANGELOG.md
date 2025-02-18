@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 4.1.16
+
+### Update Instructions
+
+This release of Phraseanet includes an upgrade of MariaDB.
+
+Docker Compose does not cleanly stop MySQL by default. Therefore, an error can occur when restarting the DB after an update.
+
+To cleanly stop MariaDB with docker compose, you can use the following command:
+```dc exec db /usr/bin/mysqladmin -uroot -p shutdown```
+
+- **Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+### Version Summary
+
+- Bump MariaDB
+- todo
+
+
+## What's Changed
+
+- WIP
+
 ## 4.1.15
 
 ### Update Instructions
