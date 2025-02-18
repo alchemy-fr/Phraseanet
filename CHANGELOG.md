@@ -7,9 +7,13 @@
 This release of Phraseanet includes an upgrade of MariaDB.
 
 Docker Compose does not cleanly stop MySQL by default. Therefore, an error can occur when restarting the DB after an update.
+see:https://github.com/MariaDB/mariadb-docker/issues/185
 
 To cleanly stop MariaDB with docker compose, you can use the following command:
 ```dc exec db /usr/bin/mysqladmin -uroot -p shutdown```
+
+MARIADB_AUTO_UPGRADE variable is set to 1 (activated) by default and used to automate the upgrade of the mariadb system tables.
+When this environment variable is set, this will run the mariadb-upgrade⁠ (https://mariadb.com/kb/en/mariadb-upgrade/), if needed, so any changes in the MariaDB system tables required to expose new features will be made. This may impeed some downgrade options⁠. Unless the environment variable MARIADB_DISABLE_UPGRADE_BACKUP is set, there will be a backup of the system tables created as system_mysql_backup_*.sql.zst in the top level of the data directory to assist in the downgrade if needed.
 
 - **Migration Patch**:
   - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
