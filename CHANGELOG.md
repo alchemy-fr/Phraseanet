@@ -1,69 +1,19 @@
 # CHANGELOG
 
-## 4.1.16
-
-### Update Instructions
-
-The ```docker compose``` stack bump version of the provided MariaDB.
-
-Docker Compose does not cleanly stop MySQL by default. 
-Therefore, an error can occur when restarting the DB after an update.
-see:https://github.com/MariaDB/mariadb-docker/issues/185
-
-To cleanly stop MariaDB with docker compose, you can use the following command:
-```dc exec db /usr/bin/mysqladmin -uroot -p shutdown```
-
-Performing a DB backup is recommended before starting the update procedure. 
-You can use the db-backup profile included in the docker-compose.tools.yml file to perform the backup.
-
-Added environement variable
-MARIADB_AUTO_UPGRADE variable is set to 1 (activated) by default and used to automate the upgrade of the mariadb system tables.
-When this environment variable is set, this will run the mariadb-upgrade⁠ (https://mariadb.com/kb/en/mariadb-upgrade/), if needed, so any changes in the MariaDB system tables required to expose new features will be made. This may impeed some downgrade options⁠. Unless the environment variable MARIADB_DISABLE_UPGRADE_BACKUP is set, there will be a backup of the system tables created as system_mysql_backup_*.sql.zst in the top level of the data directory to assist in the downgrade if needed.
-
-Keep in mind, the provided MariaDB container in ```docker compose``` and  stack is not ready for production as-is and requires adjustments. 
-It is recommended to use an external, redundant service for the primary datastore.
-
-#### Steps to Follow for Update docker compose stack
-
-
-1. Perform a backup of the application box and all databoxes published on your MariaDB server (the MariaDB database).
-2. Stop the MariaDB server with (adapt it with your credentials):
-   ```sh
-   dc exec db /usr/bin/mysqladmin -uroot -p shutdown
-   ```
-3. Take down the Docker stack with:
-   ```sh
-   dc down
-   ```
-4. Deploy the new Docker stack version.
-5. Bring up your stack with:
-   ```sh
-   dc up -d
-   ```
-
-**Note:** `dc` is a bash function aliasing `docker compose` with `.env` and `.env.local` values merged. See the [README.md](https://github.com/alchemy-fr/Phraseanet/blob/master/README.md#using-a-envlocal-method-for-custom-env-values) for more details.
-
-
-- **Phraseanet Migration Patch**:
-  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
-    ```
-    bin/setup system:upgrade
-    ```
-
-
-### Stack (Docker Compose and Helm)
-
-- **MariaDB**: Bumped to 10.11.4
-
 ### Version Summary
 
 - Bump MariaDB
-- todo
+- Fix issue on CSRF
+- Fix issue on export title choice in pusher case
+
+## What's Changed
+* PHRAS-4129 : account page - collections request - CSRF error by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4585
+* PHRAS-4130 : upgrade mariadb to 5.11.11 by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4586
+* PHRAS-4115 Export window - Save File name choice case download_async by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4583
+* PHRAS-4127 add mysql timeout env by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4584
 
 
-### What's Changed
-
-- WIP
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.15...4.1.16
 
 __
 ## 4.1.15
