@@ -17,6 +17,7 @@ services:
     - MYSQL_KEY_BUFFER_SIZE
     - MYSQL_CONNECT_TIMEOUT
     - MYSQL_WAIT_TIMEOUT
+    - MARIADB_AUTO_UPGRADE
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql
     networks:
