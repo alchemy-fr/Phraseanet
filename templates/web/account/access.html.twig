@@ -74,5 +74,6 @@
         <div class="form-actions">
             <input type="submit" class="btn btn-info" value="{{ "boutton::valider" | trans }}">
         </div>
+        <input type="hidden" name="userAccount_token" value="{{ app['session'].get('userAccount_token') }}">
     </form>
 {% endblock %}
