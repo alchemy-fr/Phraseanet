@@ -11,3 +11,6 @@ query_cache_limit=$MYSQL_QUERY_CACHE_LIMIT
 query_cache_size=$MYSQL_QUERY_CACHE_SIZE
 
 key_buffer_size=$MYSQL_KEY_BUFFER_SIZE
+
+connect_timeout=$MYSQL_CONNECT_TIMEOUT
+wait_timeout=$MYSQL_WAIT_TIMEOUT
