@@ -60,16 +60,17 @@
     <div class="buttons_line" style="display:{% if choose_export_title %}{% else %}none{% endif %}; text-align: left;">
         <p>{{ 'Nom des fichiers a l\'export' | trans }}</p>
         <div class="well-small">
-            <label for="type_{{id}}_original" class="radio">
-                <input type="radio" name="type" id="type_{{id}}_original"
+            <label for="type_{{id}}_title" class="radio">
+                <input type="radio" name="type" id="type_{{id}}_title"
                        {% if (app['session'].has('download_name_type') and app['session'].get('download_name_type') == "title") or (not app['session'].has('download_name_type') and default_export_title == "title" ) %}
                            checked
                        {% endif %}
                        value="title" />
                 {{ 'export::titre: titre du documument' | trans }}
             </label>
-            <label for="type_{{id}}_title" class="radio">
-                <input type="radio" name="type" id="type_{{id}}_title"
+
+            <label for="type_{{id}}_original" class="radio">
+                <input type="radio" name="type" id="type_{{id}}_original"
                        {% if (app['session'].has('download_name_type') and app['session'].get('download_name_type') == "originalname") or (not app['session'].has('download_name_type') and default_export_title == "original" ) %}
                            checked
                        {% endif %}

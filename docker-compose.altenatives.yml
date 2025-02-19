@@ -24,6 +24,8 @@ services:
     - MYSQL_QUERY_CACHE_LIMIT
     - MYSQL_QUERY_CACHE_SIZE
     - MYSQL_KEY_BUFFER_SIZE
+    - MYSQL_CONNECT_TIMEOUT
+    - MYSQL_WAIT_TIMEOUT
     volumes:
     - ${PHRASEANET_DB_DIR}_mysql8:/var/lib/mysql:rw
     networks:
