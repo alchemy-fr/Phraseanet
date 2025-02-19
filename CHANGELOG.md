@@ -1,5 +1,71 @@
 # CHANGELOG
 
+## 4.1.16
+
+### Update Instructions
+
+The ```docker compose``` stack bump version of the provided MariaDB.
+
+Docker Compose does not cleanly stop MySQL by default. 
+Therefore, an error can occur when restarting the DB after an update.
+see:https://github.com/MariaDB/mariadb-docker/issues/185
+
+To cleanly stop MariaDB with docker compose, you can use the following command:
+```dc exec db /usr/bin/mysqladmin -uroot -p shutdown```
+
+Performing a DB backup is recommended before starting the update procedure. 
+You can use the db-backup profile included in the docker-compose.tools.yml file to perform the backup.
+
+Added environement variable
+MARIADB_AUTO_UPGRADE variable is set to 1 (activated) by default and used to automate the upgrade of the mariadb system tables.
+When this environment variable is set, this will run the mariadb-upgrade⁠ (https://mariadb.com/kb/en/mariadb-upgrade/), if needed, so any changes in the MariaDB system tables required to expose new features will be made. This may impeed some downgrade options⁠. Unless the environment variable MARIADB_DISABLE_UPGRADE_BACKUP is set, there will be a backup of the system tables created as system_mysql_backup_*.sql.zst in the top level of the data directory to assist in the downgrade if needed.
+
+Keep in mind, the provided MariaDB container in ```docker compose``` and  stack is not ready for production as-is and requires adjustments. 
+It is recommended to use an external, redundant service for the primary datastore.
+
+#### Steps to Follow for Update docker compose stack
+
+
+1. Perform a backup of the application box and all databoxes published on your MariaDB server (the MariaDB database).
+2. Stop the MariaDB server with (adapt it with your credentials):
+   ```sh
+   dc exec db /usr/bin/mysqladmin -uroot -p shutdown
+   ```
+3. Take down the Docker stack with:
+   ```sh
+   dc down
+   ```
+4. Deploy the new Docker stack version.
+5. Bring up your stack with:
+   ```sh
+   dc up -d
+   ```
+
+**Note:** `dc` is a bash function aliasing `docker compose` with `.env` and `.env.local` values merged. See the [README.md](https://github.com/alchemy-fr/Phraseanet/blob/master/README.md#using-a-envlocal-method-for-custom-env-values) for more details.
+
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+
+### Stack (Docker Compose and Helm)
+
+- **MariaDB**: Bumped to 10.11.4
+
+### Version Summary
+
+- Bump MariaDB
+- todo
+
+
+### What's Changed
+
+- WIP
+
+__
 ## 4.1.15
 
 ### Update Instructions
@@ -15,7 +81,7 @@
 - Fixed status bit on persisted user's query.
 - Fixed issue with expose enabled publication during creation.
 
-## What's Changed
+### What's Changed
 * PHRAS-3416 Phraseanet Translation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4578
 * PHRAS-4123 : Prod - status preference saved : gives wrong answer after re-authentication by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4579
 * PHRAS-4115 Prod - Export window - Save File name choice made by the user by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4577
@@ -39,12 +105,11 @@ __
   - Correcting issue in patch 4111phras4106 where an error occurs if type is absent in IDP providers.
 
 
-## What's Changed
+### What's Changed
 * PHRAS-4120: bin/system upgrade - Upgrade fails on 4111phras4106 patch by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4574
 
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.13...4.1.14
-
 
 __
 ## 4.1.13
@@ -62,13 +127,12 @@ __
   - Remove www/.htacess from docker stack.
   - Remove Nginx access status.
 
-## What's Changed
+### What's Changed
 * PHRAS-4117 remove gateway /status and /ping page direct access by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4571
 * PHRAS-4119 exclude www/.htaccess file form docker stack in https://github.com/alchemy-fr/Phraseanet/pull/4573
 
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.12...4.1.13
-
 
 __
 ## 4.1.12
@@ -90,7 +154,7 @@ __
 
 - **Phraseanet Base Image**: Bumped to 1.2.2
 
-## What's Changed
+### What's Changed
 * PHRAS-4109: Language : Secure cookie seems to be always needing HTTPS by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4566
 * PHRAS-4112 bump base image to 1.2.1 / fix MP4Box by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4567
 * PHRAS-4114 newrelic install fix by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4569
@@ -119,7 +183,7 @@ __
 - **Phraseanet Base Image**: Bumped to 1.2.0.
 - **Nginx**:  adding quota on https requests, set it with environnements variables.
 
-## What's Changed
+### What's Changed
 * PHRAS-4106 ignore openid groups by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4561
 * PHRAS-4093  Adding in UFRAW in Phraseanet base Image by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4562
 * PHRAS-3588 Implement http request quota by type by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4564
@@ -167,7 +231,7 @@ __
   - `imagePullPolicy` can now be set from `values.yaml`.
   - Release details: [Helm chart release 0.47.0](https://github.com/alchemy-fr/alchemy-helm-charts-repo/releases/tag/phraseanet-0.47.0)
 
-## What's Changed
+### What's Changed
 * PHRAS-3416 : fix string in admin create subdef by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4534
 * PHRAS-3416 create subdefinition localisation by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4537
 * PHRAS-4094 Bump rabbitMQ version to 3.8.34 by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4546
@@ -182,7 +246,7 @@ __
 * PHRAS-4104 Nginx bump 1.27.2 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4557
 * PHRAS-4101: Update Range for Subdefinition Image Sizes by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4558
 
-## New Contributors
+### New Contributors
 * @tacman made their first contribution in https://github.com/alchemy-fr/Phraseanet/pull/4552
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.9...4.1.10
@@ -206,7 +270,7 @@ ___
 
  - No change
 
-## What's Changed
+### What's Changed
 * PHRAS-4083_searchraw-limit-offset-to-result by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4528
 * PHRAS-4082: Github action - Check the push image method by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4530
 * PHRAS-4086_pdftotext-exception by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4532
@@ -242,7 +306,7 @@ ___
    - Build of Phraseanet image has been updated with a "Phraseanet base image" available on dockerhub
 
 
-## What's Changed
+### What's Changed
 * PHRAS-4058 Admin - workermanager default filter since 3 days by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4507
 * PHRAS-4064 Fix worker plugin install as app by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4508
 * PHRAS-4042 Fix language in webvtt field uploaded to expose by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4510
@@ -282,7 +346,7 @@ ___
     
    - Redis native session support
 
-## What's Changed
+### What's Changed
 * PHRAS-4041:Prod - matomo - Field display - improve rendering of Matomomediametrics by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4497
 * PHRAS-3416 Local for worker jobs by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4499
 * PHRAS-4056 Change imagemagick version and config file path by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4500
