@@ -1,46 +1,51 @@
 # CHANGELOG
 
+## 4.1.16
+
 ### Update Instructions
 
-The ```docker compose``` stack bump version of the provided MariaDB.
+**Update: Docker Compose Stack Version Bump for MariaDB**
 
-Docker Compose does not cleanly stop MySQL by default. 
-Therefore, an error can occur when restarting the DB after an update.
-see:https://github.com/MariaDB/mariadb-docker/issues/185
+This update includes a version bump for MariaDB within our Docker Compose stack to incorporate the latest improvements and fixes.
 
-To cleanly stop MariaDB with docker compose, you can use the following command:
-```dc exec db /usr/bin/mysqladmin -uroot -p shutdown```
+**Issue:**
+Docker Compose does not cleanly stop MySQL by default, which can lead to errors when restarting the database after an update. Reference: [MariaDB Docker Issue #185](https://github.com/MariaDB/mariadb-docker/issues/185).
 
-Performing a DB backup is recommended before starting the update procedure. 
-You can use the db-backup profile included in the docker-compose.tools.yml file to perform the backup.
+**Solution:**
+To cleanly stop MariaDB with Docker Compose, use the following command:
+```bash
+dc exec db /usr/bin/mysqladmin -uroot -p shutdown
+```
 
-Added environement variable
-MARIADB_AUTO_UPGRADE variable is set to 1 (activated) by default and used to automate the upgrade of the mariadb system tables.
-When this environment variable is set, this will run the mariadb-upgrade⁠ (https://mariadb.com/kb/en/mariadb-upgrade/), if needed, so any changes in the MariaDB system tables required to expose new features will be made. This may impeed some downgrade options⁠. Unless the environment variable MARIADB_DISABLE_UPGRADE_BACKUP is set, there will be a backup of the system tables created as system_mysql_backup_*.sql.zst in the top level of the data directory to assist in the downgrade if needed.
+**Recommendation:**
+Performing a database backup is recommended before starting the update procedure. Utilize the `db-backup` profile included in the `docker-compose.tools.yml` file for this purpose.
 
-Keep in mind, the provided MariaDB container in ```docker compose``` and  stack is not ready for production as-is and requires adjustments. 
-It is recommended to use an external, redundant service for the primary datastore.
+**New Feature:**
+An environment variable `MARIADB_AUTO_UPGRADE` is now set to `1` (activated) by default to automate the upgrade of the MariaDB system tables. This upgrade process, executed via [mariadb-upgrade](https://mariadb.com/kb/en/mariadb-upgrade/), updates system tables to enable new features but may restrict some downgrade options. Unless the environment variable `MARIADB_DISABLE_UPGRADE_BACKUP` is set, a backup of the system tables will be created as `system_mysql_backup_*.sql.zst` in the top level of the data directory to assist in any required downgrades.
 
-#### Steps to Follow for Update docker compose stack
+**Caution:**
+The provided MariaDB container in the Docker Compose stack is not ready for production as-is and requires adjustments. It is recommended to use an external, redundant service for the primary datastore.
 
+#### Steps to Follow for Updating Docker Compose Stack:
 
-1. Perform a backup of the application box and all databoxes published on your MariaDB server (the MariaDB database).
-2. Stop the MariaDB server with (adapt it with your credentials):
-   ```sh
+1. Perform a backup of the application box and all databases published on your MariaDB server.
+2. Stop the MariaDB server using the command (adapt it with your credentials):
+   ```bash
    dc exec db /usr/bin/mysqladmin -uroot -p shutdown
    ```
 3. Take down the Docker stack with:
-   ```sh
+   ```bash
    dc down
    ```
 4. Deploy the new Docker stack version.
-5. Bring up your stack with:
-   ```sh
+5. Start your stack with:
+   ```bash
    dc up -d
    ```
 
 **Note:** `dc` is a bash function aliasing `docker compose` with `.env` and `.env.local` values merged. See the [README.md](https://github.com/alchemy-fr/Phraseanet/blob/master/README.md#using-a-envlocal-method-for-custom-env-values) for more details.
 
+#### Phraseanet Upgrade
 
 - **Phraseanet Migration Patch**:
   - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
