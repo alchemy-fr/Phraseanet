@@ -8246,6 +8246,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
   margin-top: 6px;
 }
 
+.assets_list .chim-wrapper {
+  margin: 3px 3px;
+}
+
 .record-number {
   position: absolute;
   background-color: #5cb85c;

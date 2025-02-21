@@ -147,74 +147,38 @@ const storyReorderContent = (services) => {
             scroll: true,
             scrollSensitivity: 40,
             scrollSpeed: 30,
+            helper: function (e, item) {
+                var elements = $('.selected', container).not('.ui-sortable-placeholder').clone();
+                var helper = $('<div/>');
+                item.siblings('.selected').addClass('hidden');
+                return helper.append(elements);
+            },
             start: function (event, ui) {
-                var selected = $('.selected', container);
-
-                selected.each(function (i, n) {
-                    $(n).attr('position', i);
-                });
-
-                var n = selected.length - 1;
-
-                $('.selected:visible', container).hide();
-
-                while (n > 0) {
-                    $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
-                    n--;
+                var elementsPrev = ui.item.prevAll('.selected.hidden').not('.ui-sortable-placeholder');
+                if (elementsPrev.length > 0) {
+                    ui.item.data('itemsPrev', elementsPrev);
+                }
+                var elementsNext = ui.item.nextAll('.selected.hidden').not('.ui-sortable-placeholder');
+                if (elementsNext.length > 0) {
+                    ui.item.data('itemsNext', elementsNext);
                 }
             },
             stop: function (event, ui) {
+                if (ui.item.data('itemsPrev') !== undefined) {
+                    var lastBefore = ui.item[0];
+                    $(ui.item.data('itemsPrev')).each(function (i, n) {
+                        $(lastBefore).before($(n));
+                        lastBefore = n;
+                    })
+                }
 
-                $('.diapo.ui-sortable-placeholderfollow', container).remove();
+                if (ui.item.data('itemsNext') !== undefined) {
+                    $(ui.item[0]).after($(ui.item.data('itemsNext')));
+                }
 
-                var main_id = $(ui.item[0]).attr('id');
-
-                var selected = $('.selected', container);
-                var sorter = [];
-
-
-                selected.each(function (i, n) {
-
-                    var position = parseInt($(n).attr('position'), 10);
-
-                    if (position !== '') {
-                        sorter[position] = $(n);
-                    }
-
-                    var id = $(n).attr('id');
-                    if (id === main_id) {
-                        return;
-                    }
-
-                });
-
-                var before = true;
-                var last_moved = $(ui.item[0]);
-                $(sorter).each(function (i, n) {
-                    $(n).show().removeAttr('position');
-                    if ($(n).attr('id') === main_id) {
-                        before = false;
-                    } else {
-                        if (before) {
-                            $(n).before($(ui.item[0]));
-                        } else {
-                            $(n).after($(last_moved));
-                        }
-
-                    }
-                    last_moved = sorter[i];
-                });
+                ui.item.siblings('.selected').removeClass('hidden');
 
             },
-            change: function () {
-                $('.diapo.ui-sortable-placeholderfollow', container).remove();
-
-                var n = OrderSelection.length() - 1;
-                while (n > 0) {
-                    $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after($('.diapo.ui-sortable-placeholder', container));
-                    n--;
-                }
-            }
 
         }).disableSelection();
 

@@ -961,6 +961,8 @@ const workzone = (services) => {
                 }
             });
 
+        let ordeSelection = new Selectable(services, $('.publication-list'), {selector: '.chim-wrapper'});
+
         // delete an asset from publication
         idFrameC.find('.publication-droppable').on('click', '.removeAsset', function(){
             let publicationId = $(this).attr('data-publication-id');
@@ -1060,14 +1062,43 @@ const workzone = (services) => {
             getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
         });
 
+        idFrameC.find('.publication-droppable').on('click', '.edit-asset-order', function () {
+            if ($(this).is(':checked')) {
+                $(this).closest('div').find('.choose-order').css('display', 'inline-block');
+            } else {
+                $(this).closest('div').find('.choose-order').css('display', 'none');
+            }
+
+            $(this).closest('div').find('.choose-order button.apply-order').data('already-apply', 0);
+            let publicationId = $(this).closest('div.expose_item_top').find('button.refresh-publication').attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_deployed');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+        });
+
+        idFrameC.find('.publication-droppable').on('click', '.apply-order', function () {
+            let publicationId = $(this).closest('div.expose_item_top').find('button.refresh-publication').attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_deployed');
+
+            let orderField = $(this).closest('div').find('select.order-field').val();
+            let orderSort = $(this).closest('div').find('select.order-sort').val();
+
+            if (orderField !== '') {
+                $(this).data('already-apply', 1);
+                assetsContainer.find('.assets_bottom_info').addClass('loading');
+                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1, orderField, orderSort);
+            }
+        });
+
         // Order assets in publication
-        idFrameC.find('.publication-droppable').on('click', '.order-assets', function() {
+        idFrameC.find('.publication-droppable').on('click', '.order-assets', function () {
             let publicationId = $(this).attr('data-publication-id');
             let exposeName = $('#expose_list').val();
             let assetsContainer = $(this).parents('.expose_item_deployed');
             const order = [];
 
-            $('.assets_list .chim-wrapper').each(function(i, el){
+            assetsContainer.find('.assets_list .chim-wrapper').each(function(i, el){
                 order.push($(this).attr('data-pub-asset-id'));
             });
 
@@ -1125,8 +1156,19 @@ const workzone = (services) => {
             let assetsContainer = $(this).parents('.expose_item_bottom').find('.expose_drag_drop');
             let page = assetsContainer.find('#list_assets_page').val();
 
+            let exposeItemTop = $(this).closest('div.expose_item_bottom').siblings('.expose_item_top');
+            let applyOrder = exposeItemTop.find('button.apply-order');
+
+            if (exposeItemTop.find('input.edit-asset-order').is(':checked') && applyOrder.data('already-apply') == 1) {
+                let orderField = applyOrder.data('last-field');
+                let orderSort = applyOrder.data('last-sort');
+                getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1, orderField, orderSort);
+            } else {
+                getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+            }
+
             $(this).find('.loading_more').removeClass('hidden');
-            getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+
         });
 
     }
@@ -1231,7 +1273,7 @@ const workzone = (services) => {
     }
 
 
-    function getPublicationAssetsList(publicationId, exposeName, assetsContainer, page=1) {
+    function getPublicationAssetsList(publicationId, exposeName, assetsContainer, page= 1, orderField = '', orderSort = '') {
         $.ajax({
             type: 'GET',
             url: `/prod/expose/get-publication/${publicationId}/assets?exposeName=${exposeName}&page=${page}`,
@@ -1239,7 +1281,11 @@ const workzone = (services) => {
                 capabilitiesDelete: assetsContainer.closest(".expose_basket_item").data("capabilities-delete") ? 1 : 0,
                 capabilitiesEdit: assetsContainer.closest(".expose_basket_item").data("capabilities-edit") ? 1 : 0,
                 enabled: assetsContainer.closest(".expose_basket_item").data("enabled") ? 1 : 0,
-                childrenCount : assetsContainer.closest(".expose_basket_item").data("childrencount")
+                childrenCount: assetsContainer.closest(".expose_basket_item").data("childrencount"),
+                editOrder: assetsContainer.find('.edit-asset-order').is(':checked') ? 1 : 0,
+                orderField: orderField,
+                orderSort: orderSort,
+                alreadyApplyOrder: assetsContainer.find('.apply-order').data('already-apply')
             },
             success: function (data) {
                 if (typeof data.success === 'undefined') {
@@ -1247,20 +1293,68 @@ const workzone = (services) => {
                         assetsContainer.removeClass('loading');
                         assetsContainer.empty().html(data);
 
-                        assetsContainer.find('.assets_list').sortable({
-                            change: function () {
-                                $(this).closest('.expose_item_deployed').find('.order-assets').show();
-                            }
-                        }).disableSelection();
+                        if ($('#idFrameC').find('.publication-droppable').find('.edit-asset-order').is(':checked')) {
+                            assetsContainer.find('.assets_list').sortable({
+                                appendTo: assetsContainer,
+                                distance: 20,
+                                cursorAt: {
+                                    top: 10,
+                                    left: -20
+                                },
+                                items: 'div.chim-wrapper',
+                                scroll: true,
+                                scrollSensitivity: 40,
+                                scrollSpeed: 30,
+                                helper: function (e, item) {
+                                    let elements = $('.selected', assetsContainer).not('.ui-sortable-placeholder').clone();
+                                    let helper = $('<div/>');
+                                    item.siblings('.selected').addClass('hidden');
+                                    return helper.append(elements);
+                                },
+                                start: function (event, ui) {
+                                    // let len = ui.helper.children().length;
+                                    // let currentWidth = ui.helper.width();
+                                    // let itemWidth = ui.item.width();
+                                    // ui.helper.width(currentWidth + (len * itemWidth));
+                                    // ui.placeholder.width((len * itemWidth))
 
-                    }
-                    else {
+                                    let elementsPrev = ui.item.prevAll('.selected.hidden').not('.ui-sortable-placeholder');
+                                    if (elementsPrev.length > 0) {
+                                        ui.item.data('itemsPrev', elementsPrev);
+                                    }
+                                    let elementsNext = ui.item.nextAll('.selected.hidden').not('.ui-sortable-placeholder');
+                                    if (elementsNext.length > 0) {
+                                        ui.item.data('itemsNext', elementsNext);
+                                    }
+                                },
+                                stop: function (event, ui) {
+                                    if (ui.item.data('itemsPrev') !== undefined) {
+                                        let lastBefore = ui.item[0];
+                                        $(ui.item.data('itemsPrev')).each(function (i, n) {
+                                            $(lastBefore).before($(n));
+                                            lastBefore = n;
+                                        })
+                                    }
+
+                                    if (ui.item.data('itemsNext') !== undefined) {
+                                        $(ui.item[0]).after($(ui.item.data('itemsNext')));
+                                    }
+
+                                    ui.item.siblings('.selected').removeClass('hidden');
+                                    $(this).closest('.expose_item_deployed').find('.order-assets').show();
+                                }
+                            }).disableSelection();
+                        }
+                    } else {
                         assetsContainer.find('.assets_list').append(data);
                         assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
                         assetsContainer.find('#list_assets_page').val(page);
+
+                        if ($('#idFrameC').find('.publication-droppable').find('.edit-asset-order').is(':checked')) {
+                            assetsContainer.find('.assets_list').sortable('refresh');
+                        }
                     }
-                }
-                else {
+                } else {
                     if (!data.success) {
                         assetsContainer.empty().html(data.message);
                     }

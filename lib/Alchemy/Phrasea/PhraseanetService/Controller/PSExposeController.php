@@ -504,6 +504,8 @@ class PSExposeController extends Controller
         $exposeName = $request->get('exposeName');
         $exposeConfiguration = $this->getExposeConfiguration($exposeName);
         $page = $request->get('page')?:1;
+        $orderField = $request->get('orderField');
+        $orderSort  =  $request->get('orderSort');
 
         $exposeClient = $this->getExposeClient($exposeName);
 
@@ -517,7 +519,13 @@ class PSExposeController extends Controller
         $accessToken = $this->getAndSaveToken($exposeName);
 
         try {
-            $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
+            if (empty($orderField)) {
+                $uri = '/publications/' . $request->get('publicationId') . '/assets?page=' . $page . '&order[position]=asc&order[createdAt]=asc';
+            } else {
+                $uri = '/publications/' . $request->get('publicationId') . '/assets?page=' . $page . '&order[' . $orderField .']='. $orderSort;
+            }
+
+            $resPublication = $exposeClient->get($uri, [
                 'headers' => [
                     'Authorization' => 'Bearer '. $accessToken,
                     'Content-Type'  => 'application/json'
@@ -564,7 +572,11 @@ class PSExposeController extends Controller
             'childrenCount'         => $request->get('childrenCount'),
             'totalItems'            => $totalItems,
             'page'                  => $page,
-            'exposeFrontBasePath'   => $exposeFrontBasePath
+            'exposeFrontBasePath'   => $exposeFrontBasePath,
+            'editOrder'             => $request->get('editOrder'),
+            'orderField'            => $request->get('orderField'),
+            'orderSort'             => $request->get('orderSort'),
+            'alreadyApplyOrder'     => $request->get('alreadyApplyOrder')
         ]);
     }
 
