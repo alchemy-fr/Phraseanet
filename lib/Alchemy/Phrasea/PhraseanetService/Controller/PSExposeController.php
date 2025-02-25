@@ -520,7 +520,7 @@ class PSExposeController extends Controller
 
         try {
             if (empty($orderField)) {
-                $uri = '/publications/' . $request->get('publicationId') . '/assets?page=' . $page . '&order[position]=asc&order[createdAt]=asc';
+                $uri = '/publications/' . $request->get('publicationId') . '/assets?page=' . $page ;
             } else {
                 $uri = '/publications/' . $request->get('publicationId') . '/assets?page=' . $page . '&order[' . $orderField .']='. $orderSort;
             }
