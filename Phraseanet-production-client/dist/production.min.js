@@ -10906,6 +10906,8 @@ var workzone = function workzone(services) {
             }
         });
 
+        var ordeSelection = new _selectable2.default(services, (0, _jquery2.default)('.publication-list'), { selector: '.chim-wrapper' });
+
         // delete an asset from publication
         idFrameC.find('.publication-droppable').on('click', '.removeAsset', function () {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
@@ -11003,6 +11005,35 @@ var workzone = function workzone(services) {
             getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
         });
 
+        idFrameC.find('.publication-droppable').on('click', '.edit-asset-order', function () {
+            if ((0, _jquery2.default)(this).is(':checked')) {
+                (0, _jquery2.default)(this).closest('div').find('.choose-order').css('display', 'inline-block');
+            } else {
+                (0, _jquery2.default)(this).closest('div').find('.choose-order').css('display', 'none');
+            }
+
+            (0, _jquery2.default)(this).closest('div').find('.choose-order button.apply-order').data('already-apply', 0);
+            var publicationId = (0, _jquery2.default)(this).closest('div.expose_item_top').find('button.refresh-publication').attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+        });
+
+        idFrameC.find('.publication-droppable').on('click', '.apply-order', function () {
+            var publicationId = (0, _jquery2.default)(this).closest('div.expose_item_top').find('button.refresh-publication').attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
+
+            var orderField = (0, _jquery2.default)(this).closest('div').find('select.order-field').val();
+            var orderSort = (0, _jquery2.default)(this).closest('div').find('select.order-sort').val();
+
+            if (orderField !== '') {
+                (0, _jquery2.default)(this).data('already-apply', 1);
+                assetsContainer.find('.assets_bottom_info').addClass('loading');
+                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1, orderField, orderSort);
+            }
+        });
+
         // Order assets in publication
         idFrameC.find('.publication-droppable').on('click', '.order-assets', function () {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
@@ -11010,7 +11041,7 @@ var workzone = function workzone(services) {
             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
             var order = [];
 
-            (0, _jquery2.default)('.assets_list .chim-wrapper').each(function (i, el) {
+            assetsContainer.find('.assets_list .chim-wrapper').each(function (i, el) {
                 order.push((0, _jquery2.default)(this).attr('data-pub-asset-id'));
             });
 
@@ -11066,8 +11097,18 @@ var workzone = function workzone(services) {
             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_bottom').find('.expose_drag_drop');
             var page = assetsContainer.find('#list_assets_page').val();
 
+            var exposeItemTop = (0, _jquery2.default)(this).closest('div.expose_item_bottom').siblings('.expose_item_top');
+            var applyOrder = exposeItemTop.find('button.apply-order');
+
+            if (exposeItemTop.find('input.edit-asset-order').is(':checked') && applyOrder.data('already-apply') == 1) {
+                var orderField = applyOrder.data('last-field');
+                var orderSort = applyOrder.data('last-sort');
+                getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1, orderField, orderSort);
+            } else {
+                getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+            }
+
             (0, _jquery2.default)(this).find('.loading_more').removeClass('hidden');
-            getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
         });
     }
 
@@ -11172,6 +11213,8 @@ var workzone = function workzone(services) {
 
     function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
         var page = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+        var orderField = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
+        var orderSort = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
 
         _jquery2.default.ajax({
             type: 'GET',
@@ -11180,7 +11223,11 @@ var workzone = function workzone(services) {
                 capabilitiesDelete: assetsContainer.closest(".expose_basket_item").data("capabilities-delete") ? 1 : 0,
                 capabilitiesEdit: assetsContainer.closest(".expose_basket_item").data("capabilities-edit") ? 1 : 0,
                 enabled: assetsContainer.closest(".expose_basket_item").data("enabled") ? 1 : 0,
-                childrenCount: assetsContainer.closest(".expose_basket_item").data("childrencount")
+                childrenCount: assetsContainer.closest(".expose_basket_item").data("childrencount"),
+                editOrder: assetsContainer.find('.edit-asset-order').is(':checked') ? 1 : 0,
+                orderField: orderField,
+                orderSort: orderSort,
+                alreadyApplyOrder: assetsContainer.find('.apply-order').data('already-apply')
             },
             success: function success(data) {
                 if (typeof data.success === 'undefined') {
@@ -11188,15 +11235,66 @@ var workzone = function workzone(services) {
                         assetsContainer.removeClass('loading');
                         assetsContainer.empty().html(data);
 
-                        assetsContainer.find('.assets_list').sortable({
-                            change: function change() {
-                                (0, _jquery2.default)(this).closest('.expose_item_deployed').find('.order-assets').show();
-                            }
-                        }).disableSelection();
+                        if ((0, _jquery2.default)('#idFrameC').find('.publication-droppable').find('.edit-asset-order').is(':checked')) {
+                            assetsContainer.find('.assets_list').sortable({
+                                appendTo: assetsContainer,
+                                distance: 20,
+                                cursorAt: {
+                                    top: 10,
+                                    left: -20
+                                },
+                                items: 'div.chim-wrapper',
+                                scroll: true,
+                                scrollSensitivity: 40,
+                                scrollSpeed: 30,
+                                helper: function helper(e, item) {
+                                    var elements = (0, _jquery2.default)('.selected', assetsContainer).not('.ui-sortable-placeholder').clone();
+                                    var helper = (0, _jquery2.default)('<div/>');
+                                    item.siblings('.selected').addClass('hidden');
+                                    return helper.append(elements);
+                                },
+                                start: function start(event, ui) {
+                                    // let len = ui.helper.children().length;
+                                    // let currentWidth = ui.helper.width();
+                                    // let itemWidth = ui.item.width();
+                                    // ui.helper.width(currentWidth + (len * itemWidth));
+                                    // ui.placeholder.width((len * itemWidth))
+
+                                    var elementsPrev = ui.item.prevAll('.selected.hidden').not('.ui-sortable-placeholder');
+                                    if (elementsPrev.length > 0) {
+                                        ui.item.data('itemsPrev', elementsPrev);
+                                    }
+                                    var elementsNext = ui.item.nextAll('.selected.hidden').not('.ui-sortable-placeholder');
+                                    if (elementsNext.length > 0) {
+                                        ui.item.data('itemsNext', elementsNext);
+                                    }
+                                },
+                                stop: function stop(event, ui) {
+                                    if (ui.item.data('itemsPrev') !== undefined) {
+                                        var lastBefore = ui.item[0];
+                                        (0, _jquery2.default)(ui.item.data('itemsPrev')).each(function (i, n) {
+                                            (0, _jquery2.default)(lastBefore).before((0, _jquery2.default)(n));
+                                            lastBefore = n;
+                                        });
+                                    }
+
+                                    if (ui.item.data('itemsNext') !== undefined) {
+                                        (0, _jquery2.default)(ui.item[0]).after((0, _jquery2.default)(ui.item.data('itemsNext')));
+                                    }
+
+                                    ui.item.siblings('.selected').removeClass('hidden');
+                                    (0, _jquery2.default)(this).closest('.expose_item_deployed').find('.order-assets').show();
+                                }
+                            }).disableSelection();
+                        }
                     } else {
                         assetsContainer.find('.assets_list').append(data);
                         assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
                         assetsContainer.find('#list_assets_page').val(page);
+
+                        if ((0, _jquery2.default)('#idFrameC').find('.publication-droppable').find('.edit-asset-order').is(':checked')) {
+                            assetsContainer.find('.assets_list').sortable('refresh');
+                        }
                     }
                 } else {
                     if (!data.success) {
@@ -20903,69 +21001,42 @@ var basketReorderContent = function basketReorderContent(services) {
             scroll: true,
             scrollSensitivity: 40,
             scrollSpeed: 30,
+            helper: function helper(e, item) {
+                var elements = (0, _jquery2.default)('.selected', container).not('.ui-sortable-placeholder').clone();
+                var helper = (0, _jquery2.default)('<div/>');
+                item.siblings('.selected').addClass('hidden');
+                return helper.append(elements);
+            },
             start: function start(event, ui) {
-                var selected = (0, _jquery2.default)('.selected', container);
+                // var len = ui.helper.children().length;
+                // var currentWidth = ui.helper.width();
+                // var itemWidth = ui.item.width();
+                // ui.helper.width(currentWidth + (len * itemWidth));
+                // ui.placeholder.width((len * itemWidth))
 
-                selected.each(function (i, n) {
-                    (0, _jquery2.default)(n).attr('position', i);
-                });
-
-                var n = selected.length - 1;
-
-                (0, _jquery2.default)('.selected:visible', container).hide();
-
-                while (n > 0) {
-                    (0, _jquery2.default)('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after((0, _jquery2.default)('.diapo.ui-sortable-placeholder', container));
-                    n--;
+                var elementsPrev = ui.item.prevAll('.selected.hidden').not('.ui-sortable-placeholder');
+                if (elementsPrev.length > 0) {
+                    ui.item.data('itemsPrev', elementsPrev);
+                }
+                var elementsNext = ui.item.nextAll('.selected.hidden').not('.ui-sortable-placeholder');
+                if (elementsNext.length > 0) {
+                    ui.item.data('itemsNext', elementsNext);
                 }
             },
             stop: function stop(event, ui) {
-
-                (0, _jquery2.default)('.diapo.ui-sortable-placeholderfollow', container).remove();
-
-                var main_id = (0, _jquery2.default)(ui.item[0]).attr('id');
-
-                var selected = (0, _jquery2.default)('.selected', container);
-                var sorter = [];
-
-                selected.each(function (i, n) {
-
-                    var position = parseInt((0, _jquery2.default)(n).attr('position'), 10);
-
-                    if (position !== '') {
-                        sorter[position] = (0, _jquery2.default)(n);
-                    }
-
-                    var id = (0, _jquery2.default)(n).attr('id');
-                    if (id === main_id) {
-                        return;
-                    }
-                });
-
-                var before = true;
-                var last_moved = (0, _jquery2.default)(ui.item[0]);
-                (0, _jquery2.default)(sorter).each(function (i, n) {
-                    (0, _jquery2.default)(n).show().removeAttr('position');
-                    if ((0, _jquery2.default)(n).attr('id') === main_id) {
-                        before = false;
-                    } else {
-                        if (before) {
-                            (0, _jquery2.default)(n).before((0, _jquery2.default)(ui.item[0]));
-                        } else {
-                            (0, _jquery2.default)(n).after((0, _jquery2.default)(last_moved));
-                        }
-                    }
-                    last_moved = sorter[i];
-                });
-            },
-            change: function change() {
-                (0, _jquery2.default)('.diapo.ui-sortable-placeholderfollow', container).remove();
-
-                var n = OrderSelection.length() - 1;
-                while (n > 0) {
-                    (0, _jquery2.default)('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after((0, _jquery2.default)('.diapo.ui-sortable-placeholder', container));
-                    n--;
+                if (ui.item.data('itemsPrev') !== undefined) {
+                    var lastBefore = ui.item[0];
+                    (0, _jquery2.default)(ui.item.data('itemsPrev')).each(function (i, n) {
+                        (0, _jquery2.default)(lastBefore).before((0, _jquery2.default)(n));
+                        lastBefore = n;
+                    });
                 }
+
+                if (ui.item.data('itemsNext') !== undefined) {
+                    (0, _jquery2.default)(ui.item[0]).after((0, _jquery2.default)(ui.item.data('itemsNext')));
+                }
+
+                ui.item.siblings('.selected').removeClass('hidden');
             }
 
         }).disableSelection();
@@ -21190,69 +21261,36 @@ var storyReorderContent = function storyReorderContent(services) {
             scroll: true,
             scrollSensitivity: 40,
             scrollSpeed: 30,
+            helper: function helper(e, item) {
+                var elements = (0, _jquery2.default)('.selected', container).not('.ui-sortable-placeholder').clone();
+                var helper = (0, _jquery2.default)('<div/>');
+                item.siblings('.selected').addClass('hidden');
+                return helper.append(elements);
+            },
             start: function start(event, ui) {
-                var selected = (0, _jquery2.default)('.selected', container);
-
-                selected.each(function (i, n) {
-                    (0, _jquery2.default)(n).attr('position', i);
-                });
-
-                var n = selected.length - 1;
-
-                (0, _jquery2.default)('.selected:visible', container).hide();
-
-                while (n > 0) {
-                    (0, _jquery2.default)('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after((0, _jquery2.default)('.diapo.ui-sortable-placeholder', container));
-                    n--;
+                var elementsPrev = ui.item.prevAll('.selected.hidden').not('.ui-sortable-placeholder');
+                if (elementsPrev.length > 0) {
+                    ui.item.data('itemsPrev', elementsPrev);
+                }
+                var elementsNext = ui.item.nextAll('.selected.hidden').not('.ui-sortable-placeholder');
+                if (elementsNext.length > 0) {
+                    ui.item.data('itemsNext', elementsNext);
                 }
             },
             stop: function stop(event, ui) {
-
-                (0, _jquery2.default)('.diapo.ui-sortable-placeholderfollow', container).remove();
-
-                var main_id = (0, _jquery2.default)(ui.item[0]).attr('id');
-
-                var selected = (0, _jquery2.default)('.selected', container);
-                var sorter = [];
-
-                selected.each(function (i, n) {
-
-                    var position = parseInt((0, _jquery2.default)(n).attr('position'), 10);
-
-                    if (position !== '') {
-                        sorter[position] = (0, _jquery2.default)(n);
-                    }
-
-                    var id = (0, _jquery2.default)(n).attr('id');
-                    if (id === main_id) {
-                        return;
-                    }
-                });
-
-                var before = true;
-                var last_moved = (0, _jquery2.default)(ui.item[0]);
-                (0, _jquery2.default)(sorter).each(function (i, n) {
-                    (0, _jquery2.default)(n).show().removeAttr('position');
-                    if ((0, _jquery2.default)(n).attr('id') === main_id) {
-                        before = false;
-                    } else {
-                        if (before) {
-                            (0, _jquery2.default)(n).before((0, _jquery2.default)(ui.item[0]));
-                        } else {
-                            (0, _jquery2.default)(n).after((0, _jquery2.default)(last_moved));
-                        }
-                    }
-                    last_moved = sorter[i];
-                });
-            },
-            change: function change() {
-                (0, _jquery2.default)('.diapo.ui-sortable-placeholderfollow', container).remove();
-
-                var n = OrderSelection.length() - 1;
-                while (n > 0) {
-                    (0, _jquery2.default)('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').after((0, _jquery2.default)('.diapo.ui-sortable-placeholder', container));
-                    n--;
+                if (ui.item.data('itemsPrev') !== undefined) {
+                    var lastBefore = ui.item[0];
+                    (0, _jquery2.default)(ui.item.data('itemsPrev')).each(function (i, n) {
+                        (0, _jquery2.default)(lastBefore).before((0, _jquery2.default)(n));
+                        lastBefore = n;
+                    });
                 }
+
+                if (ui.item.data('itemsNext') !== undefined) {
+                    (0, _jquery2.default)(ui.item[0]).after((0, _jquery2.default)(ui.item.data('itemsNext')));
+                }
+
+                ui.item.siblings('.selected').removeClass('hidden');
             }
 
         }).disableSelection();
