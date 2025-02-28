@@ -33,9 +33,34 @@
         </button>
 
         {% if capabilitiesEdit %}
-            <button class="btn-secondary order-assets pull-right" data-publication-id="{{ publicationId }}" style="margin-left: 5px; display:none;">
-                {{ 'prod:expose:publication:Set order' | trans }}
-            </button>
+            <div style="margin-top: 15px;">
+                <label style="display:inline-block;">
+                    <input type="checkbox" class="edit-asset-order" name="edit-asset-order" value="1" style="margin-top:-1px;" {% if editOrder == 1 %} checked {% endif %}>
+                    {{ 'edit order' | trans }}
+                </label>
+                <div class="choose-order" style="{% if editOrder == 0 %}display:none;{% endif %}">
+                    <span style="margin-left:20px;">{{ 'Order by' | trans }}</span>
+                    <select class="order-field" name="parent" tabindex="-1" aria-hidden="true" style="width:100px;">
+                        <option value="">{{ 'choose' | trans }}</option>
+                        <option value="title" {% if orderField == 'title' %} selected {% endif %}>{{ 'title' | trans }}</option>
+                        <option value="createdAt" {% if orderField == 'createdAt' %} selected {% endif %}>{{ 'createdAt' | trans }}</option>
+                    </select>
+
+                    <select class="order-sort" name="parent" tabindex="-1" aria-hidden="true"  style="width:70px;">
+                        <option value="asc" {% if orderSort == 'asc' %} selected {% endif %}>ASC</option>
+                        <option value="desc" {% if orderSort == 'desc' %} selected {% endif %}>DESC</option>
+                    </select>
+                    <button class="apply-order btn btn-inverse" data-last-sort="{{ orderSort }}" data-last-field="{{ orderField }}" data-already-apply={{ alreadyApplyOrder }}>
+                        {{ 'apply' | trans }}
+                    </button>
+
+                    <button class="btn-primary order-assets" data-publication-id="{{ publicationId }}" style="margin-left: 50px;">
+                        {{ 'prod:expose:publication:Set order' | trans }}
+                    </button>
+                </div>
+
+            </div>
+
         {% endif %}
     </div>
 
