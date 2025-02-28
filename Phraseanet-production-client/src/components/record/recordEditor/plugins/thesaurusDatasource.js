@@ -41,10 +41,10 @@ const thesaurusDatasource = (services) => {
     };
 
     const searchValue = (params) => {
-        let {event, value, field} = params;
+        let {event, value, field, method} = params;
         // ok a thesaurus branch match
         if (field.tbranch !== undefined) {
-            return ETHSeeker.search(value);
+            return ETHSeeker.search(value, method);
         }
     }
 
@@ -61,16 +61,16 @@ const thesaurusDatasource = (services) => {
 
         this._ctimer = null;
 
-        this.search = function (txt) {
+        this.search = function (txt, method = 'begins') {
             if (this._ctimer) {
                 clearTimeout(this._ctimer);
             }
             this._ctimer = setTimeout(() => {
-                return ETHSeeker.search_delayed('"' + txt.replace("'", "\\'") + '"')
+                return ETHSeeker.search_delayed('"' + txt.replace("'", "\\'") + '"', method)
             }, 125);
         };
 
-        this.search_delayed = function (txt) {
+        this.search_delayed = function (txt, method) {
             if (this.jq && typeof this.jq.abort === 'function') {
                 this.jq.abort();
                 this.jq = null;
@@ -82,7 +82,8 @@ const thesaurusDatasource = (services) => {
                 lng: localeService.getLocale(),
                 t: txt,
                 mod: 'TREE',
-                u: Math.random()
+                u: Math.random(),
+                method: method
             };
 
             let me = this;

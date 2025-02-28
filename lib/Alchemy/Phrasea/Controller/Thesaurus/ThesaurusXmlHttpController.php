@@ -906,11 +906,25 @@ class ThesaurusXmlHttpController extends Controller
 
                 $t = $this->splitTermAndContext($request->get('t'));
                 $unicode = $this->getUnicode();
-                $q2 = 'starts-with(@w, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . '\')';
-                if ($t[1]) {
-                    $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[1])) . '\')';
+                switch ($request->get('method')) {
+                    case 'contains':
+                        $q2 = 'contains(@w, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . '\')';
+                        if ($t[1]) {
+                            $q2 .= ' and contains(@k, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[1])) . '\')';
+                        }
+                        $q2 = '//sy[' . $q2 . ']';
+
+                        break;
+                    case 'begins':
+                    default:
+                        $q2 = 'starts-with(@w, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . '\')';
+                        if ($t[1]) {
+                            $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[1])) . '\')';
+                        }
+                        $q2 = '//sy[' . $q2 . ']';
+
+                        break;
                 }
-                $q2 = '//sy[' . $q2 . ']';
             }
 
             $nodes = $xpath->query($q2, $znode);
@@ -1493,9 +1507,21 @@ class ThesaurusXmlHttpController extends Controller
 
                     $t = $this->splitTermAndContext($request->get('t'));
                     $unicode = $this->getUnicode();
-                    $q2 = 'starts-with(@w, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . '\')';
-                    if ($t[1]) {
-                        $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[1])) . '\')';
+
+                    switch ($request->get('method')) {
+                        case 'contains':
+                            $q2 = 'contains(@w, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . '\')';
+                            if ($t[1]) {
+                                $q2 .= ' and contains(@k, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[1])) . '\')';
+                            }
+                            break;
+                        case 'begins':
+                        default:
+                            $q2 = 'starts-with(@w, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . '\')';
+                            if ($t[1]) {
+                                $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[1])) . '\')';
+                            }
+                            break;
                     }
 
                     if($lng != null){

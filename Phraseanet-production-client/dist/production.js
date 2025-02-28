@@ -11867,10 +11867,13 @@ var thesaurusService = function thesaurusService(services) {
             thesauCancelWizard();
         }).on('keyup', '.thesaurus-filter-suggest-action', function (event) {
             event.preventDefault();
-            searchValue((0, _jquery2.default)(event.currentTarget).val());
+            var method = (0, _jquery2.default)(event.currentTarget).siblings('select.thesaurus-search-operator').val();
+            searchValue((0, _jquery2.default)(event.currentTarget).val(), method);
         }).on('submit', '.thesaurus-filter-submit-action', function (event) {
             event.preventDefault();
-            T_Gfilter(event.currentTarget);
+
+            var method = (0, _jquery2.default)(event.currentTarget).closest('#THPD_WIZARDS').find('select.thesaurus-search-operator').val();
+            T_Gfilter(event.currentTarget, method);
         });
 
         /**
@@ -12264,7 +12267,7 @@ var thesaurusService = function thesaurusService(services) {
 
     // here when the 'filter' forms is submited with key <enter> or button <ok>
     // force immediate search
-    function T_Gfilter(o) {
+    function T_Gfilter(o, m) {
         var f;
         if (o.nodeName === 'FORM') {
             f = (0, _jquery2.default)(o).find('input[name=search_value]').val();
@@ -12272,7 +12275,7 @@ var thesaurusService = function thesaurusService(services) {
             f = (0, _jquery2.default)(o).val();
         }
 
-        searchValue(f);
+        searchValue(f, m);
 
         switch (options.currentWizard) {
             case 'wiz_0':
@@ -12292,18 +12295,20 @@ var thesaurusService = function thesaurusService(services) {
 
     // here when a key is pressed in the 'filter' form
     var searchValue = function searchValue(f) {
+        var m = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'begins';
+
         switch (options.currentWizard) {
             case 'wiz_0':
                 // browse
-                searchValueByMode(f, 'ALL');
+                searchValueByMode(f, 'ALL', m);
                 break;
             case 'wiz_1':
                 // accept
-                searchValueByMode(f, 'CANDIDATE');
+                searchValueByMode(f, 'CANDIDATE', m);
                 break;
             case 'wiz_2':
                 // replace
-                searchValueByMode(f, 'CANDIDATE');
+                searchValueByMode(f, 'CANDIDATE', m);
                 break;
             default:
                 break;
@@ -12338,7 +12343,7 @@ var thesaurusService = function thesaurusService(services) {
         confirmBox.setContent(msg);
     }
 
-    function searchValueByMode(f, mode) {
+    function searchValueByMode(f, mode, method) {
         if (mode === 'ALL') {
             (function () {
                 var type = void 0;
@@ -12361,7 +12366,8 @@ var thesaurusService = function thesaurusService(services) {
                         url: _zurl,
                         type: 'POST',
                         data: {
-                            prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                            prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val(),
+                            method: method
                         },
                         dataType: 'json',
                         success: function success(j) {
@@ -12400,7 +12406,8 @@ var thesaurusService = function thesaurusService(services) {
                     url: zurl,
                     type: 'POST',
                     data: {
-                        prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                        prodTabThesaurus_token: (0, _jquery2.default)('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val(),
+                        method: method
                     },
                     dataType: 'json',
                     success: function success(j) {
@@ -22309,6 +22316,7 @@ var recordEditorService = function recordEditorService(services) {
     var $editMonoValTextArea = void 0;
     var $editMultiValTextArea = void 0;
     var $searchThesaurus = void 0;
+    var $searchThesaurusOperator = void 0;
     var $toolsTabs = void 0;
     var $idExplain = void 0;
     var $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
@@ -22337,6 +22345,7 @@ var recordEditorService = function recordEditorService(services) {
         $toolsTabs = (0, _jquery2.default)('#EDIT_MID_R .tabs', options.$container);
         $idExplain = (0, _jquery2.default)('#idExplain', options.$container);
         $searchThesaurus = (0, _jquery2.default)('.editor-thesaurus-search', options.$container);
+        $searchThesaurusOperator = (0, _jquery2.default)('.thesaurus-search-operator', options.$container);
 
         $toolsTabs.tabs({
             activate: function activate(event, ui) {
@@ -22473,8 +22482,9 @@ var recordEditorService = function recordEditorService(services) {
             }
         }).on('mouseup mousedown keyup keydown', '.editor-thesaurus-search', function (event) {
             var currentField = options.fieldCollection.getActiveField();
+            var method = (0, _jquery2.default)(event.currentTarget).siblings('select.thesaurus-search-operator').val();
 
-            onUserInputComplete(event, $searchThesaurus.val(), currentField);
+            onUserInputComplete(event, $searchThesaurus.val(), currentField, method);
         });
     };
 
@@ -22839,6 +22849,7 @@ var recordEditorService = function recordEditorService(services) {
                         $editTextArea.hide();
                         $editDateArea.show();
                         $searchThesaurus.hide();
+                        $searchThesaurusOperator.hide();
 
                         (0, _jquery2.default)('#idEditDateZone', options.$container).show();
                         $editDateArea.val(field._value);
@@ -22869,6 +22880,7 @@ var recordEditorService = function recordEditorService(services) {
                         $editTextArea.show();
                         $editTextArea.css('height', '100%');
                         $searchThesaurus.show();
+                        $searchThesaurusOperator.show();
 
                         if (field.input_disable) {
                             $editTextArea.prop('disabled', true);
@@ -22946,6 +22958,7 @@ var recordEditorService = function recordEditorService(services) {
                     }, 50);
 
                     $searchThesaurus.show();
+                    $searchThesaurusOperator.show();
 
                     //      reveal_mval();
                 }
@@ -23077,6 +23090,7 @@ var recordEditorService = function recordEditorService(services) {
         $searchThesaurus.blur();
 
         $searchThesaurus.hide();
+        $searchThesaurusOperator.hide();
 
         (0, _jquery2.default)('#idFieldNameEdit', options.$container).html('[STATUS]');
         $idExplain.html('&nbsp;');
@@ -23829,11 +23843,14 @@ var recordEditorService = function recordEditorService(services) {
      * @param field
      */
     var onUserInputComplete = function onUserInputComplete(event, value, field) {
+        var method = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'begins';
+
         if (value !== '') {
             recordEditorEvents.emit('recordEditor.userInputValue', {
                 event: event,
                 value: value,
-                field: field
+                field: field,
+                method: method
             });
         }
     };
@@ -53048,11 +53065,12 @@ var thesaurusDatasource = function thesaurusDatasource(services) {
     var searchValue = function searchValue(params) {
         var event = params.event,
             value = params.value,
-            field = params.field;
+            field = params.field,
+            method = params.method;
         // ok a thesaurus branch match
 
         if (field.tbranch !== undefined) {
-            return ETHSeeker.search(value);
+            return ETHSeeker.search(value, method);
         }
     };
 
@@ -53069,15 +53087,17 @@ var thesaurusDatasource = function thesaurusDatasource(services) {
         this._ctimer = null;
 
         this.search = function (txt) {
+            var method = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'begins';
+
             if (this._ctimer) {
                 clearTimeout(this._ctimer);
             }
             this._ctimer = setTimeout(function () {
-                return ETHSeeker.search_delayed('"' + txt.replace("'", "\\'") + '"');
+                return ETHSeeker.search_delayed('"' + txt.replace("'", "\\'") + '"', method);
             }, 125);
         };
 
-        this.search_delayed = function (txt) {
+        this.search_delayed = function (txt, method) {
             if (this.jq && typeof this.jq.abort === 'function') {
                 this.jq.abort();
                 this.jq = null;
@@ -53089,7 +53109,8 @@ var thesaurusDatasource = function thesaurusDatasource(services) {
                 lng: localeService.getLocale(),
                 t: txt,
                 mod: 'TREE',
-                u: Math.random()
+                u: Math.random(),
+                method: method
             };
 
             var me = this;
