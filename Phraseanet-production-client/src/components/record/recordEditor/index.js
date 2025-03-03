@@ -35,6 +35,7 @@ const recordEditorService = services => {
     let $editMonoValTextArea;
     let $editMultiValTextArea;
     let $searchThesaurus;
+    let $searchThesaurusOperator;
     let $toolsTabs;
     let $idExplain;
     let $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
@@ -61,6 +62,7 @@ const recordEditorService = services => {
         $toolsTabs = $('#EDIT_MID_R .tabs', options.$container);
         $idExplain = $('#idExplain', options.$container);
         $searchThesaurus = $('.editor-thesaurus-search', options.$container);
+        $searchThesaurusOperator = $('.thesaurus-search-operator', options.$container);
 
         $toolsTabs.tabs({
             activate: function (event, ui) {
@@ -217,8 +219,9 @@ const recordEditorService = services => {
             })
             .on('mouseup mousedown keyup keydown', '.editor-thesaurus-search', (event) => {
                 let currentField = options.fieldCollection.getActiveField();
+                let method = $(event.currentTarget).siblings('select.thesaurus-search-operator').val();
 
-                onUserInputComplete(event, $searchThesaurus.val(), currentField);
+                onUserInputComplete(event, $searchThesaurus.val(), currentField, method);
             })
         ;
     };
@@ -617,6 +620,7 @@ const recordEditorService = services => {
                         $editTextArea.hide();
                         $editDateArea.show();
                         $searchThesaurus.hide();
+                        $searchThesaurusOperator.hide();
 
                         $('#idEditDateZone', options.$container).show();
                         $editDateArea.val(field._value);
@@ -647,6 +651,7 @@ const recordEditorService = services => {
                         $editTextArea.show();
                         $editTextArea.css('height', '100%');
                         $searchThesaurus.show();
+                        $searchThesaurusOperator.show();
 
                         if (field.input_disable) {
                             $editTextArea.prop('disabled', true);
@@ -731,6 +736,7 @@ const recordEditorService = services => {
                     self.setTimeout(() => $editMultiValTextArea.focus(), 50);
 
                     $searchThesaurus.show();
+                    $searchThesaurusOperator.show();
 
                     //      reveal_mval();
                 }
@@ -884,6 +890,7 @@ const recordEditorService = services => {
         $searchThesaurus.blur();
 
         $searchThesaurus.hide();
+        $searchThesaurusOperator.hide();
 
         $('#idFieldNameEdit', options.$container).html('[STATUS]');
         $idExplain.html('&nbsp;');
@@ -1766,12 +1773,13 @@ const recordEditorService = services => {
      * @param value
      * @param field
      */
-    let onUserInputComplete = (event, value, field) => {
+    let onUserInputComplete = (event, value, field, method = 'begins') => {
         if (value !== '') {
             recordEditorEvents.emit('recordEditor.userInputValue', {
                 event,
                 value,
-                field
+                field,
+                method
             });
         }
     };
