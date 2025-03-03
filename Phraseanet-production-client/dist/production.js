@@ -12240,8 +12240,9 @@ var thesaurusService = function thesaurusService(services) {
         if (wizard !== options.currentWizard) {
             (0, _jquery2.default)('#THPD_WIZARDS DIV.wizard', options.tabs).hide();
             (0, _jquery2.default)('#THPD_WIZARDS .' + wizard, options.tabs).show();
-            (0, _jquery2.default)('#THPD_T', options.tabs).css('top', (0, _jquery2.default)('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight);
-            (0, _jquery2.default)('#THPD_C', options.tabs).css('top', (0, _jquery2.default)('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight);
+            (0, _jquery2.default)('#THPD_T', options.tabs).css('top', (0, _jquery2.default)('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight + 22 // for margin 22
+            );
+            (0, _jquery2.default)('#THPD_C', options.tabs).css('top', (0, _jquery2.default)('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight + 22);
 
             options.currentWizard = wizard;
 

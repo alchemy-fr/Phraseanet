@@ -504,11 +504,11 @@ const thesaurusService = services => {
             $('#THPD_WIZARDS .' + wizard, options.tabs).show();
             $('#THPD_T', options.tabs).css(
                 'top',
-                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight
+                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight + 22  // for margin 22
             );
             $('#THPD_C', options.tabs).css(
                 'top',
-                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight
+                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight + 22
             );
 
             options.currentWizard = wizard;
