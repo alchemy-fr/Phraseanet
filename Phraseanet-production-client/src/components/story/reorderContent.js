@@ -29,7 +29,7 @@ const storyReorderContent = (services) => {
 
         let dialogOptions = merge({
             size: 'Medium',
-            loading: false
+            loading: true
         }, options);
         const $dialog = dialog.create(services, dialogOptions);
 // /prod/story/1/62/reorder/
@@ -188,6 +188,9 @@ const storyReorderContent = (services) => {
 
 
         $('form[name="reorder"] .btn').bind('click', function (event) {
+            $(this).attr('disabled', 'disabled');
+            $(this).closest('div#reorder_options').find('div.loading').removeClass('hidden');
+
             var $form = $(this).closest('form');
 
             $('.elements form', container).each(function (i, el) {

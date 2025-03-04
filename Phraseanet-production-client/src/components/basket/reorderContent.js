@@ -34,7 +34,7 @@ const basketReorderContent = (services) => {
 
         let dialogOptions = merge({
             size: 'Medium',
-            loading: false
+            loading: true
         }, options);
         const $dialog = dialog.create(services, dialogOptions);
 
@@ -194,8 +194,11 @@ const basketReorderContent = (services) => {
 
         $('form[name="reorder"] .btn').bind('click', function (event) {
 
-            //$this.SetLoader(true);
-            var $form =$(this).closest('form');
+            $(this).attr('disabled', 'disabled');
+            $(this).closest('div#reorder_options').find('div.loading').removeClass('hidden');
+
+            var $form = $(this).closest('form');
+
 
             $('.elements form', container).each(function (i, el) {
                 var id = $('input[name="id"]', $(el)).val();

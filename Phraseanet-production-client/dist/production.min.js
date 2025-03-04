@@ -20884,7 +20884,7 @@ var basketReorderContent = function basketReorderContent(services) {
 
         var dialogOptions = (0, _lodash2.default)({
             size: 'Medium',
-            loading: false
+            loading: true
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
 
@@ -21040,7 +21040,9 @@ var basketReorderContent = function basketReorderContent(services) {
 
         (0, _jquery2.default)('form[name="reorder"] .btn').bind('click', function (event) {
 
-            //$this.SetLoader(true);
+            (0, _jquery2.default)(this).attr('disabled', 'disabled');
+            (0, _jquery2.default)(this).closest('div#reorder_options').find('div.loading').removeClass('hidden');
+
             var $form = (0, _jquery2.default)(this).closest('form');
 
             (0, _jquery2.default)('.elements form', container).each(function (i, el) {
@@ -21140,7 +21142,7 @@ var storyReorderContent = function storyReorderContent(services) {
 
         var dialogOptions = (0, _lodash2.default)({
             size: 'Medium',
-            loading: false
+            loading: true
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
         // /prod/story/1/62/reorder/
@@ -21293,6 +21295,9 @@ var storyReorderContent = function storyReorderContent(services) {
         });
 
         (0, _jquery2.default)('form[name="reorder"] .btn').bind('click', function (event) {
+            (0, _jquery2.default)(this).attr('disabled', 'disabled');
+            (0, _jquery2.default)(this).closest('div#reorder_options').find('div.loading').removeClass('hidden');
+
             var $form = (0, _jquery2.default)(this).closest('form');
 
             (0, _jquery2.default)('.elements form', container).each(function (i, el) {
