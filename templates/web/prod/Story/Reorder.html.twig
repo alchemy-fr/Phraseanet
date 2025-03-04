@@ -11,6 +11,7 @@
         </select>
         <button type="button" class="autoorder btn btn-inverse">{{ 'Re-ordonner' | trans }}</button>
         <button type="button" class="reverseorder btn btn-inverse">{{ 'Inverser' | trans }}</button>
+        <div class="hidden loading pull-right" style="height: 32px; width: 60px;"></div>
     </form>
     <form class="form-inline span2" name="reorder" method="POST"
           action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
