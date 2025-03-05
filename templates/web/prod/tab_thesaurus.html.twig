@@ -8,7 +8,7 @@
                 {% endif %}
             </ul>
             <div class="ui-tabs-panels-container">
-                <div id='THPD_WIZARDS' style="position:relative; top:0px; left:0px; height:auto; width:100%;">
+                <div id='THPD_WIZARDS' style="position:relative; top:0px; left:0px; height:auto; width:100%; margin-top: 15px;">
                     <div class="wizard wiz_0">
                         <!-- empty wizard -->
                     </div>
@@ -20,8 +20,20 @@
                     </div>
                     <form class="gform form-inline thesaurus-filter-submit-action">
                         <div class="input-append">
-                            <input type="text" name="search_value" class="input-medium thesaurus-filter-suggest-action"/>
-                            <button type="submit" class="th_ok btn btn-inverse">
+                            <select class="thesaurus-search-operator" tabindex="-1" aria-hidden="true" style="width: 25%; margin-left:10px; height:39px;">
+                                <option value="begins"
+                                        {% if app['session'].has('workzone_thesaurus_operator') and app['session'].get('workzone_thesaurus_operator') == "begins" %}
+                                            selected
+                                        {% endif %}
+                                >{{ 'begins with' | trans }}</option>
+                                <option value="contains"
+                                        {% if app['session'].has('workzone_thesaurus_operator') and app['session'].get('workzone_thesaurus_operator') == "contains" %}
+                                            selected
+                                        {% endif %}
+                                >{{ 'contains' | trans }}</option>
+                            </select>
+                            <input type="text" name="search_value" class="input-medium thesaurus-filter-suggest-action" style="width: 55%; float:none;"/>
+                            <button type="submit" class="th_ok btn btn-inverse" style="width:12%; float:none;">
                                 <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
 
