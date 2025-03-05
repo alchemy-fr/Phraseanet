@@ -22526,9 +22526,8 @@ var recordEditorService = function recordEditorService(services) {
             }
         }).on('mouseup mousedown keyup keydown', '.editor-thesaurus-search', function (event) {
             var currentField = options.fieldCollection.getActiveField();
-            var method = (0, _jquery2.default)(event.currentTarget).siblings('select.thesaurus-search-operator').val();
 
-            onUserInputComplete(event, $searchThesaurus.val(), currentField, method);
+            onUserInputComplete(event, $searchThesaurus.val(), currentField);
         });
     };
 
@@ -23887,9 +23886,9 @@ var recordEditorService = function recordEditorService(services) {
      * @param field
      */
     var onUserInputComplete = function onUserInputComplete(event, value, field) {
-        var method = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'begins';
-
         if (value !== '') {
+            var method = (0, _jquery2.default)('div#EDIT_MID').find('select.thesaurus-search-operator').val();
+
             recordEditorEvents.emit('recordEditor.userInputValue', {
                 event: event,
                 value: value,

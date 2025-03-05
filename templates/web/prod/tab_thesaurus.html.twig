@@ -21,8 +21,16 @@
                     <form class="gform form-inline thesaurus-filter-submit-action">
                         <div class="input-append">
                             <select class="thesaurus-search-operator" tabindex="-1" aria-hidden="true" style="width: 25%; margin-left:10px; height:39px;">
-                                <option value="begins">{{ 'begins with' | trans }}</option>
-                                <option value="contains">{{ 'contains' | trans }}</option>
+                                <option value="begins"
+                                        {% if app['session'].has('workzone_thesaurus_operator') and app['session'].get('workzone_thesaurus_operator') == "begins" %}
+                                            selected
+                                        {% endif %}
+                                >{{ 'begins with' | trans }}</option>
+                                <option value="contains"
+                                        {% if app['session'].has('workzone_thesaurus_operator') and app['session'].get('workzone_thesaurus_operator') == "contains" %}
+                                            selected
+                                        {% endif %}
+                                >{{ 'contains' | trans }}</option>
                             </select>
                             <input type="text" name="search_value" class="input-medium thesaurus-filter-suggest-action" style="width: 55%; float:none;"/>
                             <button type="submit" class="th_ok btn btn-inverse" style="width:12%; float:none;">

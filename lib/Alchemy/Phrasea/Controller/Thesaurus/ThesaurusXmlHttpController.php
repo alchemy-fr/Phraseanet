@@ -880,6 +880,8 @@ class ThesaurusXmlHttpController extends Controller
 
     public function openBranchesHtml(Request $request)
     {
+        $this->app['session']->set('editor_thesaurus_operator', $request->get('method'));
+
         if (null === $mod = $request->get('mod')) {
             $mod = 'TREE';
         }
@@ -1457,6 +1459,8 @@ class ThesaurusXmlHttpController extends Controller
         if (!$this->isCrsfValid($request, 'prodTabThesaurus')) {
             return $this->app->json(['success' => false , 'message' => 'invalid form token'], 403);
         }
+
+        $this->app['session']->set('workzone_thesaurus_operator', $request->get('method'));
 
         $lng = $request->get('lng');
 

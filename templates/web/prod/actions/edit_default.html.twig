@@ -272,8 +272,16 @@
                 {% if thesaurus %}
                     <div id='TH_Ofull'>
                         <select class="thesaurus-search-operator" tabindex="-1" aria-hidden="true" style="width: 106px; margin-left:10px; display: none;">
-                            <option value="begins">{{ 'begins with' | trans }}</option>
-                            <option value="contains">{{ 'contains' | trans }}</option>
+                            <option value="begins"
+                                    {% if app['session'].has('editor_thesaurus_operator') and app['session'].get('editor_thesaurus_operator') == "begins" %}
+                                        selected
+                                    {% endif %}
+                            >{{ 'begins with' | trans }}</option>
+                            <option value="contains"
+                                    {% if app['session'].has('editor_thesaurus_operator') and app['session'].get('editor_thesaurus_operator') == "contains" %}
+                                        selected
+                                    {% endif %}
+                            >{{ 'contains' | trans }}</option>
                         </select>
                         <input type="text" class="editor-thesaurus-search" style="margin-top: 10px; margin-left: 10px; display: none;">
                         <div class='thesaurus edit-thesaurus-action'>

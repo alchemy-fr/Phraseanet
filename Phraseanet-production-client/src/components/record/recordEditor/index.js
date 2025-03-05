@@ -219,9 +219,8 @@ const recordEditorService = services => {
             })
             .on('mouseup mousedown keyup keydown', '.editor-thesaurus-search', (event) => {
                 let currentField = options.fieldCollection.getActiveField();
-                let method = $(event.currentTarget).siblings('select.thesaurus-search-operator').val();
 
-                onUserInputComplete(event, $searchThesaurus.val(), currentField, method);
+                onUserInputComplete(event, $searchThesaurus.val(), currentField);
             })
         ;
     };
@@ -1773,8 +1772,10 @@ const recordEditorService = services => {
      * @param value
      * @param field
      */
-    let onUserInputComplete = (event, value, field, method = 'begins') => {
+    let onUserInputComplete = (event, value, field) => {
         if (value !== '') {
+            let method = $('div#EDIT_MID').find('select.thesaurus-search-operator').val();
+
             recordEditorEvents.emit('recordEditor.userInputValue', {
                 event,
                 value,
