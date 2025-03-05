@@ -11571,9 +11571,9 @@
         <target state="translated">use truncation</target>
         <jms:reference-file line="479">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="484db3d45053a06d362ea0cf0c31ba8ca406001e" resname="input-disable">
+      <trans-unit id="484db3d45053a06d362ea0cf0c31ba8ca406001e" resname="input-disable" xml:space="preserve">
         <source>input-disable</source>
-        <target state="needs-translation">Restrict field content to suggested values and thesaurus (beta feature)</target>
+        <target state="needs-translation">Restrict field content to suggested values and thesaurus</target>
         <jms:reference-file line="222">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
