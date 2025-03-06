@@ -3555,9 +3555,9 @@
         <target state="translated">Obtenir une notification quand un export par e-mail échoue</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs">
+      <trans-unit id="8dcb1b50470de44a6649f135e24cf4e1beaa5288" resname="Get log docs" xml:space="preserve">
         <source>Get log docs</source>
-        <target state="needs-translation">Voir log docs</target>
+        <target state="translated">Voir log docs</target>
         <jms:reference-file line="53">admin/inspector/record-index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index" approved="yes">
@@ -10078,9 +10078,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Activer Expose Service dans Production</target>
         <jms:reference-file line="29">PhraseanetService/Form/PSExposeConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e247d6ed88683925b4f13f7cc2c4d6b97d1efa9e" resname="admin:phrasea-service-setting:tab:expose:: auth provider name with type openid">
+      <trans-unit id="e247d6ed88683925b4f13f7cc2c4d6b97d1efa9e" resname="admin:phrasea-service-setting:tab:expose:: auth provider name with type openid" xml:space="preserve">
         <source>admin:phrasea-service-setting:tab:expose:: auth provider name with type openid</source>
-        <target state="needs-translation">Nom du fournisseur Auth avec type openid</target>
+        <target state="translated">Nom du fournisseur Auth avec type openid</target>
         <jms:reference-file line="48">PhraseanetService/Form/PSExposeConnectionType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="efcf63b34a4b02de67804c139282d1c5d3d05b0b" resname="admin:phrasea-service-setting:tab:expose:: verify ssl">
@@ -13429,9 +13429,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Panier Partagé</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
+      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp" xml:space="preserve">
         <source>prod::download: delete-marking-stamp</source>
-        <target state="needs-translation">Retirer le bandeau de notice (stamp)</target>
+        <target state="translated">Retirer le bandeau de notice (stamp)</target>
         <jms:reference-file line="193">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="276">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="525">web/common/dialog_export.html.twig</jms:reference-file>
