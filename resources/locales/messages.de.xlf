@@ -13428,9 +13428,9 @@
         <target state="translated">Geteilter Sammelkorb</target>
         <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
+      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp" xml:space="preserve">
         <source>prod::download: delete-marking-stamp</source>
-        <target state="needs-translation">Stempel entfernen</target>
+        <target state="translated">Stempel entfernen</target>
         <jms:reference-file line="193">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="276">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="525">web/common/dialog_export.html.twig</jms:reference-file>
