@@ -98,11 +98,14 @@ const thesaurusService = services => {
             })
             .on('keyup', '.thesaurus-filter-suggest-action', event => {
                 event.preventDefault();
-                searchValue($(event.currentTarget).val());
+                let method = $(event.currentTarget).siblings('select.thesaurus-search-operator').val();
+                searchValue($(event.currentTarget).val(), method);
             })
             .on('submit', '.thesaurus-filter-submit-action', event => {
                 event.preventDefault();
-                T_Gfilter(event.currentTarget);
+
+                let method = $(event.currentTarget).closest('#THPD_WIZARDS').find('select.thesaurus-search-operator').val();
+                T_Gfilter(event.currentTarget, method);
             });
 
         /**
@@ -501,11 +504,11 @@ const thesaurusService = services => {
             $('#THPD_WIZARDS .' + wizard, options.tabs).show();
             $('#THPD_T', options.tabs).css(
                 'top',
-                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight
+                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight + 22  // for margin 22
             );
             $('#THPD_C', options.tabs).css(
                 'top',
-                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight
+                $('#THPD_WIZARDS', options.tabs).height() + offsetTabHeight + 22
             );
 
             options.currentWizard = wizard;
@@ -534,7 +537,7 @@ const thesaurusService = services => {
 
     // here when the 'filter' forms is submited with key <enter> or button <ok>
     // force immediate search
-    function T_Gfilter(o) {
+    function T_Gfilter(o, m) {
         var f;
         if (o.nodeName === 'FORM') {
             f = $(o).find('input[name=search_value]').val();
@@ -542,7 +545,7 @@ const thesaurusService = services => {
             f = $(o).val();
         }
 
-        searchValue(f);
+        searchValue(f, m);
 
         switch (options.currentWizard) {
             case 'wiz_0': // browse
@@ -558,16 +561,16 @@ const thesaurusService = services => {
     }
 
     // here when a key is pressed in the 'filter' form
-    let searchValue = f => {
+    let searchValue = (f, m = 'begins')=> {
         switch (options.currentWizard) {
             case 'wiz_0': // browse
-                searchValueByMode(f, 'ALL');
+                searchValueByMode(f, 'ALL', m);
                 break;
             case 'wiz_1': // accept
-                searchValueByMode(f, 'CANDIDATE');
+                searchValueByMode(f, 'CANDIDATE', m);
                 break;
             case 'wiz_2': // replace
-                searchValueByMode(f, 'CANDIDATE');
+                searchValueByMode(f, 'CANDIDATE', m);
                 break;
             default:
                 break;
@@ -602,7 +605,7 @@ const thesaurusService = services => {
         confirmBox.setContent(msg);
     }
 
-    function searchValueByMode(f, mode) {
+    function searchValueByMode(f, mode, method) {
         if (mode === 'ALL') {
             let type;
             let id;
@@ -637,7 +640,8 @@ const thesaurusService = services => {
                     url: zurl,
                     type: 'POST',
                     data: {
-                        prodTabThesaurus_token: $('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                        prodTabThesaurus_token: $('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val(),
+                        method: method
                     },
                     dataType: 'json',
                     success: function (j) {
@@ -683,7 +687,8 @@ const thesaurusService = services => {
                     url: zurl,
                     type: 'POST',
                     data: {
-                        prodTabThesaurus_token: $('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val()
+                        prodTabThesaurus_token: $('form.thesaurus-filter-submit-action input[name=prodTabThesaurus_token]').val(),
+                        method: method
                     },
                     dataType: 'json',
                     success: function (j) {
