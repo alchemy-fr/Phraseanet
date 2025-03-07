@@ -22363,6 +22363,7 @@ var recordEditorService = function recordEditorService(services) {
     var $searchThesaurusOperator = void 0;
     var $toolsTabs = void 0;
     var $idExplain = void 0;
+    var $buttonEmptyField = void 0;
     var $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
 
     var initialize = function initialize(params) {
@@ -22390,6 +22391,7 @@ var recordEditorService = function recordEditorService(services) {
         $idExplain = (0, _jquery2.default)('#idExplain', options.$container);
         $searchThesaurus = (0, _jquery2.default)('.editor-thesaurus-search', options.$container);
         $searchThesaurusOperator = (0, _jquery2.default)('.thesaurus-search-operator', options.$container);
+        $buttonEmptyField = (0, _jquery2.default)('.empty-field', options.$container);
 
         $toolsTabs.tabs({
             activate: function activate(event, ui) {
@@ -22528,6 +22530,17 @@ var recordEditorService = function recordEditorService(services) {
             var currentField = options.fieldCollection.getActiveField();
 
             onUserInputComplete(event, $searchThesaurus.val(), currentField);
+        }).on('click', '.empty-field', function (event) {
+            event.preventDefault();
+            var fieldIndex = options.fieldCollection.getActiveFieldIndex();
+            var field = options.fieldCollection.getFieldByIndex(fieldIndex);
+
+            if (field.multi) {
+                if (!confirm("Are you sure, this will remove all values if exist!")) {
+                    return false;
+                }
+            }
+            emptyField();
         });
     };
 
@@ -22913,8 +22926,10 @@ var recordEditorService = function recordEditorService(services) {
 
                         if (field.input_disable) {
                             $editDateArea.prop('disabled', true);
+                            $buttonEmptyField.show();
                         } else {
                             $editDateArea.prop('disabled', false);
+                            $buttonEmptyField.hide();
                         }
                     } else {
                         $editDateArea.hide();
@@ -22927,8 +22942,10 @@ var recordEditorService = function recordEditorService(services) {
 
                         if (field.input_disable) {
                             $editTextArea.prop('disabled', true);
+                            $buttonEmptyField.show();
                         } else {
                             $editTextArea.prop('disabled', false);
+                            $buttonEmptyField.hide();
                         }
                     }
 
@@ -22992,8 +23009,10 @@ var recordEditorService = function recordEditorService(services) {
 
                     if (field.input_disable) {
                         $editMultiValTextArea.prop('disabled', true);
+                        $buttonEmptyField.show();
                     } else {
                         $editMultiValTextArea.prop('disabled', false);
+                        $buttonEmptyField.hide();
                     }
 
                     self.setTimeout(function () {
@@ -23723,6 +23742,22 @@ var recordEditorService = function recordEditorService(services) {
                 vocabularyId: vocabularyId
             });
         }
+        refreshFields(null);
+    }
+
+    function emptyField() {
+        var records = options.recordCollection.getRecords();
+        var fieldIndex = options.fieldCollection.getActiveFieldIndex();
+
+        for (var recordIndex in records) {
+            var currentRecord = options.recordCollection.getRecordByIndex(recordIndex);
+
+            if (!currentRecord._selected) {
+                continue;
+            }
+            options.recordCollection.emptyRecordField(recordIndex, fieldIndex);
+        }
+
         refreshFields(null);
     }
 
@@ -61873,6 +61908,11 @@ var RecordCollection = function () {
                 vocabularyId = params.vocabularyId;
 
             this.records[recordIndex].fields[fieldIndex].addValue(value, merge, vocabularyId);
+        }
+    }, {
+        key: 'emptyRecordField',
+        value: function emptyRecordField(recordIndex, fieldIndex) {
+            this.records[recordIndex].fields[fieldIndex].empty();
         }
 
         /*    options.recordCollection.removeRecordFieldValue(r, currentFieldId, {

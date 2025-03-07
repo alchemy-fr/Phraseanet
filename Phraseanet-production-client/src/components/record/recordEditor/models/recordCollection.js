@@ -183,6 +183,10 @@ class RecordCollection {
         this.records[recordIndex].fields[fieldIndex].addValue(value, merge, vocabularyId);
     }
 
+    emptyRecordField(recordIndex, fieldIndex) {
+        this.records[recordIndex].fields[fieldIndex].empty();
+    }
+
 /*    options.recordCollection.removeRecordFieldValue(r, currentFieldId, {
     value, vocabularyId
 })*/
