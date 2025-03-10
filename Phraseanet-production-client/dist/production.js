@@ -22363,7 +22363,6 @@ var recordEditorService = function recordEditorService(services) {
     var $searchThesaurusOperator = void 0;
     var $toolsTabs = void 0;
     var $idExplain = void 0;
-    var $buttonEmptyField = void 0;
     var $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
 
     var initialize = function initialize(params) {
@@ -22391,7 +22390,6 @@ var recordEditorService = function recordEditorService(services) {
         $idExplain = (0, _jquery2.default)('#idExplain', options.$container);
         $searchThesaurus = (0, _jquery2.default)('.editor-thesaurus-search', options.$container);
         $searchThesaurusOperator = (0, _jquery2.default)('.thesaurus-search-operator', options.$container);
-        $buttonEmptyField = (0, _jquery2.default)('.empty-field', options.$container);
 
         $toolsTabs.tabs({
             activate: function activate(event, ui) {
@@ -22536,7 +22534,7 @@ var recordEditorService = function recordEditorService(services) {
             var field = options.fieldCollection.getFieldByIndex(fieldIndex);
 
             if (field.multi) {
-                if (!confirm("Are you sure, this will remove all values if exist!")) {
+                if (!confirm(localeService.t('empty_field_confirm'))) {
                     return false;
                 }
             }
@@ -22926,10 +22924,8 @@ var recordEditorService = function recordEditorService(services) {
 
                         if (field.input_disable) {
                             $editDateArea.prop('disabled', true);
-                            $buttonEmptyField.show();
                         } else {
                             $editDateArea.prop('disabled', false);
-                            $buttonEmptyField.hide();
                         }
                     } else {
                         $editDateArea.hide();
@@ -22942,10 +22938,8 @@ var recordEditorService = function recordEditorService(services) {
 
                         if (field.input_disable) {
                             $editTextArea.prop('disabled', true);
-                            $buttonEmptyField.show();
                         } else {
                             $editTextArea.prop('disabled', false);
-                            $buttonEmptyField.hide();
                         }
                     }
 
@@ -23009,10 +23003,8 @@ var recordEditorService = function recordEditorService(services) {
 
                     if (field.input_disable) {
                         $editMultiValTextArea.prop('disabled', true);
-                        $buttonEmptyField.show();
                     } else {
                         $editMultiValTextArea.prop('disabled', false);
-                        $buttonEmptyField.hide();
                     }
 
                     self.setTimeout(function () {

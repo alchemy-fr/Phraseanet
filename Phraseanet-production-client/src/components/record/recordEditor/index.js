@@ -38,7 +38,6 @@ const recordEditorService = services => {
     let $searchThesaurusOperator;
     let $toolsTabs;
     let $idExplain;
-    let $buttonEmptyField;
     let $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
 
     const initialize = params => {
@@ -64,7 +63,6 @@ const recordEditorService = services => {
         $idExplain = $('#idExplain', options.$container);
         $searchThesaurus = $('.editor-thesaurus-search', options.$container);
         $searchThesaurusOperator = $('.thesaurus-search-operator', options.$container);
-        $buttonEmptyField = $('.empty-field', options.$container);
 
         $toolsTabs.tabs({
             activate: function (event, ui) {
@@ -230,7 +228,7 @@ const recordEditorService = services => {
                 let field = options.fieldCollection.getFieldByIndex(fieldIndex);
 
                 if (field.multi) {
-                    if (!confirm("Are you sure, this will remove all values if exist!")) {
+                    if (!confirm(localeService.t('empty_field_confirm'))) {
                         return false;
                     }
                 }
@@ -654,10 +652,8 @@ const recordEditorService = services => {
 
                         if (field.input_disable) {
                             $editDateArea.prop('disabled', true);
-                            $buttonEmptyField.show();
                         } else {
                             $editDateArea.prop('disabled', false);
-                            $buttonEmptyField.hide();
                         }
                     } else {
                         $editDateArea.hide();
@@ -670,10 +666,8 @@ const recordEditorService = services => {
 
                         if (field.input_disable) {
                             $editTextArea.prop('disabled', true);
-                            $buttonEmptyField.show();
                         } else {
                             $editTextArea.prop('disabled', false);
-                            $buttonEmptyField.hide();
                         }
                     }
 
@@ -746,10 +740,8 @@ const recordEditorService = services => {
 
                     if (field.input_disable) {
                         $editMultiValTextArea.prop('disabled', true);
-                        $buttonEmptyField.show();
                     } else {
                         $editMultiValTextArea.prop('disabled', false);
-                        $buttonEmptyField.hide();
                     }
 
                     self.setTimeout(() => $editMultiValTextArea.focus(), 50);

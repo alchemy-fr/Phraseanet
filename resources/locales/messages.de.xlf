@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2025-03-07T17:24:08Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2025-03-10T14:09:01Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -10694,7 +10694,7 @@
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
         <source>button::no</source>
         <target state="translated">Abbrechen</target>
-        <jms:reference-file line="192">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dec336199ec8f3f37f192f52e7f719ad756f725" resname="button::supprimer" approved="yes">
         <source>button::supprimer</source>
@@ -10704,7 +10704,7 @@
       <trans-unit id="2367e7fbfff83a6019b9af459b23dabcb5461fd5" resname="button::yes">
         <source>button::yes</source>
         <target state="translated">löschen</target>
-        <jms:reference-file line="191">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="192">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fd0653c4f2aef3b19a3c145bbdc5f4740715a09" resname="cancel" approved="yes">
         <source>cancel</source>
@@ -11213,12 +11213,12 @@
       <trans-unit id="9cc8a0492f9019e1953e9115a51f12c7f3a168df" resname="expose:: Choose a profile where to store mapping">
         <source>expose:: Choose a profile where to store mapping</source>
         <target state="translated">Profil auswählen</target>
-        <jms:reference-file line="188">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="189">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f115e28db92ccc8057993ab7d5d852c5d2647bd1" resname="expose:: Expose mapping">
         <source>expose:: Expose mapping</source>
         <target state="translated">Expose Mapping</target>
-        <jms:reference-file line="187">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="188">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c4df7967ec486605a9f7b9a0ce933ae6cf3618f7" resname="expose:: Logged in">
         <source>expose:: Logged in</source>
@@ -11325,7 +11325,7 @@
       <trans-unit id="67c618b3545eed0caac4352a96df0ccc17d877dd" resname="expose::setting duplicate mapping!">
         <source>expose::setting duplicate mapping!</source>
         <target state="translated">Fehler in Mapping der Unterauflösungen, zwei Unterauflösungen haben gleichen Namen</target>
-        <jms:reference-file line="189">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="190">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a0f24c4767ae8e6091b0600be99f54669a4d5bfb" resname="expose::setting send geolocalisation">
         <source>expose::setting send geolocalisation</source>
@@ -13045,7 +13045,7 @@
       <trans-unit id="d1ef242fa9a4b4bb75011ac40d9ad4f3d90f441d" resname="preview::tab geolocalisation">
         <source>preview::tab geolocalisation</source>
         <target state="translated">Geolokalisierung</target>
-        <jms:reference-file line="197">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="198">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b03b2c44ce1a3c17af6b603d666344f64ebe942" resname="preview::tab:feedback">
         <source>preview::tab:feedback</source>
@@ -13449,17 +13449,17 @@
       <trans-unit id="d0290556002259ddf657748fc256a1cec709e9f9" resname="prod::dialog feedback title">
         <source>prod::dialog feedback title</source>
         <target state="translated">Geteilter Sammelkorb mit Feedback</target>
-        <jms:reference-file line="194">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="195">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9673eb292053fe80e79a1df28e941618965382ac" resname="prod::dialog listmanager title">
         <source>prod::dialog listmanager title</source>
         <target state="translated">Benutzer Liste</target>
-        <jms:reference-file line="195">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="196">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c5f3d8f6be8871509d3c9158d8d098679ec0919" resname="prod::dialog sharebasket title">
         <source>prod::dialog sharebasket title</source>
         <target state="translated">Geteilter Sammelkorb</target>
-        <jms:reference-file line="193">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="194">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
         <source>prod::download: delete-marking-stamp</source>
@@ -13713,7 +13713,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="fd0959321b1848440ff9f5c13702156bba7e6a21" resname="prod::listmanager Delete the list">
         <source>prod::listmanager Delete the list</source>
         <target state="translated">Die Liste löschen</target>
-        <jms:reference-file line="190">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="191">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="47f76b5a8ec06b165c0d83ed447999def6f368e4" resname="prod::notification: notification title" approved="yes">
         <source>prod::notification: notification title</source>
@@ -13891,12 +13891,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="fb3208aca269a2ccf25bf327f6cc468a8b5fd776" resname="prod::story: choose a collection to create a story!">
         <source>prod::story: choose a collection to create a story!</source>
         <target state="translated">Eine Kollektion auswählen</target>
-        <jms:reference-file line="177">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="178">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bbbcd53a63ba018c78a6a3f650868c1a6da45a6d" resname="prod::story: warning! use only documents from one databox!">
         <source>prod::story: warning! use only documents from one databox!</source>
         <target state="translated">Achtung, die Datensätze müssen aus einer einzigen Databox stammen</target>
-        <jms:reference-file line="176">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="177">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="45e5796d4f618bc0f7e96945fdb7ffd903cd8673" resname="prod::tech_info: databox_name">
         <source>prod::tech_info: databox_name</source>
@@ -14058,7 +14058,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="20e46f258c5d547ce58701bddf375f8f0f32d803" resname="prod::workzone:facet see more">
         <source>prod::workzone:facet see more</source>
         <target state="translated">Mehr</target>
-        <jms:reference-file line="196">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="197">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user">
         <source>prod::workzone:feedback add user</source>
@@ -14119,6 +14119,11 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>prod:app trash: title-trash</source>
         <target state="translated">Datensatz (¨e) in den Papierkorb verschieben</target>
         <jms:reference-file line="45">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7a44b51d2ff23c39f95ed1919d3f56db8a225bab" resname="prod:edit: Are you sure, this will remove all values if exist!">
+        <source>prod:edit: Are you sure, this will remove all values if exist!</source>
+        <target state="new">prod:edit: Are you sure, this will remove all values if exist!</target>
+        <jms:reference-file line="172">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d75ccc6722ace63fbdb430baa7a12dc93d13ff74" resname="prod:edit: chapters" approved="yes">
         <source>prod:edit: chapters</source>
@@ -14497,52 +14502,52 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="9b591771eaaea126c4fc9c3a97f9c95674c4179d" resname="prod:mapboxgl: description info : right click to add position" approved="yes">
         <source>prod:mapboxgl: description info : right click to add position</source>
         <target state="translated">Rechtsklick, um die Position von ausgewählte Datensatz (¨e) zu verändern oder Rechtsklick auf die Positionssymbol, um die Position eines Datensatzes zu verändern</target>
-        <jms:reference-file line="183">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="184">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice" approved="yes">
         <source>prod:mapboxgl: description notice</source>
         <target state="translated">Machen Sie einen Rechtsklick, um einen Suchbereich zu hinzufügen. Klicken Sie auf den Bereich zu entfernen. Benutzen Sie den Griff, um die Grösse zu ändern oder den Bereich zu verschieben. Es ist auch möglich, mehrere Suchbereiche auszuwählen.</target>
-        <jms:reference-file line="173">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="174">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="178eecce991e4efb2a13ad496a3fac410593efdd" resname="prod:mapboxgl: title info" approved="yes">
         <source>prod:mapboxgl: title info</source>
         <target state="translated">Hilfe</target>
-        <jms:reference-file line="182">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="183">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a98f467977cb73bc309f3afa984388ab1facf905" resname="prod:mapboxgl: title map dialog" approved="yes">
         <source>prod:mapboxgl: title map dialog</source>
         <target state="translated">Lokalisierung Suche</target>
-        <jms:reference-file line="174">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="175">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d7f5939616105e9e12962cca5eacff5064eb711" resname="prod:mapboxgl: title notice" approved="yes">
         <source>prod:mapboxgl: title notice</source>
         <target state="translated">Suchbereiche Funktionen</target>
-        <jms:reference-file line="172">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="173">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="58c99910c7e56b82e9b7ef4d9029a472585cd423" resname="prod:mapboxjs: description info : right click to add position" approved="yes">
         <source>prod:mapboxjs: description info : right click to add position</source>
         <target state="translated">Rechtsklick, um die Position von ausgewählte Datensatz (¨e) zu verändern oder Rechtsklick auf die Positionssymbol, um die Position eines Datensatzes zu verändern</target>
-        <jms:reference-file line="181">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="182">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db26b26f3033b25e4bbee3d5d901bb2c1a4720bf" resname="prod:mapboxjs: description notice" approved="yes">
         <source>prod:mapboxjs: description notice</source>
         <target state="translated">Beschreibung</target>
-        <jms:reference-file line="179">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="180">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c614bef0cbd5f3a86d388a3e274390bc6db1dced" resname="prod:mapboxjs: title info" approved="yes">
         <source>prod:mapboxjs: title info</source>
         <target state="translated">Hilfe</target>
-        <jms:reference-file line="180">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="181">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2940ac57aa6946d818f42204a8751d9b3fa97692" resname="prod:mapboxjs: title notice" approved="yes">
         <source>prod:mapboxjs: title notice</source>
         <target state="translated">Titel</target>
-        <jms:reference-file line="178">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="179">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ce4044e1fce74fb5f716f7d67f3a538f4d12d26" resname="prod:push: create new user" approved="yes">
         <source>prod:push: create new user</source>
         <target state="translated">Neuer Benutzer</target>
-        <jms:reference-file line="175">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="176">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0122357712e990a5a0461aa181f54d7b1f1e3e4c" resname="prod:share:: No vote expires date">
         <source>prod:share:: No vote expires date</source>
@@ -14662,12 +14667,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="yes">
         <source>prod:videoeditor:subtitletab:message:: error</source>
         <target state="translated">Fehler beim speichern des Untertitels</target>
-        <jms:reference-file line="184">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="185">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success" approved="yes">
         <source>prod:videoeditor:subtitletab:message:: success</source>
         <target state="translated">Erfolg</target>
-        <jms:reference-file line="185">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="186">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
         <source>prod:workzone:basket:creation-date</source>
@@ -14683,7 +14688,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="e7a77a1df74d725737df947f6debe604070f0014" resname="prod:workzone:expose:modal:: title" approved="yes">
         <source>prod:workzone:expose:modal:: title</source>
         <target state="translated">Veröffentlichung Einstellungen</target>
-        <jms:reference-file line="186">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="187">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options">
         <source>prod:workzone:facetstab:search_and_facets_sort_options</source>
