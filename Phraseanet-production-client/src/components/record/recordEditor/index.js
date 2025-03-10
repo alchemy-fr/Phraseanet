@@ -222,6 +222,18 @@ const recordEditorService = services => {
 
                 onUserInputComplete(event, $searchThesaurus.val(), currentField);
             })
+            .on('click', '.empty-field', event => {
+                event.preventDefault();
+                let fieldIndex = options.fieldCollection.getActiveFieldIndex();
+                let field = options.fieldCollection.getFieldByIndex(fieldIndex);
+
+                if (field.multi) {
+                    if (!confirm(localeService.t('empty_field_confirm'))) {
+                        return false;
+                    }
+                }
+                emptyField();
+            })
         ;
     };
 
@@ -1593,6 +1605,27 @@ const recordEditorService = services => {
                 }
             );
         }
+        refreshFields(null);
+    }
+
+    function emptyField() {
+        let records = options.recordCollection.getRecords();
+        let fieldIndex = options.fieldCollection.getActiveFieldIndex();
+
+        for (let recordIndex in records) {
+            let currentRecord = options.recordCollection.getRecordByIndex(
+                recordIndex
+            );
+
+            if (!currentRecord._selected) {
+                continue;
+            }
+            options.recordCollection.emptyRecordField(
+                recordIndex,
+                fieldIndex,
+            );
+        }
+
         refreshFields(null);
     }
 

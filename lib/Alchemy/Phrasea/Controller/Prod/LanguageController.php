@@ -169,6 +169,7 @@ class LanguageController
             'Chapters'            => $translator->trans('prod:edit: chapters'),
             'No hover to chapter' => $translator->trans('prod:edit: no overlaps for chapters'),
             'suggested_values'    => $translator->trans('prod:edit: suggested_values'),
+            'empty_field_confirm' => $translator->trans('prod:edit: Are you sure, this will remove all values if exist!'),
             'title notice'        => $translator->trans('prod:mapboxgl: title notice'),
             'description notice'  => $translator->trans('prod:mapboxgl: description notice'),
             'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),

@@ -22528,6 +22528,17 @@ var recordEditorService = function recordEditorService(services) {
             var currentField = options.fieldCollection.getActiveField();
 
             onUserInputComplete(event, $searchThesaurus.val(), currentField);
+        }).on('click', '.empty-field', function (event) {
+            event.preventDefault();
+            var fieldIndex = options.fieldCollection.getActiveFieldIndex();
+            var field = options.fieldCollection.getFieldByIndex(fieldIndex);
+
+            if (field.multi) {
+                if (!confirm(localeService.t('empty_field_confirm'))) {
+                    return false;
+                }
+            }
+            emptyField();
         });
     };
 
@@ -23723,6 +23734,22 @@ var recordEditorService = function recordEditorService(services) {
                 vocabularyId: vocabularyId
             });
         }
+        refreshFields(null);
+    }
+
+    function emptyField() {
+        var records = options.recordCollection.getRecords();
+        var fieldIndex = options.fieldCollection.getActiveFieldIndex();
+
+        for (var recordIndex in records) {
+            var currentRecord = options.recordCollection.getRecordByIndex(recordIndex);
+
+            if (!currentRecord._selected) {
+                continue;
+            }
+            options.recordCollection.emptyRecordField(recordIndex, fieldIndex);
+        }
+
         refreshFields(null);
     }
 
@@ -61873,6 +61900,11 @@ var RecordCollection = function () {
                 vocabularyId = params.vocabularyId;
 
             this.records[recordIndex].fields[fieldIndex].addValue(value, merge, vocabularyId);
+        }
+    }, {
+        key: 'emptyRecordField',
+        value: function emptyRecordField(recordIndex, fieldIndex) {
+            this.records[recordIndex].fields[fieldIndex].empty();
         }
 
         /*    options.recordCollection.removeRecordFieldValue(r, currentFieldId, {

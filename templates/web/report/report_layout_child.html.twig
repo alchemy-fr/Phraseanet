@@ -25,7 +25,7 @@
         </form>
 
         <div class="form_submit">
-            <button class="formsubmiter" data-form_selector="#report-connections-form">Download</button>
+            <button class="formsubmiter" data-form_selector="#report-connections-form">{{'Download' | trans}}</button>
         </div>
         
     </div>
@@ -50,7 +50,7 @@
             <div class="form2 form_content">
                 <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
                 <select name="permalink">
-                    <option value>{{ "report:: choose subdef permalink" }}</option>
+                    <option value>{{ "report:: choose subdef permalink" | trans }}</option>
                     {% for sbas_id,subdefs in availableSubdefName %}
                         {% for subdefName in subdefs %}
                             <option class="subdeflist subdeflist-{{ sbas_id }}" value="{{ subdefName }}">{{ subdefName }}</option>
@@ -62,7 +62,7 @@
         </form>
 
         <div class="form_submit">
-            <button class="formsubmiter" data-form_selector="#report-downloads-form">Download</button>
+            <button class="formsubmiter" data-form_selector="#report-downloads-form">{{'Download' | trans}}</button>
         </div>
 
     </div>
@@ -108,7 +108,7 @@
             <div class="form2 form_content">
                 <div class="form_titre">{{ "report:: Permalink" | trans }}</div>
                 <select name="permalink">
-                        <option value>{{ "report:: choose subdef permalink" }}</option>
+                        <option value>{{ "report:: choose subdef permalink" | trans }}</option>
                     {% for sbas_id,subdefs in availableSubdefName %}
                         {% for subdefName in subdefs %}
                             <option class="subdeflist subdeflist-{{ sbas_id }}" value="{{ subdefName }}">{{ subdefName }}</option>
@@ -121,7 +121,7 @@
         </form>
 
         <div class="form_submit">
-            <button class="formsubmiter" data-form_selector="#report-records-form">Download</button>
+            <button class="formsubmiter" data-form_selector="#report-records-form">{{'Download' | trans}}</button>
         </div>
 
     </div>
