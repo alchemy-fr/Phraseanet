@@ -170,10 +170,10 @@ class ReportRecords extends Report
         if(!empty($collIds)) {
             $this->sqlWhere = "`r`.`coll_id` IN(" . join(',', $collIds) . ")";
             if(!is_null($this->parms['dmin'])) {
-                $this->sqlWhere .= " AND r.moddate >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
+                $this->sqlWhere .= " AND r.credate >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
             }
             if(!is_null($this->parms['dmax'])) {
-                $this->sqlWhere .= " AND r.moddate <= " . $this->databox->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
+                $this->sqlWhere .= " AND r.credate <= " . $this->databox->get_connection()->quote($this->parms['dmax'] . " 23:59:59");
             }
         }
         else {
