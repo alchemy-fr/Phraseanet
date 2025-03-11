@@ -190,6 +190,28 @@ class AlertExpiringRightsCommand extends Command
             }
         }
 
+        // filter on sb
+        $mask = get_in($job, ['status']);
+        if ($mask !== null) {
+            $m = preg_replace('/[^0-1]/', 'x', trim($mask));
+            if (strlen($m) > 32) {
+                $this->output->writeln(sprintf("<error>status mask (%s) too long</error>", $mask));
+
+                return false;
+            }
+            $mask_xor = str_replace(' ', '0', ltrim(str_replace(['0', 'x'], [' ', ' '], $m)));
+            $mask_and = str_replace(' ', '0', ltrim(str_replace(['x', '0'], [' ', '1'], $m)));
+            if ($mask_xor && $mask_and) {
+                $wheres[] = '((r.`status` ^ 0b' . $mask_xor . ') & 0b' . $mask_and . ') = 0';
+            }
+            elseif ($mask_xor) {
+                $wheres[] = '(r.`status` ^ 0b' . $mask_xor . ') = 0';
+            }
+            elseif ($mask_and) {
+                $wheres[] = '(r.`status` & 0b' . $mask_and . ') = 0';
+            }
+        }
+
         // clause on sb (negated)
         $mask = get_in($job, ['set_status']);
         if ($mask === null) {
@@ -198,7 +220,7 @@ class AlertExpiringRightsCommand extends Command
         }
         $m = preg_replace('/[^0-1]/', 'x', trim($mask));
         if (strlen($m) > 32) {
-            $this->output->writeln(sprintf("<error>status mask (%s) too long</error>", $mask));
+            $this->output->writeln(sprintf("<error>set_status mask (%s) too long</error>", $mask));
             return false;
         }
         $mask_xor = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $m)));
