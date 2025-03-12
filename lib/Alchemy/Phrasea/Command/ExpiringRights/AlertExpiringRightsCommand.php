@@ -243,6 +243,21 @@ class AlertExpiringRightsCommand extends Command
             }
         }
 
+        // filter on negated set_collection
+        if($set_collection = get_in($job, ['set_collection'])) {
+            /** @var collection $coll */
+            if (($coll = get_in($this->databoxes[$sbas_id], ['collections', $set_collection])) !== null) {
+                $wheres[] = "r.`coll_id`!=" . $dbox->get_connection()->quote($coll->get_coll_id());
+
+                // change collection by actions api
+                $actions['base_id'] = $coll->get_coll_id();
+            }
+            else {
+                $this->output->writeln(sprintf("<error>unknown collection (%s)</error>", $c));
+                return false;
+            }
+        }
+
         // clause on expiration date
         // the NOW() can be faked for testing
         $expire_field_id = null;
@@ -287,18 +302,6 @@ class AlertExpiringRightsCommand extends Command
 
         if ($this->input->getOption('dry')) {
             $this->output->writeln(sprintf("<info>dry mode: updates on %d records NOT executed</info>", $stmt->rowCount()));
-        }
-
-        // change collection by actions api
-        if($set_collection = get_in($job, ['set_collection'])) {
-            /** @var collection $coll */
-            if (($coll = get_in($this->databoxes[$sbas_id], ['collections', $set_collection])) !== null) {
-                $actions['base_id'] = $coll->get_coll_id();
-            }
-            else {
-                $this->output->writeln(sprintf("<error>unknown collection (%s)</error>", $c));
-                return false;
-            }
         }
 
         if(empty($actions)) {
