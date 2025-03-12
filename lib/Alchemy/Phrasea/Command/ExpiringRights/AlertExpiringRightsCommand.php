@@ -154,6 +154,9 @@ class AlertExpiringRightsCommand extends Command
             return true;
         }
 
+        // actions by api
+        $actions = [];
+
         // build sql where clause
         $wheres = [];
 
@@ -173,7 +176,7 @@ class AlertExpiringRightsCommand extends Command
         $dbox = $this->databoxes[$d]['dbox'];
         $sbas_id = $dbox->get_sbas_id();
 
-        // filter on collections ?
+        // filter on collections
         $collList = [];
         foreach (get_in($job, ['collection'], []) as $c) {
             /** @var collection $coll */
@@ -190,13 +193,11 @@ class AlertExpiringRightsCommand extends Command
             }
         }
 
-        // filter on sb
-        $mask = get_in($job, ['status']);
-        if ($mask !== null) {
-            $m = preg_replace('/[^0-1]/', 'x', trim($mask));
-            if (strlen($m) > 32) {
-                $this->output->writeln(sprintf("<error>status mask (%s) too long</error>", $mask));
-
+        // filter on status
+        if (($status = get_in($job, ['status'])) !== null) {
+            $m = preg_replace('/[^0-1]/', 'x', trim($status));
+            if (strlen($m) == 0 || strlen($m) > 32) {
+                $this->output->writeln(sprintf("<error>invalid status (%s)</error>", $status));
                 return false;
             }
             $mask_xor = str_replace(' ', '0', ltrim(str_replace(['0', 'x'], [' ', ' '], $m)));
@@ -212,38 +213,34 @@ class AlertExpiringRightsCommand extends Command
             }
         }
 
-        // clause on sb (negated)
-        $mask = get_in($job, ['set_status']);
-        if ($mask === null) {
-            $this->output->writeln(sprintf("<error>missing 'set_status' clause</error>"));
-            return false;
-        }
-        $m = preg_replace('/[^0-1]/', 'x', trim($mask));
-        if (strlen($m) > 32) {
-            $this->output->writeln(sprintf("<error>set_status mask (%s) too long</error>", $mask));
-            return false;
-        }
-        $mask_xor = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $m)));
-        $mask_and = str_replace(' ', '0', ltrim(str_replace(array('x', '0'), array(' ', '1'), $m)));
-        if ($mask_xor && $mask_and) {
-            $wheres[] = '((r.`status` ^ 0b' . $mask_xor . ') & 0b' . $mask_and . ') != 0';
-        } elseif ($mask_xor) {
-            $wheres[] = '(r.`status` ^ 0b' . $mask_xor . ') != 0';
-        } elseif ($mask_and) {
-            $wheres[] = '(r.`status` & 0b' . $mask_and . ') != 0';
-        } else {
-            $this->output->writeln(sprintf("<error>empty status mask</error>"));
-            return false;
-        }
-        // set status
-        $set_status = "`status`";
-        $set_or = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $m)));
-        $set_nand = str_replace(' ', '0', ltrim(str_replace(array('x', '1', '0'), array(' ', ' ', '1'), $m)));
-        if($set_or) {
-            $set_status = "(" . $set_status . " | 0b" . $set_or . ")";
-        }
-        if($set_nand) {
-            $set_status = "(" . $set_status . " & ~0b" . $set_nand . ")";
+        // filter on negated set_status
+        if(($set_status = get_in($job, ['set_status'])) !== null) {
+            $m = preg_replace('/[^0-1]/', 'x', trim($set_status));
+            if (strlen($m) == 0 || strlen($m) > 32) {
+                $this->output->writeln(sprintf("<error>invalid set_status (%s)</error>", $set_status));
+                return false;
+            }
+            $mask_xor = str_replace(' ', '0', ltrim(str_replace(['0', 'x'], [' ', ' '], $m)));
+            $mask_and = str_replace(' ', '0', ltrim(str_replace(['x', '0'], [' ', '1'], $m)));
+            if ($mask_xor && $mask_and) {
+                $wheres[] = '((r.`status` ^ 0b' . $mask_xor . ') & 0b' . $mask_and . ') != 0';
+            }
+            elseif ($mask_xor) {
+                $wheres[] = '(r.`status` ^ 0b' . $mask_xor . ') != 0';
+            }
+            elseif ($mask_and) {
+                $wheres[] = '(r.`status` & 0b' . $mask_and . ') != 0';
+            }
+
+            // set status by actions api
+            foreach (str_split(strrev($m)) as $bit => $val) {
+                if ($val == '0' || $val == '1') {
+                    if(!array_key_exists('status', $actions)) {
+                        $actions['status'] = [];
+                    }
+                    $actions['status'][] = ['bit' => $bit, 'state' => $val=='1'];
+                }
+            }
         }
 
         // clause on expiration date
@@ -292,18 +289,42 @@ class AlertExpiringRightsCommand extends Command
             $this->output->writeln(sprintf("<info>dry mode: updates on %d records NOT executed</info>", $stmt->rowCount()));
         }
 
+        // change collection by actions api
+        if($set_collection = get_in($job, ['set_collection'])) {
+            /** @var collection $coll */
+            if (($coll = get_in($this->databoxes[$sbas_id], ['collections', $set_collection])) !== null) {
+                $actions['base_id'] = $coll->get_coll_id();
+            }
+            else {
+                $this->output->writeln(sprintf("<error>unknown collection (%s)</error>", $c));
+                return false;
+            }
+        }
+
+        if(empty($actions)) {
+            $this->output->writeln(sprintf("<error>no actions defined</error>"));
+            return false;
+        }
+
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $record = $dbox->get_record($row['record_id']);
             $row['collection'] = $record->getCollection()->get_name();
             $row['title'] = $record->get_title();
             $records[] = $row;
 
-            $sql = "UPDATE `record` SET `status`=" . $set_status . " WHERE record_id=" . $dbox->get_connection()->quote($row['record_id']);
-            if ($this->input->getOption('show-sql')) {
-                $this->output->writeln(sprintf("sql: %s", $sql));
-            }
-            if (!$this->input->getOption('dry')) {
-                $dbox->get_connection()->exec($sql);
+            // update by api
+            if(!empty($actions)) {
+                $js = json_encode($actions);
+                $this->output->writeln(sprintf("on databox(%s), record(%s) :%s js=%s \n",
+                    $sbas_id,
+                    $row['record_id'],
+                    $this->input->getOption('dry') ? " [DRY]" : '',
+                    $js
+                ));
+
+                if(!$this->input->getOption('dry')) {
+                    $record->setMetadatasByActions(json_decode($js, false));  // false: setMetadatasByActions expects object, not array !
+                }
             }
         }
         $stmt->closeCursor();
@@ -597,12 +618,11 @@ class AlertExpiringRightsCommand extends Command
 
     private function sanitizeJobOwners($job)
     {
-        return $this->sanitize(
-            $job,
-            [
-                'set_status' => "is_string",
-            ]
-        );
+        if(get_in($job, ['set_status']) === null && get_in($job, ['set_collection']) === null) {
+            $this->output->writeln(sprintf("<error>missing 'set_status' or 'set_collection' setting</error>"));
+            return false;
+        }
+        return true;
     }
 
     private function sanitizeJobDownloaders($job)
