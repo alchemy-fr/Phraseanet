@@ -1,5 +1,43 @@
 # CHANGELOG
 
+## 4.1.17
+
+#### Phraseanet Upgrade
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+
+### Stack (Docker Compose and Helm)
+
+- no change
+
+### Version Summary
+
+- Expose-cli Add sort capabilities inside an Expose publication, sort is performed by Expose.
+- Change on Thesaurus Search - add content operator for search in editing.
+- Minor change on translation.
+- Report fix when exporting with date based on. 
+- Change process on expiring-right.
+
+
+## What's Changed
+* PHRAS-4131 prod - expose-cli - Sort record (assets) inside an expose publication by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4588
+* PHRAS-4131: add loader on set order window and when validate by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4590
+* PHRAS-4135: Prod - Thesaurus Search - add content operator for search in editing and workzonethesaurus search add content operator by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4589
+* PHRAS-3416 phraseanet translations by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4591
+* PHRAS-4138 empty field restricted thesaurus by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4592
+* PHRAS-3416 phraseanet translations by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4593
+* PHRAS-4141-Report-updated_at-mismatch by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4597
+* PHRAS-4140_sb-filter-for-expiringrights by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4594
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.16...4.1.17
+
+
 ## 4.1.16
 
 ### Update Instructions
