@@ -28,7 +28,7 @@ sleep 10
     --lazaret-path=$PHRASEANET_LAZARET_DIR \
     --caption-path=$PHRASEANET_CAPTION_DIR \
     --worker-tmp-files=$PHRASEANET_WORKER_TMP \
-    --data-path=/var/alchemy/Phraseanet/datas -y
+    --data-path=/var/alchemy/Phraseanet/datas -f
 done
 
 /var/alchemy/Phraseanet/bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry
