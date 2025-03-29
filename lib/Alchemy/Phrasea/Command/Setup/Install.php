@@ -94,30 +94,7 @@ class Install extends Command
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $output->writeln("<comment>
-                                                      ,-._.-._.-._.-._.-.
-                                                      `-.             ,-'
- .----------------------------------------------.       |             |
-|                                                |      |             |
-|  Hello !                                       |      |             |
-|                                                |      |             |
-|  You are on your way to install Phraseanet,    |     ,';\".________.-.
-|  You will need access to 2 MySQL databases.    |     ;';_'         )]
-|                                                |    ;             `-|
-|                                                `.    `T-            |
- `----------------------------------------------._ \    |             |
-                                                  `-;   |             |
-                                                        |..________..-|
-                                                       /\/ |________..|
-                                                  ,'`./  >,(           |
-                                                  \_.-|_/,-/   ii  |   |
-                                                   `.\"' `-/  .-\"\"\"||    |
-                                                    /`^\"-;   |    ||____|
-                                                   /     /   `.__/  | ||
-                                                        /           | ||
-                                                                    | ||
-</comment>"
-        );
+        $output->writeln("<comment>You are on your way to install Phraseanet, You will need access to 2 MySQL databases.</comment>");
 
         if (!$input->getOption('yes') && !$input->getOption('force') && !$input->getOption('appbox')) {
             $continue = $dialog->askConfirmation($output, 'Do you have these two DB handy ? (N/y)', false);
