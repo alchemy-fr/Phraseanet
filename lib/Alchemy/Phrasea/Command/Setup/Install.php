@@ -94,7 +94,7 @@ class Install extends Command
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $output->writeln("<comment>You are on your way to install Phraseanet, You will need access to 2 MySQL databases.</comment>");
+        $output->writeln("<comment> --- You are on your way to install Phraseanet, You will need access to 2 MySQL databases. --- </comment>");
 
         if (!$input->getOption('yes') && !$input->getOption('force') && !$input->getOption('appbox')) {
             $continue = $dialog->askConfirmation($output, 'Do you have these two DB handy ? (N/y)', false);
@@ -115,7 +115,7 @@ class Install extends Command
         }
 
         if (!$input->getOption('force') && $abConn->getSchemaManager()->tablesExist(['users'])) {
-            $output->writeln("<error>Database table already exist in appbox! installation abort</error>");
+            $output->writeln("<error>(*) Database table already exist in appbox! installation abort</error>");
 
             return 1;
         }
@@ -123,7 +123,7 @@ class Install extends Command
         list($dbConn, $templateName) = $this->getDBConn($input, $output, $abConn, $dialog);
 
         if (!$input->getOption('force') && $dbConn->getSchemaManager()->tablesExist(['record'])) {
-            $output->writeln("<error>Database table already exist in databox! installation abort</error>");
+            $output->writeln("<error>(*) Database table already exist in databox! installation abort</error>");
 
             return 1;
         }
