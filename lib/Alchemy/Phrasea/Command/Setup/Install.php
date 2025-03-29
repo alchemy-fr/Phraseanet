@@ -61,6 +61,7 @@ class Install extends Command
             ->addOption('scheduler-locks-path', null, InputOption::VALUE_OPTIONAL, 'Path to scheduler-locks repository', __DIR__ . '/../../../../../tmp/locks')
             ->addOption('worker-tmp-files', null, InputOption::VALUE_OPTIONAL, 'Path to worker-tmp-files repository', __DIR__ . '/../../../../../tmp')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'force to continue installation')
             ->setHelp("Phraseanet can only be installed on 64 bits PHP.");
             ;
 
@@ -93,32 +94,9 @@ class Install extends Command
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $output->writeln("<comment>
-                                                      ,-._.-._.-._.-._.-.
-                                                      `-.             ,-'
- .----------------------------------------------.       |             |
-|                                                |      |             |
-|  Hello !                                       |      |             |
-|                                                |      |             |
-|  You are on your way to install Phraseanet,    |     ,';\".________.-.
-|  You will need access to 2 MySQL databases.    |     ;';_'         )]
-|                                                |    ;             `-|
-|                                                `.    `T-            |
- `----------------------------------------------._ \    |             |
-                                                  `-;   |             |
-                                                        |..________..-|
-                                                       /\/ |________..|
-                                                  ,'`./  >,(           |
-                                                  \_.-|_/,-/   ii  |   |
-                                                   `.\"' `-/  .-\"\"\"||    |
-                                                    /`^\"-;   |    ||____|
-                                                   /     /   `.__/  | ||
-                                                        /           | ||
-                                                                    | ||
-</comment>"
-        );
+        $output->writeln("<comment> --- You are on your way to install Phraseanet, You will need access to 2 MySQL databases. --- </comment>");
 
-        if (!$input->getOption('yes') && !$input->getOption('appbox')) {
+        if (!$input->getOption('yes') && !$input->getOption('force') && !$input->getOption('appbox')) {
             $continue = $dialog->askConfirmation($output, 'Do you have these two DB handy ? (N/y)', false);
 
             if (!$continue) {
@@ -130,16 +108,30 @@ class Install extends Command
 
         $serverName = $this->getServerName($input, $output, $dialog);
 
+        /** @var Connection $abConn */
         $abConn = $this->getABConn($input, $output, $dialog, $serverName);
         if(!$abConn) {
             return 1;       // no ab is fatal
         }
 
+        if (!$input->getOption('force') && $abConn->getSchemaManager()->tablesExist(['users'])) {
+            $output->writeln("<error>(*) Database table already exist in appbox! installation abort</error>");
+
+            return 1;
+        }
+
         list($dbConn, $templateName) = $this->getDBConn($input, $output, $abConn, $dialog);
+
+        if (!$input->getOption('force') && $dbConn->getSchemaManager()->tablesExist(['record'])) {
+            $output->writeln("<error>(*) Database table already exist in databox! installation abort</error>");
+
+            return 1;
+        }
+
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);
 
-        if (! $input->getOption('yes')) {
+        if (!$input->getOption('yes') && !$input->getOption('force')) {
             $output->writeln("<info>--- ElasticSearch connection settings ---</info>");
         }
 
@@ -154,7 +146,7 @@ class Install extends Command
 
         $output->writeln('');
 
-        if (!$input->getOption('yes')) {
+        if (!$input->getOption('yes') && !$input->getOption('force')) {
             $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
 
             if (!$continue) {
@@ -341,7 +333,7 @@ class Install extends Command
     {
         $dataPath = $input->getOption('data-path');
 
-        if (!$input->getOption('yes')) {
+        if (!$input->getOption('yes') && !$input->getOption('force')) {
             $continue = $dialog->askConfirmation($output, 'Would you like to change default data-path ? (N/y)', false);
 
             if ($continue) {
@@ -362,7 +354,7 @@ class Install extends Command
     {
         $serverName = $input->getOption('server-name');
 
-        if (!$serverName && !$input->getOption('yes')) {
+        if (!$serverName && !$input->getOption('yes') && !$input->getOption('force')) {
             do {
                 $serverName = $dialog->ask($output, 'Please provide the server name : ', null);
             } while (!$serverName);
@@ -380,7 +372,7 @@ class Install extends Command
         $host = $input->getOption('es-host');
         $port = (int) $input->getOption('es-port');
 
-        if (! $input->getOption('yes')) {
+        if (! $input->getOption('yes') && !$input->getOption('force')) {
             while (! $host) {
                 $host = $dialog->ask($output, 'ElasticSearch server host : ', null);
             };
@@ -397,7 +389,7 @@ class Install extends Command
     {
         $index = $input->getOption('es-index');
 
-        if (! $input->getOption('yes')) {
+        if (!$input->getOption('yes') && !$input->getOption('force')) {
             $index = $dialog->ask($output, 'ElasticSearch server index name (blank to autogenerate) : ', null);
         }
 
