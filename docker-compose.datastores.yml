@@ -24,7 +24,7 @@ services:
       - internal
 
   rabbitmq:
-    image: rabbitmq:3.8.34-management
+    image: $RABBITMQ_IMAGE_VERSION
     profiles: ["rabbitmq"]
     restart: on-failure
     hostname: $RABBITMQ_HOSTNAME
