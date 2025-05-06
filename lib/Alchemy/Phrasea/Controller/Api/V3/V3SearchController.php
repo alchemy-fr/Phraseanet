@@ -79,6 +79,7 @@ class V3SearchController extends Controller
             'suggestions' => new CallbackTransformer(),
             'results.stories' => $storyTransformer,
             'results.stories.children' => $recordTransformer,
+            'results.records.stories' => new CallbackTransformer(),
             'results.stories.children.thumbnail' => $subdefTransformer,
             'results.stories.children.technical_informations' => $technicalDataTransformer,
             'results.stories.children.subdefs' => $subdefTransformer,
@@ -338,7 +339,11 @@ class V3SearchController extends Controller
      */
     private function doSearch(Request $request)
     {
+        // print(getcwd()); die;
         list($offset, $limit) = V3ResultHelpers::paginationFromRequest($request);
+        file_put_contents("/var/alchemy/Phraseanet/logs/trace.txt",
+            sprintf("%s(%d) : %d ; %d\n", __FILE__, __LINE__, $offset, $limit),
+            FILE_APPEND);
 
         $options = SearchEngineOptions::fromRequest($this->app, $request);
 

@@ -22,7 +22,8 @@ class RecordTransformer extends TransformerAbstract
         'metadata',
 //        'metadatas',
         'status',
-        'caption'
+        'caption',
+        'stories'
     ];
 
     protected $defaultIncludes = [
@@ -168,6 +169,23 @@ class RecordTransformer extends TransformerAbstract
                 'name' => $field->get_name(),
                 'value' => $field->get_serialized_values(';'),
             ];
+        });
+    }
+
+    public function includeStories(RecordView $recordView)
+    {
+        $data = [];
+
+        /** @var record_adapter $story */
+        foreach($recordView->getRecord()->get_grouping_parents() as $story) {
+            $data[] = [
+            //    'title' => $story->get_title(),
+                'record_id' => $story->getRecordId(),
+            ];
+        }
+
+        return $this->collection($data, function (array $storyData) {
+            return $storyData;
         });
     }
 
