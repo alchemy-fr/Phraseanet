@@ -46,6 +46,10 @@ class RecordTransformer extends TransformerAbstract
      * @var callable
      */
     private $resourceIdResolver;
+    /**
+     * @var V3StoryTransformer
+     */
+    private $storyTransformer;
 
     public function __construct(SubdefTransformer $subdefTransformer, TechnicalDataTransformer $technicalDataTransformer, callable $resourceIdResolver)
     {
@@ -179,8 +183,8 @@ class RecordTransformer extends TransformerAbstract
         /** @var record_adapter $story */
         foreach($recordView->getRecord()->get_grouping_parents() as $story) {
             $data[] = [
-            //    'title' => $story->get_title(),
-                'record_id' => $story->getRecordId(),
+                //    'title' => $story->get_title(),
+                'story_id' => $story->getRecordId(),
             ];
         }
 
@@ -195,5 +199,10 @@ class RecordTransformer extends TransformerAbstract
     public function getResourceIdResolver(): callable
     {
         return $this->resourceIdResolver;
+    }
+
+    public function setStoryTransformer(V3StoryTransformer $storyTransformer)
+    {
+        $this->storyTransformer = $storyTransformer;
     }
 }
