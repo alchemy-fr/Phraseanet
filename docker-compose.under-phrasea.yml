@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
     phrasea:
       name: ${PHRASEA_NETWORK_NAME}

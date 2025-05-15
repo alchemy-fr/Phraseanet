@@ -97,7 +97,8 @@ Get official support : https://www.alchemy.fr/en/rubrique/services/
 ## Prerequisites
 
 
-- docker >=v20.10.24
+- docker >=25.0.5
+- docker compose >= 2.29.0
 
 In the stack Docker, Docker Compose included in this repo starts by default in test mode. 
 All services are launched in a separate container and except "Phraseanet app" and "workers" containers, 
@@ -196,6 +197,18 @@ export PHRASEANET_APP_PORT=8082
 ```
 If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
 
+
+### stack Management
+ 
+To start and stop the stack, use the `stack_management.sh start|stop` script at the project root.
+this script work only Linux and MacOS.
+
+This script performs start and stop operations for the stack, utilizing docker compose with .env and env.local files.
+
+The `stop` operation is the most critical function of the script, as it ensures a clean shutdown 
+of the database container before stopping the entire stack.
+
+This script is useful if you are using the database container within the stack.
 
 ### Using a env.local method for custom .env values
 
