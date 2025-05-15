@@ -400,10 +400,36 @@ paths:
 
         ### results.records.technical_informations
         always included
-
+          
         _nb:_ since stories are not related to a document, there is no technical_informations for stories.
-
-        ### results.records.children
+            
+        ### results.records.stories
+        Include a list of stories that contains the record
+          
+        stories is an array of small objects containing only the `story_id` (= `record_id`) of the story.
+        ```
+        "response": {
+          "results": {
+            "records": [
+              {
+                "stories": [
+                  {
+                    "story_id": 100
+                  },
+                  {
+                    "story_id": 102
+                  },
+                  ...
+                ],
+                ...
+              },
+              ...
+            ]
+          }
+        }
+        ```
+          
+        ### results.stories.children
         In story search mode, will publish a children[] array for each result. See _story_children_limit_ parameter.
 
         children is an array of records, with same structure as a result record.
