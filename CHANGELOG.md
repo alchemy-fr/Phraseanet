@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## 4.1.19
+
+#### Phraseanet Upgrade
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+
+### Stack (Docker Compose and Helm)
+
+- RabbitMQ image version can be set in .env and bumped to 4.1.0
+- Introducing a stack_management script for Linux and Macos performing a clean stop of db container
+
+### Version Summary
+
+ To do
+
+## What's Changed
+
+ To do
+
+__ 
 ## 4.1.18
 
 #### Phraseanet Upgrade
