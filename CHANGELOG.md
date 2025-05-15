@@ -22,7 +22,11 @@
 
 ## What's Changed
 
- To do
+ * PHRAS-4151_stories-reference-in-api by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4602
+ * PHRAS-4153: Rabbitmq : Update rabbitmq to 4.1.0 to fix CVE-2025-32433  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4601
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.18...4.1.19
 
 __ 
 ## 4.1.18
