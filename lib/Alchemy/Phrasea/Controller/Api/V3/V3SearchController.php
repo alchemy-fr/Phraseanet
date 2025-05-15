@@ -69,6 +69,7 @@ class V3SearchController extends Controller
         $technicalDataTransformer = new TechnicalDataTransformer();
         $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer, $this->getResourceIdResolver());
         $storyTransformer = new V3StoryTransformer($recordTransformer);
+        $recordTransformer->setStoryTransformer($storyTransformer);
         $compositeTransformer = new V3SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
         $searchTransformer = new V3SearchResultTransformer($compositeTransformer);
 
@@ -79,6 +80,9 @@ class V3SearchController extends Controller
             'suggestions' => new CallbackTransformer(),
             'results.stories' => $storyTransformer,
             'results.stories.children' => $recordTransformer,
+            'results.records.stories' => $storyTransformer,
+            'results.records.stories.thumbnail' => $subdefTransformer,
+            'results.records.stories.metadata' => new CallbackTransformer(),
             'results.stories.children.thumbnail' => $subdefTransformer,
             'results.stories.children.technical_informations' => $technicalDataTransformer,
             'results.stories.children.subdefs' => $subdefTransformer,
