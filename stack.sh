@@ -42,6 +42,14 @@ check_versions() {
 
     echo "Docker and Docker Compose versions are compatible."
 
+<<<<<<< HEAD:stack.sh
+=======
+    # Get uptime of the stack
+    echo "Stack Uptime:"
+    $DOCKER_COMPSE_CMD ps | awk 'NR>1 {print $4}'
+    echo
+
+>>>>>>> Clean output SKIP_CI:stack_management.sh
     # Get internal IP addresses
     echo "Internal IP Addresses:"
     $DOCKER_COMPSE_CMD exec -T db sh -c 'ip addr show eth0 | grep "inet " | awk "{print \$2}" | cut -d/ -f1'
@@ -76,7 +84,11 @@ display_info() {
     # Display Docker tag and registry information
     echo "Phraseanet Docker Tag: ${PHRASEANET_DOCKER_TAG:-Not set}"
     echo "Phraseanet Docker Registry: ${PHRASEANET_DOCKER_REGISTRY:-Not set}"
+<<<<<<< HEAD:stack.sh
     echo
+=======
+    echo 
+>>>>>>> Clean output SKIP_CI:stack_management.sh
 
     # Construct and display the internal URL of the Phraseanet instance
     if [ -n "$PHRASEANET_HOSTNAME" ] && [ -n "$PHRASEANET_SCHEME" ] && [ -n "$PHRASEANET_APP_PORT" ]; then
@@ -104,6 +116,10 @@ display_info() {
         else
             echo "Last Update unknown, config/configuration-compiled.php not found."
             echo
+<<<<<<< HEAD:stack.sh
+=======
+            
+>>>>>>> Clean output SKIP_CI:stack_management.sh
         fi
 
         # Check if the Phraseanet container is running
