@@ -1,0 +1,72 @@
+Certainly! Here's a README for the script that provides an overview of its functionality, usage, and features:
+
+---
+
+# Docker Stack Management Script
+
+This script is designed to manage a Docker stack, particularly for Phraseanet applications. It provides functionalities to start, stop, check, and gather information about the Docker stack, including version checks, log viewing, and environment details.
+
+## Features
+
+- **Start and Stop the Docker Stack**: Easily start or stop your Docker stack with simple commands.
+- **Version Checking**: Verify the compatibility of Docker and Docker Compose versions.
+- **Environment Information**: Gather detailed information about the environment, including Phraseanet installation status, version details, and internal URLs.
+- **Log Viewing**: View logs for all containers or filter logs for a specific container.
+- **Environment Variables**: Load and display environment variables from `.env` and either `env.local` or `.env.local` files.
+
+## Usage
+
+### Prerequisites
+
+- Docker and Docker Compose installed on your system.
+- Appropriate permissions to execute Docker commands.
+- Environment files (`.env`, `env.local`, or `.env.local`) configured with necessary variables.
+
+### Commands
+
+- **Start the Stack**:
+  ```bash
+  ./manage_docker.sh start
+  ```
+
+- **Stop the Stack**:
+  ```bash
+  ./manage_docker.sh stop
+  ```
+
+- **Check Versions**:
+  ```bash
+  ./manage_docker.sh check
+  ```
+
+- **Display Environment Information**:
+  ```bash
+  ./manage_docker.sh info
+  ```
+
+- **View Logs**:
+  - For all containers:
+    ```bash
+    ./manage_docker.sh log
+    ```
+  - For a specific container:
+    ```bash
+    ./manage_docker.sh log <container_name>
+    ```
+
+### Environment Variables
+
+The script uses the following environment variables, which should be defined in your environment files:
+
+- `PHRASEANET_DOCKER_TAG`: The Docker tag for the Phraseanet image.
+- `PHRASEANET_DOCKER_REGISTRY`: The Docker registry for the Phraseanet image.
+- `PHRASEANET_HOSTNAME`: The hostname for the Phraseanet instance.
+- `PHRASEANET_SCHEME`: The scheme (e.g., `http` or `https`) for the Phraseanet instance.
+- `PHRASEANET_APP_PORT`: The port for the Phraseanet application.
+
+### Notes
+
+- Ensure that the environment files (`.env`, `env.local`, or `.env.local`) are correctly configured with the necessary variables.
+- The script checks for the presence of `config/configuration.yml` to determine if Phraseanet is installed.
+- The script constructs the internal URL of the Phraseanet instance using the environment variables `PHRASEANET_HOSTNAME`, `PHRASEANET_SCHEME`, and `PHRASEANET_APP_PORT`.
+
