@@ -131,14 +131,18 @@ display_info() {
             # Compare versions
             if [ "$version_from_file" == "$version_from_console" ]; then
                 echo "Versions match."
+                echo
             else
                 echo "Versions do not match."
+                echo
             fi
         else
             echo "Phraseanet container is not running. Cannot fetch version information."
+            echo
         fi
     else
         echo "Phraseanet is not installed: config/configuration.yml not found."
+        echo
     fi
 
     # Fetch the latest version from GitHub
