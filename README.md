@@ -197,8 +197,8 @@ export PHRASEANET_APP_PORT=8082
 ```
 
 If you want persit this change you can also save your change in a files named `env.local` or `.env.local`
-this files are git ignored and permit a stack customisation without git conflic generation
-see more about in stack management section 
+These files are git ignored and permit stack customization without git conflict generation.
+
 
 If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
 
@@ -215,7 +215,7 @@ of the database container before stopping the entire stack.
 
 This script is useful if you are using the database container within the stack.
 
-Of course before using it you need to chmod this file.
+see more here ![stack Management](doc/infra/compose/stack_management.md)
 
 ### Using a env.local method for custom .env values
 
