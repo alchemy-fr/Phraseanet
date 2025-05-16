@@ -45,23 +45,28 @@ check_versions() {
     # Get uptime of the stack
     echo "Stack Uptime:"
     $DOCKER_COMPSE_CMD ps | awk 'NR>1 {print $4}'
+    echo
 
     # Get internal IP addresses
     echo "Internal IP Addresses:"
     $DOCKER_COMPSE_CMD exec -T db sh -c 'ip addr show eth0 | grep "inet " | awk "{print \$2}" | cut -d/ -f1'
+    echo
 
     # Get container status
     echo "Container Status:"
     $DOCKER_COMPSE_CMD ps
+    echo
 
     # Get resource usage
     echo "Resource Usage:"
     $DOCKER_COMPSE_CMD top
+    echo
 }
 
 # Function to display information about the environment
 display_info() {
     echo "Checking environment information..."
+    echo
 
     # Load environment variables
     local env_files=($(get_env_files))
@@ -76,13 +81,16 @@ display_info() {
     # Display Docker tag and registry information
     echo "Phraseanet Docker Tag: ${PHRASEANET_DOCKER_TAG:-Not set}"
     echo "Phraseanet Docker Registry: ${PHRASEANET_DOCKER_REGISTRY:-Not set}"
+    echo 
 
     # Construct and display the internal URL of the Phraseanet instance
     if [ -n "$PHRASEANET_HOSTNAME" ] && [ -n "$PHRASEANET_SCHEME" ] && [ -n "$PHRASEANET_APP_PORT" ]; then
         local internal_url="${PHRASEANET_SCHEME}://${PHRASEANET_HOSTNAME}:${PHRASEANET_APP_PORT}"
         echo "Internal URL of Phraseanet Instance: $internal_url"
+        echo
     else
         echo "Internal URL of Phraseanet Instance: Cannot be determined (missing environment variables)."
+        echo
     fi
 
     # Check if Phraseanet is installed by looking for config/configuration.yml
@@ -97,8 +105,11 @@ display_info() {
         if [ -f "config/configuration-compiled.php" ]; then
             local last_modified_date=$(date -r "$(stat -f %m "config/configuration-compiled.php" 2>/dev/null || stat -c %Y "config/configuration-compiled.php" 2>/dev/null)" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || echo "Unknown")
             echo "Last Update Date: $last_modified_date"
+            echo
         else
-            echo "config/configuration-compiled.php not found."
+            echo "Last Update unknown, config/configuration-compiled.php not found."
+            echo
+            
         fi
 
         # Check if the Phraseanet container is running
@@ -157,6 +168,7 @@ stop_stack() {
     echo "Stopping the MySQL server in the db container..."
     # Execute the mysqladmin command inside the container where the environment variable is defined
     $DOCKER_COMPSE_CMD exec db sh -c '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
+    echo
 
     echo "Stopping the Docker stack..."
     local env_files=($(get_env_files))
