@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 4.1.18
+
+#### Phraseanet Upgrade
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+
+### Stack (Docker Compose and Helm)
+
+- no change
+
+### Version Summary
+
+- Installation process (bin/setup system:install) now aborts if the application and/or databox contain existing data. the option -f  also answer all questions for yes AND  force installation to continue even if DB table  already exist
+
+## What's Changed
+* PHRAS-4146 bin/setup system:install - abort app installation if mysql db is not empty by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4599
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.17...4.1.18
+
+__
 ## 4.1.17
 
 #### Phraseanet Upgrade
@@ -37,7 +63,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.16...4.1.17
 
-
+__
 ## 4.1.16
 
 ### Update Instructions
@@ -111,6 +137,7 @@ The provided MariaDB container in the Docker Compose stack is not ready for prod
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.15...4.1.16
 
+__
 ## 4.1.15
 
 ### Update Instructions

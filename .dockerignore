@@ -38,3 +38,4 @@
 /www/thumbnails
 /www/.htaccess
 npm-debug.log
+stack_management.sh
