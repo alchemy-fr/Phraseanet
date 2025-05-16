@@ -81,7 +81,7 @@ display_info() {
     # Display Docker tag and registry information
     echo "Phraseanet Docker Tag: ${PHRASEANET_DOCKER_TAG:-Not set}"
     echo "Phraseanet Docker Registry: ${PHRASEANET_DOCKER_REGISTRY:-Not set}"
-    echo 
+    echo
 
     # Construct and display the internal URL of the Phraseanet instance
     if [ -n "$PHRASEANET_HOSTNAME" ] && [ -n "$PHRASEANET_SCHEME" ] && [ -n "$PHRASEANET_APP_PORT" ]; then
@@ -109,7 +109,6 @@ display_info() {
         else
             echo "Last Update unknown, config/configuration-compiled.php not found."
             echo
-            
         fi
 
         # Check if the Phraseanet container is running
@@ -141,6 +140,12 @@ display_info() {
     else
         echo "Phraseanet is not installed: config/configuration.yml not found."
     fi
+
+    # Fetch the latest version from GitHub
+    echo "Fetching the latest Phraseanet version from GitHub..."
+    local latest_version=$(curl -s https://api.github.com/repos/alchemy-fr/Phraseanet/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    echo "Latest Phraseanet Version on GitHub: $latest_version"
+    echo
 }
 
 # Function to display logs
