@@ -4,7 +4,7 @@ Certainly! Here's a README for the script that provides an overview of its funct
 
 # Docker Stack Management Script
 
-This script is designed to manage a Docker stack, particularly for Phraseanet applications. It provides functionalities to start, stop, check, and gather information about the Docker stack, including version checks, log viewing, and environment details.
+This script is an helper designed to manage a Phraseanet Docker compose stack by wrapping docker compose commande. It provides functionalities to start, stop, check, and gather information about the Docker stack, including docker and Phraseanet version checks, log viewing, and environment details.
 
 ## Features
 
