@@ -76,15 +76,7 @@ display_info() {
     # Display Docker tag and registry information
     echo "Phraseanet Docker Tag: ${PHRASEANET_DOCKER_TAG:-Not set}"
     echo "Phraseanet Docker Registry: ${PHRASEANET_DOCKER_REGISTRY:-Not set}"
-<<<<<<< HEAD:stack.sh
-<<<<<<< HEAD:stack.sh
     echo
-=======
-    echo 
->>>>>>> Clean output SKIP_CI:stack_management.sh
-=======
-    echo
->>>>>>> Adding latest version info:stack_management.sh
 
     # Construct and display the internal URL of the Phraseanet instance
     if [ -n "$PHRASEANET_HOSTNAME" ] && [ -n "$PHRASEANET_SCHEME" ] && [ -n "$PHRASEANET_APP_PORT" ]; then
@@ -112,13 +104,6 @@ display_info() {
         else
             echo "Last Update unknown, config/configuration-compiled.php not found."
             echo
-<<<<<<< HEAD:stack.sh
-<<<<<<< HEAD:stack.sh
-=======
-            
->>>>>>> Clean output SKIP_CI:stack_management.sh
-=======
->>>>>>> Adding latest version info:stack_management.sh
         fi
 
         # Check if the Phraseanet container is running
