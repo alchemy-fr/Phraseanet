@@ -137,7 +137,15 @@ display_info() {
                 echo
             fi
         else
-            echo "Phraseanet container is not running. Cannot fetch version information."
+            # Extract version from Version.php file
+            local version_php_file="lib/Alchemy/Phrasea/Core/Version.php"
+            if [ -f "$version_php_file" ]; then
+                local version_from_file=$(grep -o "private \$number = '[^']*" "$version_php_file" | sed "s/private \$number = '//;s/'//")
+                echo "Version from Version.php: $version_from_file"
+            else
+                echo "Version.php file not found."
+            fi
+            echo "Phraseanet container is not running. Cannot fetch version information from container."
             echo
         fi
     else
