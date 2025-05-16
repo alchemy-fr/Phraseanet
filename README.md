@@ -197,8 +197,8 @@ export PHRASEANET_APP_PORT=8082
 ```
 
 If you want persit this change you can also save your change in a files named `env.local` or `.env.local`
-These files are git ignored and permit stack customization without git conflict generation.
 
+These files are git ignored and permit stack customization without git conflict generation.
 
 If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
 
@@ -430,9 +430,4 @@ Where `<command>` can be:
 You can also download a testing pre installed Virtual Machine in OVA format here :
 
 https://www.phraseanet.com/download/
-
-
-
-
-
 
