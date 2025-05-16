@@ -186,7 +186,7 @@ COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,redis-session,ra
 
 
 You should review the default env variables defined in `.env` file.
-Use `export` method to override these values 
+Use `export` method to override these values
 
 i.e:
 ```bash
