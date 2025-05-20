@@ -48,5 +48,7 @@ services:
     volumes:
     - ${PHRASEANET_DB_DIR}_mysql8:/var/lib/mysql:rw
     networks:
-      - internal
+       internal:
+         aliases:
+            - db
 
