@@ -12,7 +12,7 @@ This script is an helper designed to manage a Phraseanet Docker compose stack by
 - **Version Checking**: Verify the compatibility of Docker and Docker Compose versions.
 - **Environment Information**: Gather detailed information about the environment, including Phraseanet installation status, version details, and internal URLs.
 - **Log Viewing**: View logs for all containers or filter logs for a specific container.
-- **Environment Variables**: Load and display environment variables from `.env` and either `env.local` or `.env.local` files.
+
 
 ## Usage
 
@@ -26,32 +26,32 @@ This script is an helper designed to manage a Phraseanet Docker compose stack by
 
 - **Start the Stack**:
   ```bash
-  ./manage_docker.sh start
+  ./stack.sh start
   ```
 
 - **Stop the Stack**:
   ```bash
-  ./manage_docker.sh stop
+  ./stack.sh stop
   ```
 
 - **Check Versions**:
   ```bash
-  ./manage_docker.sh check
+  ./stack.sh status
   ```
 
 - **Display Environment Information**:
   ```bash
-  ./manage_docker.sh info
+  ./stack.sh info
   ```
 
 - **View Logs**:
   - For all containers:
     ```bash
-    ./manage_docker.sh log
+    ./stack.sh logs
     ```
   - For a specific container:
     ```bash
-    ./manage_docker.sh log <container_name>
+    ./stack.sh logs <container_name>
     ```
 
 ### Environment Variables
