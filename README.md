@@ -197,13 +197,8 @@ export PHRASEANET_APP_PORT=8082
 ```
 
 If you want persit this change you can also save your change in a files named `env.local` or `.env.local`
-<<<<<<< HEAD
 
-These files are git ignored and permit stack customization without git conflict generation.
-=======
-These files are git ignored and permit stack customization without git conflict generation.
-
->>>>>>> update readme
+These files are git ignored and permit stack customization without git conflict.
 
 If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
 
