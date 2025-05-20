@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   mailhog:
     image: mailhog/mailhog
