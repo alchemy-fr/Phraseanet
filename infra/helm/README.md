@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]  
 > Helm charts included in this repositorie have been moved here
-> https://github.com/alchemy-fr/alchemy-helm-charts-repo/tree/main/charts/phraseanet
+> https://github.com/alchemy-fr/phraseanet-helm-charts
 
 Helm charts and bash script in this repositorie are not maintained anymore
 
