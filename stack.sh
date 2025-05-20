@@ -42,11 +42,6 @@ check_versions() {
 
     echo "Docker and Docker Compose versions are compatible."
 
-    # Get uptime of the stack
-    echo "Stack Uptime:"
-    $DOCKER_COMPSE_CMD ps | awk 'NR>1 {print $4}'
-    echo
-
     # Get internal IP addresses
     echo "Internal IP Addresses:"
     $DOCKER_COMPSE_CMD exec -T db sh -c 'ip addr show eth0 | grep "inet " | awk "{print \$2}" | cut -d/ -f1'
@@ -200,17 +195,17 @@ case "$1" in
     stop)
         stop_stack
         ;;
-    check)
+    status)
         check_versions
         ;;
     info)
         display_info
         ;;
-    log)
+    logs)
         display_logs "$2"
         ;;
     *)
-        echo "Usage: $0 {start|stop|check|info|log [container_name]}"
+        echo "Usage: $0 {start|stop|status|info|logs [container_name]}"
         exit 1
 esac
 
