@@ -22,7 +22,7 @@ services:
       - internal
 
   rabbitmq:
-    image: $RABBITMQ_IMAGE_VERSION
+    image: $RABBITMQ_IMAGE_TAG
     profiles: ["rabbitmq"]
     restart: on-failure
     hostname: $RABBITMQ_HOSTNAME
@@ -35,14 +35,14 @@ services:
       - internal
   
   redis:
-    image: redis
+    image: $REDIS_CACHE_IMAGE_TAG
     profiles: ["redis"]
     restart: on-failure
     networks:
       - internal
 
   redis-session:
-    image: redis
+    image: $REDIS_SESSION_IMAGE_TAG
     profiles: ["redis-session"]
     restart: on-failure
     networks:
