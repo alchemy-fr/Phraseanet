@@ -50,6 +50,10 @@ services:
 
   elasticsearch:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     profiles: ["elasticsearch"]
     build: ./docker/elasticsearch
     restart: on-failure
