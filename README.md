@@ -186,7 +186,7 @@ COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,redis-session,ra
 
 
 You should review the default env variables defined in `.env` file.
-Use `export` method to override these values 
+Use `export` method to override these values
 
 i.e:
 ```bash
@@ -198,24 +198,26 @@ export PHRASEANET_APP_PORT=8082
 
 If you want persit this change you can also save your change in a files named `env.local` or `.env.local`
 
-These files are git ignored and permit stack customization without git conflict generation.
+These files are git ignored and permit stack customization without git conflict.
 
 If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
 
 
 ### stack Management
  
-To start and stop the stack, use the `stack_management.sh start|stop|info|check|log` script at the project root.
+
+To start and stop the stack, use the `stack_management.sh start|stop|info|status|log` script at the project root.
 this script work only Linux and MacOS.
 
 This script wrapping standard oprations for the stack, using standard docker compose cmd and take in account `.env` and `env.local | .env.local`  files.
+
 
 The `stop` operation is the most critical function of the script, as it ensures a clean shutdown 
 of the database container before stopping the entire stack.
 
 This script is useful if you are using the database container within the stack.
 
-see more here ![stack Management](doc/infra/compose/stack_management.md)
+see more here ![stack](doc/infra/compose/stack.md)
 
 ### Using a env.local method for custom .env values
 

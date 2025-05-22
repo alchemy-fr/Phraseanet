@@ -22,53 +22,31 @@ get_env_files() {
 }
 
 # Function to check Docker and Docker Compose versions and display additional information
-check_versions() {
-    local required_docker_version="25.0.5"
-    local required_compose_version="2.29.0"
-
-    # Get Docker version
-    local docker_version=$(docker --version | awk -F'[ ,]' '{print $3}')
-    if [ "$(printf '%s\n' "$required_docker_version" "$docker_version" | sort -V | head -n1)" != "$required_docker_version" ]; then
-        echo "Error: Docker version $docker_version is less than the required version $required_docker_version."
-        exit 1
-    fi
-
-    # Get Docker Compose version
-    local compose_version=$($DOCKER_COMPSE_CMD version --short)
-    if [ "$(printf '%s\n' "$required_compose_version" "$compose_version" | sort -V | head -n1)" != "$required_compose_version" ]; then
-        echo "Error: Docker Compose version $compose_version is less than the required version $required_compose_version."
-        exit 1
-    fi
-
-    echo "Docker and Docker Compose versions are compatible."
-
-    # Get uptime of the stack
-    echo "Stack Uptime:"
-    $DOCKER_COMPSE_CMD ps | awk 'NR>1 {print $4}'
-    echo
-
-    # Get internal IP addresses
-    echo "Internal IP Addresses:"
-    $DOCKER_COMPSE_CMD exec -T db sh -c 'ip addr show eth0 | grep "inet " | awk "{print \$2}" | cut -d/ -f1'
-    echo
+stack_status() {
+    check_compose_version
 
     # Get container status
     echo "Container Status:"
-    $DOCKER_COMPSE_CMD ps
+    $DOCKER_COMPOSE_CMD ps
     echo
 
     # Get resource usage
     echo "Resource Usage:"
-    $DOCKER_COMPSE_CMD top
+    $DOCKER_COMPOSE_CMD top
     echo
+
+    display_rabbitmq_info
+    echo 
+    display_db_info
 }
 
 # Function to display information about the environment
 display_info() {
     echo "Checking environment information..."
     echo
+    
+    check_compose_version
 
-    # Load environment variables
     local env_files=($(get_env_files))
     for env_file in "${env_files[@]}"; do
         if [ -f "$env_file" ]; then
@@ -77,7 +55,7 @@ display_info() {
             set +a
         fi
     done
-
+    
     # Display Docker tag and registry information
     echo "Phraseanet Docker Tag: ${PHRASEANET_DOCKER_TAG:-Not set}"
     echo "Phraseanet Docker Registry: ${PHRASEANET_DOCKER_REGISTRY:-Not set}"
@@ -99,12 +77,12 @@ display_info() {
 
         # Get creation date of the configuration file
         local creation_date=$(date -r "$(stat -f %B "config/configuration.yml" 2>/dev/null || stat -c %Y "config/configuration.yml" 2>/dev/null)" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || echo "Unknown")
-        echo "Installation Date: $creation_date"
+        echo "Installation Date (configuration.yml creation date): $creation_date"
 
         # Check for the compiled configuration file and get its last modification date
         if [ -f "config/configuration-compiled.php" ]; then
             local last_modified_date=$(date -r "$(stat -f %m "config/configuration-compiled.php" 2>/dev/null || stat -c %Y "config/configuration-compiled.php" 2>/dev/null)" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || echo "Unknown")
-            echo "Last Update Date: $last_modified_date"
+            echo "Last Update Date (configuration-compiled.yml update date): $last_modified_date"
             echo
         else
             echo "Last Update unknown, config/configuration-compiled.php not found."
@@ -112,7 +90,7 @@ display_info() {
         fi
 
         # Check if the Phraseanet container is running
-        if $DOCKER_COMPSE_CMD ps | grep -q "phraseanet.*Up"; then
+        if $DOCKER_COMPOSE_CMD ps | grep -q "phraseanet.*Up"; then
             echo "Phraseanet container is running. Fetching version information..."
 
             # Extract version from Version.php file
@@ -125,7 +103,7 @@ display_info() {
             fi
 
             # Execute the command to get Phraseanet version from console
-            local version_from_console=$($DOCKER_COMPSE_CMD exec phraseanet sh -c 'bin/console --version | grep -o "KONSOLE KOMMANDER version [^ ]* [^ ]*" | awk "{print \$NF}"')
+            local version_from_console=$($DOCKER_COMPOSE_CMD exec phraseanet sh -c 'bin/console --version | grep -o "KONSOLE KOMMANDER version [^ ]* [^ ]*" | awk "{print \$NF}"')
             echo "Version from console: $version_from_console"
 
             # Compare versions
@@ -164,32 +142,78 @@ display_info() {
 display_logs() {
     if [ -n "$1" ]; then
         echo "Displaying logs for container: $1"
-        $DOCKER_COMPSE_CMD logs -f "$1"
+        $DOCKER_COMPOSE_CMD logs -f "$1"
     else
         echo "Displaying logs for all containers"
-        $DOCKER_COMPSE_CMD logs -f
+        $DOCKER_COMPOSE_CMD logs -f
     fi
 }
 
-DOCKER_COMPSE_CMD=$(detect_docker_compose_command)
+DOCKER_COMPOSE_CMD=$(detect_docker_compose_command)
 
 # Function to start the Docker stack
 start_stack() {
     echo "Starting the Docker stack..."
     local env_files=($(get_env_files))
-    $DOCKER_COMPSE_CMD "${env_files[@]/#/--env-file=}" up -d
+    $DOCKER_COMPOSE_CMD "${env_files[@]/#/--env-file=}" up -d
 }
 
 # Function to stop the Docker stack
 stop_stack() {
     echo "Stopping the MySQL server in the db container..."
     # Execute the mysqladmin command inside the container where the environment variable is defined
-    $DOCKER_COMPSE_CMD exec db sh -c '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
+    $DOCKER_COMPOSE_CMD exec db sh -c '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
     echo
 
     echo "Stopping the Docker stack..."
     local env_files=($(get_env_files))
-    $DOCKER_COMPSE_CMD "${env_files[@]/#/--env-file=}" down
+    $DOCKER_COMPOSE_CMD "${env_files[@]/#/--env-file=}" down
+}
+
+# Function rabbimq queue information
+display_rabbitmq_info() {
+    echo "RabbitMQ queue informations :"
+    $DOCKER_COMPOSE_CMD exec rabbitmq sh -c 'rabbitmqctl --version  & rabbitmqctl list_queues --vhost $PHRASEANET_RABBITMQ_VHOST'
+    echo
+}
+
+# Function check compose version
+check_compose_version() {
+    local compose_version=$($DOCKER_COMPOSE_CMD version --short)
+    if [[ $compose_version == *"v2"* ]]; then
+        echo "Docker Compose v2 detected."
+    else
+        echo "Docker Compose v1 detected."
+    fi
+
+    local required_docker_version="25.0.5"
+    local required_compose_version="2.29.0"
+
+    # Get Docker version
+    local docker_version=$(docker --version | awk -F'[ ,]' '{print $3}')
+    if [ "$(printf '%s\n' "$required_docker_version" "$docker_version" | sort -V | head -n1)" != "$required_docker_version" ]; then
+        echo "Error: Docker version $docker_version is less than the required version $required_docker_version."
+        exit 1
+    fi
+
+    # Get Docker Compose version
+    local compose_version=$($DOCKER_COMPOSE_CMD version --short)
+    if [ "$(printf '%s\n' "$required_compose_version" "$compose_version" | sort -V | head -n1)" != "$required_compose_version" ]; then
+        echo "Error: Docker Compose version $compose_version is less than the required version $required_compose_version."
+        exit 1
+    fi
+
+    echo "Docker and Docker Compose versions are compatible."
+    echo "Docker Version: $docker_version"
+    echo "Docker Compose Version: $compose_version"
+    echo
+}
+
+# Function db status
+display_db_info () {
+    echo "DB status"
+    $DOCKER_COMPOSE_CMD exec db sh -c 'env |grep MYSQL_ & mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES;SHOW PROCESSLIST;"'
+    echo
 }
 
 # Check the argument passed to the script
@@ -200,17 +224,17 @@ case "$1" in
     stop)
         stop_stack
         ;;
-    check)
-        check_versions
+    status)
+        stack_status
         ;;
-    info)
+    version)
         display_info
         ;;
-    log)
+    logs)
         display_logs "$2"
         ;;
     *)
-        echo "Usage: $0 {start|stop|check|info|log [container_name]}"
+        echo "Usage: $0 {start|stop|status|version|logs [container_name]}"
         exit 1
 esac
 
