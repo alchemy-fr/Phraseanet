@@ -40,6 +40,13 @@ stack_status() {
     display_db_info
 }
 
+# Function to display the Kernel version (Linux and macOS compatible)
+display_kernel_version() {
+    echo "Kernel Version:"
+    uname -sr
+    echo
+}
+
 # Function to display information about the environment
 display_info() {
     echo "Checking environment information..."
@@ -226,6 +233,9 @@ case "$1" in
         ;;
     status)
         stack_status
+        ;;
+    kernel)
+        display_kernel_version
         ;;
     version)
         display_info
