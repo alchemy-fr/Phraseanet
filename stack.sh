@@ -44,6 +44,11 @@ stack_status() {
 display_info() {
     echo "Checking environment information..."
     echo
+
+    # Kernel version (Linux and macOS compatible)
+    echo "Kernel Version:"
+    uname -sr
+    echo
     
     check_compose_version
 
