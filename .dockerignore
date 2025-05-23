@@ -38,4 +38,6 @@
 /www/thumbnails
 /www/.htaccess
 npm-debug.log
-stack_management.sh
+stack.sh
+/.vagrant
+

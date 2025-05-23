@@ -1,26 +1,4 @@
 services:
-
-  db:
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
-    build: ./docker/db
-    restart: on-failure
-    profiles: ["db-volume-container"]
-    environment:
-    - MYSQL_ROOT_PASSWORD
-    - MYSQL_MAX_ALLOWED_PACKET
-    - MYSQL_MAX_CONNECTION
-    - MYSQL_LONG_QUERY_TIME
-    - MYSQL_SLOW_QUERY_LOG
-    - MYSQL_QUERY_CACHE_LIMIT
-    - MYSQL_QUERY_CACHE_SIZE
-    - MYSQL_KEY_BUFFER_SIZE
-    - MYSQL_CONNECT_TIMEOUT
-    - MYSQL_WAIT_TIMEOUT
-    - MARIADB_AUTO_UPGRADE
-    volumes:
-    - db_vol:/var/lib/mysql
-    networks:
-      - internal
   db-mysql8:
     image: mysql:8.0.36-debian
     # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
@@ -51,4 +29,5 @@ services:
        internal:
          aliases:
             - db
+            
 
