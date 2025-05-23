@@ -35,7 +35,7 @@ class StoryController extends Controller
         $storyTitleMetaStructIds = [];
         foreach ($this->getApplicationBox()->get_databoxes() as $db) {
             foreach ($db->get_meta_structure() as $metaStruct) {
-                if ($metaStruct->get_thumbtitle() == "1" &&
+                if ($metaStruct->get_thumbtitle() != "0" &&
                     !$metaStruct->is_readonly() &&
                     $metaStruct->get_gui_editable() &&
                     $metaStruct->get_type() == \databox_field::TYPE_STRING
