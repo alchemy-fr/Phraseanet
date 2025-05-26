@@ -29,5 +29,6 @@ services:
        internal:
          aliases:
             - db
-            
+    pre_stop:
+      - command: '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'        
 

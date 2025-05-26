@@ -22,6 +22,8 @@ services:
       internal:
          aliases:
             - db
+    pre_stop:
+      - command: '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
 
   db-docker-vol:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
@@ -46,7 +48,8 @@ services:
        internal:
          aliases:
             - db
-
+    pre_stop:
+      - command: '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
   rabbitmq:
     image: $RABBITMQ_IMAGE_TAG
     profiles: ["rabbitmq"]

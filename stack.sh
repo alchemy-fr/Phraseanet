@@ -37,6 +37,7 @@ stack_status() {
 
     display_rabbitmq_info
     echo 
+
     display_db_info
 }
 
@@ -191,8 +192,8 @@ check_compose_version() {
         echo "Docker Compose v1 detected."
     fi
 
-    local required_docker_version="25.0.5"
-    local required_compose_version="2.29.0"
+    local required_docker_version="27.3.1"
+    local required_compose_version="2.30.3"
 
     # Get Docker version
     local docker_version=$(docker --version | awk -F'[ ,]' '{print $3}')
@@ -220,7 +221,34 @@ display_db_info () {
     $DOCKER_COMPOSE_CMD exec db sh -c 'env |grep MYSQL_ & mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES;SHOW PROCESSLIST;"'
     echo
 }
-
+ # Function to enable or disable maintenance mode
+maintenance_mode() {
+    if [ "$1" == "on" ]; then
+        echo "Enabling maintenance mode..."
+        $DOCKER_COMPOSE_CMD exec phraseanet sh -c 'envsubst < "/usr/local/etc/maintenance.html" > /var/alchemy/Phraseanet/datas/nginx/maintenance.html'
+        echo "Maintenance mode is now enabled. it will be disabling after the next restart of stack."
+        echo "if you want persist maintenance mode, you must set the environment variable PHRASEANET_MAINTENANCE_MODE=1 in your .env file."
+    elif [ "$1" == "off" ]; then
+        echo "Disabling maintenance mode..."
+        $DOCKER_COMPOSE_CMD exec phraseanet sh -c 'rm -rf /var/alchemy/Phraseanet/datas/nginx/maintenance.html'
+        echo "Maintenance mode is now disabled."
+    else
+        echo "Usage: $0 maintenance {on|off}"
+        exit 1
+    fi
+}
+# Function to apply setup
+apply_setup() {
+    echo "Applying setup..."
+    local env_files=($(get_env_files))
+    $DOCKER_COMPOSE_CMD "${env_files[@]/#/--env-file=}" run --rm setup
+    if [ $? -eq 0 ]; then
+        echo "Setup applied successfully."
+    else
+        echo "Failed to apply setup."
+        exit 1
+    fi
+}
 # Check the argument passed to the script
 case "$1" in
     start)
@@ -238,8 +266,19 @@ case "$1" in
     logs)
         display_logs "$2"
         ;;
+    maintenance)
+        if [ -n "$2" ]; then
+            maintenance_mode "$2"
+        else
+            echo "Usage: $0 maintenance {on|off}"
+            exit 1
+        fi
+        ;;
+    apply)
+        apply_setup
+        ;;
     *)
-        echo "Usage: $0 {start|stop|status|version|logs [container_name]}"
+        echo "Usage: $0 {start|stop|status|version|maintenance [on|off]|logs [container_name]}"
         exit 1
 esac
 
