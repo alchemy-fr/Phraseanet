@@ -238,7 +238,7 @@ maintenance_mode() {
     fi
 }
 # Function to apply setup
-apply-setup() {
+apply_setup() {
     echo "Applying setup..."
     local env_files=($(get_env_files))
     $DOCKER_COMPOSE_CMD "${env_files[@]/#/--env-file=}" run --rm setup
