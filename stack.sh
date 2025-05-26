@@ -238,7 +238,7 @@ maintenance_mode() {
     fi
 }
 # Function to apply setup
-apply_setup() {
+apply-setup() {
     echo "Applying setup..."
     local env_files=($(get_env_files))
     $DOCKER_COMPOSE_CMD "${env_files[@]/#/--env-file=}" run --rm setup
@@ -274,11 +274,11 @@ case "$1" in
             exit 1
         fi
         ;;
-    apply)
+    apply-setup)
         apply_setup
         ;;
     *)
-        echo "Usage: $0 {start|stop|status|version|maintenance [on|off]|logs [container_name]}"
+        echo "Usage: $0 {start|stop|status|version|maintenance [on|off]|logs [container_name]|apply-setup}"
         exit 1
 esac
 
