@@ -13,17 +13,25 @@
 
 ### Stack (Docker Compose and Helm)
 
-- RabbitMQ image version can be set in .env and bumped to 4.1.0
-- Introducing a stack_management script for Linux and Macos performing a clean stop of db container
+- The RabbitMQ image version can be set in the .env file and updated to 4.1.0-management.
+- Introducing a stack_management script, a shortcut for the stack only for Linux and macOS hosts.
+- The Minimum required Docker and Docker compose version are now `docker >=27.3.1` and `compose >= 2.30.3`
+- Defining Elasticsearch ulimits.
 
 ### Version Summary
-
- To do
-
+ 
+- New API routes for retrieving a story from records.
+- Bug fix on story title.
+- ImageMagick policies are applied in the fpm container
+ 
 ## What's Changed
-
- * PHRAS-4151_stories-reference-in-api by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4602
- * PHRAS-4153: Rabbitmq : Update rabbitmq to 4.1.0 to fix CVE-2025-32433  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4601
+* PHRAS-4151_stories-reference-in-api by @jygaulier in https://github.com/alchemy-fr/Phraseanet/pull/4602
+* PHRAS-4153: Rabbitmq : Update rabbitmq to 4.1.0 to fix CVE-2025-32433  by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4601
+* PHRAS-4154 imageMagick policies management in FPM container by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4604
+* PHRAS-4156 Redis image tag from env and others docker stacks fix by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4608
+* PHRAS-4157 Add Elasticsearch ulimits inside docker-compose.datastores.yml by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4612
+* PHRAS-4158: Prod - Story -Story title is Nok when is not thumbtitle="1" by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4614
+* PHRAS-4149 stack management by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4615
 
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.18...4.1.19

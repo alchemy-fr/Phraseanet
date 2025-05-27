@@ -166,14 +166,9 @@ start_stack() {
 
 # Function to stop the Docker stack
 stop_stack() {
-    echo "Stopping the MySQL server in the db container..."
-    # Execute the mysqladmin command inside the container where the environment variable is defined
-    $DOCKER_COMPOSE_CMD exec db sh -c '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
-    echo
-
     echo "Stopping the Docker stack..."
     local env_files=($(get_env_files))
-    $DOCKER_COMPOSE_CMD "${env_files[@]/#/--env-file=}" down
+    $DOCKER_COMPOSE_CMD down
 }
 
 # Function rabbimq queue information

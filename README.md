@@ -211,10 +211,6 @@ this script work only Linux and MacOS.
 
 This script wrapping standard oprations for the stack, using standard docker compose cmd and take in account `.env` and `env.local | .env.local`  files.
 
-
-The `stop` operation is the most critical function of the script, as it ensures a clean shutdown 
-of the database container before stopping the entire stack.
-
 This script is useful if you are using the database container within the stack.
 
 see more here ![stack](doc/infra/compose/stack.md)
