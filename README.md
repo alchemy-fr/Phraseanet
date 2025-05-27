@@ -206,14 +206,16 @@ If you are not interested in the development of Phraseanet, you can ignore every
 ### stack Management
  
 
-To start and stop the stack, use the `stack_management.sh start|stop|info|status|log` script at the project root.
+To start and stop the stack, use the 
+`start|stop|status|version|maintenance [on|off]|logs [container_name]|apply-setup` 
+script at the project root.
 this script work only Linux and MacOS.
 
 This script wrapping standard oprations for the stack, using standard docker compose cmd and take in account `.env` and `env.local | .env.local`  files.
 
 This script is useful if you are using the database container within the stack.
 
-see more here ![stack](doc/infra/compose/stack.md)
+More reading [here](doc/infra/compose/stack.md)
 
 ### Using a env.local method for custom .env values
 
