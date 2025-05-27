@@ -8,6 +8,7 @@
 /env.*
 /.git
 /.gitignore
+/.github
 /.travis.yml
 /AUTHORS
 /CONTRIBUTORS
@@ -38,4 +39,8 @@
 /www/thumbnails
 /www/.htaccess
 npm-debug.log
-stack_management.sh
+stack.sh
+/.vagrant
+/Vagrantfile
+
+

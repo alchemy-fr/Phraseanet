@@ -19,8 +19,37 @@ services:
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql
     networks:
-      - internal
+      internal:
+         aliases:
+            - db
+    pre_stop:
+      - command: '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
 
+  db-docker-vol:
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
+    build: ./docker/db
+    restart: on-failure
+    profiles: ["db-docker-vol"]
+    environment:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_MAX_ALLOWED_PACKET
+    - MYSQL_MAX_CONNECTION
+    - MYSQL_LONG_QUERY_TIME
+    - MYSQL_SLOW_QUERY_LOG
+    - MYSQL_QUERY_CACHE_LIMIT
+    - MYSQL_QUERY_CACHE_SIZE
+    - MYSQL_KEY_BUFFER_SIZE
+    - MYSQL_CONNECT_TIMEOUT
+    - MYSQL_WAIT_TIMEOUT
+    - MARIADB_AUTO_UPGRADE
+    volumes:
+    - db_vol:/var/lib/mysql
+    networks:
+       internal:
+         aliases:
+            - db
+    pre_stop:
+      - command: '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
   rabbitmq:
     image: $RABBITMQ_IMAGE_TAG
     profiles: ["rabbitmq"]

@@ -97,8 +97,8 @@ Get official support : https://www.alchemy.fr/en/rubrique/services/
 ## Prerequisites
 
 
-- docker >=25.0.5
-- docker compose >= 2.29.0
+- docker >=27.3.1
+- docker compose >= 2.30.3
 
 In the stack Docker, Docker Compose included in this repo starts by default in test mode. 
 All services are launched in a separate container and except "Phraseanet app" and "workers" containers, 
