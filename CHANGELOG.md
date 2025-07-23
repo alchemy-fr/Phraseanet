@@ -22,7 +22,7 @@
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.19...4.1.20
 
-
+__
 ## 4.1.19
 
 #### Phraseanet Upgrade
