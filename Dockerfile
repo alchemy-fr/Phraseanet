@@ -25,7 +25,7 @@ RUN cd /tmp \
         python3 \
         pkg-config \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists \
+    && rm -rf /var/lib/apt/lists/* \
     && git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh \
     && mkdir -p /var/alchemy/Phraseanet \
     && chown -R app:app /var/alchemy
@@ -109,7 +109,7 @@ RUN apt-get install -y --no-install-recommends  logrotate
 RUN mkdir -p /var/log/supervisor \
     && chown -R app: /var/log/supervisor \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
+    && rm -rf /var/lib/apt/lists/* 
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
 COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
