@@ -101,7 +101,7 @@ FROM builder AS phraseanet-worker
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-
+USER root
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends  supervisor
 RUN apt-get install -y --no-install-recommends  logrotate 
