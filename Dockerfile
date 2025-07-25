@@ -25,7 +25,6 @@ RUN cd /tmp \
         python3 \
         pkg-config \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
     && git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh \
     && mkdir -p /var/alchemy/Phraseanet \
     && chown -R app:app /var/alchemy
