@@ -73,6 +73,7 @@ CMD []
 
 FROM builder AS phraseanet-setup
 
+USER root
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
@@ -86,6 +87,7 @@ CMD []
 
 FROM builder AS phraseanet-fpm
 
+USER root
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
@@ -98,10 +100,10 @@ CMD ["php-fpm", "-F"]
 
 FROM builder AS phraseanet-worker
 
+USER root
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-USER root
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends  supervisor
 RUN apt-get install -y --no-install-recommends  logrotate 
@@ -139,6 +141,7 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 #########################################################################
 
 FROM builder AS phraseanet-saml-sp
+USER root
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
