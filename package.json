@@ -58,7 +58,7 @@
     "jquery-lazyload": "^1.9.7",
     "jquery-simplecolorpicker": "^0.3.1",
     "jquery-treeview": "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e",
-    "jquery-ui": "^1.12.1",
+    "jquery-ui": "^1.13.2",
     "jquery-ui-datepicker-with-i18n": "^1.10.4",
     "jquery-ui-dist": "^1.12.1",
     "jquery.cookie": "^1.4.1",
