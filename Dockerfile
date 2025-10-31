@@ -45,9 +45,6 @@ RUN composer install --prefer-dist --no-dev --no-progress --classmap-authoritati
 
 COPY --chown=app  . .
 
-RUN mkdir -p node_modules/jquery-ui-datepicker-with-i18n/ui/i18n && \
-    touch node_modules/jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-ar.js
-
 RUN make install
 
 ADD ./docker/builder/root /
