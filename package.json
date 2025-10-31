@@ -53,14 +53,14 @@
     "html5shiv": "^3.7.3",
     "humane-js": "^3.0.6",
     "i18next": "^8.4.3",
-    "jquery": "~1.11.3",
+    "jquery": "^3.5.1",
     "jquery-datetimepicker": "^2.5.21",
     "jquery-lazyload": "^1.9.7",
     "jquery-simplecolorpicker": "^0.3.1",
     "jquery-treeview": "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e",
-    "jquery-ui": "^1.12.1",
-    "jquery-ui-datepicker-with-i18n": "^1.10.4",
-    "jquery-ui-dist": "^1.12.1",
+    "jquery-ui": "^1.13.3",
+    "jquery-ui-datepicker-with-i18n": "^1.13.3",
+    "jquery-ui-dist": "^1.13.3",
     "jquery.cookie": "^1.4.1",
     "jquery.fancytree": "^2.27.0",
     "normalize-css": "^2.1.0",
@@ -70,7 +70,7 @@
     "requirejs": "^2.3.5",
     "select2": "^4.1.0-rc.0",
     "tinymce": "^4.0.28",
-    "underscore": "^1.8.3",
+    "underscore": "^1.13.6",
     "zxcvbn": "^4.4.2"
   }
 }
