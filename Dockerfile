@@ -45,6 +45,15 @@ RUN composer install --prefer-dist --no-dev --no-progress --classmap-authoritati
 
 COPY --chown=app  . .
 
+# Temporary stub for missing jquery-ui-datepicker-with-i18n locale files
+RUN mkdir -p node_modules/jquery-ui-datepicker-with-i18n/ui/i18n && \
+    touch node_modules/jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-ar.js && \
+    touch node_modules/jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-de.js && \
+    touch node_modules/jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-es.js && \
+    touch node_modules/jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-fr.js && \
+    touch node_modules/jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-nl.js && \
+    touch node_modules/jquery-ui-datepicker-with-i18n/ui/i18n/jquery.ui.datepicker-en-GB.js
+
 RUN make install
 
 ADD ./docker/builder/root /
