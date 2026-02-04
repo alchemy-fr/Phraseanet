@@ -6,7 +6,7 @@ Phraseanet 4.1 - Digital Asset Management application
 ---
 > **✨ Phraseanet Evolves into Phrasea! ✨**
 >
-> After years of innovation and growth, **[Phraseanet is getting a fresh start as **Phrasea**](https://www.phrasea.com)**.
+> After years of innovation and growth, **[Phraseanet is getting a fresh start as **Phrasea**](https://github.com/alchemy-fr/phrasea)**.
 > This transformation reflects our commitment to delivering a modern, scalable, and user-friendly **Digital Asset Management (DAM)** solution.
 >
 > With **Phrasea**, you’ll find the same powerful features you trust, now enhanced with:
@@ -17,6 +17,7 @@ Phraseanet 4.1 - Digital Asset Management application
 > 🔗 **Explore the new Phrasea:**
 > - [Official Website](https://www.phrasea.com)
 > - [GitHub Repository](https://github.com/alchemy-fr/phrasea)
+> - [Phrasea Documentation](https://docs.phrasea.com)
 >
 > *Phraseanet’s legacy lives on in Phrasea. Stay tuned for updates!*
 ---
