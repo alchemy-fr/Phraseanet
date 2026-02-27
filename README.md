@@ -3,6 +3,26 @@ Phraseanet 4.1 - Digital Asset Management application
 
 [![CI](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml)
 
+---
+> **✨ Phraseanet Evolves into Phrasea! ✨**
+>
+> After years of innovation and growth, **[Phraseanet is getting a fresh start as **Phrasea**](https://github.com/alchemy-fr/phrasea)**.
+> This transformation reflects our commitment to delivering a modern, scalable, and user-friendly **Digital Asset Management (DAM)** solution.
+>
+> With **Phrasea**, you’ll find the same powerful features you trust, now enhanced with:
+> - Improved performance and architecture
+> - Streamlined workflows
+> - Renewed focus on flexibility and integration
+>
+> 🔗 **Explore the new Phrasea:**
+> - [Official Website](https://www.phrasea.com)
+> - [GitHub Repository](https://github.com/alchemy-fr/phrasea)
+> - [Phrasea Documentation](https://docs.phrasea.com)
+>
+> *Phraseanet’s legacy lives on in Phrasea. Stay tuned for updates!*
+---
+
+
 # Main Features :
 
  - Several GUI : Prod, Admin, Thesaurus, Lightbox, Report,    
