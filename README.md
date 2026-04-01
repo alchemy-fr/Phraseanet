@@ -445,9 +445,4 @@ Where `<command>` can be:
 - `bin/console task-manager:scheduler:run`
 - ...
 
-# Try Phraseanet with Pre installed VM (deprecated)
-
-You can also download a testing pre installed Virtual Machine in OVA format here :
-
-https://www.phraseanet.com/download/
 
