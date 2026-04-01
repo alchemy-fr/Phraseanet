@@ -59,7 +59,7 @@ For development with Phraseanet API, see https://docs.phraseanet.com/4.1/en/Deve
 
 You can download a packaged version here:
 
-https://www.phraseanet.com/en/download/
+https://www.phraseanet.com/en/resourcecenter
 
 
 You can also ```git clone``` this repository for dev and/or test. 
