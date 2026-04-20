@@ -25,7 +25,6 @@ RUN cd /tmp \
         python3 \
         pkg-config \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists \
     && git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh \
     && mkdir -p /var/alchemy/Phraseanet \
     && chown -R app:app /var/alchemy
@@ -72,8 +71,9 @@ CMD []
 # Phraseanet install and setup application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.3 AS phraseanet-setup
+FROM builder AS phraseanet-setup
 
+USER root
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
@@ -85,8 +85,9 @@ CMD []
 # Phraseanet web application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.3 AS phraseanet-fpm
+FROM builder AS phraseanet-fpm
 
+USER root
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
@@ -97,19 +98,19 @@ CMD ["php-fpm", "-F"]
 # Phraseanet worker application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.3 AS phraseanet-worker
+FROM builder AS phraseanet-worker
 
+USER root
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends  supervisor
 RUN apt-get install -y --no-install-recommends  logrotate 
 RUN mkdir -p /var/log/supervisor \
     && chown -R app: /var/log/supervisor \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
+    && rm -rf /var/lib/apt/lists/* 
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
 COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
@@ -139,7 +140,8 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 # phraseanet adapted simplesaml service provider 
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.2.3 AS phraseanet-saml-sp
+FROM builder AS phraseanet-saml-sp
+USER root
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
