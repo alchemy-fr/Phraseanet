@@ -577,7 +577,7 @@ SQL;
     private static function cleanLabel(unicode $unicode, $label)
     {
         $label = $unicode->remove_nonazAZ09(
-            preg_replace("/\\s+/", '-', trim($label))
+            preg_replace("/[\\s+]+/", '-', trim($label))
         );
 
         return $label ? $label : 'untitled';
