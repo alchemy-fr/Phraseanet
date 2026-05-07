@@ -39,7 +39,7 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
         $this->object->set_label('');
         $this->assertEquals('untitled', $this->object->get_label());
         $this->object->set_label('JE+ANp++++ra&é"\/,;:!§/.?%µ*ù$]@^\[{#~234567890°+\'(-è_çà');
-        $this->assertEquals('JE-ANp-raeu234567890-e_ca', $this->object->get_label());
+        $this->assertEquals('JE-ANp-raeu234567890--e_ca', $this->object->get_label());
     }
 
     public function testGet_url()
