@@ -103,7 +103,15 @@ class ToolsController extends Controller
         /** @var record_adapter $rec */
         foreach ($records as $rec) {
 
-            $databoxSubdefs = $rec->getDatabox()->get_subdef_structure()->getSubdefGroup($rec->getType());
+            $recordType = $rec->getType();
+
+            // if record type is unknown
+            // use the type 'document' setting
+            if ($recordType == 'unknown') {
+                $recordType = 'document';
+            }
+
+            $databoxSubdefs = $rec->getDatabox()->get_subdef_structure()->getSubdefGroup($recordType);
             if ($databoxSubdefs !== null) {
                 foreach ($databoxSubdefs as $sub) {
                     if ($sub->isTobuild()) {
