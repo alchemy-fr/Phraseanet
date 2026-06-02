@@ -575,10 +575,10 @@ SQL;
      * @param $label
      * @return string
      */
-    private static function cleanLabel(unicode $unicode, $label, $sanitizeCharacter='')
+    private static function cleanLabel(unicode $unicode, $label, $sanitizeCharacter='-')
     {
         if (!in_array($sanitizeCharacter, ['-', '_', '+'])) {
-            $sanitizeCharacter = '';
+            $sanitizeCharacter = '-';
         }
 
         $label = $unicode->remove_nonazAZ09(
