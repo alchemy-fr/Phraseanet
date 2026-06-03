@@ -573,7 +573,7 @@ class set_export extends set_abstract
 
             $sanitizeCharacter = $this->app['conf']->get(['registry', 'actions', 'filename-sanitize-character'], '');
             if (!in_array($sanitizeCharacter, ['-', '_', '+'])) {
-                $sanitizeCharacter = '_';
+                $sanitizeCharacter = '-';
             }
 
             // cleanup the exportname so it can be used as a filename (even if it came from the originale_name)
