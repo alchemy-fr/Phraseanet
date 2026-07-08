@@ -37,7 +37,7 @@ class V3SubdefsServiceController extends Controller
      */
     public function callbackAction_POST(Request $request)
     {
-        $logto = realpath(dirname(__FILE__).'/../../../../../../logs') . '/';
+        $logto = \p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'worker_tmp_files']));
 
         /** @var UploadedFile $file */
         $file = $request->files->get('file');
@@ -45,11 +45,13 @@ class V3SubdefsServiceController extends Controller
 
         // save the received file
         $src = $file->getRealPath();
-        $dst = $logto . $info['filename'];
+        $dst = $logto . $this->app['unicode']->remove_nonazAZ09($info['filename'], true, true, true);
         copy($src, $dst);
 
+        $logFile = $logto .'subdefgenerator-' . date('Y-m-d') . '.txt';
+
         // log
-        file_put_contents($logto. 'subdefgenerator.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+        file_put_contents($logFile, sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf(
                 "into callbackAction_POST with\n - file: \"%s\"\n - filesize: %d\n - saved to: \"%s\"\n - payload: %s" ,
                 $file->getRealPath(),
