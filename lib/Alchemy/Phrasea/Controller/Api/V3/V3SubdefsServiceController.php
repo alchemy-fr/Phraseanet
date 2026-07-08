@@ -43,9 +43,12 @@ class V3SubdefsServiceController extends Controller
         $file = $request->files->get('file');
         $info = $request->get('file_info');
 
+        $filename = basename($info['filename']);
+
         // save the received file
         $src = $file->getRealPath();
-        $dst = $logto . $this->app['unicode']->remove_nonazAZ09($info['filename'], true, true, true);
+        $dst = $logto . $this->app['unicode']->remove_nonazAZ09($filename, true, true, true);
+
         copy($src, $dst);
 
         $logFile = $logto .'subdefgenerator-' . date('Y-m-d') . '.txt';
