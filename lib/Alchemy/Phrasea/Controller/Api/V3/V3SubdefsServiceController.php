@@ -37,17 +37,35 @@ class V3SubdefsServiceController extends Controller
      */
     public function callbackAction_POST(Request $request)
     {
-        $logto = \p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'worker_tmp_files']));
+        $tmpDir = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);
+        if (empty($tmpDir)) {
+            $tmpDir = realpath(__DIR__ . '/../../../../../../logs') ?: sys_get_temp_dir();
+        }
+
+        $logto = \p4string::addEndSlash($tmpDir);
+        if (!is_dir($logto) && !mkdir($logto, 0775, true) && !is_dir($logto)) {
+            return Result::createError($request, 500, sprintf('Unable to create directory "%s"', $logto))->createResponse();
+        }
 
         /** @var UploadedFile $file */
         $file = $request->files->get('file');
         $info = $request->get('file_info');
 
+        if (empty($file) || empty($info['filename'])) {
+            return Result::createError($request, 400, 'Missing file or file_info')->createResponse();
+        }
+
         $filename = basename($info['filename']);
 
         // save the received file
         $src = $file->getRealPath();
-        $dst = $logto . $this->app['unicode']->remove_nonazAZ09($filename, true, true, true);
+        $filename = $this->app['unicode']->remove_nonazAZ09($filename, true, true, true);
+
+        if (empty($filename)) {
+            return Result::createError($request, 400, 'Filename not allowed')->createResponse();
+        }
+
+        $dst = $logto . $filename;
 
         copy($src, $dst);
 
