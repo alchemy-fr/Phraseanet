@@ -51,7 +51,7 @@ class V3SubdefsServiceController extends Controller
         $file = $request->files->get('file');
         $info = $request->get('file_info');
 
-        if (empty($file) || empty($info['filename'])) {
+        if (!$file instanceof UploadedFile || !$file->isValid() || !is_array($info) || empty($info['filename']) || !is_string($info['filename'])) {
             return Result::createError($request, 400, 'Missing file or file_info')->createResponse();
         }
 
@@ -61,13 +61,15 @@ class V3SubdefsServiceController extends Controller
         $src = $file->getRealPath();
         $filename = $this->app['unicode']->remove_nonazAZ09($filename, true, true, true);
 
-        if (empty($filename)) {
+        if (empty($filename) || $filename === '.' || $filename === '..') {
             return Result::createError($request, 400, 'Filename not allowed')->createResponse();
         }
 
         $dst = $logto . $filename;
 
-        copy($src, $dst);
+        if (!@copy($src, $dst)) {
+             return Result::createError($request, 500, sprintf('Unable to save file to "%s"', $dst))->createResponse();
+        }
 
         $logFile = $logto .'subdefgenerator-' . date('Y-m-d') . '.txt';
 
