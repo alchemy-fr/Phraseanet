@@ -10691,6 +10691,9 @@ var workzone = function workzone(services) {
 
                             selectedItem.remove();
                         } else {
+                            workzoneOptions.selection.empty();
+                            appEvents.emit('broadcast.workzoneResultSelection', { asArray: [], serialized: "" });
+
                             return workzoneOptions.reloadCurrent();
                         }
                     } else {
@@ -11667,6 +11670,8 @@ var workzone = function workzone(services) {
                     if (act === 'MOV' || (0, _jquery2.default)(destKey).next().is(':visible') === true || (0, _jquery2.default)(destKey).hasClass('content') === true) {
                         (0, _jquery2.default)('.CHIM.selected:visible').fadeOut();
                         workzoneOptions.selection.empty();
+                        appEvents.emit('broadcast.workzoneResultSelection', { asArray: [], serialized: "" });
+
                         return workzoneOptions.reloadCurrent();
                     }
 
