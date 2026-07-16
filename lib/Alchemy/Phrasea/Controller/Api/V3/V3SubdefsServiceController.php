@@ -37,19 +37,41 @@ class V3SubdefsServiceController extends Controller
      */
     public function callbackAction_POST(Request $request)
     {
-        $logto = realpath(dirname(__FILE__).'/../../../../../../logs') . '/';
+        $tmpDir = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);
+
+        $logto = \p4string::addEndSlash($tmpDir);
+        if (!is_dir($logto) && !mkdir($logto, 0775, true) && !is_dir($logto)) {
+            return Result::createError($request, 500, sprintf('Unable to create directory "%s"', $logto))->createResponse();
+        }
 
         /** @var UploadedFile $file */
         $file = $request->files->get('file');
         $info = $request->get('file_info');
 
+        if (!$file instanceof UploadedFile || !$file->isValid() || !is_array($info) || empty($info['filename']) || !is_string($info['filename'])) {
+            return Result::createError($request, 400, 'Require file or file_info parameters')->createResponse();
+        }
+
+        $filename = basename($info['filename']);
+
         // save the received file
         $src = $file->getRealPath();
-        $dst = $logto . $info['filename'];
-        copy($src, $dst);
+        $filename = $this->app['unicode']->remove_nonazAZ09($filename, true, true, true);
+
+        if (empty($filename) || $filename === '.' || $filename === '..') {
+            return Result::createError($request, 400, 'Filename not allowed')->createResponse();
+        }
+
+        $dst = $logto . $filename;
+
+        if (!@copy($src, $dst)) {
+             return Result::createError($request, 500, sprintf('Unable to save file to "%s"', $dst))->createResponse();
+        }
+
+        $logFile = $logto .'subdefgenerator-' . date('Y-m-d') . '.txt';
 
         // log
-        file_put_contents($logto. 'subdefgenerator.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+        file_put_contents($logFile, sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf(
                 "into callbackAction_POST with\n - file: \"%s\"\n - filesize: %d\n - saved to: \"%s\"\n - payload: %s" ,
                 $file->getRealPath(),
