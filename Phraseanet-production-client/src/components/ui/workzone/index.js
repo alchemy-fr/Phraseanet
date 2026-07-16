@@ -733,6 +733,9 @@ const workzone = (services) => {
 
                             selectedItem.remove();
                         } else {
+                            workzoneOptions.selection.empty();
+                            appEvents.emit('broadcast.workzoneResultSelection', {asArray:[], serialized:""});
+
                             return workzoneOptions.reloadCurrent();
                         }
                     } else {
@@ -1745,6 +1748,8 @@ const workzone = (services) => {
                     if (act === 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true) {
                         $('.CHIM.selected:visible').fadeOut();
                         workzoneOptions.selection.empty();
+                        appEvents.emit('broadcast.workzoneResultSelection', {asArray:[], serialized:""});
+
                         return workzoneOptions.reloadCurrent();
                     }
 
