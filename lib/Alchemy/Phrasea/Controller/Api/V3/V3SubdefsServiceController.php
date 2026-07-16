@@ -38,9 +38,6 @@ class V3SubdefsServiceController extends Controller
     public function callbackAction_POST(Request $request)
     {
         $tmpDir = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);
-        if (empty($tmpDir)) {
-            $tmpDir = realpath(__DIR__ . '/../../../../../../logs') ?: sys_get_temp_dir();
-        }
 
         $logto = \p4string::addEndSlash($tmpDir);
         if (!is_dir($logto) && !mkdir($logto, 0775, true) && !is_dir($logto)) {
@@ -52,7 +49,7 @@ class V3SubdefsServiceController extends Controller
         $info = $request->get('file_info');
 
         if (!$file instanceof UploadedFile || !$file->isValid() || !is_array($info) || empty($info['filename']) || !is_string($info['filename'])) {
-            return Result::createError($request, 400, 'Missing file or file_info')->createResponse();
+            return Result::createError($request, 400, 'Require file or file_info parameters')->createResponse();
         }
 
         $filename = basename($info['filename']);
