@@ -283,6 +283,7 @@ registry:
     actions:
         export-stamp-choice: false
         stamp-subdefs: false
+        filename-sanitize-character: ""
     webservices:
         captcha-provider: none # none, reCaptcha , hCaptcha
 crossdomain:

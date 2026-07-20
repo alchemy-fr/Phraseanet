@@ -190,7 +190,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         /** @var unicode $unicode */
         $unicode = $this->app['unicode'];
 
-        $this->label = self::cleanLabel($unicode, $label);
+        $this->label = self::cleanLabel($unicode, $label, $this->app['conf']->get(['registry', 'actions', 'filename-sanitize-character'], ''));
 
         $this->databox->get_connection()->executeUpdate(
             'UPDATE permalinks SET label = :label, last_modified = NOW() WHERE id = :id',
@@ -394,7 +394,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         // build a multi-rows insert
         $inserts = '';
         // constant part values
-        $insk = ", 1, NOW(), NOW(), " . $connection->quote(self::cleanLabel($unicode, $record->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI])));
+        $insk = ", 1, NOW(), NOW(), " . $connection->quote(self::cleanLabel($unicode, $record->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI]), $app['conf']->get(['registry', 'actions', 'filename-sanitize-character'], '')));
         // multiple rows
         foreach($subdef_ids as $subdef_id) {
             // fake subdefs (icons substitution) for thumb/prev are hardcoded.
@@ -485,7 +485,8 @@ class media_Permalink_Adapter implements cache_cacheableInterface
                 'token' => $generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS),
                 'label' => self::cleanLabel(
                     $unicode,
-                    $records[$media_subdef->get_record_id()]->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI])
+                    $records[$media_subdef->get_record_id()]->get_title(['removeExtension' => true, 'encode'=> record_adapter::ENCODE_FOR_URI]),
+                    $app['conf']->get(['registry', 'actions', 'filename-sanitize-character'], '')
                 ),
             ];
         }
@@ -574,10 +575,15 @@ SQL;
      * @param $label
      * @return string
      */
-    private static function cleanLabel(unicode $unicode, $label)
+    private static function cleanLabel(unicode $unicode, $label, $sanitizeCharacter='-')
     {
+        if (!in_array($sanitizeCharacter, ['-', '_', '+'])) {
+            $sanitizeCharacter = '-';
+        }
+
         $label = $unicode->remove_nonazAZ09(
-            preg_replace("/\\s+/", '-', trim($label))
+             preg_replace("/[\\s+]+/", $sanitizeCharacter, trim($label)),
+             true, true, false, false, true
         );
 
         return $label ? $label : 'untitled';
