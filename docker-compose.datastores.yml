@@ -52,6 +52,11 @@ services:
       - command: '/usr/bin/mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown'
   rabbitmq:
     image: $RABBITMQ_IMAGE_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["rabbitmq"]
     restart: on-failure
     hostname: $RABBITMQ_HOSTNAME
@@ -80,6 +85,11 @@ services:
 
   elasticsearch:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     ulimits:
       nofile:
         soft: 65536
