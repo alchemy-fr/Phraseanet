@@ -13,6 +13,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["gateway-classic"]
     restart: on-failure
     volumes:
@@ -56,6 +61,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["gateway-traefik"]
     restart: on-failure
     volumes:
@@ -92,6 +102,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-setup:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["setup"]
     #command: [ "/bin/sh", "-c", "exit" ]
     restart: "on-failure"
@@ -222,6 +237,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["app"]
     restart: on-failure
     environment:
@@ -312,6 +332,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["worker"]
     restart: on-failure
     depends_on:
@@ -380,6 +405,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "mainQueue"]
     restart: on-failure
     depends_on:
@@ -432,6 +462,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "assetsIngest"]
     restart: on-failure
     depends_on:
@@ -483,6 +518,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "createRecord"]
     restart: on-failure
     depends_on:
@@ -535,6 +575,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "deleteRecord"]
     restart: on-failure
     depends_on:
@@ -586,6 +631,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "editRecord"]
     restart: on-failure
     depends_on:
@@ -637,6 +687,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "exportMail"]
     restart: on-failure
     depends_on:
@@ -688,6 +743,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "downloadAsync"]
     restart: on-failure
     depends_on:
@@ -739,6 +799,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "exposeUpload"]
     restart: on-failure
     depends_on:
@@ -790,6 +855,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "exportFtp"]
     restart: on-failure
     depends_on:
@@ -841,6 +911,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "populateIndex"]
     restart: on-failure
     depends_on:
@@ -892,6 +967,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "pullAssets"]
     restart: on-failure
     depends_on:
@@ -943,6 +1023,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "recordsActions"]
     restart: on-failure
     depends_on:
@@ -994,6 +1079,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "shareBasket"]
     restart: on-failure
     depends_on:
@@ -1048,6 +1138,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "subdefCreation"]
     restart: on-failure
     depends_on:
@@ -1099,6 +1194,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["subtitle"]
     restart: on-failure
     depends_on:
@@ -1150,6 +1250,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "validationReminder"]
     restart: on-failure
     depends_on:
@@ -1201,6 +1306,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "webhook"]
     restart: on-failure
     depends_on:
@@ -1252,6 +1362,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["workers", "writeMetadatas"]
     restart: on-failure
     depends_on:
@@ -1303,6 +1418,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["scheduler"]
     restart: on-failure
     depends_on:
@@ -1353,6 +1473,11 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    logging:
+      driver: "local"
+      options:
+        max-size: "${DOCKER_LOG_MAX_SIZE}"
+        max-file: "${DOCKER_LOG_MAX_FILE}"
     profiles: ["cmd"]
     restart: on-failure
     depends_on:
