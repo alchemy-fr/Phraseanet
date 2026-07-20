@@ -2,6 +2,32 @@
 
 ## 4.1.21
 
+### Version Summary
+ 
+- Fixes PHRAS-4167 by making permalink label sanitization (and filename export sanitization) treat + signs as separators, and by allowing the replacement character to be configured in `filename-sanitize-character: ""` (must be -, _, or +). 
+  - Details :
+Adapter::cleanLabel now accepts a sanitize character (validated against -, _, +) and collapses runs of whitespace or + into it; all three callers read it from the new keys in `configuration.yml` files `registry.actions filename-sanitize-character`.
+
+
+- Adds Docker container log rotation configuration to the Phraseanet Compose stack by introducing per-service logging settings and exposing rotation parameters via .env.
+  - Detail:
+Add logging configuration (driver: "local", max-size, max-file) to many services in docker-compose.yml.
+Introduce .env variables (DOCKER_LOG_MAX_SIZE, DOCKER_LOG_MAX_FILE) to configure log rotation limits.
+
+- Preventing a runtime error when generating sharing links for records whose file type has no associated subdef group (e.g., “unknown type” such as a zip), ensuring share links still render without crashing.
+  - Detail:
+Add a null-check around the $databoxSubdefs->hasSubdef(...) call to avoid calling methods on null.
+
+- Updates Phraseanet’s Docker build to use the newer alchemyfr/phraseanet-base:1.2.4 image, aligning with PHRAS-4172’s intent to resolve the libfdk AAC-related build/runtime issue via the rebuilt ffmpeg in the base image.
+  - Details:
+Bump alchemyfr/phraseanet-base from 1.2.3 to 1.2.4 for all multi-stage build targets (builder/setup/fpm/worker/saml-sp).
+
+- Fixes security leak on the V3 subdef service callback endpoint’s file/log handling by moving output from a hardcoded logs directory to the configured worker temp directory, while sanitizing the received filename.
+  - Details: Write received callback files into main.storage.worker_tmp_files (with trailing slash handling).
+Sanitize the incoming filename (via basename() + remove_nonazAZ09()) before saving to disk.
+Change logging from a single subdefgenerator.txt file to a daily subdefgenerator-YYYY-MM-DD.txt file.
+  - Credit: Dylan Iffrig-Bourfa & Sébastien Sauty from Orange Cyberdefense SCRT Hacking Team. 
+
 #### Phraseanet Upgrade
 
 - **Phraseanet Migration Patch**:
@@ -12,13 +38,19 @@
 
 ### Stack (Docker Compose and Helm)
 
-- no change
+- Adds Docker container log rotation configuration
 
-### Version Summary
- 
-- Fixes PHRAS-4167 by making permalink label sanitization (and filename export sanitization) treat + signs as separators, and by allowing the replacement character to be configured in `filename-sanitize-character: ""` (must be -, _, or +). 
 
 ### What's Changed
+* Readme update by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4620
+* PHRAS-4166 bump ci action version by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4622
+* PS-4166 bump build-push-action@v7 by @nmaillat in https://github.com/alchemy-fr/Phraseanet/pull/4623
+* PHRAS-4172 fix libfdk aac error by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4628
+* PHRAS-4173 fix basket export after add/delete element by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4630
+* PHRAS-4171 fix subdef service by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4629
+* PHRAS-4170 : fix error on sharing link of unknown type files by @moctardiouf in https://github.com/alchemy-fr/Phraseanet/pull/4627
+* PHRAS-4174 Add Docker log rotation configuration by @gjacobjn in https://github.com/alchemy-fr/Phraseanet/pull/4631
+
 
 **Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.20...4.1.21
 
