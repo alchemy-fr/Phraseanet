@@ -86,11 +86,6 @@ class OAuthListener
         } else {
             $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
         }
-
-        $oAuth2App = $oAuth2Account->getApplication();
-
-        /** @var PropertyAccess $conf */
-        $conf = $app['conf'];
        
         $authentication = $this->getAuthenticator($app);
 

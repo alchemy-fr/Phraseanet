@@ -82,7 +82,9 @@ class patch_4121PHRAS4175 implements patchInterface
 
         foreach ($nativeAppClientId as $clientId) {
             $application = $apiAppRepository->findByClientId($clientId);
-            $apiAppManipulator->delete($application);
+            if (null !== $application) {
+                $apiAppManipulator->delete($application);
+            } 
         }
 
         if ($conf->has(['registry', 'api-clients', 'navigator-enabled'])) {
