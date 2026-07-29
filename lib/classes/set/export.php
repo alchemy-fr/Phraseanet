@@ -571,9 +571,15 @@ class set_export extends set_abstract
                 $export_name = $original_name;
             }
 
+            $sanitizeCharacter = $this->app['conf']->get(['registry', 'actions', 'filename-sanitize-character'], '');
+            if (!in_array($sanitizeCharacter, ['-', '_', '+'])) {
+                $sanitizeCharacter = '-';
+            }
+
             // cleanup the exportname so it can be used as a filename (even if it came from the originale_name)
-            $export_name = str_replace([' ', "\t", "\r", "\n"], '_', $export_name);
-            $export_name = $unicode->remove_nonazAZ09($export_name, true, true, true);  // keep '_', '-', '.'
+            $export_name = str_replace([' ', "\t", "\r", "\n", "+"], $sanitizeCharacter, $export_name);
+
+            $export_name = $unicode->remove_nonazAZ09($export_name, true, true, true, false, true);  // keep '_', '-', '.', '+'
             // really no luck if nothing left
             if($export_name == '') {
                 $export_name = (string)$id;
