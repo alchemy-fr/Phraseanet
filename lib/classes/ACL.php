@@ -525,8 +525,14 @@ class ACL implements cache_cacheableInterface
 
         $databox = $this->app->findDataboxById($record->getDataboxId());
         try {
+            $recordType = $record->getType();
+
+            if ($recordType == 'unknown') {
+                $recordType = 'document';
+            }
+
             $subdef_class = $databox->get_subdef_structure()
-                ->get_subdef($record->getType(), $subdef_name)
+                ->get_subdef($recordType, $subdef_name)
                 ->get_class();
         } catch (\Exception $e) {
             return false;

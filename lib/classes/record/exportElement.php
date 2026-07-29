@@ -89,7 +89,7 @@ class record_exportElement extends record_adapter
         $subdefs = [];
 
         foreach ($this->app->findDataboxById($sbas_id)->get_subdef_structure() as $subdef_type => $subdefs_obj) {
-            if ($subdef_type == $this->getType()) {
+            if ($subdef_type == $this->getType() || ($this->getType() == 'unknown') && $subdef_type == 'document') {
                 $subdefs = $subdefs_obj;
                 break;
             }
