@@ -359,8 +359,6 @@ class V1Controller extends Controller
                         'clientSecret' => $conf->get(['main', 'bridge', 'dailymotion', 'client_secret']),
                     ],
                 ],
-                'navigator'         => ['active' => $conf->get(['registry', 'api-clients', 'navigator-enabled']),],
-                'office-plugin'     => ['active' => $conf->get(['registry', 'api-clients', 'office-enabled']),],
                 'homepage'          => ['viewType' => $conf->get(['registry', 'general', 'home-presentation-mode']),],
                 'report'            => ['anonymous' => $conf->get(['registry', 'modules', 'anonymous-report']),],
                 'storage'           => ['documents' => $conf->get(['main', 'storage', 'subdefs']),],

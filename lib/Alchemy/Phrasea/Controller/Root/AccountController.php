@@ -226,23 +226,14 @@ class AccountController extends Controller
     {
         $data = [];
 
-        $nativeApp = [
-            \API_OAuth2_Application_Navigator::CLIENT_NAME,
-            \API_OAuth2_Application_OfficePlugin::CLIENT_NAME,
-            \API_OAuth2_Application_AdobeCCPlugin::CLIENT_NAME,
-        ];
-
         $user = $this->getAuthenticatedUser();
         foreach (
             $this->getApiApplicationRepository()->findByUser($user) as $application) {
             $account = $this->getApiAccountRepository()->findByUserAndApplication($user, $application);
-
-            if(!in_array($application->getName(), $nativeApp)){
-                $data[$application->getId()] = [
-                    'application' => $application,
-                    'user-account' => $account,
-                ];
-            }
+            $data[$application->getId()] = [
+                'application' => $application,
+                'user-account' => $account,
+            ];
         }
 
         return $this->render('account/authorized_apps.html.twig', [

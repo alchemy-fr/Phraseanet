@@ -86,29 +86,7 @@ class OAuthListener
         } else {
             $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
         }
-
-        $oAuth2App = $oAuth2Account->getApplication();
-
-        /** @var PropertyAccess $conf */
-        $conf = $app['conf'];
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_Navigator::CLIENT_ID
-            && !$conf->get(['registry', 'api-clients', 'navigator-enabled'])
-        ) {
-            return Result::createError($request, 403, 'The use of Phraseanet Navigator is not allowed')->createResponse();
-        }
-
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_OfficePlugin::CLIENT_ID
-            && !$conf->get(['registry', 'api-clients', 'office-enabled'])
-        ) {
-            return Result::createError($request, 403, 'The use of Office Plugin is not allowed.')->createResponse();
-        }
-
-        if ($oAuth2App->getClientId() == \API_OAuth2_Application_AdobeCCPlugin::CLIENT_ID
-            && !$conf->get(['registry', 'api-clients', 'adobe_cc-enabled'])
-        ) {
-            return Result::createError($request, 403, 'The use of AdobeCC Plugin is not allowed.')->createResponse();
-        }
-
+       
         $authentication = $this->getAuthenticator($app);
 
         if ($authentication->isAuthenticated()) {
