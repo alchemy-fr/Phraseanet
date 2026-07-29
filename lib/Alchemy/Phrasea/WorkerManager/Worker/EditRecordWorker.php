@@ -31,6 +31,13 @@ class EditRecordWorker implements WorkerInterface
 
     public function process(array $payload)
     {
+        if ($payload['dataType'] == 'watchdog') {
+            @unlink($_SERVER['PWD'] . '/tmp/watchdog/edit.watchdog');
+            $this->messagePublisher->pushLog("watchdog edit message processed!", 'info');
+
+            return 0;
+        }
+
         try {
             $databox = $this->findDataboxById($payload['databoxId']);
         } catch(\Exception $e) {
