@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\CLI;
-use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Developer\APIRoutesDumper;
 use Alchemy\Phrasea\Command\Developer\Behat;
 use Alchemy\Phrasea\Command\Developer\ComposerInstall;
@@ -20,36 +19,37 @@ use Alchemy\Phrasea\Command\Developer\JsFixtures;
 use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
 use Alchemy\Phrasea\Command\Developer\RoutesDumper;
 use Alchemy\Phrasea\Command\Developer\SetupTestsDbs;
-use Alchemy\Phrasea\Command\Developer\Uninstaller;
 use Alchemy\Phrasea\Command\Developer\TranslationDumper;
-
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
-use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
-// DBAL Commands
-use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
-use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
-// ORM Commands
-use Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand;
-use Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand;
-use Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand;
-use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
-use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
-use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
-use Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand;
-use Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand;
-use Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand;
-use Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand;
-use Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand;
-use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
-use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
-use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
-// Migration Commands
+use Alchemy\Phrasea\Command\Developer\Uninstaller;
+use Alchemy\Phrasea\Core\Version;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
+use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand;
+use Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand;
+use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
+use Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand;
+use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
+use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+
+// DBAL Commands
+// ORM Commands
+// Migration Commands
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -78,6 +78,12 @@ $cli->command(new Uninstaller());
 $cli->command(new JsFixtures());
 $cli->command(new IniReset());
 $cli->command(new SetupTestsDbs());
+
+// *******************************************************************
+// ********************** TO BE DELETED AFTER TESTS ******************
+$cli->command(new \Alchemy\Phrasea\Command\Developer\test());
+// *******************************************************************
+
 $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
 

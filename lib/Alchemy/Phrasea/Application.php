@@ -64,6 +64,7 @@ use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PluginServiceProvider;
+use Alchemy\Phrasea\Core\Provider\PsSettingsServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RandomGeneratorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
@@ -75,14 +76,14 @@ use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
+use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WorkerConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
-use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Databox\Caption\CaptionServiceProvider;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Filesystem\FilesystemServiceProvider;
 use Alchemy\Phrasea\Filesystem\ApplicationPathServiceGenerator;
+use Alchemy\Phrasea\Filesystem\FilesystemServiceProvider;
 use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Media\DatafilesResolver;
 use Alchemy\Phrasea\Media\MediaAccessorResolver;
@@ -272,6 +273,8 @@ class Application extends SilexApplication
             $this->register(new QueueWorkerServiceProvider());
             $this->register(new AlchemyWorkerServiceProvider());
         }
+
+        $this->register(new PsSettingsServiceProvider());
 
         $this['monolog'] = $this->share(
             $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
