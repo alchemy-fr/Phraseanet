@@ -89,7 +89,6 @@ class RegenerateSqliteDb extends Command
         $this->generateUsers($em, $DI);
         $this->insertOauthApps($DI);
         $this->insertOauthAccounts($DI);
-        $this->insertNativeApps();
         $this->generateCollection($DI);
         $this->generateRecord($DI);
         $this->insertTwoTasks($em);
@@ -232,54 +231,6 @@ class RegenerateSqliteDb extends Command
         $apiOAuthTokenManipulator->create($DI['api-app-acc-user-not-admin']);
         $DI['api-app-acc-user1'] = $apiAccountManipulator->create($DI['api-app-user1'], $DI['user_1'], V2::VERSION);
         $apiOAuthTokenManipulator->create($DI['api-app-acc-user1']);
-    }
-
-    public function insertNativeApps()
-    {
-        $application = $this->container['manipulator.api-application']->create(
-            \API_OAuth2_Application_Navigator::CLIENT_NAME,
-            ApiApplication::DESKTOP_TYPE,
-            '',
-            'http://www.phraseanet.com',
-            null,
-            ApiApplication::NATIVE_APP_REDIRECT_URI
-        );
-
-        $application->setGrantPassword(true);
-        $application->setClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
-        $application->setClientSecret(\API_OAuth2_Application_Navigator::CLIENT_SECRET);
-
-        $this->container['manipulator.api-application']->update($application);
-
-        $application = $this->container['manipulator.api-application']->create(
-            \API_OAuth2_Application_OfficePlugin::CLIENT_NAME,
-            ApiApplication::DESKTOP_TYPE,
-            '',
-            'http://www.phraseanet.com',
-            null,
-            ApiApplication::NATIVE_APP_REDIRECT_URI
-        );
-
-        $application->setGrantPassword(true);
-        $application->setClientId(\API_OAuth2_Application_OfficePlugin::CLIENT_ID);
-        $application->setClientSecret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
-
-        $this->container['manipulator.api-application']->update($application);
-
-        $application = $this->container['manipulator.api-application']->create(
-            \API_OAuth2_Application_AdobeCCPlugin::CLIENT_NAME,
-            ApiApplication::DESKTOP_TYPE,
-            '',
-            'http://www.phraseanet.com',
-            null,
-            ApiApplication::NATIVE_APP_REDIRECT_URI
-        );
-
-        $application->setGrantPassword(true);
-        $application->setClientId(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_ID);
-        $application->setClientSecret(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_SECRET);
-
-        $this->container['manipulator.api-application']->update($application);
     }
 
     private function insertAuthFailures(EntityManager $em, \Pimple $DI)

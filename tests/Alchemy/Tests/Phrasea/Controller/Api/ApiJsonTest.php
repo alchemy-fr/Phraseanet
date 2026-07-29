@@ -252,44 +252,6 @@ class ApiJsonTest extends ApiTestCase
         }
     }
 
-    public function testCheckNativeApp()
-    {
-        $app = $this->getApplication();
-        /** @var PropertyAccess $conf */
-        $conf = $app['conf'];
-        $value = $conf->get(['registry', 'api-clients', 'navigator-enabled']);
-        $conf->set(['registry', 'api-clients', 'navigator-enabled'], false);
-
-        $fail = null;
-
-        try {
-            $nativeApp = $app['repo.api-applications']->findByClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
-            if (null === $nativeApp) {
-                throw new  \Exception(sprintf('%s not found', \API_OAuth2_Application_Navigator::CLIENT_ID));
-            }
-            $account = $app['manipulator.api-account']->create($nativeApp, self::$DI['user'], V2::VERSION);
-            $token = $app['manipulator.api-oauth-token']->create($account);
-
-            $this->setToken($token);
-            $client = $this->getClient();
-            $client->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-            $content = $this->unserialize(
-                $client->getResponse()->getContent());
-
-            if (403 != $content['meta']['http_code']) {
-                $fail = new \Exception('Result does not match expected 403, returns ' . $content['meta']['http_code']);
-            }
-        } catch (\Exception $e) {
-            $fail = $e;
-        }
-
-        $conf->set(['registry', 'api-clients', 'navigator-enabled'], $value);
-
-        if ($fail) {
-            throw $fail;
-        }
-    }
-
     /**
      * Covers mustBeAdmin route middleware
      */

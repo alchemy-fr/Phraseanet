@@ -252,9 +252,6 @@ registry:
     maintenance:
         message: 'May the force be with you'
         enabled: false
-    api-clients:
-        navigator-enabled: false
-        office-enabled: true
     webservices:
         google-charts-enabled: true
         geonames-server: 'http://geonames.alchemyasp.com/'

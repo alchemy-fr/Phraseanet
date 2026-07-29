@@ -144,9 +144,6 @@ class RegistryFormManipulator
             ],
             'api-clients'  => [
                 'api-enabled' => true,
-                'navigator-enabled' => true,
-                'office-enabled' => true,
-                'adobe_cc-enabled' => true,
             ],
             'webservices'  => [
                 'google-charts-enabled' => true,

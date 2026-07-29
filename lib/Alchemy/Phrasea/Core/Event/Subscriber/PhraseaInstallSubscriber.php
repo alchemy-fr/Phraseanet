@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Process\Process;
@@ -36,64 +35,7 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
 
     public function onInstallFinished(InstallFinishEvent $event)
     {
-        $this->createNavigatorApplication();
-        $this->createOfficePluginApplication();
-        $this->createAdobeCCPluginApplication();
         $this->generateProxies();
-    }
-
-    private function createNavigatorApplication()
-    {
-        $application = $this->app['manipulator.api-application']->create(
-            \API_OAuth2_Application_Navigator::CLIENT_NAME,
-            ApiApplication::DESKTOP_TYPE,
-            '',
-            'http://www.phraseanet.com',
-            null,
-            ApiApplication::NATIVE_APP_REDIRECT_URI
-        );
-
-        $application->setGrantPassword(true);
-        $application->setClientId(\API_OAuth2_Application_Navigator::CLIENT_ID);
-        $application->setClientSecret(\API_OAuth2_Application_Navigator::CLIENT_SECRET);
-
-        $this->app['manipulator.api-application']->update($application);
-    }
-
-    private function createOfficePluginApplication()
-    {
-        $application = $this->app['manipulator.api-application']->create(
-            \API_OAuth2_Application_OfficePlugin::CLIENT_NAME,
-            ApiApplication::DESKTOP_TYPE,
-            '',
-            'http://www.phraseanet.com',
-            null,
-            ApiApplication::NATIVE_APP_REDIRECT_URI
-        );
-
-        $application->setGrantPassword(true);
-        $application->setClientId(\API_OAuth2_Application_OfficePlugin::CLIENT_ID);
-        $application->setClientSecret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
-
-        $this->app['manipulator.api-application']->update($application);
-    }
-
-    private function createAdobeCCPluginApplication()
-    {
-        $application = $this->app['manipulator.api-application']->create(
-            \API_OAuth2_Application_AdobeCCPlugin::CLIENT_NAME,
-            ApiApplication::DESKTOP_TYPE,
-            '',
-            'http://www.phraseanet.com',
-            null,
-            ApiApplication::NATIVE_APP_REDIRECT_URI
-        );
-
-        $application->setGrantPassword(true);
-        $application->setClientId(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_ID);
-        $application->setClientSecret(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_SECRET);
-
-        $this->app['manipulator.api-application']->update($application);
     }
 
     private function generateProxies()

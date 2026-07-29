@@ -33,19 +33,6 @@ class APIClientsFormType extends AbstractType
             'label' => 'Enable Phraseanet Web API',
             'help_message' => /** @Ignore */ $this->translator->trans('The Phraseanet Web API allows other web application to rely on this instance')
         ]);
-
-        $builder->add('navigator-enabled', CheckboxType::class, [
-            'label'        => 'Authorize *Phraseanet Navigator*',
-            'help_message' => /** @Ignore */ $this->translator->trans('*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance'),
-        ]);
-
-        $builder->add('office-enabled', CheckboxType::class, [
-            'label'        => /** @Ignore */ $this->translator->trans('Authorize Microsoft Office Plugin to connect.'),
-        ]);
-
-        $builder->add('adobe_cc-enabled', CheckboxType::class, [
-            'label'        => /** @Ignore */ $this->translator->trans('Authorize Adobe cc Plugin to connect.'),
-        ]);
     }
 
     public function getName()
