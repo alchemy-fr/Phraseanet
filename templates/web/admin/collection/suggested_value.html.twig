@@ -248,7 +248,7 @@
     function supprimer() {
 
         let lastIdx = null;
-        const o2    = $("#valsug2");
+        let o2    = $("#valsug2");
 
         if (o2.length > 0) {
             const o           = $("#nomchamPH");
@@ -259,9 +259,6 @@
             for (let aa in pref[o.val()].valsug) {
                 if (aa != o2.prop("selectedIndex")) {
                     pref[o.val()].valsug[bb] = pref[o.val()].valsug[aa];
-                    if (parseInt(aa) + 1 == pref[o.val()].valsug.length) {
-                        pref[o.val()].valsug[bb] = null;
-                    }
                     bb++;
                 }
             }
@@ -275,7 +272,7 @@
 
 
             write_valsug();
-            const o2 = $("#valsug2");
+            o2 = $("#valsug2");
 
             let i = o2.find("options").length;  // au depart i=1 et ancienfocus=1
             o2.prop("selectedIndex", -1);
