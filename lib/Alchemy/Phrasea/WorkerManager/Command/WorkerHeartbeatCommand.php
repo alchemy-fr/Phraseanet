@@ -28,16 +28,16 @@ class WorkerHeartbeatCommand extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         /** @var AMQPConnection $serverConnection */
-        $serverConnection = $this->container['alchemy_worker.amqp.connection'];
+//        $serverConnection = $this->container['alchemy_worker.amqp.connection'];
 
-        $connection = $serverConnection->getConnection();
+//        $connection = $serverConnection->getConnection();
 
         $interval = $input->getOption('heartbeat');
         if (empty($interval)) {
             $interval = self::DEFAULT_INTERVAL;
         }
 
-        $heartbeatHandler = new HeartbeatHandler($connection);
+        $heartbeatHandler = new HeartbeatHandler($this->container['alchemy_worker.message.publisher']);
         $heartbeatHandler->run($interval);
 
         return 0;
