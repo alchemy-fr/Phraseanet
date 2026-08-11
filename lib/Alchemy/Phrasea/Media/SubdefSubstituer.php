@@ -99,6 +99,9 @@ class SubdefSubstituer
         }
 
         $type = $record->isStory() ? 'image' : $record->getType();
+
+        $type = ($type == 'unknown') ? 'document' :  $type;
+
         $databox_subdef = $record->getDatabox()->get_subdef_structure()->get_subdef($type, $name);
 
         if ($this->isOldSubdefPresent($record, $name)) {

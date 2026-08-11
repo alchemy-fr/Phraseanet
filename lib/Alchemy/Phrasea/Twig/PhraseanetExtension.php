@@ -324,6 +324,12 @@ class PhraseanetExtension extends \Twig_Extension
                 $src = '/assets/common/images/icons/icon_flash.png';
                 $title = $this->app['translator']->trans('flash');
                 break;
+            case 'unknown':
+                if ($record->getMimeType() == 'application/zip') {
+                    $src = '/assets/common/images/icons/substitution/application_zip.png';
+                    $title = $this->app['translator']->trans('zip');
+                }
+                break;
         }
 
         return sprintf('<img src="%s" title="%s" />', $src, $title);
