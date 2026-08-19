@@ -12,10 +12,12 @@ namespace Alchemy\Phrasea\Controller\Thesaurus;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use caption_field;
 use caption_Field_Value;
+use databox_descriptionStructure;
 use DOMElement;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -1286,11 +1288,11 @@ class ThesaurusXmlHttpController extends Controller
 
         $ret = [
             'ctermsDeleted'    => [],
-            'maxRecsUpdatable' => self::SEARCH_REPLACE_MAXREC,
             'nRecsToUpdate'    => 0,
-            'nRecsUpdated'     => 0,
             'msg'              => ''
         ];
+
+        $options = $this->getElasticsearchOptions();
 
         foreach ($request->get('id') as $id) {
             $id = explode('.', $id);
@@ -1308,11 +1310,11 @@ class ThesaurusXmlHttpController extends Controller
             $tsbas['b' . $sbas_id]['tids'][] = implode('.', $id);
         }
 
-        // first, count the number of records to update
         foreach ($tsbas as $ksbas => $sbas) {
             try {
                 $databox = $this->findDataboxById($sbas['sbas_id']);
                 $connbas = $databox->get_connection();
+                
                 $tsbas[$ksbas]['domct'] = $databox->get_dom_cterms();
             } catch (\Exception $e) {
                 continue;
@@ -1325,6 +1327,11 @@ class ThesaurusXmlHttpController extends Controller
             $lids = [];
             $xpathct = new \DOMXPath($tsbas[$ksbas]['domct']);
 
+            $fieldName = '';
+            $meta_struct_id = '';
+            $fieldValue = '';
+            $f = null;
+
             foreach ($sbas['tids'] as $tid) {
                 $xp = '//te[@id="' . $tid . '"]/sy';
                 $nodes = $xpathct->query($xp);
@@ -1332,124 +1339,70 @@ class ThesaurusXmlHttpController extends Controller
                     $sy = $nodes->item(0);
                     $syid = str_replace('.', 'd', $sy->getAttribute('id')) . 'd';
                     $lids[] = $syid;
-                    $field = $sy->parentNode->parentNode->getAttribute('field');
+                    $fieldName = $sy->parentNode->parentNode->getAttribute('field');
 
-                    if (!array_key_exists($field, $tsbas[$ksbas]['tvals'])) {
-                        $tsbas[$ksbas]['tvals'][$field] = [];
+                    if (!array_key_exists($fieldName, $tsbas[$ksbas]['tvals'])) {
+                        $tsbas[$ksbas]['tvals'][$fieldName] = [];
                     }
-                    $tsbas[$ksbas]['tvals'][$field][] = $sy;
+                    $tsbas[$ksbas]['tvals'][$fieldName][] = $sy;
+                    
+                    /* @var $f \databox_field */
+                    $f = $databox->get_meta_structure()->get_element_by_name($fieldName, databox_descriptionStructure::STRICT_COMPARE);
+                    
+                    if ($f !== null) {
+                        $meta_struct_id = $f->get_id();
+                        $fieldValue = $sy->getAttribute('v');
+                    }
                 }
             }
 
-            if (empty($lids)) {
-                // no cterm was found
+            if (empty($lids) && empty($meta_struct_id)) {
+                // no cterm and field was found
                 continue;
             }
-            $tsbas[$ksbas]['lid'] = "'" . implode("','", $lids) . "'";
 
-            // count records
             $sql = 'SELECT DISTINCT record_id AS r'
-                . ' FROM thit WHERE value IN (:lids)'
+                . ' FROM metadatas WHERE meta_struct_id = :meta AND value = :value'
                 . ' ORDER BY record_id';
             $stmt = $connbas->prepare($sql);
-            $stmt->execute(['lids' => $lids]);
+            $stmt->execute(['meta' => $meta_struct_id, 'value' => $fieldValue]);
             $tsbas[$ksbas]['trids'] = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
             $stmt->closeCursor();
 
             $ret['nRecsToUpdate'] += count($tsbas[$ksbas]['trids']);
+
+            $sqlUpdate = 'UPDATE metadatas SET value = :newValue WHERE meta_struct_id = :meta AND value = :value';
+            $stmt = $connbas->prepare($sqlUpdate);
+            $stmt->execute(['newValue' => $request->get('t'), 'meta' => $meta_struct_id, 'value' => $fieldValue]);
+            $stmt->closeCursor();
+
+            $populateInfo = [
+                'host'          => $options->getHost(),
+                'port'          => $options->getPort(),
+                'indexName'     => $options->getIndexName(),
+                'databoxId'     => $sbas['sbas_id'],
+                'recordIds'     => $tsbas[$ksbas]['trids'],
+            ];
+
+            $this->getDispatcher()->dispatch(WorkerEvents::RECORD_POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
         }
 
-        if ($ret['nRecsToUpdate'] <= self::SEARCH_REPLACE_MAXREC) {
-            foreach ($tsbas as $sbas) {
-
-                try {
-                    $databox = $this->findDataboxById($sbas['sbas_id']);
-                } catch (\Exception $e) {
-                    continue;
-                }
-
-                // fix caption of records
-                foreach ($sbas['trids'] as $rid) {
-                    try {
-                        $record = $databox->get_record($rid);
-
-                        $metadatask = [];  // datas to keep
-                        $metadatasd = [];  // datas to delete
-
-                        /* @var $field caption_field */
-                        foreach ($record->get_caption()->get_fields(null, true) as $field) {
-                            $meta_struct_id = $field->get_meta_struct_id();
-                            /* @var $v caption_Field_Value */
-                            $fname = $field->get_name();
-                            if (!array_key_exists($fname, $sbas['tvals'])) {
-                                foreach ($field->get_values() as $v) {
-                                    $metadatask[] = [
-                                        'meta_struct_id' => $meta_struct_id,
-                                        'meta_id'        => $v->getId(),
-                                        'value'          => $v->getValue()
-                                    ];
-                                }
-                            } else {
-                                foreach ($field->get_values() as $v) {
-                                    $keep = true;
-                                    $vtxt = $this->getUnicode()->remove_indexer_chars($v->getValue());
-                                    /** @var DOMElement $sy */
-                                    foreach ($sbas['tvals'][$fname] as $sy) {
-                                        if ($sy->getAttribute('w') == $vtxt) {
-                                            $keep = false;
-                                        }
-                                    }
-
-                                    if ($keep) {
-                                        $metadatask[] = [
-                                            'meta_struct_id' => $meta_struct_id,
-                                            'meta_id'        => $v->getId(),
-                                            'value'          => $v->getValue()
-                                        ];
-                                    } else {
-                                        $metadatasd[] = [
-                                            'meta_struct_id' => $meta_struct_id,
-                                            'meta_id'        => $v->getId(),
-                                            'value'          => $request->get('t') ? $request->get('t') : ''
-                                        ];
-                                    }
-                                }
-                            }
-                        }
-
-                        if (count($metadatasd) > 0) {
-                            if (!$request->get('debug')) {
-                                $record->set_metadatas($metadatasd, true);
-                                $ret['nRecsUpdated']++;
-                            }
-                        }
-                    } catch (\Exception $e) {
-                        continue;
-                    }
-                }
-
-                // order to write metas for those records
-                $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                    new RecordsWriteMetaEvent($sbas['trids'], $sbas['sbas_id'])
-                );
-
-                foreach ($sbas['tvals'] as $tval) {
-                    foreach ($tval as $sy) {
-                        // remove candidate from cterms
-                        $te = $sy->parentNode;
-                        $te->parentNode->removeChild($te);
-                        $ret['ctermsDeleted'][] = $sbas['sbas_id'] . '.' . $te->getAttribute('id');
-                    }
-                }
-                if (!$request->get('debug')) {
-                    $databox->saveCterms($sbas['domct']);
+        foreach ($tsbas as $sbas) {
+            foreach ($sbas['tvals'] as $tval) {
+                foreach ($tval as $sy) {
+                    // remove candidate from cterms
+                    $te = $sy->parentNode;
+                    $te->parentNode->removeChild($te);
+                    $ret['ctermsDeleted'][] = $sbas['sbas_id'] . '.' . $te->getAttribute('id');
                 }
             }
-            $ret['msg'] = $this->app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', ['%number%' => $ret['nRecsUpdated']]);
-        } else {
-            // too many records to update
-            $ret['msg'] = $this->app->trans('prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)', ['%number%' => $ret['nRecsToUpdate'], '%maximum%' => self::SEARCH_REPLACE_MAXREC]);
+            if (!$request->get('debug')) {
+                $databox = $this->findDataboxById($sbas['sbas_id']);
+                $databox->saveCterms($sbas['domct']);
+            }
         }
+
+        $ret['msg'] = $this->app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', ['%number%' => $ret['nRecsToUpdate']]);
 
         return $this->app->json($ret);
     }
@@ -1687,5 +1640,21 @@ class ThesaurusXmlHttpController extends Controller
         }
 
         return $label;
+    }
+
+    /**
+     * @return ElasticsearchOptions
+     */
+    private function getElasticsearchOptions()
+    {
+        return $this->app['elasticsearch.options'];
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 }
