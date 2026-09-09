@@ -5,7 +5,11 @@ COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 
 # Node Installation (node + yarn)
 
-RUN cd /tmp \
+RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until \
+    && sed -i 's|http://deb.debian.org/debian bullseye main|http://snapshot.debian.org/archive/debian/20250721T000000Z bullseye main|' /etc/apt/sources.list \
+    && sed -i 's|http://deb.debian.org/debian-security bullseye-security main|http://snapshot.debian.org/archive/debian-security/20250721T000000Z bullseye-security main|' /etc/apt/sources.list \
+    && sed -i 's|http://deb.debian.org/debian bullseye-updates main|http://snapshot.debian.org/archive/debian/20250721T000000Z bullseye-updates main|' /etc/apt/sources.list \
+    && cd /tmp \
     && curl -O https://nodejs.org/download/release/v10.24.1/node-v10.24.1-linux-x64.tar.gz \
     && tar -xvf node-v10.24.1-linux-x64.tar.gz \
     && cp -Rf node-v10.24.1-linux-x64/* /usr/ \
@@ -93,23 +97,28 @@ WORKDIR /var/alchemy/Phraseanet
 ENTRYPOINT ["docker/phraseanet/fpm/entrypoint.sh"]
 CMD ["php-fpm", "-F"]
 
+
 #########################################################################
 # Phraseanet worker application image
 #########################################################################
 
 FROM alchemyfr/phraseanet-base:1.2.4 AS phraseanet-worker
 
+RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until \
+    && sed -i 's|http://deb.debian.org/debian bullseye main|http://snapshot.debian.org/archive/debian/20250721T000000Z bullseye main|' /etc/apt/sources.list \
+    && sed -i 's|http://deb.debian.org/debian-security bullseye-security main|http://snapshot.debian.org/archive/debian-security/20250721T000000Z bullseye-security main|' /etc/apt/sources.list \
+    && sed -i 's|http://deb.debian.org/debian bullseye-updates main|http://snapshot.debian.org/archive/debian/20250721T000000Z bullseye-updates main|' /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends supervisor \
+    && apt-get install -y --no-install-recommends logrotate \
+    && mkdir -p /var/log/supervisor \
+    && chown -R app: /var/log/supervisor \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists
+
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends  supervisor
-RUN apt-get install -y --no-install-recommends  logrotate 
-RUN mkdir -p /var/log/supervisor \
-    && chown -R app: /var/log/supervisor \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
 COPY ./docker/phraseanet/worker/logrotate/worker /etc/logrotate.d/
@@ -119,28 +128,39 @@ RUN chmod 644 /etc/logrotate.d/worker
 ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
 CMD ["/bin/bash", "bin/run-worker.sh"]
 
+
 #########################################################################
 # phraseanet-nginx
 #########################################################################
 
 FROM nginx:1.27.2-alpine AS phraseanet-nginx
+
 RUN adduser --uid 1000 --disabled-password app
+
 RUN apk add --update apache2-utils \
     && rm -rf /var/cache/apk/*
+
 ADD ./docker/nginx/root /
 COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
 
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
+
 HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
 
+
 #########################################################################
-# phraseanet adapted simplesaml service provider 
+# phraseanet adapted simplesaml service provider
 #########################################################################
 
 FROM alchemyfr/phraseanet-base:1.2.4 AS phraseanet-saml-sp
-RUN apt-get update \
+
+RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until \
+    && sed -i 's|http://deb.debian.org/debian bullseye main|http://snapshot.debian.org/archive/debian/20250721T000000Z bullseye main|' /etc/apt/sources.list \
+    && sed -i 's|http://deb.debian.org/debian-security bullseye-security main|http://snapshot.debian.org/archive/debian-security/20250721T000000Z bullseye-security main|' /etc/apt/sources.list \
+    && sed -i 's|http://deb.debian.org/debian bullseye-updates main|http://snapshot.debian.org/archive/debian/20250721T000000Z bullseye-updates main|' /etc/apt/sources.list \
+    && apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -158,7 +178,11 @@ RUN apt-get update \
         mcrypt \
         libldap2-dev \
     && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/
+
 ADD ./docker/phraseanet/saml-sp/root /
+
 ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+
 CMD ["/bootstrap/bin/start-servers.sh"]
-HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit
+
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 1
