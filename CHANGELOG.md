@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 4.1.23
+
+## Version Summary
+Fix thesaurus replacing a candidate by a Thesaurus value
+
+#### Phraseanet Upgrade
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Stack (Docker Compose and Helm)
+
+- no change
+
+
+## What's Changed
+* PHRAS-4178 Prod Thesaurus - replacing a candidate generates Array to string conversion error by @aynsix in https://github.com/alchemy-fr/Phraseanet/pull/4634
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.22...4.1.23
+
+__
+
 ## 4.1.22
 
 ## Version Summary
