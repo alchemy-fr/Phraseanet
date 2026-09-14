@@ -4,6 +4,8 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
@@ -75,6 +77,10 @@ class PopulateIndexWorker implements WorkerInterface
                     ->setStatus(WorkerRunningJob::RUNNING)
                 ;
 
+                if (!isset($payload['recordIds'])) {
+                    $workerRunningJob->setRecordId(0); // to differentiate in admin view : 0 databox indexing , none for records indexing
+                }
+
                 $em->persist($workerRunningJob);
 
                 $em->flush();
@@ -115,32 +121,41 @@ class PopulateIndexWorker implements WorkerInterface
         } else {
             $databox = $this->findDataboxById($databoxId);
 
-            try {
-                $r = $this->indexer->populateIndex(Indexer::THESAURUS | Indexer::RECORDS, $databox); // , $temporary);
+            if (!empty($payload['recordIds'])) {
+                $recordIds = is_array($payload['recordIds']) ? $payload['recordIds'] : [$payload['recordIds']];
+                foreach ($recordIds as $recordId) {
+                    $record = $databox->get_record($recordId);
+                    // re-index record and invalidate caption repository cache
+                    $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+                }
+            } else {
+                try {
+                    $r = $this->indexer->populateIndex(Indexer::THESAURUS | Indexer::RECORDS, $databox); // , $temporary);
 
-                $this->messagePublisher->pushLog(sprintf(
-                    "Indexation of databox \"%s\" finished in %0.2f sec (Mem. %0.2f Mo)",
-                    $databox->get_dbname(),
-                    $r['duration']/1000,
-                    $r['memory']/1048576
-                ));
-            } catch(\Exception $e) {
-                $workerMessage = sprintf("Error on indexing : %s ", $e->getMessage());
-                $this->messagePublisher->pushLog($workerMessage);
+                    $this->messagePublisher->pushLog(sprintf(
+                        "Indexation of databox \"%s\" finished in %0.2f sec (Mem. %0.2f Mo)",
+                        $databox->get_dbname(),
+                        $r['duration']/1000,
+                        $r['memory']/1048576
+                    ));
+                } catch(\Exception $e) {
+                    $workerMessage = sprintf("Error on indexing : %s ", $e->getMessage());
+                    $this->messagePublisher->pushLog($workerMessage);
 
-                $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+                    $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
-                // notify to send a retry
-                $this->dispatch(WorkerEvents::POPULATE_INDEX_FAILURE, new PopulateIndexFailureEvent(
-                    $payload['host'],
-                    $payload['port'],
-                    $payload['indexName'],
-                    $payload['databoxId'],
-                    $workerMessage,
-                    $count,
-                    $workerRunningJob->getId()
-                ));
-            }
+                    // notify to send a retry
+                    $this->dispatch(WorkerEvents::POPULATE_INDEX_FAILURE, new PopulateIndexFailureEvent(
+                        $payload['host'],
+                        $payload['port'],
+                        $payload['indexName'],
+                        $payload['databoxId'],
+                        $workerMessage,
+                        $count,
+                        $workerRunningJob->getId()
+                    ));
+                }
+            }           
         }
 
         // tell that the populate is finished

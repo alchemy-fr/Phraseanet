@@ -44,6 +44,24 @@ class SearchengineSubscriber implements EventSubscriberInterface
         }
     }
 
+    public function onRecordPopulateIndex(PopulateIndexEvent $event)
+    {
+        $populateInfo = $event->getData();
+
+        $payload = [
+            'message_type' => MessagePublisher::POPULATE_INDEX_TYPE,
+            'payload' => [
+                'host'      => $populateInfo['host'],
+                'port'      => $populateInfo['port'],
+                'indexName' => $populateInfo['indexName'],
+                'databoxId' => $populateInfo['databoxId'],
+                'recordIds'  => $populateInfo['recordIds']
+            ]
+        ];
+
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::POPULATE_INDEX_TYPE);
+    }
+
     public function onPopulateIndexFailure(PopulateIndexFailureEvent $event)
     {
         $repoWorker = $this->getRepoWorkerJob();
@@ -96,7 +114,8 @@ class SearchengineSubscriber implements EventSubscriberInterface
     {
         return [
             WorkerEvents::POPULATE_INDEX          => 'onPopulateIndex',
-            WorkerEvents::POPULATE_INDEX_FAILURE  => 'onPopulateIndexFailure'
+            WorkerEvents::POPULATE_INDEX_FAILURE  => 'onPopulateIndexFailure',
+            WorkerEvents::RECORD_POPULATE_INDEX   => 'onRecordPopulateIndex',
         ];
     }
 

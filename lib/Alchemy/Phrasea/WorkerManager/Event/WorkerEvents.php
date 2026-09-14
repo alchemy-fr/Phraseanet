@@ -29,4 +29,5 @@ final class WorkerEvents
     const RECORDS_WRITE_META                = 'records.write_meta';
 
     const RECORD_DELETE_INDEX               = 'record.delete_index';
+    const RECORD_POPULATE_INDEX             = 'record.populate_index';
 }
