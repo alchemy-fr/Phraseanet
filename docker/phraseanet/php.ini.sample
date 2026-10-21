@@ -1500,7 +1500,7 @@ session.sid_bits_per_character = 5
 ; Development Value: On
 ; Production Value: On
 ; http://php.net/session.upload-progress.enabled
-;session.upload_progress.enabled = On
+session.upload_progress.enabled = ${PHP_SESSION_UPLOAD_PROGRESS_ENABLED}
 
 ; Cleanup the progress information as soon as all POST data has been read
 ; (i.e. upload completed).
