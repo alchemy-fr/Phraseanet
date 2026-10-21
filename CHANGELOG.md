@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 4.1.24
+
+## Version Summary
+PHRAS-4184 : allow to disable php session upload progress
+secure php sessions by adding disable php session upload progress env var
+
+#### Phraseanet Upgrade
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Stack (Docker Compose and Helm)
+
+- Secure php sessions by adding disable `PHP_SESSION_UPLOAD_PROGRESS_ENABLED` env var set to `off` by default
+
 ## 4.1.23
 
 ## Version Summary
