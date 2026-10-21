@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 4.1.25
+
+## Version Summary
+PHRAS-4185 : upgrade php base image version to 1.3.0
+
+#### Phraseanet Upgrade
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Stack (Docker Compose and Helm)
+
+- no change
+
+
 ## 4.1.24
 
 ## Version Summary
