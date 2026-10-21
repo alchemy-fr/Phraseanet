@@ -16,9 +16,7 @@ secure php sessions by adding disable php session upload progress env var
 
 ### Stack (Docker Compose and Helm)
 
-- Secure php sessions by adding disable php session upload progress env var
-
-
+- Secure php sessions by adding disable `PHP_SESSION_UPLOAD_PROGRESS_ENABLED` env var set to `off` by default
 
 ## 4.1.23
 
