@@ -16,7 +16,8 @@ use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Assert\Assertion;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
@@ -226,7 +227,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->subdef_id = $normalizer('subdef_id', 'intval');
         $this->modification_date = $normalizer('updated_on', 'date_create');
         $this->creation_date = $normalizer('created_on', 'date_create');
-        $this->url = $normalizer('url', [Url::class, 'factory'], [$this, 'generateUrl']);
+        $this->url = $normalizer('url', function ($url) {
+            return new Uri((string) $url);
+        }, [$this, 'generateUrl']);
 
         if (!$this->isStillAccessible()) {
             $this->markPhysicallyUnavailable();
@@ -328,12 +331,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->etag = null;
 
         $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/substitution/';
-        $this->url = Url::factory('/assets/common/images/icons/substitution/' . $this->file);
+        $this->url = new Uri('/assets/common/images/icons/substitution/' . $this->file);
 
         if (!file_exists($this->getRealPath())) {
             $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/';
             $this->file = 'substitution.png';
-            $this->url = Url::factory('/assets/common/images/icons/' . $this->file);
+            $this->url = new Uri('/assets/common/images/icons/' . $this->file);
         }
     }
 
@@ -519,7 +522,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     * @return Url
+     * @return UriInterface
      */
     public function renew_url()
     {
@@ -691,7 +694,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     * @return Url
+     * @return UriInterface
      */
     protected function generateUrl()
     {
@@ -709,12 +712,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         foreach ($generators as $generator) {
             $url = $generator();
 
-            if ($url instanceof Url) {
+            if ($url instanceof UriInterface) {
                 return $url;
             }
         }
 
-        return Url::factory($this->app->path('datafile', [
+        return new Uri($this->app->path('datafile', [
             'sbas_id' => $this->record->getDataboxId(),
             'record_id' => $this->record->getRecordId(),
             'subdef' => $this->get_name(),
@@ -791,7 +794,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     * @return Url|null
+     * @return UriInterface|null
      */
     protected function tryGetThumbnailUrl()
     {
@@ -805,13 +808,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return null;
         }
 
-        $url->getQuery()->offsetSet('etag', $this->getEtag());
-
-        return $url;
+        return Uri::withQueryValue($url, 'etag', $this->getEtag());
     }
 
     /**
-     * @return Url|null
+     * @return UriInterface|null
      */
     protected function tryGetVideoUrl()
     {

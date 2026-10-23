@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 use Alchemy\Phrasea\Authentication\Provider\Linkedin;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use GuzzleHttp\Psr7\Response;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
@@ -33,45 +34,10 @@ class LinkedinTest extends ProviderTestCase
         $request = $this->getRequestMock();
         $this->addQueryParameter($request, ['state' => $state]);
 
-        $mock = $this->createMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->createMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-        $queryString
-            ->method('add')
-            ->will($this->returnSelf());
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response->expects($this->at(0))
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        $response->expects($this->at(1))
-            ->method('getStatusCode')
-            ->will($this->returnValue(401));
-
-        $requestGet
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $requestPost
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $mock
-            ->method('get')
-            ->will($this->returnValue($requestGet));
-
-        $mock
-            ->method('post')
-            ->will($this->returnValue($requestPost));
+        $mock = $this->getGuzzleMockWithResponses([
+            new Response(200, [], json_encode(['access_token' => 'linkedin-access-token'])),
+            new Response(401),
+        ]);
 
         $provider = $this->getProvider();
         $provider->setGuzzleClient($mock);
@@ -91,42 +57,10 @@ class LinkedinTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->createMock('Guzzle\Http\Message\EntityEnclosingRequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $queryString
-            ->method('add')
-            ->will($this->returnSelf());
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        $requestGet
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $requestPost
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle
-            ->method('get')
-            ->will($this->returnValue($requestGet));
-
-        $guzzle
-            ->method('post')
-            ->will($this->returnValue($requestPost));
+        $guzzle = $this->getGuzzleMockWithResponses([
+            new Response(200, [], json_encode(['access_token' => 'linkedin-access-token'])),
+            new Response(200, [], json_encode(['id' => self::ID])),
+        ]);
 
         $provider->setGuzzleClient($guzzle);
 
@@ -153,54 +87,23 @@ class LinkedinTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $queryString
-            ->method('add')
-            ->will($this->returnSelf());
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        $response
-            ->method('getBody')
-            ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode([
-                'positions' => [
-                    '_total' => 1,
-                    'values' => [
-                        [
-                            'company' => [
-                                'name' => self::COMPANY
-                            ]
+        $guzzle = $this->getGuzzleMock(200, json_encode([
+            'positions' => [
+                '_total' => 1,
+                'values' => [
+                    [
+                        'company' => [
+                            'name' => self::COMPANY
                         ]
                     ]
-                ],
-                'emailAddress' => self::EMAIL,
-                'firstName'    => self::FIRSTNAME,
-                'id'           => self::ID,
-                'pictureUrl'   => self::IMAGEURL,
-                'lastName'     => self::LASTNAME,
-            ])));
-
-        $requestGet
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle
-            ->method('get')
-            ->will($this->returnValue($requestGet));
+                ]
+            ],
+            'emailAddress' => self::EMAIL,
+            'firstName'    => self::FIRSTNAME,
+            'id'           => self::ID,
+            'pictureUrl'   => self::IMAGEURL,
+            'lastName'     => self::LASTNAME,
+        ]));
 
         $provider->setGuzzleClient($guzzle);
         $provider->getSession()->set('linkedin.provider.id', 'linkedin-id');
@@ -229,33 +132,7 @@ class LinkedinTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $queryString
-            ->method('add')
-            ->will($this->returnSelf());
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response
-            ->method('getStatusCode')
-            ->will($this->returnValue(401));
-
-        $requestGet
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle
-            ->method('get')
-            ->will($this->returnValue($requestGet));
+        $guzzle = $this->getGuzzleMock(401);
 
         $provider->setGuzzleClient($guzzle);
 

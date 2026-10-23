@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Viadeo;
+use GuzzleHttp\Psr7\Response;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
@@ -30,32 +31,7 @@ class ViadeoTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $queryString->expects($this->exactly(3))
-            ->method('add')
-            ->will($this->returnSelf());
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response
-            ->method('getStatusCode')
-            ->will($this->returnValue(302));
-
-        $requestGet->expects($this->once())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle
-            ->method('get')
-            ->will($this->returnValue($requestGet));
+        $guzzle = $this->getGuzzleMock(302);
 
         $provider->setGuzzleClient($guzzle);
 
@@ -66,38 +42,10 @@ class ViadeoTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->createMock('Guzzle\Http\Message\EntityEnclosingRequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        $requestGet
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $requestPost
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle
-            ->method('get')
-            ->will($this->returnValue($requestGet));
-
-        $guzzle
-            ->method('post')
-            ->will($this->returnValue($requestPost));
+        $guzzle = $this->getGuzzleMockWithResponses([
+            new Response(200, [], json_encode(['access_token' => 'viadeo-access-token'])),
+            new Response(200, [], json_encode(['id' => self::ID])),
+        ]);
 
         $provider->setGuzzleClient($guzzle);
 
@@ -129,66 +77,22 @@ class ViadeoTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
-
-        $requestGet1 = $this->createMock('Guzzle\Http\Message\RequestInterface');
-        $requestGet2 = $this->createMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $requestGet1
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-        $requestGet2
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response1 = $this->createMock('Guzzle\Http\Message\Response');
-        $response2 = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response1
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-        $response2
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        $response1
-            ->method('getBody')
-            ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode([
+        $guzzle = $this->getGuzzleMockWithResponses([
+            new Response(200, [], json_encode([
                 'id'            => self::ID,
                 'first_name'    => self::FIRSTNAME,
                 'last_name'     => self::LASTNAME,
                 'picture_large' => self::IMAGEURL,
                 'nickname'      => self::USERNAME,
-            ])));
-
-        $response2
-            ->method('getBody')
-            ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode([
+            ])),
+            new Response(200, [], json_encode([
                 'data' => [
                    [
                        'company_name' => self::COMPANY
                    ]
                 ],
-            ])));
-
-        $requestGet1
-            ->method('send')
-            ->will($this->returnValue($response1));
-        $requestGet2
-            ->method('send')
-            ->will($this->returnValue($response2));
-
-        $guzzle->expects($this->at(0))
-            ->method('get')
-            ->will($this->returnValue($requestGet1));
-
-        $guzzle->expects($this->at(1))
-            ->method('get')
-            ->will($this->returnValue($requestGet2));
+            ])),
+        ]);
 
         $provider->setGuzzleClient($guzzle);
         $provider->getSession()->set('viadeo.provider.id', 'viadeo-id');
@@ -205,29 +109,7 @@ class ViadeoTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response
-            ->method('getStatusCode')
-            ->will($this->returnValue(401));
-
-        $requestGet
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle
-            ->method('get')
-            ->will($this->returnValue($requestGet));
+        $guzzle = $this->getGuzzleMock(401);
 
         $provider->setGuzzleClient($guzzle);
 

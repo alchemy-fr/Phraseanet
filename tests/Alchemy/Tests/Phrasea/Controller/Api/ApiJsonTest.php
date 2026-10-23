@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Guzzle\Common\Exception\GuzzleException;
+use GuzzleHttp\Exception\GuzzleException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;

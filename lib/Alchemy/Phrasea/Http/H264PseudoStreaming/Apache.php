@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Http\H264PseudoStreaming;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Http\AbstractServerMode;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
 
 class Apache extends AbstractServerMode implements H264Interface
 {
@@ -104,6 +104,6 @@ class Apache extends AbstractServerMode implements H264Interface
         $hexTime = dechex(time() + 3600);
         $token = md5($entry['passphrase'] . $path . $hexTime);
 
-        return Url::factory($entry['mount-point'] .'/'. $token . "/" . $hexTime . $path);
+        return new Uri($entry['mount-point'] .'/'. $token . "/" . $hexTime . $path);
     }
 }

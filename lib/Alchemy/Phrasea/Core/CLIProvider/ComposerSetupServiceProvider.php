@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\Phrasea\Utilities\ComposerSetup;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;

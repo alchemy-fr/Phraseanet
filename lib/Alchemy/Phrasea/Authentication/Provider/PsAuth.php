@@ -18,9 +18,9 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Exception;
-use Guzzle\Common\Exception\GuzzleException;
-use Guzzle\Http\Client as Guzzle;
-use Guzzle\Http\ClientInterface;
+use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use RandomLibtest\Mocks\Random\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ class PsAuth extends AbstractProvider
     private $iconUri;
 
     /**
-     * @var Guzzle
+     * @var ClientInterface
      */
     private $client;
 
@@ -60,7 +60,7 @@ class PsAuth extends AbstractProvider
         }
     }
 
-    public function __construct(UrlGenerator $urlGenerator, SessionInterface $session, array $config, Guzzle $client)
+    public function __construct(UrlGenerator $urlGenerator, SessionInterface $session, array $config, ClientInterface $client)
     {
         parent::__construct($urlGenerator, $session);
 
@@ -96,8 +96,10 @@ class PsAuth extends AbstractProvider
             }
         }
 
-        $guzzle = new Guzzle($options['base-url']);
-        $guzzle->setSslVerification(false, false, 0);
+        $guzzle = new Guzzle([
+            'base_uri' => rtrim($options['base-url'], '/') . '/',
+            'verify' => false,
+        ]);
 
         return new self($generator, $session, $options, $guzzle);
     }
@@ -125,7 +127,7 @@ class PsAuth extends AbstractProvider
     /**
      * @return ClientInterface
      */
-    public function getGuzzleClient()
+    public function getGuzzleClient(): ClientInterface
     {
         return $this->client;
     }
@@ -252,22 +254,20 @@ class PsAuth extends AbstractProvider
                 urlencode($this->config['provider-type']),
                 urlencode($this->config['provider-name'])
             );
-            $guzzleRequest = $this->client->post($url);
-
-            $guzzleRequest->addPostFields([
-                'grant_type' => "authorization_code",
-                'code' => $request->query->get('code'),
-                'redirect_uri' => $this->generator->generate(
-                    'login_authentication_provider_callback',
-                    ['providerId' => $this->getId()],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-                'client_id' => $this->config['client-id'],
-                'client_secret' => $this->config['client-secret'],
+            $response = $this->client->request('POST', $url, [
+                'form_params' => [
+                    'grant_type' => "authorization_code",
+                    'code' => $request->query->get('code'),
+                    'redirect_uri' => $this->generator->generate(
+                        'login_authentication_provider_callback',
+                        ['providerId' => $this->getId()],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                    'client_id' => $this->config['client-id'],
+                    'client_secret' => $this->config['client-secret'],
+                ],
+                'headers' => ['Accept' => 'application/json'],
             ]);
-            $guzzleRequest->setHeader('Accept', 'application/json');
-            $this->debug();
-            $response = $guzzleRequest->send();
             $this->debug();
         }
         catch (GuzzleException $e) {
@@ -281,7 +281,7 @@ class PsAuth extends AbstractProvider
         }
 
         $this->debug();
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
         $this->debug();
 
         if (JSON_ERROR_NONE !== json_last_error()) {
@@ -296,12 +296,12 @@ class PsAuth extends AbstractProvider
         try {
             $this->debug();
             // $request = $this->client->get($this->getId() . 'userinfo');
-            $request = $this->client->get('me');
-            $request->getQuery()->add('access_token', $data['access_token']);
-            $request->setHeader('Accept', 'application/json');
             $this->debug();
 
-            $response = $request->send();
+            $response = $this->client->request('GET', 'me', [
+                'query' => ['access_token' => $data['access_token']],
+                'headers' => ['Accept' => 'application/json'],
+            ]);
             $this->debug();
         }
         catch (GuzzleException $e) {
@@ -310,7 +310,7 @@ class PsAuth extends AbstractProvider
         }
 
         $this->debug();
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
         $this->debug(var_export($data, true));
 
         if (200 !== $response->getStatusCode()) {
@@ -372,7 +372,7 @@ class PsAuth extends AbstractProvider
         $distantUserId = $this->session->get($this->getId() . '.provider.id');
         $this->debug(sprintf("session->get('%s') ==> '%s')", $this->getId() . ".provider.id", $distantUserId));
 
-        if ('' === trim($distantUserId)) {
+        if ('' === trim((string) $distantUserId)) {
             $this->debug();
             throw new NotAuthenticatedException($this->getId() . ' has not authenticated');
         }
@@ -393,11 +393,10 @@ class PsAuth extends AbstractProvider
         $identity = new Identity();
 
         try {
-            $request = $this->client->get('me');
-            $request->getQuery()->add('access_token', $this->session->get($this->getId() . '.provider.access_token'));
-            $request->setHeader('Accept', 'application/json');
-
-            $response = $request->send();
+            $response = $this->client->request('GET', 'me', [
+                'query' => ['access_token' => $this->session->get($this->getId() . '.provider.access_token')],
+                'headers' => ['Accept' => 'application/json'],
+            ]);
         }
         catch (GuzzleException $e) {
             $this->debug();
@@ -409,7 +408,7 @@ class PsAuth extends AbstractProvider
             throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             $this->debug();

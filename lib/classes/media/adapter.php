@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use Guzzle\Http\Url;
+use Psr\Http\Message\UriInterface;
 
 class media_adapter extends media_abstract
 {
@@ -19,9 +19,9 @@ class media_adapter extends media_abstract
      *
      * @param int $width
      * @param int $height
-     * @param Url $url
+     * @param UriInterface $url
      */
-    public function __construct($width, $height, Url $url)
+    public function __construct($width, $height, UriInterface $url)
     {
         parent::__construct($width, $height, $url);
     }

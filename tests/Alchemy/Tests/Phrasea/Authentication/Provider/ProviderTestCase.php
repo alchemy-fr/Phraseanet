@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 
 use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
@@ -11,7 +12,15 @@ use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use appbox;
 use DataURI\Parser;
 use Doctrine\ORM\EntityManager;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Promise\Create;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
 use RandomLib\Generator as RandomGenerator;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
@@ -57,7 +66,7 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
     public function testGetSetGuzzleClient()
     {
         $provider = $this->getProvider();
-        $this->assertInstanceOf('Guzzle\Http\CLientInterface', $provider->getGuzzleClient());
+        $this->assertInstanceOf(ClientInterface::class, $provider->getGuzzleClient());
         $guzzle = $this->getGuzzleMock();
 
         $provider->setGuzzleClient($guzzle);
@@ -101,18 +110,33 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideDataForSuccessCallback')]
-    public function testOnCallbackWithSuccess(ProviderInterface $provider, $request)
+    public function testOnCallbackWithSuccess()
     {
-        $this->markTestSkipped('Current implementation does not allow mocking guzzle responses properly');
-        $provider->onCallback($request);
+        $cases = $this->provideDataForSuccessCallback();
+        $this->assertNotEmpty($cases);
+
+        foreach ($cases as list($provider, $request)) {
+            $provider->onCallback($request);
+            $this->addToAssertionCount(1);
+        }
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideDataForFailingCallback')]
-    public function testOnCallbackWithFailure($provider, $request)
+    /**
+     * Cases are built by a non-static method because they need mocks, which PHPUnit data providers cannot create.
+     */
+    public function testOnCallbackWithFailure()
     {
-        $this->expectException(\Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException::class);
-        $provider->onCallback($request);
+        $cases = $this->provideDataForFailingCallback();
+        $this->assertNotEmpty($cases);
+
+        foreach ($cases as $i => list($provider, $request)) {
+            try {
+                $provider->onCallback($request);
+                $this->fail(sprintf('Case #%s should throw a NotAuthenticatedException', $i));
+            } catch (NotAuthenticatedException $e) {
+                $this->addToAssertionCount(1);
+            }
+        }
     }
 
     public function testGetToken()
@@ -164,23 +188,19 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
         $this->assertInstanceOf($name, $provider);
     }
 
-    abstract public static function provideDataForFailingCallback();
+    /**
+     * @return array list of [ProviderInterface $provider, Request $request]
+     */
+    abstract public function provideDataForFailingCallback();
 
-    abstract public static function provideDataForSuccessCallback();
+    /**
+     * @return array list of [ProviderInterface $provider, Request $request]
+     */
+    abstract public function provideDataForSuccessCallback();
 
     protected function addQueryParameter(Request $request, array $parameters)
     {
-        $query = $this->createMock('Symfony\Component\HttpFoundation\ParameterBag');
-
-        $query
-            ->method('get')
-            ->will($this->returnCallback(function ($param) use ($parameters) {
-                if (isset($parameters[$param])) {
-                    return $parameters[$param];
-                }
-            }));
-
-        $request->query = $query;
+        $request->query = new InputBag($parameters);
     }
 
     protected function getMockSession()
@@ -237,45 +257,36 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
 
     protected function getRequestMock()
     {
-        return $this->createMock('Symfony\Component\HttpFoundation\Request');
+        return new Request();
     }
 
-    protected function getGuzzleMock($statusCode = 200)
+    /**
+     * Returns a client answering every request with the same response.
+     *
+     * @param int $statusCode
+     * @param string $body
+     *
+     * @return Client
+     */
+    protected function getGuzzleMock($statusCode = 200, $body = '')
     {
-        $mock = $this->createMock('Guzzle\Http\ClientInterface');
+        $handler = function (RequestInterface $request, array $options) use ($statusCode, $body) {
+            return Create::promiseFor(new Response($statusCode, [], $body));
+        };
 
-        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->createMock('Guzzle\Http\Message\RequestInterface');
+        return new Client(['handler' => HandlerStack::create($handler)]);
+    }
 
-        $queryString = $this->createMock('Guzzle\Http\QueryString');
-
-        $requestGet
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->createMock('Guzzle\Http\Message\Response');
-
-        $response
-            ->method('getStatusCode')
-            ->will($this->returnValue($statusCode));
-
-        $requestGet
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $requestPost
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $mock
-            ->method('get')
-            ->will($this->returnValue($requestGet));
-
-        $mock
-            ->method('post')
-            ->will($this->returnValue($requestPost));
-
-        return $mock;
+    /**
+     * Returns a client answering the successive requests with the given responses.
+     *
+     * @param Response[] $responses
+     *
+     * @return Client
+     */
+    protected function getGuzzleMockWithResponses(array $responses)
+    {
+        return new Client(['handler' => HandlerStack::create(new MockHandler($responses))]);
     }
 
     /**

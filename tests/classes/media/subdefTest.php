@@ -79,8 +79,8 @@ class media_subdefTest extends \PhraseanetTestCase
 
     public function testGet_url()
     {
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectNotPresent->get_url());
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectPresent->get_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectNotPresent->get_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectPresent->get_url());
         $this->assertEquals('/assets/common/images/icons/substitution/image_jpeg.png', (string) self::$objectNotPresent->get_url());
         $this->assertMatchesRegularExpression('#\/datafiles\/' . self::$objectPresent->get_sbas_id() . '\/' . self::$objectPresent->get_record_id() . '\/preview\/\?etag=[0-9a-f]{32}#', (string) self::$objectPresent->get_url());
     }
@@ -192,8 +192,8 @@ class media_subdefTest extends \PhraseanetTestCase
 
     public function testRenew_url()
     {
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectPresent->renew_url());
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectNotPresent->renew_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectPresent->renew_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectNotPresent->renew_url());
     }
 
     public function testGetDataboxSubdef()

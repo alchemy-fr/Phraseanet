@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\Common\Collections\ArrayCollection;
-use Guzzle\Common\Exception\GuzzleException;
+use GuzzleHttp\Exception\GuzzleException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
@@ -384,7 +384,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         if (null === $webserver) {
             try {
-                $code = self::$DI['local-guzzle']->head('/api/')->send()->getStatusCode();
+                $code = self::$DI['local-guzzle']->request('HEAD', '/api/')->getStatusCode();
             } catch (GuzzleException $e) {
                 $code = null;
             }
@@ -397,7 +397,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $url = substr($url, strlen($webserver));
         }
 
-        return $request[$url] = self::$DI['local-guzzle']->head($url)->send();
+        return $request[$url] = self::$DI['local-guzzle']->request('HEAD', $url);
     }
 
     protected function assertPermalinkHeaders($url, \media_subdef $subdef, $type_url = "page_url")
@@ -408,21 +408,21 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         switch ($type_url) {
             case "page_url" :
-                $this->assertTrue(strpos((string) $response->getHeader('content-type'), "text/html") === 0);
+                $this->assertTrue(strpos($response->getHeaderLine('content-type'), "text/html") === 0);
                 if ($response->hasHeader('content-length')) {
-                    $this->assertNotEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                    $this->assertNotEquals($subdef->get_size(), $response->getHeaderLine('content-length'));
                 }
                 break;
             case "url" :
-                $this->assertTrue(strpos((string) $response->getHeader('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . (string) $response->getHeader('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
+                $this->assertTrue(strpos($response->getHeaderLine('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . $response->getHeaderLine('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
                 if ($response->hasHeader('content-length')) {
-                    $this->assertEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                    $this->assertEquals($subdef->get_size(), $response->getHeaderLine('content-length'));
                 }
                 break;
             case "download_url" :
-                $this->assertTrue(strpos((string) $response->getHeader('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . (string) $response->getHeader('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
+                $this->assertTrue(strpos($response->getHeaderLine('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . $response->getHeaderLine('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
                 if ($response->hasHeader('content-length')) {
-                    $this->assertEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                    $this->assertEquals($subdef->get_size(), $response->getHeaderLine('content-length'));
                 }
                 break;
         }

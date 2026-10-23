@@ -17,10 +17,11 @@ use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use Exception;
-use Guzzle\Common\Exception\GuzzleException;
-use Guzzle\Http\Client as Guzzle;
-use Guzzle\Http\ClientInterface;
+use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use RandomLibtest\Mocks\Random\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +38,7 @@ class Openid extends AbstractProvider
     private $iconUri;
 
     /**
-     * @var Guzzle
+     * @var ClientInterface
      */
     private $client;
 
@@ -60,7 +61,7 @@ class Openid extends AbstractProvider
         }
     }
 
-    public function __construct(UrlGenerator $urlGenerator, SessionInterface $session, array $config, Guzzle $client)
+    public function __construct(UrlGenerator $urlGenerator, SessionInterface $session, array $config, ClientInterface $client)
     {
         parent::__construct($urlGenerator, $session);
 
@@ -96,8 +97,7 @@ class Openid extends AbstractProvider
             }
         }
 
-        $guzzle = new Guzzle();
-        $guzzle->setSslVerification(false, false, 0);
+        $guzzle = new Guzzle(['verify' => false]);
 
         return new self($generator, $session, $options, $guzzle);
     }
@@ -125,7 +125,7 @@ class Openid extends AbstractProvider
     /**
      * @return ClientInterface
      */
-    public function getGuzzleClient()
+    public function getGuzzleClient(): ClientInterface
     {
         return $this->client;
     }
@@ -261,22 +261,20 @@ class Openid extends AbstractProvider
                 urlencode($this->config['realm-name'])
             );
 
-            $guzzleRequest = $this->client->post($url);
-
-            $guzzleRequest->addPostFields([
-                'grant_type' => "authorization_code",
-                'code' => $request->query->get('code'),
-                'redirect_uri' => $this->generator->generate(
-                    'login_authentication_provider_callback',
-                    ['providerId' => $this->getId()],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-                'client_id' => $this->config['client-id'],
-                'client_secret' => $this->config['client-secret'],
+            $response = $this->client->request('POST', $url, [
+                'form_params' => [
+                    'grant_type' => "authorization_code",
+                    'code' => $request->query->get('code'),
+                    'redirect_uri' => $this->generator->generate(
+                        'login_authentication_provider_callback',
+                        ['providerId' => $this->getId()],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                    'client_id' => $this->config['client-id'],
+                    'client_secret' => $this->config['client-secret'],
+                ],
+                'headers' => ['Accept' => 'application/json'],
             ]);
-            $guzzleRequest->setHeader('Accept', 'application/json');
-            $this->debug();
-            $response = $guzzleRequest->send();
             $this->debug();
         }
         catch (GuzzleException $e) {
@@ -290,7 +288,7 @@ class Openid extends AbstractProvider
         }
 
         $this->debug();
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
         $this->debug();
 
         if (JSON_ERROR_NONE !== json_last_error()) {
@@ -314,12 +312,11 @@ class Openid extends AbstractProvider
                 urlencode($this->config['realm-name'])
             );
 
-            $request = $this->client->get($uri);
-            $request->setHeader('Authorization', 'Bearer '. $data['access_token']);
-
             $this->debug();
 
-            $response = $request->send();
+            $response = $this->client->request('GET', $uri, [
+                'headers' => ['Authorization' => 'Bearer '. $data['access_token']],
+            ]);
             $this->debug();
         }
         catch (GuzzleException $e) {
@@ -333,7 +330,7 @@ class Openid extends AbstractProvider
         }
 
         $this->debug();
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
         $this->debug(var_export($data, true));
 
         if (JSON_ERROR_NONE !== json_last_error()) {
@@ -352,7 +349,7 @@ class Openid extends AbstractProvider
         $groupsKey = isset($this->config['fieldmap']['groups']) ? $this->config['fieldmap']['groups'] : 'groups';
         $distantUserId = $data['sub'];
 
-        if (!\Swift_Validate::email($data[$loginKey]) && isset($data['email'])) {
+        if (!EmailValidator::isValid($data[$loginKey]) && isset($data['email'])) {
             $loginKey = 'email';// login to be an email
         }
 
@@ -403,7 +400,7 @@ class Openid extends AbstractProvider
         $distantUserId = $this->session->get($this->getId() . '.provider.id');
         $this->debug(sprintf("session->get('%s') ==> '%s')", $this->getId() . ".provider.id", $distantUserId));
 
-        if ('' === trim($distantUserId)) {
+        if ('' === trim((string) $distantUserId)) {
             $this->debug();
             throw new NotAuthenticatedException($this->getId() . ' has not authenticated');
         }
@@ -429,10 +426,9 @@ class Openid extends AbstractProvider
                 urlencode($this->config['realm-name'])
             );
 
-            $request = $this->client->get($uri);
-            $request->setHeader('Authorization', 'Bearer '. $this->session->get($this->getId() . '.provider.access_token'));
-
-            $response = $request->send();
+            $response = $this->client->request('GET', $uri, [
+                'headers' => ['Authorization' => 'Bearer '. $this->session->get($this->getId() . '.provider.access_token')],
+            ]);
         }
         catch (GuzzleException $e) {
             $this->debug();
@@ -444,7 +440,7 @@ class Openid extends AbstractProvider
             throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             $this->debug();
@@ -853,17 +849,15 @@ class Openid extends AbstractProvider
                     urlencode($this->config['realm-name'])
                 );
 
-                $guzzleRequest = $this->client->post($url);
-
-                $guzzleRequest->addPostFields([
-                    'grant_type'        => "refresh_token",
-                    'refresh_token'     => $tokenInfo['refresh_token'],
-                    'client_id'         => $this->config['client-id'],
-                    'client_secret'     => $this->config['client-secret'],
+                $response = $this->client->request('POST', $url, [
+                    'form_params' => [
+                        'grant_type'        => "refresh_token",
+                        'refresh_token'     => $tokenInfo['refresh_token'],
+                        'client_id'         => $this->config['client-id'],
+                        'client_secret'     => $this->config['client-secret'],
+                    ],
+                    'headers' => ['Accept' => 'application/json'],
                 ]);
-
-                $guzzleRequest->setHeader('Accept', 'application/json');
-                $response = $guzzleRequest->send();
                 $this->debug();
             }
             catch (\Exception $e) {
@@ -876,7 +870,7 @@ class Openid extends AbstractProvider
                 throw new NotAuthenticatedException('Error while retrieving user info, invalid status code.');
             }
 
-            $data = @json_decode($response->getBody(true), true);
+            $data = @json_decode((string) $response->getBody(), true);
 
             if (JSON_ERROR_NONE !== json_last_error()) {
                 $this->debug();

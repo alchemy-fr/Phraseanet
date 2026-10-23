@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
 
 class record_preview extends record_adapter
 {
@@ -635,7 +635,7 @@ class record_preview extends record_adapter
 
         $width = 350;
         $height = 150;
-        $url = Url::factory('https://chart.googleapis.com/chart?' .
+        $url = new Uri('https://chart.googleapis.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $views) .
             '&cht=lc' .
@@ -710,7 +710,7 @@ class record_preview extends record_adapter
         $width = 550;
         $height = 100;
 
-        $url = Url::factory('https://chart.googleapis.com/chart?'
+        $url = new Uri('https://chart.googleapis.com/chart?'
             . 'cht=p3&chf=bg,s,00000000&chd=t:'
             . implode(',', $referrers)
             . '&chs=' . $width . 'x' . $height
@@ -779,7 +779,7 @@ class record_preview extends record_adapter
 
         $width = 250;
         $height = 150;
-        $url = Url::factory('https://chart.googleapis.com/chart?' .
+        $url = new Uri('https://chart.googleapis.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $dwnls) .
             '&cht=lc' .

@@ -12,18 +12,18 @@
 namespace Alchemy\Phrasea\Utilities;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Guzzle\Common\Exception\GuzzleException;
-use Guzzle\Http\Client as Guzzle;
-use Symfony\Component\Process\ProcessBuilder;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Process\Exception\ExceptionInterface as ProcessException;
 use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class ComposerSetup
 {
     private $guzzle;
     private $phpExecutable;
 
-    public function __construct(Guzzle $guzzle, $phpExecutable = null)
+    public function __construct(ClientInterface $guzzle, $phpExecutable = null)
     {
         if (null === $phpExecutable) {
             $finder = new PhpExecutableFinder();
@@ -48,15 +48,11 @@ class ComposerSetup
     public function setup($target)
     {
         $installer = tempnam(sys_get_temp_dir(), 'install');
-        $handle = fopen($installer, 'w+');
-
-        $request = $this->guzzle->get('https://getcomposer.org/installer', null, $handle);
 
         try {
-            $response = $request->send();
-            fclose($handle);
+            $response = $this->guzzle->request('GET', 'https://getcomposer.org/installer', ['sink' => $installer]);
         } catch (GuzzleException $e) {
-            fclose($handle);
+            @unlink($installer);
             throw new RuntimeException('Unable to download composer install script.');
         }
 
@@ -70,10 +66,8 @@ class ComposerSetup
             throw new RuntimeException('Unable to move to target directory for composer install.');
         }
 
-        $process = \Symfony\Component\Process\Process::create([$this->phpExecutable, $installer])
-            ->setTimeout(300)
-            ->getProcess()
-        ;
+        $process = new Process([$this->phpExecutable, $installer]);
+        $process->setTimeout(300);
 
         try {
             $process->run();

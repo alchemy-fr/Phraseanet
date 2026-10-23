@@ -12,7 +12,6 @@ use databox;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use Guzzle\Http\Client as Guzzle;
 use igorw;
 use MediaVorus\MediaVorus;
 use Neutron\TemporaryFilesystem\TemporaryFilesystem;

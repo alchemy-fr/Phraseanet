@@ -15,7 +15,8 @@ use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
 use RandomLib\Generator;
 
 class media_Permalink_Adapter implements cache_cacheableInterface
@@ -113,13 +114,13 @@ class media_Permalink_Adapter implements cache_cacheableInterface
     }
 
     /**
-     * @return Url
+     * @return UriInterface
      */
     public function get_url()
     {
         $label = $this->get_label() . '.' . pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION);
 
-        return Url::factory($this->app->url('permalinks_permalink', [
+        return new Uri($this->app->url('permalinks_permalink', [
             'sbas_id' => $this->media_subdef->get_sbas_id(),
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef' => $this->media_subdef->get_name(),

@@ -21,15 +21,14 @@ use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 use Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository;
 use Alchemy\Phrasea\Model\Repositories\WebhookEventPayloadRepository;
 use Alchemy\Phrasea\Model\Repositories\WebhookEventRepository;
-use Guzzle\Common\Event;
-use Guzzle\Http\Client;
-use Guzzle\Http\Message\EntityEnclosingRequestInterface;
-use Guzzle\Http\Message\Request;
-use Guzzle\Http\Message\Response;
-use Guzzle\Plugin\Backoff\BackoffPlugin;
-use Guzzle\Plugin\Backoff\CallbackBackoffStrategy;
-use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
-use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -57,7 +56,7 @@ class WebhookInvoker implements LoggerAwareInterface
     private $eventDeliveryRepository;
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     private $client;
 
@@ -94,7 +93,7 @@ class WebhookInvoker implements LoggerAwareInterface
      * @param WebhookEventDeliveryRepository $eventDeliveryRepository
      * @param WebhookEventDeliveryManipulator $eventDeliveryManipulator
      * @param WebhookEventPayloadRepository $eventPayloadRepository
-     * @param Client $client
+     * @param ClientInterface|null $client
      *
      * @todo Extract classes to reduce number of required dependencies
      */
@@ -106,7 +105,7 @@ class WebhookInvoker implements LoggerAwareInterface
         WebhookEventDeliveryRepository $eventDeliveryRepository,
         WebhookEventDeliveryManipulator $eventDeliveryManipulator,
         WebhookEventPayloadRepository $eventPayloadRepository,
-        ?Client $client = null
+        ?ClientInterface $client = null
     ) {
         $this->applicationRepository = $applicationRepository;
         $this->processorFactory = $processorFactory;
@@ -116,7 +115,7 @@ class WebhookInvoker implements LoggerAwareInterface
         $this->eventDeliveryRepository = $eventDeliveryRepository;
         $this->eventPayloadRepository = $eventPayloadRepository;
 
-        $this->client = $client ?: new Client();
+        $this->client = $client ?: new Client(['handler' => HandlerStack::create()]);
         $this->logger = new NullLogger();
 
         $this->configureClient();
@@ -126,10 +125,8 @@ class WebhookInvoker implements LoggerAwareInterface
      * Sets a logger instance on the object.
      *
      * @param LoggerInterface $logger
-     *
-     * @return null
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
@@ -166,51 +163,64 @@ class WebhookInvoker implements LoggerAwareInterface
 
     private function configureClient()
     {
-        $this->client->getEventDispatcher()->addListener('request.error', function (Event $event) {
-            // Override guzzle default behavior of throwing exceptions
-            // when 4xx & 5xx responses are encountered
-            $event->stopPropagation();
-        }, -254);
+        $handler = $this->client->getConfig('handler');
+        if (!$handler instanceof HandlerStack) {
+            return;
+        }
 
-        // Set callback which logs success or failure
-        $subscriber = new CallbackBackoffStrategy(function ($retries, Request $request, $response, $e) {
-            $retry = true;
-            if ($response && (null !== $deliverId = parse_url($request->getUrl(), PHP_URL_FRAGMENT))) {
-                $delivery = $this->eventDeliveryRepository->find($deliverId);
-
-                $logContext = ['host' => $request->getHost()];
-
-                if ($response->isSuccessful()) {
-                    $this->eventDeliveryManipulator->deliverySuccess($delivery);
-
-                    $logType = 'info';
-                    $logEntry = sprintf('Deliver success event "%d:%s" for app "%s"',
-                        $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
-                        $delivery->getThirdPartyApplication()->getName()
-                    );
-
-                    $retry = false;
-                } else {
-                    $this->eventDeliveryManipulator->deliveryFailure($delivery);
-
-                    $logType = 'error';
-                    $logEntry = sprintf('Webhook delivery failed "%d:%s" for app "%s"',
-                        $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
-                        $delivery->getThirdPartyApplication()->getName()
-                    );
-                }
-
-                $this->logger->log($logType, $logEntry, $logContext);
-
-                return $retry;
+        // Logs success or failure of each delivery attempt and retries failed ones
+        $decider = function ($retries, RequestInterface $request, ?ResponseInterface $response = null, $exception = null) {
+            if ($retries >= WebhookEventDelivery::MAX_DELIVERY_TRIES) {
+                return false;
             }
-        }, true, new CurlBackoffStrategy());
 
-        // Set max retries
-        $subscriber = new TruncatedBackoffStrategy(WebhookEventDelivery::MAX_DELIVERY_TRIES, $subscriber);
-        $subscriber = new BackoffPlugin($subscriber);
+            $deliverId = $request->getUri()->getFragment();
 
-        $this->client->addSubscriber($subscriber);
+            if (null === $response || '' === $deliverId) {
+                return $exception instanceof ConnectException;
+            }
+
+            $delivery = $this->eventDeliveryRepository->find($deliverId);
+
+            $logContext = ['host' => $request->getUri()->getHost()];
+
+            if ($this->isSuccessful($response)) {
+                $this->eventDeliveryManipulator->deliverySuccess($delivery);
+
+                $logType = 'info';
+                $logEntry = sprintf('Deliver success event "%d:%s" for app "%s"',
+                    $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
+                    $delivery->getThirdPartyApplication()->getName()
+                );
+
+                $retry = false;
+            } else {
+                $this->eventDeliveryManipulator->deliveryFailure($delivery);
+
+                $logType = 'error';
+                $logEntry = sprintf('Webhook delivery failed "%d:%s" for app "%s"',
+                    $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
+                    $delivery->getThirdPartyApplication()->getName()
+                );
+
+                $retry = true;
+            }
+
+            $this->logger->log($logType, $logEntry, $logContext);
+
+            return $retry;
+        };
+
+        $handler->push(Middleware::retry($decider, function () {
+            return 0;
+        }), 'webhook_retry');
+    }
+
+    private function isSuccessful(ResponseInterface $response)
+    {
+        $statusCode = $response->getStatusCode();
+
+        return ($statusCode >= 200 && $statusCode < 300) || $statusCode === 304;
     }
 
     /**
@@ -236,17 +246,17 @@ class WebhookInvoker implements LoggerAwareInterface
             // Append delivery id as url anchor
             $uniqueUrl = $this->buildUrl($thirdPartyApplication, $delivery);
 
-            // Create http request with data as request body
-            $request = $this->client->createRequest('POST', $uniqueUrl, [
-                'Content-Type' => 'application/vnd.phraseanet.event+json'
-            ], json_encode($data));
-
-            $requestBody = $request instanceof EntityEnclosingRequestInterface ? $request->getBody() : '';
+            $requestBody = json_encode($data);
 
             try {
-                $response = $request->send();
+                // 4xx and 5xx responses are recorded as delivery failures, not thrown
+                $response = $this->client->request('POST', $uniqueUrl, [
+                    RequestOptions::HEADERS => ['Content-Type' => 'application/vnd.phraseanet.event+json'],
+                    RequestOptions::BODY => $requestBody,
+                    RequestOptions::HTTP_ERRORS => false,
+                ]);
 
-                $responseBody = $response->getBody(true);
+                $responseBody = (string) $response->getBody();
                 $statusCode = $response->getStatusCode();
                 $headers = $this->extractResponseHeaders($response);
             }
@@ -278,13 +288,12 @@ class WebhookInvoker implements LoggerAwareInterface
         return sprintf('%s#%s', $application->getWebhookUrl(), $delivery->getId());
     }
 
-    private function extractResponseHeaders(Response $response)
+    private function extractResponseHeaders(ResponseInterface $response)
     {
-        $headerCollection = $response->getHeaders()->toArray();
         $headers = '';
 
-        foreach ($headerCollection as $name => $value) {
-            $headers .= sprintf('%s: %s', $name, $value) . PHP_EOL;
+        foreach ($response->getHeaders() as $name => $values) {
+            $headers .= sprintf('%s: %s', $name, implode(', ', $values)) . PHP_EOL;
         }
 
         return trim($headers);

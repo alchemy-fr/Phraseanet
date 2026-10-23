@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Http\H264PseudoStreaming;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Http\AbstractServerMode;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
 
 class Nginx extends AbstractServerMode implements H264Interface
 {
@@ -109,6 +109,6 @@ class Nginx extends AbstractServerMode implements H264Interface
 
         $hash = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(md5($expire.$path.' '.$entry['passphrase'], true)));
 
-        return Url::factory($path.'?hash='.$hash.'&expires='.$expire);
+        return new Uri($path.'?hash='.$hash.'&expires='.$expire);
     }
 }
