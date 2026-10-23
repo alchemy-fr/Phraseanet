@@ -33,12 +33,12 @@ class SearchEngineController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var ElasticsearchOptions $data */
             $data = $form->getData();
             // $q = $request->request->get('elasticsearch_settings');
             $facetNames = [];   // rebuild the data "_customValues/facets" list following the form order
-            foreach($request->request->get('elasticsearch_settings') as $name=>$value) {
+            foreach($request->request->all('elasticsearch_settings') as $name=>$value) {
                 $matches = null;
                 if(preg_match('/^facets:(.+):limit$/', $name, $matches) === 1) {
                     $facetNames[] = $matches[1];
@@ -113,8 +113,11 @@ class SearchEngineController extends Controller
         /** @var GlobalStructure $g */
         $g = $this->app['search_engine.global_structure'];
 
-        return $this->app->form(new ElasticsearchSettingsFormType($g, $options, $this->getTranslator()), $options, [
-            'action' => $this->app->url('admin_searchengine_form'),
+        return $this->app->form(ElasticsearchSettingsFormType::class, $options, [
+            'action'                => $this->app->url('admin_searchengine_form'),
+            'global_structure'      => $g,
+            'elasticsearch_options' => $options,
+            'translator'            => $this->getTranslator(),
         ]);
     }
 

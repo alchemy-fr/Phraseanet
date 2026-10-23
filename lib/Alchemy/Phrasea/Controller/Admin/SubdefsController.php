@@ -50,9 +50,9 @@ class SubdefsController extends Controller
      */
     function changeSubdefsAction(Request $request, $sbas_id) {
         $delete_subdef = $request->request->get('delete_subdef');
-        $toadd_subdef = $request->request->get('add_subdef');
-        $Paramsubdefs = $request->request->get('subdefs', []);
-        $ParamDocumentMeta = $request->request->get('document_meta', []);
+        $toadd_subdef = $request->request->all('add_subdef');
+        $Paramsubdefs = $request->request->all('subdefs');
+        $ParamDocumentMeta = $request->request->all('document_meta');
 
         $databox = $this->findDataboxById((int) $sbas_id);
         $subdefs = $databox->get_subdef_structure();
@@ -200,7 +200,7 @@ class SubdefsController extends Controller
                     $options[$def] = $parm_loc;
                 }
                 $mediatype = $request->request->get($post_sub . '_mediatype');
-                $media = $request->request->get($post_sub . '_' . $mediatype, []);
+                $media = $request->request->all($post_sub . '_' . $mediatype);
 
                 foreach ($media as $option => $value) {
 
@@ -211,7 +211,7 @@ class SubdefsController extends Controller
                     $options[$option] = $value;
                 }
 
-                $labels = $request->request->get($post_sub . '_label', []);
+                $labels = $request->request->all($post_sub . '_label');
                 $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset, $toBuild, $substituable);
             }
         }

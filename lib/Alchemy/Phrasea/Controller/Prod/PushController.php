@@ -31,13 +31,13 @@ use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrListRepository;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use RandomLib\Generator;
 use record_adapter;
 use Session_Logger;
-use Swift_Validate;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,7 +88,7 @@ class PushController extends Controller
             );
             $push_description = $request->request->get('push_description');
 
-            $receivers = $request->request->get('participants');
+            $receivers = $request->request->all('participants');
 
             if (!is_array($receivers) || empty($receivers)) {
                 throw new ControllerException($this->app->trans('No receivers specified'));
@@ -238,7 +238,7 @@ class PushController extends Controller
 
             $isFeedback = $request->request->get('isFeedback') == "1";
 
-            $participants = $request->request->get('participants');
+            $participants = $request->request->all('participants');
 
             if (!is_array($participants) || empty($participants)) {
                 throw new ControllerException($this->app->trans('No participants specified'));
@@ -318,7 +318,7 @@ class PushController extends Controller
                 '%quantity_records% records have been sent for validation to %quantity_users% users',
                 [
                     '%quantity_records%' => count($pusher->get_elements()),
-                    '%quantity_users%'   => count($request->request->get('participants')),
+                    '%quantity_users%'   => count($request->request->all('participants')),
                 ]
             );
 
@@ -416,7 +416,7 @@ class PushController extends Controller
             if (!$request->request->get('email'))
                 throw new ControllerException($this->app->trans('Email is required'));
 
-            if (!Swift_Validate::email($request->request->get('email')))
+            if (!EmailValidator::isValid($request->request->get('email')))
                 throw new ControllerException($this->app->trans('Email is invalid'));
         } catch (ControllerException $e) {
             $result['message'] = $e->getMessage();

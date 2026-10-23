@@ -358,10 +358,10 @@ class UserController extends Controller
         $user_query = $this->createUserQuery();
 
         $like_value = $request->query->get('term');
-        $rights = $request->query->get('filter_rights') ? : [];
-        $have_right = $request->query->get('have_right') ? : [];
-        $have_not_right = $request->query->get('have_not_right') ? : [];
-        $on_base = $request->query->get('on_base') ? : [];
+        $rights = $request->query->all('filter_rights');
+        $have_right = $request->query->all('have_right');
+        $have_not_right = $request->query->all('have_not_right');
+        $on_base = $request->query->all('on_base');
 
         $eligible_users = $user_query
             ->on_sbas_where_i_am($this->getAclForConnectedUser(), $rights)
@@ -423,8 +423,8 @@ class UserController extends Controller
 
         $like_value = $request->request->get('like_value');
         $like_field = $request->request->get('like_field');
-        $on_base = $request->request->get('base_id') ? : null;
-        $on_sbas = $request->request->get('sbas_id') ? : null;
+        $on_base = $request->request->all('base_id') ? : null;
+        $on_sbas = $request->request->all('sbas_id') ? : null;
 
         $eligible_users = $user_query->on_bases_where_i_am($this->getAclForConnectedUser(), [\ACL::CANADMIN])
             ->like($like_field, $like_value)
@@ -560,10 +560,10 @@ class UserController extends Controller
 
     public function submitRegistrationAction(Request $request)
     {
-        $templates = $this->normalizeTemplateArray($request->request->get('template', []));
-        $deny = $this->normalizeDenyArray($request->request->get('deny', []), $templates);
+        $templates = $this->normalizeTemplateArray($request->request->all('template'));
+        $deny = $this->normalizeDenyArray($request->request->all('deny'), $templates);
 
-        $accepts = $request->request->get('accept', []);
+        $accepts = $request->request->all('accept');
         $accept = $options = [];
         foreach ($accepts as $acc) {
             $acc = explode('_', $acc);
@@ -573,14 +573,14 @@ class UserController extends Controller
             }
         }
 
-        foreach ($request->request->get('accept_hd', []) as $accHD) {
+        foreach ($request->request->all('accept_hd') as $accHD) {
             $accHD = explode('_', $accHD);
             if (count($accHD) == 2 && isset($accept[$accHD[0]]) && isset($options[$accHD[0]][$accHD[1]])) {
                 $options[$accHD[0]][$accHD[1]]['HD'] = true;
             }
         }
 
-        foreach ($request->request->get('watermark', []) as $wm) {
+        foreach ($request->request->all('watermark') as $wm) {
             $wm = explode('_', $wm);
             if (count($wm) == 2 && isset($accept[$wm[0]]) && isset($options[$wm[0]][$wm[1]])) {
                 $options[$wm[0]][$wm[1]]['WM'] = true;

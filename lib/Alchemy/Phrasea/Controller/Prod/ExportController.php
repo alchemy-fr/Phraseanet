@@ -177,7 +177,7 @@ class ExportController extends Controller
         $mandatoryParameters = ['address', 'login', 'obj'];
 
         foreach ($mandatoryParameters as $parameter) {
-            if (!$request->request->get($parameter)) {
+            if (empty($request->request->all()[$parameter])) {
                 $this->app->abort(400, sprintf('required parameter `%s` is missing', $parameter));
             }
         }
@@ -193,7 +193,7 @@ class ExportController extends Controller
             $download->prepare_export(
                 $this->getAuthenticatedUser(),
                 $this->getFilesystem(),
-                $request->request->get('obj'),
+                $request->request->all('obj'),
                 false,
                 $request->request->get('businessfields'),
                 \set_export::STAMP_ASYNC,
@@ -255,7 +255,7 @@ class ExportController extends Controller
         $list = $download->prepare_export(
             $this->getAuthenticatedUser(),
             $this->getFilesystem(),
-            (array) $request->request->get('obj'),
+            $request->request->all('obj'),
             $request->request->get("type") == "title" ? : false,
             $request->request->get('businessfields'),
             \set_export::STAMP_ASYNC,

@@ -109,7 +109,7 @@ class ProdOrderController extends BaseOrderController
 
         $todo = $request->query->get('todo', Order::STATUS_TODO);
         $start = $request->query->get('start', Order::STATUS_NO_FILTER);
-        $limit = $request->query->get('limit', []);
+        $limit = $request->query->all('limit');
 
         if ($page > 0) {
             $offsetStart = ($page - 1) * $perPage;
@@ -167,7 +167,7 @@ class ProdOrderController extends BaseOrderController
      */
     public function sendOrder(Request $request, $order_id)
     {
-        $elementIds = $request->request->get('elements', []);
+        $elementIds = $request->request->all('elements');
         $acceptor = $this->getAuthenticatedUser();
 
         if (empty($request->request->get('expireOn'))) {
@@ -209,7 +209,7 @@ class ProdOrderController extends BaseOrderController
      */
     public function denyOrder(Request $request, $order_id)
     {
-        $elementIds = $request->request->get('elements', []);
+        $elementIds = $request->request->all('elements');
         $acceptor = $this->getAuthenticatedUser();
 
         $elements = $this->doDenyElements($order_id, $elementIds, $acceptor);
@@ -234,8 +234,8 @@ class ProdOrderController extends BaseOrderController
 
     public function validateOrder(Request $request, $order_id)
     {
-        $elementSendIds = $request->request->get('elementsSend', []);
-        $elementDenyIds = $request->request->get('elementsDeny', []);
+        $elementSendIds = $request->request->all('elementsSend');
+        $elementDenyIds = $request->request->all('elementsDeny');
         $acceptor = $this->getAuthenticatedUser();
 
         if (!empty($elementSendIds)) {

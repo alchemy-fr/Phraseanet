@@ -91,7 +91,7 @@ class CollectionController extends Controller
     public function setOrderAdmins(Request $request, $bas_id)
     {
         $admins = array_filter(
-            array_values($request->request->get('admins', [])),
+            array_values($request->request->all('admins')),
             function ($value) { return $value != false; }
         );
 
@@ -578,7 +578,7 @@ class CollectionController extends Controller
 
     public function labels(Request $request, $bas_id)
     {
-        if (null === $labels = $request->request->get('labels')) {
+        if (null === $labels = ($request->request->all()['labels'] ?? null)) {
             $this->app->abort(400, $this->app->trans('Missing labels parameter'));
         }
         if (false === is_array($labels)) {

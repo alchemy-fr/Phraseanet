@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailCheck;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -107,7 +108,7 @@ class DashboardController extends Controller
             $this->app->abort(400, 'Bad request missing email parameter');
         };
 
-        if (!\Swift_Validate::email($mail)) {
+        if (!EmailValidator::isValid($mail)) {
             $this->app->abort(400, 'Bad request missing email parameter');
         };
 
@@ -152,7 +153,7 @@ class DashboardController extends Controller
      */
     public function addAdmins(Request $request)
     {
-        $admins = $request->request->get('admins', []);
+        $admins = $request->request->all('admins');
 
         // Remove empty values
         $admins = array_filter($admins);

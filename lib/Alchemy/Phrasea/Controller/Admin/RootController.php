@@ -71,7 +71,7 @@ class RootController extends Controller
             $this->app->abort(400, $this->app->trans('Bad request format, only JSON is allowed'));
         }
 
-        if (0 === count($tests = $request->query->get('tests', []))) {
+        if (0 === count($tests = $request->query->all('tests'))) {
             $this->app->abort(400, $this->app->trans('Missing tests parameter'));
         }
 
@@ -263,8 +263,8 @@ class RootController extends Controller
             'name'       => $request->request->get('name', ''),
             'labelon'    => $request->request->get('label_on', ''),
             'labeloff'   => $request->request->get('label_off', ''),
-            'labels_on'  => $request->request->get('labels_on', []),
-            'labels_off' => $request->request->get('labels_off', []),
+            'labels_on'  => $request->request->all('labels_on'),
+            'labels_off' => $request->request->all('labels_off'),
         ];
 
         $databox = $this->findDataboxById($databox_id);

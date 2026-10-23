@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Controller;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authorization\AuthorizationChecker;
 use Alchemy\Phrasea\Model\Entities\User;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,12 +59,12 @@ abstract class BaseController
 
     /**
      * @param string $method
-     * @param mixed  $formType
+     * @param string $formType
      * @param array  $options
      * @param mixed  $data
      * @return FormInterface
      */
-    public function createApiForm($method = 'POST', $formType = 'form', array $options = [], $data = null)
+    public function createApiForm($method = 'POST', $formType = FormType::class, array $options = [], $data = null)
     {
         return $this->app['form.factory']->createNamed(
             'data',
@@ -75,12 +76,12 @@ abstract class BaseController
 
     /**
      * @param string $method
-     * @param mixed  $formType
+     * @param string $formType
      * @param array  $options
      * @param mixed  $data
      * @return FormBuilderInterface
      */
-    public function createApiFormBuilder($method = 'POST', $formType = 'form', array $options = [], $data = null)
+    public function createApiFormBuilder($method = 'POST', $formType = FormType::class, array $options = [], $data = null)
     {
         return $this->app['form.factory']->createNamedBuilder(
             'data',

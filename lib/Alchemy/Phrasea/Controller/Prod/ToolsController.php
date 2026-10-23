@@ -197,7 +197,7 @@ class ToolsController extends Controller
         $return = ['success' => true];
 
         $force = $request->request->get('force_substitution') == '1';
-        $subdefsLabel = $request->request->get('subdefsLabel', []);
+        $subdefsLabel = $request->request->all('subdefsLabel');
 
         $selection = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
 
@@ -392,7 +392,7 @@ class ToolsController extends Controller
         try {
             $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
-            $subDef = $request->request->get('sub_def');
+            $subDef = $request->request->all()['sub_def'] ?? null;
 
             // legacy handling
             if (!is_array($subDef)) {

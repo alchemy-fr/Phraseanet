@@ -87,7 +87,7 @@ class WorkzoneController extends Controller
 
     public function attachStories(Request $request)
     {
-        if (!$request->request->get('stories')) {
+        if (!$request->request->all('stories')) {
             throw new BadRequestHttpException('Missing parameters stories');
         }
 
@@ -95,7 +95,7 @@ class WorkzoneController extends Controller
 
         $alreadyFixed = $done = 0;
 
-        $stories = $request->request->get('stories', []);
+        $stories = $request->request->all('stories');
 
         $user = $this->getAuthenticatedUser();
         $acl = $this->getAclForUser($user);

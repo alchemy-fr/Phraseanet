@@ -48,7 +48,7 @@ class DownloadController extends Controller
 
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
-        $subdefs = $request->request->get('obj', []);
+        $subdefs = $request->request->all('obj');
 
         $download = new set_export($this->app, $lst, $ssttid);
 
@@ -112,7 +112,7 @@ class DownloadController extends Controller
 
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
-        $subdefs = $request->request->get('obj', []);
+        $subdefs = $request->request->all('obj');
 
         $download = new set_export($this->app, $lst, $ssttid);
 

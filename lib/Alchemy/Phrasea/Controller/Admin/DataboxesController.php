@@ -97,7 +97,7 @@ class DataboxesController extends Controller
             'files'      => new \DirectoryIterator($this->app['root.path'] . '/lib/conf.d/data_templates'),
             'sbas'       => $sbas,
             'error_msg'  => $errorMsg,
-            'advices'    => $request->query->get('advices', []),
+            'advices'    => $request->query->all('advices'),
             'reloadTree' => (bool) $request->query->get('reload-tree'),
         ]);
     }

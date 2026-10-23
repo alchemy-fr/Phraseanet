@@ -333,7 +333,7 @@ class BasketController extends Controller
 
         $ret = ['success' => false, 'message' => $this->app->trans('An error occured')];
         try {
-            $order = $request->request->get('element');
+            $order = $request->request->all('element');
 
             foreach ($basket->getElements() as $basketElement) {
                 if (isset($order[$basketElement->getId()])) {
@@ -405,7 +405,7 @@ class BasketController extends Controller
         $user = $this->getAuthenticatedUser();
         /** @var BasketElementRepository $repository */
         $repository = $this->app['repo.basket-elements'];
-        foreach ($request->request->get('elements') as $bask_element_id) {
+        foreach ($request->request->all('elements') as $bask_element_id) {
             try {
                 $basket_element = $repository->findUserElement($bask_element_id, $user);
             } catch (\Exception $e) {

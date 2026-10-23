@@ -81,7 +81,7 @@ class BasketSubscriber extends AbstractNotificationSubscriber
             'message_type' => MessagePublisher::SHARE_BASKET_TYPE,
             'payload' => [
                 'isFeedback'            => $request->request->get('isFeedback') == "1",
-                'participants'          => $request->request->get('participants'),
+                'participants'          => $request->request->all('participants'),
                 'feedbackAction'        => $request->request->get('feedbackAction'),
                 'shareExpires'          => $request->request->get('shareExpires'),
                 'voteExpires'           => $request->request->get('voteExpires'),

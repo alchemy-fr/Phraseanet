@@ -81,7 +81,7 @@ class StoryController extends Controller
 
         $metadatas = [];
 
-        $titleFields = $request->request->get('name');
+        $titleFields = $request->request->all('name');
 
         foreach ($titleFields as $db_metastructId => $value) {
             $t = explode('-', $db_metastructId);
@@ -243,7 +243,7 @@ class StoryController extends Controller
             $sql = 'UPDATE regroup SET ord = :ord WHERE rid_parent = :parent_id AND rid_child = :children_id';
             $stmt = $story->getDatabox()->get_connection()->prepare($sql);
 
-            foreach ($request->request->get('element') as $record_id => $ord) {
+            foreach ($request->request->all('element') as $record_id => $ord) {
                 $params = [
                     ':ord'         => $ord,
                     ':parent_id'   => $story->getRecordId(),

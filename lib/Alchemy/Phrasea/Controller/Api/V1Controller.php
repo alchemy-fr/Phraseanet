@@ -906,13 +906,13 @@ class V1Controller extends Controller
     {
         $service = $this->getAccountService();
         $command = new UpdatePasswordCommand();
-        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+        $form = $this->app->form(PhraseaRenewPasswordForm::class, $command, [
             'csrf_protection' => false,
         ]);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $service->updatePassword($command, $login);
 
@@ -1186,8 +1186,7 @@ class V1Controller extends Controller
 
     private function listPermalink(\media_Permalink_Adapter $permalink)
     {
-        $downloadUrl = $permalink->get_url();
-        $downloadUrl->getQuery()->set('download', '1');
+        $downloadUrl = \GuzzleHttp\Psr7\Uri::withQueryValue($permalink->get_url(), 'download', '1');
 
         return [
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
@@ -3066,7 +3065,7 @@ class V1Controller extends Controller
         $data = json_decode($request->getContent(false), true);
         $command = new UpdatePasswordCommand();
         /** @var Form $form */
-        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+        $form = $this->app->form(PhraseaRenewPasswordForm::class, $command, [
             'csrf_protection' => false,
         ]);
 
@@ -3081,7 +3080,7 @@ class V1Controller extends Controller
                 $ret = [ 'success' => false, 'message' => $exception->getMessage() ];
             }
         } else {
-            $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];
+            $ret = [ 'success' => false, 'message' => (string) $form->getErrors(true, false) ];
         }
 
         return Result::create($request, $ret)->createResponse();

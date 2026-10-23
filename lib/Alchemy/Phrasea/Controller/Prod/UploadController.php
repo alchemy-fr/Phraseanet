@@ -219,7 +219,7 @@ class UploadController extends Controller
 
             $packageFile = new File($this->app, $media, $collection, $originalName);
 
-            $postStatus = $request->request->get('status');
+            $postStatus = $request->request->all('status');
 
             if (isset($postStatus[$collection->get_base_id()]) && is_array($postStatus[$collection->get_base_id()])) {
                 $postStatus = $postStatus[$collection->get_base_id()];

@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller;
 
+use Alchemy\Phrasea\Media\JwtKeySet;
 use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -94,7 +95,7 @@ class MediaAccessorController extends Controller
     public function decodeToken($token)
     {
         try {
-            return JWT::decode($token, $this->keyStorage, $this->allowedAlgorithms);
+            return JWT::decode($token, new JwtKeySet($this->keyStorage, reset($this->allowedAlgorithms) ?: 'HS256'));
         } catch (\UnexpectedValueException $exception) {
             throw new NotFoundHttpException('Resource not found', $exception);
         } catch (\Exception $exception) {

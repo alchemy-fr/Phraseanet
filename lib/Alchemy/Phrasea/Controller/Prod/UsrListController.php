@@ -316,7 +316,7 @@ class UsrListController extends Controller
     public function addUsers(Request $request, $list_id)
     {
         try {
-            if (!is_array($request->request->get('usr_ids'))) {
+            if (!is_array($request->request->all()['usr_ids'] ?? null)) {
                 throw new ControllerException('Invalid or missing parameter usr_ids');
             }
 
@@ -332,7 +332,7 @@ class UsrListController extends Controller
             $inserted_usr_ids = [];
 
             $manager = $this->getEntityManager();
-            $userIds = $request->request->get('usr_ids');
+            $userIds = $request->request->all('usr_ids');
             if (! is_array($userIds)) {
                 throw new \InvalidArgumentException('A usr_ids key should be provider');
             }

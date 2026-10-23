@@ -1066,10 +1066,10 @@ class PSExposeController extends Controller
 
         $exposeName = $request->get('exposeName');
         $profile = $request->request->get('profile');
-        $sendGeolocField = !empty($request->request->get('sendGeolocField')) ? array_keys($request->request->get('sendGeolocField')): [];
-        $sendVttField = !empty($request->request->get('sendVttField')) ? array_keys($request->request->get('sendVttField')) : [];
+        $sendGeolocField = array_keys($request->request->all('sendGeolocField'));
+        $sendVttField = array_keys($request->request->all('sendVttField'));
 
-        $fields = ($request->request->get('fields') === null) ? null : $request->request->get('fields');
+        $fields = $request->request->has('fields') ? $request->request->all('fields') : null;
 
         $fieldMapping = [
             'sendGeolocField'   => $sendGeolocField,
@@ -1147,7 +1147,7 @@ class PSExposeController extends Controller
         $exposeName = $request->get('exposeName');
         $profile = $request->request->get('profile');
         $exposeClient = $this->getExposeClient($exposeName);
-        $subdefs = $request->request->get('subdefs');
+        $subdefs = $request->request->has('subdefs') ? $request->request->all('subdefs') : null;
 
         if ($exposeClient == null) {
             return $app->json([
