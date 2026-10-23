@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Core\Connection\ConnectionProvider;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
-class ConnectionPoolManager extends \PhraseanetTestCase
+class ConnectionProviderTest extends \PhraseanetTestCase
 {
     public function testMysqlTimeoutIsHandled()
     {
