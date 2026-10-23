@@ -100,7 +100,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             default:
                 throw new \InvalidArgumentException(sprintf('Direction %s is not recognized.', $direction));
         }
-        $em->getConnection()->executeUpdate($sql);
+        $em->getConnection()->executeStatement($sql);
     }
 
     private function alterTablesUp(EntityManager $em)
@@ -116,7 +116,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             'UsrListsContent'        => "ALTER TABLE UsrListsContent CHANGE usr_id user_id INT DEFAULT NULL",
         ] as $table => $sql) {
             if ($this->tableExists($em, $table)) {
-                $em->getConnection()->executeUpdate($sql);
+                $em->getConnection()->executeStatement($sql);
             }
         }
     }
@@ -134,7 +134,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             'ValidationParticipants' => "ALTER TABLE ValidationParticipants CHANGE user_id usr_id INT DEFAULT NULL",
         ] as $table => $sql) {
             if ($this->tableExists($em, $table)) {
-                $em->getConnection()->executeUpdate($sql);
+                $em->getConnection()->executeStatement($sql);
             }
         }
     }
@@ -187,7 +187,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         )->getResult();
 
         foreach ($rs as $row) {
-            $em->getConnection()->executeUpdate(sprintf('UPDATE usr SET usr_login="%s" WHERE usr_id=%d', $row['login_utf8'], $row['usr_id']));
+            $em->getConnection()->executeStatement(sprintf('UPDATE usr SET usr_login="%s" WHERE usr_id=%d', $row['login_utf8'], $row['usr_id']));
         }
 
         foreach ([
@@ -198,7 +198,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             // recreate index
             "CREATE UNIQUE INDEX usr_login ON usr (usr_login);"
         ] as $sql) {
-            $em->getConnection()->executeUpdate($sql);
+            $em->getConnection()->executeStatement($sql);
         }
     }
 
@@ -269,7 +269,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
         }
 
         $sql = sprintf('SELECT id FROM %s WHERE %s %s', $tableName, $field, $wrongIds);
-        $rs = $em->getConnection()->executeQuery($sql)->fetchAll(\PDO::FETCH_COLUMN);
+        $rs = $em->getConnection()->executeQuery($sql)->fetchFirstColumn();
 
         if (count($rs) === 0) {
             return;
@@ -283,7 +283,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
 
         array_walk($rs, function ($value) use ($em, $schemas, $tableName, $field) {
             $sql = sprintf('DELETE FROM %s WHERE id = :value', $tableName);
-            $em->getConnection()->executeUpdate($sql, [':value' => $value]);
+            $em->getConnection()->executeStatement($sql, [':value' => $value]);
         });
     }
 
@@ -303,7 +303,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
 
             try {
                 $connection->query('SET FOREIGN_KEY_CHECKS=0');
-                $connection->executeUpdate($dbPlatform->getTruncateTableSql($meta->getTableName()));
+                $connection->executeStatement($dbPlatform->getTruncateTableSql($meta->getTableName()));
                 $connection->query('SET FOREIGN_KEY_CHECKS=1');
                 $connection->commit();
             } catch (\Exception $e) {
@@ -333,7 +333,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
      */
     private function updateUsers(EntityManager $em)
     {
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement(
             'INSERT INTO Users
             (
                 id,                     activity,               address,                admin,
@@ -361,13 +361,13 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             )'
         );
 
-        $em->getConnection()->executeUpdate('UPDATE Users SET geoname_id=NULL WHERE geoname_id=0');
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement('UPDATE Users SET geoname_id=NULL WHERE geoname_id=0');
+        $em->getConnection()->executeStatement(
             'UPDATE Users SET locale=NULL WHERE locale NOT IN (:locales)',
             ['locales' => array_keys(Application::getAvailableLanguages())],
             ['locales' => Connection::PARAM_STR_ARRAY]
         );
-        $em->getConnection()->executeUpdate('UPDATE Users SET deleted=1, login=SUBSTRING(login, 11) WHERE login LIKE "(#deleted_%"');
+        $em->getConnection()->executeStatement('UPDATE Users SET deleted=1, login=SUBSTRING(login, 11) WHERE login LIKE "(#deleted_%"');
     }
 
     private function updateFtpSettings(EntityManager $em)
@@ -399,7 +399,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
                 ->setMaxResults($perBatch)
                 ->getSQL();
 
-            $rs = $em->getConnection()->fetchAll($sql);
+            $rs = $em->getConnection()->fetchAllAssociative($sql);
 
             foreach ($rs as $row) {
                 try {
@@ -439,7 +439,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
      */
     private function updateLastAppliedModels(EntityManager $em)
     {
-        $em->getConnection()->executeUpdate('
+        $em->getConnection()->executeStatement('
             UPDATE Users
                 INNER JOIN usr ON (
                     usr.usr_id = Users.id
@@ -458,7 +458,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
     private function updateTemplateOwner(EntityManager $em)
     {
 
-        $em->getConnection()->executeUpdate('
+        $em->getConnection()->executeStatement('
             UPDATE Users
                 INNER JOIN usr ON (
                     usr.usr_id = Users.id
@@ -468,7 +468,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
                 SET Users.model_of = usr.model_of
         ');
 
-        $em->getConnection()->executeUpdate('
+        $em->getConnection()->executeStatement('
             DELETE from Users
             WHERE id IN (
                 SELECT id FROM (
@@ -479,7 +479,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             )
         ');
 
-        $em->getConnection()->executeUpdate('
+        $em->getConnection()->executeStatement('
             DELETE from Users
             WHERE id IN (
                 SELECT id FROM (
@@ -490,6 +490,6 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             )
         ');
 
-        $em->getConnection()->executeUpdate(' DELETE from Users WHERE deleted = 1 AND model_of IS NOT NULL');
+        $em->getConnection()->executeStatement(' DELETE from Users WHERE deleted = 1 AND model_of IS NOT NULL');
     }
 }

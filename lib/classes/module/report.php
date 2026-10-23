@@ -847,10 +847,8 @@ class module_report
 
         try {
             try {
-                $stmt = $conn->prepare($this->req);
-                $stmt->execute($this->params);
-                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
+                $stmt = $conn->executeQuery($this->req, $this->params);
+                $rs = $stmt->fetchAllAssociative();
             } catch (DBALException $e) {
 
                 return;

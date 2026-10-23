@@ -99,7 +99,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                     . " host, port, `user`, COALESCE(pwd, '') AS password, dbname, 'utf8' AS charset, 'pdo_mysql' AS driver"
                     . " FROM sbas";
 
-                return $connection->fetchAll($sql);
+                return $connection->fetchAllAssociative($sql);
             } catch (\Exception $e) {
                 return [];
             }

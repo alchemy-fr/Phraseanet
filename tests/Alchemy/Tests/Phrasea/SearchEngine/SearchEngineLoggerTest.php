@@ -30,10 +30,8 @@ class SearchEngineLoggerTest extends \PhraseanetTestCase
                 FROM log_search
                 ORDER BY id DESC
                 LIMIT 1';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         $this->assertEquals($query, $row['search']);
         $this->assertEquals($answers, $row['results']);

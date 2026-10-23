@@ -70,7 +70,7 @@ class Step35 implements DatasUpgraderInterface
                 $stmt = $databox->get_connection()->prepare($sql);
 
                 foreach ($rs as $row) {
-                    $stmt->execute([':record_id' => $row['record_id']]);
+                    $stmt->executeStatement([':record_id' => $row['record_id']]);
 
                     try {
                         $record = new \record_adapter($this->app, $databox->get_sbas_id(), $row['record_id']);
@@ -92,8 +92,6 @@ class Step35 implements DatasUpgraderInterface
                     }
                     unset($record);
                 }
-
-                $stmt->closeCursor();
                 $databox->get_connection()->commit();
             } while (count($rs) > 0);
         }
@@ -114,10 +112,8 @@ class Step35 implements DatasUpgraderInterface
             $sql = 'select record_id
                             FROM record';
 
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
+            $stmt = $databox->get_connection()->executeQuery($sql);
             $time += $stmt->rowCount();
-            $stmt->closeCursor();
         }
 
         $time = $time / self::AVERAGE_PER_SECOND;
@@ -238,10 +234,8 @@ class Step35 implements DatasUpgraderInterface
                         WHERE migrate35=0
                         LIMIT 0, 500';
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         return $rs;
     }
@@ -258,10 +252,8 @@ class Step35 implements DatasUpgraderInterface
                         WHERE originalname IS NULL
                         LIMIT 0, 500';
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         return $rs;
     }
@@ -275,8 +267,7 @@ class Step35 implements DatasUpgraderInterface
     {
         $sql = 'ALTER TABLE `record` DROP `migrate35` ';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
     /**
@@ -291,8 +282,7 @@ class Step35 implements DatasUpgraderInterface
                     ADD `migrate35` TINYINT( 1 ) UNSIGNED NOT NULL ,
                     ADD INDEX ( `migrate35` ) ';
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         } catch (\Exception $e) {
 
         }

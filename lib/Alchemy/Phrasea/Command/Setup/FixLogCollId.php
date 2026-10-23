@@ -188,8 +188,7 @@ class FixLogCollId extends Command
             $this->output->writeln("");
         }
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = "TRUNCATE TABLE `tmp_colls`";
 
@@ -198,8 +197,7 @@ class FixLogCollId extends Command
             $this->output->writeln("");
         }
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
     private function dropWorkingTable(\databox $databox)
@@ -210,8 +208,7 @@ class FixLogCollId extends Command
             $this->output->writeln($sql);
         }
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
     private function showCount(\databox $databox)
@@ -382,7 +379,7 @@ class FixLogCollId extends Command
         $stmt = null;
         if(!$this->dry || ($work['playdry'] & self::PLAYDRY_SQL)) {
             $stmt = $databox->get_connection()->prepare($work['sql']);
-            $stmt->execute();
+            $stmt->executeStatement();
         }
         if($work['code'] && (!$this->dry || ($work['playdry'] & self::PLAYDRY_CODE))) {
             $code = $work['code'];

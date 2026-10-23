@@ -171,7 +171,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
     {
         $this->is_activated = (bool)$is_activated;
 
-        $this->databox->get_connection()->executeUpdate(
+        $this->databox->get_connection()->executeStatement(
             'UPDATE permalinks SET activated = :activated, last_modified = NOW() WHERE id = :id',
             ['activated' => $this->is_activated, 'id' => $this->get_id()]
         );
@@ -192,7 +192,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
         $this->label = self::cleanLabel($unicode, $label, $this->app['conf']->get(['registry', 'actions', 'filename-sanitize-character'], ''));
 
-        $this->databox->get_connection()->executeUpdate(
+        $this->databox->get_connection()->executeStatement(
             'UPDATE permalinks SET label = :label, last_modified = NOW() WHERE id = :id',
             ['label' => $this->label, 'id' => $this->get_id()]
         );
@@ -499,7 +499,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
             foreach ($data as $params) {
                 try {
-                    $statement->execute($params);
+                    $statement->executeStatement($params);
                 }
                 catch(UniqueConstraintViolationException $e) {
                     // we ignore this because somebody else might have created this plink

@@ -71,15 +71,11 @@ class CleanLogSearchCommand extends Command
                     $sqlCount = 'SELECT COUNT(`id`) FROM log_search WHERE ' . $clauseWhere;
                     $sql = 'SELECT id, `date`, search, results, coll_id FROM log_search WHERE ' . $clauseWhere . ' LIMIT 1000';
 
-                    $stmt = $databox->get_connection()->prepare($sqlCount);
-                    $stmt->execute();
+                    $stmt = $databox->get_connection()->executeQuery($sqlCount);
                     $count = $stmt->fetchColumn(0);
-                    $stmt->closeCursor();
 
-                    $stmt = $databox->get_connection()->prepare($sql);
-                    $stmt->execute();
-                    $displayedRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
+                    $stmt = $databox->get_connection()->executeQuery($sql);
+                    $displayedRows = $stmt->fetchAllAssociative();
 
                     $output->writeln(sprintf("\n \n dry-run , %d log search entry to delete for databox %s", $count, $databox->get_dbname()));
                     // displayed only the 1000 first row to avoid memory leak

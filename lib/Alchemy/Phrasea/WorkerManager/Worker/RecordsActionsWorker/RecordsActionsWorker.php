@@ -153,9 +153,8 @@ class RecordsActionsWorker implements WorkerInterface
                 $to_coll = $coll;
             }
 
-            $stmt = $databox->get_connection()->prepare($task['sql']['real']['sql']);
-            $stmt->execute();
-            while (false !== $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stmt = $databox->get_connection()->executeQuery($task['sql']['real']['sql']);
+            while (false !== $row = $stmt->fetchAssociative()) {
                 $tmp = [
                     'databoxId'   => $databox->get_sbas_id(),
                     'record_id' => $row['record_id'],
@@ -201,7 +200,6 @@ class RecordsActionsWorker implements WorkerInterface
                         break;
                 }
             }
-            $stmt->closeCursor();
         }
 
         return $ret;
@@ -382,7 +380,7 @@ class RecordsActionsWorker implements WorkerInterface
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
-        $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();
+        $result['n'] = $connbas->executeQuery('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchOne();
 
         $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
         if ($stmt->execute([])) {

@@ -210,17 +210,13 @@ class SubdefCreationWorker implements WorkerInterface
 
         $connection = $record->getDatabox()->get_connection();
 
-        $stmt = $connection->prepare($sql);
-
-        $stmt->execute([
+        $stmt = $connection->executeQuery($sql, [
             ':parent_record_id' => $story->getRecordId(),
             ':children_id'      => $record->getRecordId(),
             ':ord'              => 0,
         ]);
 
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             return true;
@@ -241,12 +237,11 @@ class SubdefCreationWorker implements WorkerInterface
 
         $stmt = $connection->prepare($sql);
 
-        $stmt->execute([
+        $stmt->executeStatement([
             ':record_id'    => $record->getRecordId(),
             ':token'        => PhraseaTokens::MAKE_SUBDEF,
         ]);
 
         $connection->commit();
-        $stmt->closeCursor();
     }
 }

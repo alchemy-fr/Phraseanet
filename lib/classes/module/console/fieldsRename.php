@@ -78,10 +78,8 @@ class module_console_fieldsRename extends Command
         $output->writeln("<info>OK</info>");
 
         $sql = 'SELECT count(record_id) as total FROM record';
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $data = $stmt->fetchAssociative();
 
         $total = $data['total'];
         $start = 0;

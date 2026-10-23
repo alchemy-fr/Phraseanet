@@ -65,19 +65,15 @@ class CleanWebhookLogsCommand extends Command
         $sql = 'SELECT id, `name`, `type`, created FROM WebhookEvents WHERE ' . $clauseWhere;
         $connection = $this->container->getApplicationBox()->get_connection();
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute();
-        $webhookEventsList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connection->executeQuery($sql);
+        $webhookEventsList = $stmt->fetchAllAssociative();
 
         $webhookEventsId = array_column($webhookEventsList, 'id');
 
         if (!empty($webhookEventsId)) {
             $sqlDelivery = "SELECT id, application_id, event_id, created FROM WebhookEventDeliveries WHERE event_id IN (" . implode(', ', $webhookEventsId) . ")";
-            $stmt = $connection->prepare($sqlDelivery);
-            $stmt->execute();
-            $webhookEventDeliveryList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $connection->executeQuery($sqlDelivery);
+            $webhookEventDeliveryList = $stmt->fetchAllAssociative();
 
             $deliveryIds = array_column($webhookEventDeliveryList, 'id');
         }
@@ -106,10 +102,8 @@ class CleanWebhookLogsCommand extends Command
 
                 if (!empty($deliveryIds)) {
                     $sqlPayload = "SELECT id, delivery_id, status FROM WebhookEventPayloads WHERE delivery_id IN (". implode(', ', $deliveryIds).")";
-                    $stmt = $connection->prepare($sqlPayload);
-                    $stmt->execute();
-                    $webhookEventPayloadsList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
+                    $stmt = $connection->executeQuery($sqlPayload);
+                    $webhookEventPayloadsList = $stmt->fetchAllAssociative();
 
                     $output->writeln(sprintf("\n \n dry-run , %d WebhookEventPayloads entry to delete", count($webhookEventPayloadsList)));
                     $payloadEntryTable = $this->getHelperSet()->get('table');

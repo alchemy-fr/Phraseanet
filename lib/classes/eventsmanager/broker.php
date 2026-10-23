@@ -89,8 +89,7 @@ class eventsmanager_broker
             ];
 
             $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-            $stmt->execute($params);
-            $stmt->closeCursor();
+            $stmt->executeStatement($params);
         } catch (\Exception $e) {
             return false;
         }
@@ -251,13 +250,11 @@ class eventsmanager_broker
         $total = 0;
         $unread = 0;
         $sql = 'SELECT COUNT(`id`) AS `total`, SUM(`unread`) AS `unread` FROM `notifications` WHERE `usr_id` = :usr_id';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]);
-        if( ($row = $stmt->fetch(PDO::FETCH_ASSOC)) ) {
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]);
+        if( ($row = $stmt->fetchAssociative()) ) {
             $total  = (int)$row['total'];
             $unread = (int)$row['unread'];
         }
-        $stmt->closeCursor();
 
         if($stopwatch) $stopwatch->lap("sql count unread");
 
@@ -281,10 +278,8 @@ class eventsmanager_broker
         }
         $sql .= " ORDER BY created_on DESC LIMIT " . $offset . ", " . $limit;
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]); // , ':offset' => $offset, ':limit' => $limit]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]); // , ':offset' => $offset, ':limit' => $limit]);
+        $rs = $stmt->fetchAllAssociative();
 
         if($stopwatch) $stopwatch->lap("sql 2");
 
@@ -328,7 +323,6 @@ class eventsmanager_broker
                 ]
             );
         }
-        $stmt->closeCursor();
 
         if($stopwatch) $stopwatch->lap("fetch");
 

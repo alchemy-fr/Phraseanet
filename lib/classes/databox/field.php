@@ -272,8 +272,7 @@ class databox_field implements cache_cacheableInterface
         $connbas = $this->get_connection();
         $sql = 'DELETE FROM metadatas_structure WHERE id = :id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':id' => $this->get_id()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':id' => $this->get_id()]);
 
         $dom_struct = $this->databox->get_dom_structure();
         $xp_struct = $this->databox->get_xpath_structure();
@@ -361,8 +360,7 @@ class databox_field implements cache_cacheableInterface
         ];
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         if ($this->renamed) {
             caption_field::rename_all_metadatas($this->app, $this);
@@ -578,7 +576,7 @@ class databox_field implements cache_cacheableInterface
         $connection = $this->get_connection();
 
         if (null !== $DCES_element) {
-            $connection->executeUpdate(
+            $connection->executeStatement(
                 'UPDATE metadatas_structure SET dces_element = null WHERE dces_element = :dces_element',
                 [
                     'dces_element' => $DCES_element->get_label(),
@@ -586,7 +584,7 @@ class databox_field implements cache_cacheableInterface
             );
         }
 
-        $connection->executeUpdate(
+        $connection->executeStatement(
             'UPDATE metadatas_structure SET dces_element = :dces_element WHERE id = :id',
             [
                 'dces_element' => $DCES_element ? $DCES_element->get_label() : null,
@@ -1063,10 +1061,8 @@ class databox_field implements cache_cacheableInterface
         $sorter = 0;
 
         $sql = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure';
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             $sorter = max(1, (int) $row['sorter']);
@@ -1088,9 +1084,8 @@ class databox_field implements cache_cacheableInterface
 
         $connection = $databox->get_connection();
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':name'   => $name, ':sorter' => $sorter]);
+        $stmt->executeStatement([':name'   => $name, ':sorter' => $sorter]);
         $id = $connection->lastInsertId();
-        $stmt->closeCursor();
 
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 

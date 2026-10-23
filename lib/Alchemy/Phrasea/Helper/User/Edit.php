@@ -143,7 +143,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             . " GROUP BY b.base_id\n"
             . " ORDER BY s.ord, s.sbas_id, b.ord, b.base_id ";
 
-        $rs = $this->app->getApplicationBox()->get_connection()->fetchAll(
+        $rs = $this->app->getApplicationBox()->get_connection()->fetchAllAssociative(
             $sql,
             [
                 'users' => $this->users,
@@ -159,7 +159,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             . " WHERE (usr_id IN (:users)) AND (base_id IN (:bases))\n"
             . " GROUP BY base_id";
 
-        $access = $this->app->getApplicationBox()->get_connection()->fetchAll(
+        $access = $this->app->getApplicationBox()->get_connection()->fetchAllAssociative(
             $sql,
             [
                 'users' => $this->users,
@@ -322,10 +322,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
               . " ORDER BY rr.id DESC limit 200 \n"
         ;
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, $params);
+        $rows = $stmt->fetchAllAssociative();
 
         $sql = "SELECT count(*) as nb \n"
             . " FROM records_rights rr \n"
@@ -333,10 +331,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             . $whereClause
         ;
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $totalCount = $stmt->fetchColumn();
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, $params);
+        $totalCount = $stmt->fetchOne();
 
         return [
             'records_acl' => $rows,
@@ -355,7 +351,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'base_id' => $this->base_id,
                 'users' => $this->users,
@@ -388,7 +384,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'base_id' => $this->base_id,
                 'users' => $this->users,
@@ -491,7 +487,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'base_id' => $this->base_id,
                 'users' => $this->users,
@@ -553,7 +549,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'sbas_id' => $sbas_id,
                 'users' => $this->users,

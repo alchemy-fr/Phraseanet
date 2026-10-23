@@ -53,8 +53,7 @@ class patch_360alpha1b extends patchAbstract
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         } catch (DBALException $e) {
 
         }

@@ -24,8 +24,7 @@ class Bridge_AccountSettingsTest extends \PhraseanetTestCase
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
             $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
             $this->api = Bridge_Api::create(self::$DI['app'], 'Apitest');
             $this->dist_id = 'EZ1565loPP';
             $this->named = 'Fête à pinpins';

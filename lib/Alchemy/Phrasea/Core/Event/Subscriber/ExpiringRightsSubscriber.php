@@ -186,13 +186,12 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
             $sql = "UPDATE `ExpiringRights` SET new_expire = :new_expire\n"
                 . " WHERE sbas_id = :sbas_id AND record_id = :record_id AND (IFNULL(expire, 0) != IFNULL(:expire, 0) OR !ISNULL(new_expire))";
             $stmt = $abox->get_connection()->prepare($sql);
-            $stmt->execute($p = [
+            $stmt->executeStatement($p = [
                 ':new_expire' => $expire_value,
                 ':sbas_id'    => $sbas_id,
                 ':record_id'  => $record_id,
                 ':expire'     => $expire_value
             ]);
-            $stmt->closeCursor();
         }
     }
 

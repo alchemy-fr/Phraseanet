@@ -95,16 +95,12 @@ class patch_373alpha1a extends patchAbstract
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
 
         foreach ($Regbinaries as $name) {
-            $stmt->execute([':key' => $name]);
+            $stmt->executeStatement([':key' => $name]);
         }
 
-        $stmt->closeCursor();
-
         $sql = 'SELECT value FROM registry WHERE `key` = :key';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':key'=>'GV_sit']);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':key'=>'GV_sit']);
+        $row = $stmt->fetchAssociative();
 
         $config['main']['key'] = $row['value'];
 
@@ -112,8 +108,7 @@ class patch_373alpha1a extends patchAbstract
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':key'=>'GV_sit']);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':key'=>'GV_sit']);
 
         return true;
     }

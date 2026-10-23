@@ -54,7 +54,7 @@ class TitleHydrator implements HydratorInterface
             array(Connection::PARAM_INT_ARRAY)
         );
 
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetchAssociative()) {
             $records[$row['record_id']]['title'][$row['locale']] = $this->helper->sanitizeValue($row['title'], FieldMapping::TYPE_STRING);
         }
     }

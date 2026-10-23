@@ -57,10 +57,8 @@ class phrasea
         self::$_sbas_params = [];
 
         $sql = 'SELECT sbas_id, host, port, user, pwd as password, dbname FROM sbas';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             self::$_sbas_params[$row['sbas_id']] = $row;

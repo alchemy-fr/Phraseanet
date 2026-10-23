@@ -1364,17 +1364,14 @@ class ThesaurusXmlHttpController extends Controller
             $sql = 'SELECT DISTINCT record_id AS r'
                 . ' FROM metadatas WHERE meta_struct_id = :meta AND value = :value'
                 . ' ORDER BY record_id';
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute(['meta' => $meta_struct_id, 'value' => $fieldValue]);
-            $tsbas[$ksbas]['trids'] = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
-            $stmt->closeCursor();
+            $stmt = $connbas->executeQuery($sql, ['meta' => $meta_struct_id, 'value' => $fieldValue]);
+            $tsbas[$ksbas]['trids'] = $stmt->fetchFirstColumn();
 
             $ret['nRecsToUpdate'] += count($tsbas[$ksbas]['trids']);
 
             $sqlUpdate = 'UPDATE metadatas SET value = :newValue WHERE meta_struct_id = :meta AND value = :value';
             $stmt = $connbas->prepare($sqlUpdate);
-            $stmt->execute(['newValue' => $request->get('t'), 'meta' => $meta_struct_id, 'value' => $fieldValue]);
-            $stmt->closeCursor();
+            $stmt->executeStatement(['newValue' => $request->get('t'), 'meta' => $meta_struct_id, 'value' => $fieldValue]);
 
             $populateInfo = [
                 'host'          => $options->getHost(),

@@ -60,10 +60,8 @@ class patch_361alpha1a extends patchAbstract
         $conn = $appbox->get_connection();
 
         $sql = 'SELECT sbas_id, record_id, id FROM BasketElements';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $result = $stmt->fetchAllAssociative();
 
         foreach ($result as $row) {
             $sbas_id = (int) $row['sbas_id'];
@@ -78,10 +76,8 @@ class patch_361alpha1a extends patchAbstract
             }
 
             $sql = 'SELECT record_id FROM record WHERE record_id = :record_id';
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute([':record_id' => $row['record_id']]);
+            $stmt = $connbas->executeQuery($sql, [':record_id' => $row['record_id']]);
             $rowCount = $stmt->rowCount();
-            $stmt->closeCursor();
 
             if ($rowCount == 0) {
                 $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);

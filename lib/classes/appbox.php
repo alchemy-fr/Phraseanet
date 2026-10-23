@@ -131,8 +131,7 @@ class appbox extends base
     {
         $sqlupd = "UPDATE bas SET ord = :ordre WHERE base_id = :base_id";
         $stmt = $this->get_connection()->prepare($sqlupd);
-        $stmt->execute([':ordre'   => $ordre, ':base_id' => $collection->get_base_id()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':ordre'   => $ordre, ':base_id' => $collection->get_base_id()]);
 
         $collection->get_databox()->delete_data_from_cache(\databox::CACHE_COLLECTIONS);
 
@@ -150,11 +149,10 @@ class appbox extends base
         $sql = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute([
+        $stmt->executeStatement([
             ':indexable' => ($boolean ? '1' : '0'),
             ':sbas_id'   => $databox->get_sbas_id()
         ]);
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -167,10 +165,8 @@ class appbox extends base
     {
         $sql = 'SELECT indexable FROM sbas WHERE sbas_id = :sbas_id';
 
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute([':sbas_id' => $databox->get_sbas_id()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql, [':sbas_id' => $databox->get_sbas_id()]);
+        $row = $stmt->fetchAssociative();
 
         $indexable = $row ? $row['indexable'] : null;
 

@@ -64,10 +64,8 @@ class Bridge_Api
 
         $sql = 'SELECT id, name, disable_time, created_on, updated_on
             FROM bridge_apis WHERE id = :id';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':id' => $this->id]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             throw new Bridge_Exception_ApiNotFound('Api Not Found');
@@ -383,8 +381,7 @@ class Bridge_Api
         $sql = 'DELETE FROM bridge_apis WHERE id = :id';
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':id' => $this->id]);
 
         return;
     }
@@ -407,8 +404,7 @@ class Bridge_Api
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -495,10 +491,8 @@ class Bridge_Api
         $name = strtolower($name);
 
         $sql = 'SELECT id FROM bridge_apis WHERE name = :name';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':name' => $name]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':name' => $name]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             throw new Bridge_Exception_ApiNotFound('Unknown api name ' . $name);
@@ -514,10 +508,8 @@ class Bridge_Api
     public static function get_availables(Application $app)
     {
         $sql = 'SELECT id FROM bridge_apis';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $results = [];
 

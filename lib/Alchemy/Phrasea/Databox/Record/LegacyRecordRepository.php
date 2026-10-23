@@ -58,7 +58,7 @@ class LegacyRecordRepository implements RecordRepository
                 $sql = $this->createSelectBuilder()->where('record_id = :record_id')->getSQL();
             }
 
-            $data = $this->databox->get_connection()->fetchAssoc($sql, ['record_id' => $record_id]);
+            $data = $this->databox->get_connection()->fetchAssociative($sql, ['record_id' => $record_id]);
         }
 
         if (false === $data) {
@@ -80,7 +80,7 @@ class LegacyRecordRepository implements RecordRepository
             $sql = $this->createSelectBuilder()->where('sha256 = :sha256')->getSQL();
         }
 
-        $result = $this->databox->get_connection()->fetchAll($sql, ['sha256' => $sha256]);
+        $result = $this->databox->get_connection()->fetchAllAssociative($sql, ['sha256' => $sha256]);
 
         return $this->mapRecordsFromResultSet($result);
     }
@@ -100,7 +100,7 @@ class LegacyRecordRepository implements RecordRepository
             $sql = $qb->getSQL();
         }
 
-        $result = $this->databox->get_connection()->fetchAll($sql,
+        $result = $this->databox->get_connection()->fetchAllAssociative($sql,
             [
                 'sha256'  => $sha256,
                 'coll_id' => $excludedCollIds
@@ -125,7 +125,7 @@ class LegacyRecordRepository implements RecordRepository
             $sql = $this->createSelectBuilder()->where('uuid = :uuid')->getSQL();
         }
 
-        $result = $this->databox->get_connection()->fetchAll($sql, ['uuid' => $uuid]);
+        $result = $this->databox->get_connection()->fetchAllAssociative($sql, ['uuid' => $uuid]);
 
         return $this->mapRecordsFromResultSet($result);
     }
@@ -151,7 +151,7 @@ class LegacyRecordRepository implements RecordRepository
             $sql = $qb->getSQL();
         }
 
-        $result = $this->databox->get_connection()->fetchAll($sql,
+        $result = $this->databox->get_connection()->fetchAllAssociative($sql,
             [
                 'uuid'      => $uuid,
                 'coll_id'   => $excludedCollIds
@@ -176,7 +176,7 @@ class LegacyRecordRepository implements RecordRepository
             $sql = $this->createSelectBuilder()->where('record_id IN (:recordIds)')->getSQL();
         }
 
-        $result = $this->databox->get_connection()->fetchAll(
+        $result = $this->databox->get_connection()->fetchAllAssociative(
             $sql,
             ['recordIds' => $recordIds],
             ['recordIds' => Connection::PARAM_INT_ARRAY]
@@ -240,7 +240,7 @@ class LegacyRecordRepository implements RecordRepository
         ;
 
         $r = array_fill_keys($storyIds, 0);
-        foreach($connection->fetchAll($sql, $parmValues, $parmTypes) as $row) {
+        foreach($connection->fetchAllAssociative($sql, $parmValues, $parmTypes) as $row) {
             $r[$row['story_id']] = (int)$row['n_children'];
         }
 
@@ -324,7 +324,7 @@ class LegacyRecordRepository implements RecordRepository
             ;
         }
 
-        $data = $connection->fetchAll($sql, $parmValues, $parmTypes);
+        $data = $connection->fetchAllAssociative($sql, $parmValues, $parmTypes);
 
         $records = $this->mapRecordsFromResultSet($data);
 
@@ -378,7 +378,7 @@ class LegacyRecordRepository implements RecordRepository
             $this->addUserFilter($builder, $user);
         }
 
-        $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
+        $data = $connection->fetchAllAssociative($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
         $stories = $this->mapRecordsFromResultSet($data);
 
         $selections = array_map(function () {

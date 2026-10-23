@@ -757,10 +757,8 @@ class ThesaurusController extends Controller
         $bases = $languages = [];
 
         $appbox = $this->getApplicationBox();
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->getAuthenticatedUser()->getId()]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql, [':usr_id' => $this->getAuthenticatedUser()->getId()]);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             try {

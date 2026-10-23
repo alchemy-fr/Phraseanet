@@ -80,7 +80,7 @@ class DatabaseMaintenanceService
             $allTables[(string)$table['name']] = $table;
         }
 
-        $foundTables = $this->connection->fetchAll("SHOW TABLE STATUS");
+        $foundTables = $this->connection->fetchAllAssociative("SHOW TABLE STATUS");
 
         foreach ($foundTables as $foundTable) {
             $tableName = $foundTable["Name"];
@@ -279,7 +279,7 @@ class DatabaseMaintenanceService
 
         foreach ($defaults_stmt as $def) {
             $stmt = $this->connection->prepare($def['sql']);
-            $stmt->execute($def['params']);
+            $stmt->executeStatement($def['params']);
         }
 
         unset($stmt);
@@ -361,7 +361,7 @@ class DatabaseMaintenanceService
         }
 
         $sql = "SHOW FULL FIELDS FROM `" . $table['name'] . "`";
-        $rs2 = $this->connection->fetchAll($sql);
+        $rs2 = $this->connection->fetchAllAssociative($sql);
 
         foreach ($rs2 as $row2) {
             $f_name = $row2['Field'];
@@ -491,7 +491,7 @@ class DatabaseMaintenanceService
 
         $tIndex = [];
         $sql = "SHOW INDEXES FROM `" . $table['name'] . "`";
-        $rs2 = $this->connection->fetchAll($sql);
+        $rs2 = $this->connection->fetchAllAssociative($sql);
 
         foreach ($rs2 as $row2) {
             if (!isset($tIndex[$row2['Key_name']])) {

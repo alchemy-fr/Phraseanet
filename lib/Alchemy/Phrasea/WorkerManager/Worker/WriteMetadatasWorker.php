@@ -350,13 +350,12 @@ class WriteMetadatasWorker implements WorkerInterface
         $connection->beginTransaction();
         $stmt = $connection->prepare('UPDATE record SET jeton=(jeton & ~(:token)), moddate=NOW() WHERE record_id = :record_id');
 
-        $stmt->execute([
+        $stmt->executeStatement([
             ':record_id'    => $record->getRecordId(),
             ':token'        => PhraseaTokens::WRITE_META,
         ]);
 
         $connection->commit();
-        $stmt->closeCursor();
     }
 
     /**

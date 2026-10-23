@@ -67,10 +67,8 @@ class patch_320alpha2a extends patchAbstract
         $app['orm.em']->flush();
 
         $sql = 'SELECT task_id, `class` FROM task2';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $sql = 'UPDATE task2 SET `class` = :class WHERE task_id = :task_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -83,10 +81,8 @@ class patch_320alpha2a extends patchAbstract
                 , ':class'   => str_replace('task_', 'task_period_', $row['class'])
             ];
 
-            $stmt->execute($params);
+            $stmt->executeStatement($params);
         }
-
-        $stmt->closeCursor();
 
         return true;
     }

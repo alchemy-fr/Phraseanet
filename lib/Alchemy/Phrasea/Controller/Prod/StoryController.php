@@ -249,10 +249,8 @@ class StoryController extends Controller
                     ':parent_id'   => $story->getRecordId(),
                     ':children_id' => $record_id
                 ];
-                $stmt->execute($params);
+                $stmt->executeStatement($params);
             }
-
-            $stmt->closeCursor();
 
             $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
             $ret = ['success' => true, 'message' => $this->app->trans('Story updated')];

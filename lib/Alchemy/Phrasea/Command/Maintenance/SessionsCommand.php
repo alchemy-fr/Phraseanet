@@ -68,8 +68,8 @@ class SessionsCommand extends Command
 
             try {
                 $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 0;');
-                $connection->executeUpdate($platform->getTruncateTableSQL('SessionModules', true));
-                $connection->executeUpdate($platform->getTruncateTableSQL('Sessions', true));
+                $connection->executeStatement($platform->getTruncateTableSQL('SessionModules', true));
+                $connection->executeStatement($platform->getTruncateTableSQL('Sessions', true));
                 $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1;');
 
                 $this->em->commit();
@@ -103,10 +103,8 @@ class SessionsCommand extends Command
 
             // check table if exist
             $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :db_name AND TABLE_NAME = 'Sessions';";
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([':db_name' => $dbName]);
-            $row = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $connection->executeQuery($sql, [':db_name' => $dbName]);
+            $row = $stmt->fetchAllAssociative();
             /**********************/
 
             if (count($row) == 1) {
@@ -124,10 +122,8 @@ class SessionsCommand extends Command
 
             // check table if exist
             $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :db_name AND TABLE_NAME = 'SessionModules';";
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([':db_name' => $dbName]);
-            $row = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $connection->executeQuery($sql, [':db_name' => $dbName]);
+            $row = $stmt->fetchAllAssociative();
             /**********************/
 
             if (count($row) == 1) {

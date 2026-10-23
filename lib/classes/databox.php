@@ -85,16 +85,14 @@ class databox extends base implements ThumbnailedElement
         try {
             $sql = 'CREATE DATABASE `' . $dbname . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
             $stmt = $databoxConnection->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         } catch (\Exception $e) {
 
         }
 
         $sql = 'USE `' . $dbname . '`';
         $stmt = $databoxConnection->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $app['orm.add']([
             'host'     => $host,
@@ -348,13 +346,12 @@ class databox extends base implements ThumbnailedElement
         $this->structure = $dom_struct->saveXML();
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(
+        $stmt->executeStatement(
             [
                 ':structure' => $this->structure,
                 ':now'       => $now
             ]
         );
-        $stmt->closeCursor();
 
         $this->_sxml_structure = $this->_dom_structure = $this->_xpath_structure = null;
 
@@ -675,8 +672,7 @@ class databox extends base implements ThumbnailedElement
         $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
 
         $stmt = $this->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute([':viewname' => $viewname, ':sbas_id' => $this->id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':viewname' => $viewname, ':sbas_id' => $this->id]);
 
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         cache_databox::update($this->app, $this->id, 'structure');
@@ -704,8 +700,7 @@ class databox extends base implements ThumbnailedElement
         $sql = "UPDATE sbas SET label_$code = :label
             WHERE sbas_id = :sbas_id";
         $stmt = $this->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute([':label' => $label, ':sbas_id'   => $this->id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':label' => $label, ':sbas_id'   => $this->id]);
 
         $this->labels[$code] = $label;
 
@@ -749,10 +744,8 @@ class databox extends base implements ThumbnailedElement
             $sortk2 = "name";
         }
 
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $rowbas) {
             if ( ! isset($trows[$rowbas[$sortk1]]))
@@ -777,10 +770,8 @@ class databox extends base implements ThumbnailedElement
     public function get_record_amount()
     {
         $sql = "SELECT COUNT(record_id) AS n FROM record";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql);
+        $rowbas = $stmt->fetchAssociative();
 
         $amount = $rowbas ? (int) $rowbas["n"] : null;
 
@@ -791,10 +782,8 @@ class databox extends base implements ThumbnailedElement
     {
         $mask = PhraseaTokens::MAKE_SUBDEF | PhraseaTokens::TO_INDEX | PhraseaTokens::INDEXING; // we only care about those "jetons"
         $sql = "SELECT type, jeton & (".$mask.") AS status, SUM(1) AS n FROM record GROUP BY type, (jeton & ".$mask.")";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $ret = [
             'records'             => 0,
@@ -872,23 +861,19 @@ class databox extends base implements ThumbnailedElement
 
         $sql = 'DELETE FROM clients WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $sql = 'DELETE FROM memcached WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $sql = "DELETE FROM sbas WHERE sbas_id = :sbas_id";
         $stmt = $this->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':sbas_id' => $this->id]);
 
         $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
         $stmt = $this->get_appbox()->get_connection()->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':sbas_id' => $this->id]);
 
         $this->databoxRepository->unmount($this);
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
@@ -951,8 +936,7 @@ class databox extends base implements ThumbnailedElement
 
         $sql = 'DROP DATABASE `' . $this->get_dbname() . '`';
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
@@ -992,10 +976,8 @@ class databox extends base implements ThumbnailedElement
         $colls = [];
 
         $sql = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, [':sbas_id' => $this->id]);
+        $rs = $stmt->fetchAllAssociative();
         unset($stmt);
 
         foreach ($rs as $row) {
@@ -1035,10 +1017,8 @@ class databox extends base implements ThumbnailedElement
         $base_ids = [];
 
         $sql = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $this->id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, [':sbas_id' => $this->id]);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $base_ids[] = (int) $row['base_id'];
@@ -1061,8 +1041,7 @@ class databox extends base implements ThumbnailedElement
         ];
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->databoxRepository->save($this);
 
@@ -1078,8 +1057,7 @@ class databox extends base implements ThumbnailedElement
 
         $sql = "UPDATE pref SET value = :xml, updated_on = :date WHERE prop='thesaurus'";
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute([':xml'  => $this->thesaurus, ':date' => $now]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':xml'  => $this->thesaurus, ':date' => $now]);
         $this->delete_data_from_cache(databox::CACHE_THESAURUS);
 
         $this->databoxRepository->save($this);
@@ -1136,10 +1114,8 @@ class databox extends base implements ThumbnailedElement
 
         try {
             $sql = 'SELECT value AS thesaurus FROM pref WHERE prop="thesaurus" LIMIT 1;';
-            $stmt = $this->get_connection()->prepare($sql);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $this->get_connection()->executeQuery($sql);
+            $row = $stmt->fetchAssociative();
             $this->thesaurus = $row['thesaurus'];
             $this->set_data_to_cache($this->thesaurus, self::CACHE_THESAURUS);
         } catch (\Exception $e) {
@@ -1171,10 +1147,8 @@ class databox extends base implements ThumbnailedElement
             );
 
         $sql = "SELECT * FROM coll";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $sql = "INSERT INTO bas (active, server_coll_id, sbas_id) VALUES ('1', :coll_id, :sbas_id)";
         $stmt = $conn->prepare($sql);
@@ -1182,7 +1156,7 @@ class databox extends base implements ThumbnailedElement
         $base_ids = [];
         foreach ($rs as $row) {
             try {
-                $stmt->execute([':coll_id'  => $row['coll_id'], ':sbas_id'  => $this->id]);
+                $stmt->executeStatement([':coll_id'  => $row['coll_id'], ':sbas_id'  => $this->id]);
                 $base_ids[] = $base_id = $conn->lastInsertId();
 
                 if ( ! empty($row['logo'])) {
@@ -1192,7 +1166,6 @@ class databox extends base implements ThumbnailedElement
                 unset($e);
             }
         }
-        $stmt->closeCursor();
 
         $this->app->getAclForUser($user)->give_access_to_base($base_ids);
 
@@ -1376,10 +1349,8 @@ class databox extends base implements ThumbnailedElement
         }
 
         $sql = "SELECT value FROM pref WHERE prop='cterms'";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         if ($row)
             $this->cterms = $row['value'];
@@ -1400,8 +1371,7 @@ class databox extends base implements ThumbnailedElement
         $sql .= ' WHERE prop="ToU" AND locale = :locale';
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute([':terms'    => $terms, ':locale'   => $locale]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':terms'    => $terms, ':locale'   => $locale]);
         $this->cgus = null;
         $this->delete_data_from_cache(self::CACHE_CGUS);
 
@@ -1541,10 +1511,8 @@ class databox extends base implements ThumbnailedElement
 
         $structure = null;
         $sql = "SELECT value FROM pref WHERE prop='structure'";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         if ($row)
             $structure = $row['value'];
@@ -1564,10 +1532,8 @@ class databox extends base implements ThumbnailedElement
         }
 
         $sql = 'SELECT value, locale, updated_on FROM pref WHERE prop ="ToU"';
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $TOU = [];
         foreach ($rs as $row) {
@@ -1591,10 +1557,9 @@ class databox extends base implements ThumbnailedElement
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
         $stmt = $this->get_connection()->prepare($sql);
         foreach ($missing_locale as $v) {
-            $stmt->execute([':locale' => $v, ':date' => $date]);
+            $stmt->executeStatement([':locale' => $v, ':date' => $date]);
             $TOU[$v] = ['updated_on' => $date, 'value' => ''];
         }
-        $stmt->closeCursor();
         $this->cgus = $TOU;
 
         $this->set_data_to_cache($TOU, self::CACHE_CGUS);

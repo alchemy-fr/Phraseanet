@@ -366,10 +366,8 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
     private function getNbRowLogs(\databox $databox)
     {
-        $stmt = $databox->get_connection()->prepare('SELECT COUNT(l.id) as nb_log FROM log_docs l WHERE l.action = "download"');
-        $stmt->execute();
-        $row = $stmt->fetch();
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery('SELECT COUNT(l.id) as nb_log FROM log_docs l WHERE l.action = "download"');
+        $row = $stmt->fetchAssociative();
         unset($stmt);
 
         return $row['nb_log'];

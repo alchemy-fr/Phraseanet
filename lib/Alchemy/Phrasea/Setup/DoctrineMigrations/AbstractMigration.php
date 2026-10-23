@@ -104,7 +104,7 @@ abstract class AbstractMigration extends BaseMigration
      */
     protected function tableExists($tableName)
     {
-        $rs = $this->getEntityManager()->getConnection()->fetchAll('SHOW TABLE STATUS');
+        $rs = $this->getEntityManager()->getConnection()->fetchAllAssociative('SHOW TABLE STATUS');
 
         foreach ($rs as $row) {
             if ($tableName === $row['Name']) {

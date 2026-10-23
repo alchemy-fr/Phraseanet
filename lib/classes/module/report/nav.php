@@ -67,10 +67,8 @@ class module_report_nav extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $row = $stmt->fetchAssociative();
 
         return (int) $row['total'];
     }
@@ -122,10 +120,8 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
@@ -181,10 +177,8 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
@@ -240,10 +234,8 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
@@ -301,10 +293,8 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
@@ -359,10 +349,8 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $applis = false;
@@ -416,10 +404,8 @@ class module_report_nav extends module_report
 
         if ($on) {
             if ( ! empty($req)) {
-                $stmt = $this->app->findDataboxById($this->sbas_id)->get_connection()->prepare($req);
-                $stmt->execute($params);
-                $rsu = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
+                $stmt = $this->app->findDataboxById($this->sbas_id)->get_connection()->executeQuery($req, $params);
+                $rsu = $stmt->fetchAllAssociative();
 
                 foreach ($rsu as $row_user) {
                     $filter_id_apbox[] = "usr_id = " . (int) $row_user['usrid'];
@@ -451,10 +437,8 @@ class module_report_nav extends module_report
         }
 
         $params2 = [':value' => $val];
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params2);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params2);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
@@ -552,10 +536,8 @@ class module_report_nav extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);

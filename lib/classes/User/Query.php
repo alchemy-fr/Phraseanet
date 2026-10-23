@@ -340,10 +340,8 @@ class User_Query
             );
         }
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $userIndexes = [];
 
@@ -380,10 +378,8 @@ class User_Query
 
         $sql_count = 'SELECT COUNT(DISTINCT Users.id) as total ' . $this->generate_sql_constraints();
 
-        $stmt = $conn->prepare($sql_count);
-        $stmt->execute($this->sql_params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql_count, $this->sql_params);
+        $row = $stmt->fetchAssociative();
 
         $this->total = $row['total'];
 
@@ -837,10 +833,8 @@ class User_Query
 
         $sql = 'SELECT DISTINCT SUBSTRING_INDEX(Users.email, "@", -1) as emailDomain' . $this->generate_sql_constraints(). 'ORDER BY emailDomain';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $this->sql_params);
+        $rs = $stmt->fetchAllAssociative();
 
         $emailDomains = [];
         foreach ($rs as $row) {
@@ -864,10 +858,8 @@ class User_Query
 
         $sql = 'SELECT DISTINCT Users.activity ' . $this->generate_sql_constraints(). ' ORDER BY Users.activity';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $this->sql_params);
+        $rs = $stmt->fetchAllAssociative();
 
         $activities = [];
         foreach ($rs as $row) {
@@ -891,10 +883,8 @@ class User_Query
 
         $sql = 'SELECT DISTINCT Users.job ' . $this->generate_sql_constraints() . ' ORDER BY Users.job';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $this->sql_params);
+        $rs = $stmt->fetchAllAssociative();
 
         $jobs = [];
         foreach ($rs as $row) {
@@ -918,10 +908,8 @@ class User_Query
 
         $sql = 'SELECT DISTINCT Users.country ' . $this->generate_sql_constraints() . ' ORDER BY Users.country';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $this->sql_params);
+        $rs = $stmt->fetchAllAssociative();
 
         $countries = [];
         $listCountry = Countries::getCountries($this->app['locale']);
@@ -949,10 +937,8 @@ class User_Query
 
         $sql = 'SELECT DISTINCT Users.company ' . $this->generate_sql_constraints() . ' ORDER BY Users.company';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $this->sql_params);
+        $rs = $stmt->fetchAllAssociative();
 
         $companies = [];
         foreach ($rs as $row) {
@@ -976,10 +962,8 @@ class User_Query
 
         $sql = 'SELECT DISTINCT Users.last_model ' . $this->generate_sql_constraints() . ' ORDER BY Users.last_model';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($this->sql_params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $this->sql_params);
+        $rs = $stmt->fetchAllAssociative();
 
         $lastModel = [];
         foreach ($rs as $row) {

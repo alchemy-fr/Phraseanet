@@ -500,7 +500,7 @@ class WorkerRunningJobRepository extends EntityRepository
             AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
         ;
 
-        $this->_em->getConnection()->executeUpdate($sql, [
+        $this->_em->getConnection()->executeStatement($sql, [
             'second'    => $hour * 3600,
             'running'   => 'running',
             'canceled'  => 'canceled'
@@ -540,7 +540,7 @@ class WorkerRunningJobRepository extends EntityRepository
         $platform = $connection->getDatabasePlatform();
         $this->_em->beginTransaction();
         try {
-            $connection->executeUpdate($platform->getTruncateTableSQL('WorkerRunningJob'));
+            $connection->executeStatement($platform->getTruncateTableSQL('WorkerRunningJob'));
         }
         catch (Exception $e) {
             $this->_em->rollback();

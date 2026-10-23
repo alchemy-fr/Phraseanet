@@ -61,15 +61,13 @@ class patch_380alpha3a extends patchAbstract
             . ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         unset($stmt);
 
         $removeProc = "DROP PROCEDURE IF EXISTS explode_log_table";
 
         $stmt = $conn->prepare($removeProc);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         unset($stmt);
 
         $procedure = "
@@ -116,17 +114,14 @@ class patch_380alpha3a extends patchAbstract
         END;";
 
         $stmt = $conn->prepare($procedure);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = "CALL explode_log_table(',')";
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $stmt = $conn->prepare($removeProc);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

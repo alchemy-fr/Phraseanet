@@ -119,8 +119,7 @@ class BasketRepository extends EntityRepository
         ];
 
         $stmt = $this->_em->getConnection()->executeQuery($sql, $params);
-        $basket_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        $stmt->closeCursor();
+        $basket_ids = $stmt->fetchFirstColumn();
 
         // ... then we fetch the basket objects in dql
         $dql = "SELECT b FROM Phraseanet:Basket b\n"

@@ -125,10 +125,8 @@ class Migration38 implements MigrationInterface
 
     private function fetchInstanceKey()
     {
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare('SELECT `value` FROM registry WHERE `key` = "GV_sit"');
-        $stmt->execute();
-        $rs = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery('SELECT `value` FROM registry WHERE `key` = "GV_sit"');
+        $rs = $stmt->fetchAssociative();
 
         if (!$rs) {
             throw new RuntimeException('Unable to fetch GV_SIT key from registry table.');

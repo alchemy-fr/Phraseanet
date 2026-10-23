@@ -75,7 +75,7 @@ class SetupTestsDbs extends Command
             'GRANT ALL PRIVILEGES ON '.$db_name.'.* TO '.$user.'@'.$host
         );
 */
-        $this->container['orm.em']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
+        $this->container['orm.em']->getConnection()->executeStatement('SET @@global.sql_mode= ""');
 
         return 0;
     }

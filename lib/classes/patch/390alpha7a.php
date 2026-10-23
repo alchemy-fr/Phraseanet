@@ -69,41 +69,33 @@ class patch_390alpha7a extends patchAbstract
 
         $sql = 'DELETE FROM Feeds';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'DELETE FROM FeedEntries';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'DELETE FROM FeedPublishers';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'DELETE FROM FeedItems';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'DELETE FROM FeedTokens';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'DELETE FROM AggregateTokens';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $conn = $app->getApplicationBox()->get_connection();
 
         $sql = 'SELECT id, title, subtitle, public, created_on, updated_on, base_id FROM feeds_backup;';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $n = 0;
         $em = $app['orm.em'];
@@ -117,7 +109,6 @@ class patch_390alpha7a extends patchAbstract
         $ftSql = 'SELECT token, usr_id, aggregated FROM feed_tokens WHERE feed_id = :feed_id;';
         $ftStmt = $conn->prepare($ftSql);
         $faSql = 'SELECT token, usr_id FROM feed_tokens WHERE aggregated = 1;';
-        $faStmt = $conn->prepare($faSql);
 
         foreach ($rs as $row) {
             $feed = new Feed();
@@ -208,8 +199,8 @@ class patch_390alpha7a extends patchAbstract
         $fpStmt->closeCursor();
         $ftStmt->closeCursor();
 
-        $faStmt->execute();
-        $faRes = $faStmt->fetchAll(\PDO::FETCH_ASSOC);
+        $faStmt = $conn->executeQuery($faSql);
+        $faRes = $faStmt->fetchAllAssociative();
 
         foreach ($faRes as $faRow) {
             if (null === $user = $this->loadUser($app['orm.em'], $faRow['usr_id'])) {
@@ -222,7 +213,6 @@ class patch_390alpha7a extends patchAbstract
 
             $em->persist($token);
         }
-        $faStmt->closeCursor();
 
         $em->flush();
         $em->clear();

@@ -128,11 +128,9 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $app = $this->getApplication();
         $connection = $app->getApplicationBox()->get_connection();
         $stmt = $connection->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         $stmt = $connection->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
     protected function createDatabase()
@@ -145,8 +143,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             ->get_connection()
             ->prepare('CREATE DATABASE `unit_test_db`
               CHARACTER SET utf8 COLLATE utf8_unicode_ci');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
     public function provideFlashMessages()

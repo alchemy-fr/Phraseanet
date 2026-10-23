@@ -61,8 +61,7 @@ class patch_360alpha2b extends patchAbstract
                     ADD INDEX ( `updated` )";
 
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
 
             $sql = 'UPDATE metadatas SET updated = "0"
                     WHERE meta_struct_id IN
@@ -72,8 +71,7 @@ class patch_360alpha2b extends patchAbstract
                         WHERE multi = "1"
                     )';
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         } catch (DBALException $e) {
 
         }
@@ -82,8 +80,7 @@ class patch_360alpha2b extends patchAbstract
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         } catch (DBALException $e) {
 
         }
@@ -93,10 +90,8 @@ class patch_360alpha2b extends patchAbstract
                 WHERE m.meta_struct_id = s.id
                 AND s.multi = "1" AND updated="0"';
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt = $databox->get_connection()->executeQuery($sql);
         $rowCount = $stmt->rowCount();
-        $stmt->closeCursor();
 
         $n = 0;
         $perPage = 1000;
@@ -107,10 +102,8 @@ class patch_360alpha2b extends patchAbstract
                     WHERE m.meta_struct_id = s.id
                     AND s.multi = "1" LIMIT ' . $n . ', ' . $perPage;
 
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $databox->get_connection()->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
 
             $databox->get_connection()->beginTransaction();
 
@@ -132,21 +125,17 @@ class patch_360alpha2b extends patchAbstract
                         ':meta_struct_id' => $row['meta_struct_id'],
                         ':value'          => $value,
                     ];
-                    $stmt->execute($params);
+                    $stmt->executeStatement($params);
                 }
             }
-
-            $stmt->closeCursor();
 
             $sql = 'DELETE FROM metadatas WHERE id = :id';
             $stmt = $databox->get_connection()->prepare($sql);
 
             foreach ($rs as $row) {
                 $params = [':id' => $row['id']];
-                $stmt->execute($params);
+                $stmt->executeStatement($params);
             }
-
-            $stmt->closeCursor();
 
             $databox->get_connection()->commit();
 
@@ -159,8 +148,7 @@ class patch_360alpha2b extends patchAbstract
         try {
             $sql = "ALTER TABLE `metadatas` DROP `updated`";
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         } catch (\Exception $e) {
 
         }

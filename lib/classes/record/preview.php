@@ -349,7 +349,7 @@ class record_preview extends record_adapter
 
         $sql .= 'ORDER BY d.date, usrid DESC';
 
-        foreach ($this->getDataboxConnection()->executeQuery($sql, $params)->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($this->getDataboxConnection()->executeQuery($sql, $params)->fetchAllAssociative() as $row) {
             $hour = $row['date'];
 
             if ( ! isset($tab[$hour]))
@@ -480,8 +480,7 @@ class record_preview extends record_adapter
                     ':site'      => $this->app['conf']->get(['main', 'key']),
                     ':from'      => $this->statistics['from'],
                     ':to'        => $this->statistics['to']
-                ])
-                ->fetchAll(PDO::FETCH_ASSOC);
+                ])->fetchAllAssociative();
             foreach ($result as $row) {
                 $date = $row['datee'];
                 if(array_key_exists($date, $this->statistics['by_day'])) {
@@ -507,8 +506,7 @@ class record_preview extends record_adapter
                     ':site'      => $this->app['conf']->get(['main', 'key']),
                     ':from'      => $this->statistics['from'],
                     ':to'        => $this->statistics['to']
-                ])
-                ->fetchAll(PDO::FETCH_ASSOC);
+                ])->fetchAllAssociative();
             foreach ($result as $row) {
                 $date = $row['datee'];
                 if(array_key_exists($date, $this->statistics['by_day'])) {
@@ -529,8 +527,7 @@ class record_preview extends record_adapter
                     ':record_id' => $this->getRecordId(),
                     ':from'      => $this->statistics['from'],
                     ':to'        => $this->statistics['to']
-                ])
-                ->fetchAll(PDO::FETCH_ASSOC);
+                ])->fetchAllAssociative();
             foreach ($result as $row) {
                 $k = $row['referrer'];
                 if ($k == 'NO REFERRER') {
@@ -618,8 +615,7 @@ class record_preview extends record_adapter
             ->executeQuery($sql, [
                 ':record_id' => $this->getRecordId(),
                 ':site' => $this->app['conf']->get(['main', 'key'])
-            ])
-            ->fetchAll(PDO::FETCH_ASSOC);
+            ])->fetchAllAssociative();
 
         foreach ($result as $row) {
             if (isset($views[$row['datee']])) {
@@ -684,8 +680,7 @@ class record_preview extends record_adapter
             GROUP BY referrer ORDER BY referrer ASC';
 
         $result = $this->getDataboxConnection()
-            ->executeQuery($sql, [':record_id' => $this->getRecordId()])
-            ->fetchAll(PDO::FETCH_ASSOC);
+            ->executeQuery($sql, [':record_id' => $this->getRecordId()])->fetchAllAssociative();
 
         $referrers = [];
 
@@ -771,8 +766,7 @@ class record_preview extends record_adapter
             ->executeQuery($sql, [
                 ':record_id' => $this->getRecordId(),
                 ':site'      => $this->app['conf']->get(['main', 'key'])
-            ])
-            ->fetchAll(PDO::FETCH_ASSOC);
+            ])->fetchAllAssociative();
 
         $top = 10;
 

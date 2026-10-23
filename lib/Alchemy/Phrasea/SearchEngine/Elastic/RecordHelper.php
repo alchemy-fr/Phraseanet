@@ -70,9 +70,9 @@ class RecordHelper
                         base_id
                     FROM bas';
 
-            $statement = $this->appbox->get_connection()->query($sql);
+            $statement = $this->appbox->get_connection()->executeQuery($sql);
 
-            while ($mapping = $statement->fetch()) {
+            while ($mapping = $statement->fetchAssociative()) {
                 if (! isset($map[$mapping['databox_id']])) {
                     $map[$mapping['databox_id']] = [];
                 }

@@ -108,7 +108,7 @@ class FixAutoincrements extends Command
 
         $stmt = $box->get_connection()->executeQuery($sql, [':dbname' => $box->get_dbname()]);
         $max_id = 0;
-        $rows = $stmt->fetchAll();
+        $rows = $stmt->fetchAllAssociative();
         foreach($rows as $row) {
             $id = $row['id'];
 
@@ -121,7 +121,6 @@ class FixAutoincrements extends Command
                 }
             }
         }
-        $stmt->closeCursor();
 
         return $max_id;
     }
@@ -161,7 +160,6 @@ class FixAutoincrements extends Command
         else {
             try {
                 $stmt = $box->get_connection()->executeQuery($sql, $parms);
-                $stmt->closeCursor();
 
                 $msg[1] = sprintf("<info>%s</info>", $msg[1]);
                 $ouputTable->addRow($msg);
@@ -338,7 +336,6 @@ class FixAutoincrements extends Command
                     $max_SessionId = $id;
                 }
             }
-            $stmt->closeCursor();
         }
 
         // fix using different methods

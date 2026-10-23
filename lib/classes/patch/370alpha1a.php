@@ -51,10 +51,8 @@ class patch_370alpha1a extends patchAbstract
         $conn = $databox->get_connection();
 
         $sql = 'SELECT value FROM pref WHERE prop = "structure"';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $result = $stmt->fetchAssociative();
 
         if (! $result) {
             throw new \RuntimeException('Unable to find structure');
@@ -77,8 +75,7 @@ class patch_370alpha1a extends patchAbstract
 
         $sql = 'UPDATE pref SET value = :structure WHERE prop = "structure"';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([':structure' => $DOMDocument->saveXML()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':structure' => $DOMDocument->saveXML()]);
 
         return true;
     }

@@ -34,13 +34,11 @@ class patchthesaurus_201 implements patchthesaurus_interface
 
             $sql = "UPDATE record SET status=status & ~2";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
 
             $sql = "DELETE FROM thit";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
 
             $domct = new DOMDocument();
             $domct->load(__DIR__ . "/../../../lib/conf.d/blank_cterms.xml");

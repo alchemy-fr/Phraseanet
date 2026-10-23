@@ -56,10 +56,8 @@ class patch_390alpha9b extends patchAbstract
     private function upgradeRegistry(Application $app)
     {
         $sql = 'SELECT `key`, `value`, `type` FROM registry';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         $oldRegistry = [];
 

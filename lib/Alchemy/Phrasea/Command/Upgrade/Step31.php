@@ -82,10 +82,8 @@ class Step31 implements DatasUpgraderInterface
                         AND s.record_id = r.record_id AND s.name="document"
                         AND parent_record_id = 0';
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt = $databox->get_connection()->executeQuery($sql);
         $quantity = $stmt->rowCount();
-        $stmt->closeCursor();
 
         return $quantity;
     }
@@ -104,10 +102,8 @@ class Step31 implements DatasUpgraderInterface
                         AND s.record_id = r.record_id AND s.name="document"
                         AND parent_record_id = 0 LIMIT 100';
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         return $rs;
     }
@@ -144,7 +140,6 @@ class Step31 implements DatasUpgraderInterface
             ':record_id' => $record['record_id'],
         ];
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
     }
 }

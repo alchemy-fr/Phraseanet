@@ -63,10 +63,8 @@ class patch_380alpha11a extends patchAbstract
             $sql = 'SELECT usr_id, user_agent, ip, platform, browser, app,
                         browser_version, screen, token, nonce, lastaccess, created_on
                     FROM cache';
-            $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $appbox->get_connection()->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
         } catch (DBALException $e) {
             // this may fail on oldest versions
             return false;

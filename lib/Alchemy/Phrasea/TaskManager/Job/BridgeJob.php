@@ -73,10 +73,8 @@ class BridgeJob extends AbstractJob
         $sql = 'SELECT id, account_id FROM bridge_elements'
             . ' WHERE (status = ' . implode(' OR status = ', array_keys($params)) . ')';
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             if (!$this->isStarted()) {
@@ -99,8 +97,7 @@ class BridgeJob extends AbstractJob
                 $sql = 'UPDATE bridge_elements SET status = :status WHERE id = :id';
                 $params = [':status' => \Bridge_Element::STATUS_ERROR, ':id' => $row['id']];
                 $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-                $stmt->execute($params);
-                $stmt->closeCursor();
+                $stmt->executeStatement($params);
             }
         }
     }

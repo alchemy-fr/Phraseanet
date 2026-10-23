@@ -91,8 +91,7 @@ class UserManager
     {
         $sql = 'DELETE FROM notifications WHERE usr_id = :usr_id';
         $stmt = $this->appboxConnection->prepare($sql);
-        $stmt->execute([':usr_id' => $user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':usr_id' => $user->getId()]);
     }
 
     /**
@@ -253,8 +252,7 @@ class UserManager
     {
         $sql = 'DELETE FROM `edit_presets` WHERE usr_id = :usr_id';
         $stmt = $this->appboxConnection->prepare($sql);
-        $stmt->execute([':usr_id' => $user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':usr_id' => $user->getId()]);
 
         $this->cleanSettings($user);
         $this->cleanTokens($user);
@@ -292,8 +290,7 @@ class UserManager
             'DELETE FROM `records_rights` WHERE usr_id = :usr_id',
         ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
-            $stmt->execute([':usr_id' => $user->getId()]);
-            $stmt->closeCursor();
+            $stmt->executeStatement([':usr_id' => $user->getId()]);
         }
     }
 

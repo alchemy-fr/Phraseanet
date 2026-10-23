@@ -477,10 +477,8 @@ class RootController extends Controller
                     LEFT JOIN  log l ON l.id = d.log_id
                     WHERE d.record_id =" . $recordId . " ORDER BY date LIMIT 1000";
 
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $logDocs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $databox->get_connection()->executeQuery($sql);
+            $logDocs = $stmt->fetchAllAssociative();
 
             return $this->render('admin/inspector/record-detail.html.twig', [
                 'logDocs'   => $logDocs,

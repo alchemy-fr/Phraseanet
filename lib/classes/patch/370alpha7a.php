@@ -66,10 +66,8 @@ class patch_370alpha7a extends patchAbstract
         try {
             //get all old lazaret file & transform them to LazaretFile object
             $sql = 'SELECT * FROM lazaret';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll();
-            $stmt->closeCursor();
+            $stmt = $conn->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
         } catch (DBALException $e) {
             // table not found
             if ($e->getCode() == '42S02') {

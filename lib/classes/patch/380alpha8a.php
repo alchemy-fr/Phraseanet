@@ -53,10 +53,8 @@ class patch_380alpha8a extends patchAbstract
         $sql = 'SELECT settings
                 FROM task2
                 WHERE class="task_period_cindexer" LIMIT 1';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         if (!$row) {
             return false;

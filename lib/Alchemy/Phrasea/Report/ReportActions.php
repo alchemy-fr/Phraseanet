@@ -106,7 +106,7 @@ class ReportActions extends Report
 
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
-        while (($row = $stmt->fetch())) {
+        while (($row = $stmt->fetchAssociative())) {
 
             // only for group downloads all and download by user
             if (empty($this->parms['group']) || $this->parms['group'] == 'user') {
@@ -140,7 +140,6 @@ class ReportActions extends Report
 
             $callback($row);
         }
-        $stmt->closeCursor();
     }
 
     private function computeVars()

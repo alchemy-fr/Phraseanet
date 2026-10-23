@@ -291,7 +291,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $connection = $this->getDataboxConnection();
 
-        $connection->executeUpdate(
+        $connection->executeStatement(
             'DELETE FROM permalinks WHERE subdef_id = :subdef_id',
             ['subdef_id' => $this->subdef_id]
         );

@@ -59,10 +59,8 @@ class patch_383alpha2a extends patchAbstract
     {
         // Clean validation sessions where initiator_id does not exist anymore
         $sql = 'SELECT DISTINCT(v.id) AS validation_session_id FROM `ValidationSessions` v LEFT JOIN Users u ON (v.initiator_id = u.id) WHERE u.id IS NULL';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         foreach ($rows as $row) {
             try {

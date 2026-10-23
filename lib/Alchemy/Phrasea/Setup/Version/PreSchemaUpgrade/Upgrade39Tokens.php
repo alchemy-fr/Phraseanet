@@ -41,7 +41,7 @@ class Upgrade39Tokens implements PreSchemaUpgradeInterface
     public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
     {
         if ($this->tableExists($em, 'tokens_backup')) {
-            $em->getConnection()->executeUpdate('RENAME TABLE `tokens_backup` TO `tokens`');
+            $em->getConnection()->executeStatement('RENAME TABLE `tokens_backup` TO `tokens`');
         }
     }
 
@@ -67,6 +67,6 @@ class Upgrade39Tokens implements PreSchemaUpgradeInterface
      */
     private function doBackupFeedsTable(EntityManager $em)
     {
-        $em->getConnection()->executeUpdate('RENAME TABLE `tokens` TO `tokens_backup`');
+        $em->getConnection()->executeStatement('RENAME TABLE `tokens` TO `tokens_backup`');
     }
 }

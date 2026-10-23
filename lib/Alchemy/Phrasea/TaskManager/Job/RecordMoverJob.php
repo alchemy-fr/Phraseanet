@@ -150,9 +150,8 @@ class RecordMoverJob extends AbstractJob
                 continue;
             }
 
-            $stmt = $databox->get_connection()->prepare($task['sql']['real']['sql']);
-            $stmt->execute();
-            while ($this->isStarted() && false !== $row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $stmt = $databox->get_connection()->executeQuery($task['sql']['real']['sql']);
+            while ($this->isStarted() && false !== $row = $stmt->fetchAssociative()) {
                 $tmp = [
                     'sbas_id'   => $task['sbas_id'],
                     'record_id' => $row['record_id'],
@@ -181,7 +180,6 @@ class RecordMoverJob extends AbstractJob
                         break;
                 }
             }
-            $stmt->closeCursor();
         }
 
         return $ret;
@@ -354,7 +352,7 @@ class RecordMoverJob extends AbstractJob
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
-        $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();
+        $result['n'] = $connbas->executeQuery('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchOne();
 
         $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
         if ($stmt->execute([])) {

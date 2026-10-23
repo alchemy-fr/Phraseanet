@@ -172,7 +172,7 @@ class patch_419PHRAS4078 implements patchInterface
 
         $stmt = $appbox->get_connection()->prepare($sql);
         try {
-            $stmt->execute();
+            $stmt->executeStatement();
         }
         catch(TableExistsException $e) {
             // table v3 already exists, skip migration
@@ -182,7 +182,6 @@ class patch_419PHRAS4078 implements patchInterface
             // fatal
             return;
         }
-        $stmt->closeCursor();
 
         // migrate data from v-1 ?
         try {
@@ -234,7 +233,7 @@ class patch_419PHRAS4078 implements patchInterface
         foreach ($config['jobs'] as $jobname => $job) {
 
             // copy v-1 rows to v3 (add job)
-            $stmtCopy->execute([':job' => $jobname]);
+            $stmtCopy->executeStatement([':job' => $jobname]);
 
             // fix alerted too early
             $delta = $job['prior_notice'];
@@ -247,22 +246,18 @@ class patch_419PHRAS4078 implements patchInterface
             }
             $sql = "UPDATE `ExpiringRights` SET `alerted`=NULL WHERE `job` = :job AND `alerted` < " . $value;
             $stmtEarly = $appbox->get_connection()->prepare($sql);
-            $stmtEarly->execute([':job' => $jobname]);
-            $stmtEarly->closeCursor();
+            $stmtEarly->executeStatement([':job' => $jobname]);
         }
-        $stmtCopy->closeCursor();
 
         // fix bad date
         $sql = "UPDATE `ExpiringRights` SET `expire`=NULL WHERE `expire`='0000-00-00'";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([]);
 
         // fix useless new_expire
         $sql = "UPDATE `ExpiringRights` SET `new_expire`=NULL WHERE `new_expire` = `expire`";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([]);
     }
 
 }

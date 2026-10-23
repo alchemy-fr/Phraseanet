@@ -435,11 +435,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
               AND record_id = :record_id';
-        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
-
-        $stmt->execute([':record_id' => $record_1->getRecordId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $record_1->getDatabox()->get_connection()->executeQuery($sql, [':record_id' => $record_1->getRecordId()]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             $this->fail();
@@ -454,11 +451,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $sql = 'SELECT record_id, coll_id, jeton
             FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)
             AND record_id = :record_id';
-        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
-
-        $stmt->execute([':record_id' => $record_1->getRecordId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $record_1->getDatabox()->get_connection()->executeQuery($sql, [':record_id' => $record_1->getRecordId()]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             $this->fail();

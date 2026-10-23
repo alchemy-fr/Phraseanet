@@ -305,7 +305,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $sql = 'UPDATE record SET moddate = NOW(), type = :type WHERE record_id = :record_id';
-        $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
+        $this->getDataboxConnection()->executeStatement($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if (($old_type !== $type) && $shouldSubdefsBeRebuilt) {
             $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
@@ -319,7 +319,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function touch()
     {
-        $this->getDataboxConnection()->executeUpdate(
+        $this->getDataboxConnection()->executeStatement(
             'UPDATE record SET moddate = NOW() WHERE record_id = :record_id',
             ['record_id' => $this->getRecordId()]
         );
@@ -369,7 +369,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
         }
 
-        if ($this->getDataboxConnection()->executeUpdate(
+        if ($this->getDataboxConnection()->executeStatement(
             'UPDATE record SET moddate = NOW(), mime = :mime WHERE record_id = :record_id',
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
@@ -590,8 +590,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         ];
 
         $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->base_id = $collection->get_base_id();
         $this->collection_id = $coll_id_to;
@@ -969,7 +968,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             new RecordsWriteMetaEvent([$this->getRecordId()], $this->getDataboxId())
         );
 
-        $this->getDataboxConnection()->executeUpdate(
+        $this->getDataboxConnection()->executeStatement(
             'UPDATE record SET moddate = NOW(), originalname = :originalname WHERE record_id = :record_id',
             ['originalname' => $original_name, 'record_id' => $this->getRecordId()]
         );
@@ -1116,13 +1115,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $sql = 'UPDATE record SET moddate = NOW(), xml = :xml WHERE record_id= :record_id';
         $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute(
+        $stmt->executeStatement(
             [
                 ':xml'       => $dom_doc->saveXML(),
                 ':record_id' => $this->getRecordId(),
             ]
         );
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -1692,11 +1690,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $sql = 'UPDATE record SET jeton=(jeton | :make_subdef_mask) WHERE record_id = :record_id';
         $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute([
+        $stmt->executeStatement([
             ':record_id' => $this->getRecordId(),
             'make_subdef_mask' => PhraseaTokens::MAKE_SUBDEF,
         ]);
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -1739,7 +1736,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function write_metas()
     {
         $tokenMask = PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF;
-        $this->getDataboxConnection()->executeUpdate(
+        $this->getDataboxConnection()->executeStatement(
             'UPDATE record SET jeton = jeton | :tokenMask WHERE record_id= :record_id',
             ['tokenMask' => $tokenMask, 'record_id' => $this->getRecordId()]
         );
@@ -1768,7 +1765,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $stmt = $connection->prepare($sql);
 
-        $stmt->execute([
+        $stmt->executeStatement([
             ':coll_id'          => $collection->get_coll_id(),
             ':parent_record_id' => 1,
             ':type'             => 'unknown',
@@ -1777,7 +1774,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ':originalname'     => null,
             ':mime'             => null,
         ]);
-        $stmt->closeCursor();
 
         $story_id = $connection->lastInsertId();
 
@@ -1789,13 +1785,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, coll_id, action, final, comment)'
                 . ' VALUES (null, :log_id, now(), :record_id, :coll_id, "add", :final, "")';
             $stmt = $connection->prepare($sql);
-            $stmt->execute([
+            $stmt->executeStatement([
                 ':log_id'    => $log_id,
                 ':record_id' => $story_id,
                 ':coll_id'   => $collection->get_coll_id(),
                 ':final'     => $collection->get_coll_id(),
             ]);
-            $stmt->closeCursor();
         } catch (\Exception $e) {
             unset($e);
         }
@@ -1839,11 +1834,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $sql = "UPDATE record SET `cover_record_id` = :cover_record_id WHERE record_id = :story_id";
         $connection = $databox->get_connection();
         $stmt = $connection->prepare($sql);
-        $stmt->execute([
+        $stmt->executeStatement([
             ':cover_record_id' => $this->getCoverRecordId(),
             ':story_id'        => $this->getRecordId()
         ]);
-        $stmt->closeCursor();
 
         // try to copy thumbnail & preview
 
@@ -1971,7 +1965,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $connection = $databox->get_connection();
         $stmt = $connection->prepare($sql);
 
-        $stmt->execute([
+        $stmt->executeStatement([
             ':coll_id'          => $collection->get_coll_id(),
             ':parent_record_id' => 0,
             ':type'             => $file ? ($file->getType() ? $file->getType()->getType() : 'unknown') : 'unknown',
@@ -1980,7 +1974,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ':originalname'     => $file ? $file->getOriginalName() : null,
             ':mime'             => $file ? $file->getFile()->getMimeType() : null,
         ]);
-        $stmt->closeCursor();
 
         $record_id = $connection->lastInsertId();
 
@@ -1993,13 +1986,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 . " VALUES (null, :log_id, now(), :record_id, :coll_id, 'add', :final, '')";
 
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute([
+            $stmt->executeStatement([
                 ':log_id'    => $log_id,
                 ':record_id' => $record_id,
                 ':coll_id'   => $collection->get_coll_id(),
                 ':final'     => $collection->get_coll_id(),
             ]);
-            $stmt->closeCursor();
         }
         catch (\Exception $e) {
             $record = null;
@@ -2023,7 +2015,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $connection = $this->getDataboxConnection();
-        $connection->executeUpdate('DELETE FROM technical_datas WHERE record_id = :record_id', [
+        $connection->executeStatement('DELETE FROM technical_datas WHERE record_id = :record_id', [
             ':record_id' => $this->getRecordId(),
         ]);
 
@@ -2153,14 +2145,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ':record_id' => $this->getRecordId()
         ];
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute($params);
+        $stmt = $connection->executeQuery($sql, $params);
 
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetchAssociative()) {
             @unlink(\p4string::addEndSlash($row['path']) . 'stamp_' . $row['file']);
         }
-
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -2202,33 +2191,27 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $sql = "DELETE FROM record WHERE record_id = :record_id";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':record_id' => $this->getRecordId()]);
 
         $sql = "DELETE FROM metadatas WHERE record_id = :record_id";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':record_id' => $this->getRecordId()]);
 
         $sql = "DELETE permalinks FROM subdef INNER JOIN permalinks USING(subdef_id) WHERE record_id=:record_id";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':record_id' => $this->getRecordId()]);
 
         $sql = "DELETE FROM subdef WHERE record_id = :record_id";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':record_id' => $this->getRecordId()]);
 
         $sql = "DELETE FROM technical_datas WHERE record_id = :record_id";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':record_id' => $this->getRecordId()]);
 
         $sql = "DELETE FROM regroup WHERE rid_parent = :record_id1 OR rid_child = :record_id2";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id1' => $this->getRecordId(), ':record_id2' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':record_id1' => $this->getRecordId(), ':record_id2' => $this->getRecordId()]);
 
         $orderElementRepository = $this->app['repo.order-elements'];
 
@@ -2338,8 +2321,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             , ':collid'   => $this->getCollectionId()
         ];
         $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -2381,10 +2363,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $how_many
         );
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute([':original_name' => $original_name]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql, [':original_name' => $original_name]);
+        $rs = $stmt->fetchAllAssociative();
 
         $records = [];
         foreach ($rs as $row) {
@@ -2421,7 +2401,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ->getSQL()
             ;
 
-        $rs = $databox->get_connection()->fetchAll($sql, $params, $types);
+        $rs = $databox->get_connection()->fetchAllAssociative($sql, $params, $types);
 
         $records = [];
         foreach ($rs as $row) {
@@ -2503,13 +2483,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $connection = $this->getDataboxConnection();
 
-        $stmt = $connection->prepare($sql);
+        $stmt = $connection->executeQuery($sql, [':parent_record_id' => $this->getRecordId()]);
 
-        $stmt->execute([':parent_record_id' => $this->getRecordId()]);
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             $ord = is_null($row["ord"]) ? 0 : $row["ord"];
@@ -2525,9 +2501,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         ];
 
         $stmt = $connection->prepare($sql);
-        $stmt->execute($params);
-
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->touch();
 
@@ -2548,8 +2522,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         ];
 
         $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->touch();
 
@@ -2594,7 +2567,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ];
         }
 
-        $this->getDataboxConnection()->executeUpdate(
+        $this->getDataboxConnection()->executeStatement(
             'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
             ['status' => bindec($status), 'record_id' => $this->getRecordId()]
         );

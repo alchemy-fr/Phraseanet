@@ -47,7 +47,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
             $types['names'] = Connection::PARAM_STR_ARRAY;
         }
 
-        return array_map([$this, 'sqlToPhp'], $this->connection->fetchAll($sql, $params, $types));
+        return array_map([$this, 'sqlToPhp'], $this->connection->fetchAllAssociative($sql, $params, $types));
     }
 
     /**
@@ -135,7 +135,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
 
         foreach ($toInsert as $index => $data) {
             try {
-                $statement->execute($this->phpToSql($data));
+                $statement->executeStatement($this->phpToSql($data));
             } catch (DriverException $exception) {
                 $updateNeeded[$index] = $data;
             }
@@ -157,7 +157,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
         $statement = $this->connection->prepare($this->getUpdateSql());
 
         foreach ($toUpdate as $data) {
-            $statement->execute($this->phpToSql($data));
+            $statement->executeStatement($this->phpToSql($data));
         }
     }
 

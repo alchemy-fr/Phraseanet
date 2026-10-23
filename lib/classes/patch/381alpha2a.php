@@ -49,16 +49,13 @@ class patch_381alpha2a extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT `value` FROM `registry` WHERE `key` = "GV_i18n_service"';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         if (null !== $row && false !== strpos($row['value'], 'localization.webservice.alchemyasp.com')) {
             $sql = 'UPDATE `registry` SET `value` = "http://geonames.alchemyasp.com/" WHERE `key` = "GV_i18n_service"';
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         }
 
         return true;

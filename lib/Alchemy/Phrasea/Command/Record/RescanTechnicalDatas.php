@@ -62,10 +62,8 @@ class RescanTechnicalDatas extends Command
         foreach ($this->container->getDataboxes() as $databox) {
 
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $databox->get_connection()->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
 
             foreach ($rs as $row) {
                 $record = $databox->get_record($row['record_id']);

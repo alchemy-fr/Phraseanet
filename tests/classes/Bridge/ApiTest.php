@@ -22,8 +22,7 @@ class Bridge_ApiTest extends \PhraseanetTestCase
         $app = $this->getApplication();
 
         $stmt = $app->getApplicationBox()->get_connection()->prepare('DELETE FROM bridge_apis WHERE name = "Apitest"');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $this->type = 'Apitest';
 

@@ -297,8 +297,7 @@ class AlertExpiringRightsCommand extends Command
 
         // play sql
         $records = [];
-        $stmt = $dbox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt = $dbox->get_connection()->executeQuery($sql);
 
         if ($this->input->getOption('dry')) {
             $this->output->writeln(sprintf("<info>dry mode: updates on %d records NOT executed</info>", $stmt->rowCount()));
@@ -309,7 +308,7 @@ class AlertExpiringRightsCommand extends Command
             return false;
         }
 
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetchAssociative()) {
             $record = $dbox->get_record($row['record_id']);
             $row['collection'] = $record->getCollection()->get_name();
             $row['title'] = $record->get_title();
@@ -330,7 +329,6 @@ class AlertExpiringRightsCommand extends Command
                 }
             }
         }
-        $stmt->closeCursor();
 
         $n_records = count($records);
         if($n_records === 0) {
@@ -453,9 +451,8 @@ class AlertExpiringRightsCommand extends Command
             self::RIGHT_EXTENDED => 0,
             self::RIGHT_SHORTENED => 0
         ];
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $stmt = $this->appbox->get_connection()->executeQuery($sql);
+        while ($row = $stmt->fetchAssociative()) {
             $type = null;
             if($row['new_expire'] !== null) {
                 if($row['expire'] === null || $row['alerted'] === null) {
@@ -502,7 +499,6 @@ class AlertExpiringRightsCommand extends Command
             }
             $n_records['all']++;
         }
-        $stmt->closeCursor();
 
         $payload = [
             'job'     => $jobname,
@@ -518,9 +514,8 @@ class AlertExpiringRightsCommand extends Command
             $sql = "UPDATE `ExpiringRights` SET expire=COALESCE(new_expire, expire), new_expire=NULL, alerted=" . $now . "\n"
                 . " WHERE " . $sql_where;
             $stmt = $this->appbox->get_connection()->prepare($sql);
-            $stmt->execute([]);
+            $stmt->executeStatement([]);
             $this->appbox->get_connection()->exec($sql);
-            $stmt->closeCursor();
         }
 
         $this->output->writeln(

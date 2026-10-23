@@ -294,7 +294,7 @@ class set_export extends set_abstract
                 'sendermail' => $app->getAuthenticatedUser()->getEmail(),
             ];
 
-            foreach ($app->getApplicationBox()->get_connection()->fetchAll($sql, $params, $types) as $row) {
+            foreach ($app->getApplicationBox()->get_connection()->fetchAllAssociative($sql, $params, $types) as $row) {
                 $datas[] = [
                     'name' => $row["usr_login"],
                     'usr_id' => $row['usr_id'],
@@ -985,11 +985,9 @@ class set_export extends set_abstract
                         ':usr_id' => $app->getAuthenticatedUser()->getId(),
                     ];
 
-                    $stmt->execute($params);
+                    $stmt->executeStatement($params);
                 }
             }
-
-            $stmt->closeCursor();
         }
     }
 

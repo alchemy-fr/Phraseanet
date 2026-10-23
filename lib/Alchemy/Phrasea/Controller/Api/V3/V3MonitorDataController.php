@@ -51,10 +51,8 @@ class V3MonitorDataController extends Controller
         foreach ($this->app->getDataboxes() as $databox) {
             // get volumes by db
 
-            $stmt = $databox->get_connection()->prepare($sqlByDb);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $databox->get_connection()->executeQuery($sqlByDb);
+            $row = $stmt->fetchAssociative();
 
             $ret['databoxes'][$databox->get_sbas_id()] = [
                 'sbas_id'   => $databox->get_sbas_id(),
@@ -75,12 +73,11 @@ class V3MonitorDataController extends Controller
         // get volumes of downloads
 
         $sql = "SELECT `data` FROM `Tokens` WHERE `type`='download'";
-        $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt = $this->getApplicationBox()->get_connection()->executeQuery($sql);
         $size = 0;
         $disksize = 0;
         $n = 0;
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetchAssociative()) {
             try {
                 $data       = unserialize($row['data']);
                 $size       += $data['size'];
@@ -91,13 +88,10 @@ class V3MonitorDataController extends Controller
                 // ignore
             }
         }
-        $stmt->closeCursor();
 
         $sql = "SELECT DATEDIFF(NOW(), MIN(`created`)) AS `oldest`, SUM(IF(NOW()>`expiration`, 1, 0)) AS `expired` FROM `Tokens` WHERE `type`='download'";
-        $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->getApplicationBox()->get_connection()->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         $ret['downloads'] = [
             'count'         => $n,
@@ -111,11 +105,9 @@ class V3MonitorDataController extends Controller
             . " SUM(CEIL(`size` / " . $blocksize . ") * " . $blocksize . ") " . $sqlDivider . " AS disksize"
             . " FROM `LazaretFiles` WHERE size IS NOT NULL";
 
-        $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt = $this->getApplicationBox()->get_connection()->executeQuery($sql);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $row = $stmt->fetchAssociative();
 
         $ret['lazaret'] = [
             'count'     => $row['n'],
@@ -146,10 +138,8 @@ class V3MonitorDataController extends Controller
 
         // get volumes by db
 
-        $stmt = $databox->get_connection()->prepare($sqlByDb);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sqlByDb);
+        $row = $stmt->fetchAssociative();
 
         $ret['databox'] = [
             'sbas_id'   => $databox->get_sbas_id(),
@@ -169,12 +159,11 @@ class V3MonitorDataController extends Controller
         // get volumes of downloads
 
         $sql = "SELECT `data` FROM `Tokens` WHERE `type`='download'";
-        $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt = $this->getApplicationBox()->get_connection()->executeQuery($sql);
         $size = 0;
         $disksize = 0;
         $n = 0;
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetchAssociative()) {
             try {
                 $found = false;
                 $data = unserialize($row['data']);
@@ -198,8 +187,6 @@ class V3MonitorDataController extends Controller
             }
         }
 
-        $stmt->closeCursor();
-
         $ret['downloads'] = [
             'sbas_id'   => $databoxId,
             'count'     => $n,
@@ -216,11 +203,9 @@ class V3MonitorDataController extends Controller
             " WHERE L.`size` IS NOT NULL AND b.`sbas_id`=". $databoxId;
 
 
-        $stmt = $this->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt = $this->getApplicationBox()->get_connection()->executeQuery($sql);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $row = $stmt->fetchAssociative();
 
         $ret['lazaret'] = [
             'sbas_id'   => $databoxId,
@@ -283,9 +268,8 @@ class V3MonitorDataController extends Controller
         // get volumes grouped by collection and subdef
 
         $collections = [];
-        $stmt = $databox->get_connection()->prepare($sqlByColl);
-        $stmt->execute();
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $stmt = $databox->get_connection()->executeQuery($sqlByColl);
+        while ($row = $stmt->fetchAssociative()) {
             if (!array_key_exists($row['coll_id'], $collections)) {
                 $collections[$row['coll_id']] = [
                     'coll_id' => $row['coll_id'],
@@ -299,19 +283,16 @@ class V3MonitorDataController extends Controller
                 'disksize' => round($row['disksize'], 2)
             ];
         }
-        $stmt->closeCursor();
 
         // get volumes by subdef
 
         $subdefs = [];
-        $stmt = $databox->get_connection()->prepare($sqlByName);
-        $stmt->execute();
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $stmt = $databox->get_connection()->executeQuery($sqlByName);
+        while ($row = $stmt->fetchAssociative()) {
             $subdefs[$row['name']]['count'] = (int)$row['n'];
             $subdefs[$row['name']]['size'] = round($row['size'], 2);
             $subdefs[$row['name']]['disksize'] = round($row['disksize'], 2);
         }
-        $stmt->closeCursor();
 
         return [$collections, $subdefs];
     }

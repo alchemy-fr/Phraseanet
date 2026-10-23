@@ -69,10 +69,8 @@ class WriteMetadataJob extends AbstractJob
         foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
 
-            $statement = $connection->prepare('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)');
-            $statement->execute(['token' => PhraseaTokens::WRITE_META]);
-            $rs = $statement->fetchAll(\PDO::FETCH_ASSOC);
-            $statement->closeCursor();
+            $statement = $connection->executeQuery('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)', ['token' => PhraseaTokens::WRITE_META]);
+            $rs = $statement->fetchAllAssociative();
 
             foreach ($rs as $row) {
                 $record_id = $row['record_id'];
@@ -199,11 +197,10 @@ class WriteMetadataJob extends AbstractJob
                 }
 
                 $statement = $connection->prepare('UPDATE record SET jeton=jeton & ~:token WHERE record_id = :record_id');
-                $statement->execute([
+                $statement->executeStatement([
                     'record_id' => $record_id,
                     'token' => PhraseaTokens::WRITE_META,
                 ]);
-                $statement->closeCursor();
             }
         }
     }

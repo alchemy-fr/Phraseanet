@@ -53,20 +53,17 @@ class patch_320alpha6a extends patchAbstract
                 WHERE r.record_id = s.record_id
                   AND s.name="document"';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'UPDATE subdef s, record r
                 SET s.updated_on = r.moddate, s.created_on = r.credate
                 WHERE s.record_id = r.record_id';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'UPDATE subdef SET `name` = LOWER( `name` )';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $dom = $databox->get_dom_structure();
         $xpath = $databox->get_xpath_structure();

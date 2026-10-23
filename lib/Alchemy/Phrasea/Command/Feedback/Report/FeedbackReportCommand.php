@@ -122,8 +122,8 @@ GROUP BY be.id";
         $last_basket_id = null;
         $condensed = null;
         $vote_initiator = null;
-        $stmt_select = $appbox->get_connection()->query($sql_select);
-        while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
+        $stmt_select = $appbox->get_connection()->executeQuery($sql_select);
+        while ($row = $stmt_select->fetchAssociative()) {
             if($row['basket_id'] !== $last_basket_id) {
                 $this->outputCondensed($condensed);
                 $condensed = [
@@ -192,14 +192,13 @@ GROUP BY be.id";
                 }
             }
             if(!$this->config->isDryRun()) {
-                $stmt_update->execute([
+                $stmt_update->executeStatement([
                     ':expired' => $row['expired'],
                     ':id'      => $row['be_id']
                 ]);
             }
         }
         $this->outputCondensed($condensed);
-        $stmt_select->closeCursor();
 
         return 0;
     }

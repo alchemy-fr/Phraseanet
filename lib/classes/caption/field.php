@@ -89,10 +89,8 @@ class caption_field implements cache_cacheableInterface
             , ':meta_struct_id' => $this->databox_field->get_id()
         ];
 
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $ids = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connbas->executeQuery($sql, $params);
+        $ids = $stmt->fetchAllAssociative();
 
         $this->set_data_to_cache($ids);
 

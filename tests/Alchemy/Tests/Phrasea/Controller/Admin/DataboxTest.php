@@ -519,8 +519,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         // delete mounted collection
         $sql = "DELETE FROM bas ORDER BY base_id DESC LIMIT 1";
         $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         unset($stmt);
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . $collection->get_sbas_id() . '/?mount=ok');
@@ -672,7 +671,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $stmt = $base->get_connection()->prepare($sql);
         $i = 0;
         while ($i < 502) {
-            $stmt->execute([
+            $stmt->executeStatement([
                 ':coll_id'          => $collection->get_coll_id(),
                 ':parent_record_id' => 0,
                 ':type'             => 'unknown',
@@ -683,8 +682,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
             ]);
             $i++;
         }
-
-        $stmt->closeCursor();
 
         if ($collection->get_record_amount() < 500) {
             $this->markTestSkipped('No enough records added');

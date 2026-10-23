@@ -67,10 +67,8 @@ class CleanWorkerRunningJobCommand extends Command
             $output->writeln(sprintf("sql: \"<info>%s</info>\"", $sql_delete));
         }
 
-        $stmt = $this->container->getApplicationBox()->get_connection()->prepare($sql_count);
-        $stmt->execute();
+        $stmt = $this->container->getApplicationBox()->get_connection()->executeQuery($sql_count);
         $n = $stmt->fetchColumn(0);
-        $stmt->closeCursor();
 
         $output->writeln(sprintf("%d WorkerRunningJob will be deleted.", $n));
 

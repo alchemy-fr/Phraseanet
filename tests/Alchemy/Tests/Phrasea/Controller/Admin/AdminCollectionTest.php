@@ -555,7 +555,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $stmt = $databox->get_connection()->prepare($sql);
         $i = 0;
         while ($i < 502) {
-            $stmt->execute([
+            $stmt->executeStatement([
                 ':coll_id'          => $collection->get_coll_id(),
                 ':parent_record_id' => 0,
                 ':type'             => 'unknown',
@@ -566,8 +566,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
             ]);
             $i ++;
         }
-
-        $stmt->closeCursor();
 
         if ($collection->get_record_amount() < 500) {
             $this->markTestSkipped('No enough records added');

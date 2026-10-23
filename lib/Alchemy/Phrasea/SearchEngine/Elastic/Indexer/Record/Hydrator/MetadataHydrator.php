@@ -76,7 +76,7 @@ class MetadataHydrator implements HydratorInterface
         );
 
         $record_id = -1;
-        while ($metadata = $statement->fetch()) {
+        while ($metadata = $statement->fetchAssociative()) {
 
             if($metadata['record_id'] !== $record_id) {
                 // record has changed, don't mix with previous one

@@ -114,8 +114,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
             if ($sbit->parentNode->removeChild($sbit)) {
                 $sql = 'UPDATE record SET status = status&(~(1<<' . $bit . '))';
                 $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
+                $stmt->executeStatement();
             }
         }
 

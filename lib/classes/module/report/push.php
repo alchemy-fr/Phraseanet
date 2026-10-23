@@ -67,10 +67,8 @@ class module_report_push extends module_report
         $sql = $var['sql'];
         $params = $var['params'];
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $ret = [];
 

@@ -69,17 +69,12 @@ class CleanLogViewCommand extends Command
                 $foundDatabox = true;
                 if ($dry) {
                     $sqlCount = 'SELECT COUNT(`id`) FROM log_view WHERE ' . $clauseWhere;
-                    $stmt = $databox->get_connection()->prepare($sqlCount);
-                    $stmt->execute();
+                    $stmt = $databox->get_connection()->executeQuery($sqlCount);
                     $count = $stmt->fetchColumn(0);
 
                     $sql = 'SELECT id, `date`, record_id, coll_id FROM log_view WHERE ' . $clauseWhere . ' LIMIT 1000';
-
-                    $stmt->closeCursor();
-                    $stmt = $databox->get_connection()->prepare($sql);
-                    $stmt->execute();
-                    $displayedRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
+                    $stmt = $databox->get_connection()->executeQuery($sql);
+                    $displayedRows = $stmt->fetchAllAssociative();
 
                     $output->writeln(sprintf("\n \n dry-run , %d log view entry to delete for databox %s", $count, $databox->get_dbname()));
                     // displayed only the 1000 first row to avoid memory leak

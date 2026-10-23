@@ -25,7 +25,7 @@ class DataboxVersionRepository implements VersionRepository
      */
     public function getVersion()
     {
-        $result = $this->connection->fetchAssoc('SELECT value AS version FROM pref WHERE prop="version"');
+        $result = $this->connection->fetchAssociative('SELECT value AS version FROM pref WHERE prop="version"');
 
         if ($result !== false) {
             return $result['version'];

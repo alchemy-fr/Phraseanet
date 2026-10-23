@@ -72,7 +72,7 @@ class patch_390alpha17a extends patchAbstract
         if (false === $this->tableExists($em, 'api_applications')) {
             return true;
         }
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement(
             'INSERT INTO ApiApplications
             (
                 id,           `type`,     `name`,         description,    website,
@@ -99,7 +99,7 @@ class patch_390alpha17a extends patchAbstract
         if (false === $this->tableExists($em, 'api_accounts')) {
             return true;
         }
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement(
             'INSERT INTO ApiAccounts
             (
                 id,           user_id,  revoked,
@@ -122,7 +122,7 @@ class patch_390alpha17a extends patchAbstract
         if (false === $this->tableExists($em, 'api_accounts')) {
             return true;
         }
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement(
             'INSERT INTO ApiLogs
             (
                 id,         account_id,     route,    error_message,
@@ -146,7 +146,7 @@ class patch_390alpha17a extends patchAbstract
         if (false === $this->tableExists($em, 'api_oauth_codes')) {
             return true;
         }
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement(
             'INSERT INTO ApiOauthCodes
             (
                 code,       account_id,     redirect_uri,    expires,
@@ -168,7 +168,7 @@ class patch_390alpha17a extends patchAbstract
         if (false === $this->tableExists($em, 'api_oauth_refresh_tokens')) {
             return true;
         }
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement(
             'INSERT INTO ApiOauthRefreshTokens
             (
                 refresh_token,  account_id,     expires,
@@ -190,7 +190,7 @@ class patch_390alpha17a extends patchAbstract
         if (false === $this->tableExists($em, 'api_oauth_tokens')) {
             return true;
         }
-        $em->getConnection()->executeUpdate(
+        $em->getConnection()->executeStatement(
             'INSERT INTO ApiOauthTokens
             (
                 oauth_token,  account_id,     session_id, expires,
@@ -236,7 +236,7 @@ class patch_390alpha17a extends patchAbstract
      */
     private function updateLogsTable(EntityManager $em)
     {
-        $em->getConnection()->executeUpdate("
+        $em->getConnection()->executeStatement("
             UPDATE `ApiLogs`
             SET method = SUBSTRING_INDEX(SUBSTRING_INDEX(route, ' ', 1), ' ', -1),
                 route = SUBSTRING_INDEX(SUBSTRING_INDEX(route, ' ', 2), ' ', -1)

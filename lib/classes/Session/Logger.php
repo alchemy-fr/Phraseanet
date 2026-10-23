@@ -85,8 +85,7 @@ class Session_Logger
             ':comm' => $comment,
         ];
 
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -140,9 +139,8 @@ class Session_Logger
         ];
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
+        $stmt->executeStatement($params);
         $log_id = $conn->lastInsertId();
-        $stmt->closeCursor();
 
         unset($stmt, $conn);
 
@@ -163,10 +161,8 @@ class Session_Logger
             , ':ses_id' => $app['session']->get('session_id')
         ];
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql, $params);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             throw new Exception_Session_LoggerNotFound('Logger not found');
@@ -183,10 +179,8 @@ class Session_Logger
             ':log_id'   => $logId
         ];
 
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql, $params);
+        $row = $stmt->fetchAssociative();
 
         if (!$row) {
             throw new Exception_Session_LoggerNotFound('Logger not found');
@@ -242,10 +236,8 @@ class Session_Logger
                     $databox = $app->findDataboxById($sbas_id);
                     $connbas = $databox->get_connection();
                     $sql = 'SELECT appli FROM log WHERE id = :log_id';
-                    $stmt = $connbas->prepare($sql);
-                    $stmt->execute([':log_id' => $logger->get_id()]);
-                    $row3 = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
+                    $stmt = $connbas->executeQuery($sql, [':log_id' => $logger->get_id()]);
+                    $row3 = $stmt->fetchAssociative();
 
                     if (!$row3)
                         throw new Exception('no log');
@@ -263,8 +255,7 @@ class Session_Logger
                     ];
 
                     $stmt = $connbas->prepare($sql);
-                    $stmt->execute($params);
-                    $stmt->closeCursor();
+                    $stmt->executeStatement($params);
                 } catch (\Exception $e) {
 
                 }
@@ -287,10 +278,8 @@ class Session_Logger
             ':final'       => $subdefName
         ];
 
-        $stmt = $databox->get_connection()->prepare($sqlCount);
-        $stmt->execute($params);
+        $stmt = $databox->get_connection()->executeQuery($sqlCount, $params);
         $count = $stmt->fetchColumn(0);
-        $stmt->closeCursor();
 
         $comment = json_encode([
             'finished' => empty($finished) ? '' : $finished->format('Y-m-d H:i:s'),
@@ -311,8 +300,7 @@ class Session_Logger
                 ':final'       => $subdefName
             ];
 
-            $stmt->execute($p);
-            $stmt->closeCursor();
+            $stmt->executeStatement($p);
         } else {
             // insert to log_docs
             $this->log(

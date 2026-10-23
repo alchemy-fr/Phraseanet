@@ -178,9 +178,8 @@ class CleanUsersCommand extends Command
             $output->writeln(sprintf("sql: \"<info>%s</info>\"", $sql_list));
         }
 
-        $stmt = $cnx->prepare($sql_list);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $cnx->executeQuery($sql_list);
+        $rows = $stmt->fetchAllAssociative();
 
         if (!$yes && !$dry) {
             $helper = $this->getHelper('question');
@@ -256,8 +255,6 @@ class CleanUsersCommand extends Command
                 ];
             }
         }
-
-        $stmt->closeCursor();
 
         if ($dry) {
             $output->writeln(sprintf("dry-run , %d users included in the given inactivity_period", count($rows)));
