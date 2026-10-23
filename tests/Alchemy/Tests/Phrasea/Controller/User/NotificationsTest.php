@@ -52,7 +52,7 @@ class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testRequireAuthentication()
     {
-        self::$DI['app']['authentication']->setUser($this->createMock('Alchemy\Phrasea\Model\Entities\User'));
+        self::$DI['app']['authentication']->setUser($this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')->disableOriginalConstructor()->onlyMethods(['isGuest'])->getMock());
 
         self::$DI['app']->getAuthenticatedUser()->expects($this->once())
             ->method('isGuest')

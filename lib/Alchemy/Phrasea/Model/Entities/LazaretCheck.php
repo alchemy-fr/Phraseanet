@@ -12,7 +12,7 @@ namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'LazaretChecks')]

@@ -31,7 +31,7 @@ class ExtensionTest extends \PhraseanetTestCase
 
         foreach ($tests as $extension => $result) {
 
-            $spl = $this->createMock('\\Symfony\\Component\\HttpFoundation\\File\\File');
+            $spl = $this->getMockBuilder('\\Symfony\\Component\\HttpFoundation\\File\\File')->setConstructorArgs([__DIR__ . '/../../../../../files/test001.jpg'])->onlyMethods(['getExtension'])->getMock();
 
             $spl
                 ->method('getExtension')

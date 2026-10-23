@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class phrasea
 {

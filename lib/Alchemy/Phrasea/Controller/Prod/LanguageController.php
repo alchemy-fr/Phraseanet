@@ -10,7 +10,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LanguageController
 {

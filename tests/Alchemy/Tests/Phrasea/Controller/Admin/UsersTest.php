@@ -413,7 +413,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('prepare')
             ->will($this->returnValue($stmt));
 
-        $appbox = $this->createMock('\appbox');
+        $appbox = $this->getMockBuilder('\appbox')->disableOriginalConstructor()->onlyMethods(['get_connection'])->getMock();
 
         $appbox
             ->method('get_connection')

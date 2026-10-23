@@ -10,7 +10,7 @@ class TokenTest extends \PhraseanetTestCase
 {
     public function testGetIdAndProvider()
     {
-        $provider = $this->createStub('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $id = 'Id-' . mt_rand();
 
         $token = new Token($provider, $id);

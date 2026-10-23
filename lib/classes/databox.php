@@ -26,7 +26,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Result;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use Alchemy\Phrasea\Core\Event\Databox\DataboxEvents;
 use Alchemy\Phrasea\Core\Event\Databox\CreatedEvent;

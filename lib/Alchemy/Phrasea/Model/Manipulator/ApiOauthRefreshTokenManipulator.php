@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiOauthRefreshtoken;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
 

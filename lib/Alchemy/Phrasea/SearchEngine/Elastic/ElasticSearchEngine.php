@@ -33,7 +33,7 @@ use Closure;
 use databox_field;
 use Doctrine\Common\Collections\ArrayCollection;
 use Elasticsearch\Client;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -769,7 +769,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
                 default:
-                    continue;
+                    break;
             }
         }
 

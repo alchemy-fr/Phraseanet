@@ -13,7 +13,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Admin\ConnectedUsersController;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ConnectedUsersControllerTest extends \PHPUnit\Framework\TestCase
 {

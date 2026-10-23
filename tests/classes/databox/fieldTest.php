@@ -414,7 +414,7 @@ class databox_fieldTest extends \PhraseanetTestCase
             $this->assertIsBool($data['multi']);
             $this->assertIsBool($data['indexable']);
             if (!is_null($data['dces-element'])) {
-                $this->assertInternalType('', $data['dces-element']);
+                $this->assertIsString($data['dces-element']);
             }
             if (!is_null($data['vocabulary-type'])) {
                 $this->assertIsString($data['vocabulary-type']);

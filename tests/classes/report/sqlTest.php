@@ -17,7 +17,7 @@ class report_sqlTest extends \report_abstractReportTestCase
 
     public function testSql()
     {
-        $sqlFilter = $this->createMock('module_report_sqlfilter');
+        $sqlFilter = $this->getMockBuilder('module_report_sqlfilter')->disableOriginalConstructor()->onlyMethods(['getCorFilter'])->getMock();
         $sqlFilter->method('getCorFilter')->will($this->onConsecutiveCalls([], ['hello' => 'world']));
         $this->sql->setFilter($sqlFilter);
         $this->assertEquals('hello', $this->sql->getTransQuery('hello'));

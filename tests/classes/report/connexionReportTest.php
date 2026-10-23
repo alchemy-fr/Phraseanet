@@ -35,7 +35,7 @@ class report_connexionReportTest extends \report_abstractReportTestCase
     {
         $ret = $this->report->colFilter('user');
 
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $ret);
+        $this->assertIsArray($ret);
         foreach ($ret as $result) {
             $this->assertArrayHasKey('val', $result);
             $this->assertArrayHasKey('value', $result);

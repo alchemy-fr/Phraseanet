@@ -21,7 +21,7 @@ class FactoryTest extends \PhraseanetTestCase
 
         $metadata = new Metadata($tag, $value);
 
-        $attribute = Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_METADATA, serialize($metadata));
+        $attribute = Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_METADATA, (new \Alchemy\Phrasea\Border\Attribute\Metadata($metadata))->asString());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Metadata', $attribute);
     }
@@ -74,7 +74,6 @@ class FactoryTest extends \PhraseanetTestCase
     public function testGetFileAttributeStoryFails()
     {
         $this->expectException(\InvalidArgumentException::class);
-        \PHPUnit\Framework\Error\Warning::$enabled = false;
 
         Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_STORY, self::$DI['collection']->get_databox()->get_sbas_id() . '_0');
     }

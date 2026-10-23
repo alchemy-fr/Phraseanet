@@ -60,7 +60,8 @@ abstract class BaseVoter implements VoterInterface
             return self::ACCESS_ABSTAIN;
         }
 
-        $user = (ctype_digit($token->getUser())) ? $this->userRepository->find((int) $token->getUser()) : null;
+        $userId = $token->getUserIdentifier();
+        $user = ctype_digit($userId) ? $this->userRepository->find((int) $userId) : null;
 
         foreach ($attributes as $attribute) {
             $attribute = strtolower($attribute);

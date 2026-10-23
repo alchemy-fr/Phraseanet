@@ -12,21 +12,21 @@ class OldPasswordEncoderTest extends \PhraseanetTestCase
     public function testEncodePassword($pass, $salt, $encoded)
     {
         $encoder = new OldPasswordEncoder();
-        $this->assertEquals($encoded, $encoder->encodePassword($pass, $salt));
+        $this->assertEquals($encoded, $encoder->hash($pass, $salt));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testIsPasswordValid($pass, $salt, $encoded)
     {
         $encoder = new OldPasswordEncoder();
-        $this->assertTrue($encoder->isPasswordValid($encoded, $pass, $salt));
+        $this->assertTrue($encoder->verify($encoded, $pass, $salt));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValid($pass, $salt, $encoded)
     {
         $encoder = new OldPasswordEncoder();
-        $this->assertFalse($encoder->isPasswordValid(mt_rand(), $pass, $salt));
+        $this->assertFalse($encoder->verify(mt_rand(), $pass, $salt));
     }
 
     public static function providePasswords()

@@ -135,7 +135,7 @@ class module_report_nav extends module_report
             $i ++;
         }
 
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
@@ -191,7 +191,7 @@ class module_report_nav extends module_report
             $this->report['value'][] = $row['nb'];
             $this->report['legend'][] = $row['os'];
         }
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
@@ -250,7 +250,7 @@ class module_report_nav extends module_report
             $this->report['legend'][] = $row['res'];
         }
 
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
@@ -308,7 +308,7 @@ class module_report_nav extends module_report
             $this->report['value'][] = $row['nb'];
             $this->report['legend'][] = $row['combo'];
         }
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
@@ -385,7 +385,7 @@ class module_report_nav extends module_report
             $this->report['value'][] = $nb;
             $this->report['legend'][] = $appli;
         }
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
@@ -543,7 +543,7 @@ class module_report_nav extends module_report
         $this->setDisplay($tab);
 
         $this->result = $rs;
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();

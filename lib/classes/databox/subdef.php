@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Media\Subdef\Unknown;
 use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 use MediaAlchemyst\Specification\SpecificationInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class databox_subdef
 {

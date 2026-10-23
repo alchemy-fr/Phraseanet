@@ -41,7 +41,6 @@ class PluginsExplorer implements \IteratorAggregate, \Countable
         return $finder
             ->ignoreDotFiles(true)
             ->ignoreVCS(true)
-            ->useBestAdapter()
             ->directories()
             ->in($this->pluginsDirectory)
             ->depth(0);

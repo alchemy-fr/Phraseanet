@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 
 class module_report_dashboard_feed implements module_report_dashboard_componentInterface
 {

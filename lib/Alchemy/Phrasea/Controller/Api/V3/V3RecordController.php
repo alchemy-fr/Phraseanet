@@ -19,7 +19,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use collection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use GuzzleHttp\Client as Guzzle;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;

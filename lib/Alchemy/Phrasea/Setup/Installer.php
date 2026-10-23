@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\TaskManager\Job\JobInterface;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\Tools\SchemaTool;
 
 class Installer

@@ -19,7 +19,7 @@ use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ConnectedUsersController extends Controller
 {

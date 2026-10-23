@@ -28,7 +28,7 @@ class Bridge_Api_AbstractCollectionTest extends \PhraseanetTestCase
     public function testSet_total_items()
     {
         $return = $this->stub->set_total_items("3");
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->stub->get_total_items());
+        $this->assertIsInt($this->stub->get_total_items());
         $this->assertEquals(3, $this->stub->get_total_items());
         $this->assertEquals($return, $this->stub);
     }
@@ -43,7 +43,7 @@ class Bridge_Api_AbstractCollectionTest extends \PhraseanetTestCase
     public function testSet_items_per_page()
     {
         $return = $this->stub->set_items_per_page("3");
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->stub->get_items_per_page());
+        $this->assertIsInt($this->stub->get_items_per_page());
         $this->assertEquals(3, $this->stub->get_items_per_page());
         $this->assertEquals($return, $this->stub);
     }
@@ -58,7 +58,7 @@ class Bridge_Api_AbstractCollectionTest extends \PhraseanetTestCase
     public function testSet_current_page()
     {
         $return = $this->stub->set_current_page("3");
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->stub->get_current_page());
+        $this->assertIsInt($this->stub->get_current_page());
         $this->assertEquals(3, $this->stub->get_current_page());
         $this->assertEquals($return, $this->stub);
         $return = $this->stub->set_current_page(-4);
@@ -75,7 +75,7 @@ class Bridge_Api_AbstractCollectionTest extends \PhraseanetTestCase
     public function testSet_total_page()
     {
         $return = $this->stub->set_total_page("3");
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->stub->get_total_page());
+        $this->assertIsInt($this->stub->get_total_page());
         $this->assertEquals(3, $this->stub->get_total_page());
         $this->assertEquals($return, $this->stub);
         $return = $this->stub->set_total_page(-4);
@@ -117,7 +117,7 @@ class Bridge_Api_AbstractCollectionTest extends \PhraseanetTestCase
 
     public function testGet_elements()
     {
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $this->stub->get_elements());
+        $this->assertIsArray($this->stub->get_elements());
         $this->assertEquals([], $this->stub->get_elements());
     }
 }

@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\Model\Entities\Task;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]

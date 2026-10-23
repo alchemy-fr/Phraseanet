@@ -16,8 +16,8 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\TaskManager\NullNotifier;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Translation\TranslatorInterface;
+use Doctrine\Persistence\ObjectManager;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskManipulator implements ManipulatorInterface
 {

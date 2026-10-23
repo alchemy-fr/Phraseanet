@@ -38,7 +38,7 @@ class report_questionReportTest extends \report_abstractReportTestCase
 
     public function moreFilter($ret)
     {
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $ret);
+        $this->assertIsArray($ret);
         foreach ($ret as $result) {
             $this->assertArrayHasKey('val', $result);
             $this->assertArrayHasKey('value', $result);

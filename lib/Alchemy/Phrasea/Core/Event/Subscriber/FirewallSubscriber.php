@@ -43,6 +43,7 @@ class FirewallSubscriber implements EventSubscriberInterface
             $headers = $e->getHeaders();
 
             if (isset($headers['X-Phraseanet-Redirect'])) {
+                $event->allowCustomResponseCode();
                 $event->setResponse(new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, ['X-Status-Code' => 302]));
             }
         }

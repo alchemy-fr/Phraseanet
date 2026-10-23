@@ -26,7 +26,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryCreate()
     {
-        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
+        self::$DI['app']['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
 
         self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
             ->method('deliver')
@@ -71,7 +71,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 3);
 
-        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
+        self::$DI['app']['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
 
         self::$DI['app']['notification.deliverer']->expects($this->never())
             ->method('deliver');
@@ -366,7 +366,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testSuscribeAggregate()
     {
-        self::$DI['app']['feed.aggregate-link-generator'] = $this->createStub('Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator');
+        self::$DI['app']['feed.aggregate-link-generator'] = $this->createMock('Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator');
         $link = $this->createMock('Alchemy\Phrasea\Feed\Link\FeedLink');
         $link->expects($this->once())
             ->method('getURI')
@@ -396,7 +396,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
-        self::$DI['app']['feed.user-link-generator'] = $this->createStub('Alchemy\Phrasea\Feed\Link\FeedLinkGenerator');
+        self::$DI['app']['feed.user-link-generator'] = $this->createMock('Alchemy\Phrasea\Feed\Link\FeedLinkGenerator');
         $link = $this->createMock('Alchemy\Phrasea\Feed\Link\FeedLink');
         $link->expects($this->once())
             ->method('getURI')

@@ -84,14 +84,14 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $conf['extra-key'] = 'extra-value';
         $this->assertEquals('extra-value', $conf['extra-key']);
 
-        $updated = $yaml->parse($config);
+        $updated = $yaml->parse(file_get_contents($config));
         $this->assertEquals('extra-value', $updated['extra-key']);
 
         $this->assertTrue(isset($conf['extra-key']));
         unset($conf['extra-key']);
         $this->assertFalse(isset($conf['extra-key']));
 
-        $updated = $yaml->parse($config);
+        $updated = $yaml->parse(file_get_contents($config));
         $this->assertFalse(isset($updated['extra-key']));
     }
 
@@ -129,12 +129,12 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         unset($config['main']);
         $conf->setConfig($config);
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertFalse(isset($updated['main']));
 
         $conf->setDefault('main');
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertTrue(isset($updated['main']));
     }
 
@@ -149,12 +149,12 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         unset($config['main']['cache']);
         $conf->setConfig($config);
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertFalse(isset($updated['main']['cache']));
 
         $conf->setDefault('main', 'cache');
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertTrue(isset($updated['main']['cache']));
     }
 
@@ -197,7 +197,7 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
 
         $yaml = new Yaml();
         $compiler = new Compiler();
-        file_put_contents($this->compiled, $compiler->compile($yaml->parse($configFile)));
+        file_put_contents($this->compiled, $compiler->compile($yaml->parse(file_get_contents($configFile))));
 
         $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
         $compiler->expects($this->never())
@@ -225,7 +225,7 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
 
         $yaml = new Yaml();
         $compiler = new Compiler();
-        file_put_contents($this->compiled, $compiler->compile($yaml->parse($configFile)));
+        file_put_contents($this->compiled, $compiler->compile($yaml->parse(file_get_contents($configFile))));
 
         // compilation is older than config
         touch($this->compiled, time()-2);

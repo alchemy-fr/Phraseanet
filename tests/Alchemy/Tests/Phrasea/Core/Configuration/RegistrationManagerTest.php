@@ -42,7 +42,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('userDataProvider')]
     public function testGetRegistrationSummaryWithUserData($data, $type, $value)
     {
-        $repoMock = $this->createMock('Alchemy\Phrasea\Model\Repositories\RegistrationRepository');
+        $repoMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\RegistrationRepository')->disableOriginalConstructor()->onlyMethods(['getRegistrationsSummaryForUser'])->getMock();
         $repoMock->expects($this->once())->method('getRegistrationsSummaryForUser')->will($this->returnValue($data));
 
         $service = new RegistrationManager(self::$DI['app']['phraseanet.appbox'], $repoMock, self::$DI['app']['locale']);

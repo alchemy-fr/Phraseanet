@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 

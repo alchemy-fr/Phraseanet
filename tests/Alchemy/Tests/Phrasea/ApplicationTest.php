@@ -203,7 +203,7 @@ class ApplicationTest extends \PhraseanetTestCase
     public function testAddCaptcha()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']
             ->method('get')
             ->with(['registry', 'webservices', 'captcha-provider'])
@@ -239,7 +239,7 @@ class ApplicationTest extends \PhraseanetTestCase
     public function testUrlGeneratorContext()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']->expects($this->once())
             ->method('get')
             ->with('servername')

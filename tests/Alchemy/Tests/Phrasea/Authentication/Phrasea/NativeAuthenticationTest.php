@@ -84,10 +84,10 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $entityRepo = $this->getEntityRepositoryMock($user);
 
         $oldEncoder->expects($this->never())
-            ->method('isPasswordValid');
+            ->method('verify');
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(true));
 
@@ -120,10 +120,10 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $entityRepo = $this->getEntityRepositoryMock($user);
 
         $oldEncoder->expects($this->never())
-            ->method('isPasswordValid');
+            ->method('verify');
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
@@ -156,12 +156,12 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $entityRepo = $this->getEntityRepositoryMock($user);
 
         $oldEncoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
@@ -196,12 +196,12 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $manipulator->expects($this->once())->method('setPassword')->with($this->equalTo($user), $this->equalTo($password));
 
         $oldEncoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(true));
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->will($this->returnCallback(function ($encoded, $pass, $nonce) use (&$catchTestPassword) {
                 $catchTestPassword = [
                     'encoded' => $encoded,

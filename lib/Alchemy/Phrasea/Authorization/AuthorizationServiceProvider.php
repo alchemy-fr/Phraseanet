@@ -13,8 +13,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Model\Entities\User;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 
 class AuthorizationServiceProvider implements ServiceProviderInterface
@@ -25,10 +24,10 @@ class AuthorizationServiceProvider implements ServiceProviderInterface
             $user = $app['authentication']->getUser();
 
             if ($user instanceof User) {
-                return new PreAuthenticatedToken((string)$user->getId(), null, 'fake', ['ROLE_USER']);
+                return new UserIdToken($user->getId(), ['ROLE_USER']);
             }
 
-            return new AnonymousToken('fake', 'anon.', []);
+            return new NullToken();
         };
 
         $app['phraseanet.access_manager'] = function (PhraseaApplication $app) {

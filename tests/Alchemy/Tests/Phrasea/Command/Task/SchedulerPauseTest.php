@@ -10,7 +10,7 @@ class SchedulerPauseTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {
-        self::$DI['cli']['task-manager.status'] = $this->createStub('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
+        self::$DI['cli']['task-manager.status'] = $this->createMock('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
         self::$DI['cli']['task-manager.status']->expects($this->once())
             ->method('stop');
 

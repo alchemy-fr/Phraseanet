@@ -27,13 +27,13 @@ class Bridge_Api_Flickr_ContainerTest extends \PhraseanetTestCase
     public function testGet_id()
     {
         $this->assertEquals("72157626216528324", $this->object->get_id());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_id());
+        $this->assertIsString($this->object->get_id());
     }
 
     public function testGet_thumbnail()
     {
         $this->assertEquals("my_humbnail", $this->object->get_thumbnail());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_thumbnail());
+        $this->assertIsString($this->object->get_thumbnail());
     }
 
     public function testGet_url()
@@ -41,19 +41,19 @@ class Bridge_Api_Flickr_ContainerTest extends \PhraseanetTestCase
         $this->assertMatchesRegularExpression("/https:\/\/secure.flickr.com\/photos/", $this->object->get_url());
         $this->assertMatchesRegularExpression("/userid123/", $this->object->get_url());
         $this->assertMatchesRegularExpression("/72157626216528324/", $this->object->get_url());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_thumbnail());
+        $this->assertIsString($this->object->get_thumbnail());
     }
 
     public function testGet_title()
     {
         $this->assertEquals("My Grandma's Recipe File.", $this->object->get_description());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_description());
+        $this->assertIsString($this->object->get_description());
     }
 
     public function testGet_description()
     {
         $this->assertEquals("Avis Blanche", $this->object->get_title());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_title());
+        $this->assertIsString($this->object->get_title());
     }
 
     public function testGet_updated_on()
@@ -71,6 +71,6 @@ class Bridge_Api_Flickr_ContainerTest extends \PhraseanetTestCase
     public function testGet_type()
     {
         $this->assertEquals("photoset", $this->object->get_type());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_type());
+        $this->assertIsString($this->object->get_type());
     }
 }

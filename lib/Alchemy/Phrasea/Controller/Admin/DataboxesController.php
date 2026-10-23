@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxConnectionSettings;
 use Alchemy\Phrasea\Databox\DataboxService;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

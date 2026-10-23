@@ -5,7 +5,7 @@ use Alchemy\Phrasea\Media\Subdef;
 use Alchemy\Phrasea\Media\Subdef\Specification\FlexPaperSpecification;
 use Alchemy\Phrasea\Media\Type;
 use MediaAlchemyst\Specification;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class databox_subdefTest extends \PHPUnit\Framework\TestCase
 {

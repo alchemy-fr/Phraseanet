@@ -41,7 +41,7 @@ class ManagerTest extends \PhraseanetTestCase
     public function testFactoryCreateOne()
     {
         $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
-        $logger = $this->createStub('Monolog\Logger');
+        $logger = $this->createMock('Monolog\Logger');
         $factory = $this->createMock('Alchemy\Phrasea\Cache\Factory');
 
         $compiler->expects($this->once())
@@ -71,7 +71,7 @@ class ManagerTest extends \PhraseanetTestCase
         file_put_contents($this->file, $this->compiler->compile(["custom-type" => "array"]));
 
         $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
-        $logger = $this->createStub('Monolog\Logger');
+        $logger = $this->createMock('Monolog\Logger');
         $factory = $this->createMock('Alchemy\Phrasea\Cache\Factory');
 
         $compiler->expects($this->never())
@@ -100,7 +100,7 @@ class ManagerTest extends \PhraseanetTestCase
         ]));
 
         $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
-        $logger = $this->createStub('Monolog\Logger');
+        $logger = $this->createMock('Monolog\Logger');
         $factory = $this->createMock('Alchemy\Phrasea\Cache\Factory');
 
         $compiler->expects($this->never())
@@ -149,17 +149,20 @@ class ManagerTest extends \PhraseanetTestCase
         $name = 'unknown';
         $values = ['option', 'value'];
 
-        $factory->expects($this->at(0))
+        $calls = [];
+        $factory->expects($this->exactly(2))
             ->method('create')
-            ->with($name, $values)
-            ->will($this->throwException(new RuntimeException('Unknown cache type')));
+            ->willReturnCallback(function ($type, $options) use (&$calls, $cache) {
+                $calls[] = [$type, $options];
+                if (1 === count($calls)) {
+                    throw new RuntimeException('Unknown cache type');
+                }
 
-        $factory->expects($this->at(1))
-            ->method('create')
-            ->with('array', [])
-            ->will($this->returnValue($cache));
+                return $cache;
+            });
 
         $manager = new Manager($compiler, $this->file, $logger, $factory);
         $this->assertSame($cache, $manager->factory('custom-type', $name, $values));
+        $this->assertSame([[$name, $values], ['array', []]], $calls);
     }
 }

@@ -11,7 +11,7 @@
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class Bridge_Api_Abstract
 {

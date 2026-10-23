@@ -121,7 +121,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
         $nonce = self::$DI['app']['random.low']->generateString(16);
         $string = $browser->getBrowser() . '_' . $browser->getPlatform();
 
-        $token = self::$DI['app']['auth.password-encoder']->encodePassword($string, $nonce);
+        $token = self::$DI['app']['auth.password-encoder']->hash($string, $nonce);
 
         $app['browser'] = $browser;
 

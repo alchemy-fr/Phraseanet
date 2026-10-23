@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\TaskManager\Job\AbstractJob;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmptyCollectionJobTest extends \PHPUnit\Framework\TestCase
 {

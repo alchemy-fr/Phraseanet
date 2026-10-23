@@ -12,16 +12,13 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Helper\JsonBodyHelper;
-use JsonSchema\RefResolver;
-use JsonSchema\Uri\UriResolver;
+use JsonSchema\Constraints\Factory;
+use JsonSchema\SchemaStorage;
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Webmozart\Json\JsonDecoder;
-use Webmozart\Json\JsonEncoder;
-use Webmozart\Json\JsonValidator;
 
 class JsonSchemaServiceProvider implements ServiceProviderInterface
 {
@@ -32,30 +29,22 @@ class JsonSchemaServiceProvider implements ServiceProviderInterface
             return new UriRetriever();
         };
 
-        $app['json-schema.ref_resolver'] = function (Application $app) {
-            return new RefResolver($app['json-schema.retriever'], new UriResolver());
+        $app['json-schema.storage'] = function (Application $app) {
+            return new SchemaStorage($app['json-schema.retriever']);
         };
 
-        $app['json-schema.validator'] = function (Application $app) {
-            return new Validator(Validator::CHECK_MODE_NORMAL, $app['json-schema.retriever']);
+        $app['json-schema.constraint_factory'] = function (Application $app) {
+            return new Factory($app['json-schema.storage'], $app['json-schema.retriever']);
         };
 
-        $app['json.validator'] = function (Application $app) {
-            return new JsonValidator($app['json-schema.validator']);
-        };
-        $app['json.decoder'] = function (Application $app) {
-            return new JsonDecoder($app['json.validator']);
-        };
-        $app['json.encoder'] = function (Application $app) {
-            return new JsonEncoder($app['json.validator']);
-        };
+        $app['json-schema.validator'] = $app->factory(function (Application $app) {
+            return new Validator($app['json-schema.constraint_factory']);
+        });
 
         $app['json.body_helper'] = function (Application $app) {
             return new JsonBodyHelper(
-                $app['json.validator'],
-                $app['json.decoder'],
-                $app['json-schema.retriever'],
-                $app['json-schema.ref_resolver'],
+                $app['json-schema.storage'],
+                $app['json-schema.constraint_factory'],
                 $app['json-schema.base_uri']
             );
         };

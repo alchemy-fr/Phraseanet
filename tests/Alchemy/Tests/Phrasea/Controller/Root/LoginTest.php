@@ -1145,7 +1145,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        $repoUsrAuthProvider = $this->createMock('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository');
+        $repoUsrAuthProvider = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')->onlyMethods(['findWithProviderAndId'])->getMock();
 
         $repoUsrAuthProvider
             ->method('findWithProviderAndId')
@@ -1966,7 +1966,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
     {
-        $repo = $this->createMock('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository');
+        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')->disableOriginalConstructor()->onlyMethods(['findWithProviderAndId'])->getMock();
 
         $repo
             ->method('findWithProviderAndId')

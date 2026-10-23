@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 
 class patch_360alpha1b extends patchAbstract
 {

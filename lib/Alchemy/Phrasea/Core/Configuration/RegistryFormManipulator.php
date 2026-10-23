@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Form\Configuration\MainConfigurationFormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistryFormManipulator
 {

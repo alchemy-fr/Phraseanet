@@ -88,6 +88,7 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
             $response->headers->set($key, $value);
         }
 
+        $event->allowCustomResponseCode();
         $event->setResponse($response);
     }
 }

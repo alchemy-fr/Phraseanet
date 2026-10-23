@@ -12,7 +12,7 @@ class PasswordTokenTest extends \PhraseanetTestCase
 {
     public function testInvalidTokenIsNotValid()
     {
-        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
+        $repo = $this->createMock('Alchemy\Phrasea\Model\Repositories\TokenRepository');
 
         $tokenValue = self::$DI['app']['random.low']->generateString(8);
 
@@ -28,7 +28,7 @@ class PasswordTokenTest extends \PhraseanetTestCase
 
     public function testValidTokenIsValid()
     {
-        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
+        $repo = $this->createMock('Alchemy\Phrasea\Model\Repositories\TokenRepository');
 
         $tokenValue = self::$DI['app']['random.low']->generateString(8);
         $token = new Token();

@@ -158,7 +158,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
             return array_map([$this, 'getCacheKey'], array_fill(0, $namesCount, $recordId), $names);
         }, array_unique($recordIds));
 
-        return $keys ? call_user_func_array('array_merge', $keys) : [];
+        return $keys ? array_merge(...array_values($keys)) : [];
     }
 
     /**
@@ -207,7 +207,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
         $keys = $this->generateAllCacheKeys($recordIds);
         $data = $this->cache->fetchMultiple($keys);
 
-        return count($keys) === count($data) ? call_user_func_array('array_merge', $data) : [];
+        return count($keys) === count($data) ? array_merge(...array_values($data)) : [];
     }
 
     /**

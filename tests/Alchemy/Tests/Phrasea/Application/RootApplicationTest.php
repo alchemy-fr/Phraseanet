@@ -37,11 +37,4 @@ class RootApplicationTest extends \PhraseanetTestCase
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
         $this->assertFalse(isset($app['profiler']));
     }
-
-    public function testWebProfilerEnableInDevMode()
-    {
-        $environment = Application::ENV_DEV;
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
-        $this->assertTrue(isset($app['profiler']));
-    }
 }

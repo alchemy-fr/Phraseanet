@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use DateTime;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\NonUniqueResultException;
 use RandomLib\Generator;
 use RuntimeException;

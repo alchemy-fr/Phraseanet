@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Checks if a file with the same Sha256 checksum already exists in the

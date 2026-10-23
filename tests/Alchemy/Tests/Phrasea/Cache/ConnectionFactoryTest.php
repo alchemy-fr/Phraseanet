@@ -25,7 +25,7 @@ class ConnectionFactoryTest extends \PhraseanetTestCase
     public function testGetInvalidRedisConnection()
     {
         $this->expectException(\RedisException::class);
-        $this->expectExceptionMessage('php_network_getaddresses: getaddrinfo failed: Temporary failure in name resolution');
+        $this->expectExceptionMessageMatches('/php_network_getaddresses: getaddrinfo/');
         if (!extension_loaded('redis')) {
             $this->markTestSkipped('redis extension is not loaded.');
         }

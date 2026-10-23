@@ -11,7 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Assert\Assertion;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 
 class patch_360alpha2b extends patchAbstract
 {

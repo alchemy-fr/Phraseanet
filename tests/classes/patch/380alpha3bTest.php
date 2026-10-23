@@ -12,7 +12,7 @@ class patch_380alpha3bTest extends \PhraseanetTestCase
 
         $app = $this->getApplication();
 
-        $app['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']->expects($this->once())
             ->method('set')
             ->with(['main', 'search-engine'], [

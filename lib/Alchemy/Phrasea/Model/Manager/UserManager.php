@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\ApiLog;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Connection;
 

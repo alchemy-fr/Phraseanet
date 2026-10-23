@@ -60,7 +60,6 @@ class MetadataTest extends \PhraseanetTestCase
     public function testLoadFromStringFail()
     {
         $this->expectException(\InvalidArgumentException::class);
-        \PHPUnit\Framework\Error\Notice::$enabled = false;
 
         Metadata::loadFromString(self::$DI['app'], 'Hello String');
     }

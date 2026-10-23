@@ -171,6 +171,9 @@
       },
       "react/promise": {
         "PHP 8.5 deprecations": "patches/react-promise.patch"
+      },
+      "vierbergenlars/php-semver": {
+        "Complete versions with missing minor or patch numbers": "patches/php-semver.patch"
       }
     }
   }

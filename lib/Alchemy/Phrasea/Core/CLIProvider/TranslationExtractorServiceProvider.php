@@ -23,6 +23,7 @@ use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Translation\ExtractorManager;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use JMS\TranslationBundle\Translation\FileWriter;
 use JMS\TranslationBundle\Translation\Loader\SymfonyLoaderAdapter;
 use JMS\TranslationBundle\Translation\Loader\XliffLoader;
@@ -47,13 +48,16 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
 
             return $parser;
         };
+        $app['translation-extractor.file-source-factory'] = function (Application $app) {
+            return new FileSourceFactory($app['root.path']);
+        };
         $app['translation-extractor.node-visitors'] = function (Application $app) {
             return [
                 new ConstraintExtractor($app),
-                new ValidationExtractor($app['validator']->getMetadataFactory()),
-                new DefaultPhpFileExtractor($app['translation-extractor.doc-parser']),
-                new TwigFileExtractor($app['twig']),
-                new FormExtractor($app['translation-extractor.doc-parser']),
+                new ValidationExtractor($app['validator.mapping.class_metadata_factory']),
+                new DefaultPhpFileExtractor($app['translation-extractor.doc-parser'], $app['translation-extractor.file-source-factory']),
+                new TwigFileExtractor($app['twig'], $app['translation-extractor.file-source-factory']),
+                new FormExtractor($app['translation-extractor.doc-parser'], $app['translation-extractor.file-source-factory']),
                 new HelpMessageExtractor($app['translation-extractor.doc-parser']),
             ];
         };

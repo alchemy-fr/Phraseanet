@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 
 class Pdf extends Provider

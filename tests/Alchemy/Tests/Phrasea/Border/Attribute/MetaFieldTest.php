@@ -30,14 +30,10 @@ class MetaFieldTest extends \PhraseanetTestCase
         }
         $this->object = new MetaField($this->databox_field, $this->value);
 
-        $this->before = \PHPUnit\Framework\Error\Warning::$enabled;
-        $this->beforeNotice = \PHPUnit\Framework\Error\Notice::$enabled;
     }
 
     public function tearDown(): void
     {
-        \PHPUnit\Framework\Error\Warning::$enabled = $this->before;
-        \PHPUnit\Framework\Error\Notice::$enabled = $this->beforeNotice;
         $this->object = null;
         parent::tearDown();
     }
@@ -82,8 +78,6 @@ class MetaFieldTest extends \PhraseanetTestCase
     public function testLoadFromStringFailSerialize()
     {
         $this->expectException(\InvalidArgumentException::class);
-        \PHPUnit\Framework\Error\Warning::$enabled = false;
-        \PHPUnit\Framework\Error\Notice::$enabled = false;
         MetaField::loadFromString(self::$DI['app'], serialize(['Elephant', 'sbas_id' => self::$DI['collection']->get_sbas_id(), 'id' => 0]));
     }
 }

@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 use Alchemy\Phrasea\Model\Entities\User;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
@@ -72,7 +72,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
             ->with($this->equalTo(4))
             ->will($this->returnValue($geoname));
 
-        $passwordInterface = $this->createStub('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface');
+        $passwordInterface = $this->createStub('Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface');
 
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks'], self::$DI['app']['random.low'], self::$DI['app']['dispatcher']);
@@ -132,7 +132,7 @@ class UserManipulatorTest extends \PhraseanetTestCase
             ->with($this->equalTo(-1))
             ->will($this->returnValue($geoname));
 
-        $passwordInterface = $this->createStub('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface');
+        $passwordInterface = $this->createStub('Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface');
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks'], self::$DI['app']['random.low'], self::$DI['app']['dispatcher']);
         $this->expectException(

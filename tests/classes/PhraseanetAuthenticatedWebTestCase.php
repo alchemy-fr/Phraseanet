@@ -6,7 +6,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Prophecy\Argument;
 use Symfony\Component\DomCrawler\Crawler;
 

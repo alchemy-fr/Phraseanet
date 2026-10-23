@@ -10,7 +10,7 @@ class SchedulerRunTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {
-        self::$DI['cli']['task-manager'] = $this->createStub('Alchemy\TaskManager\TaskManager');
+        self::$DI['cli']['task-manager'] = $this->createMock('Alchemy\TaskManager\TaskManager');
         self::$DI['cli']['task-manager']->expects($this->once())
             ->method('addSubscriber')
             ->with($this->isInstanceOf('Alchemy\TaskManager\Event\TaskManagerSubscriber\LockFileSubscriber'));

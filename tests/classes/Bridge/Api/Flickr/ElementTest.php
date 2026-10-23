@@ -59,9 +59,9 @@ class Bridge_Api_Flickr_ElementTest extends \PhraseanetTestCase
     public function testGet_id()
     {
         $this->assertEquals("5930279108", $this->object_alone->get_id());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_alone->get_id());
+        $this->assertIsString($this->object_alone->get_id());
         $this->assertEquals("6263188755", $this->object_list->get_id());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_list->get_id());
+        $this->assertIsString($this->object_list->get_id());
     }
 
     public function testGet_url()
@@ -71,8 +71,8 @@ class Bridge_Api_Flickr_ElementTest extends \PhraseanetTestCase
         $this->assertMatchesRegularExpression("/60578095@N05/", $this->object_list->get_url());
         $this->assertMatchesRegularExpression("/http:\/\/www.flickr.com\//", $this->object_list->get_url());
         $this->assertEquals("http://www.flickr.com/photos/bees/2733/", $this->object_alone->get_url());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_alone->get_url());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_list->get_url());
+        $this->assertIsString($this->object_alone->get_url());
+        $this->assertIsString($this->object_list->get_url());
     }
 
     public function testGet_thumbnail()
@@ -82,24 +82,24 @@ class Bridge_Api_Flickr_ElementTest extends \PhraseanetTestCase
         $this->assertMatchesRegularExpression("/6135/", $this->object_alone->get_thumbnail());
         $this->assertMatchesRegularExpression("/c06196fbd8/", $this->object_alone->get_thumbnail());
         $this->assertMatchesRegularExpression("/5930279108/", $this->object_alone->get_thumbnail());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_alone->get_thumbnail());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_list->get_thumbnail());
+        $this->assertIsString($this->object_alone->get_thumbnail());
+        $this->assertIsString($this->object_list->get_thumbnail());
     }
 
     public function testGet_title()
     {
         $this->assertEquals("un titre", $this->object_list->get_title());
         $this->assertEquals("Australia.gif", $this->object_alone->get_title());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_alone->get_title());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_list->get_title());
+        $this->assertIsString($this->object_alone->get_title());
+        $this->assertIsString($this->object_list->get_title());
     }
 
     public function testGet_description()
     {
         $this->assertEquals("une description", $this->object_list->get_description());
         $this->assertEquals("drapeau de l'australie", $this->object_alone->get_description());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_alone->get_description());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_list->get_description());
+        $this->assertIsString($this->object_alone->get_description());
+        $this->assertIsString($this->object_list->get_description());
     }
 
     public function testGet_updated_on()
@@ -126,8 +126,8 @@ class Bridge_Api_Flickr_ElementTest extends \PhraseanetTestCase
     {
         $this->assertEquals(1, $this->object_list->get_view_count());
         $this->assertEquals(1, $this->object_alone->get_view_count());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->object_alone->get_view_count());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->object_list->get_view_count());
+        $this->assertIsInt($this->object_alone->get_view_count());
+        $this->assertIsInt($this->object_list->get_view_count());
     }
 
     public function testGet_rating()
@@ -148,15 +148,15 @@ class Bridge_Api_Flickr_ElementTest extends \PhraseanetTestCase
     {
         $this->assertFalse($this->object_list->is_private());
         $this->assertTrue($this->object_alone->is_private());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_BOOL, $this->object_alone->is_private());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_BOOL, $this->object_list->is_private());
+        $this->assertIsBool($this->object_alone->is_private());
+        $this->assertIsBool($this->object_list->is_private());
     }
 
     public function testGet_type()
     {
         $this->assertEquals('album', $this->object_list->get_type());
         $this->assertEquals('album', $this->object_alone->get_type());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_alone->get_type());
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object_list->get_type());
+        $this->assertIsString($this->object_alone->get_type());
+        $this->assertIsString($this->object_list->get_type());
     }
 }

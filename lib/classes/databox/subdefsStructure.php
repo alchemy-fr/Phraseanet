@@ -11,7 +11,7 @@
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Assert\Assertion;
 use Alchemy\Phrasea\Media\MediaTypeFactory;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class databox_subdefsStructure implements IteratorAggregate, Countable
 {

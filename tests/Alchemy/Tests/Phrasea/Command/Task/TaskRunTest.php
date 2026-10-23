@@ -24,7 +24,7 @@ class TaskRunTest extends \PhraseanetTestCase
 
         $job = $this->createMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
 
-        self::$DI['cli']['task-manager.job-factory'] = $this->createStub('Alchemy\Phrasea\TaskManager\Job\Factory');
+        self::$DI['cli']['task-manager.job-factory'] = $this->createMock('Alchemy\Phrasea\TaskManager\Job\Factory');
         self::$DI['cli']['task-manager.job-factory']->expects($this->once())
                 ->method('create')
                 ->will($this->returnValue($job));

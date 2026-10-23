@@ -82,6 +82,10 @@ class UserRepository extends EntityRepository
      */
     public function findByEmail($email)
     {
+        if (null === $email) {
+            return null;
+        }
+
         $qb = $this->createQueryBuilder('u');
 
         $qb->where($qb->expr()->eq($qb->expr()->lower('u.email'), $qb->expr()->lower($qb->expr()->literal($email))))

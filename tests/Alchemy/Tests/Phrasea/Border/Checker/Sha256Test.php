@@ -42,7 +42,7 @@ class Sha256Test extends \PhraseanetTestCase
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
 
-        $mock = $this->createMock('\\Alchemy\\Phrasea\\Border\\File');
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getSha256'])->getMock();
 
         $mock
             ->expects($this->once())
@@ -57,7 +57,7 @@ class Sha256Test extends \PhraseanetTestCase
 
     public function testCheckNoFile()
     {
-        $mock = $this->createMock('\\Alchemy\\Phrasea\\Border\\File');
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getSha256'])->getMock();
 
         $mock
             ->expects($this->once())

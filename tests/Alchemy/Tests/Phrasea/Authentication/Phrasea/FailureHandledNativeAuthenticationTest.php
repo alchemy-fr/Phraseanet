@@ -51,16 +51,12 @@ class FailureHandledNativeAuthenticationTest extends \PhraseanetTestCase
             ->with($username, $password, $request)
             ->will($this->returnValue(null));
 
-        $manager->expects($this->at(0))
+        $manager->expects($this->exactly(2))
             ->method('checkFailures')
             ->with($username, $request);
 
-        $manager->expects($this->at(1))
+        $manager->expects($this->once())
             ->method('saveFailure')
-            ->with($username, $request);
-
-        $manager->expects($this->at(2))
-            ->method('checkFailures')
             ->with($username, $request);
 
         $failure = new FailureHandledNativeAuthentication($auth, $manager);

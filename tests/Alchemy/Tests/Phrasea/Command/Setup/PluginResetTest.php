@@ -18,7 +18,7 @@ class PluginResetTest extends \PhraseanetTestCase
 
         $capturedSource = null;
 
-        self::$DI['cli']['filesystem'] = $this->createStub('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem');
+        self::$DI['cli']['filesystem'] = $this->createMock('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem');
         self::$DI['cli']['filesystem']->expects($this->once())
             ->method('remove')
             ->with(self::$DI['cli']['plugin.path']);

@@ -81,14 +81,14 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->createStub('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
         $app['authentication']->method('isAuthenticated')->will($this->returnValue(true));
 
         $session = new Session();
         $session->setUpdated(new \DateTime());
 
-        $app['orm.em'] = $this->createStub('Doctrine\ORM\EntityManager');
-        $app['repo.sessions'] = $this->createStub('Doctrine\Common\Persistence\ObjectRepository');
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
+        $app['repo.sessions'] = $this->createMock('Doctrine\Persistence\ObjectRepository');
         $app['repo.sessions']->expects($this->exactly(2))->method('find')->will($this->returnValue($session));
         $app['orm.em']->expects($this->exactly(4))->method('persist')->will($this->returnValue(null));
         $app['orm.em']->expects($this->exactly(2))->method('flush')->will($this->returnValue(null));
@@ -119,15 +119,15 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->createStub('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
         $app['authentication']->method('isAuthenticated')->will($this->returnValue(true));
         $app['authentication']->expects($this->once())->method('closeAccount')->will($this->returnValue(null));
 
         $session = new Session();
         $session->setUpdated(new \DateTime('-1 hour'));
 
-        $app['orm.em'] = $this->createStub('Doctrine\ORM\EntityManager');
-        $app['repo.sessions'] = $this->createStub('Doctrine\Common\Persistence\ObjectRepository');
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
+        $app['repo.sessions'] = $this->createMock('Doctrine\Persistence\ObjectRepository');
         $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
         $app['orm.em']->method('persist')->will($this->returnValue(null));
         $app['orm.em']->method('flush')->will($this->returnValue(null));
@@ -161,15 +161,15 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->createStub('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
         $app['authentication']->method('isAuthenticated')->will($this->returnValue(true));
         $app['authentication']->expects($this->once())->method('closeAccount')->will($this->returnValue(null));
 
         $session = new Session();
         $session->setUpdated(new \DateTime('-1 hour'));
 
-        $app['orm.em'] = $this->createStub('Doctrine\ORM\EntityManager');
-        $app['repo.sessions'] = $this->createStub('Doctrine\Common\Persistence\ObjectRepository');
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
+        $app['repo.sessions'] = $this->createMock('Doctrine\Persistence\ObjectRepository');
         $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
         $app['orm.em']->method('persist')->will($this->returnValue(null));
         $app['orm.em']->method('flush')->will($this->returnValue(null));
@@ -225,10 +225,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->createStub('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
         $app['authentication']->expects($this->never())->method('isAuthenticated');
 
-        $app['orm.em'] = $this->createStub('Doctrine\ORM\EntityManager');
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
         $app['orm.em']->expects($this->never())->method('flush');
 
         $app->get($route, function () {
@@ -262,10 +262,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->createStub('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
         $app['authentication']->expects($this->once())->method('isAuthenticated');
 
-        $app['orm.em'] = $this->createStub('Doctrine\ORM\EntityManager');
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
         $app['orm.em']->expects($this->never())->method('flush');
 
         $app->get($route, function () {

@@ -50,7 +50,6 @@ class StoryTest extends \PhraseanetTestCase
     public function testLoadFromStringWrongStory()
     {
         $this->expectException(\InvalidArgumentException::class);
-        \PHPUnit\Framework\Error\Warning::$enabled = false;
 
         Story::loadFromString(self::$DI['app'], self::$DI['collection']->get_databox()->get_sbas_id() . '_0');
     }

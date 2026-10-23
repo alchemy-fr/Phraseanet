@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 
 class module_report
 {
@@ -832,7 +832,7 @@ class module_report
     {
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
-        if (sizeof($this->report) > 0) {
+        if (count((array) $this->report) > 0) {
             return $this->report;
         }
 

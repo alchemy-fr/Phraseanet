@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Event;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

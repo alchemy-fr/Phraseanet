@@ -15,6 +15,7 @@ class unitTestsTest extends \PhraseanetTestCase
             "PhraseanetSeTestSubscriber.php",
             "PDOMock.php",
             "CsrfTestProvider.php",
+            "PhraseanetTestContainer.php",
         ];
 
         $testDir = __DIR__ . '/';

@@ -42,7 +42,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
             ->method("isAuthValid")
             ->will($this->returnValue(true));
 
-        $stub = $this->createMock("Bridge_Api_Auth_Flickr");
+        $stub = $this->getMockBuilder("Bridge_Api_Auth_Flickr")->onlyMethods(["get_api"])->getMock();
 
         $stub
             ->method("get_api")
@@ -50,7 +50,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
 
         $return = $stub->connect("123");
 
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $return);
+        $this->assertIsArray($return);
         $this->assertArrayHasKey("auth_token", $return);
         $this->assertEquals("un_token", $return["auth_token"]);
     }
@@ -67,7 +67,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
             ->method("isAuthValid")
             ->will($this->returnValue(false));
 
-        $stub = $this->createMock("Bridge_Api_Auth_Flickr");
+        $stub = $this->getMockBuilder("Bridge_Api_Auth_Flickr")->onlyMethods(["get_api"])->getMock();
 
         $stub
             ->method("get_api")
@@ -85,7 +85,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
 
     public function testDisconnect()
     {
-        $setting = $this->createMock("Bridge_AccountSettings");
+        $setting = $this->getMockBuilder("Bridge_AccountSettings")->disableOriginalConstructor()->onlyMethods(["set"])->getMock();
 
         $setting->expects($this->once())
             ->method("set")
@@ -100,7 +100,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
 
     public function testIs_connected()
     {
-        $setting = $this->createMock("Bridge_AccountSettings");
+        $setting = $this->getMockBuilder("Bridge_AccountSettings")->disableOriginalConstructor()->onlyMethods(["get"])->getMock();
 
         $setting
             ->method("get")
@@ -116,7 +116,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
 
     public function testGet_auth_signatures()
     {
-        $setting = $this->createMock("Bridge_AccountSettings");
+        $setting = $this->getMockBuilder("Bridge_AccountSettings")->disableOriginalConstructor()->onlyMethods(["get"])->getMock();
 
         $setting->expects($this->once())
             ->method("get")
@@ -127,7 +127,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
 
         $return = $this->object->get_auth_signatures();
 
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $return);
+        $this->assertIsArray($return);
         $this->assertArrayHasKey("auth_token", $return);
         $this->assertEquals("123", $return["auth_token"]);
     }
@@ -160,7 +160,7 @@ class Bridge_Api_Auth_FlickrTest extends \PhraseanetTestCase
             ->with($this->equalTo("write"), $this->equalTo("un_token"))
             ->will($this->returnValue("une_super_url"));
 
-        $stub = $this->createMock("Bridge_Api_Auth_Flickr");
+        $stub = $this->getMockBuilder("Bridge_Api_Auth_Flickr")->onlyMethods(["get_api"])->getMock();
 
         $stub
             ->method("get_api")

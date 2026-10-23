@@ -92,7 +92,7 @@ class MediaSubdefService
         );
 
         if ($groups) {
-            return call_user_func_array('array_merge', $groups);
+            return array_merge(...array_values($groups));
         }
 
         return [];

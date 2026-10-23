@@ -18,7 +18,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use PDO;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BasketRepository extends EntityRepository
 {

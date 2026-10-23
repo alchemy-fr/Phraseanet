@@ -66,14 +66,15 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $app['acl'] = $aclProvider;
 
-        $em->expects($this->at(0))
+        $em->expects($this->exactly(2))
             ->method('persist')
-            ->with($this->isInstanceOf(SessionEntity::class))
-            ->will($this->returnCallback(function (SessionEntity $session) use (&$capturedSession) {
-                $capturedSession = $session;
-                $capturedSession->setCreated(new \Datetime());
-            }));
-        $em->expects($this->at(1))
+            ->willReturnCallback(function ($entity) use (&$capturedSession) {
+                if ($entity instanceof SessionEntity) {
+                    $capturedSession = $entity;
+                    $capturedSession->setCreated(new \Datetime());
+                }
+            });
+        $em->expects($this->exactly(2))
             ->method('flush');
 
         $repo = $this->createEntityRepositoryMock();

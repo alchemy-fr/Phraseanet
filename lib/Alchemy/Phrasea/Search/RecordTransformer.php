@@ -131,7 +131,7 @@ class RecordTransformer extends TransformerAbstract
         }
 
         if ($values) {
-            $values = call_user_func_array('array_merge', $values);
+            $values = array_merge(...array_values($values));
         }
 
         return $this->collection($values, function (\caption_Field_Value $value) use ($fieldData) {

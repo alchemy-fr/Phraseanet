@@ -26,7 +26,7 @@ class SubscriberTest extends \PhraseanetTestCase
     public function testIfPublisheMessageOnSubscribeEvent()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['alchemy_worker.message.publisher'] = $this->createStub('Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher');
+        $app['alchemy_worker.message.publisher'] = $this->createMock('Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher');
 
         $app['alchemy_worker.type_based_worker_resolver'] = $this->createStub('Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver');
 

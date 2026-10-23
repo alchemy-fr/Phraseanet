@@ -66,6 +66,7 @@ class BridgeExceptionSubscriber implements EventSubscriberInterface
 
         $response->headers->set('Phrasea-StatusCode', 200);
 
+        $event->allowCustomResponseCode();
         $event->setResponse($response);
     }
 

@@ -20,7 +20,7 @@ class MailTestTest extends \PhraseanetTestCase
 
         $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        self::$DI['cli']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
+        self::$DI['cli']['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
 
         self::$DI['cli']['notification.deliverer']->expects($this->once())
             ->method('deliver')

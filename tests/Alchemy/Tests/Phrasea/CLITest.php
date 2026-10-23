@@ -17,7 +17,7 @@ class CLITest extends \PhraseanetTestCase
             ->method('flushQueue')
             ->with($this->isInstanceOf('Swift_Transport'));
 
-        $app['swiftmailer.spooltransport'] = $this->createStub('Swift_SpoolTransport');
+        $app['swiftmailer.spooltransport'] = $this->createMock('Swift_SpoolTransport');
 
         $app['swiftmailer.spooltransport']->expects($this->once())
             ->method('getSpool')

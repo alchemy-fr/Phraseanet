@@ -220,7 +220,7 @@ class collectionTest extends \PhraseanetTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('collectionXmlConfiguration')]
     public function testIsRegistrationEnabled($data, $value)
     {
-        $mock = $this->createMock('\collection');
+        $mock = $this->getMockBuilder('\collection')->disableOriginalConstructor()->onlyMethods(['get_prefs'])->getMock();
 
         $mock->expects($this->once())->method('get_prefs')->will($this->returnValue($data));
         $this->assertEquals($value, $mock->isRegistrationEnabled());

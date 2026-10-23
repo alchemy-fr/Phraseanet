@@ -11,7 +11,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use databox_field;
 use igorw;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class ElasticsearchOptions

@@ -42,34 +42,34 @@ class PasswordEncoderTest extends \PhraseanetTestCase
     public function testEncodePassword($key, $pass, $salt, $expected)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertEquals($expected, $encoder->encodePassword($pass, $salt));
+        $this->assertEquals($expected, $encoder->hash($pass, $salt));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testIsPasswordValid($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertTrue($encoder->isPasswordValid($encoded, $pass, $salt));
+        $this->assertTrue($encoder->verify($encoded, $pass, $salt));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValid($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertFalse($encoder->isPasswordValid(mt_rand(), $pass, $salt));
+        $this->assertFalse($encoder->verify(mt_rand(), $pass, $salt));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValidIfChangingTheKey($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key . mt_rand());
-        $this->assertFalse($encoder->isPasswordValid($encoded, $pass, $salt));
+        $this->assertFalse($encoder->verify($encoded, $pass, $salt));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValidIfChangingTheSalt($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertFalse($encoder->isPasswordValid($encoded, $pass, $salt. mt_rand()));
+        $this->assertFalse($encoder->verify($encoded, $pass, $salt. mt_rand()));
     }
 }

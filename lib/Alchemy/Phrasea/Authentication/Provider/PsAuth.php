@@ -21,7 +21,7 @@ use Exception;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use RandomLibtest\Mocks\Random\Generator as RandomGenerator;
+use RandomLib\Generator as RandomGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;

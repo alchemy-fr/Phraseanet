@@ -61,7 +61,6 @@ class DimensionTest extends \PhraseanetTestCase
         $this->assertTrue($response->isOk());
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('getWrongDimensions')]
     public function testInvalidVars()
     {
         foreach ($this->getWrongDimensions() as $dimensions) {

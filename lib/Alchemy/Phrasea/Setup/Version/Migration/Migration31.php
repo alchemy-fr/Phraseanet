@@ -24,7 +24,7 @@ class Migration31 implements MigrationInterface
 
     public function migrate()
     {
-        if (!file_exists(__DIR__ . '/../../../../../../config/_GV.php')) {
+        if (!file_exists(__DIR__ . '/../../../../../../config/_GV.php') || !file_exists(__DIR__ . '/../../../../../../config/connexion.inc')) {
             throw new \LogicException('Required config files not found');
         }
 

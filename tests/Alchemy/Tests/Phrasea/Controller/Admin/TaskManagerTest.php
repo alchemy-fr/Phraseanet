@@ -64,7 +64,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostStartScheduler()
     {
-        self::$DI['app']['task-manager.status'] = $this->createStub('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
+        self::$DI['app']['task-manager.status'] = $this->createMock('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
         self::$DI['app']['task-manager.status']->expects($this->once())
                ->method('start');
         // Prevent actual start of process scheduler
@@ -79,7 +79,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostStopScheduler()
     {
-        self::$DI['app']['task-manager.status'] = $this->createStub('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
+        self::$DI['app']['task-manager.status'] = $this->createMock('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
         self::$DI['app']['task-manager.status']->expects($this->once())
                ->method('stop');
         self::$DI['client']->request('POST', '/admin/task-manager/scheduler/stop');
@@ -253,7 +253,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 ->method('facility')
                 ->will($this->returnValue(new Response('Hello')));
 
-        self::$DI['app']['task-manager.job-factory'] = $this->createStub('Alchemy\Phrasea\TaskManager\Job\Factory');
+        self::$DI['app']['task-manager.job-factory'] = $this->createMock('Alchemy\Phrasea\TaskManager\Job\Factory');
         self::$DI['app']['task-manager.job-factory']->expects($this->once())
                 ->method('create')
                 ->will($this->returnValue($job));
@@ -274,7 +274,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 ->method('updateXMLWithRequest')
                 ->will($this->returnValue(new Response('Hello')));
 
-        self::$DI['app']['task-manager.job-factory'] = $this->createStub('Alchemy\Phrasea\TaskManager\Job\Factory');
+        self::$DI['app']['task-manager.job-factory'] = $this->createMock('Alchemy\Phrasea\TaskManager\Job\Factory');
         self::$DI['app']['task-manager.job-factory']->expects($this->once())
                 ->method('create')
                 ->will($this->returnValue($job));

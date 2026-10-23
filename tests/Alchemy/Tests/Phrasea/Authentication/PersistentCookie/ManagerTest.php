@@ -36,7 +36,7 @@ class ManagerTest extends \PhraseanetTestCase
         $manager = new Manager($encoder, $repo, $browser);
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->anything(), 'Firefox_Linux', 'prettyN0nce')
             ->will($this->returnValue(true));
 
@@ -70,7 +70,7 @@ class ManagerTest extends \PhraseanetTestCase
         $manager = new Manager($encoder, $repo, $browser);
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->anything(), 'Firefox_Linux', 'prettyN0nce')
             ->will($this->returnValue(false));
 

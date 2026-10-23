@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Assert\Assertion;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use record_adapter;
 
 class BasketManipulator

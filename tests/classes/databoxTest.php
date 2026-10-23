@@ -112,7 +112,7 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('databoxXmlConfiguration')]
     public function testIsRegistrationEnabled($data, $value)
     {
-        $mock = $this->createMock('\databox');
+        $mock = $this->getMockBuilder('\databox')->disableOriginalConstructor()->onlyMethods(['get_sxml_structure'])->getMock();
 
         $mock->expects($this->once())->method('get_sxml_structure')->will($this->returnValue($data));
         $this->assertEquals($value, $mock->isRegistrationEnabled());

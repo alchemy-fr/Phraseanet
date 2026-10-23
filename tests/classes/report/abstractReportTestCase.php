@@ -8,7 +8,7 @@ class report_abstractReportTestCase extends \PhraseanetTestCase
     {
         parent::setUp();
 
-        $mock = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
+        $mock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->onlyMethods(array('getUser'))->getMock();
 
         $mock->method('getUser')->will($this->returnValue(self::$DI['user']));
 

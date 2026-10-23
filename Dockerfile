@@ -66,6 +66,7 @@ RUN install-php-extensions \
         amqp \
         bcmath \
         exif \
+        ftp \
         gd \
         gettext \
         imagick \

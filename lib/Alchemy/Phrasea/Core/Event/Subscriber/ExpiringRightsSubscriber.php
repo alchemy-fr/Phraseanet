@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use appbox;
 use databox;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ExpiringRightsSubscriber implements EventSubscriberInterface

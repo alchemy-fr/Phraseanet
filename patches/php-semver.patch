@@ -1,0 +1,16 @@
+diff --git a/src/vierbergenlars/SemVer/internal.php b/src/vierbergenlars/SemVer/internal.php
+index 062cea4..1195061 100644
+--- a/src/vierbergenlars/SemVer/internal.php
++++ b/src/vierbergenlars/SemVer/internal.php
+@@ -321,6 +321,11 @@ class SemVer extends JObject
+             return;
+         }
+ 
++        // Versions with missing minor or patch numbers ("3", "3.8") are completed with zeros
++        if (is_string($version) && preg_match('/^\s*v?\d+(\.\d+)?\s*$/', $version, $matches)) {
++            $version = trim($version) . (isset($matches[1]) ? '.0' : '.0.0');
++        }
++
+         $version = new JString($version);
+ 
+         $m = $version->trim()->match($loose?Exports::$re[LOOSE]:Exports::$re[FULL]);

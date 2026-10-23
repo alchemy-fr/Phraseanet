@@ -196,9 +196,13 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $key = $app['hash.dsn']($app['db.dsn']($info));
 
-            // a database mounted again replaces its previous definitions
-            foreach (['dbs.event_manager', 'dbs.config', 'dbs', 'orm.ems'] as $containerId) {
-                unset($app[$containerId][$key]);
+            // a database mounted again replaces its previous definitions; the containers are built
+            // first, as building "dbs" reads the definitions of the default database
+            $containers = array_map(function ($containerId) use ($app) {
+                return $app[$containerId];
+            }, ['dbs', 'orm.ems', 'dbs.event_manager', 'dbs.config']);
+            foreach ($containers as $container) {
+                unset($container[$key]);
             }
 
             $evm = new EventManager();

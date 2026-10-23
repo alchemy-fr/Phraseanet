@@ -18,7 +18,7 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Exception;
 use ftpClient;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FtpWorker implements WorkerInterface
 {

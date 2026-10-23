@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39Users;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\SchemaTool;

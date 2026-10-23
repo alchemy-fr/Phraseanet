@@ -11,7 +11,9 @@ class RemovePluginTest extends PluginCommandTestCase
     public function testExecute()
     {
         $name = 'test-plugin';
-        @mkdir(self::$DI['cli']['plugin.path']);
+        if (!is_dir(self::$DI['cli']['plugin.path'])) {
+            mkdir(self::$DI['cli']['plugin.path']);
+        }
 
         $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
         $input->expects($this->once())
@@ -24,7 +26,7 @@ class RemovePluginTest extends PluginCommandTestCase
         $command = new RemovePlugin();
         $command->setContainer(self::$DI['cli']);
 
-        self::$DI['cli']['plugins.manager'] = $this->createStub('Alchemy\Phrasea\Plugin\PluginManager');
+        self::$DI['cli']['plugins.manager'] = $this->createMock('Alchemy\Phrasea\Plugin\PluginManager');
 
         self::$DI['cli']['plugins.manager']->expects($this->once())
             ->method('hasPlugin')
@@ -32,17 +34,20 @@ class RemovePluginTest extends PluginCommandTestCase
             ->will($this->returnValue(true));
 
         self::$DI['cli']['filesystem'] = $this->createFilesystemMock();
-        self::$DI['cli']['filesystem']->expects($this->at(0))
+        $removed = [];
+        self::$DI['cli']['filesystem']->expects($this->exactly(2))
             ->method('remove')
-            ->with(self::$DI['cli']['root.path'].'/www/plugins/'.$name);
-
-        self::$DI['cli']['filesystem']->expects($this->at(1))
-            ->method('remove')
-            ->with(self::$DI['cli']['plugin.path'].'/'.$name);
+            ->willReturnCallback(function ($path) use (&$removed) {
+                $removed[] = $path;
+            });
 
         $result = $command->execute($input, $output);
 
         $this->assertSame(0, $result);
+        $this->assertSame([
+            self::$DI['cli']['root.path'].'/www/plugins/'.$name,
+            self::$DI['cli']['plugin.path'].'/'.$name,
+        ], $removed);
 
         $conf = self::$DI['cli']['phraseanet.configuration']->getConfig();
         $this->assertArrayNotHasKey('test-plugin', $conf['plugins']);

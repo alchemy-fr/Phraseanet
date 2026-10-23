@@ -45,7 +45,7 @@ class UUIDTest extends \PhraseanetTestCase
 
     public function testCheckNoFile()
     {
-        $mock = $this->createMock('\\Alchemy\\Phrasea\\Border\\File');
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getUUID'])->getMock();
 
         $mock
             ->expects($this->once())

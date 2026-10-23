@@ -43,7 +43,7 @@ class Bridge_Api_Dailymotion_ElementTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['description'], $this->object->get_description());
         unset($this->test["description"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_description());
+        $this->assertIsString($this->object->get_description());
         $this->assertEmpty($this->object->get_description());
     }
 
@@ -53,7 +53,7 @@ class Bridge_Api_Dailymotion_ElementTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['id'], $this->object->get_id());
         unset($this->test["id"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_description());
+        $this->assertIsString($this->object->get_description());
         $this->assertEmpty($this->object->get_id());
     }
 
@@ -63,7 +63,7 @@ class Bridge_Api_Dailymotion_ElementTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['thumbnail_medium_url'], $this->object->get_thumbnail());
         unset($this->test["thumbnail_medium_url"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_thumbnail());
+        $this->assertIsString($this->object->get_thumbnail());
         $this->assertEmpty($this->object->get_thumbnail());
     }
 
@@ -73,7 +73,7 @@ class Bridge_Api_Dailymotion_ElementTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['title'], $this->object->get_title());
         unset($this->test["title"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_title());
+        $this->assertIsString($this->object->get_title());
         $this->assertEmpty($this->object->get_title());
     }
 
@@ -99,51 +99,51 @@ class Bridge_Api_Dailymotion_ElementTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['url'], $this->object->get_url());
         unset($this->test["url"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_url());
+        $this->assertIsString($this->object->get_url());
         $this->assertEmpty($this->object->get_url());
     }
 
     public function testIs_private()
     {
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_BOOL, $this->object->is_private());
+        $this->assertIsBool($this->object->is_private());
         $this->assertTrue($this->object->is_private());
         unset($this->test["private"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_BOOL, $this->object->is_private());
+        $this->assertIsBool($this->object->is_private());
         $this->assertFalse($this->object->is_private());
     }
 
     public function testGet_duration()
     {
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_duration());
+        $this->assertIsString($this->object->get_duration());
         $this->assertEquals("01:20", $this->object->get_duration());
         unset($this->test["duration"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_duration());
+        $this->assertIsString($this->object->get_duration());
         $this->assertEquals("00:00", $this->object->get_duration());
     }
 
     public function testGet_view_count()
     {
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->object->get_view_count());
+        $this->assertIsInt($this->object->get_view_count());
         $this->assertEquals($this->test['views_total'], $this->object->get_view_count());
         unset($this->test["views_total"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->object->get_view_count());
+        $this->assertIsInt($this->object->get_view_count());
         $this->assertEquals(0, $this->object->get_view_count());
     }
 
     public function testGet_rating()
     {
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->object->get_rating());
+        $this->assertIsInt($this->object->get_rating());
         $this->assertEquals($this->test['ratings_total'], $this->object->get_rating());
         unset($this->test["ratings_total"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $this->object->get_rating());
+        $this->assertIsInt($this->object->get_rating());
         $this->assertEquals(0, $this->object->get_rating());
     }
 
@@ -153,7 +153,7 @@ class Bridge_Api_Dailymotion_ElementTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['channel'], $this->object->get_category());
         unset($this->test["channel"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_category());
+        $this->assertIsString($this->object->get_category());
         $this->assertEmpty($this->object->get_category());
     }
 }

@@ -28,7 +28,7 @@ class Bridge_Api_Auth_OAuth2Test extends \PhraseanetTestCase
             , 'auth_endpoint'  => "one_auth_endpoint"
         ];
 
-        $this->mockSettings = $this->createMock("Bridge_AccountSettings");
+        $this->mockSettings = $this->getMockBuilder("Bridge_AccountSettings")->disableOriginalConstructor()->onlyMethods(["get", "set"])->getMock();
     }
 
     public function testParse_request_token()
@@ -101,7 +101,7 @@ class Bridge_Api_Auth_OAuth2Test extends \PhraseanetTestCase
 
         $return = $this->object->get_auth_signatures();
 
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $return);
+        $this->assertIsArray($return);
         $this->assertArrayHasKey("auth_token", $return);
         $this->assertEquals("123", $return["auth_token"]);
     }

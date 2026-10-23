@@ -65,7 +65,7 @@ class report_filterTest extends \report_abstractReportTestCase
         $tabfilter = $filter->getTabFilter();
         $this->assertEquals(2, count($tabfilter));
         $added_filter = $tabfilter[0];
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $added_filter);
+        $this->assertIsArray($added_filter);
         $this->assertArrayHasKey('f', $added_filter);
         $this->assertArrayHasKey('o', $added_filter);
         $this->assertArrayHasKey('v', $added_filter);
@@ -86,7 +86,7 @@ class report_filterTest extends \report_abstractReportTestCase
         $filter->addFilter('a', 'OR', '');
         $filter->addFilter('appli', '=', 'a:1:{i:0;i:1;}');
         $filter->addFilter('ddate', '=', 'o');
-        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $filter->getPostingFilter());
+        $this->assertIsArray($filter->getPostingFilter());
         $nbBefore = count($filter->getTabFilter());
         $filter->removeFilter('ddate');
         $nbAfter = count($filter->getTabFilter());

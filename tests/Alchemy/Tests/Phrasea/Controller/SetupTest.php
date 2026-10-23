@@ -99,7 +99,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->method('isBlank')
             ->will($this->returnValue(true));
 
-        $this->app['phraseanet.installer'] = $this->createStub('Alchemy\Phrasea\Setup\Installer');
+        $this->app['phraseanet.installer'] = $this->createMock('Alchemy\Phrasea\Setup\Installer');
 
         $user = $this->createUserMock();
 

@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 {

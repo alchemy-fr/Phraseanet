@@ -34,8 +34,9 @@ class BasketParticipantRepository extends EntityRepository
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\BasketParticipant', 'p');
         $selectClause = $rsm->generateSelectClause();
 
-        switch($this->_em->getConnection()->getDriver()->getName()) {
-            case 'pdo_mysql':
+        $platform = $this->_em->getConnection()->getDatabasePlatform();
+        switch(true) {
+            case $platform instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform:
                 $sql = '
                     SELECT ' . $selectClause . '
                     FROM BasketParticipants p
@@ -47,7 +48,7 @@ class BasketParticipantRepository extends EntityRepository
                 ;
 
                 break;
-            case 'pdo_sqlite':
+            case $platform instanceof \Doctrine\DBAL\Platforms\SqlitePlatform:
                 $sql = '
                     SELECT ' . $selectClause . '
                     FROM BasketParticipants p

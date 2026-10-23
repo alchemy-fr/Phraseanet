@@ -13,7 +13,7 @@ class ConfigurationTest extends \PhraseanetTestCase
         $command = new Configuration();
         $command->setContainer(self::$DI['cli']);
 
-        self::$DI['cli']['configuration.store'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        self::$DI['cli']['configuration.store'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
         self::$DI['cli']['configuration.store']->expects($this->once())
             ->method('compileAndWrite');
 

@@ -75,7 +75,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
         $manipulator->delete($application);
         $this->assertGreaterThan(count($app['repo.api-applications']->findAll()), $countBefore);
         $accounts = $app['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], $applicationSave);
-        $this->assertEquals(0, count($accounts));
+        $this->assertNull($accounts);
         $tokens = $app['repo.api-oauth-tokens']->findOauthTokens($accountMem);
         $this->assertEquals(0, count($tokens));
     }

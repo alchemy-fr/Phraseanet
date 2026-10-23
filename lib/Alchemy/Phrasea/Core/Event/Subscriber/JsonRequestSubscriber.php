@@ -33,6 +33,7 @@ class JsonRequestSubscriber implements EventSubscriberInterface
                 'message' => $exception->getMessage(),
             ];
 
+            $event->allowCustomResponseCode();
             $event->setResponse(new JsonResponse($datas, 200, ['X-Status-Code' => 200]));
         }
     }

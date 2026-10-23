@@ -52,7 +52,7 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
 
         $app['conf']->set(['languages', 'available'], ['en_US']);
 
-        $app['monolog'] = $this->createStub('Psr\Log\LoggerInterface');
+        $app['monolog'] = $this->createMock('Psr\Log\LoggerInterface');
         $app['monolog']->expects($this->once())
             ->method('error');
 
@@ -67,7 +67,7 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
-        $app['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']->expects($this->once())
             ->method('get')
             ->with(['languages', 'default'], 'en')

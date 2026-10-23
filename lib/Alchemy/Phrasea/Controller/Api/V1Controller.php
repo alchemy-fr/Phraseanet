@@ -104,7 +104,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class V1Controller extends Controller
@@ -232,10 +232,9 @@ class V1Controller extends Controller
     public function sendAssetsInQueue(Request $request)
     {
         $jsonBodyHelper = $this->getJsonBodyHelper();
-        $schema = $this->app['json-schema.ref_resolver']->resolve($this->app['json-schema.base_uri']. 'assets_enqueue.json');
         $data = $request->getContent();
 
-        $errors = $jsonBodyHelper->validateJson(json_decode($data), $schema);
+        $errors = $jsonBodyHelper->validateJson(json_decode($data), 'assets_enqueue.json');
 
         if (count($errors) > 0) {
             return Result::createError($request, 422, $errors[0])->createResponse();
@@ -3391,7 +3390,7 @@ class V1Controller extends Controller
         });
 
         if ($groups) {
-            return call_user_func_array('array_merge', $groups);
+            return array_merge(...array_values($groups));
         }
 
         return [];

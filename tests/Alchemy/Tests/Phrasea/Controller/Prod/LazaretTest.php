@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -386,7 +386,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $em = $this->createEntityManagerMock();
 
-        self::$DI['app']['subdef.substituer'] = $this->createStub('Alchemy\Phrasea\Media\SubdefSubstituer');
+        self::$DI['app']['subdef.substituer'] = $this->createMock('Alchemy\Phrasea\Media\SubdefSubstituer');
         $record = self::$DI['record_2'];
 
         //expect one call to substitute the documents

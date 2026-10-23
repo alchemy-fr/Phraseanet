@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 
 class PresetManipulator implements ManipulatorInterface

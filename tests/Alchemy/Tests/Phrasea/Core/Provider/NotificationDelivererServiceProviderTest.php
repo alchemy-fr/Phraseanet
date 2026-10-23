@@ -39,7 +39,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
 
         $this->assertInstanceOf($instance, self::$DI['app']['swiftmailer.transport']);
 
-        if (!self::$DI['app']['swiftmailer.transport'] instanceof \Swift_Transport_MailTransport) {
+        if (!self::$DI['app']['swiftmailer.transport'] instanceof \Swift_Transport_SendmailTransport) {
             $this->assertEquals($values['expected-host'], self::$DI['app']['swiftmailer.transport']->getHost());
             $this->assertEquals($values['expected-port'], self::$DI['app']['swiftmailer.transport']->getPort());
             $this->assertEquals($values['expected-encryption'], self::$DI['app']['swiftmailer.transport']->getEncryption());
@@ -67,7 +67,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
                 'expected-password' => 'b4tm4n',
                 'expected-authmode' => null,
             ]],
-            ['\Swift_Transport_MailTransport', [
+            ['\Swift_Transport_SendmailTransport', [
                 serialize(['registry', 'email', 'smtp-enabled']) => false,
                 serialize(['registry', 'email', 'smtp-auth-enabled']) => true,
                 serialize(['registry', 'email', 'smtp-host']) => 'special.host.mail',
@@ -97,7 +97,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
                 'expected-password' => null,
                 'expected-authmode' => null,
             ]],
-            ['\Swift_Transport_MailTransport', [
+            ['\Swift_Transport_SendmailTransport', [
                 serialize(['registry', 'email', 'smtp-enabled']) => false,
                 serialize(['registry', 'email', 'smtp-auth-enabled']) => false,
                 'expected-host' => null,

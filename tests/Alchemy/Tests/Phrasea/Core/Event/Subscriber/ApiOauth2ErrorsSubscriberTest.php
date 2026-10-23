@@ -48,8 +48,8 @@ class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
     public static function provideExceptionsAndCode()
     {
         return [
-            [new HttpException(512, null, null, ['content-type' => 'application/json']), 512, 'application/json'],
-            [new HttpException(512, null, null), 512, 'text/html; charset=UTF-8'],
+            [new HttpException(512, '', null, ['content-type' => 'application/json']), 512, 'application/json'],
+            [new HttpException(512, '', null), 512, 'text/html; charset=UTF-8'],
             [new \Exception(), 500, 'text/html; charset=UTF-8'],
         ];
     }

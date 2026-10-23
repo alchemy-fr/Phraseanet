@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Command\Command as phrCommand;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use collection;
 use databox;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use igorw;

@@ -30,7 +30,7 @@ use Psr\Http\Message\ResponseInterface;
 use Silex\Application;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WebhookJob extends AbstractJob
 {

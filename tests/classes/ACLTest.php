@@ -90,8 +90,8 @@ class ACLTest extends \PhraseanetTestCase
         $base_ids = [self::$DI['collection']->get_base_id()];
         self::$DI['app']->getAclForUser(self::$DI['user_template'])->give_access_to_base($base_ids);
 
-        $limit_from = new \DateTime('-1 day');
-        $limit_to = new \DateTime('+1 day');
+        $limit_from = new \DateTime(date('Y-m-d H:i:s', strtotime('-1 day')));
+        $limit_to = new \DateTime(date('Y-m-d H:i:s', strtotime('+1 day')));
 
         foreach ($base_ids as $base_id) {
             self::$DI['app']->getAclForUser(self::$DI['user_template'])->set_limits($base_id, 1, $limit_from, $limit_to);
@@ -733,17 +733,17 @@ class ACLTest extends \PhraseanetTestCase
                     continue;
 
                 $this->assertFalse($this->object->is_limited($base_id));
-                $this->object->set_limits($base_id, true, new DateTime('-1 day'), new DateTime('+1 day'));
+                $this->object->set_limits($base_id, true, new DateTime(date('Y-m-d H:i:s', strtotime('-1 day'))), new DateTime(date('Y-m-d H:i:s', strtotime('+1 day'))));
                 $this->assertFalse($this->object->is_limited($base_id));
-                $this->object->set_limits($base_id, false, new DateTime('-1 day'), new DateTime('+1 day'));
+                $this->object->set_limits($base_id, false, new DateTime(date('Y-m-d H:i:s', strtotime('-1 day'))), new DateTime(date('Y-m-d H:i:s', strtotime('+1 day'))));
                 $this->assertFalse($this->object->is_limited($base_id));
-                $this->object->set_limits($base_id, true, new DateTime('+1 day'), new DateTime('+2 day'));
+                $this->object->set_limits($base_id, true, new DateTime(date('Y-m-d H:i:s', strtotime('+1 day'))), new DateTime(date('Y-m-d H:i:s', strtotime('+2 day'))));
                 $this->assertTrue($this->object->is_limited($base_id));
-                $this->object->set_limits($base_id, true, new DateTime('-2 day'), new DateTime('-1 day'));
+                $this->object->set_limits($base_id, true, new DateTime(date('Y-m-d H:i:s', strtotime('-2 day'))), new DateTime(date('Y-m-d H:i:s', strtotime('-1 day'))));
                 $this->assertTrue($this->object->is_limited($base_id));
-                $this->object->set_limits($base_id, true, new DateTime('-2 day'), new DateTime('+2 day'));
+                $this->object->set_limits($base_id, true, new DateTime(date('Y-m-d H:i:s', strtotime('-2 day'))), new DateTime(date('Y-m-d H:i:s', strtotime('+2 day'))));
                 $this->assertFalse($this->object->is_limited($base_id));
-                $this->object->set_limits($base_id, false, new DateTime('-2 day'), new DateTime('+2 day'));
+                $this->object->set_limits($base_id, false, new DateTime(date('Y-m-d H:i:s', strtotime('-2 day'))), new DateTime(date('Y-m-d H:i:s', strtotime('+2 day'))));
                 $this->assertFalse($this->object->is_limited($base_id));
                 $found = true;
             }
@@ -765,14 +765,14 @@ class ACLTest extends \PhraseanetTestCase
                 if ( ! $this->object->has_access_to_base($base_id))
                     continue;
 
-                $minusone = new DateTime('-1 day');
-                $plusone = new DateTime('+1 day');
+                $minusone = new DateTime(date('Y-m-d H:i:s', strtotime('-1 day')));
+                $plusone = new DateTime(date('Y-m-d H:i:s', strtotime('+1 day')));
                 $this->object->set_limits($base_id, true, $minusone, $plusone);
                 $limits = $this->object->get_limits($base_id);
                 $this->assertEquals($limits['dmax'], $plusone);
                 $this->assertEquals($limits['dmin'], $minusone);
-                $minustwo = new DateTime('-2 day');
-                $plustwo = new DateTime('-2 day');
+                $minustwo = new DateTime(date('Y-m-d H:i:s', strtotime('-2 day')));
+                $plustwo = new DateTime(date('Y-m-d H:i:s', strtotime('-2 day')));
                 $this->object->set_limits($base_id, true, $minustwo, $plustwo);
                 $limits = $this->object->get_limits($base_id);
                 $this->assertEquals($limits['dmin'], $minustwo);

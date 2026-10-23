@@ -239,7 +239,7 @@ class module_report_activity extends module_report
             $this->report['value2'][] = $row['nb_rep'];
         }
 
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         //calculate prev and next page
         $this->calculatePages();
         //do we display navigator ?
@@ -530,7 +530,7 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($this->result, true)), FILE_APPEND);
 
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
