@@ -195,7 +195,8 @@ RUN composer install --prefer-dist --no-dev --no-progress --classmap-authoritati
 
 COPY --chown=app  . .
 
-RUN make install
+# GitHub release downloads (phantomjs) send response headers larger than the 8 KB accepted by default by node 10
+RUN NODE_OPTIONS=--max-http-header-size=65536 make install
 
 ADD ./docker/builder/root /
 
