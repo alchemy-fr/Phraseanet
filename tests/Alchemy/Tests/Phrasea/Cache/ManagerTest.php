@@ -11,6 +11,7 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 class ManagerTest extends \PhraseanetTestCase
 {
     private $file;
+    private $compiler;
 
     public function setUp(): void
     {

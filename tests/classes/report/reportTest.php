@@ -15,6 +15,7 @@ class report_reportTest extends \report_abstractReportTestCase
      */
     protected $report;
     protected $save_report;
+    protected $xml;
 
     public function setUp(): void
     {

@@ -4,6 +4,7 @@
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_sqlTest extends \report_abstractReportTestCase
 {
+    private $sql;
 
     public function setUp(): void
     {

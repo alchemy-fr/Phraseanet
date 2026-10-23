@@ -34,7 +34,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     /** @var \PhraseanetTestContainer */
     protected static $DI;
 
-    private static $recordsInitialized = false;
+    private static $recordsInitialized = [];
     private static $fixtureIds = [];
 
     public function createApplication()

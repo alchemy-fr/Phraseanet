@@ -4,6 +4,11 @@
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
 class databox_Field_DCES_DCESTestCase extends \PhraseanetTestCase
 {
+    /**
+     * @var databox_Field_DCESAbstract
+     */
+    protected $object;
+
     public function testGet_label()
     {
         $data = explode('_', get_class($this));

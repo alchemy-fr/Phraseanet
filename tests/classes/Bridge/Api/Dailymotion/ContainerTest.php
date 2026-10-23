@@ -10,6 +10,7 @@ class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
      * @var Bridge_Api_Dailymotion_Container
      */
     protected $object;
+    protected $test;
 
     public function setUp(): void
     {

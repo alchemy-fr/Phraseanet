@@ -16,6 +16,7 @@ class MetaFieldTest extends \PhraseanetTestCase
     protected $before;
     protected $beforeNotice;
     protected $databox_field;
+    protected $value;
 
     public function setUp(): void
     {
