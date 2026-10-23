@@ -108,7 +108,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->will($this->returnValue($user));
         
         $authenticator = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
-        $session = $this->createStub('Entities\Session');
+        $session = $this->createStub('Alchemy\Phrasea\Model\Entities\Session');
 
         $authenticator->expects($this->once())
             ->method('openAccount')

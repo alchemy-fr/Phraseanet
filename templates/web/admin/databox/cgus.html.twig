@@ -2,7 +2,7 @@
     <h1>{{ 'Terms Of Use' | trans }}</h1>
 </div>
 
-<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app['request'].attributes.get('databox_id')}) }}" class="form-inline">
+<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app['request_stack'].currentRequest.attributes.get('databox_id')}) }}" class="form-inline">
     <div class='well'>
         <label for="valid" class='checkbox'>
             <input type="checkbox" value="1" id="valid" name="valid"/>

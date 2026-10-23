@@ -773,6 +773,7 @@ class ApiJsonTest extends ApiTestCase
                 $app['random.low'],
                 $app['dispatcher'],
             ])
+            ->onlyMethods(['logQuery'])
             ->getMock();
 
         $app['manipulator.user']->expects($this->once())->method('logQuery');

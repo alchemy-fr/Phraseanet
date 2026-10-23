@@ -298,7 +298,7 @@ class CollectionController extends Controller
             $this->app->abort(400);
         }
 
-        if ($file->getClientSize() > 1024 * 1024) {
+        if ($file->getSize() > 1024 * 1024) {
             return $this->app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
@@ -353,7 +353,7 @@ class CollectionController extends Controller
             $this->app->abort(400);
         }
 
-        if ($file->getClientSize() > 65535) {
+        if ($file->getSize() > 65535) {
             return $this->app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
@@ -407,7 +407,7 @@ class CollectionController extends Controller
             $this->app->abort(400);
         }
 
-        if ($file->getClientSize() > 65535) {
+        if ($file->getSize() > 65535) {
             return $this->app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
@@ -562,7 +562,7 @@ class CollectionController extends Controller
 
         }
 
-        if ('json' === $this->app['request']->getRequestFormat()) {
+        if ('json' === $this->app['request_stack']->getCurrentRequest()->getRequestFormat()) {
             return $this->app->json([
                 'success' => $success,
                 'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),

@@ -166,7 +166,7 @@ class UserPasswordCommand extends Command
 
         $token = $this->container['manipulator.token']->createResetPasswordToken($user);
                  
-        $url = $this->container['url_generator']->generate('login_renew_password', [ 'token' => $token->getValue() ], true);
+        $url = $this->container['url_generator']->generate('login_renew_password', [ 'token' => $token->getValue() ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
         $mail = MailRequestPasswordUpdate::create($this->container, $receiver);
         $servername = $this->container['conf']->get('servername');
         $mail->setButtonUrl($url);

@@ -401,7 +401,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function addMocks(Application $app)
     {
-        $app['form.csrf_provider'] = function () {
+        $app['csrf.token_manager'] = function () {
             return new CsrfTestProvider();
         };
 

@@ -191,7 +191,7 @@ class Result
 
     private function parseResponseType()
     {
-        if (trim($this->request->get('callback')) !== '') {
+        if (trim((string) $this->request->get('callback')) !== '') {
             return $this->responseType = self::FORMAT_JSONP;
         }
 

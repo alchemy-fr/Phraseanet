@@ -54,7 +54,7 @@ abstract class AbstractEditor implements EditorInterface
             switch ($type) {
                 case static::FORM_TYPE_STRING:
                 default:
-                    $node->appendChild($dom->createTextNode($value));
+                    $node->appendChild($dom->createTextNode((string) $value));
                     break;
                 case static::FORM_TYPE_BOOLEAN:
                     $node->appendChild($dom->createTextNode($value ? '1' : '0'));

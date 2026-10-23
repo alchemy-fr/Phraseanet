@@ -23,6 +23,7 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
                 self::$DI['app']['random.low'],
                 self::$DI['app']['dispatcher'],
             ])
+            ->onlyMethods(['logQuery'])
             ->getMock();
 
         self::$DI['app']['manipulator.user'] = $userManipulator;

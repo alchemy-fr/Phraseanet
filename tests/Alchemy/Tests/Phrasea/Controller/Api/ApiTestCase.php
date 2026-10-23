@@ -333,8 +333,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertIsArray($permalink);
         $this->assertArrayHasKey("created_on", $permalink);
         $now = new \Datetime($permalink['created_on']);
-        $interval = $now->diff($subdef->get_permalink()->get_created_on());
-        $this->assertTrue(abs($interval->format('U')) < 2);
+        $this->assertLessThan(2, abs($now->getTimestamp() - $subdef->get_permalink()->get_created_on()->getTimestamp()));
         $this->assertIsString($permalink['created_on']);
         $this->assertDateAtom($permalink['created_on']);
         $this->assertArrayHasKey("id", $permalink);
@@ -350,7 +349,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $expected = $subdef->get_permalink()->get_last_modified();
         $found = \DateTime::createFromFormat(DATE_ATOM, $permalink['updated_on']);
 
-        $this->assertLessThanOrEqual(1, $expected->diff($found)->format('U'));
+        $this->assertLessThanOrEqual(1, abs($expected->getTimestamp() - $found->getTimestamp()));
         $this->assertIsString($permalink['updated_on']);
         $this->assertDateAtom($permalink['updated_on']);
         $this->assertArrayHasKey("page_url", $permalink);

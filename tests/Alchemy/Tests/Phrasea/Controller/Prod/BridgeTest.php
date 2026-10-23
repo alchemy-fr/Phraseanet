@@ -141,7 +141,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $account = new \Bridge_Account(self::$DI['app'], self::$api, self::$account->get_id());
         $crawler = self::$DI['client']->request('GET', $url, ["page" => 1]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
+        $this->assertStringNotContainsString(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
     }
 
     public function testLoadRecords()
@@ -152,7 +152,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $elements = \Bridge_Element::get_elements_by_account(self::$DI['app'], self::$account);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $this->assertEquals(sizeof($elements), $crawler->filterXPath("//table/tr")->count());
-        $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
+        $this->assertStringNotContainsString(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
     }
 
     public function testLoadRecordsDisconnected()
@@ -162,7 +162,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf("/prod/bridge/adapter/%s/load-records/", self::$account->get_id());
         $crawler = self::$DI['client']->request('GET', $url, ["page"       => 1]);
         $pageContent = self::$DI['client']->getResponse()->getContent();
-        $this->assertContains($url, $pageContent);
+        $this->assertStringContainsString($url, $pageContent);
         $this->deconnected($crawler, $pageContent);
     }
 
@@ -173,7 +173,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $crawler = self::$DI['client']->request('GET', $url, ["page"    => 1]);
         $elements = \Bridge_Element::get_elements_by_account(self::$DI['app'], self::$account);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
+        $this->assertStringNotContainsString(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
     }
 
     public function testLoadContainersDisconnected()
@@ -183,7 +183,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf("/prod/bridge/adapter/%s/load-containers/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
         $crawler = self::$DI['client']->request('GET', $url, ["page"       => 1]);
         $pageContent = self::$DI['client']->getResponse()->getContent();
-        $this->assertContains($url, $pageContent);
+        $this->assertStringContainsString($url, $pageContent);
         $this->deconnected($crawler, $pageContent);
     }
 
@@ -195,7 +195,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $crawler = self::$DI['client']->request('GET', $url, ["page"       => 1]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $pageContent = self::$DI['client']->getResponse()->getContent();
-        $this->assertContains($url, $pageContent);
+        $this->assertStringContainsString($url, $pageContent);
         $this->deconnected($crawler, $pageContent);
     }
 
@@ -206,7 +206,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf('/prod/bridge/adapter/%d/logout/', self::$account->get_id());
         $crawler = self::$DI['client']->request('GET', $url);
         $pageContent = self::$DI['client']->getResponse()->getContent();
-        $this->assertContains("/adapter/" . self::$account->get_id() . "/logout/", $pageContent);
+        $this->assertStringContainsString("/adapter/" . self::$account->get_id() . "/logout/", $pageContent);
         $this->deconnected($crawler, $pageContent);
     }
 
@@ -217,7 +217,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf("/prod/bridge/action/%s/une action/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         $crawler = self::$DI['client']->request('GET', $url);
         $pageContent = self::$DI['client']->getResponse()->getContent();
-        $this->assertContains($url, $pageContent);
+        $this->assertStringContainsString($url, $pageContent);
         $this->deconnected($crawler, $pageContent);
     }
 
@@ -247,9 +247,9 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $crawler = self::$DI['client']->request('GET', $url, ["element_list" => "1_2;1_3;1_4"]);
         $redirect = sprintf("/prod/bridge/adapter/%s/load-elements/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertContains($redirect, self::$DI['client']->getResponse()->headers->get("location"));
-        $this->assertContains("error=", self::$DI['client']->getResponse()->headers->get("location"));
-        $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
+        $this->assertStringContainsString($redirect, self::$DI['client']->getResponse()->headers->get("location"));
+        $this->assertStringContainsString("error=", self::$DI['client']->getResponse()->headers->get("location"));
+        $this->assertStringNotContainsString(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
 
         self::$DI['client']->request('POST', $url, ["element_list" => "1_2;1_3;1_4"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -261,7 +261,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         $crawler = self::$DI['client']->request('GET', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertNotContains(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
+        $this->assertStringNotContainsString(self::$account->get_api()->generate_login_url(self::$DI['app']['url_generator'], self::$account->get_api()->get_connector()->get_name()), self::$DI['client']->getResponse()->getContent());
 
         self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
@@ -329,7 +329,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
         $url = sprintf("/prod/bridge/action/%s/moveinto/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         $crawler = self::$DI['client']->request('GET', $url, ["elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()]);
-        $this->assertNotContains("http://dev.phrasea.net/prod/bridge/login/youtube/", self::$DI['client']->getResponse()->getContent());
+        $this->assertStringNotContainsString("http://dev.phrasea.net/prod/bridge/login/youtube/", self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         self::$DI['client']->request('POST', $url, ["elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()]);
@@ -345,7 +345,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
     public function deconnected($crawler, $pageContent)
     {
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertContains("prod/bridge/login/" . mb_strtolower(self::$account->get_api()->get_connector()->get_name()) . "/", $pageContent);
+        $this->assertStringContainsString("prod/bridge/login/" . mb_strtolower(self::$account->get_api()->get_connector()->get_name()) . "/", $pageContent);
     }
 
     public function testUpload()

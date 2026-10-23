@@ -655,7 +655,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             // todo : wtf check if parm contains good types (a checkbox should be a bool, not a "0" or "1"
             //        as required by ACL::update_rights_to_bas(...)
-            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request_stack']->getCurrentRequest(), $rights, 'values');
 
             foreach ($parm as $p => $v) {
                 // p is like {bid}_{right} => right-value
@@ -703,7 +703,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             // todo : wtf check if parm contains good types (a checkbox should be a bool, not a "0" or "1"
             //        as required by ACL::update_rights_to_sbas(...)
-            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request_stack']->getCurrentRequest(), $rights, 'values');
 
             foreach ($parm as $p => $v) {
                 if (trim($v) == '')

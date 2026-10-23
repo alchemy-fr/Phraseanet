@@ -309,7 +309,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertContains('/admin/collection/'.$collection->get_base_id().'/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertStringContainsString('/admin/collection/'.$collection->get_base_id().'/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     public function testPostNameUnauthorizedException()
@@ -523,7 +523,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         ];
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/mini-logo/', [], $files);
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
-        $this->assertEquals(1, count(\collection::getLogo(self::$DI['collection']->get_base_id(), self::$DI['app'])));
+        $this->assertNotSame('', \collection::getLogo(self::$DI['collection']->get_base_id(), self::$DI['app']));
     }
 
     public function testDeleteMiniLogoNotJson()
@@ -539,7 +539,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteMiniLogo()
     {
-        if (count(\collection::getLogo(self::$DI['collection']->get_base_id(), self::$DI['app'])) === 0) {
+        if ("" === (string) \collection::getLogo(self::$DI['collection']->get_base_id(), self::$DI['app'])) {
             $this->markTestSkipped('No logo setted');
         }
 
@@ -565,7 +565,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $client = self::$DI['client'];
         $client->request('POST', '/admin/collection/' . $collection->get_base_id() . '/picture/watermark/', [], $files);
         $this->checkRedirection($client->getResponse(), '/admin/collection/' . $collection->get_base_id() . '/?success=1');
-        $this->assertEquals(1, count(\collection::getWatermark($collection->get_base_id())));
+        $this->assertNotSame('', \collection::getWatermark($collection->get_base_id()));
     }
 
     public function testDeleteWmBadNotJson()
@@ -581,7 +581,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteWm()
     {
-        if (count(\collection::getWatermark(self::$DI['collection']->get_base_id())) === 0) {
+        if ('' === (string) \collection::getWatermark(self::$DI['collection']->get_base_id())) {
             $this->markTestSkipped('No watermark setted');
         }
         $this->setAdmin(true);
@@ -603,7 +603,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         ];
         self::$DI['client']->request('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/picture/stamp-logo/', [], $files);
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
-        $this->assertEquals(1, count(\collection::getStamp(self::$DI['collection']->get_base_id())));
+        $this->assertNotSame('', \collection::getStamp(self::$DI['collection']->get_base_id()));
     }
 
     public function testDeleteStampBadNotJson()
@@ -619,7 +619,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteStamp()
     {
-        if (count(\collection::getStamp(self::$DI['collection']->get_base_id())) === 0) {
+        if ('' === (string) \collection::getStamp(self::$DI['collection']->get_base_id())) {
             $this->markTestSkipped('No stamp setted');
         }
 

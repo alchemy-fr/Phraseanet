@@ -225,8 +225,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->is_physically_present = (bool)$data['physically_present'];
         $this->is_substituted = (bool)$data['is_substituted'];
         $this->subdef_id = $normalizer('subdef_id', 'intval');
-        $this->modification_date = $normalizer('updated_on', 'date_create');
-        $this->creation_date = $normalizer('created_on', 'date_create');
+        $dateCreate = function ($date) {
+            return date_create($date ?? 'now');
+        };
+        $this->modification_date = $normalizer('updated_on', $dateCreate);
+        $this->creation_date = $normalizer('created_on', $dateCreate);
         $this->url = $normalizer('url', function ($url) {
             return new Uri((string) $url);
         }, [$this, 'generateUrl']);

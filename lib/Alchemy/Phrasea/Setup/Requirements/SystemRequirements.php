@@ -51,7 +51,7 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
             $timezones = [];
             foreach (\DateTimeZone::listAbbreviations() as $abbreviations) {
                 foreach ($abbreviations as $abbreviation) {
-                    $timezones[$abbreviation['timezone_id']] = true;
+                    $timezones[(string) $abbreviation['timezone_id']] = true;
                 }
             }
 

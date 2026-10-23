@@ -59,9 +59,9 @@
 </div>
 
 <div id="order_manager" style="margin-top: 15px">
-    {% set success = app['request'].query.get('success') %}
-    {% set action = app['request'].query.get('action') %}
-    {% set message = app['request'].query.get('message') %}
+    {% set success = app['request_stack'].currentRequest.query.get('success') %}
+    {% set action = app['request_stack'].currentRequest.query.get('action') %}
+    {% set message = app['request_stack'].currentRequest.query.get('message') %}
 
     {% if  success == '1' %}
         <div class="alert alert-success">

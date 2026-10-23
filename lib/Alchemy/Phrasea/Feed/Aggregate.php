@@ -61,7 +61,7 @@ class Aggregate implements FeedInterface
         $tmp_feeds = [];
 
         foreach ($feeds as $feed) {
-            $tmp_feeds[$feed->getId()] = $feed;
+            $tmp_feeds[(string) $feed->getId()] = $feed;
         }
 
         $this->feeds = new ArrayCollection($tmp_feeds);

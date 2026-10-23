@@ -32,7 +32,7 @@ class HostConfiguration implements ConfigurationInterface
      */
     public function setHost($host)
     {
-        $this->host = trim(strtolower($host));
+        $this->host = trim(strtolower((string) $host));
 
         if ('' === $this->host) {
             $this->merge();

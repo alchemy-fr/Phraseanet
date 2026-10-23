@@ -215,7 +215,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUploadInvalidFile()
     {
         $file = new UploadedFile(
-                $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
+                $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', UPLOAD_ERR_NO_FILE
         );
 
         $params = ['base_id' => self::$DI['collection']->get_base_id()];

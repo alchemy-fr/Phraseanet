@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
-use Symfony\Component\CssSelector\CssSelector;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
@@ -335,7 +334,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $feeds = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
 
         foreach ($feeds as $one_feed) {
-            $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
+            $path = (new \Symfony\Component\CssSelector\CssSelectorConverter())->toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
             $msg = sprintf("user %s has access to feed %s", self::$DI['user']->getId(), $one_feed->getId());
 
             if ($one_feed->hasAccess(self::$DI['user'], self::$DI['app'])) {
@@ -353,7 +352,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/feed/' . $feed->getId() . "/");
 
         foreach ($feeds as $one_feed) {
-            $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
+            $path = (new \Symfony\Component\CssSelector\CssSelectorConverter())->toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->getId() . "/']");
             $msg = sprintf("user %s has access to feed %s", self::$DI['user']->getId(), $one_feed->getId());
 
             if ($one_feed->hasAccess(self::$DI['user'], self::$DI['app'])) {

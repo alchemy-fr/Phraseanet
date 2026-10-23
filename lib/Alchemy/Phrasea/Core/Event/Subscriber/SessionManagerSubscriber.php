@@ -191,7 +191,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     {
         $moduleName = $this->getModuleName($pathInfo);
 
-        if (!isset(self::$modulesIds[$moduleName])) {
+        if (null === $moduleName || !isset(self::$modulesIds[$moduleName])) {
             return null;
         }
 

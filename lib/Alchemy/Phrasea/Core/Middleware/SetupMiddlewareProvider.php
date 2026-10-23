@@ -25,7 +25,7 @@ class SetupMiddlewareProvider implements ServiceProviderInterface
             if (0 === strpos($request->getPathInfo(), '/setup')) {
                 if (!$app['phraseanet.configuration-tester']->isInstalled()) {
                     if (!$app['phraseanet.configuration-tester']->isBlank()) {
-                        if ('setup_upgrade_instructions' !== $app['request']->attributes->get('_route')) {
+                        if ('setup_upgrade_instructions' !== $app['request_stack']->getCurrentRequest()->attributes->get('_route')) {
                             return $app->redirectPath('setup_upgrade_instructions');
                         }
                     }

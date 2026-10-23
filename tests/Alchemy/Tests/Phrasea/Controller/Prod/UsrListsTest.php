@@ -39,14 +39,14 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasProperty('users', $list);
 
         if ($owners)
-            $this->assertTrue(count($list->owners) > 0);
+            $this->assertTrue(count((array) $list->owners) > 0);
 
         foreach ($list->owners as $owner) {
             $this->checkOwner($owner);
         }
 
         if ($users)
-            $this->assertTrue(count($list->users) > 0);
+            $this->assertTrue(count((array) $list->users) > 0);
 
         foreach ($list->users as $user) {
             $this->checkUser($user);

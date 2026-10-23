@@ -20,6 +20,7 @@ class RegistrationManager
     /** @var \appbox */
     private $appbox;
     private $repository;
+    private $locale;
 
     public function __construct(\appbox $appbox, RegistrationRepository $repository, $locale)
     {

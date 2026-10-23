@@ -154,6 +154,9 @@
       "dflydev/doctrine-orm-service-provider": {
         "Doctrine Persistence 2+ namespaces and attribute mapping driver": "patches/dflydev-doctrine-orm-service-provider.patch"
       },
+      "goodby/csv": {
+        "PHP 8 SplFileObject::fputcsv() signature": "patches/goodby-csv.patch"
+      },
       "hoa/compiler": {
         "PHP 8.5 deprecations": "patches/hoa-compiler.patch"
       },

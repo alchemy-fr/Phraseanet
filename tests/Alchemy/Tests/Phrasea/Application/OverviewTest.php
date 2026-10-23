@@ -85,11 +85,12 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
-        $this->assertInstanceOf('DateTime', $response->getLastModified());
+        $this->assertInstanceOf('DateTimeInterface', $response->getLastModified());
         $this->assertEquals(0, $response->getMaxAge());
         $this->assertEquals(0, $response->getTtl());
         $this->assertGreaterThanOrEqual(0, $response->getAge());
-        $this->assertNull($response->getExpires());
+        // a response using the session expires immediately
+        $this->assertLessThanOrEqual(time(), $response->getExpires() ? $response->getExpires()->getTimestamp() : 0);
     }
 
     public function testDatafilesRouteNotAuthenticated()
@@ -164,7 +165,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => $token,
-        ], true);
+        ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertEquals($url, $response->headers->get("Link"));
     }
 
@@ -312,7 +313,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => $token,
-        ], true);
+        ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertEquals($url, $response->headers->get("Link"));
         $this->assertTrue($response->isOk());
     }
@@ -391,7 +392,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
             'token' => $token,
-        ], true);
+        ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertEquals($url, $response->headers->get("Link"));
         $this->assertTrue($response->isOk());
 

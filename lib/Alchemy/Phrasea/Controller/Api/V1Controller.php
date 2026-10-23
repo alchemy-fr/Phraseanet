@@ -951,8 +951,8 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        if (count($request->files->get('file')) == 0) {
-            if(count($request->get('url')) == 0) {
+        if (!$request->files->get('file')) {
+            if (null === $request->get('url')) {
                 return $this->getBadRequestAction($request, 'Missing file parameter');
             }
             else {
@@ -1070,7 +1070,7 @@ class V1Controller extends Controller
     {
         $ret = array();
 
-        if (count($request->files->get('file')) == 0) {
+        if (!$request->files->get('file')) {
             return $this->getBadRequestAction($request, 'Missing file parameter');
         }
         $file = $request->files->get('file');

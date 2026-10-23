@@ -1145,7 +1145,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        $repoUsrAuthProvider = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')->onlyMethods(['findWithProviderAndId'])->getMock();
+        $repoUsrAuthProvider = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository')->disableOriginalConstructor()->onlyMethods(['findWithProviderAndId'])->getMock();
 
         $repoUsrAuthProvider
             ->method('findWithProviderAndId')
@@ -1426,7 +1426,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var Cookie $inviteUsrIdCookie */
         $inviteUsrIdCookie = $cookies['']['/']['invite-usr-id'];
         $this->assertInstanceOf(Cookie::class, $inviteUsrIdCookie);
-        $this->assertIsInt($inviteUsrIdCookie->getValue());
+        $this->assertMatchesRegularExpression('/^\d+$/', $inviteUsrIdCookie->getValue());
     }
 
     /**
@@ -1473,7 +1473,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var Cookie $inviteUsrIdCookie */
         $inviteUsrIdCookie = $cookies['']['/']['invite-usr-id'];
         $this->assertInstanceOf(Cookie::class, $inviteUsrIdCookie);
-        $this->assertIsInt($inviteUsrIdCookie->getValue());
+        $this->assertMatchesRegularExpression('/^\d+$/', $inviteUsrIdCookie->getValue());
     }
 
     public function testBadAuthenticate()
@@ -1966,7 +1966,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
     {
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')->disableOriginalConstructor()->onlyMethods(['findWithProviderAndId'])->getMock();
+        $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository')->disableOriginalConstructor()->onlyMethods(['findWithProviderAndId'])->getMock();
 
         $repo
             ->method('findWithProviderAndId')
@@ -2115,6 +2115,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 $app['repo.registrations'],
                 $app['locale'],
             ])
+            ->onlyMethods(['isRegistrationEnabled'])
             ->getMock();
 
         $managerMock->method('isRegistrationEnabled')->will($this->returnValue(true));
@@ -2130,6 +2131,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 $app['repo.registrations'],
                 $app['locale'],
             ])
+            ->onlyMethods(['isRegistrationEnabled'])
             ->getMock();
 
         $managerMock->method('isRegistrationEnabled')->will($this->returnValue(false));

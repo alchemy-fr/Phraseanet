@@ -344,7 +344,7 @@ class DataboxController extends Controller
         try {
             if (null !== ($file = $request->files->get('newLogoPdf')) && $file->isValid()) {
 
-                if ($file->getClientSize() < 65536) {
+                if ($file->getSize() < 65536) {
                     $databox = $this->findDataboxById($databox_id);
                     $this->getApplicationBox()->write_databox_pic(
                         $this->app['media-alchemyst'],
