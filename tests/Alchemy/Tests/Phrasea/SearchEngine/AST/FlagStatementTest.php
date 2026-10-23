@@ -6,13 +6,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\FlagStatement;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 
-/**
- * @group unit
- * @group searchengine
- * @group ast
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+#[\PHPUnit\Framework\Attributes\Group('ast')]
 class FlagStatementTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(FlagStatement::class, '__toString'), 'Class does not have method __toString');

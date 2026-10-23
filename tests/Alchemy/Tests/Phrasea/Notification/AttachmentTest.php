@@ -12,15 +12,12 @@ class AttachmentTest extends \PHPUnit\Framework\TestCase
     protected $object;
     protected $tempFile;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->tempFile = tempnam(null, 'attachment');
         $this->object = new Attachment($this->tempFile, 'test.txt', 'text/plain');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Attachment::As_Swift_Attachment
-     */
     public function testAsSwiftAttachment()
     {
         /** @var $a \Swift_Mime_Attachment */
@@ -33,7 +30,7 @@ class AttachmentTest extends \PHPUnit\Framework\TestCase
         unset($swa);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unlink($this->tempFile);
     }

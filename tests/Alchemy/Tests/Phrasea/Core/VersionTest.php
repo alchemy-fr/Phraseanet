@@ -10,7 +10,7 @@ class VersionTest extends \PHPUnit\Framework\TestCase
     {
         $version = new Version();
         $this->assertTrue(is_string($version->getNumber()));
-        $this->assertRegExp('/[\d]{1}\.[\d]{1,2}\.[\d]{1,2}/', $version->getNumber());
+        $this->assertMatchesRegularExpression('/[\d]{1}\.[\d]{1,2}\.[\d]{1,2}/', $version->getNumber());
     }
 
     public function testGetName()

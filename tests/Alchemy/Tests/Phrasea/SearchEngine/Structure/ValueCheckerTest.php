@@ -7,15 +7,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
 
-/**
- * @group unit
- * @group structure
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('structure')]
 class ValueCheckerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider valueCheckerProvider
-     */
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    #[\PHPUnit\Framework\Attributes\DataProvider('valueCheckerProvider')]
     public function testValueCompatibility($subject, $value, $compatible)
     {
         $this->assertEquals($compatible, ValueChecker::isValueCompatible($subject, $value));

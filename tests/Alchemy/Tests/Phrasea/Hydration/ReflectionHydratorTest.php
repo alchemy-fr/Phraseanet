@@ -20,14 +20,14 @@ class ReflectionHydratorTest extends \PHPUnit\Framework\TestCase
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->sut = new ReflectionHydrator(ToHydrate::class, ['foo', 'bar']);
     }
 
     public function testItThrowsExceptionOnUnknownProperty()
     {
-        $this->setExpectedException(\ReflectionException::class);
+        $this->expectException(\ReflectionException::class);
 
         $sut = new ReflectionHydrator(ToHydrate::class, ['baz']);
         $sut->extract(new ToHydrate());

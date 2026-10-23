@@ -19,9 +19,7 @@ class TypeBasedWorkerResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testGetFactories()
     {
-        $workerFactory = $this->getMockBuilder(WorkerFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock()
+        $workerFactory = $this->createStub(WorkerFactoryInterface::class)
         ;
 
         $sut = new TypeBasedWorkerResolver();
@@ -33,13 +31,9 @@ class TypeBasedWorkerResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testGetWorkerSuccess()
     {
-        $worker = $this->getMockBuilder(WorkerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $worker = $this->createStub(WorkerInterface::class);
 
-        $workerFactory = $this->getMockBuilder(CallableWorkerFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $workerFactory = $this->createMock(CallableWorkerFactory::class);
 
         $workerFactory->method('createWorker')->will($this->returnValue($worker));
 
@@ -55,13 +49,9 @@ class TypeBasedWorkerResolverTest extends \PHPUnit\Framework\TestCase
 
     public function testGetWorkerWrongTypeThrowException()
     {
-        $worker = $this->getMockBuilder(WorkerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $worker = $this->createStub(WorkerInterface::class);
 
-        $workerFactory = $this->getMockBuilder(CallableWorkerFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $workerFactory = $this->createMock(CallableWorkerFactory::class);
 
         $workerFactory->method('createWorker')->will($this->returnValue($worker));
 
@@ -69,7 +59,7 @@ class TypeBasedWorkerResolverTest extends \PHPUnit\Framework\TestCase
 
         $sut->addFactory(MessagePublisher::SUBDEF_CREATION_TYPE, $workerFactory);
 
-        $this->setExpectedException(\RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
 
         $sut->getWorker(MessagePublisher::WRITE_METADATAS_TYPE, ['mock-message']);
 

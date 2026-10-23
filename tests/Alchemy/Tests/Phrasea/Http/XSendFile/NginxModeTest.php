@@ -12,7 +12,7 @@ class NginxModeTest extends \PHPUnit\Framework\TestCase
         $mode = new NginxMode([[
             'directory' => __DIR__, 'mount-point' => '/download']]);
         $conf = $mode->getVirtualHostConfiguration();
-        $this->assertRegExp('#'.__DIR__ . '#', $conf);
+        $this->assertMatchesRegularExpression('#'.__DIR__ . '#', $conf);
     }
 
     public function testSetValidHeaders()
@@ -61,16 +61,14 @@ class NginxModeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $mode->getMapping());
     }
 
-    /**
-     * @dataProvider provideMappings
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideMappings')]
     public function testInvalidMapping($mapping)
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         new NginxMode($mapping);
     }
 
-    public function provideMappings()
+    public static function provideMappings()
     {
         return [
             [[['Directory' => __DIR__]]],

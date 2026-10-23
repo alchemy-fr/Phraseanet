@@ -11,21 +11,19 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Prophecy\Argument;
 
-/**
- * @group unit
- * @group searchengine
- * @group ast
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+#[\PHPUnit\Framework\Attributes\Group('ast')]
 class RangeExpressionTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerializability()
     {
         $this->assertTrue(method_exists(RangeExpression::class, '__toString'), 'Class does not have method __toString');
     }
 
-    /**
-     * @dataProvider serializationProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('serializationProvider')]
     public function testSerialization($expression, $serialization)
     {
         $this->assertEquals($serialization, (string) $expression);
@@ -44,9 +42,7 @@ class RangeExpressionTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider queryProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('queryProvider')]
     public function testQueryBuild($factory, $query_context, $key, $value, $result)
     {
         $node = RangeExpression::$factory($key, $value);

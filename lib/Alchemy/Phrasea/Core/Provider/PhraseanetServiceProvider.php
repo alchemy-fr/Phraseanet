@@ -104,7 +104,7 @@ class PhraseanetServiceProvider implements ServiceProviderInterface, BootablePro
                         $app['url_generator']->getContext()->setScheme($t[0]);
                     }
                 } else {
-                    $app['url_generator']->getContext()->setHost($servername);
+                    $app['url_generator']->getContext()->setHost((string) $servername);
                 }
             }
         }

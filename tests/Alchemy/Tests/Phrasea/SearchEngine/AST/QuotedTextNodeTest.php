@@ -8,13 +8,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
-/**
- * @group unit
- * @group searchengine
- * @group ast
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+#[\PHPUnit\Framework\Attributes\Group('ast')]
 class QuotedTextNodeTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(QuotedTextNode::class, '__toString'), 'Class does not have method __toString');

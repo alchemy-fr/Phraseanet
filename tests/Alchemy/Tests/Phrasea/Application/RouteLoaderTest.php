@@ -12,11 +12,10 @@ use Silex\Route;
 class RouteLoaderTest extends \PHPUnit\Framework\TestCase
 {
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testRegisterProviderWithInvalidClassFails()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $routeLoader = new RouteLoader();
 
         $routeLoader->registerProvider('test_invalid_class', '\Alchemy\Tests\Phrasea\Application\UndefinedClass');

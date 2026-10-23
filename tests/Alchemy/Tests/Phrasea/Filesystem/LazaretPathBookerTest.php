@@ -25,14 +25,11 @@ class LazaretPathBookerTest extends \PHPUnit\Framework\TestCase
      */
     private $root;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->root = vfsStream::setup();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::bookLazaretPathfile
-     */
     public function testBookFile()
     {
         $mockedPathResolver = function ($path) {

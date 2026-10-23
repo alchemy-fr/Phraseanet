@@ -8,12 +8,12 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
-/**
- * @group unit
- * @group searchengine
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
 class QueryContextTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testFieldNarrowing()
     {
         $structure = $this->prophesize(Structure::class)->reveal();

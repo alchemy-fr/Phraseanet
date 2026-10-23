@@ -8,13 +8,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\MetadataKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\NativeKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-/**
- * @group unit
- * @group searchengine
- * @group ast
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+#[\PHPUnit\Framework\Attributes\Group('ast')]
 class MatchExpressionTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(MatchExpression::class, '__toString'), 'Class does not have method __toString');
@@ -37,9 +37,7 @@ class MatchExpressionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(json_decode($result, true), $query);
     }
 
-    /**
-     * @dataProvider keyProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('keyProvider')]
     public function testNativeQueryBuild($key, $value, $result)
     {
         $query_context = $this->prophesize(QueryContext::class);
@@ -48,7 +46,7 @@ class MatchExpressionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(json_decode($result, true), $query);
     }
 
-    public function keyProvider()
+    public static function keyProvider()
     {
         return [
             [NativeKey::database(),         'foo', '{"match":{"databox_name": "foo"}}'],

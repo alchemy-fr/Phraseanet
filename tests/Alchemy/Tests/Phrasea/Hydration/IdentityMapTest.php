@@ -16,12 +16,14 @@ use Prophecy\Argument;
 
 class IdentityMapTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var IdentityMap
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $hydrator = $this->prophesize(Hydrator::class);
 

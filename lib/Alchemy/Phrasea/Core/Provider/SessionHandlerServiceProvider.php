@@ -14,47 +14,13 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Configuration\SessionHandlerFactory;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Silex\Api\BootableProviderInterface;
-use Silex\Application;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 
-class SessionHandlerServiceProvider implements ServiceProviderInterface, BootableProviderInterface
+class SessionHandlerServiceProvider implements ServiceProviderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function register(Container $app)
     {
-        $app['session.storage.handler.factory'] = function (Application $app) {
+        $app['session.storage.handler.factory'] = function ($app) {
             return new SessionHandlerFactory($app['cache.connection-factory']);
         };
-    }
-
-    public function onKernelResponse(ResponseEvent $event)
-    {
-        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        $request = $event->getRequest();
-        if (!$request->hasSession()) {
-            return;
-        }
-
-        $session = $request->getSession();
-        if ($session->isStarted()) {
-            $session->save();
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot(Application $app)
-    {
-        // Priority should be lower than test session mock listener
-        $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'onKernelResponse'), -129);
     }
 }

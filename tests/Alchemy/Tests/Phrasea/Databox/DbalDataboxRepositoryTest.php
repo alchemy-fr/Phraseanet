@@ -19,6 +19,8 @@ use Prophecy\Prophecy\ObjectProphecy;
 
 final class DbalDataboxRepositoryTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /** @var ObjectProphecy */
     private $connection;
     /** @var ObjectProphecy */
@@ -26,7 +28,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit\Framework\TestCase
     /** @var DbalDataboxRepository */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->connection = $this->prophesize(Connection::class);
         $this->factory = $this->prophesize(DataboxFactory::class);

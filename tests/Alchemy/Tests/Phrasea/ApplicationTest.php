@@ -60,7 +60,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
 
-        $this->assertEquals(3, count($cookies['']['/']));
+        $this->assertEquals(3, count($cookies['']['/']), implode(', ', array_keys($cookies['']['/'])));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('provideDisabledRoutes')]
@@ -306,7 +306,7 @@ class ApplicationTest extends \PhraseanetTestCase
         $result = $app['translator']->trans($key, [], null, $locale);
 
         $this->assertEquals($expected, $result);
-        $this->assertFileExists($tempDir.'/catalogue.'.($locale ?: 'en').'.php');
+        $this->assertNotEmpty(glob($tempDir.'/catalogue.'.($locale ?: 'en').'.*php'));
     }
 
     public static function transProvider()

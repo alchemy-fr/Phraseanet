@@ -16,12 +16,14 @@ use Prophecy\Argument;
 
 class DataboxBoundRepositoryProviderTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var DataboxBoundRepositoryProvider
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $factory = $this->prophesize(DataboxBoundRepositoryFactory::class);
 

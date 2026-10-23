@@ -110,7 +110,7 @@ class InstallTest extends \PhraseanetTestCase
                 }
             }));
 
-        self::$DI['cli']['phraseanet.installer'] = $this->createMock('Alchemy\Phrasea\Setup\Installer');
+        self::$DI['cli']['phraseanet.installer'] = $this->createStub('Alchemy\Phrasea\Setup\Installer');
 
         self::$DI['cli']['phraseanet.installer']->expects($this->once())
             ->method('install')

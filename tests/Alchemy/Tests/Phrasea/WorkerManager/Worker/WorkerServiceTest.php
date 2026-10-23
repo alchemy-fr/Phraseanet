@@ -16,6 +16,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
  */
 class WorkerServiceTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testImplementationClass()
     {
         $app = new Application(Application::ENV_TEST);

@@ -6,16 +6,14 @@ use Alchemy\Phrasea\Utilities\CrossDomainDumper;
 
 class CrossDomainDumperTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider crossDomainProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('crossDomainProvider')]
     public function testDumper(array $configuration, $expected)
     {
         $dumper = new CrossDomainDumper();
         $this->assertEquals($dumper->dump($configuration), $expected);
     }
 
-    public function crossDomainProvider()
+    public static function crossDomainProvider()
     {
         return array(
             array(

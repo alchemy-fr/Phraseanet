@@ -13,6 +13,7 @@ use Symfony\Component\DomCrawler\Crawler;
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     private static $createdDataboxes = [];
 
     /**

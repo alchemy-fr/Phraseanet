@@ -8,6 +8,8 @@ use Alchemy\Phrasea\Border\File;
 
 class AbstractCheckerTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var Application
      */
@@ -18,7 +20,7 @@ class AbstractCheckerTest extends \PHPUnit\Framework\TestCase
      */
     private $sut;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -31,9 +33,7 @@ class AbstractCheckerTest extends \PHPUnit\Framework\TestCase
 
     }
 
-    /**
-     * @dataProvider getDataboxesCombination
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxesCombination')]
     public function testRestrictToDataboxes($databoxes, $collection, $assertion)
     {
         $file = $this->prophesize(File::class);
@@ -65,9 +65,7 @@ class AbstractCheckerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider getCollectionsCombination
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getCollectionsCombination')]
     public function testRestrictToCollections($collection, $othercollection, $assertion)
     {
         $file = $this->prophesize(File::class);
@@ -103,41 +101,33 @@ class AbstractCheckerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \LogicException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
     public function testMixCollectionFirst($databox, $collection)
     {
+        $this->expectException(\LogicException::class);
         $this->sut->restrictToCollections($collection);
         $this->sut->restrictToDataboxes($databox);
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \LogicException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
     public function testMixDataboxFirst($databox, $collection)
     {
+        $this->expectException(\LogicException::class);
         $this->sut->restrictToDataboxes($databox);
         $this->sut->restrictToCollections($collection);
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \InvalidArgumentException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
     public function testInvalidDatabox($databox, $collection)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->sut->restrictToDataboxes($collection);
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \InvalidArgumentException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
     public function testInvalidCollection($databox, $collection)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->sut->restrictToCollections($databox);
     }
 

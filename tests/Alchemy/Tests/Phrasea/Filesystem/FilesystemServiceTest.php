@@ -19,19 +19,19 @@ use Alchemy\Phrasea\Model\RecordInterface;
 
 class FilesystemServiceTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var FilesystemService
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->sut = new FilesystemService(new Filesystem());
     }
 
-    /**
-     * @dataProvider provideRecordsAndExpectedDocumentFilenames
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRecordsAndExpectedDocumentFilenames')]
     public function testItProperlyGeneratesDocumentFileNames($expected, $recordId, $filename)
     {
         $record = $this->prophesize(RecordInterface::class);
@@ -40,7 +40,7 @@ class FilesystemServiceTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $this->sut->generateDocumentFilename($record->reveal(), $filename));
     }
 
-    public function provideRecordsAndExpectedDocumentFileNames()
+    public static function provideRecordsAndExpectedDocumentFileNames()
     {
         return [
             ['2_document.jpg', 2, 'foo.jpg'],

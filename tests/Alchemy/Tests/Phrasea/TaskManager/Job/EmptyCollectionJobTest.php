@@ -10,6 +10,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class EmptyCollectionJobTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var ObjectProphecy
      */
@@ -20,7 +22,7 @@ class EmptyCollectionJobTest extends \PHPUnit\Framework\TestCase
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->translator = $this->prophesize(\Symfony\Contracts\Translation\TranslatorInterface::class);
 

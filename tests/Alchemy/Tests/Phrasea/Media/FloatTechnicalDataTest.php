@@ -30,6 +30,6 @@ final class FloatTechnicalDataTest extends \PHPUnit\Framework\TestCase
     {
         $sut = new FloatTechnicalData('foo', '3.14159');
 
-        $this->assertEquals(3.14159, $sut->getValue(), '', 0.00001);
+        $this->assertEqualsWithDelta(3.14159, $sut->getValue(), 0.00001);
     }
 }

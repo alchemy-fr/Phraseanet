@@ -32,29 +32,19 @@ final class ControllerTest extends \PHPUnit\Framework\TestCase
     /** @var Controller */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->appbox = $this->getMockBuilder(\appbox::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->appbox = $this->createMock(\appbox::class);
 
-        $this->twig = $this->getMockBuilder(\Twig\Environment::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->twig = $this->createMock(\Twig\Environment::class);
 
-        $this->aclProvider = $this->getMockBuilder(ACLProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->aclProvider = $this->createMock(ACLProvider::class);
 
-        $this->authenticator = $this->getMockBuilder(Authenticator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->authenticator = $this->createMock(Authenticator::class);
 
-        $this->app = $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->app = $this->createMock(Application::class);
 
-        $this->app->expects($this->any())
+        $this->app
             ->method('offsetGet')
             ->willReturnMap([
                 ['phraseanet.appbox', $this->appbox],
@@ -73,9 +63,7 @@ final class ControllerTest extends \PHPUnit\Framework\TestCase
 
     public function testItCanFetchDataboxById()
     {
-        $databox = $this->getMockBuilder(\databox::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $databox = $this->createStub(\databox::class);
         $this->appbox->expects($this->once())
             ->method('get_databox')
             ->with(42)
@@ -138,9 +126,7 @@ final class ControllerTest extends \PHPUnit\Framework\TestCase
     public function testItCanCreateAclForAGivenUser()
     {
         $user = new User();
-        $acl = $this->getMockBuilder(\ACL::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acl = $this->createStub(\ACL::class);
 
         $this->authenticator->expects($this->never())
             ->method('getUser');
@@ -156,9 +142,7 @@ final class ControllerTest extends \PHPUnit\Framework\TestCase
     public function testItCanCreateAclForCurrentlyLoggedUser()
     {
         $user = new User();
-        $acl = $this->getMockBuilder(\ACL::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acl = $this->createStub(\ACL::class);
 
         $this->authenticator->expects($this->once())
             ->method('getUser')

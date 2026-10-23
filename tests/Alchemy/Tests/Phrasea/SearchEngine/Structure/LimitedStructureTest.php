@@ -8,12 +8,12 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\LimitedStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
-/**
- * @group unit
- * @group structure
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('structure')]
 class LimitedStructureTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testGetUnrestrictedFields()
     {
         $field = new Field('foo', FieldMapping::TYPE_STRING, [

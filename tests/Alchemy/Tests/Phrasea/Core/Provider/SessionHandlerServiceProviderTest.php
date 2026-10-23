@@ -2,190 +2,88 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Cache\ConnectionFactory;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
+use Alchemy\Phrasea\Utilities\RedisSessionHandler;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 use Silex\Application;
 use Silex\Provider\SessionServiceProvider;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandler;
 
 class SessionHandlerServiceProviderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var SessionHandlerServiceProvider */
-    private $sut;
-
-    protected function setUp()
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVariousConfigurations')]
+    public function testWithVariousConfigurations($sessionConf, $expectedInstance, $method = null, $options = null, $connectionClass = null)
     {
-        $this->sut = new SessionHandlerServiceProvider();
-    }
+        if (null !== $connectionClass && !class_exists($connectionClass)) {
+            $this->markTestSkipped(sprintf('%s extension is not available', $connectionClass));
+        }
 
-    /**
-     * @dataProvider provideVariousConfigurations
-     */
-    public function testWithVariousConfigurations($sessionConf, $expectedInstance, $method = null, $options = null, $mock = null)
-    {
         $app = new Application();
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new SessionServiceProvider());
         $app->register(new SessionHandlerServiceProvider());
 
-        $app['conf'] = new PropertyAccess(new MockArrayConf(['main' => ['session' => $sessionConf ]]));
-        $app['cache.connection-factory'] = $this->getMockBuilder('Alchemy\Phrasea\Cache\ConnectionFactory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['conf'] = new PropertyAccess(new MockArrayConf(['main' => ['session' => $sessionConf]]));
+        $app['cache.connection-factory'] = $this->createMock(ConnectionFactory::class);
         if ($method) {
             $app['cache.connection-factory']->expects($this->once())
                 ->method($method)
                 ->with($options)
-                ->will($this->returnValue($mock));
+                ->willReturn($this->createMock($connectionClass));
         }
 
         $handler = $app['session.storage.handler.factory']->create($app['conf']);
         $this->assertInstanceOf($expectedInstance, $handler);
     }
 
-    public function provideVariousConfigurations()
+    public static function provideVariousConfigurations()
     {
-        @mkdir("/tmp/session");
-        $configurations = [
+        @mkdir('/tmp/session');
+
+        return [
+            [
+                ['type' => 'native'],
+                StrictSessionHandler::class,
+            ],
             [
                 [
-                    'type' => 'file',
+                    'type'    => 'file',
                     'options' => [
                         'save-path' => '/tmp/session',
-                    ]
+                    ],
                 ],
-                'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler'
-            ]
-        ];
-
-        if (class_exists('Memcache')) {
-            $memcache = $this->getMockBuilder('Memcache')
-                ->disableOriginalConstructor()
-                ->getMock();
-
-            $configurations[] = [
+                NativeFileSessionHandler::class,
+            ],
+            [
                 [
-                    'type'    => 'memcache',
+                    'type'    => 'memcached',
                     'options' => [
                         'host' => 'localhost',
                         'port' => '11211',
-                    ]
+                    ],
                 ],
-                'Symfony\Component\HttpFoundation\Session\Storage\Handler\WriteCheckSessionHandler',
-                'getMemcacheConnection',
-                ['host' => 'localhost', 'port' => 11211],
-                $memcache
-            ];
-        }
-
-        if (class_exists('Memcached')) {
-            // Error suppressor due to Memcached having now obsolete by reference declarations
-            @$memcached = $this->getMockBuilder('Memcached')
-                ->disableOriginalConstructor()
-                ->getMock();
-
-            $configurations[] = [
-                [
-                    'type' => 'memcached',
-                    'options' => [
-                        'host' => 'localhost',
-                        'port' => '11211',
-                    ]
-                ],
-                'Symfony\Component\HttpFoundation\Session\Storage\Handler\WriteCheckSessionHandler',
+                MemcachedSessionHandler::class,
                 'getMemcachedConnection',
                 ['host' => 'localhost', 'port' => 11211],
-                $memcached
-            ];
-        }
-
-        if (class_exists('Redis')) {
-            $redis = $this->getMockBuilder('Redis')
-                ->disableOriginalConstructor()
-                ->getMock();
-
-            $configurations[] = [
+                'Memcached',
+            ],
+            [
                 [
-                    'type' => 'redis',
+                    'type'    => 'redis',
                     'options' => [
                         'host' => '127.0.0.1',
                         'port' => '6379',
-                    ]
+                    ],
                 ],
-                'Symfony\Component\HttpFoundation\Session\Storage\Handler\WriteCheckSessionHandler',
+                RedisSessionHandler::class,
                 'getRedisConnection',
                 ['host' => '127.0.0.1', 'port' => 6379],
-                $redis
-            ];
-        }
-
-        return $configurations;
-    }
-
-    public function testItIgnoresSubRequests()
-    {
-        $event = $this->getMockBuilder(ResponseEvent::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $event->expects($this->once())
-            ->method('getRequestType')
-            ->willReturn(HttpKernelInterface::SUB_REQUEST)
-        ;
-
-        $this->sut->onKernelResponse($event);
-    }
-
-    public function testItSavesSessionAtKernelResponseEvent()
-    {
-        $session = $this->getMock(SessionInterface::class);
-        $session
-            ->expects($this->once())
-            ->method('isStarted')
-            ->willReturn(true)
-        ;
-        $session
-            ->expects($this->once())
-            ->method('save')
-        ;
-
-        $request = new Request();
-        $request->setSession($session);
-
-        $event = $this->getMockBuilder(ResponseEvent::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $event->expects($this->once())
-            ->method('getRequestType')
-            ->willReturn(HttpKernelInterface::MAIN_REQUEST)
-        ;
-        $event
-            ->expects($this->once())
-            ->method('getRequest')
-            ->willReturn($request)
-        ;
-
-        $this->sut->onKernelResponse($event);
-    }
-
-    public function testItAddsFilterResponseAtBoot()
-    {
-        $dispatcher = $this->getMock(EventDispatcherInterface::class);
-        $dispatcher
-            ->expects($this->once())
-            ->method('addListener')
-            ->with(KernelEvents::RESPONSE, [$this->sut, 'onKernelResponse'], -129);
-
-        $app = new Application();
-        $app['dispatcher'] = $dispatcher;
-
-        $this->sut->boot($app);
+                'Redis',
+            ],
+        ];
     }
 }
