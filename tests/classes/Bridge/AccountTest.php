@@ -167,8 +167,6 @@ class Bridge_AccountTest extends \PhraseanetTestCase
 
         if (null === $reflection) {
             $reflection = new ReflectionProperty(Bridge_Account::class, 'updated_on');
-
-            $reflection->setAccessible(true);
         }
 
         $reflection->setValue(self::$object, new DateTime('yesterday'));

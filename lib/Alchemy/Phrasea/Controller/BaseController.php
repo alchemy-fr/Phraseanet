@@ -35,7 +35,7 @@ abstract class BaseController
         return $this->app['authentication']->getUser();
     }
 
-    public function render($view, array $parameters = [], Response $response = null)
+    public function render($view, array $parameters = [], ?Response $response = null)
     {
         /** @var \Twig\Environment $twig */
         $twig = $this->app['twig'];

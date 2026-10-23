@@ -96,8 +96,6 @@ class Bridge_ApiTest extends \PhraseanetTestCase
 
         if (null === $reflection) {
             $reflection = new ReflectionProperty(Bridge_Api::class, 'updated_on');
-
-            $reflection->setAccessible(true);
         }
 
         $reflection->setValue($this->object, new DateTime('yesterday'));

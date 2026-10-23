@@ -30,7 +30,7 @@ abstract class patchAbstract implements patchInterface
 
     protected function tableExists(EntityManager $em, $tableName)
     {
-        return (Boolean) $em->createNativeQuery(
+        return (bool) $em->createNativeQuery(
             'SHOW TABLE STATUS WHERE Name="'.$tableName.'" COLLATE utf8_bin ', (new ResultSetMapping())->addScalarResult('Name', 'Name')
         )->getOneOrNullResult();
     }

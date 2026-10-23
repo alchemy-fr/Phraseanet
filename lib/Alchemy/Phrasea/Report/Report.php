@@ -33,7 +33,7 @@ abstract class Report
         $this->databox = $databox;
         $this->parms = $parms;
 
-        $this->databox->get_connection()->getWrappedConnection()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
+        $this->databox->get_connection()->getWrappedConnection()->setAttribute(\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY, FALSE);
     }
 
     abstract function getName();

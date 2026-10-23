@@ -953,7 +953,7 @@ class ACL implements cache_cacheableInterface
      * @param  array|null $sbas_ids Optionnal sbas_id to restrict the query on
      * @return collection[] An array of collection
      */
-    public function get_granted_base(Array $rights = [], array $sbas_ids = null)
+    public function get_granted_base(Array $rights = [], ?array $sbas_ids = null)
     {
         $this->load_rights_bas();
         $ret = [];
@@ -1888,7 +1888,7 @@ class ACL implements cache_cacheableInterface
         return $this->_limited[$base_id];
     }
 
-    public function set_limits($base_id, $limit, DateTime $limit_from = null, DateTime $limit_to = null)
+    public function set_limits($base_id, $limit, ?DateTime $limit_from = null, ?DateTime $limit_to = null)
     {
         $sql = "UPDATE basusr\n"
             . " SET time_limited = :time_limited, limited_from = :limited_from, limited_to = :limited_to\n"

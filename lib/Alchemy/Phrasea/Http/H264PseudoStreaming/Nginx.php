@@ -68,7 +68,7 @@ class Nginx extends AbstractServerMode implements H264Interface
         $pathfile = realpath($pathfile);
 
         foreach ($this->mapping as $entry) {
-            if (0 !== strpos($pathfile, $entry['directory'])) {
+            if (0 !== strpos($pathfile, (string) $entry['directory'])) {
                 continue;
             }
 

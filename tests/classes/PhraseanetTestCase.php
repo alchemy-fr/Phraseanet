@@ -468,7 +468,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         $refl = new ReflectionObject($this);
         foreach ($refl->getProperties() as $prop) {
             if (!$prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_') && 0 !== strpos($prop->getDeclaringClass()->getName(), 'Phraseanet')) {
-                $prop->setAccessible(true);
                 $prop->setValue($this, null);
             }
         }
@@ -673,7 +672,7 @@ abstract class PhraseanetTestCase extends WebTestCase
      * @param Application $app
      * @param User        $user
      */
-    protected function authenticate(Application $app, User $user = null)
+    protected function authenticate(Application $app, ?User $user = null)
     {
         /** @var User $user */
         $user = $user ?: self::$DI['user'];

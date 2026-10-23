@@ -513,7 +513,7 @@ class module_report_nav extends module_report
         return $this->report;
     }
 
-    public function buildTabInfoNav($tab = false, $navigator)
+    public function buildTabInfoNav($tab = false, $navigator = null)
     {
         $databox = $this->app->findDataboxById($this->sbas_id);
         $conn = $databox->get_connection();

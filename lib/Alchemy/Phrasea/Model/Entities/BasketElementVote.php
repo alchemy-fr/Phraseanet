@@ -157,7 +157,7 @@ class BasketElementVote
      * @param  BasketParticipant $participant
      * @return self
      */
-    private function setParticipant(BasketParticipant $participant = null)
+    private function setParticipant(?BasketParticipant $participant = null)
     {
         $this->participant = $participant;
 
@@ -180,7 +180,7 @@ class BasketElementVote
      * @param  BasketElement  $basketElement
      * @return self
      */
-    private function setBasketElement(BasketElement $basketElement = null)
+    private function setBasketElement(?BasketElement $basketElement = null)
     {
         $this->basket_element = $basketElement;
 

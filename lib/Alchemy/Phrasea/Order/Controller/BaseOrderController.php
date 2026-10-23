@@ -147,7 +147,7 @@ class BaseOrderController extends Controller
      * @param \DateTime|null $expireDate
      * @return BasketElement[]
      */
-    protected function doAcceptElements($order_id, $elementIds, User $acceptor, \DateTime $expireDate = null)
+    protected function doAcceptElements($order_id, $elementIds, User $acceptor, ?\DateTime $expireDate = null)
     {
         $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
         $order = $this->findOr404($order_id);

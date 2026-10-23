@@ -28,7 +28,7 @@ class NewEmail extends Constraint
 
     public function isAlreadyRegistered($email)
     {
-        return (Boolean) $this->repository->findByEmail($email);
+        return (bool) $this->repository->findByEmail($email);
     }
 
     public static function create(Application $app)

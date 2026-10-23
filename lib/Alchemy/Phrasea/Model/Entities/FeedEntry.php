@@ -277,7 +277,7 @@ class FeedEntry
      * @param  FeedPublisher $publisher
      * @return FeedEntry
      */
-    public function setPublisher(FeedPublisher $publisher = null)
+    public function setPublisher(?FeedPublisher $publisher = null)
     {
         $this->publisher = $publisher;
 
@@ -300,7 +300,7 @@ class FeedEntry
      * @param  Feed      $feed
      * @return FeedEntry
      */
-    public function setFeed(Feed $feed = null)
+    public function setFeed(?Feed $feed = null)
     {
         $this->feed = $feed;
 

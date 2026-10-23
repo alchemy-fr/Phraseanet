@@ -138,7 +138,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      * @param bool $substitute
      * @param array|null $data
      */
-    public function __construct(Application $app, RecordReferenceInterface $record, $name, $substitute = false, array $data = null)
+    public function __construct(Application $app, RecordReferenceInterface $record, $name, $substitute = false, ?array $data = null)
     {
         $this->app = $app;
         $this->name = $name;
@@ -206,7 +206,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             ];
         }
 
-        $normalizer = function ($field, callable $then, callable $else = null) use ($data) {
+        $normalizer = function ($field, callable $then, ?callable $else = null) use ($data) {
             if (isset($data[$field]) || array_key_exists($field, $data)) {
                 return $then($data[$field]);
             }

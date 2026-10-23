@@ -45,7 +45,7 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      * @param callable $creator Creates Reference from extracted data. no-op when null
      * @return RecordReferenceCollection
      */
-    public static function fromListExtractor($list, callable $extractor, callable $creator = null)
+    public static function fromListExtractor($list, callable $extractor, ?callable $creator = null)
     {
         Assertion::isTraversable($list);
 

@@ -81,7 +81,7 @@ class PhraseaAuthenticationForm extends AbstractType
     {
         $csrf = true;
         if (isset($this->app['phraseanet.configuration']['auth-csrf-protection'])) {
-            $csrf = (Boolean) $this->app['phraseanet.configuration']['auth-csrf-protection'];
+            $csrf = (bool) $this->app['phraseanet.configuration']['auth-csrf-protection'];
         }
 
         $resolver->setDefaults(array(

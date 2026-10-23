@@ -187,7 +187,7 @@ class Token
      * @param  \DateTime $expiration
      * @return Token
      */
-    public function setExpiration(\DateTime $expiration = null)
+    public function setExpiration(?\DateTime $expiration = null)
     {
         $this->expiration = $expiration;
 
@@ -210,7 +210,7 @@ class Token
      * @param  User  $user
      * @return Token
      */
-    public function setUser(User $user = null)
+    public function setUser(?User $user = null)
     {
         $this->user = $user;
 

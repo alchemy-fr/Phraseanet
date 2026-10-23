@@ -368,7 +368,7 @@ class Bridge_Element
      *
      * @return DateTime
      */
-    public function set_uploaded_on(DateTime $date = null)
+    public function set_uploaded_on(?DateTime $date = null)
     {
         $this->uploaded_on = $date;
         $this->updated_on = new DateTime();

@@ -34,7 +34,7 @@ class XSendFileFactory
     public function __construct(LoggerInterface $logger, $enabled, $type, array $mapping)
     {
         $this->logger = $logger;
-        $this->enabled = (Boolean) $enabled;
+        $this->enabled = (bool) $enabled;
         $this->type = strtolower($type);
         $this->mapping = $mapping;
     }

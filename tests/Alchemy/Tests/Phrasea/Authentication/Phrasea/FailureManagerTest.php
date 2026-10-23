@@ -281,7 +281,7 @@ class FailureManagerTest extends \PhraseanetTestCase
         return $failures;
     }
 
-    private function getReCaptchaMock($isSetup = true, Request $request = null, $isValid = false)
+    private function getReCaptchaMock($isSetup = true, ?Request $request = null, $isValid = false)
     {
         return $this->getMockBuilder('ReCaptcha\ReCaptcha')
             ->disableOriginalConstructor()

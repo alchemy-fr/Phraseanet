@@ -184,7 +184,7 @@ class ValidationSession
      * @param  Basket            $basket
      * @return ValidationSession
      */
-    public function setBasket(Basket $basket = null)
+    public function setBasket(?Basket $basket = null)
     {
         $this->basket = $basket;
 

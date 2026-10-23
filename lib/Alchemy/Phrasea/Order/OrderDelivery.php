@@ -45,7 +45,7 @@ class OrderDelivery
      * @param \DateTime $expireOn
      * @param PartialOrder $partialOrder
      */
-    public function __construct(Order $deliveredOrder, User $manager, $quantity, PartialOrder $partialOrder, \DateTime $expireOn = null)
+    public function __construct(Order $deliveredOrder, User $manager, $quantity, PartialOrder $partialOrder, ?\DateTime $expireOn = null)
     {
         $this->order        = $deliveredOrder;
         $this->admin        = $manager;

@@ -257,7 +257,7 @@ class caption_Field_Value implements cache_cacheableInterface
      * @return $this
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function changeVocabulary(ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    public function changeVocabulary(?ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
         if (isset($vocabulary, $vocabularyId)) {
             return $this->setVocab($vocabulary, $vocabularyId);
@@ -288,7 +288,7 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
-    public static function create(Application $app, databox_field $databox_field, \record_adapter $record, $value, ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    public static function create(Application $app, databox_field $databox_field, \record_adapter $record, $value, ?ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
         $connection = $databox_field->get_connection();
 

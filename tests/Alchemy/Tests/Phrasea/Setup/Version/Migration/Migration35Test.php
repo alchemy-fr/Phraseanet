@@ -61,7 +61,7 @@ class Migration35Test extends AbstractSetupTester
         @unlink($compiled);
     }
 
-    private function getMigration(Application $app = null)
+    private function getMigration(?Application $app = null)
     {
         $app = $app ? : new Application(Application::ENV_TEST);
 

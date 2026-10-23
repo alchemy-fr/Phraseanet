@@ -41,7 +41,7 @@ class Configuration implements ConfigurationInterface
         $this->compiler = $compiler;
         $this->config = $config;
         $this->compiled = $compiled;
-        $this->autoReload = (Boolean) $autoReload;
+        $this->autoReload = (bool) $autoReload;
     }
 
     /**

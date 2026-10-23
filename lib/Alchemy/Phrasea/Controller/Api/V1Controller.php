@@ -1465,7 +1465,7 @@ class V1Controller extends Controller
      * @param int $urlTTL
      * @return SubdefView[][]
      */
-    private function buildSubdefsViews($references, array $names = null, $urlTTL)
+    private function buildSubdefsViews($references, ?array $names = null, $urlTTL = null)
     {
         $subdefGroups = $this->app['service.media_subdef']
             ->findSubdefsByRecordReferenceFromCollection($references, $names);
@@ -2350,7 +2350,7 @@ class V1Controller extends Controller
      *
      * @return array
      */
-    private function listPublication(Feed $feed, User $user = null)
+    private function listPublication(Feed $feed, ?User $user = null)
     {
         return [
             'id'            => $feed->getId(),

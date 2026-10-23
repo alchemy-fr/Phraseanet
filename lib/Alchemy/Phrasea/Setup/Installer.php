@@ -30,7 +30,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, Connection $abConn, $serverName, array $storagePaths, Connection $dbConn = null, $templateName = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, array $storagePaths, ?Connection $dbConn = null, $templateName = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -52,7 +52,7 @@ class Installer
         return $user;
     }
 
-    private function createDB(Connection $dbConn = null, $templateName, User $admin)
+    private function createDB(?Connection $dbConn = null, $templateName = null, ?User $admin = null)
     {
         /** @var StructureTemplate $st */
         $st = $this->app['phraseanet.structure-template'];
@@ -117,7 +117,7 @@ class Installer
         $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
-    private function rollbackInstall(Connection $abConn, Connection $dbConn = null)
+    private function rollbackInstall(Connection $abConn, ?Connection $dbConn = null)
     {
         $structure = simplexml_load_file(__DIR__ . "/../../../conf.d/bases_structure.xml");
 

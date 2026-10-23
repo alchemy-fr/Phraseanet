@@ -327,7 +327,7 @@ class BasketElement
      * @param  Basket        $basket
      * @return BasketElement
      */
-    public function setBasket(Basket $basket = null)
+    public function setBasket(?Basket $basket = null)
     {
         $this->basket = $basket;
 

@@ -47,7 +47,7 @@ class Deliverer
      * @throws LogicException In case no Receiver provided
      * @throws LogicException In case a read-receipt is asked but no Emitter provided
      */
-    public function deliver(MailInterface $mail, $readReceipt = false, array $attachments = null)
+    public function deliver(MailInterface $mail, $readReceipt = false, ?array $attachments = null)
     {
         if (!$mail->getReceiver()) {
             throw new LogicException('You must provide a receiver for a mail notification');

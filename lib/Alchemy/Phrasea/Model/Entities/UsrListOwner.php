@@ -170,7 +170,7 @@ class UsrListOwner
      * @param  UsrList      $list
      * @return UsrListOwner
      */
-    public function setList(UsrList $list = null)
+    public function setList(?UsrList $list = null)
     {
         $this->list = $list;
 

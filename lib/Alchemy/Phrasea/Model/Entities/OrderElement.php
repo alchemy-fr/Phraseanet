@@ -72,7 +72,7 @@ class OrderElement
      *
      * @return $this
      */
-    public function setOrderMaster(User $user = null)
+    public function setOrderMaster(?User $user = null)
     {
         $this->orderMaster = $user;
 
@@ -116,7 +116,7 @@ class OrderElement
      * @param  Order        $order
      * @return OrderElement
      */
-    public function setOrder(Order $order = null)
+    public function setOrder(?Order $order = null)
     {
         $this->order = $order;
 

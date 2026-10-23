@@ -446,7 +446,7 @@ class databox extends base implements ThumbnailedElement
                 ]
             ) ? $type : databox_field::TYPE_STRING;
 
-            $multi = isset($field['multi']) ? (Boolean) (string) $field['multi'] : false;
+            $multi = isset($field['multi']) ? (bool) (string) $field['multi'] : false;
 
             $meta_struct_field = databox_field::create($this->app, $this, $fname);
             $meta_struct_field
@@ -548,7 +548,7 @@ class databox extends base implements ThumbnailedElement
         return $this->id;
     }
 
-    public function updateThumbnail($thumbnailType, File $file = null)
+    public function updateThumbnail($thumbnailType, ?File $file = null)
     {
         $this->delete_data_from_cache('printLogo');
     }
@@ -1429,7 +1429,7 @@ class databox extends base implements ThumbnailedElement
     {
         if (false !== $xml = $this->get_sxml_structure()) {
             foreach ($xml->xpath('/record/caninscript') as $canRegister) {
-                if (false !== (Boolean) (string) $canRegister) {
+                if (false !== (bool) (string) $canRegister) {
                     return true;
                 }
             }

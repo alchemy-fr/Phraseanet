@@ -77,7 +77,7 @@ class LazaretCheck
      * @param  LazaretFile  $lazaretFile
      * @return LazaretCheck
      */
-    public function setLazaretFile(LazaretFile $lazaretFile = null)
+    public function setLazaretFile(?LazaretFile $lazaretFile = null)
     {
         $this->lazaretFile = $lazaretFile;
 

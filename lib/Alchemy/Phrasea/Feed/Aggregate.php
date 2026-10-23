@@ -50,7 +50,7 @@ class Aggregate implements FeedInterface
      * @param Feed[]                 $feeds
      * @param AggregateToken         $token
      */
-    public function __construct(EntityManagerInterface $em, array $feeds, AggregateToken $token = null)
+    public function __construct(EntityManagerInterface $em, array $feeds, ?AggregateToken $token = null)
     {
         $this->title = 'AGGREGATE';
         $this->subtitle = 'AGGREGATE SUBTITLE';

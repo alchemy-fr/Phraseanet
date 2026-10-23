@@ -23,7 +23,7 @@ class StatusStructure implements \IteratorAggregate
     private $url;
     private $path;
 
-    public function __construct(\databox $databox, ArrayCollection $status = null)
+    public function __construct(\databox $databox, ?ArrayCollection $status = null)
     {
         $this->databox = $databox;
         $this->status = $status ?: new ArrayCollection();

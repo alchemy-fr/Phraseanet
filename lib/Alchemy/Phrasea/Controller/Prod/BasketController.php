@@ -354,7 +354,7 @@ class BasketController extends Controller
 
     public function archiveBasket(Request $request, Basket $basket)
     {
-        $archive_status = (Boolean) $request->query->get('archive');
+        $archive_status = (bool) $request->query->get('archive');
 
         $basket->setArchived($archive_status);
 

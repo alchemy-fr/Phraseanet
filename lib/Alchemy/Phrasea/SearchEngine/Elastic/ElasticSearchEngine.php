@@ -415,7 +415,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
     }
 
-    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, ?\record_adapter $record = null)
     {
         $params = [
             'index' => $this->indexName,
@@ -925,7 +925,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function clearAllCache(\DateTime $date = null)
+    public function clearAllCache(?\DateTime $date = null)
     {
     }
 }

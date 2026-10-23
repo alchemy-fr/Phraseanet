@@ -33,7 +33,7 @@ class Migration35 implements MigrationInterface
         $config = $this->app['configuration.store']->initialize()->getConfig();
 
         foreach ($config['registration-fields'] as $key => $field) {
-            $config['registration-fields'][$key]['required'] = (boolean) $field['required'];
+            $config['registration-fields'][$key]['required'] = (bool) $field['required'];
         }
 
         $retrieve_old_credentials = function () {

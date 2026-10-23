@@ -134,7 +134,7 @@ class ConfigurationTester
      */
     public function isMigrable()
     {
-        return (Boolean) $this->getMigrations();
+        return (bool) $this->getMigrations();
     }
 
     public function isConnectedToDBHost()
@@ -156,7 +156,7 @@ class ConfigurationTester
     /**
      * @return MigrationInterface[]
      */
-    public function getMigrations(InputInterface $input = null, OutputInterface $output = null)
+    public function getMigrations(?InputInterface $input = null, ?OutputInterface $output = null)
     {
        $migrations = [];
 

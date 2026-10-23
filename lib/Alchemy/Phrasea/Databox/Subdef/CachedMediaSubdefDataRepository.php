@@ -72,7 +72,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[]|null $names
      * @return array
      */
-    public function findByRecordIdsAndNames(array $recordIds, array $names = null)
+    public function findByRecordIdsAndNames(array $recordIds, ?array $names = null)
     {
         $keys = $this->computeKeys($recordIds, $names);
 
@@ -178,7 +178,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[] $keys Known keys supposed to be fetched
      * @return array
      */
-    private function fetchAndSave(array $recordIds, array $names = null, array $keys = [])
+    private function fetchAndSave(array $recordIds, ?array $names = null, array $keys = [])
     {
         $retrieved = $this->decorated->findByRecordIdsAndNames($recordIds, $names);
 
@@ -196,7 +196,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[]|null $names
      * @return string[]
      */
-    private function computeKeys(array $recordIds, array $names = null)
+    private function computeKeys(array $recordIds, ?array $names = null)
     {
         if (!$recordIds) {
             return [];

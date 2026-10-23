@@ -567,7 +567,7 @@ class User_Query
      *
      * @return $this
      */
-    public function on_base_ids(array $base_ids = null)
+    public function on_base_ids(?array $base_ids = null)
     {
         if (! $base_ids) {
             return $this;
@@ -595,7 +595,7 @@ class User_Query
      *
      * @return $this
      */
-    public function on_sbas_ids(Array $sbas_ids = null)
+    public function on_sbas_ids(?Array $sbas_ids = null)
     {
         if (! $sbas_ids) {
             return $this;

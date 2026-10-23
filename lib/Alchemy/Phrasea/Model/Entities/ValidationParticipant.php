@@ -256,7 +256,7 @@ class ValidationParticipant
      * @param  ValidationSession     $session
      * @return ValidationParticipant
      */
-    public function setSession(ValidationSession $session = null)
+    public function setSession(?ValidationSession $session = null)
     {
         $this->session = $session;
 

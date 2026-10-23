@@ -31,7 +31,7 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         }
     }
 
-    abstract protected function provideConfiguration($confFile, $compiledFile = null, Compiler $compiler = null, Yaml $yaml = null);
+    abstract protected function provideConfiguration($confFile, $compiledFile = null, ?Compiler $compiler = null, ?Yaml $yaml = null);
 
     /**
      * @expectedException \Alchemy\Phrasea\Exception\RuntimeException

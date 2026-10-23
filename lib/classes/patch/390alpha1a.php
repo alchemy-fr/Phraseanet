@@ -116,7 +116,7 @@ class patch_390alpha1a extends patchAbstract
                 $orderElement = new OrderElement();
                 $user = $this->loadUser($app['orm.em'], $row['usr_id']);
                 $orderElement->setBaseId($element['base_id'])
-                    ->setDeny($element['deny'] === null ? null : (Boolean) $element['deny'])
+                    ->setDeny($element['deny'] === null ? null : (bool) $element['deny'])
                     ->setOrder($order)
                     ->setOrderMaster($user)
                     ->setRecordId($element['record_id']);

@@ -446,7 +446,7 @@ class LegacyRecordRepository implements RecordRepository
      * @param record_adapter|null $record
      * @return record_adapter
      */
-    private function mapRecordFromResultRow(array $row, record_adapter $record = null)
+    private function mapRecordFromResultRow(array $row, ?record_adapter $record = null)
     {
         if (null === $record) {
             $record = new record_adapter($this->app, $this->databox->get_sbas_id(), $row['record_id'], null, false);

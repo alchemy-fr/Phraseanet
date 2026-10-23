@@ -138,7 +138,7 @@ class ValidationData
      * @param  ValidationParticipant $participant
      * @return ValidationData
      */
-    public function setParticipant(ValidationParticipant $participant = null)
+    public function setParticipant(?ValidationParticipant $participant = null)
     {
         $this->participant = $participant;
 
@@ -161,7 +161,7 @@ class ValidationData
      * @param  BasketElement  $basketElement
      * @return ValidationData
      */
-    public function setBasketElement(BasketElement $basketElement = null)
+    public function setBasketElement(?BasketElement $basketElement = null)
     {
         $this->basket_element = $basketElement;
 

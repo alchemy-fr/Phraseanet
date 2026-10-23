@@ -68,7 +68,7 @@ class SubdefGenerator
         $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);;
     }
 
-    public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
+    public function generateSubdefs(\record_adapter $record, ?array $wanted_subdefs = null)
     {
         if ($record->get_hd_file() !== null && $record->get_hd_file()->getMimeType() == "application/x-indesign") {
             $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());

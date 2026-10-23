@@ -30,7 +30,7 @@ class FtpExportRepository extends EntityRepository
      *
      * @return array
      */
-    public function findCrashedExports(\DateTime $before = null)
+    public function findCrashedExports(?\DateTime $before = null)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->where($qb->expr()->gte('e.crash', 'e.nbretry'));

@@ -159,7 +159,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
         }
     }
 
-    private function getTester(Application $app = null)
+    private function getTester(?Application $app = null)
     {
         $app = $app ? : new Application(Application::ENV_TEST);
 

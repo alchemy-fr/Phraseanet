@@ -148,7 +148,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
      */
     private function tableExists(EntityManager $em, $table)
     {
-        return (Boolean) $em->createNativeQuery(
+        return (bool) $em->createNativeQuery(
             'SHOW TABLE STATUS WHERE Name = :table', (new ResultSetMapping())->addScalarResult('Name', 'Name')
         )->setParameter(':table', $table)->getOneOrNullResult();
     }
@@ -322,7 +322,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
      */
     private function hasField(EntityManager $em, $fieldName)
     {
-        return (Boolean) $em->createNativeQuery(
+        return (bool) $em->createNativeQuery(
             "SHOW FIELDS FROM usr WHERE Field = :field",
             (new ResultSetMapping())->addScalarResult('Field', 'Field')
         )->setParameter(':field', $fieldName)->getOneOrNullResult();
@@ -415,7 +415,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
                 $credential->setActive($row['activeFTP']);
                 $credential->setAddress($row['addrFTP']);
                 $credential->setLogin($row['loginFTP']);
-                $credential->setMaxRetry((Integer) $row['retryFTP']);
+                $credential->setMaxRetry((int) $row['retryFTP']);
                 $credential->setPassive($row['passifFTP']);
                 $credential->setPassword($row['pwdFTP']);
                 $credential->setReceptionFolder($row['destFTP']);

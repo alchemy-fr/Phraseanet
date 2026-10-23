@@ -131,7 +131,7 @@ WHERE base_id = :baseId';
         return null;
     }
 
-    public function findHavingOrderMaster(array $baseIdsSubset = null)
+    public function findHavingOrderMaster(?array $baseIdsSubset = null)
     {
         $query = self::$selectQuery
             . ' WHERE EXISTS(SELECT 1 FROM basusr WHERE basusr.order_master = 1 AND basusr.base_id = bas.base_id)';

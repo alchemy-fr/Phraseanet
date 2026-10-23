@@ -506,7 +506,7 @@ class WorkerRunningJobRepository extends EntityRepository
         ]);
     }
 
-    public function getRunningSinceCreated($hour = 0, array $action = null)
+    public function getRunningSinceCreated($hour = 0, ?array $action = null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\WorkerRunningJob', 'w');

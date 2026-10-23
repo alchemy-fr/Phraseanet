@@ -132,7 +132,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $ref = new \ReflectionObject($session);
         $prop = $ref->getProperty('id');
-        $prop->setAccessible(true);
         $prop->setValue($session, $sessionId);
 
         $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
@@ -176,7 +175,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $ref = new \ReflectionObject($session);
         $prop = $ref->getProperty('id');
-        $prop->setAccessible(true);
         $prop->setValue($session, $sessionId);
 
         $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')

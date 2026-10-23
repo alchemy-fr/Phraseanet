@@ -31,7 +31,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[]|null $names
      * @return array[]
      */
-    public function findByRecordIdsAndNames(array $recordIds, array $names = null)
+    public function findByRecordIdsAndNames(array $recordIds, ?array $names = null)
     {
         if (!$recordIds || (null !== $names && !$names)) {
             return [];

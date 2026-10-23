@@ -312,7 +312,7 @@ class Order
      * @param  Basket $basket
      * @return Order
      */
-    public function setBasket(Basket $basket = null)
+    public function setBasket(?Basket $basket = null)
     {
         if ($this->basket) {
             $this->basket->setOrder(null);

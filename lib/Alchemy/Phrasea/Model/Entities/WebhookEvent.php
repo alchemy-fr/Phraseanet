@@ -182,7 +182,7 @@ class WebhookEvent
      */
     public function setProcessed($processed)
     {
-        $this->processed = (Boolean) $processed;
+        $this->processed = (bool) $processed;
 
         return $this;
     }

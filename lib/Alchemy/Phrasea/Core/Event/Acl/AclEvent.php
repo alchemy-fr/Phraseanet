@@ -26,7 +26,7 @@ abstract class AclEvent extends Event
      * @param ACL $acl
      * @param array|null $args
      */
-    public function __construct(ACL $acl, array $args = null)
+    public function __construct(ACL $acl, ?array $args = null)
     {
         $this->acl = $acl;
         $this->args = $args;

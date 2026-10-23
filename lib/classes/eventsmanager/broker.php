@@ -203,7 +203,7 @@ class eventsmanager_broker
     const READ = 1;
     const UNREAD = 2;
 
-    public function get_notifications(int $offset=0, int $limit=10, $readFilter = self::READ | self::UNREAD, \Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
+    public function get_notifications(int $offset=0, int $limit=10, $readFilter = self::READ | self::UNREAD, ?\Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
     {
         if(!$this->app->getAuthenticatedUser()) {
             return;

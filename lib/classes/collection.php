@@ -59,7 +59,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         return $registry->getRepositoryByDatabox($databoxId);
     }
 
-    public static function create(Application $app, databox $databox, appbox $appbox, $name, User $user = null)
+    public static function create(Application $app, databox $databox, appbox $appbox, $name, ?User $user = null)
     {
         $databoxId = $databox->get_sbas_id();
 
@@ -668,10 +668,10 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      * @param string $thumbnailType
      * @param File $file
      */
-    public function updateThumbnail($thumbnailType, File $file = null)
+    public function updateThumbnail($thumbnailType, ?File $file = null)
     {
         switch ($thumbnailType) {
-            case ThumbnailManager::TYPE_WM;
+            case ThumbnailManager::TYPE_WM:
                 $this->reset_watermark();
                 break;
             case ThumbnailManager::TYPE_LOGO:
@@ -709,7 +709,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      * @param SplFileInfo $pathfile
      * @return $this
      */
-    public function update_logo(\SplFileInfo $pathfile = null)
+    public function update_logo(?\SplFileInfo $pathfile = null)
     {
         $fileContents = null;
 

@@ -44,7 +44,7 @@ class CsvFileIterator implements Iterator
     private function fgetcsv()
     {
         do {
-            $line = $this->file->fgetcsv();
+            $line = $this->file->fgetcsv(escape: '\\');
         }
         while (isset($line[0]) && '#' === substr($line[0], 0, 1));
 

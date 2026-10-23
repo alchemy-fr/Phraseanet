@@ -71,8 +71,8 @@ class FeedItemRepository extends EntityRepository
 
             $query = $this->_em->createQuery($dql);
             $query
-                ->setFirstResult((integer) $nbItems * $execution)
-                ->setMaxResults((integer) $nbItems);
+                ->setFirstResult((int) $nbItems * $execution)
+                ->setMaxResults((int) $nbItems);
 
             $result = $query->getResult();
 

@@ -135,7 +135,7 @@ class SessionModule
      * @param  Session       $session
      * @return SessionModule
      */
-    public function setSession(Session $session = null)
+    public function setSession(?Session $session = null)
     {
         $this->session = $session;
 

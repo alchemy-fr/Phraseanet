@@ -81,7 +81,7 @@ class FeedToken
      * @param  Feed      $feed
      * @return FeedToken
      */
-    public function setFeed(Feed $feed = null)
+    public function setFeed(?Feed $feed = null)
     {
         $this->feed = $feed;
 

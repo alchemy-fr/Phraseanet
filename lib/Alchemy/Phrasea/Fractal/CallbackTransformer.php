@@ -19,7 +19,7 @@ class CallbackTransformer extends TransformerAbstract
      */
     private $callback;
 
-    public function __construct(callable $callback = null)
+    public function __construct(?callable $callback = null)
     {
         if (null === $callback) {
             $callback = function () {

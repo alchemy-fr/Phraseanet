@@ -478,7 +478,7 @@ class LazaretFile
      * @param  LazaretSession $session
      * @return LazaretFile
      */
-    public function setSession(LazaretSession $session = null)
+    public function setSession(?LazaretSession $session = null)
     {
         $this->session = $session;
 

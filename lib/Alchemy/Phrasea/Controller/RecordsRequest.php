@@ -41,7 +41,7 @@ class RecordsRequest extends ArrayCollection
      * @param Basket|null     $basket
      * @param Boolean         $flatten
      */
-    public function __construct(array $elements, ArrayCollection $rejected, ArrayCollection $received, Basket $basket = null, $flatten = self::FLATTEN_NO)
+    public function __construct(array $elements, ArrayCollection $rejected, ArrayCollection $received, ?Basket $basket = null, $flatten = self::FLATTEN_NO)
     {
         parent::__construct($elements);
         $this->received = $received;

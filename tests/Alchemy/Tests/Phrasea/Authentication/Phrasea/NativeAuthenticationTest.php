@@ -246,7 +246,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         return $manipulator;
     }
 
-    private function getEntityRepositoryMock(User $user = null)
+    private function getEntityRepositoryMock(?User $user = null)
     {
         $repoMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\UserRepository')->disableOriginalConstructor()->getMock();
         $repoMock->expects($this->any())->method('findRealUserByLogin')->will($this->returnValue($user));

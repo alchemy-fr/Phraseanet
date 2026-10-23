@@ -125,7 +125,7 @@ class FeedItem
      * @param  FeedEntry $entry
      * @return FeedItem
      */
-    public function setEntry(FeedEntry $entry = null)
+    public function setEntry(?FeedEntry $entry = null)
     {
         $this->entry = $entry;
 

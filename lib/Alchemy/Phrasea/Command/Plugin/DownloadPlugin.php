@@ -80,7 +80,6 @@ class DownloadPlugin extends AbstractPluginCommand
                     curl_setopt($ch, CURLOPT_FILE, $fp);
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                     curl_exec($ch);
-                    curl_close($ch);
                     fclose($fp);
 
                     // unpack

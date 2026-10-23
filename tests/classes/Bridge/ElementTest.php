@@ -154,8 +154,6 @@ class Bridge_ElementTest extends \PhraseanetTestCase
 
         if (null === $reflection) {
             $reflection = new ReflectionProperty(Bridge_Element::class, 'updated_on');
-
-            $reflection->setAccessible(true);
         }
 
         $reflection->setValue($this->object, new DateTime('yesterday'));

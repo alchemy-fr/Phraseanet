@@ -157,7 +157,6 @@ class report_reportTest extends \report_abstractReportTestCase
 
             $r = new \ReflectionObject($report);
             $p = $r->getProperty('app');
-            $p->setAccessible(true);
             $p->setValue($report, self::$DI['app']);
 
             $report->setRequest('SELECT

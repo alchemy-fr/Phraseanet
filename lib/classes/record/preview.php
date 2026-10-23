@@ -76,7 +76,7 @@ class record_preview extends record_adapter
 
     protected $statistics;
 
-    public function __construct(Application $app, $env, $pos, $contId, SearchEngineInterface $search_engine = null, $query = '', SearchEngineOptions $options = null)
+    public function __construct(Application $app, $env, $pos, $contId, ?SearchEngineInterface $search_engine = null, $query = '', ?SearchEngineOptions $options = null)
     {
         $number = null;
         $this->env = $env;

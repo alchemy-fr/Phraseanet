@@ -41,7 +41,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
     /**
      * {@inheritdoc}
      */
-    public function createResponse(Application $app, FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet')
+    public function createResponse(Application $app, FeedInterface $feed, $page, ?User $user = null, $generator = 'Phraseanet')
     {
         $content = $this->format($feed, $page, $user, $generator, $app);
         $response = new Response($content, 200, ['Content-Type' => 'application/rss+xml']);
@@ -52,7 +52,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
     /**
      * {@inheritdoc}
      */
-    public function format(FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet', Application $app = null)
+    public function format(FeedInterface $feed, $page, ?User $user = null, $generator = 'Phraseanet', ?Application $app = null)
     {
         $doc = new \DOMDocument('1.0', 'UTF-8');
         $doc->formatOutput = true;

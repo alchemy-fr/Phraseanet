@@ -74,5 +74,5 @@ interface RecordInterface extends RecordReferenceInterface
      * @param array $fields Returns only public fields when null
      * @return array
      */
-    public function getCaption(array $fields = null);
+    public function getCaption(?array $fields = null);
 }

@@ -98,7 +98,7 @@ class DataboxesController extends Controller
             'sbas'       => $sbas,
             'error_msg'  => $errorMsg,
             'advices'    => $request->query->get('advices', []),
-            'reloadTree' => (Boolean) $request->query->get('reload-tree'),
+            'reloadTree' => (bool) $request->query->get('reload-tree'),
         ]);
     }
 

@@ -313,7 +313,7 @@ class Feed implements FeedInterface
      *
      * @return void
      */
-    public function setCollection(\collection $collection = null)
+    public function setCollection(?\collection $collection = null)
     {
         if ($collection === null) {
             $this->baseId = null;

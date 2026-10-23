@@ -420,7 +420,7 @@ class RecordsActionsWorker implements WorkerInterface
 
         // criteria <number field="XXX" compare="OP" value="ZZZ" />
         foreach ($sxIf->number as $x) {
-            $this->add_IF_NumberClause($sqlBuilder, $databox, trim($x['field']), trim($x['compare']), (double)($x['value']));
+            $this->add_IF_NumberClause($sqlBuilder, $databox, trim($x['field']), trim($x['compare']), (float) $x['value']);
         }
 
         // criteria <is_set field="XXX" />

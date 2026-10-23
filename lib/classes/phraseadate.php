@@ -82,7 +82,7 @@ class phraseadate
      * @param  DateTime $date
      * @return string
      */
-    public function getPrettyString(DateTime $date = null)
+    public function getPrettyString(?DateTime $date = null)
     {
         if (is_null($date)) {
             return null;
@@ -120,7 +120,7 @@ class phraseadate
         }
     }
 
-    public function getFormatedDate(DateTime $date = null)
+    public function getFormatedDate(?DateTime $date = null)
     {
         // this force date format to dd MMMM yyyy
         $fmt = new IntlDateFormatter(

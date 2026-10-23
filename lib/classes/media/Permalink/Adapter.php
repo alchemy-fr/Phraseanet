@@ -51,7 +51,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
      * @param media_subdef $media_subdef
      * @param array $data
      */
-    public function __construct(Application $app, databox $databox, media_subdef $media_subdef, array $data = null)
+    public function __construct(Application $app, databox $databox, media_subdef $media_subdef, ?array $data = null)
     {
         $this->app = $app;
         $this->databox = $databox;

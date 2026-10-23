@@ -239,7 +239,7 @@ class FtpExportElement
      */
     public function setError($error)
     {
-        $this->error = (Boolean) $error;
+        $this->error = (bool) $error;
 
         return $this;
     }
@@ -263,7 +263,7 @@ class FtpExportElement
      */
     public function setDone($done)
     {
-        $this->done = (Boolean) $done;
+        $this->done = (bool) $done;
 
         return $this;
     }
@@ -287,7 +287,7 @@ class FtpExportElement
      */
     public function setBusinessfields($businessfields)
     {
-        $this->businessfields = (Boolean) $businessfields;
+        $this->businessfields = (bool) $businessfields;
 
         return $this;
     }
@@ -357,7 +357,7 @@ class FtpExportElement
      *
      * @return FtpExportElement
      */
-    public function setExport(FtpExport $export = null)
+    public function setExport(?FtpExport $export = null)
     {
         $this->export = $export;
 

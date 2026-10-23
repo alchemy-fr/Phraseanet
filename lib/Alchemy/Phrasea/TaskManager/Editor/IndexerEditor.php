@@ -28,7 +28,7 @@ class IndexerEditor extends AbstractEditor
     /**
      * {@inheritdoc}
      */
-    public function getDefaultSettings(PropertyAccess $config = null)
+    public function getDefaultSettings(?PropertyAccess $config = null)
     {
         return <<<XML
 <?xml version="1.0" encoding="UTF-8"?>

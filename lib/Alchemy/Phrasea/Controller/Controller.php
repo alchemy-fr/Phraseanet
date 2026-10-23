@@ -95,7 +95,7 @@ class Controller
      * @param User|null $user
      * @return \ACL
      */
-    public function getAclForUser(User $user = null)
+    public function getAclForUser(?User $user = null)
     {
         $aclProvider = $this->getAclProvider();
 

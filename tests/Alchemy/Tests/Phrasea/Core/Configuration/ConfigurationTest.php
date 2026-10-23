@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ConfigurationTest extends ConfigurationTestCase
 {
-    protected function provideConfiguration($confFile, $compiledFile = null, Compiler $compiler = null, Yaml $yaml = null, $autoreload = false)
+    protected function provideConfiguration($confFile, $compiledFile = null, ?Compiler $compiler = null, ?Yaml $yaml = null, $autoreload = false)
     {
         if (null === $compiledFile) {
             $compiledFile = $this->compiled;

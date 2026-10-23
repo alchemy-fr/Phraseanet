@@ -39,7 +39,7 @@ class ReconnectableConnection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    public function query()
+    public function query(string $sql)
     {
         return $this->tryMethod(__FUNCTION__, func_get_args());
     }

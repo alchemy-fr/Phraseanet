@@ -36,7 +36,7 @@ class Filename extends AbstractChecker
             $options['sensitive'] = false;
         }
 
-        $this->sensitive = (boolean) $options['sensitive'];
+        $this->sensitive = (bool) $options['sensitive'];
         parent::__construct($app);
     }
 

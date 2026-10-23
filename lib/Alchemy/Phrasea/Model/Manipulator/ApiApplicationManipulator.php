@@ -32,7 +32,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
         $this->randomGenerator = $random;
     }
 
-    public function create($name, $type, $description, $applicationWebsite, User $creator = null, $redirectUri = null)
+    public function create($name, $type, $description, $applicationWebsite, ?User $creator = null, $redirectUri = null)
     {
         $application = new ApiApplication();
         $application->setCreator($creator);

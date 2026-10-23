@@ -72,7 +72,7 @@ class appbox extends base
         parent::__construct($app, $connection, $connectionSettings, $versionRepository);
     }
 
-    public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
+    public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, ?SymfoFile $pathfile = null, $pic_type = null)
     {
         $manager = new \Alchemy\Phrasea\Core\Thumbnail\CollectionThumbnailManager(
             $this->app,
@@ -86,7 +86,7 @@ class appbox extends base
         return $this;
     }
 
-    public function write_databox_pic(Alchemyst $alchemyst, Filesystem $filesystem, databox $databox, SymfoFile $pathfile = null, $pic_type)
+    public function write_databox_pic(Alchemyst $alchemyst, Filesystem $filesystem, databox $databox, ?SymfoFile $pathfile = null, $pic_type = null)
     {
         $manager = new \Alchemy\Phrasea\Core\Thumbnail\DataboxThumbnailManager(
             $this->app,
@@ -170,7 +170,7 @@ class appbox extends base
 
         $indexable = $row ? $row['indexable'] : null;
 
-        return (Boolean) $indexable;
+        return (bool) $indexable;
     }
 
     /**

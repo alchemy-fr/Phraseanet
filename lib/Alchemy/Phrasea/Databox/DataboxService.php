@@ -78,7 +78,7 @@ class DataboxService
      * @param DataboxConnectionSettings|null $connectionSettings
      * @return bool
      */
-    public function exists($databaseName, DataboxConnectionSettings $connectionSettings = null)
+    public function exists($databaseName, ?DataboxConnectionSettings $connectionSettings = null)
     {
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
@@ -131,7 +131,7 @@ class DataboxService
         $databaseName,
         $templateName,
         User $owner,
-        DataboxConnectionSettings $connectionSettings = null
+        ?DataboxConnectionSettings $connectionSettings = null
     ) {
         $this->validateDatabaseName($databaseName);
 
@@ -195,7 +195,7 @@ class DataboxService
      * @param DataboxConnectionSettings $connectionSettings
      * @return \databox
      */
-    public function mountDatabox($databaseName, User $owner, DataboxConnectionSettings $connectionSettings = null)
+    public function mountDatabox($databaseName, User $owner, ?DataboxConnectionSettings $connectionSettings = null)
     {
         $this->validateDatabaseName($databaseName);
 

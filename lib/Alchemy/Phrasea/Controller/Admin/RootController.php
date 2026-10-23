@@ -529,7 +529,7 @@ class RootController extends Controller
         return $this->app['manipulator.api-oauth-token'];
     }
 
-    private function dispatchEvent($eventName, StatusBitEvent $event = null)
+    private function dispatchEvent($eventName, ?StatusBitEvent $event = null)
     {
         $this->app['dispatcher']->dispatch($event, $eventName);
     }

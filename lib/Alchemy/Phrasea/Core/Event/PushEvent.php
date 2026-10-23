@@ -26,7 +26,7 @@ class PushEvent extends SfEvent
         $this->basket = $basket;
         $this->message = $message;
         $this->url = $url;
-        $this->receipt = (Boolean) $receipt;
+        $this->receipt = (bool) $receipt;
     }
 
     /**

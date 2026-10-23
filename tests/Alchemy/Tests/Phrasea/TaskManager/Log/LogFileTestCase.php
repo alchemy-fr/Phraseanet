@@ -33,7 +33,7 @@ abstract class LogFileTestCase extends \PhraseanetTestCase
     public function testGetPathIsInRoot()
     {
         $log = $this->getLogFile($this->root);
-        $this->assertSame(0, strpos($log->getPath(), $this->root));
+        $this->assertSame(0, strpos($log->getPath(), (string) $this->root));
     }
 
     public function testGetContent()

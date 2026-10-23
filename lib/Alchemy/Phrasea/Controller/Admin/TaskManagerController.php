@@ -311,7 +311,7 @@ class TaskManagerController extends Controller
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->strictErrorChecking = true;
 
-        return (Boolean) @$dom->loadXML($string);
+        return (bool) @$dom->loadXML($string);
     }
 
     private function getTaskResourceUrls($taskId)

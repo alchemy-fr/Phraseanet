@@ -406,7 +406,7 @@ class SearchEngineOptions
      * @param \DateTime $min_date
      * @return $this
      */
-    public function setMinDate(\DateTime $min_date = null)
+    public function setMinDate(?\DateTime $min_date = null)
     {
         if ($min_date && $this->date_max && $min_date > $this->date_max) {
             throw new \LogicException('Min-date should be before max-date');
@@ -429,7 +429,7 @@ class SearchEngineOptions
      * @param \DateTime|string $max_date
      * @return $this
      */
-    public function setMaxDate(\DateTime $max_date = null)
+    public function setMaxDate(?\DateTime $max_date = null)
     {
         if ($max_date && $this->date_max && $max_date < $this->date_min) {
             throw new \LogicException('Min-date should be before max-date');
@@ -497,7 +497,7 @@ class SearchEngineOptions
         $options = new static($app['repo.collection-references']);
 
         if($user) {
-            $options->setIncludeUnsetFieldFacet((Boolean)(self::getSettings($app)->getUserSetting($user, 'show_unset_field_facet', false)));
+            $options->setIncludeUnsetFieldFacet((bool) self::getSettings($app)->getUserSetting($user, 'show_unset_field_facet', false));
         }
         else {
             $options->setIncludeUnsetFieldFacet(false);
@@ -509,7 +509,7 @@ class SearchEngineOptions
         $options->setSearchType($request->get('search_type'));
         $options->setRecordType($request->get('record_type'));
         $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
-        $options->setStemming((Boolean) $request->get('stemme'));
+        $options->setStemming((bool) $request->get('stemme'));
 
         $min_date = $max_date = null;
         if ($request->get('date_min')) {
@@ -598,7 +598,7 @@ class SearchEngineOptions
         $options->setFields($databoxFields);
         $options->setDateFields($databoxDateFields);
 
-        $options->setUseTruncation((Boolean) $request->get('truncation'));
+        $options->setUseTruncation((bool) $request->get('truncation'));
 
         return $options;
     }

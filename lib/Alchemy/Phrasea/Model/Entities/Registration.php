@@ -82,7 +82,7 @@ class Registration
      */
     public function setPending($pending)
     {
-        $this->pending = (Boolean) $pending;
+        $this->pending = (bool) $pending;
 
         return $this;
     }
@@ -102,7 +102,7 @@ class Registration
      */
     public function setRejected($rejected)
     {
-        $this->rejected = (Boolean) $rejected;
+        $this->rejected = (bool) $rejected;
 
         return $this;
     }

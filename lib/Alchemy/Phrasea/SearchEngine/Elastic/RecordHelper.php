@@ -151,7 +151,7 @@ class RecordHelper
                 $value = str_replace("\0", '', $value); // no null char for lucene !
                 if( strlen($value) > 32766) {      // for lucene limit, before a better solution
                     for($l=32766; $l > 0; $l--) {
-                        if(ord(substr($value, $l-1, 1)) < 128) {
+                        if(ord(substr($value, $l-1, 1)[0]) < 128) {
                             break;
                         }
                     }

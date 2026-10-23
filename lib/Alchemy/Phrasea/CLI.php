@@ -122,7 +122,7 @@ class CLI extends Application
         $this['console']->setDispatcher($this['dispatcher']);
     }
 
-    public function run(\Symfony\Component\HttpFoundation\Request $request = null)
+    public function run(?\Symfony\Component\HttpFoundation\Request $request = null)
     {
         if (null !== $request) {
             throw new RuntimeException('Phraseanet Konsole can not run Http Requests.');

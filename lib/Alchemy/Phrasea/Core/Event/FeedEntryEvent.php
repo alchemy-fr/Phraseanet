@@ -22,7 +22,7 @@ class FeedEntryEvent extends SfEvent
     public function __construct(FeedEntry $entry, $emailNotification)
     {
         $this->entry = $entry;
-        $this->emailNotification = (Boolean) $emailNotification;
+        $this->emailNotification = (bool) $emailNotification;
     }
 
     public function getFeedEntry()

@@ -59,7 +59,7 @@ class RecordMoverJob extends AbstractJob
         $app = $data->getApplication();
 
         $settings = simplexml_load_string($data->getTask()->getSettings());
-        $logsql = (Boolean) $settings->logsql;
+        $logsql = (bool) $settings->logsql;
         $tasks = array();
         foreach($settings->tasks->task as $task) {
             $tasks[] = $task;

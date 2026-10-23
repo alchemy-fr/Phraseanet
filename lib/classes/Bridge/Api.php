@@ -100,7 +100,7 @@ class Bridge_Api
      * @param null|DateTime $checkDate
      * @return bool
      */
-    public function is_disabled(DateTime $checkDate = null)
+    public function is_disabled(?DateTime $checkDate = null)
     {
         if ($this->disable_time === null) {
             return false;

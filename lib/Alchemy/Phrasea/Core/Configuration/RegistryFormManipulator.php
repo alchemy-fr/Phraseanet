@@ -44,7 +44,7 @@ class RegistryFormManipulator
      *
      * @return FormInterface
      */
-    public function createForm(PropertyAccess $conf = null)
+    public function createForm(?PropertyAccess $conf = null)
     {
         $form = $this->factory->create(new MainConfigurationFormType($this->translator, $this->languages));
         $currentConf = $conf ? ($conf->get('registry') ?: []) : [];
@@ -63,7 +63,7 @@ class RegistryFormManipulator
      * @param PropertyAccess $conf
      * @return array
      */
-    public function getRegistryData(FormInterface $form = null, PropertyAccess $conf = null)
+    public function getRegistryData(?FormInterface $form = null, ?PropertyAccess $conf = null)
     {
         $data = [];
 

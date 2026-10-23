@@ -182,7 +182,7 @@ class RegistrationService
         return null;
     }
 
-    public function registerUser(array $data, array $selectedCollections = null, $providerId = null)
+    public function registerUser(array $data, ?array $selectedCollections = null, $providerId = null)
     {
         $provider = null;
 

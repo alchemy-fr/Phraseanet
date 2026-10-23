@@ -145,7 +145,7 @@ class ApiAccount
      */
     public function setRevoked($revoked)
     {
-        $this->revoked = (Boolean) $revoked;
+        $this->revoked = (bool) $revoked;
 
         return $this;
     }

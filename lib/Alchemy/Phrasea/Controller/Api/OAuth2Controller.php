@@ -147,7 +147,7 @@ class OAuth2Controller extends Controller
 
             return $r;
         } elseif (!$appAuthorized && $actionAccept !== null) {
-            $appAuthorized = (Boolean) $actionAccept;
+            $appAuthorized = (bool) $actionAccept;
             if ($appAuthorized) {
                 $this->getApiAccountManipulator()
                     ->authorizeAccess($account);

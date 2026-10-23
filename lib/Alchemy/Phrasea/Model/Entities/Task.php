@@ -248,7 +248,7 @@ class Task
      */
     public function setSingleRun($singleRun)
     {
-        $this->singleRun = (Boolean) $singleRun;
+        $this->singleRun = (bool) $singleRun;
 
         return $this;
     }
@@ -339,7 +339,7 @@ class Task
 
     public function setPeriod($period)
     {
-        $this->period = (integer) $period;
+        $this->period = (int) $period;
 
         return $this;
     }

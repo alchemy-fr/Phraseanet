@@ -301,7 +301,7 @@ class UserManipulator implements ManipulatorInterface
     public function setNotificationSetting(User $user, $name, $value)
     {
         if ($user->getNotificationSettings()->containsKey($name)) {
-            $user->getNotificationSettings()->get($name)->setValue((Boolean) $value);
+            $user->getNotificationSettings()->get($name)->setValue((bool) $value);
         } else {
             $userSetting = new UserNotificationSetting();
             $userSetting->setUser($user);
@@ -372,7 +372,7 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetEmail(User $user, $email)
     {
-        if (null !== $email && false === (Boolean) \Swift_Validate::email($email)) {
+        if (null !== $email && false === (bool) \Swift_Validate::email($email)) {
             throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
         }
 

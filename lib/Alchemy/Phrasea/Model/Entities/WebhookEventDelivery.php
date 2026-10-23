@@ -96,7 +96,7 @@ class WebhookEventDelivery
      */
     public function setDelivered($delivered)
     {
-        $this->delivered = (Boolean) $delivered;
+        $this->delivered = (bool) $delivered;
 
         return $this;
     }

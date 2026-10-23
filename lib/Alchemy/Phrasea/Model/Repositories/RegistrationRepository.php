@@ -135,7 +135,7 @@ class RegistrationRepository extends EntityRepository
     public static function nullOrBoolean($v)
     {
         if(!is_null($v)) {
-            $v = (boolean)$v;
+            $v = (bool) $v;
         }
         return $v;
     }

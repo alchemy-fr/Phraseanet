@@ -59,7 +59,7 @@ class RecordIndexer
         DataboxFetcherFactory $fetcherFactory,
         RecordHelper $helper,
         EventDispatcherInterface $eventDispatcher,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->fetcherFactory = $fetcherFactory;

@@ -280,7 +280,7 @@ class FtpExport
      */
     public function setSsl($ssl)
     {
-        $this->ssl = (Boolean) $ssl;
+        $this->ssl = (bool) $ssl;
 
         return $this;
     }
@@ -352,7 +352,7 @@ class FtpExport
      */
     public function setPassif($passif)
     {
-        $this->passif = (Boolean) $passif;
+        $this->passif = (bool) $passif;
 
         return $this;
     }
@@ -496,7 +496,7 @@ class FtpExport
      */
     public function setLogfile($logfile)
     {
-        $this->logfile = (Boolean) $logfile;
+        $this->logfile = (bool) $logfile;
 
         return $this;
     }

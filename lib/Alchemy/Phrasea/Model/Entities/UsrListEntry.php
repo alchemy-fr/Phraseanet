@@ -135,7 +135,7 @@ class UsrListEntry
      * @param  UsrList      $list
      * @return UsrListEntry
      */
-    public function setList(UsrList $list = null)
+    public function setList(?UsrList $list = null)
     {
         $this->list = $list;
 

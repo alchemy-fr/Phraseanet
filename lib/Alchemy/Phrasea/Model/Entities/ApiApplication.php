@@ -165,7 +165,7 @@ class ApiApplication
      */
     public function setActivated($activated)
     {
-        $this->activated = (Boolean) $activated;
+        $this->activated = (bool) $activated;
 
         return $this;
     }
@@ -243,7 +243,7 @@ class ApiApplication
      *
      * @return ApiApplication
      */
-    public function setCreator(User $creator = null)
+    public function setCreator(?User $creator = null)
     {
         $this->creator = $creator;
 
@@ -285,7 +285,7 @@ class ApiApplication
      */
     public function setGrantPassword($grantPassword)
     {
-        $this->grantPassword = (Boolean) $grantPassword;
+        $this->grantPassword = (bool) $grantPassword;
 
         return $this;
     }
@@ -516,6 +516,6 @@ class ApiApplication
      */
     public function setWebhookActive($webhookActive)
     {
-        $this->webhookActive = (Boolean) $webhookActive;
+        $this->webhookActive = (bool) $webhookActive;
     }
 }

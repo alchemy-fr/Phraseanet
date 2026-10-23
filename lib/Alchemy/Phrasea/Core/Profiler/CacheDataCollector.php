@@ -70,7 +70,7 @@ class CacheDataCollector implements DataCollectorInterface
      * @param Response $response A Response instance
      * @param \Exception $exception An Exception instance
      */
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, ?\Exception $exception = null)
     {
         $this->startProfile = new CacheProfile($this->statsListener->getInitialStats() ?: []);
         $this->endProfile = new CacheProfile($this->statsListener->getCurrentStats() ?: []);

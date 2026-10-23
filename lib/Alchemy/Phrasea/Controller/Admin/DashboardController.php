@@ -39,7 +39,7 @@ class DashboardController extends Controller
     public function slash(Request $request)
     {
         switch ($emailStatus = $request->query->get('email')) {
-            case 'sent';
+            case 'sent':
                 $emailStatus = $this->app->trans('Mail sent');
                 break;
             case 'error':

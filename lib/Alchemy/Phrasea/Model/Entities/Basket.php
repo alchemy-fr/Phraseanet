@@ -272,7 +272,7 @@ class Basket
      *
      * @return $this
      */
-    public function setPusher(User $user = null)
+    public function setPusher(?User $user = null)
     {
         $this->pusher = $user;
 
@@ -651,7 +651,7 @@ class Basket
      * @param  Order  $order
      * @return self
      */
-    public function setOrder(Order $order = null)
+    public function setOrder(?Order $order = null)
     {
         $this->order = $order;
 

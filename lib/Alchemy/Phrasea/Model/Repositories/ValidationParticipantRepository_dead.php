@@ -30,7 +30,7 @@ class ValidationParticipantRepository extends EntityRepository
      * @return ValidationParticipant[]
      * @throws \Exception
      */
-    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, DateTime $today=null)
+    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, ?DateTime $today=null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\ValidationParticipant', 'p');

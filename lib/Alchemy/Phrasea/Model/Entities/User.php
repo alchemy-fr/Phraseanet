@@ -390,7 +390,7 @@ class User
      */
     public function setSaltedPassword($saltedPassword)
     {
-        $this->saltedPassword = (Boolean) $saltedPassword;
+        $this->saltedPassword = (bool) $saltedPassword;
 
         return $this;
     }
@@ -721,7 +721,7 @@ class User
      */
     public function setAdmin($admin)
     {
-        $this->admin = (Boolean) $admin;
+        $this->admin = (bool) $admin;
 
         return $this;
     }
@@ -740,7 +740,7 @@ class User
      */
     public function setGuest($guest)
     {
-        $this->guest = (Boolean) $guest;
+        $this->guest = (bool) $guest;
 
         return $this;
     }
@@ -759,7 +759,7 @@ class User
      */
     public function setCanRenewPassword($canRenewPassword)
     {
-        $this->canRenewPassword = (Boolean) $canRenewPassword;
+        $this->canRenewPassword = (bool) $canRenewPassword;
 
         return $this;
     }
@@ -778,7 +778,7 @@ class User
      */
     public function setMailNotificationsActivated($mailNotifications)
     {
-        $this->mailNotificationsActivated = (Boolean) $mailNotifications;
+        $this->mailNotificationsActivated = (bool) $mailNotifications;
 
         return $this;
     }
@@ -797,7 +797,7 @@ class User
      */
     public function setRequestNotificationsActivated($requestNotifications)
     {
-        $this->requestNotificationsActivated = (Boolean) $requestNotifications;
+        $this->requestNotificationsActivated = (bool) $requestNotifications;
 
         return $this;
     }
@@ -816,7 +816,7 @@ class User
      */
     public function setLdapCreated($ldapCreated)
     {
-        $this->ldapCreated = (Boolean) $ldapCreated;
+        $this->ldapCreated = (bool) $ldapCreated;
 
         return $this;
     }
@@ -892,7 +892,7 @@ class User
      */
     public function setCanChangeProfil($canChangeProfil)
     {
-        $this->canChangeProfil = (Boolean) $canChangeProfil;
+        $this->canChangeProfil = (bool) $canChangeProfil;
 
         return $this;
     }
@@ -911,7 +911,7 @@ class User
      */
     public function setCanChangeFtpProfil($canChangeFtpProfil)
     {
-        $this->canChangeFtpProfil = (Boolean) $canChangeFtpProfil;
+        $this->canChangeFtpProfil = (bool) $canChangeFtpProfil;
 
         return $this;
     }
@@ -949,7 +949,7 @@ class User
      */
     public function setMailLocked($mailLocked)
     {
-        $this->mailLocked = (Boolean) $mailLocked;
+        $this->mailLocked = (bool) $mailLocked;
 
         return $this;
     }
@@ -969,7 +969,7 @@ class User
      */
     public function setDeleted($deleted)
     {
-        $this->deleted = (Boolean) $deleted;
+        $this->deleted = (bool) $deleted;
 
         return $this;
     }
@@ -1025,7 +1025,7 @@ class User
      *
      * @return User
      */
-    public function setFtpCredential(FtpCredential $ftpCredential = null)
+    public function setFtpCredential(?FtpCredential $ftpCredential = null)
     {
         $this->ftpCredential = $ftpCredential;
 
@@ -1107,7 +1107,7 @@ class User
      */
     public function setGrantedApi($grantedApi)
     {
-        $this->grantedApi = (Boolean) $grantedApi;
+        $this->grantedApi = (bool) $grantedApi;
 
         return $this;
     }

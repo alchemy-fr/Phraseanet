@@ -106,7 +106,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isRedirect(), 'Could not validate some elements. not a redirect');
 
         $url = parse_url($response->headers->get('location'));
-        parse_str($url['query']);
+        parse_str($url['query'], $result);
 
         $this->assertTrue(strpos($url['query'], 'success=1') === 0, 'Validation of elements is not successful');
     }

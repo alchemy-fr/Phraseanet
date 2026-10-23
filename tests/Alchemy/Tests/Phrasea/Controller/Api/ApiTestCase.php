@@ -393,7 +393,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         if (false === $webserver) {
             $this->markTestSkipped('Install does not seem to rely on a webserver');
         }
-        if (0 === strpos($url, $webserver)) {
+        if (0 === strpos($url, (string) $webserver)) {
             $url = substr($url, strlen($webserver));
         }
 

@@ -570,7 +570,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return record_adapter
      *
      */
-    public function move_to_collection(collection $collection, appbox $appbox = null)
+    public function move_to_collection(collection $collection, ?appbox $appbox = null)
     {
         if ($this->getCollection()->get_base_id() === $collection->get_base_id()) {
             $this->dispatch(new CollectionChangedEvent($this, $collection, $collection), RecordEvents::COLLECTION_CHANGED);
@@ -865,7 +865,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return new caption_record($this->app, $this);
     }
 
-    public function getCaption(array $fields = null)
+    public function getCaption(?array $fields = null)
     {
         return $this->getCaptionFieldsMap($this->get_caption()->get_fields($fields, true));
     }
@@ -1954,7 +1954,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return record_adapter|null
      * @throws DBALException
      */
-    private static function _create(collection $collection, Application $app, File $file=null)
+    private static function _create(collection $collection, Application $app, ?File $file=null)
     {
         $databox = $collection->get_databox();
 

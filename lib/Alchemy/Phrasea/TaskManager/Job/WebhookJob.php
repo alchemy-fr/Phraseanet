@@ -38,9 +38,9 @@ class WebhookJob extends AbstractJob
 
     public function __construct(
         TranslatorInterface $translator,
-        EventDispatcherInterface $dispatcher = null,
-        LoggerInterface $logger = null,
-        GuzzleClient $httpClient = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?LoggerInterface $logger = null,
+        ?GuzzleClient $httpClient = null
     )
     {
         parent::__construct($translator, $dispatcher, $logger);

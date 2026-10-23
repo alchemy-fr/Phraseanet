@@ -418,7 +418,7 @@ class databox_field implements cache_cacheableInterface
         return $this;
     }
 
-    private function dispatchEvent($eventName, FieldEvent $event = null)
+    private function dispatchEvent($eventName, ?FieldEvent $event = null)
     {
         $this->app['dispatcher']->dispatch($event, $eventName);
     }
@@ -571,7 +571,7 @@ class databox_field implements cache_cacheableInterface
         return $this->dces_element;
     }
 
-    public function set_dces_element(databox_Field_DCESAbstract $DCES_element = null)
+    public function set_dces_element(?databox_Field_DCESAbstract $DCES_element = null)
     {
         $connection = $this->get_connection();
 
@@ -629,7 +629,7 @@ class databox_field implements cache_cacheableInterface
      * @param  ControlProviderInterface $vocabulary_control
      * @return \databox_field
      */
-    public function setVocabularyControl(ControlProviderInterface $vocabulary_control = null)
+    public function setVocabularyControl(?ControlProviderInterface $vocabulary_control = null)
     {
         $this->vocabulary_control = $vocabulary_control;
 

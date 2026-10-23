@@ -64,7 +64,7 @@ class patch_390alpha9b extends patchAbstract
         foreach ($rows as $row) {
             switch ($row['type']) {
                 case 'boolean':
-                    $value = (Boolean) $row['value'];
+                    $value = (bool) $row['value'];
                     break;
                 case 'integer':
                     $value = (int) $row['value'];

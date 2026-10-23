@@ -28,7 +28,7 @@ class NewLogin extends Constraint
 
     public function isAlreadyRegistered($login)
     {
-        return (Boolean) $this->repository->findByLogin($login);
+        return (bool) $this->repository->findByLogin($login);
     }
 
     public static function create(Application $app)

@@ -127,7 +127,7 @@ class FtpCredential
      */
     public function setActive($active)
     {
-        $this->active = (Boolean) $active;
+        $this->active = (bool) $active;
 
         return $this;
     }
@@ -247,7 +247,7 @@ class FtpCredential
      */
     public function setPassive($passive)
     {
-        $this->passive = (Boolean) $passive;
+        $this->passive = (bool) $passive;
 
         return $this;
     }
@@ -267,7 +267,7 @@ class FtpCredential
      */
     public function setSsl($ssl)
     {
-        $this->ssl = (Boolean) $ssl;
+        $this->ssl = (bool) $ssl;
 
         return $this;
     }

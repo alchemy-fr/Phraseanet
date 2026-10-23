@@ -70,7 +70,7 @@ class patch_380alpha13a extends patchAbstract
 
         $config = $app['configuration.store']->setDefault('xsendfile')->getConfig();
 
-        $config['xsendfile']['enabled'] = (Boolean) $registry['GV_modxsendfile'];
+        $config['xsendfile']['enabled'] = (bool) $registry['GV_modxsendfile'];
         $config['xsendfile']['type'] = $config['xsendfile']['enabled'] ? 'nginx' : '';
 
         if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {

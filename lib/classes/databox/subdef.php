@@ -72,7 +72,7 @@ class databox_subdef
      * @param TranslatorInterface $translator
      * @param databox|null $databox
      */
-    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator, databox $databox = null)
+    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator, ?databox $databox = null)
     {
         $this->databox = $databox;
         $this->subdef_group = $type;

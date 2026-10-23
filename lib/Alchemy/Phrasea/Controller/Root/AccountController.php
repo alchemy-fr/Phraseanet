@@ -195,7 +195,7 @@ class AccountController extends Controller
         }
 
         $manipulator = $this->getApiAccountManipulator();
-        if (false === (Boolean) $request->query->get('revoke')) {
+        if (false === (bool) $request->query->get('revoke')) {
             $manipulator->authorizeAccess($account);
         } else {
             $manipulator->revokeAccess($account);
@@ -464,7 +464,7 @@ class AccountController extends Controller
                 ->setJob($request->request->get("form_function"))
                 ->setCompany($request->request->get("form_company"))
                 ->setPosition($request->request->get("form_activity"))
-                ->setNotifications((Boolean) $request->request->get("mail_notifications"));
+                ->setNotifications((bool) $request->request->get("mail_notifications"));
 
             $service->updateAccount($command);
 

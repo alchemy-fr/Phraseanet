@@ -46,7 +46,7 @@ class Fetcher
     private $postFetch;
     private $onDrain;
 
-    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
+    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, ?FetcherDelegateInterface $delegate = null)
     {
         $this->databox = $databox;
         $this->options = $options;

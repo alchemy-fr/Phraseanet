@@ -66,7 +66,7 @@ class Session_Logger
         return $this->id;
     }
 
-    public function log(record_adapter $record, $action, $final, $comment, $coll_id_from = null, DateTime $date = null)
+    public function log(record_adapter $record, $action, $final, $comment, $coll_id_from = null, ?DateTime $date = null)
     {
         $sql = 'INSERT INTO log_docs
           (id, log_id, date, record_id, coll_id_from, coll_id, action, final, comment)
@@ -265,7 +265,7 @@ class Session_Logger
         return;
     }
 
-    public function initOrUpdateLogDocsFromWorker(\record_adapter $record, \databox $databox, WorkerRunningJob $workerRunningJob, $subdefName, $action, DateTime $finished = null, $status = WorkerRunningJob::RUNNING)
+    public function initOrUpdateLogDocsFromWorker(\record_adapter $record, \databox $databox, WorkerRunningJob $workerRunningJob, $subdefName, $action, ?DateTime $finished = null, $status = WorkerRunningJob::RUNNING)
     {
         $whereClause = ' date=:date AND record_id=:record_id AND action=:action AND final=:final';
 

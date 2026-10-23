@@ -131,7 +131,7 @@ class patch_390alpha7a extends patchAbstract
                 $feedPublisher->setFeed($feed);
                 $feed->addPublisher($feedPublisher);
                 $feedPublisher->setCreatedOn(new \DateTime($fpRow['created_on']));
-                $feedPublisher->setIsOwner((Boolean) $fpRow['owner']);
+                $feedPublisher->setIsOwner((bool) $fpRow['owner']);
                 $feedPublisher->setUser($user);
 
                 $feRes = $feStmt->executeQuery([':feed_id' => $row['id'], ':publisher_id' => $fpRow['id']])->fetchAllAssociative();

@@ -111,7 +111,7 @@ class FeedPublisher
      * @param  Feed          $feed
      * @return FeedPublisher
      */
-    public function setFeed(Feed $feed = null)
+    public function setFeed(?Feed $feed = null)
     {
         $this->feed = $feed;
 
