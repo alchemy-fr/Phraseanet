@@ -78,6 +78,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->configuration[$offset] = $value;

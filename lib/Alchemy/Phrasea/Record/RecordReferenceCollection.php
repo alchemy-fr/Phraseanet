@@ -196,6 +196,7 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset
      * @param RecordReferenceInterface $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         Assertion::isInstanceOf($value, RecordReferenceInterface::class);

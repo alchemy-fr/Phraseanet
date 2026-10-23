@@ -58,6 +58,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $conf = $this->getConfig();

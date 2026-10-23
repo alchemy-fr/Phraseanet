@@ -95,6 +95,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
      * @param int|string $offset
      * @param \record_adapter $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         Assertion::isInstanceOf($value, \record_adapter::class);

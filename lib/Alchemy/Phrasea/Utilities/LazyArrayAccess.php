@@ -34,6 +34,7 @@ class LazyArrayAccess implements \ArrayAccess
         return $this->fetchArrayAccessible()->offsetGet($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->fetchArrayAccessible()->offsetSet($offset, $value);

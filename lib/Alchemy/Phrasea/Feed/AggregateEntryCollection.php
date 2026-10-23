@@ -150,6 +150,7 @@ class AggregateEntryCollection implements Collection, Selectable
         return $this->entries->offsetGet($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (null === $this->entries) {

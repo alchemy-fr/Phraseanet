@@ -23,21 +23,25 @@ class MockArrayConf implements ConfigurationInterface
         $this->conf = $config;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->conf[$key];
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
         $this->conf[$key] = $value;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($key)
     {
         return isset($this->conf[$key]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         unset($this->conf[$key]);

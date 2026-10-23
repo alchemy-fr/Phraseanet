@@ -97,6 +97,7 @@ class IdentityMap implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this->entities[$offset];
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         Assertion::notNull($offset);

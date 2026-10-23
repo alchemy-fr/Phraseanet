@@ -54,6 +54,7 @@ class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSet
      * @param null|string $offset
      * @param TechnicalData $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         Assertion::isInstanceOf($value, TechnicalData::class);

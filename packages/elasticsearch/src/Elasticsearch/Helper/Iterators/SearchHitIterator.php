@@ -57,6 +57,7 @@ class SearchHitIterator implements Iterator, \Countable {
      * @return void
      * @see    Iterator::rewind()
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->current_key = 0;
@@ -84,6 +85,7 @@ class SearchHitIterator implements Iterator, \Countable {
      * @return void
      * @see    Iterator::next()
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->current_key++;
@@ -103,6 +105,7 @@ class SearchHitIterator implements Iterator, \Countable {
      * @return bool
      * @see    Iterator::valid()
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return is_array($this->current_hit_data);
@@ -114,6 +117,7 @@ class SearchHitIterator implements Iterator, \Countable {
      * @return array
      * @see    Iterator::current()
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->current_hit_data;
@@ -125,6 +129,7 @@ class SearchHitIterator implements Iterator, \Countable {
      * @return int
      * @see    Iterator::key()
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->current_hit_index;
@@ -150,6 +155,7 @@ class SearchHitIterator implements Iterator, \Countable {
     /**
      * {@inheritDoc}
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         if ($this->count === null) {
