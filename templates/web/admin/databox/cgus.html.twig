@@ -23,9 +23,9 @@
         {% for code, lang in languages %}
             {% if code in cgus| keys %}
                 <div id="terms-{{ code }}">
-                    {% spaceless %}
+                    {% apply spaceless %}
                         <textarea name="TOU[{{ code }}]" style="width:100%;height:600px;margin:0 auto;">{% set cgu = attribute(cgus, code) %}{{ cgu['value']|trim }}</textarea>
-                    {% endspaceless %}
+                    {% endapply %}
                 </div>
             {% endif %}
         {% endfor %}

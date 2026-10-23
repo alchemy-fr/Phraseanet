@@ -9,7 +9,7 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu  pull-right">
-            {% for code, language in available_language if code != locale %}
+            {% for code, language in available_language|filter((language, code) => code != locale) %}
                  <li><a href="{{ path('set_locale', {'locale' : code, 'redirect' : current_url }) }}" data-country-code="{{ code }}">{{ language }}</a></li>
             {% endfor %}
         </ul>

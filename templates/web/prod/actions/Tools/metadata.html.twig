@@ -27,7 +27,7 @@
                     </tr>
                 {% endfor %}
             {% else %}
-                {% for metadata in metadatas if 'System' not in  metadata.getTag().getTagname() %}
+                {% for metadata in metadatas|filter(metadata => 'System' not in metadata.getTag().getTagname()) %}
                     <tr>
                         <td>
                             {{ metadata.getTag().getTagname() }}

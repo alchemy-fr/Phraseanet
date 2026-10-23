@@ -69,13 +69,13 @@
                     {% if subdefList[defKey].height == 0 %}
                         {%  set defKey = 'thumbnail'  %}
                     {% endif %}
-                    {% spaceless %}
+                    {% apply spaceless %}
                         <textarea class="input-block-level" rows="4" readonly="true" id="embedRecordUrl">
                                 <iframe width="{{ subdefList[defKey].width != 0 ?subdefList[defKey].width : 240 }}" height="{{subdefList[defKey].height != 0 ? subdefList[defKey].height : 240 }}"
                                         src="{{ embedUrl }}" frameborder="0"
                                         allowfullscreen></iframe>
                             </textarea>
-                    {% endspaceless %}
+                    {% endapply %}
                     <p class="pull-right">
                         <a id="embedRecordUrl-link" href="{{ embedUrl }}"
                            target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;

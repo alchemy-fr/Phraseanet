@@ -183,13 +183,13 @@
                                             {% set title_send %}
                                                 {% trans %}Forcer l'envoi du document{% endtrans %}
                                             {% endset %}
-                                            <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-{#                                            <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />#}
+                                            <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% apply spaceless %}{{title|e}}{% endapply %}" />
+{#                                            <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% apply spaceless %}{{title_send|e}}{% endapply %}" />#}
                                         {% else %}
                                             {% set title %}
                                                 {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
                                             {% endset %}
-                                            <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                            <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% apply spaceless %}{{title|e}}{% endapply %}" />
                                         {% endif %}
                                     {% endif %}
                                 </td>
