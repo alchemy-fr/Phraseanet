@@ -55,6 +55,7 @@ class User_Query
     protected $like_match = 'OR';
     protected $get_inactives = '';
     protected $total = 0;
+    protected $total_page;
     protected $active_bases = [];
     protected $active_sbas = [];
     protected $bases_restrictions = false;
@@ -1214,7 +1215,7 @@ class User_Query
                     }
 
                     break;
-                default;
+                default:
                     break;
             }
         }

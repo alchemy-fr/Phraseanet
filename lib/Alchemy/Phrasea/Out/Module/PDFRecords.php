@@ -406,11 +406,9 @@ class PDFRecords extends PDF
             $this->pdf->SetX($lmargin);
             $this->pdf->SetY($y);
 
-            $this->pdf->out = false;
             $this->pdf->MultiCell(140, 4, $title, "LTR", "L", 1);
             $y2 = $this->pdf->GetY();
             $h = $y2 - $y;
-            $this->pdf->out = true;
             $this->pdf->SetX($lmargin);
             $this->pdf->SetY($y);
             $this->pdf->Cell(0, $h, "", "LTR", 1, "R", 1);
@@ -514,11 +512,9 @@ class PDFRecords extends PDF
             $this->pdf->SetX($lmargin);
             $this->pdf->SetY($y);
 
-            $this->pdf->out = false;
             $this->pdf->MultiCell(140, 4, $title, "LTR", "L", 1);
             $y2 = $this->pdf->GetY();
             $h = $y2 - $y;
-            $this->pdf->out = true;
             $this->pdf->SetX($lmargin);
             $this->pdf->SetY($y);
             $this->pdf->Cell(0, $h, "", "LTR", 1, "R", 1);

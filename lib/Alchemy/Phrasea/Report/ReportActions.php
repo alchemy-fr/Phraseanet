@@ -159,7 +159,7 @@ class ReportActions extends Report
                 }
 
                 $this->sqlColSelect = [];
-                $this->sqlFiedlSelect = [];
+                $this->sqlFieldSelect = [];
                 foreach($this->getDatabox()->get_meta_structure() as $field) {
                     // skip the fields that can't be reported
                     if(!$field->is_report()) {

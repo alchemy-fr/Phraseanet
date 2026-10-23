@@ -45,6 +45,8 @@ class ValidationSession
     #[ORM\Column(type: 'integer', nullable: true, name: 'basket_id')]
     private $basket;
 
+    private $participants;
+
     /**
      * Constructor
      */

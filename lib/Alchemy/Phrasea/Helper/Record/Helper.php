@@ -47,6 +47,8 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
      */
     protected $sbas_id;
 
+    protected $sbas_ids;
+
     /**
      *
      * @var boolean

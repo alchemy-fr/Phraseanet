@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application;
 class module_report_filter
 {
     private $app;
+    private $tab_filter;
     private $posting_filter = [];
     private $cor_query = [];
     private $active_column = [];

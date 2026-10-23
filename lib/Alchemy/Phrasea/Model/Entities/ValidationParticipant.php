@@ -43,6 +43,8 @@ class ValidationParticipant
     #[ORM\Column(type: 'integer', nullable: true, name: 'validation_session_id')]
     private $session;
 
+    private $datas;
+
     /**
      * ValidationParticipant constructor.
      */
