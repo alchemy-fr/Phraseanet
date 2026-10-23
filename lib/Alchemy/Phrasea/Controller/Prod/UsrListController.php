@@ -191,8 +191,8 @@ class UsrListController extends Controller
                 'name'    => $list->getName(),
                 'created' => $list->getCreated()->format(DATE_ATOM),
                 'updated' => $list->getUpdated()->format(DATE_ATOM),
-                'owners'  => $owners,
-                'users'   => $entries,
+                'owners'  => $owners->toArray(),
+                'users'   => $entries->toArray(),
             ]
         ]);
     }

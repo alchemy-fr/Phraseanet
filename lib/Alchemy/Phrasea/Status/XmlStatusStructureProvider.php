@@ -22,6 +22,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 {
     protected $rootPath;
     protected $locales;
+    protected $fs;
 
     public function __construct($rootPath, $locales, $fs = null)
     {

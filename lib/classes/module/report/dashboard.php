@@ -44,6 +44,8 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      */
     public $dashboard = [];
 
+    public $legendDay;
+
     /**
      * @des le nombre par defaut de resultats afficher par categorie
      * @var <int>

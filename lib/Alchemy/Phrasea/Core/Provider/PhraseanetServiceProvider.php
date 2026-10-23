@@ -97,7 +97,7 @@ class PhraseanetServiceProvider implements ServiceProviderInterface, BootablePro
         if ($app['configuration.store']->isSetup()) {
             if (php_sapi_name() == 'cli') {
                 $servername = $app['conf']->get('servername');
-                if (preg_match('#^http(s)?://#', $servername)) {
+                if (preg_match('#^http(s)?://#', (string) $servername)) {
                     $t = explode('://', $servername);
                     if (count($t) == 2) {
                         $app['url_generator']->getContext()->setHost($t[1]);

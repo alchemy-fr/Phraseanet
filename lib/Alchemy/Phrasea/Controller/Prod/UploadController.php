@@ -232,6 +232,10 @@ class UploadController extends Controller
             }
 
             $forceBehavior = $request->request->get('forceAction');
+            // the Border manager expects one of its FORCE_* booleans, forms post them as strings
+            if (null !== $forceBehavior && !is_bool($forceBehavior)) {
+                $forceBehavior = '' === $forceBehavior ? null : filter_var($forceBehavior, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            }
 
             $reasons = [];
             $elementCreated = null;

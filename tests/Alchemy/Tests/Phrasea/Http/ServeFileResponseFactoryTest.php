@@ -76,7 +76,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename=toto.jpg', $response->headers->get('content-disposition'));
-        $this->assertEquals('/protected/cestlafete.jpg', $response->headers->get('x-accel-redirect'));
+        $this->assertEquals(rawurlencode('/protected/cestlafete.jpg'), $response->headers->get('x-accel-redirect'));
     }
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFileAndNoTrailingSlashes()
@@ -99,7 +99,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename=toto.jpg', $response->headers->get('content-disposition'));
-        $this->assertEquals('/protected/cestlafete.jpg', $response->headers->get('x-accel-redirect'));
+        $this->assertEquals(rawurlencode('/protected/cestlafete.jpg'), $response->headers->get('x-accel-redirect'));
     }
 
     public function testDeliverUnexistingFile()
@@ -133,6 +133,6 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals('attachment; filename=PhraseanetTestCase.php', $response->headers->get('content-disposition'));
-        $this->assertEquals(realpath($file), $response->headers->get('x-accel-redirect'));
+        $this->assertNull($response->headers->get('x-accel-redirect'));
     }
 }

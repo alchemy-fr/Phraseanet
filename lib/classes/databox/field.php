@@ -405,9 +405,9 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('printable', $this->printable ? '1' : '0');
         $meta->setAttribute('input_disable', $this->input_disable ? '1' : '0');
         if ($this->multi) {
-            $meta->setAttribute('separator', $this->separator);
+            $meta->setAttribute('separator', (string) $this->separator);
         }
-        $meta->setAttribute('thumbtitle', $this->thumbtitle);
+        $meta->setAttribute('thumbtitle', (string) $this->thumbtitle);
         $meta->setAttribute('meta_id', $this->id);
         $meta->setAttribute('sorter', $this->position);
 
@@ -561,7 +561,7 @@ class databox_field implements cache_cacheableInterface
     {
         // lazy loading
         if ($this->dces_element === false) {
-            if (array_key_exists($this->original_dces, self::$knownDCES)) {
+            if (array_key_exists((string) $this->original_dces, self::$knownDCES)) {
                 $class = self::$knownDCES[$this->original_dces];
                 $this->dces_element = new $class();
             } else {

@@ -644,7 +644,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_subdef($name)
     {
-        $name = strtolower($name);
+        $name = strtolower((string) $name);
 
         if (isset($this->subdefs[$name])) {
             return $this->subdefs[$name];
@@ -923,7 +923,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_original_name($removeExtension = null)
     {
         if ($removeExtension) {
-            return pathinfo($this->original_name, PATHINFO_FILENAME);
+            return pathinfo((string) $this->original_name, PATHINFO_FILENAME);
         }
 
         return $this->original_name;
@@ -936,7 +936,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         foreach ($this->getDatabox()->get_meta_structure()->get_elements() as $data_field) {
 
             if ($data_field->get_tag() instanceof TfFilename) {
-                $original_name = pathinfo($original_name, PATHINFO_FILENAME);
+                $original_name = pathinfo((string) $original_name, PATHINFO_FILENAME);
             } elseif (!$data_field->get_tag() instanceof TfBasename) {
                 continue;
             }
@@ -1139,7 +1139,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             if (!array_key_exists($k, $params)) {
                 throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $k));
             }
-            $params[$k] = trim($params[$k]);
+            $params[$k] = trim((string) $params[$k]);
         }
 
         if (!is_scalar($params['value'])) {

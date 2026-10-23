@@ -56,7 +56,7 @@ class HttpStackMetaProvider implements ServiceProviderInterface
     {
         $app->extend('request_context', function (RequestContext $context, Application $app) {
             if ($app['configuration.store']->isSetup()) {
-                $data = parse_url($app['conf']->get('servername'));
+                $data = parse_url((string) $app['conf']->get('servername'));
 
                 if (isset($data['scheme'])) {
                     $context->setScheme($data['scheme']);
