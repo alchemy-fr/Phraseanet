@@ -47,7 +47,7 @@ class Installer
             throw $e;
         }
 
-        $this->app['dispatcher']->dispatch(PhraseaEvents::INSTALL_FINISH, new InstallFinishEvent($user));
+        $this->app['dispatcher']->dispatch(new InstallFinishEvent($user), PhraseaEvents::INSTALL_FINISH);
 
         return $user;
     }

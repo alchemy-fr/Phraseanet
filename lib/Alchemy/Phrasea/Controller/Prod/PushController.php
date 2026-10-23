@@ -172,8 +172,8 @@ class PushController extends Controller
 
                 $receipt = $request->get('recept') ? $this->getAuthenticatedUser()->getEmail() : '';
                 $this->dispatch(
-                    PhraseaEvents::BASKET_PUSH,
-                    new PushEvent($Basket, $request->request->get('message'), $url, $receipt)
+                    new PushEvent($Basket, $request->request->get('message'), $url, $receipt),
+                    PhraseaEvents::BASKET_PUSH
                 );
             }
 
@@ -330,12 +330,12 @@ class PushController extends Controller
             $manager->commit();
 
             $this->dispatch(
-                PhraseaEvents::BASKET_SHARE,
                 new ShareEvent(
                     $request,
                     $basket,
                     $this->getAuthenticatedUser()
-                )
+                ),
+                PhraseaEvents::BASKET_SHARE
             );
         }
         catch (ControllerException $e) {

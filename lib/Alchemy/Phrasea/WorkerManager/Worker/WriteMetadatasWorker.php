@@ -131,14 +131,15 @@ class WriteMetadatasWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
-            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+            $this->dispatch(new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName,
                 SubdefinitionWritemetaEvent::FAILED,
                 $workerMessage,
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_WRITE_META);
 
             // the subscriber will mark the job as errored, no need to do it here
             return ;
@@ -148,14 +149,15 @@ class WriteMetadatasWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
-            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+            $this->dispatch(new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName,
                 SubdefinitionWritemetaEvent::FAILED,
                 'Subdef is not physically present!',
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_WRITE_META);
 
             // the subscriber will mark the job as errored, no need to do it here
             return ;
@@ -307,14 +309,15 @@ class WriteMetadatasWorker implements WorkerInterface
                 $count = isset($payload['count']) ? $payload['count'] + 1 : 2;
 
                 /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
-                $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                $this->dispatch(new SubdefinitionWritemetaEvent(
                     $record,
                     $subdefName,
                     SubdefinitionWritemetaEvent::FAILED,
                     $workerMessage,
                     $count,
                     $workerRunningJobId
-                ));
+                ),
+                WorkerEvents::SUBDEFINITION_WRITE_META);
                 // the subscriber will "unlock" the row, no need to do it here
             }
             else {

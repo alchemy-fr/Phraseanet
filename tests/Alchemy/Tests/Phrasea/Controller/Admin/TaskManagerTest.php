@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -72,7 +72,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['task-manager.status']->expects($this->once())
                ->method('start');
         // Prevent actual start of process scheduler
-        self::$DI['app']['dispatcher']->addListener(KernelEvents::TERMINATE, function (PostResponseEvent $event) {
+        self::$DI['app']['dispatcher']->addListener(KernelEvents::TERMINATE, function (TerminateEvent $event) {
             $event->stopPropagation();
         }, -999);
 

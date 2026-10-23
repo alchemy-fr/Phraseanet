@@ -1381,7 +1381,7 @@ class ThesaurusXmlHttpController extends Controller
                 'recordIds'     => $tsbas[$ksbas]['trids'],
             ];
 
-            $this->getDispatcher()->dispatch(WorkerEvents::RECORD_POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
+            $this->getDispatcher()->dispatch(new PopulateIndexEvent($populateInfo), WorkerEvents::RECORD_POPULATE_INDEX);
         }
 
         foreach ($tsbas as $sbas) {

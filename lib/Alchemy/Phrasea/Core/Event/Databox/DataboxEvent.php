@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Databox;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class DataboxEvent extends Event
 {

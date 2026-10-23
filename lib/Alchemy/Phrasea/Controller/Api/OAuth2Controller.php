@@ -59,7 +59,7 @@ class OAuth2Controller extends Controller
     public function authorizeAction(Request $request)
     {
         $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
-        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(new PreAuthenticate($request, $context), PhraseaEvents::PRE_AUTHENTICATE);
 
         //Check for auth params, send error or redirect if not valid
         $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request);
@@ -113,7 +113,7 @@ class OAuth2Controller extends Controller
                 $user = $this->getUserRepository()->find($usrId);
                 $this->getAuthenticator()->openAccount($user);
                 $event = new PostAuthenticate($request, new Response(), $user, $context);
-                $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+                $this->dispatch($event, PhraseaEvents::POST_AUTHENTICATE);
             } else {
                 $r = new Response($this->render($template, array('error' => $error, "auth" => $this->oAuth2Adapter)));
                 $r->headers->set('Content-Type', 'text/html');
@@ -177,7 +177,7 @@ class OAuth2Controller extends Controller
     public function authorizeWithProviderAction(Request $request, $providerId)
     {
         $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
-        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(new PreAuthenticate($request, $context), PhraseaEvents::PRE_AUTHENTICATE);
 
         //Check for auth params, send error or redirect if not valid
         $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request);
@@ -238,7 +238,7 @@ class OAuth2Controller extends Controller
 
         $this->getAuthenticator()->openAccount($userAuthProvider->getUser());
         $event = new PostAuthenticate($request, new Response(), $user, $context);
-        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+        $this->dispatch($event, PhraseaEvents::POST_AUTHENTICATE);
 
         /** @var ApiApplicationRepository $appRepository */
         $appRepository = $this->app['repo.api-applications'];

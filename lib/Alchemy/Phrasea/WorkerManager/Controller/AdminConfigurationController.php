@@ -426,7 +426,7 @@ class AdminConfigurationController extends Controller
         if ($form->isValid()) {
             $populateInfo = $this->getData($form);
 
-            $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
+            $this->getDispatcher()->dispatch(new PopulateIndexEvent($populateInfo), WorkerEvents::POPULATE_INDEX);
 
             // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
             return $app->redirectPath('worker_admin', ['_fragment'=>'worker-searchengine']);

@@ -11,7 +11,7 @@ use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 
-class PhraseanetExtension extends \Twig_Extension
+class PhraseanetExtension extends \Twig\Extension\AbstractExtension
 {
     /** @var Application */
     private $app;
@@ -24,38 +24,39 @@ class PhraseanetExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('sort_collections', array(CollectionHelper::class, 'sort')),
-            new \Twig_SimpleFilter('date_duration', array($this, 'getDuration')),
-            new \Twig_SimpleFilter('json_to_array', array($this, 'jsonToArray')),
+            new \Twig\TwigFilter('sort_collections', array(CollectionHelper::class, 'sort')),
+            new \Twig\TwigFilter('date_duration', array($this, 'getDuration')),
+            new \Twig\TwigFilter('json_to_array', array($this, 'jsonToArray')),
+            new \Twig\TwigFilter('truncate', array($this, 'truncate'), array('needs_environment' => true)),
         );
     }
 
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('user_setting', array($this, 'getUserSetting')),
-            new \Twig_SimpleFunction('record_thumbnail_url', array($this, 'getThumbnailUrl')),
-            new \Twig_SimpleFunction('record_subdef_url', array($this, 'getSubdefUrl')),
-            new \Twig_SimpleFunction('record_subdef_size', array($this, 'getSubdefSize')),
-            new \Twig_SimpleFunction('record_doctype_icon', array($this, 'getDoctypeIcon'), array(
+            new \Twig\TwigFunction('user_setting', array($this, 'getUserSetting')),
+            new \Twig\TwigFunction('record_thumbnail_url', array($this, 'getThumbnailUrl')),
+            new \Twig\TwigFunction('record_subdef_url', array($this, 'getSubdefUrl')),
+            new \Twig\TwigFunction('record_subdef_size', array($this, 'getSubdefSize')),
+            new \Twig\TwigFunction('record_doctype_icon', array($this, 'getDoctypeIcon'), array(
                 'is_safe' => array('html')
             )),
-            new \Twig_SimpleFunction('has_access_subdef', array($this, 'hasAccessSubDefinition')),
-            new \Twig_SimpleFunction('record_thumbnailgif_url', array($this, 'getThumbnailGifUrl')),
-            new \Twig_SimpleFunction('granted_on_collection', array($this, 'isGrantedOnCollection')),
-            new \Twig_SimpleFunction('granted_on_databox', array($this, 'isGrantedOnDatabox')),
-            new \Twig_SimpleFunction('collection_logo', array($this, 'getCollectionLogo'), array(
+            new \Twig\TwigFunction('has_access_subdef', array($this, 'hasAccessSubDefinition')),
+            new \Twig\TwigFunction('record_thumbnailgif_url', array($this, 'getThumbnailGifUrl')),
+            new \Twig\TwigFunction('granted_on_collection', array($this, 'isGrantedOnCollection')),
+            new \Twig\TwigFunction('granted_on_databox', array($this, 'isGrantedOnDatabox')),
+            new \Twig\TwigFunction('collection_logo', array($this, 'getCollectionLogo'), array(
                 'is_safe' => array('html')
             )),
-            new \Twig_SimpleFunction('record_flags', array($this, 'getRecordFlags')),
-            new \Twig_SimpleFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
-            new \Twig_SimpleFunction('caption_field', array($this, 'getCaptionField')),
-            new \Twig_SimpleFunction('caption_field_label', array($this, 'getCaptionFieldLabel')),
-            new \Twig_SimpleFunction('caption_field_gui_visible', array($this, 'getCaptionFieldGuiVisible')),
-            new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
+            new \Twig\TwigFunction('record_flags', array($this, 'getRecordFlags')),
+            new \Twig\TwigFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
+            new \Twig\TwigFunction('caption_field', array($this, 'getCaptionField')),
+            new \Twig\TwigFunction('caption_field_label', array($this, 'getCaptionFieldLabel')),
+            new \Twig\TwigFunction('caption_field_gui_visible', array($this, 'getCaptionFieldGuiVisible')),
+            new \Twig\TwigFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
 
-            new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
-            new \Twig_SimpleFunction('user_display_name', array($this, 'getUserDisplayName')),
+            new \Twig\TwigFunction('flag_slugify', array(Flag::class, 'normalizeName')),
+            new \Twig\TwigFunction('user_display_name', array($this, 'getUserDisplayName')),
         );
     }
 
@@ -66,6 +67,28 @@ class PhraseanetExtension extends \Twig_Extension
             'assetFileVersion' => 106
         ];
 
+    }
+
+    /**
+     * Truncates a string to the given length, optionally on a word boundary.
+     */
+    public function truncate(\Twig\Environment $env, $value, $length = 30, $preserve = false, $separator = '...')
+    {
+        $value = (string) $value;
+        $charset = $env->getCharset();
+
+        if (mb_strlen($value, $charset) <= $length) {
+            return $value;
+        }
+
+        if ($preserve) {
+            if (false === ($breakpoint = mb_strpos($value, ' ', $length, $charset))) {
+                return $value;
+            }
+            $length = $breakpoint;
+        }
+
+        return rtrim(mb_substr($value, 0, $length, $charset)) . $separator;
     }
 
     public function getDuration(int $interval)
@@ -426,8 +449,4 @@ class PhraseanetExtension extends \Twig_Extension
         return ($user == null) ? '' : $user->getDisplayName();
     }
 
-    public function getName()
-    {
-        return 'phraseanet';
-    }
 }

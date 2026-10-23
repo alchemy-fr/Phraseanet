@@ -27,7 +27,7 @@ class TraceableArraySerializer extends ArraySerializer
     public function collection($resourceKey, array $data)
     {
         /** @var GetSerializationEvent $event */
-        $event = $this->dispatcher->dispatch('fractal.serializer.collection', new GetSerializationEvent($resourceKey, $data));
+        $event = $this->dispatcher->dispatch(new GetSerializationEvent($resourceKey, $data), 'fractal.serializer.collection');
 
         $serialization = parent::collection($resourceKey, $data);
 
@@ -39,7 +39,7 @@ class TraceableArraySerializer extends ArraySerializer
     public function item($resourceKey, array $data)
     {
         /** @var GetSerializationEvent $event */
-        $event = $this->dispatcher->dispatch('fractal.serializer.item', new GetSerializationEvent($resourceKey, $data));
+        $event = $this->dispatcher->dispatch(new GetSerializationEvent($resourceKey, $data), 'fractal.serializer.item');
 
         $serialization = parent::item($resourceKey, $data);
 
@@ -51,7 +51,7 @@ class TraceableArraySerializer extends ArraySerializer
     public function null($resourceKey)
     {
         /** @var GetSerializationEvent $event */
-        $event = $this->dispatcher->dispatch('fractal.serializer.null', new GetSerializationEvent($resourceKey, null));
+        $event = $this->dispatcher->dispatch(new GetSerializationEvent($resourceKey, null), 'fractal.serializer.null');
 
         $serialization = parent::null($resourceKey);
 

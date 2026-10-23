@@ -110,7 +110,7 @@ class EditRecordWorker implements WorkerInterface
 
                 if (isset($payload['metadatas']) && is_array($payload['metadatas'])) {
                     $record->set_metadatas($payload['metadatas']);
-                    $this->dispatcher->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
+                    $this->dispatcher->dispatch(new RecordEdit($record, $previousDescription), PhraseaEvents::RECORD_EDIT);
                 }
 
                 if (isset($payload['technicalsdatas']) && is_array($payload['technicalsdatas'])) {
@@ -195,8 +195,8 @@ class EditRecordWorker implements WorkerInterface
         }
 
         // order to write metas for those records
-        $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent($recordIds, $payload['databoxId'])
+        $this->dispatcher->dispatch(new RecordsWriteMetaEvent($recordIds, $payload['databoxId']),
+            WorkerEvents::RECORDS_WRITE_META
         );
 
         // tell that we have finished to work on edit

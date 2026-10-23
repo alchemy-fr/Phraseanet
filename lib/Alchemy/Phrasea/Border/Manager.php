@@ -35,7 +35,7 @@ use Exception;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Driver\Value\Multi;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -363,7 +363,7 @@ class Manager
         $phraseanetMetadataSetter->replaceMetadata($newMetadata, $element);
 
         if(!$nosubdef) {
-            $dispatcher->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
+            $dispatcher->dispatch(new SubdefinitionCreateEvent($element, true), RecordEvents::SUBDEFINITION_CREATE);
         }
 
         return $element;

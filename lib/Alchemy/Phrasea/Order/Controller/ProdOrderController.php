@@ -69,7 +69,7 @@ class ProdOrderController extends BaseOrderController
 
             $filler->fillOrder($order, $records);
 
-            $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
+            $this->dispatch(new OrderEvent($order), PhraseaEvents::ORDER_CREATE);
 
             $success = true;
             $msg = $this->app->trans('The records have been properly ordered');

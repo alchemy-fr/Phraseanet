@@ -29,8 +29,8 @@ class ConnectedUsers implements ControllerProviderInterface, ServiceProviderInte
             return new ConnectedUsersController($app);
         };
 
-        $app->extend('twig', function (\Twig_Environment $twig, Application $app) {
-            $twig->addFilter(new \Twig_SimpleFilter('AppName', function ($value) use ($app) {
+        $app->extend('twig', function (\Twig\Environment $twig, Application $app) {
+            $twig->addFilter(new \Twig\TwigFilter('AppName', function ($value) use ($app) {
                 /** @var ConnectedUsersController $controller */
                 $controller = $app['controller.admin.connected-users'];
                 return $controller->getModuleNameFromId($value);

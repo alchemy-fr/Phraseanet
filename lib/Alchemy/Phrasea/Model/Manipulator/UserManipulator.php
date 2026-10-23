@@ -113,10 +113,10 @@ class UserManipulator implements ManipulatorInterface
         $this->manager->update($user);
 
         $this->dispatcher->dispatch(
-            UserEvents::CREATED,
             new CreatedEvent(
                 $user
-            )
+            ),
+            UserEvents::CREATED
         );
 
         return $user;
@@ -143,7 +143,6 @@ class UserManipulator implements ManipulatorInterface
             $this->manager->delete($user);
 
             $this->dispatcher->dispatch(
-                UserEvents::DELETED,
                 new DeletedEvent(
                     null,
                     array(
@@ -152,7 +151,8 @@ class UserManipulator implements ManipulatorInterface
                         'email'             => $old_email,
                         'grantedBaseIds'    => isset($grantedBaseIdList[$old_id]) ? $grantedBaseIdList[$old_id] : []
                     )
-                )
+                ),
+                UserEvents::DELETED
             );
         }
     }

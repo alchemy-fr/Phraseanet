@@ -10,7 +10,7 @@ use Silex\Provider\SessionServiceProvider;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -130,7 +130,7 @@ class SessionHandlerServiceProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testItIgnoresSubRequests()
     {
-        $event = $this->getMockBuilder(FilterResponseEvent::class)
+        $event = $this->getMockBuilder(ResponseEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -158,13 +158,13 @@ class SessionHandlerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->setSession($session);
 
-        $event = $this->getMockBuilder(FilterResponseEvent::class)
+        $event = $this->getMockBuilder(ResponseEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $event->expects($this->once())
             ->method('getRequestType')
-            ->willReturn(HttpKernelInterface::MASTER_REQUEST)
+            ->willReturn(HttpKernelInterface::MAIN_REQUEST)
         ;
         $event
             ->expects($this->once())

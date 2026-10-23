@@ -531,7 +531,7 @@ class RootController extends Controller
 
     private function dispatchEvent($eventName, StatusBitEvent $event = null)
     {
-        $this->app['dispatcher']->dispatch($eventName, $event);
+        $this->app['dispatcher']->dispatch($event, $eventName);
     }
 
     /**

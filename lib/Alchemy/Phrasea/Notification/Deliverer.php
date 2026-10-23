@@ -82,7 +82,7 @@ class Deliverer
         $ret = $this->mailer->send($message);
         $this->mailer->getTransport()->stop();
 
-        $this->dispatcher->dispatch('phraseanet.notification.sent');
+        $this->dispatcher->dispatch(new \Symfony\Contracts\EventDispatcher\Event(), 'phraseanet.notification.sent');
 
         return $ret;
     }

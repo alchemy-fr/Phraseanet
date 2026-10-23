@@ -37,7 +37,7 @@ abstract class BaseController
 
     public function render($view, array $parameters = [], Response $response = null)
     {
-        /** @var \Twig_Environment $twig */
+        /** @var \Twig\Environment $twig */
         $twig = $this->app['twig'];
 
         if ($response instanceof StreamedResponse) {

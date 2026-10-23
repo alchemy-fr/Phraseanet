@@ -115,7 +115,7 @@ class databox extends base implements ThumbnailedElement
             $template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
 
-        $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
+        $app['dispatcher']->dispatch(new CreatedEvent($databox), DataboxEvents::CREATED);
 
         return $databox;
     }
@@ -150,7 +150,7 @@ class databox extends base implements ThumbnailedElement
         phrasea::reset_sbasDatas($app['phraseanet.appbox']);
         cache_databox::update($app, $databox->get_sbas_id(), 'structure');
 
-        $app['dispatcher']->dispatch(DataboxEvents::MOUNTED, new MountedEvent($databox));
+        $app['dispatcher']->dispatch(new MountedEvent($databox), DataboxEvents::MOUNTED);
 
         return $databox;
     }
@@ -366,13 +366,13 @@ class databox extends base implements ThumbnailedElement
         $this->databoxRepository->save($this);
 
         $this->app['dispatcher']->dispatch(
-            DataboxEvents::STRUCTURE_CHANGED,
             new StructureChangedEvent(
                 $this,
                 [
                     'dom_before'=>$old_structure
                 ]
-            )
+            ),
+            DataboxEvents::STRUCTURE_CHANGED
         );
 
         return $this;
@@ -879,13 +879,13 @@ class databox extends base implements ThumbnailedElement
         $this->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $this->app['dispatcher']->dispatch(
-            DataboxEvents::UNMOUNTED,
             new UnmountedEvent(
                 null,
                 [
                     'dbname'=>$old_dbname
                 ]
-            )
+            ),
+            DataboxEvents::UNMOUNTED
         );
 
         return;
@@ -943,13 +943,13 @@ class databox extends base implements ThumbnailedElement
         $this->databoxRepository->delete($this);
 
         $this->app['dispatcher']->dispatch(
-            DataboxEvents::DELETED,
             new DeletedEvent(
                 null,
                 [
                     'dbname'=>$old_dbname
                 ]
-            )
+            ),
+            DataboxEvents::DELETED
         );
 
         return;
@@ -1062,13 +1062,13 @@ class databox extends base implements ThumbnailedElement
         $this->databoxRepository->save($this);
 
         $this->app['dispatcher']->dispatch(
-            DataboxEvents::THESAURUS_CHANGED,
             new ThesaurusChangedEvent(
                 $this,
                 array(
                     'dom_before'=>$old_thesaurus,
                 )
-            )
+            ),
+            DataboxEvents::THESAURUS_CHANGED
         );
 
         return $this;
@@ -1263,10 +1263,10 @@ class databox extends base implements ThumbnailedElement
         $stmt->executeStatement();
 
         $this->app['dispatcher']->dispatch(
-            DataboxEvents::REINDEX_ASKED,
             new ReindexAskedEvent(
                 $this
-            )
+            ),
+            DataboxEvents::REINDEX_ASKED
         );
 
         return $this;
@@ -1375,13 +1375,13 @@ class databox extends base implements ThumbnailedElement
         $this->delete_data_from_cache(self::CACHE_CGUS);
 
         $this->app['dispatcher']->dispatch(
-            DataboxEvents::TOU_CHANGED,
             new TouChangedEvent(
                 $this,
                 [
                     'tou_before'=>$old_tou,
                 ]
-            )
+            ),
+            DataboxEvents::TOU_CHANGED
         );
 
         return $this;

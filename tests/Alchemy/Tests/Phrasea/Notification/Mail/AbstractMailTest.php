@@ -26,7 +26,7 @@ class AbstractMailTest extends \PhraseanetTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $twig = $this->getMockBuilder('\Twig_Environment')
+        $twig = $this->getMockBuilder('\Twig\Environment')
             ->disableOriginalConstructor()
             ->getMock();
 

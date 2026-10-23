@@ -13,7 +13,6 @@ use Pimple\ServiceProviderInterface;
 use Silex\Application;
 use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\SessionServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Routing\RequestContext;
@@ -28,7 +27,6 @@ class HttpStackMetaProvider implements ServiceProviderInterface
         }
 
         $app->register(new HttpFragmentServiceProvider());
-        $app->register(new UrlGeneratorServiceProvider());
 
         $this->setupRequestContext($app);
 

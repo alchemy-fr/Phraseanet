@@ -118,8 +118,8 @@ class PhraseanetMetadataSetter
              */
             // order to write meta in file
 
-            $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+            $this->dispatcher->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()),
+                WorkerEvents::RECORDS_WRITE_META);
             /*
              * end of section to comment
              */

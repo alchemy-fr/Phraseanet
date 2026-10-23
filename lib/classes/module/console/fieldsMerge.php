@@ -207,8 +207,8 @@ class module_console_fieldsMerge extends Command
             }
 
             // order to write metas for those records
-            $this->container['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id'))
+            $this->container['dispatcher']->dispatch(new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id')),
+                WorkerEvents::RECORDS_WRITE_META
             );
 
             $start += $quantity;

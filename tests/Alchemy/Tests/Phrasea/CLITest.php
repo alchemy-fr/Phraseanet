@@ -27,6 +27,6 @@ class CLITest extends \PhraseanetTestCase
             ->method('getSpool')
             ->will($this->returnValue($spool));
 
-        $app['dispatcher']->dispatch('phraseanet.notification.sent');
+        $app['dispatcher']->dispatch(new \Symfony\Contracts\EventDispatcher\Event(), 'phraseanet.notification.sent');
     }
 }

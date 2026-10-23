@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ConfigurationLoaderSubscriber implements EventSubscriberInterface
@@ -38,7 +38,7 @@ class ConfigurationLoaderSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function loadConfiguration(GetResponseEvent $event)
+    public function loadConfiguration(RequestEvent $event)
     {
         $this->configuration->setHost($event->getRequest()->getHost());
     }

@@ -49,7 +49,7 @@ use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Reader;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
@@ -308,7 +308,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->getDataboxConnection()->executeStatement($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if (($old_type !== $type) && $shouldSubdefsBeRebuilt) {
-            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+            $this->dispatch(new SubdefinitionCreateEvent($this), RecordEvents::SUBDEFINITION_CREATE);
         }
 
         $this->type = $type;
@@ -375,7 +375,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         )) {
 
             if (($oldMime !== $mime) && $shouldSubdefsBeRebuilt) {
-                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+                $this->dispatch(new SubdefinitionCreateEvent($this), RecordEvents::SUBDEFINITION_CREATE);
             }
 
             $this->delete_data_from_cache();
@@ -573,7 +573,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function move_to_collection(collection $collection, appbox $appbox = null)
     {
         if ($this->getCollection()->get_base_id() === $collection->get_base_id()) {
-            $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this, $collection, $collection));
+            $this->dispatch(new CollectionChangedEvent($this, $collection, $collection), RecordEvents::COLLECTION_CHANGED);
 
             return $this;
         }
@@ -600,7 +600,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app['phraseanet.logger']($this->getDatabox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
 
-        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this, $beforeCollection, $collection));
+        $this->dispatch(new CollectionChangedEvent($this, $beforeCollection, $collection), RecordEvents::COLLECTION_CHANGED);
 
         return $this;
     }
@@ -964,8 +964,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         // order to write metas
-        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$this->getRecordId()], $this->getDataboxId())
+        $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$this->getRecordId()], $this->getDataboxId()),
+            WorkerEvents::RECORDS_WRITE_META
         );
 
         $this->getDataboxConnection()->executeStatement(
@@ -975,7 +975,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new OriginalNameChangedEvent($this));
+        $this->dispatch(new OriginalNameChangedEvent($this), RecordEvents::ORIGINAL_NAME_CHANGED);
 
         return $this;
     }
@@ -1268,7 +1268,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->write_metas();
 
-        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
+        $this->dispatch(new MetadataChangedEvent($this), RecordEvents::METADATA_CHANGED);
 
         return $this;
     }
@@ -1467,8 +1467,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->set_metadatas($metadatas_ops, true);
 
         // order to write meta in file
-        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$this->getRecordId()],  $this->getDataboxId()));
+        $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$this->getRecordId()],  $this->getDataboxId()),
+            WorkerEvents::RECORDS_WRITE_META);
 
     }
 
@@ -1744,9 +1744,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
-    private function dispatch($eventName, Event $event)
+    private function dispatch(Event $event, $eventName)
     {
-        $this->app['dispatcher']->dispatch($eventName, $event);
+        $this->app['dispatcher']->dispatch($event, $eventName);
     }
 
     /**
@@ -1800,7 +1800,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $initiatorId = $app->getAuthenticatedUser()->getId();
         }
 
-        $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story, $initiatorId));
+        $story->dispatch(new CreatedEvent($story, $initiatorId), RecordEvents::CREATED);
 
         return $story;
     }
@@ -1864,8 +1864,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($this, $fromChildRecord));
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($this, $previousDescription));
+        $this->dispatch(new StoryCoverChangedEvent($this, $fromChildRecord), RecordEvents::STORY_COVER_CHANGED);
+        $this->dispatch(new RecordEdit($this, $previousDescription), PhraseaEvents::RECORD_EDIT);
 
         return $fromChildRecord->getId();
     }
@@ -1917,7 +1917,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $initiatorId = $app->getAuthenticatedUser()->getId();
             }
 
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
+            $record->dispatch(new CreatedEvent($record, $initiatorId), RecordEvents::CREATED);
         }
 
         return $record;
@@ -1941,7 +1941,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $initiatorId = $app->getAuthenticatedUser()->getId();
             }
 
-            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record, $initiatorId));
+            $record->dispatch(new CreatedEvent($record, $initiatorId), RecordEvents::CREATED);
         }
 
         return $record;
@@ -2250,7 +2250,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // delete the corresponding key record_id from the cache
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::DELETED, new DeletedEvent($this));
+        $this->dispatch(new DeletedEvent($this), RecordEvents::DELETED);
 
         return array_keys($ftodel);
     }
@@ -2588,7 +2588,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ];
         }
 
-        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this, $statusBefore, $newStatus));
+        $this->dispatch(new StatusChangedEvent($this, $statusBefore, $newStatus), RecordEvents::STATUS_CHANGED);
     }
 
     /**

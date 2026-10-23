@@ -187,8 +187,8 @@ class Step35 implements DatasUpgraderInterface
         $record->set_metadatas($metadatas, true);
 
         // order to write meta in file
-        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+        $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()),
+            WorkerEvents::RECORDS_WRITE_META);
     }
 
     /**

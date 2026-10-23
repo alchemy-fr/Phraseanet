@@ -191,7 +191,7 @@ class DataboxController extends Controller
         ];
 
         try {
-            $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
+            $this->getDispatcher()->dispatch(new PopulateIndexEvent($populateInfo), WorkerEvents::POPULATE_INDEX);
             $success = true;
         }
         catch (Exception $e) {

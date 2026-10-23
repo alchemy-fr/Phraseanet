@@ -25,6 +25,6 @@ class LogoutSubscriberTest extends \PhraseanetTestCase
         $app['phraseanet.SE']->expects($this->exactly(2))
             ->method('clearCache');
 
-        $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
+        $app['dispatcher']->dispatch(new LogoutEvent($app), PhraseaEvents::LOGOUT);
     }
 }

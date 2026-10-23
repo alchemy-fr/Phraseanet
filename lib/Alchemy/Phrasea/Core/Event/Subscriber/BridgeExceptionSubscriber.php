@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,13 +26,13 @@ class BridgeExceptionSubscriber implements EventSubscriberInterface
         $this->app = $app;
     }
 
-    public function onSilexError(GetResponseForExceptionEvent $event)
+    public function onSilexError(ExceptionEvent $event)
     {
-        if (!$event->getException() instanceof \Bridge_Exception) {
+        if (!$event->getThrowable() instanceof \Bridge_Exception) {
             return;
         }
 
-        $e = $event->getException();
+        $e = $event->getThrowable();
         $request = $event->getRequest();
 
         $params = [

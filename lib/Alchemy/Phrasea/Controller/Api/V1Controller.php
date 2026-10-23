@@ -241,7 +241,7 @@ class V1Controller extends Controller
             return Result::createError($request, 422, $errors[0])->createResponse();
         }
 
-        $this->dispatch(WorkerEvents::ASSETS_CREATE, new AssetsCreateEvent(json_decode($data, true)));
+        $this->dispatch(new AssetsCreateEvent(json_decode($data, true)), WorkerEvents::ASSETS_CREATE);
 
         return Result::create($request, [
             "data" => json_decode($data),
@@ -1057,7 +1057,7 @@ class V1Controller extends Controller
         if ($output instanceof record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
-            $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
+            $this->dispatch(new RecordEdit($output), PhraseaEvents::RECORD_UPLOAD);
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
@@ -2000,8 +2000,8 @@ class V1Controller extends Controller
         $record->set_metadatas($metadata);
 
         // order to write meta in file
-        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$record->getRecordId()], $databox_id));
+        $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $databox_id),
+            WorkerEvents::RECORDS_WRITE_META);
 
         return Result::create($request, [
             "record_metadatas" => $this->listRecordMetadata($record),
@@ -2045,7 +2045,7 @@ class V1Controller extends Controller
         $record->setStatus(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
+        $this->dispatch(new RecordEdit($record, $previousDescription), PhraseaEvents::RECORD_EDIT);
 
         $ret = ["status" => $this->listRecordStatus($record)];
 
@@ -2622,8 +2622,8 @@ class V1Controller extends Controller
             $story->set_metadatas($metadatas);
 
             // order to write meta in file
-            $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
+            $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()),
+                WorkerEvents::RECORDS_WRITE_META);
         }
 
         if (isset($data->{'story_records'})) {
@@ -2643,7 +2643,7 @@ class V1Controller extends Controller
         $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
         $result = Result::create($request, array('records' => $records));
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescriptions));
+        $this->dispatch(new RecordEdit($story, $previousDescriptions), PhraseaEvents::RECORD_EDIT);
 
         return $result->createResponse();
     }

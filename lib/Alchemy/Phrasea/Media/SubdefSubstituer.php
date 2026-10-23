@@ -80,10 +80,10 @@ class SubdefSubstituer
         $record->write_metas();
 
         if ($shouldSubdefsBeRebuilt) {
-            $this->dispatcher->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record));
+            $this->dispatcher->dispatch(new SubdefinitionCreateEvent($record), RecordEvents::SUBDEFINITION_CREATE);
         }
 
-        $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
+        $this->dispatcher->dispatch(new MediaSubstitutedEvent($record), RecordEvents::MEDIA_SUBSTITUTED);
     }
 
     /**
@@ -131,7 +131,7 @@ class SubdefSubstituer
             $record->write_metas();
         }
 
-        $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
+        $this->dispatcher->dispatch(new MediaSubstitutedEvent($record), RecordEvents::MEDIA_SUBSTITUTED);
     }
 
     /**

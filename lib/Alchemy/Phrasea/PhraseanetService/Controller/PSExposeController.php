@@ -964,7 +964,7 @@ class PSExposeController extends Controller
             $accessTokenInfo = $this->getSession()->get($this->getCredentialSessionName($exposeName));
         }
 
-        $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessTokenInfo));
+        $this->getEventDispatcher()->dispatch(new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessTokenInfo), WorkerEvents::EXPOSE_UPLOAD_ASSETS);
 
         return $app->json([
             'success' => true,

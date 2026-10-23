@@ -343,8 +343,8 @@ class EditController extends Controller
 
         $sessionLogId = $this->getDataboxLogger($databox)->get_id();
         // order the worker to save values in fields
-        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
-            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), $sessionLogId)
+        $this->dispatch(new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), $sessionLogId),
+            WorkerEvents::RECORD_EDIT_IN_WORKER
         );
 
         return $this->app->json(['success' => true]);
@@ -372,8 +372,8 @@ class EditController extends Controller
         $sessionLogId = $this->getDataboxLogger($databox)->get_id();
 
         // order the worker to save values in fields
-        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
-            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId, $sessionLogId)
+        $this->dispatch(new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId, $sessionLogId),
+            WorkerEvents::RECORD_EDIT_IN_WORKER
         );
 
         return $this->app->json(['success' => true]);

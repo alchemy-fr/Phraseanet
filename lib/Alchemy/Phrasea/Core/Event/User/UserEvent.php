@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event\User;
 
 use Alchemy\Phrasea\Model\Entities\User as UserEntity;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use ACL;
 
 abstract class UserEvent extends Event

@@ -1080,13 +1080,13 @@ class ACL implements cache_cacheableInterface
         }
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::SYSADMIN_CHANGED,
             new SysadminChangedEvent(
                 $this,
                 array(
                     'is_sysadmin'=>$boolean
                 )
-            )
+            ),
+            AclEvents::SYSADMIN_CHANGED
         );
 
         return $this;
@@ -1352,13 +1352,13 @@ class ACL implements cache_cacheableInterface
                 continue;
             }
             $this->app['dispatcher']->dispatch(
-                AclEvents::ACCESS_TO_BASE_REVOKED,
                 new AccessToBaseRevokedEvent(
                     $this,
                     [
                         'base_id' => $base_id
                     ]
-                )
+                ),
+                AclEvents::ACCESS_TO_BASE_REVOKED
             );
         }
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
@@ -1394,13 +1394,13 @@ class ACL implements cache_cacheableInterface
 
             if($this->try_give_access_to_base_insert($stmt_i, $base_id, $usr_id) == true) {
                 $this->app['dispatcher']->dispatch(
-                    AclEvents::ACCESS_TO_BASE_GRANTED,
                     new AccessToBaseGrantedEvent(
                         $this,
                         array(
                             'base_id'=>$base_id
                         )
-                    )
+                    ),
+                    AclEvents::ACCESS_TO_BASE_GRANTED
                 );
             }
             else {
@@ -1452,13 +1452,13 @@ class ACL implements cache_cacheableInterface
                     $stmt_ins->executeStatement([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
 
                     $this->app['dispatcher']->dispatch(
-                        AclEvents::ACCESS_TO_SBAS_GRANTED,
                         new AccessToSbasGrantedEvent(
                             $this,
                             array(
                                 'sbas_id'=>$sbas_id
                             )
-                        )
+                        ),
+                        AclEvents::ACCESS_TO_SBAS_GRANTED
                     );
                 } catch (DBALException $e) {
 
@@ -1511,14 +1511,14 @@ class ACL implements cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::RIGHTS_TO_BASE_CHANGED,
             new RightsToBaseChangedEvent(
                 $this,
                 [
                     'base_id' => $base_id,
                     'rights'  => $rights
                 ]
-            )
+            ),
+            AclEvents::RIGHTS_TO_BASE_CHANGED
         );
 
         return $this;
@@ -1586,14 +1586,14 @@ class ACL implements cache_cacheableInterface
         // $this->delete_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::RIGHTS_TO_SBAS_CHANGED,
             new RightsToSbasChangedEvent(
                 $this,
                 [
                     'sbas_id' => $sbas_id,
                     'rights'  => $rights
                 ]
-            )
+            ),
+            AclEvents::RIGHTS_TO_SBAS_CHANGED
         );
 
         return $this;
@@ -1616,13 +1616,13 @@ class ACL implements cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_REMOVED,
             new DownloadQuotasOnBaseRemovedEvent(
                 $this,
                 array(
                     'base_id'=>$base_id
                 )
-            )
+            ),
+            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_REMOVED
         );
 
         return $this;
@@ -1645,10 +1645,10 @@ class ACL implements cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::DOWNLOAD_QUOTAS_RESET,
             new DownloadQuotasResetEvent(
                 $this
-            )
+            ),
+            AclEvents::DOWNLOAD_QUOTAS_RESET
         );
 
         return $this;
@@ -1680,7 +1680,6 @@ class ACL implements cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_CHANGED,
             new DownloadQuotasOnBaseChangedEvent(
                 $this,
                 array(
@@ -1688,7 +1687,8 @@ class ACL implements cache_cacheableInterface
                     'remain_dwnld'=>$restes,
                     'month_dwnld_max'=>$droits
                 )
-            )
+            ),
+            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_CHANGED
         );
 
         return $this;
@@ -1842,13 +1842,13 @@ class ACL implements cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::MASKS_ON_BASE_CHANGED,
             new MasksOnBaseChangedEvent(
                 $this,
                 array(
                     'base_id'=>$base_id
                 )
-            )
+            ),
+            AclEvents::MASKS_ON_BASE_CHANGED
         );
 
         return $this;
@@ -1906,13 +1906,13 @@ class ACL implements cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_LIMITS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::ACCESS_PERIOD_CHANGED,
             new AccessPeriodChangedEvent(
                 $this,
                 array(
                     'base_id'=>$base_id
                 )
-            )
+            ),
+            AclEvents::ACCESS_PERIOD_CHANGED
         );
 
         return $this;

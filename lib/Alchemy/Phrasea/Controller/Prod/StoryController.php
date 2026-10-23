@@ -167,7 +167,7 @@ class StoryController extends Controller
             $n++;
         }
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story, $previousDescription));
+        $this->dispatch(new RecordEdit($Story, $previousDescription), PhraseaEvents::RECORD_EDIT);
 
         $data = [
             'success' => true,
@@ -198,7 +198,7 @@ class StoryController extends Controller
         ];
 
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+        $this->dispatch(new RecordEdit($story), PhraseaEvents::RECORD_EDIT);
 
         if ($request->getRequestFormat() == 'json') {
             return $this->app->json($data);
@@ -252,7 +252,7 @@ class StoryController extends Controller
                 $stmt->executeStatement($params);
             }
 
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
+            $this->dispatch(new RecordEdit($story, $previousDescription), PhraseaEvents::RECORD_EDIT);
             $ret = ['success' => true, 'message' => $this->app->trans('Story updated')];
         } catch (ControllerException $e) {
             $ret = ['success' => false, 'message' => $e->getMessage()];

@@ -155,7 +155,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->bindPluginRoutes('plugin.controller_providers.api');
 
         $app->after(function (Request $request, Response $response) use ($app) {
-            $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent($request, $response));
+            $app['dispatcher']->dispatch(new ApiResultEvent($request, $response), PhraseaEvents::API_RESULT);
         });
     }
 

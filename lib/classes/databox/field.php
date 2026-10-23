@@ -420,7 +420,7 @@ class databox_field implements cache_cacheableInterface
 
     private function dispatchEvent($eventName, FieldEvent $event = null)
     {
-        $this->app['dispatcher']->dispatch($eventName, $event);
+        $this->app['dispatcher']->dispatch($event, $eventName);
     }
 
     /**

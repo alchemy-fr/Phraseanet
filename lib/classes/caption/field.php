@@ -313,8 +313,8 @@ class caption_field implements cache_cacheableInterface
             }
 
             // order to write metas for those records
-            $app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id())
+            $app['dispatcher']->dispatch(new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id()),
+                WorkerEvents::RECORDS_WRITE_META
             );
 
             $n += $increment;
@@ -365,8 +365,8 @@ class caption_field implements cache_cacheableInterface
             }
 
             // order to write metas for those records
-            $app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id())
+            $app['dispatcher']->dispatch(new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id()),
+                WorkerEvents::RECORDS_WRITE_META
             );
 
             $n += $increment;

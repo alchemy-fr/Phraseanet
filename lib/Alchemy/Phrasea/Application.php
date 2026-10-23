@@ -77,7 +77,6 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WorkerConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
-use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Databox\Caption\CaptionServiceProvider;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -104,19 +103,17 @@ use Psr\Log\LoggerInterface;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
+use Silex\Provider\CsrfServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\WebProfilerServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\ExceptionInterface;
-use Symfony\Component\Form\Exception\FormException;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Process\ExecutableFinder;
 use Unoconv\UnoconvServiceProvider;
@@ -231,6 +228,7 @@ class Application extends SilexApplication
         $this->register(new MediaUtilitiesMetaServiceProvider());
         $this->register(new TranslationMetaProvider());
 
+        $this->register(new CsrfServiceProvider());
         $this->register(new FormServiceProvider());
         $this->setupForm();
         $this->register(new UnoconvServiceProvider());
@@ -318,13 +316,6 @@ class Application extends SilexApplication
         };
 
         if (self::ENV_DEV === $this->getEnvironment()) {
-            $this->register($p = new WebProfilerServiceProvider(), [
-                'profiler.cache_dir' => $this['cache.path'].'/profiler',
-            ]);
-
-            $this->register(new PhraseaWebProfilerServiceProvider());
-            $this->mount('/_profiler', $p);
-
             if ($this['phraseanet.configuration-tester']->isInstalled()) {
                 $this['db'] = function (self $app) {
                     return $app['orm.em']->getConnection();
@@ -355,18 +346,17 @@ class Application extends SilexApplication
      *
      * @see FormFactory::create()
      *
-     * @param string|FormTypeInterface $type    The type of the form
-     * @param mixed                    $data    The initial data
-     * @param array                    $options The options
-     * @param FormBuilderInterface     $parent  The parent builder
+     * @param string $type    The type of the form
+     * @param mixed  $data    The initial data
+     * @param array  $options The options
      *
      * @return FormInterface The form named after the type
      *
      * @throws ExceptionInterface if any given option is not applicable to the given type
      */
-    public function form($type = 'form', $data = null, array $options = [], FormBuilderInterface $parent = null)
+    public function form($type = FormType::class, $data = null, array $options = [])
     {
-        return $this['form.factory']->create($type, $data, $options, $parent);
+        return $this['form.factory']->create($type, $data, $options);
     }
 
     /**
@@ -725,8 +715,8 @@ class Application extends SilexApplication
                     $transport->setAuthMode($options['auth_mode']);
                 }
             } else {
-                $transport = new \Swift_Transport_MailTransport(
-                    new \Swift_Transport_SimpleMailInvoker(),
+                $transport = new \Swift_Transport_SendmailTransport(
+                    $app['swiftmailer.transport.buffer'],
                     $app['swiftmailer.transport.eventdispatcher']
                 );
             }

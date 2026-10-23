@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +37,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onSilexError(GetResponseForExceptionEvent $event)
+    public function onSilexError(ExceptionEvent $event)
     {
         $request = $event->getRequest();
 
@@ -45,7 +45,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $e = $event->getException();
+        $e = $event->getThrowable();
 
         $code = 500;
         $msg = $this->translator->trans('Whoops, looks like something went wrong.');
@@ -61,7 +61,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
             $msg = json_encode(['msg'  => $msg, 'code' => $code]);
             $event->setResponse(new Response($msg, $code, $headers));
         } else {
-            $response = $this->handler->createResponse($event->getException());
+            $response = $this->handler->createResponse($event->getThrowable());
             $response->headers->set('Content-Type', 'text/html');
             $event->setResponse($response);
         }

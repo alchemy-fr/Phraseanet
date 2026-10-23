@@ -11,18 +11,8 @@
 
 namespace Alchemy\Phrasea\Twig;
 
-class JSUniqueID extends \Twig_Extension
+class JSUniqueID extends \Twig\Extension\AbstractExtension
 {
-
-    /**
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'alchemy_phrasea_jsuniqueid';
-    }
-
     /**
      *
      * @return array
@@ -30,7 +20,7 @@ class JSUniqueID extends \Twig_Extension
     public function getFilters()
     {
         return [
-            'JSUniqueID' => new \Twig_Filter_Method($this, 'JSUniqueID'),
+            new \Twig\TwigFilter('JSUniqueID', [$this, 'JSUniqueID']),
         ];
     }
 

@@ -15,8 +15,8 @@ use Silex\Application;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class PhraseaLocaleSubscriber implements EventSubscriberInterface
 {
@@ -51,7 +51,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         $this->locale = null;
     }
 
-    public function addLocale(GetResponseEvent $event)
+    public function addLocale(RequestEvent $event)
     {
         if (isset($this->locale)) {
             $this->app['locale'] = $this->locale;
@@ -69,7 +69,7 @@ class PhraseaLocaleSubscriber implements EventSubscriberInterface
         $this->locale = $this->app['locale'] = $event->getRequest()->getLocale();
     }
 
-    public function addLocaleCookie(FilterResponseEvent $event)
+    public function addLocaleCookie(ResponseEvent $event)
     {
         $cookies = $event->getRequest()->cookies;
 

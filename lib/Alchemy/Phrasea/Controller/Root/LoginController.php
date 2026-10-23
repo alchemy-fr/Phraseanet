@@ -512,7 +512,7 @@ class LoginController extends Controller
                 $response = $provider->logoutAndRedirect($redirectToPhr);
             }
             else {
-                $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+                $this->dispatch(new LogoutEvent($this->app), PhraseaEvents::LOGOUT);
                 $this->getAuthenticator()->closeAccount();
 
                 $response = $provider->logout();
@@ -524,7 +524,7 @@ class LoginController extends Controller
         }
         else {
             // no provider logout : use ours
-            $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+            $this->dispatch(new LogoutEvent($this->app), PhraseaEvents::LOGOUT);
             $this->getAuthenticator()->closeAccount();
 
             $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
@@ -595,7 +595,7 @@ class LoginController extends Controller
         }
 
         $context = new Context(Context::CONTEXT_GUEST);
-        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(new PreAuthenticate($request, $context), PhraseaEvents::PRE_AUTHENTICATE);
 
         do {
             $login = uniqid('guest');
@@ -617,7 +617,7 @@ class LoginController extends Controller
         $response->headers->setCookie(new Cookie('invite-usr-id', $user->getId()));
 
         $event = new PostAuthenticate($request, $response, $user, $context);
-        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+        $this->dispatch($event, PhraseaEvents::POST_AUTHENTICATE);
 
         return $response;
     }
@@ -825,7 +825,7 @@ class LoginController extends Controller
         }
 
         $context = new Context(Context::CONTEXT_NATIVE);
-        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(new PreAuthenticate($request, $context), PhraseaEvents::PRE_AUTHENTICATE);
 
         $form->handleRequest($request);
         if (!$form->isValid()) {
@@ -887,7 +887,7 @@ class LoginController extends Controller
         }
 
         $event = new PostAuthenticate($request, $response, $user, $context);
-        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+        $this->dispatch($event, PhraseaEvents::POST_AUTHENTICATE);
 
         return $event->getResponse();
     }

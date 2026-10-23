@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -28,16 +28,16 @@ class FirewallSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(ResponseEvent $event)
     {
         if ($event->getResponse()->headers->has('X-Phraseanet-Redirect')) {
             $event->getResponse()->headers->remove('X-Phraseanet-Redirect');
         }
     }
 
-    public function onSilexError(GetResponseForExceptionEvent $event)
+    public function onSilexError(ExceptionEvent $event)
     {
-        $e = $event->getException();
+        $e = $event->getThrowable();
 
         if ($e instanceof HttpExceptionInterface) {
             $headers = $e->getHeaders();

@@ -21,8 +21,8 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Api\BootableProviderInterface;
 use Silex\Application;
-use Twig_Environment;
-use Twig_SimpleFunction;
+use Twig\Environment;
+use Twig\TwigFunction;
 
 class PluginServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
@@ -89,8 +89,8 @@ class PluginServiceProvider implements ServiceProviderInterface, BootableProvide
         // $app['plugin.controller_providers'][] = array('/prefix', 'controller_provider_service_key');
         $app['plugin.controller_providers.api'] = new ArrayObject();
 
-        $app->extend('twig', function (Twig_Environment $twig) {
-            $function = new Twig_SimpleFunction('plugin_asset', array('Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset'));
+        $app->extend('twig', function (Environment $twig) {
+            $function = new TwigFunction('plugin_asset', array('Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset'));
             $twig->addFunction($function);
 
             return $twig;

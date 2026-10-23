@@ -325,7 +325,6 @@ class ShareBasketWorker implements WorkerInterface
                     $receipt = !empty($payload['recept']) ? $authenticatedUser->getEmail() : '';
 
                     $this->getDispatcher()->dispatch(
-                        PhraseaEvents::VALIDATION_CREATE,
                         new BasketParticipantVoteEvent(
                             $basketParticipant,
                             $url,
@@ -335,7 +334,8 @@ class ShareBasketWorker implements WorkerInterface
                             $basket->isVoteBasket(),
                             $shareExpiresDate,
                             $voteExpiresDate
-                        )
+                        ),
+                        PhraseaEvents::VALIDATION_CREATE
                     );
 
                     // file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; user notified\n", time()), FILE_APPEND);

@@ -95,10 +95,10 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         }
 
         $app['dispatcher']->dispatch(
-            CollectionEvents::CREATED,
             new CreatedEvent(
                 $collection
-            )
+            ),
+            CollectionEvents::CREATED
         );
 
         return $collection;
@@ -115,10 +115,10 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $collection->collectionService->grantAdminRights($collection->reference, $user);
 
         $app['dispatcher']->dispatch(
-            CollectionEvents::MOUNTED,
             new MountedEvent(
                 $collection
-            )
+            ),
+            CollectionEvents::MOUNTED
         );
 
         return $reference->getBaseId();
@@ -323,9 +323,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      * @param $eventName
      * @param CollectionEvent $event
      */
-    private function dispatch($eventName, CollectionEvent $event)
+    private function dispatch(CollectionEvent $event, $eventName)
     {
-        $this->app['dispatcher']->dispatch($eventName, $event);
+        $this->app['dispatcher']->dispatch($event, $eventName);
     }
 
     /**
@@ -438,11 +438,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getCollectionRepository()->save($this->collectionVO);
         $this->app['repo.collections-registry']->purgeRegistry();
 
-        $this->dispatch(CollectionEvents::NAME_CHANGED,
-            new NameChangedEvent(
+        $this->dispatch(new NameChangedEvent(
                 $this,
                 array("name_before"=>$old_name)
-            )
+            ),
+            CollectionEvents::NAME_CHANGED
         );
 
         return $this;
@@ -462,10 +462,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getCollectionRepository()->save($this->collectionVO);
         $this->app['repo.collections-registry']->purgeRegistry();
 
-        $this->dispatch(CollectionEvents::LABEL_CHANGED, new LabelChangedEvent($this, array(
+        $this->dispatch(new LabelChangedEvent($this, array(
             "lng"=>$code,
             "label_before"=>$old_label,
-        )));
+        )),
+        CollectionEvents::LABEL_CHANGED);
 
         return $this;
     }
@@ -556,13 +557,13 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->app['repo.collections-registry']->purgeRegistry();
 
         $this->dispatch(
-            CollectionEvents::SETTINGS_CHANGED,
             new SettingsChangedEvent(
                 $this,
                 array(
                     'settings_before' => $oldPreferences
                 )
-            )
+            ),
+            CollectionEvents::SETTINGS_CHANGED
         );
 
         return $this->collectionVO->getPreferences();
@@ -618,7 +619,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
-	    $this->dispatch(CollectionEvents::DISABLED, new DisabledEvent($this));
+	    $this->dispatch(new DisabledEvent($this), CollectionEvents::DISABLED);
 	
         return $this;
     }
@@ -641,7 +642,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
-	    $this->dispatch(CollectionEvents::ENABLED, new EnabledEvent($this));
+	    $this->dispatch(new EnabledEvent($this), CollectionEvents::ENABLED);
 	
         return $this;
     }
@@ -654,7 +655,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     public function empty_collection($pass_quantity = 100)
     {
         $this->collectionService->emptyCollection($this->databox, $this->collectionVO, $pass_quantity);
-        $this->dispatch(CollectionEvents::EMPTIED, new EmptiedEvent($this));
+        $this->dispatch(new EmptiedEvent($this), CollectionEvents::EMPTIED);
         return $this;
     }
 
@@ -783,14 +784,14 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->collectionRepositoryRegistry->purgeRegistry();
 
         $this->dispatch(
-            CollectionEvents::UNMOUNTED,
             new UnmountedEvent(
                 null,                   // the coll is not available anymore
                 array(
                     'coll_id' => $old_coll_id,
                     'coll_name' => $old_name
                 )
-            )
+            ),
+            CollectionEvents::UNMOUNTED
         );
 
         return $this;

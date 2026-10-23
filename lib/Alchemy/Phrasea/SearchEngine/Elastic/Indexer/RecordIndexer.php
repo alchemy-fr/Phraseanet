@@ -264,8 +264,8 @@ class RecordIndexer
         if ($databox->get_connection()->fetchOne($sql) == 'thesaurus') {
             // The thesaurus was modified, enforce index
             $this->eventDispatcher->dispatch(
-                ThesaurusEvents::REINDEX_REQUIRED,
-                new ReindexRequiredEvent($databox)
+                new ReindexRequiredEvent($databox),
+                ThesaurusEvents::REINDEX_REQUIRED
             );
         }
 

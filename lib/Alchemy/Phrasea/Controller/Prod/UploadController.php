@@ -261,7 +261,7 @@ class UploadController extends Controller
                 $element = 'record';
                 $message = $this->app->trans('The record was successfully created');
 
-                $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
+                $this->dispatch(new RecordEdit($elementCreated), PhraseaEvents::RECORD_UPLOAD);
 
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {
@@ -285,7 +285,7 @@ class UploadController extends Controller
                 }
             } else {
                 /** @var LazaretFile $elementCreated */
-                $this->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
+                $this->dispatch(new LazaretEvent($elementCreated), PhraseaEvents::LAZARET_CREATE);
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';

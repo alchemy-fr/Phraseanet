@@ -14,9 +14,9 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class CookiesDisablerSubscriber implements EventSubscriberInterface
 {
@@ -37,7 +37,7 @@ class CookiesDisablerSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function checkRoutePattern(GetResponseEvent $event)
+    public function checkRoutePattern(RequestEvent $event)
     {
         if (preg_match(static::$NOSESSION_ROUTES, $event->getRequest()->getPathInfo())) {
             $this->app['session.test'] = true;
@@ -45,13 +45,13 @@ class CookiesDisablerSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function removeCookies(FilterResponseEvent $event)
+    public function removeCookies(ResponseEvent $event)
     {
         if ($this->sessionCookieEnabled) {
             return;
         }
 
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
             return;
         }
 

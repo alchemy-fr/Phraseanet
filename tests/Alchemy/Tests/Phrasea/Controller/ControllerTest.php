@@ -23,7 +23,7 @@ final class ControllerTest extends \PHPUnit_Framework_TestCase
     private $aclProvider;
     /** @var Authenticator|\PHPUnit_Framework_MockObject_MockObject */
     private $authenticator;
-    /** @var \Twig_Environment|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \Twig\Environment|\PHPUnit_Framework_MockObject_MockObject */
     private $twig;
     /** @var \appbox|\PHPUnit_Framework_MockObject_MockObject */
     private $appbox;
@@ -38,7 +38,7 @@ final class ControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->twig = $this->getMockBuilder(\Twig_Environment::class)
+        $this->twig = $this->getMockBuilder(\Twig\Environment::class)
             ->disableOriginalConstructor()
             ->getMock();
 

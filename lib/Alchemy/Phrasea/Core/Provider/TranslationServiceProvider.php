@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Utilities\CachedTranslator;
 use Pimple\ServiceProviderInterface;
 use Symfony\Component\Translation\Loader\PoFileLoader;
-use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\Formatter\MessageFormatter;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 use Pimple\Container;
@@ -23,7 +23,7 @@ class TranslationServiceProvider implements ServiceProviderInterface
                 ], $app['translator.cache-options']
             );
 
-            $translator = new CachedTranslator($app, $app['translator.message_selector'], $app['translator.cache-options']);
+            $translator = new CachedTranslator($app, $app['translator.message_formatter'], $app['translator.cache-options']);
 
             // Handle deprecated 'locale_fallback'
             if (isset($app['locale_fallback'])) {
@@ -57,8 +57,8 @@ class TranslationServiceProvider implements ServiceProviderInterface
             return $translator;
         };
 
-        $app['translator.message_selector'] = function () {
-            return new MessageSelector();
+        $app['translator.message_formatter'] = function () {
+            return new MessageFormatter();
         };
 
         $app['translator.domains'] = [];

@@ -88,5 +88,5 @@ class ConstraintExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
     public function leaveNode(\PHPParser_Node $node) { }
     public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig\Node\Node $ast) { }
 }

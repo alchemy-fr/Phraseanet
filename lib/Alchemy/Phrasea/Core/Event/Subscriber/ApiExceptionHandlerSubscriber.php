@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -45,10 +45,10 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onSilexError(GetResponseForExceptionEvent $event)
+    public function onSilexError(ExceptionEvent $event)
     {
         $headers = [];
-        $e = $event->getException();
+        $e = $event->getThrowable();
 
         if ($e instanceof MethodNotAllowedHttpException) {
             $code = 405;

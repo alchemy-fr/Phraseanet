@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Silex\Application;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class XSendFileSubscriber implements EventSubscriberInterface
@@ -33,7 +33,7 @@ class XSendFileSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function applyHeaders(GetResponseEvent $event)
+    public function applyHeaders(RequestEvent $event)
     {
         if (!$this->app['configuration.store']->isSetup()) {
             return;

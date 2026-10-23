@@ -182,7 +182,7 @@ class ToolsController extends Controller
                 }
             }
 
-            $this->dispatch(RecordEvents::ROTATE, new RecordWasRotated($record, $rotation));
+            $this->dispatch(new RecordWasRotated($record, $rotation), RecordEvents::ROTATE);
         }
 
         return $this->app->json(['success' => true, 'errorMessage' => '']);
@@ -230,7 +230,7 @@ class ToolsController extends Controller
                     }
                 }
 
-                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record, false, $subdefsName));
+                $this->dispatch(new SubdefinitionCreateEvent($record, false, $subdefsName), RecordEvents::SUBDEFINITION_CREATE);
             }
         }
 
@@ -534,8 +534,8 @@ class ToolsController extends Controller
             $record->set_metadatas($metadatas);
 
             // order to write meta in file
-            $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+            $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()),
+                WorkerEvents::RECORDS_WRITE_META);
 
         }
         catch (\Exception $e) {
@@ -554,13 +554,13 @@ class ToolsController extends Controller
 
 
         $this->dispatch(
-            PhraseaEvents::RECORD_AUTO_SUBTITLE,
             new RecordAutoSubtitleEvent(
                 $record,
                 $request->request->get("subtitle_language_source"),
                 json_decode($request->request->get("subtitle_destination"), true),
                 $this->getAuthenticatedUser()->getId()
-            )
+            ),
+            PhraseaEvents::RECORD_AUTO_SUBTITLE
         );
 
         return $this->app->json(["status" => "dispatch"]);

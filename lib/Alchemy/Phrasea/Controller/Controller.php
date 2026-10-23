@@ -55,7 +55,7 @@ class Controller
      */
     public function render($name, array $context = [])
     {
-        /** @var \Twig_Environment $twig */
+        /** @var \Twig\Environment $twig */
         $twig = $this->app['twig'];
         return $twig->render(
             $name,

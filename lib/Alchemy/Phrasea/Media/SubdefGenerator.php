@@ -108,11 +108,11 @@ class SubdefGenerator
         }
 
         $this->dispatch(
-            RecordEvents::SUB_DEFINITIONS_CREATION,
             new SubDefinitionsCreationEvent(
                 $record,
                 $wanted_subdefs
-            )
+            ),
+            RecordEvents::SUB_DEFINITIONS_CREATION
         );
 
         if(!is_null($hd = $record->get_hd_file())) {
@@ -143,11 +143,11 @@ class SubdefGenerator
             $pathdest = $this->filesystem->generateSubdefPathname($record, $subdef, $pathdest);
 
             $this->dispatch(
-                RecordEvents::SUB_DEFINITION_CREATION,
                 new SubDefinitionCreationEvent(
                     $record,
                     $subdefname
-                )
+                ),
+                RecordEvents::SUB_DEFINITION_CREATION
             );
 
             $this->logger->info(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
@@ -159,21 +159,21 @@ class SubdefGenerator
                 \media_subdef::create($this->app, $record, $subdef->get_name(), $media);
 
                 $this->dispatch(
-                    RecordEvents::SUB_DEFINITION_CREATED,
                     new SubDefinitionCreatedEvent(
                         $record,
                         $subdefname,
                         $mediaCreated[$subdefname] = $media
-                    )
+                    ),
+                    RecordEvents::SUB_DEFINITION_CREATED
                 );
             }
             else {
                 $this->dispatch(
-                    RecordEvents::SUB_DEFINITION_CREATION_FAILED,
                     new SubDefinitionCreationFailedEvent(
                         $record,
                         $subdefname
-                    )
+                    ),
+                    RecordEvents::SUB_DEFINITION_CREATION_FAILED
                 );
             }
 
@@ -201,19 +201,19 @@ class SubdefGenerator
             }
 
             $this->dispatch(
-                RecordEvents::SUB_DEFINITIONS_CREATED,
                 new SubDefinitionsCreatedEvent(
                     $record,
                     $medias
-                )
+                ),
+                RecordEvents::SUB_DEFINITIONS_CREATED
             );
         } else {
             $this->dispatch(
-                RecordEvents::SUB_DEFINITIONS_CREATED,
                 new SubDefinitionsCreatedEvent(
                     $record,
                     $mediaCreated
-                )
+                ),
+                RecordEvents::SUB_DEFINITIONS_CREATED
             );
         }
     }
