@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Factory;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
-use PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Metadata\Metadata;
 
@@ -16,7 +16,7 @@ class FactoryTest extends \PhraseanetTestCase
 
     public function testGetFileAttributeMetadata()
     {
-        $tag = new UniqueDocumentID();
+        $tag = TagFactory::getFromRDFTagname('IPTC:UniqueDocumentID');
         $value = new Mono('Unique');
 
         $metadata = new Metadata($tag, $value);

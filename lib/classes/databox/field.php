@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\FieldEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\FieldUpdatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Metadata\TagFactory;
+use Alchemy\Phrasea\Metadata\TagInterface;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use Doctrine\DBAL\Connection;
@@ -31,7 +32,7 @@ class databox_field implements cache_cacheableInterface
     /** @var databox */
     protected $databox;
 
-    /** DO NOT IMPORT, makes PHPSTORM HANG. PHPExiftool\Driver\TagInterface */
+    /** @var TagInterface|false */
     private $tag;
 
     protected $name;
@@ -498,11 +499,11 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * Get a PHPExiftool Tag from tagName
+     * Get a Phraseanet or exiftool tag from tagName
      *
      * @param string $tagName
      * @param bool    $throwException
-     * @return object Makes phpstorm hangs \PHPExiftool\Driver\TagInterface
+     * @return TagInterface
      */
     public static function loadClassFromTagName($tagName, $throwException = true)
     {
@@ -513,7 +514,7 @@ class databox_field implements cache_cacheableInterface
         }
 
         try {
-            return TagFactory::getFromTagname($tagName);
+            return TagFactory::getFromRDFTagname($tagName);
         } catch (TagUnknown $exception) {
             if ($throwException) {
                 throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $exception);
@@ -524,10 +525,10 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * @param object $tag Actually \PHPExiftool\Driver\TagInterface but make PHPStorm hangs
+     * @param TagInterface|null $tag
      * @return $this
      */
-    public function set_tag($tag = null)
+    public function set_tag(?TagInterface $tag = null)
     {
         if ($tag === null) {
             $tag = new NoSource();
@@ -539,7 +540,7 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * @return object Avoid PHPStorm stucks on 16k classes... \PHPExiftool\Driver\TagInterface
+     * @return TagInterface
      */
     public function get_tag()
     {

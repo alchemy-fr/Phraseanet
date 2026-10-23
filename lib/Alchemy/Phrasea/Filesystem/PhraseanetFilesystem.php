@@ -32,7 +32,7 @@ class PhraseanetFilesystem extends Filesystem
      * @throws FileNotFoundException When originFile doesn't exist
      * @throws IOException           When copy fails
      */
-    public function copy($originFile, $targetFile, $overwriteNewerFiles = false)
+    public function copy(string $originFile, string $targetFile, bool $overwriteNewerFiles = false): void
     {
 //        file_put_contents(dirname(__FILE__).'/../../../../logs/fs.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
 //            sprintf("fs:copy(\"%s\", \"%s\")", $originFile, $targetFile)
@@ -52,7 +52,7 @@ class PhraseanetFilesystem extends Filesystem
         }
 
         // Stream context created to allow files overwrite when using FTP stream wrapper - disabled by default
-        if (false === $target = @fopen($tmpTarget, 'w', null, stream_context_create(array('ftp' => array('overwrite' => true))))) {
+        if (false === $target = @fopen($tmpTarget, 'w', false, stream_context_create(array('ftp' => array('overwrite' => true))))) {
             throw new IOException(sprintf('Failed to copy "%s" to "%s" because target file could not be opened for writing.', $originFile, $tmpTarget), 0, null, $originFile);
         }
 
@@ -98,7 +98,7 @@ class PhraseanetFilesystem extends Filesystem
      *
      * @return bool true if the file exists, false otherwise
      */
-    public function exists($files, int $timeToWait = 0)
+    public function exists($files, int $timeToWait = 0): bool
     {
         foreach ($this->toIterator($files) as $file) {
             if ('\\' === DIRECTORY_SEPARATOR && strlen($file) > 258) {

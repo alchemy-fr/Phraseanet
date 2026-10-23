@@ -15,18 +15,18 @@ class TagProviderTest extends \PhraseanetTestCase
         $this->object = new TagProvider;
     }
 
-    public function testGetAll()
-    {
-        $this->markTestSkipped('This test lasts more than 30 seconds');
-        $all = $this->object->getAll();
-        $this->assertArrayHasKey('Phraseanet', $all);
-        $this->assertCount(20, $all['Phraseanet']);
-    }
-
     public function testGetLookupTable()
     {
         $lookup = $this->object->getLookupTable();
         $this->assertArrayHasKey('phraseanet', $lookup);
         $this->assertCount(20, $lookup['phraseanet']);
+        $this->assertEquals([
+            'tagname'   => 'tf-filename',
+            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilename',
+            'namespace' => 'Phraseanet',
+        ], $lookup['phraseanet']['tf-filename']);
+        $this->assertArrayHasKey('iptc', $lookup);
+        $this->assertEquals('Keywords', $lookup['iptc']['keywords']['tagname']);
+        $this->assertEquals('IPTC', $lookup['iptc']['keywords']['namespace']);
     }
 }

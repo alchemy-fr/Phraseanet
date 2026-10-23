@@ -154,8 +154,8 @@ class databox_fieldTest extends \PhraseanetTestCase
 
     public function testGet_tag()
     {
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_mono->get_tag());
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_multi->get_tag());
+        $this->assertInstanceOf(\Alchemy\Phrasea\Metadata\TagInterface::class, $this->object_mono->get_tag());
+        $this->assertInstanceOf(\Alchemy\Phrasea\Metadata\TagInterface::class, $this->object_multi->get_tag());
     }
 
     public function testGet_dces_element()

@@ -9,10 +9,9 @@ use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Video;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use MediaVorus\Media\MediaInterface;
 use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
-use PHPExiftool\Driver\Tag\IPTC\Keywords;
-use PHPExiftool\Driver\Tag\MXF\ObjectName;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
 use Ramsey\Uuid\Uuid;
@@ -132,7 +131,7 @@ class FileTest extends \PhraseanetTestCase
 
     public function testAddAttribute()
     {
-        $tag = new ObjectName();
+        $tag = TagFactory::getFromRDFTagname('MXF:ObjectName');
         $value = new Mono('Object name');
 
         $metadata1 = new PHPExiftoolMetadata($tag, $value);
@@ -141,7 +140,7 @@ class FileTest extends \PhraseanetTestCase
         $this->object->addAttribute($attribute1);
         $this->assertSame([$attribute1], $this->object->getAttributes());
 
-        $tag = new Keywords();
+        $tag = TagFactory::getFromRDFTagname('IPTC:Keywords');
         $value = new Multi(['Later', 'Alligator']);
 
         $metadata2 = new PHPExiftoolMetadata($tag, $value);

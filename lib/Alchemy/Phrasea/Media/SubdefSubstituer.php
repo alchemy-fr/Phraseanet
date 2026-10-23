@@ -24,6 +24,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class SubdefSubstituer
 {
     private $alchemyst;
+    private $app;
+    private $dispatcher;
     private $fs;
     private $mediavorus;
 

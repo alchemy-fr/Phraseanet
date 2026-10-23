@@ -2,6 +2,7 @@
 
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 use Alchemy\Phrasea\Media\Subdef;
+use Alchemy\Phrasea\Media\Subdef\Specification\FlexPaperSpecification;
 use Alchemy\Phrasea\Media\Type;
 use MediaAlchemyst\Specification;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -13,7 +14,7 @@ class databox_subdefTest extends \PHPUnit\Framework\TestCase
      */
     private $translator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->translator = $this->getTranslatorMock();
     }
@@ -177,7 +178,7 @@ class databox_subdefTest extends \PHPUnit\Framework\TestCase
         $type = new \Alchemy\Phrasea\Media\Type\Flash();
         $object = new databox_subdef($type, simplexml_load_string($xml), $this->translator);
 
-        $this->assertInstanceOf(Specification\Flash::class, $object->getSpecs());
+        $this->assertInstanceOf(FlexPaperSpecification::class, $object->getSpecs());
 
         $options = $object->getOptions();
         $this->assertTrue(is_array($options));
@@ -187,17 +188,8 @@ class databox_subdefTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @dataProvider getVariouasTypeAndSubdefs
-     */
-    public function testGetAvailableSubdefTypes($object)
-    {
-        foreach ($object->getAvailableSubdefTypes() as $type) {
-            $this->assertInstanceOf(Subdef\Subdef::class, $type);
-        }
-    }
-
-    public function getVariouasTypeAndSubdefs()
+    #[\PHPUnit\Framework\Attributes\DataProvider('getVariouasTypeAndSubdefs')]
+    public function testGetAvailableSubdefTypes($mediaType)
     {
         $xmlImage = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <subdef class="thumbnail" name="gifou" downloadable="false">
@@ -205,20 +197,27 @@ class databox_subdefTest extends \PHPUnit\Framework\TestCase
                     <mediatype>image</mediatype>
                 </subdef>';
 
-        $translator = $this->getTranslatorMock();
+        $object = new databox_subdef($mediaType, simplexml_load_string($xmlImage), $this->translator);
 
+        foreach ($object->getAvailableSubdefTypes() as $type) {
+            $this->assertInstanceOf(Subdef\Subdef::class, $type);
+        }
+    }
+
+    public static function getVariouasTypeAndSubdefs()
+    {
         return [
-            [new databox_subdef(new Type\Audio(), simplexml_load_string($xmlImage), $translator)],
-            [new databox_subdef(new Type\Document(), simplexml_load_string($xmlImage), $translator)],
-            [new databox_subdef(new Type\Video(), simplexml_load_string($xmlImage), $translator)],
+            [new Type\Audio()],
+            [new Type\Document()],
+            [new Type\Video()],
         ];
     }
 
     /**
      * @param bool $expected
      * @param null|string $configValue
-     * @dataProvider providesOrderableStatuses
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providesOrderableStatuses')]
     public function testOrderableStatus($expected, $configValue, $message)
     {
         $xmlTemplate = <<<'EOF'
@@ -240,7 +239,7 @@ EOF;
         $this->assertSame($expected, $sut->isOrderable(), $message);
     }
 
-    public function providesOrderableStatuses()
+    public static function providesOrderableStatuses()
     {
         return [
             [true, null, 'No Orderable Status set should defaults to true'],
@@ -252,8 +251,8 @@ EOF;
     /**
      * @param bool $expected
      * @param null|string $configValue
-     * @dataProvider providesSubstituableStatuses
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providesSubstituableStatuses')]
     public function testSubstituableStatus($expected, $configValue, $message)
     {
         $xmlTemplate = <<<'EOF'
@@ -271,7 +270,7 @@ EOF;
         $this->assertSame($expected, $sut->isSubstituable(), $message);
     }
 
-    public function providesSubstituableStatuses()
+    public static function providesSubstituableStatuses()
     {
         return [
             [false, '', 'No substituable Status set should defaults to true'],
@@ -285,6 +284,6 @@ EOF;
      */
     private function getTranslatorMock()
     {
-        return $this->getMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
+        return $this->createMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
     }
 }

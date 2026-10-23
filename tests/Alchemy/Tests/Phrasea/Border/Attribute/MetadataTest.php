@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 
 use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use PHPExiftool\Driver\Tag\IPTC\ObjectName;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
 
@@ -21,7 +21,7 @@ class MetadataTest extends \PhraseanetTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $tag = new ObjectName();
+        $tag = TagFactory::getFromRDFTagname('IPTC:ObjectName');
         $value = new Mono('Stockhausen !');
 
         $this->metadata = new ExiftoolMeta($tag, $value);

@@ -320,7 +320,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 }
             } elseif ($attribute->getName() == AttributeInterface::NAME_METADATA) {
 
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
 
                 if (!isset($foundMeta[$tagname])) {
                     $foundMeta[$tagname] = [];
@@ -367,11 +367,11 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']);
 
-        $objectNameTag = new \PHPExiftool\Driver\Tag\IPTC\ObjectName();
+        $objectNameTag = \Alchemy\Phrasea\Metadata\TagFactory::getFromRDFTagname('IPTC:ObjectName');
         $monoValue = new \PHPExiftool\Driver\Value\Mono('title');
         $monoData = new \PHPExiftool\Driver\Metadata\Metadata($objectNameTag, $monoValue);
 
-        $personInImageTag = new \PHPExiftool\Driver\Tag\XMPIptcExt\PersonInImage();
+        $personInImageTag = \Alchemy\Phrasea\Metadata\TagFactory::getFromRDFTagname('XMP-iptcExt:PersonInImage');
         $multiValue = new \PHPExiftool\Driver\Value\Multi(['Babar', 'Celeste']);
         $multiData = new \PHPExiftool\Driver\Metadata\Metadata($personInImageTag, $multiValue);
 
@@ -425,7 +425,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
                     $tmp = [];
@@ -469,7 +469,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
                     $tmp = [];
@@ -513,7 +513,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
                     $tmp = [];

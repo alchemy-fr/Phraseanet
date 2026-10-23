@@ -19,7 +19,6 @@ use Exception;
 use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
-use PHPExiftool\Driver\Tag;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
 use PHPExiftool\Exception\TagUnknown;
@@ -171,19 +170,19 @@ class WriteMetadatasWorker implements WorkerInterface
         if ($record->getUuid()) {
             $metadata->add(
                 new Metadata(
-                    new Tag\XMPExif\ImageUniqueID(),
+                    TagFactory::getFromRDFTagname('XMP-exif:ImageUniqueID'),
                     new Mono($record->getUuid())
                 )
             );
             $metadata->add(
                 new Metadata(
-                    new Tag\ExifIFD\ImageUniqueID(),
+                    TagFactory::getFromRDFTagname('ExifIFD:ImageUniqueID'),
                     new Mono($record->getUuid())
                 )
             );
             $metadata->add(
                 new Metadata(
-                    new Tag\IPTC\UniqueDocumentID(),
+                    TagFactory::getFromRDFTagname('IPTC:UniqueDocumentID'),
                     new Mono($record->getUuid())
                 )
             );

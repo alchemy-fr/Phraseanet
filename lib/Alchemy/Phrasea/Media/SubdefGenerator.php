@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Text;
+use Alchemy\Phrasea\Media\Subdef\Specification\FlexPaperSpecification;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use databox_subdef;
 use Exception;
@@ -126,6 +127,21 @@ class SubdefGenerator
             $subdefname = $subdef->get_name();
 
             if ($wanted_subdefs && !in_array($subdefname, $wanted_subdefs)) {
+                continue;
+            }
+
+            if ($subdef->getSpecs() instanceof FlexPaperSpecification) {
+                // an existing flexpaper file is kept as is
+                $this->logger->warning(sprintf('Subdef %s of record %d not generated: flexpaper subdefinitions are not supported anymore', $subdefname, $record->getRecordId()));
+
+                $this->dispatch(
+                    new SubDefinitionCreationFailedEvent(
+                        $record,
+                        $subdefname
+                    ),
+                    RecordEvents::SUB_DEFINITION_CREATION_FAILED
+                );
+
                 continue;
             }
 
@@ -437,6 +453,12 @@ class SubdefGenerator
      */
     public function generateSubdefFromFile($pathSrc, databox_subdef $subdef_class, $pathdest)
     {
+        if ($subdef_class->getSpecs() instanceof FlexPaperSpecification) {
+            $this->logger->warning(sprintf('Subdef %s not generated: flexpaper subdefinitions are not supported anymore', $subdef_class->get_name()));
+
+            return;
+        }
+
         $start = microtime(true);
         $destFile = null;
 
@@ -556,7 +578,7 @@ class SubdefGenerator
                 copy($mediafile->getFile()->getPathname(), $pathdest);
             }
         } catch (UnoconvException $e) {
-            throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', null, $e);
+            throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', 0, $e);
         } catch (Exception $e) {
             throw $e;
         }

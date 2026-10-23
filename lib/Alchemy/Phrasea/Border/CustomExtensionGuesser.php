@@ -11,26 +11,38 @@
 
 namespace Alchemy\Phrasea\Border;
 
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface;
+use Symfony\Component\Mime\MimeTypesInterface;
 
-class CustomExtensionGuesser implements \Symfony\Component\Mime\MimeTypesInterface
+class CustomExtensionGuesser implements MimeTypesInterface
 {
     private $mapping;
 
     public function __construct(array $mapping)
     {
-        $this->mapping = $mapping;
+        $this->mapping = array_change_key_case($mapping, CASE_LOWER);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function guess($path)
+    public function isGuesserSupported(): bool
+    {
+        return true;
+    }
+
+    public function guessMimeType(string $path): ?string
     {
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-        if (isset($this->mapping[$extension])) {
-            return $this->mapping[$extension];
-        }
+        return $this->mapping[$extension] ?? null;
+    }
+
+    public function getExtensions(string $mimeType): array
+    {
+        return array_map('strval', array_keys($this->mapping, $mimeType, true));
+    }
+
+    public function getMimeTypes(string $ext): array
+    {
+        $ext = strtolower($ext);
+
+        return isset($this->mapping[$ext]) ? [$this->mapping[$ext]] : [];
     }
 }

@@ -37,6 +37,8 @@ class databox_subdef
     protected $path;
     protected $preset;
     protected $subdef_group;
+    /** @var \Alchemy\Phrasea\Media\Subdef\Subdef */
+    protected $subdef_type;
     protected $labels = [];
     /**
      * @var bool
@@ -430,8 +432,7 @@ class databox_subdef
                             $mediatype_obj = new Unknown($this->translator);
                             break;
                         default:
-                            continue;
-                            break;
+                            continue 2;
                     }
                 }
                 $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi($this->translator->trans('Target Device'),

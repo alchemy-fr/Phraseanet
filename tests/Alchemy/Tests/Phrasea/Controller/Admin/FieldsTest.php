@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-use PHPExiftool\Driver\Tag\IPTC\ObjectName;
+use Alchemy\Phrasea\Metadata\TagFactory;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
@@ -30,7 +30,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetTag()
     {
-        $tag = new ObjectName();
+        $tag = TagFactory::getFromRDFTagname('IPTC:ObjectName');
 
         $response = $this->request("GET", "/admin/fields/tags/".$tag->getTagname());
 
