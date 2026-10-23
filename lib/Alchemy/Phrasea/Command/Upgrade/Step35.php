@@ -24,6 +24,8 @@ class Step35 implements DatasUpgraderInterface
 {
     const AVERAGE_PER_SECOND = 100;
 
+    private $app;
+
     /**
      * Constructor
      *

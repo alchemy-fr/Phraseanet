@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\DBAL\Exception as DBALException;
 
 class ApplyRightsCommand extends Command
 {

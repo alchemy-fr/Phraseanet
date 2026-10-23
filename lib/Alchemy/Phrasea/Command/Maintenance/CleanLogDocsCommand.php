@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command\Maintenance;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -124,12 +125,12 @@ class CleanLogDocsCommand extends Command
                         array_push($displayedRows, array_fill_keys(['id', 'log_id', 'date', 'record_id', 'final', 'action'], ' ... '));
                     }
 
-                    $logEntryTable = $this->getHelperSet()->get('table');
+                    $logEntryTable = new Table($output);
                     $headers = ['id', 'log_id', 'date', 'record_id', 'final', 'action'];
                     $logEntryTable
                         ->setHeaders($headers)
                         ->setRows($displayedRows)
-                        ->render($output);
+                        ->render();
 
                 } else {
                     if (in_array('delete', $action)) {

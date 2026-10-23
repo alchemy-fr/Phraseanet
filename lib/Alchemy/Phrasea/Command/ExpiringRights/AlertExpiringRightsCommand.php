@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
 use appbox;
 use collection;
 use databox;
-use Doctrine\DBAL\DBALException;
 use PDO;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;

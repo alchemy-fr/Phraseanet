@@ -47,11 +47,11 @@ class InstallTest extends \PhraseanetTestCase
 
         $helperSet = $this->createMock('Symfony\Component\Console\Helper\HelperSet');
 
-        $dialog = $this->createStub('Symfony\Component\Console\Helper\DialogHelper');
+        $dialog = $this->createStub('Symfony\Component\Console\Helper\QuestionHelper');
 
         $helperSet->expects($this->once())
             ->method('get')
-            ->with('dialog')
+            ->with('question')
             ->will($this->returnValue($dialog));
 
         $input
@@ -110,11 +110,11 @@ class InstallTest extends \PhraseanetTestCase
                 }
             }));
 
-        self::$DI['cli']['phraseanet.installer'] = $this->createStub('Alchemy\Phrasea\Setup\Installer');
+        self::$DI['cli']['phraseanet.installer'] = $this->createMock('Alchemy\Phrasea\Setup\Installer');
 
         self::$DI['cli']['phraseanet.installer']->expects($this->once())
             ->method('install')
-            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $storagePaths, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
+            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Connection'), $serverName, $storagePaths, $this->isInstanceOf('Doctrine\DBAL\Connection'), $template, $this->anything());
 
         $structureTemplate = self::$DI['cli']['phraseanet.structure-template'];
 

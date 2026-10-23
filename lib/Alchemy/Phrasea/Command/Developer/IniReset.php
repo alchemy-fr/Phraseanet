@@ -18,6 +18,8 @@ use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use vierbergenlars\SemVer\version as SemVer;
@@ -42,7 +44,7 @@ class IniReset extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $interactive = !$input->getOption('yes');
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('question');
 
         if (!$this->container['phraseanet.configuration']->isSetup()) {
             throw new RuntimeException(sprintf(
@@ -61,11 +63,8 @@ class IniReset extends Command
             if ($input->getOption('db-name')) {
                 $dbName = $input->getOption('db-name');
             } else {
-                $dialog = $this->getHelperSet()->get('dialog');
-                $dbName = $dialog->ask(
-                    $output,
-                    $this->container['translator']->trans('Please enter the databox name to reset or create')
-                );
+                $dialog = $this->getHelper('question');
+                $dbName = $dialog->ask($input, $output, new Question($this->container['translator']->trans('Please enter the databox name to reset or create')));
             }
         } else if ($input->getOption('db-name')) {
             $dbName = $input->getOption('db-name');
@@ -77,7 +76,7 @@ class IniReset extends Command
         if (count($dbs['dbs']) > 1 && in_array($dbName, array_map(function(\base $db) { return $db->get_dbname();}, $dbs['dbs']))) {
             if ($interactive) {
                 do {
-                    $continue = mb_strtolower($dialog->ask($output, '<question>' .$dbName.' database is going to be truncated, do you want to continue ? (Y/n)</question>', 'Y'));
+                    $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question>' .$dbName.' database is going to be truncated, do you want to continue ? (Y/n)</question>', 'Y')));
                 } while (!in_array($continue, array('y', 'n')));
             }
         }
@@ -90,19 +89,11 @@ class IniReset extends Command
 
         if (count($unmountedDbs) > 1 && $interactive) {
             array_unshift($unmountedDbs, 'all');
-            $selected = $dialog->select(
-                $output,
-                'Choose Dbs to mount',
-                $unmountedDbs,
-                0,
-                false,
-                'Invalid choice',
-                true
-            );
+            $question = new ChoiceQuestion('Choose Dbs to mount', $unmountedDbs, 0);
+            $question->setMultiselect(true);
+            $question->setErrorMessage('Invalid choice');
 
-            $dbToMount = array_map(function($c) use ($unmountedDbs) {
-                return $unmountedDbs[$c];
-            }, $selected);
+            $dbToMount = $dialog->ask($input, $output, $question);
         }
 
         if ($input->getOption('dependencies') || !SemVer::eq($this->container->getApplicationBox()->get_version(), $this->container['phraseanet.version']->getNumber())) {
@@ -116,7 +107,7 @@ class IniReset extends Command
 
         /** @var Connection $connection */
         $connection = $this->container['orm.em']->getConnection();
-        $schema = $connection->getSchemaManager();
+        $schema = $connection->createSchemaManager();
 
         $output->writeln('Creating database "'.$dbs['ab'].'"...<info>OK</info>');
         $schema->dropAndCreateDatabase(StringHelper::SqlQuote($dbs['ab'], StringHelper::SQL_IDENTIFIER));
@@ -179,7 +170,7 @@ class IniReset extends Command
                 $conf['main']['database']['host'],
                 $conf['main']['database']['port']
             );
-            $process = new Process($cmd);
+            $process = Process::fromShellCommandline($cmd);
             $process->setTimeout(300);
             $process->run(function ($type, $buffer) {
                 if ('err' === $type) {
@@ -216,11 +207,11 @@ class IniReset extends Command
             if ($input->getOption('run-patches')) {
                 $output->write(sprintf('Upgrading... from version <info>3.1.21</info> to <info>%s</info>', $version->getNumber()), true);
             } else {
-                $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app->getApplicationBox()->get_version(), $version->getNumber()), true);
+                $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->container->getApplicationBox()->get_version(), $version->getNumber()), true);
             }
 
             $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';
-            $process = new Process($cmd);
+            $process = Process::fromShellCommandline($cmd);
             $process->setTimeout(600);
             $process->run(function ($type, $buffer) {
                 if ('err' === $type) {

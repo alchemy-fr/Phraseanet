@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command\Maintenance;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -84,21 +85,21 @@ class CleanWebhookLogsCommand extends Command
 
         if ($dry) {
             $output->writeln(sprintf("\n \n dry-run , %d WebhookEvents entry to delete", count($webhookEventsList)));
-            $eventEntryTable = $this->getHelperSet()->get('table');
+            $eventEntryTable = new Table($output);
             $headers = ['id', 'name', 'type', 'created'];
             $eventEntryTable
                 ->setHeaders($headers)
                 ->setRows($webhookEventsList)
-                ->render($output);
+                ->render();
 
             if (!empty($webhookEventsId)) {
                 $output->writeln(sprintf("\n \n dry-run , %d WebhookEventDelivery entry to delete", count($webhookEventDeliveryList)));
-                $deliveryEntryTable = $this->getHelperSet()->get('table');
+                $deliveryEntryTable = new Table($output);
                 $headers = ['id', 'application_id', 'event_id', 'created'];
                 $deliveryEntryTable
                     ->setHeaders($headers)
                     ->setRows($webhookEventDeliveryList)
-                    ->render($output);
+                    ->render();
 
                 if (!empty($deliveryIds)) {
                     $sqlPayload = "SELECT id, delivery_id, status FROM WebhookEventPayloads WHERE delivery_id IN (". implode(', ', $deliveryIds).")";
@@ -106,12 +107,12 @@ class CleanWebhookLogsCommand extends Command
                     $webhookEventPayloadsList = $stmt->fetchAllAssociative();
 
                     $output->writeln(sprintf("\n \n dry-run , %d WebhookEventPayloads entry to delete", count($webhookEventPayloadsList)));
-                    $payloadEntryTable = $this->getHelperSet()->get('table');
+                    $payloadEntryTable = new Table($output);
                     $headers = ['id', 'delivery_id', 'status'];
                     $payloadEntryTable
                         ->setHeaders($headers)
                         ->setRows($webhookEventPayloadsList)
-                        ->render($output);
+                        ->render();
                 }
             }
         } else {

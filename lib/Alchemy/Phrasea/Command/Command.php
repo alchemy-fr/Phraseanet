@@ -56,7 +56,9 @@ abstract class Command extends SymfoCommand implements CommandInterface
             $this->container->extend('task-manager.logger', $pushHandler);
         }
 
-        return (int) $this->doExecute($input, $output);
+        $statusCode = $this->doExecute($input, $output);
+
+        return is_numeric($statusCode) ? (int) $statusCode : self::SUCCESS;
     }
 
     abstract protected function doExecute(InputInterface $input, OutputInterface $output);

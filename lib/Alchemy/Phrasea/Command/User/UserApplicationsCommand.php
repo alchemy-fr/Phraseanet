@@ -13,7 +13,8 @@ namespace Alchemy\Phrasea\Command\User;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -24,6 +25,7 @@ use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputOption;
 
 class UserApplicationsCommand extends Command
@@ -289,7 +291,7 @@ class UserApplicationsCommand extends Command
                 ];
             }
 
-            $applicationTable = $this->getHelperSet()->get('table');
+            $applicationTable = new Table($output);
             $headers = ['app_id', 'user_id', 'name', 'client_id', 'client_secret', 'callback_url', 'generated token', 'grant_password status'];
 
             if ($jsonformat ) {
@@ -299,11 +301,11 @@ class UserApplicationsCommand extends Command
                 
                 echo json_encode($appInfo);
             } else {
-                $applicationTable = $this->getHelperSet()->get('table');
+                $applicationTable = new Table($output);
                 $applicationTable
                     ->setHeaders($headers)
                     ->setRows($applicationList)
-                    ->render($output)
+                    ->render()
                 ;   
             }
         } elseif ($delete) {
@@ -316,10 +318,10 @@ class UserApplicationsCommand extends Command
             $application = $apiApllicationConverter->convert($appId);
 
             if (is_null($application->getCreator())) {
-                /** @var DialogHelper $dialog */
-                $dialog = $this->getHelperSet()->get('dialog');
+                /** @var QuestionHelper $dialog */
+                $dialog = $this->getHelper('question');
 
-                $continue = $dialog->askConfirmation($output, "<question>It's a special phraseanet application, do you want really to delete it? (N/y)</question>", false);
+                $continue = $dialog->ask($input, $output, new ConfirmationQuestion("<question>It's a special phraseanet application, do you want really to delete it? (N/y)</question>", false));
 
                 if (!$continue) {
                     $output->writeln("<info>See you later !</info>");
@@ -354,11 +356,11 @@ class UserApplicationsCommand extends Command
             $createdAppInfo = array_combine($headers, $applicationCreated);
             echo json_encode($createdAppInfo);
         } else {
-            $table = $this->getHelperSet()->get('table');
+            $table = new Table($output);
             $table
                 ->setHeaders($headers)
                 ->setRows([$applicationCreated])
-                ->render($output)
+                ->render()
             ;   
         }
     }

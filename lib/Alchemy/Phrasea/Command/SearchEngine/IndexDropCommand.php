@@ -16,6 +16,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class IndexDropCommand extends Command
 {
@@ -40,7 +41,7 @@ class IndexDropCommand extends Command
         if ($input->getOption('force')) {
             $confirmation = true;
         } else {
-            $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
+            $confirmation = $this->getHelper('question')->ask($input, $output, new ConfirmationQuestion($question, false));
         }
 
         if ($confirmation) {

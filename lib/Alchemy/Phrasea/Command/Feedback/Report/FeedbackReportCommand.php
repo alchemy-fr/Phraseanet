@@ -7,7 +7,6 @@ use Alchemy\Phrasea\Command\Command as phrCommand;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use appbox;
-use Doctrine\DBAL\DBALException;
 use Exception;
 use PDO;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;

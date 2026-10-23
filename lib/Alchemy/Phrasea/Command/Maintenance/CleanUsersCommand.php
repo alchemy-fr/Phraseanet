@@ -22,6 +22,8 @@ use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailRequestInactifAccount;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessAccountInactifDelete;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Utilities\EmailValidator;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -206,7 +208,7 @@ class CleanUsersCommand extends Command
                 $action = "in grace period";
 
                 $isValidMail = true;
-                if (!\Swift_Validate::email($user->getEmail())) {
+                if (!EmailValidator::isValid($user->getEmail())) {
                     $isValidMail = false;
                 }
 
@@ -258,12 +260,12 @@ class CleanUsersCommand extends Command
 
         if ($dry) {
             $output->writeln(sprintf("dry-run , %d users included in the given inactivity_period", count($rows)));
-            $userTable = $this->getHelperSet()->get('table');
+            $userTable = new Table($output);
             $headers = ['id', 'login', 'last_connection', 'action'];
             $userTable
                 ->setHeaders($headers)
                 ->setRows($usersList)
-                ->render($output);
+                ->render();
         } else {
             $output->writeln(sprintf("%d users relanced , %d in grace period, %d users deleted", $nbUserRelanced, (count($rows)-$nbUserDeleted-$nbUserRelanced), $nbUserDeleted));
         }

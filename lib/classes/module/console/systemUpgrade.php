@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class module_console_systemUpgrade extends Command
 {
@@ -74,10 +75,10 @@ class module_console_systemUpgrade extends Command
         $output->write('Phraseanet is going to be upgraded', true);
 
         if ($interactive) {
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('question');
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question>' . $this->container->trans('Continuer ?') . ' (Y/n)</question>', 'Y'));
+                $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question>' . $this->container->trans('Continuer ?') . ' (Y/n)</question>', 'Y')));
             } while (!in_array($continue, ['y', 'n']));
         } else {
             $continue = 'y';

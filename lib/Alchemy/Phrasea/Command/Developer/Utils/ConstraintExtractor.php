@@ -15,12 +15,17 @@ use Alchemy\Phrasea\Application;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Symfony\Component\Validator\Constraint;
 
 /**
  * Extracts translations validation constraints for Phraseanet definition.
  */
-class ConstraintExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class ConstraintExtractor implements FileVisitorInterface, NodeVisitor
 {
     private $messageProperties = ['message', 'minMessage', 'maxMessage', 'multipleMessage',
                                        'extractFieldsMessage', 'missingFieldsMessage', 'notFoundMessage',
@@ -39,23 +44,23 @@ class ConstraintExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
-            $this->namespace = implode('\\', $node->name->parts);
+        if ($node instanceof Namespace_) {
+            $this->namespace = null === $node->name ? '' : $node->name->toString();
 
             return;
         }
 
-        if (!$node instanceof \PHPParser_Node_Stmt_Class) {
+        if (!$node instanceof Class_ || null === $node->name) {
             return;
         }
 
-        $name = '' === $this->namespace ? $node->name : $this->namespace.'\\'.$node->name;
+        $name = '' === $this->namespace ? $node->name->toString() : $this->namespace.'\\'.$node->name->toString();
 
         if (!class_exists($name)) {
             return;
@@ -85,7 +90,7 @@ class ConstraintExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
     }
 
     public function beforeTraverse(array $nodes) { }
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
     public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig\Node\Node $ast) { }

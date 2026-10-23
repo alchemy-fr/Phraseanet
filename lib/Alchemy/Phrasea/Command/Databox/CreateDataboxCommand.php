@@ -11,7 +11,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Question\Question;
 
 class CreateDataboxCommand extends Command
 {
@@ -37,8 +38,8 @@ class CreateDataboxCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelperSet()->get('dialog');
+        /** @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
 
         $databoxName = $input->getArgument('databox');
         $connectionSettings = $input->getOption('connection') == false ? null : new DataboxConnectionSettings(
@@ -80,7 +81,7 @@ class CreateDataboxCommand extends Command
             $defaultDBoxTemplate = $templates->getDefault();
 
             do {
-                $templateName = $dialog->ask($output, 'Choose a template from ('.$templates->toString().') for metadata structure <comment>[default: "'.$defaultDBoxTemplate.'"]</comment> : ', $defaultDBoxTemplate);
+                $templateName = $dialog->ask($input, $output, new Question('Choose a template from ('.$templates->toString().') for metadata structure <comment>[default: "'.$defaultDBoxTemplate.'"]</comment> : ', $defaultDBoxTemplate));
                 if(!$templates->getByName($templateName)){
                     $output->writeln("    <error>Data-Box template : Template not found, try again.</error>");
                 }

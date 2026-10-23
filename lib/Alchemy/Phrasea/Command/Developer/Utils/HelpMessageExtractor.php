@@ -22,13 +22,12 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use PhpParser\Comment\Doc;
-use PHPParser\Node;
-use PHPParser\Node\Expr\Array_;
-use PHPParser\Node\Scalar\String_;
-use PHPParser\Node\Stmt\Class_;
-use PHPParser\NodeTraverser;
-use PHPParser\NodeVisitor;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 
 class HelpMessageExtractor implements FileVisitorInterface, NodeVisitor, LoggerAwareInterface
 {
@@ -114,7 +113,7 @@ class HelpMessageExtractor implements FileVisitorInterface, NodeVisitor, LoggerA
 
             $message = sprintf('Unable to extract translation id for form label from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine());
             if ($this->logger) {
-                $this->logger->err($message);
+                $this->logger->error($message);
 
                 return;
             }

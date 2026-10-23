@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command\Maintenance;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -85,12 +86,12 @@ class CleanLogSearchCommand extends Command
                         array_push($displayedRows, array_fill_keys(['id', 'date', 'search', 'results', 'coll_id'], ' ... '));
                     }
 
-                    $logEntryTable = $this->getHelperSet()->get('table');
+                    $logEntryTable = new Table($output);
                     $headers = ['id', 'date', 'search', 'results', 'coll_id'];
                     $logEntryTable
                         ->setHeaders($headers)
                         ->setRows($displayedRows)
-                        ->render($output);
+                        ->render();
                 } else {
                     $cnx = $databox->get_connection();
                     $count = 0;

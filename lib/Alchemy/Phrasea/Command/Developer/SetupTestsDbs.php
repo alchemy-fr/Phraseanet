@@ -48,7 +48,7 @@ class SetupTestsDbs extends Command
 
         /** @var Connection $connection */
         $connection = $this->container['orm.em']->getConnection();
-        $schema = $connection->getSchemaManager();
+        $schema = $connection->createSchemaManager();
 
         foreach($dbs as $name) {
             $output->writeln('Creating database "'.$name.'"...<info>OK</info>');
