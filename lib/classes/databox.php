@@ -961,7 +961,7 @@ class databox extends base implements ThumbnailedElement
             $this->connectionSettings->getDatabaseName(),
             $this->connectionSettings->getHost(),
             $this->connectionSettings->getPort(),
-            $this->get_connection()->getWrappedConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION)
+            $this->get_connection()->getNativeConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION)
         );
     }
 

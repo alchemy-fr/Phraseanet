@@ -47,12 +47,10 @@ class DataboxesController extends Controller
             try {
                 $databox = $this->findDataboxById($sbasId);
 
-                /** @var \PDO $pdoConnection */
-                $pdoConnection = $databox->get_connection()->getWrappedConnection();
                 $sbas[$sbasId] = [
                     'version'     => $databox->get_version(),
                     'image'       => '/assets/common/images/icons/foldph20close_0.gif',
-                    'server_info' => $pdoConnection->getAttribute(\PDO::ATTR_SERVER_VERSION),
+                    'server_info' => $databox->get_connection()->getNativeConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION),
                     'name'        => \phrasea::sbas_labels($sbasId, $this->app)
                 ];
             } catch (\Exception $e) {
