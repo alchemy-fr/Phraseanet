@@ -12,22 +12,24 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\SessionHandlerFactory;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class SessionHandlerServiceProvider implements ServiceProviderInterface
+class SessionHandlerServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['session.storage.handler.factory'] = $app->share(function (Application $app) {
+        $app['session.storage.handler.factory'] = function (Application $app) {
             return new SessionHandlerFactory($app['cache.connection-factory']);
-        });
+        };
     }
 
     public function onKernelResponse(FilterResponseEvent $event)

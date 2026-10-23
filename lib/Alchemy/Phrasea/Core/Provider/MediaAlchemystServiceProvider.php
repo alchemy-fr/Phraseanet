@@ -2,15 +2,16 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class MediaAlchemystServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['media-alchemyst.configuration'] = $app->share(function (Application $app) {
+        $app['media-alchemyst.configuration'] = function (Application $app) {
             $configuration = [];
             $parameters = [
                 'unoconv.binaries'             => 'unoconv_binary',
@@ -36,15 +37,10 @@ class MediaAlchemystServiceProvider implements ServiceProviderInterface
             $configuration['imagine.driver'] = $app['conf']->get(['registry', 'executables', 'imagine-driver']) ?: null;
 
             return $configuration;
-        });
+        };
 
-        $app['media-alchemyst.logger'] = $app->share(function (Application $app) {
+        $app['media-alchemyst.logger'] = function (Application $app) {
             return $app['monolog'];
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 }

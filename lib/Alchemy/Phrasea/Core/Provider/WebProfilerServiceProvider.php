@@ -12,13 +12,15 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Logging\LoggerChain;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
 use Sorien\DataCollector\DoctrineDataCollector;
 use Sorien\Logger\DbalLogger;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AjaxDataCollector;
 use Symfony\Bundle\WebProfilerBundle\EventListener\WebDebugToolbarListener;
+use Pimple\Container;
+use Silex\Api\BootableProviderInterface;
 
-class WebProfilerServiceProvider implements ServiceProviderInterface
+class WebProfilerServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
 
     /**
@@ -27,35 +29,33 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         // Required because the Silex provider is not up to date with Symfony Debug Toolbar
-        $app['web_profiler.toolbar.listener'] = $app->share(
-            $app->extend('web_profiler.toolbar.listener', function () use ($app) {
-                return new WebDebugToolbarListener(
-                    $app['twig'],
-                    $app['web_profiler.debug_toolbar.intercept_redirects'],
-                    2,
-                    $app['web_profiler.debug_toolbar.position'],
-                    $app['url_generator']
-                );
-            })
-        );
+        $app->extend('web_profiler.toolbar.listener', function () use ($app) {
+            return new WebDebugToolbarListener(
+                $app['twig'],
+                $app['web_profiler.debug_toolbar.intercept_redirects'],
+                2,
+                $app['web_profiler.debug_toolbar.position'],
+                $app['url_generator']
+            );
+        });
 
         if (class_exists(AjaxDataCollector::class)) {
-            $app['data_collector.templates'] = $app->share($app->extend('data_collector.templates', function (array $templates) {
+            $app->extend('data_collector.templates', function (array $templates) {
                 $templates[] = array('ajax', '@WebProfiler/Collector/ajax.html.twig');
 
                 return $templates;
-            }));
+            });
 
-            $app['data_collectors'] = $app->share($app->extend('data_collectors', function (array $collectors, $app) {
-                $collectors['ajax'] = $app->share(function () {
+            $app->extend('data_collectors', function (array $collectors, $app) {
+                $collectors['ajax'] = function () {
                     return new AjaxDataCollector();
-                });
+                };
 
                 return $collectors;
-            }));
+            });
         }
 
         $app['dbal.config.register.loggers'] = $app->protect(function (Configuration $config, $name) use ($app) {
@@ -70,54 +70,54 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             $config->setSQLLogger($loggerChain);
         });
 
-        $app['data_collectors.doctrine.logger'] = $app->share(function ($app) {
+        $app['data_collectors.doctrine.logger'] = function ($app) {
             return new DbalLogger($app['logger'], $app['stopwatch']);
-        });
+        };
 
-        $app['data_collectors.doctrine'] = $app->share(function ($app) {
+        $app['data_collectors.doctrine'] = function ($app) {
             return new DoctrineDataCollector(new LazyArrayAccess(new LazyLocator($app, 'dbs')));
-        });
+        };
 
-        $app['cache'] = $app->share($app->extend('cache', function (Cache $cache, $app) {
+        $app->extend('cache', function (Cache $cache, $app) {
             $namespace = $app['conf']->get(['main', 'cache', 'options', 'namespace']);
             $cache = new TraceableCache($cache);
 
             $cache->setNamespace($namespace);
 
             return $cache;
-        }));
-
-        $app['data_collector.cache_subscriber'] = $app->share(function ($app) {
-            return new CacheStatisticsSubscriber($app['cache']);
         });
 
-        $app['data_collectors'] = $app->share($app->extend('data_collectors', function (array $collectors, $app) {
-            $collectors['db'] = $app->share(function ($app) {
-                return $app['data_collectors.doctrine'];
-            });
+        $app['data_collector.cache_subscriber'] = function ($app) {
+            return new CacheStatisticsSubscriber($app['cache']);
+        };
 
-            $collectors['cache'] = $app->share(function ($app) {
+        $app->extend('data_collectors', function (array $collectors, $app) {
+            $collectors['db'] = function ($app) {
+                return $app['data_collectors.doctrine'];
+            };
+
+            $collectors['cache'] = function ($app) {
                 return new CacheDataCollector($app['data_collector.cache_subscriber']);
-            });
+            };
 
             return $collectors;
-        }));
+        });
 
-        $app['data_collector.templates'] = $app->share($app->extend('data_collector.templates', function (array $templates) {
+        $app->extend('data_collector.templates', function (array $templates) {
             $templates[] = array('db', '@DoctrineBundle/Collector/db.html.twig');
             $templates[] = array('cache', '@PhraseaProfiler/cache.html.twig');
 
             return $templates;
-        }));
+        });
 
-        $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader, $app) {
+        $app->extend('twig.loader.filesystem', function ($loader, $app) {
             $loader->addPath(
                 $app['root.path'] . '/vendor/sorien/silex-dbal-profiler/src/Sorien/Resources/views',
                 'DoctrineBundle'
             );
             $loader->addPath($app['root.path'] . '/templates-profiler/', 'PhraseaProfiler');
             return $loader;
-        }));
+        });
     }
 
     /**

@@ -17,49 +17,50 @@ use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 use ArrayObject;
 use JsonSchema\Validator as JsonValidator;
-use Pimple;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Twig_Environment;
 use Twig_SimpleFunction;
 
-class PluginServiceProvider implements ServiceProviderInterface
+class PluginServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['plugins.schema'] = realpath(__DIR__ . '/../../../../conf.d/plugin-schema.json');
 
-        $app['plugins.json-validator'] = $app->share(function (Application $app) {
+        $app['plugins.json-validator'] = function (Application $app) {
             return new JsonValidator();
-        });
+        };
 
-        $app['plugins.manifest-validator'] = $app->share(function (Application $app) {
+        $app['plugins.manifest-validator'] = function (Application $app) {
             return ManifestValidator::create($app);
-        });
+        };
 
-        $app['plugins.plugins-validator'] = $app->share(function (Application $app) {
+        $app['plugins.plugins-validator'] = function (Application $app) {
             return new PluginValidator($app['plugins.manifest-validator']);
-        });
+        };
 
-        $app['plugins.manager'] = $app->share(function (Application $app) {
+        $app['plugins.manager'] = function (Application $app) {
             return new PluginManager($app['plugin.path'], $app['plugins.plugins-validator'], $app['conf']);
-        });
+        };
         // All plugins, indexed by their name
-        $app['plugins'] = $app->share(function () {
-            return new Pimple();
-        });
+        $app['plugins'] = function () {
+            return new Container();
+        };
 
-        $app['plugin.workzone.basket.actionbar'] = $app->share(function () {
-            return new Pimple();
-        });
-        $app['plugin.actionbar'] = $app->share(function () {
-            return new Pimple();
-        });
-        $app['plugin.workzone'] = $app->share(function () {
-            return new Pimple();
-        });
+        $app['plugin.workzone.basket.actionbar'] = function () {
+            return new Container();
+        };
+        $app['plugin.actionbar'] = function () {
+            return new Container();
+        };
+        $app['plugin.workzone'] = function () {
+            return new Container();
+        };
         $app['plugin.filter_by_authorization'] = $app->protect(function ($pluginZone, $attributes = 'VIEW') use ($app) {
-            /** @var \Pimple $container */
+            /** @var \Pimple\Container $container */
             $container = $app['plugin.' . $pluginZone];
             /** @var AuthorizationChecker $authorizationChecker */
             $authorizationChecker = $app['phraseanet.authorization_checker'];
@@ -88,14 +89,12 @@ class PluginServiceProvider implements ServiceProviderInterface
         // $app['plugin.controller_providers'][] = array('/prefix', 'controller_provider_service_key');
         $app['plugin.controller_providers.api'] = new ArrayObject();
 
-        $app['twig'] = $app->share(
-            $app->extend('twig', function (Twig_Environment $twig) {
-                $function = new Twig_SimpleFunction('plugin_asset', array('Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset'));
-                $twig->addFunction($function);
+        $app->extend('twig', function (Twig_Environment $twig) {
+            $function = new Twig_SimpleFunction('plugin_asset', array('Alchemy\Phrasea\Plugin\Management\AssetsManager', 'twigPluginAsset'));
+            $twig->addFunction($function);
 
-                return $twig;
-            })
-        );
+            return $twig;
+        });
     }
 
     public function boot(Application $app)

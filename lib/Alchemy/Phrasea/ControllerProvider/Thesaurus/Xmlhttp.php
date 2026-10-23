@@ -14,23 +14,19 @@ namespace Alchemy\Phrasea\ControllerProvider\Thesaurus;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Thesaurus\ThesaurusXmlHttpController;use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class Xmlhttp implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.thesaurus.xmlhttp'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.thesaurus.xmlhttp'] = function (PhraseaApplication $app) {
             return (new ThesaurusXmlHttpController($app));
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     public function connect(Application $app)

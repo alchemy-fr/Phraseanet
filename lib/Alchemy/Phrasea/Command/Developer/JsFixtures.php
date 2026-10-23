@@ -44,7 +44,7 @@ class JsFixtures extends Command
             throw new RuntimeException('You must generate sqlite db first, run "bin/developer phraseanet:regenerate-sqlite" command.');
         }
 
-        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
+        $this->container->extend('orm.em', function($em, $app) {
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
 
@@ -116,7 +116,7 @@ class JsFixtures extends Command
         $environment = Application::ENV_TEST;
         /** @var Application $app */
         $app = require __DIR__ . '/../../Application/Root.php';
-        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
+        $app->extend('orm.em', function($em, $app) {
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
 

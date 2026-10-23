@@ -15,42 +15,34 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Report\Controller\ProdReportController;
 use Alchemy\Phrasea\Report\ReportFactory;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 
 class ProdReportControllerProvider implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.report'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new ProdReportController(
-                    $app['report.factory'],
-                    $app['conf']->get(['registry', 'modules', 'anonymous-report']),
-                    $app->getAclForUser($app->getAuthenticatedUser()),
-                    $app['phraseanet.appbox']
-                ));
-            }
-        );
+        $app['controller.prod.report'] = function (PhraseaApplication $app) {
+            return (new ProdReportController(
+                $app['report.factory'],
+                $app['conf']->get(['registry', 'modules', 'anonymous-report']),
+                $app->getAclForUser($app->getAuthenticatedUser()),
+                $app['phraseanet.appbox']
+            ));
+        };
 
-        $app['report.factory'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new ReportFactory(
-                    $app['conf']->get(['main', 'key']),
-                    $app['phraseanet.appbox'],
-                    $app->getAclForUser($app->getAuthenticatedUser())
-                ));
-            }
-        );
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        $app['report.factory'] = function (PhraseaApplication $app) {
+            return (new ReportFactory(
+                $app['conf']->get(['main', 'key']),
+                $app['phraseanet.appbox'],
+                $app->getAclForUser($app->getAuthenticatedUser())
+            ));
+        };
     }
 
     /**

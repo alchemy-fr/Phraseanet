@@ -388,7 +388,7 @@ class FieldsController extends Controller
     }
 
     /**
-     * @return ControlProviderInterface[]|\Pimple
+     * @return ControlProviderInterface[]|\Pimple\Container
      */
     private function getVocabularies()
     {

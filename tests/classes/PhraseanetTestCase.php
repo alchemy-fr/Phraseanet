@@ -31,7 +31,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     const USER_AGENT_IE6 = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; SV1; .NET CLR 1.1.4322)';
     const USER_AGENT_IPHONE = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; fr-fr) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20';
 
-    /** @var Pimple */
+    /** @var \Pimple\Container */
     protected static $DI;
 
     private static $recordsInitialized = false;
@@ -51,7 +51,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     {
         parent::setUp();
 
-        self::$DI = new \Pimple();
+        self::$DI = new \Pimple\Container();
 
         ini_set('memory_limit', '4096M');
 
@@ -60,73 +60,73 @@ abstract class PhraseanetTestCase extends WebTestCase
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
-        self::$DI['app'] = self::$DI->share(function ($DI) {
+        self::$DI['app'] = function ($DI) {
             return $this->loadApp($this->getApplicationPath());
-        });
+        };
 
-        self::$DI['cli'] = self::$DI->share(function ($DI) {
+        self::$DI['cli'] = function ($DI) {
             return $this->loadCLI();
-        });
+        };
 
-        self::$DI['local-guzzle'] = self::$DI->share(function ($DI) {
+        self::$DI['local-guzzle'] = function ($DI) {
             return new Guzzle(self::$DI['app']['conf']->get('servername'));
-        });
+        };
 
-        self::$DI['client'] = self::$DI->share(function ($DI) {
+        self::$DI['client'] = function ($DI) {
             return new Client($DI['app'], []);
-        });
+        };
 
-        self::$DI['feed_public'] = self::$DI->share(function ($DI) {
+        self::$DI['feed_public'] = function ($DI) {
             return $DI['app']['repo.feeds']->find(self::$fixtureIds['feed']['public']['feed']);
-        });
-        self::$DI['feed_public_entry'] = self::$DI->share(function ($DI) {
+        };
+        self::$DI['feed_public_entry'] = function ($DI) {
             return $DI['app']['repo.feed-entries']->find(self::$fixtureIds['feed']['public']['entry']);
-        });
-        self::$DI['feed_public_token'] = self::$DI->share(function ($DI) {
+        };
+        self::$DI['feed_public_token'] = function ($DI) {
             return $DI['app']['repo.feed-tokens']->find(self::$fixtureIds['feed']['public']['token']);
-        });
+        };
 
-        self::$DI['feed_private'] = self::$DI->share(function ($DI) {
+        self::$DI['feed_private'] = function ($DI) {
             return $DI['app']['repo.feeds']->find(self::$fixtureIds['feed']['private']['feed']);
-        });
-        self::$DI['feed_private_entry'] = self::$DI->share(function ($DI) {
+        };
+        self::$DI['feed_private_entry'] = function ($DI) {
             return $DI['app']['repo.feed-entries']->find(self::$fixtureIds['feed']['private']['entry']);
-        });
-        self::$DI['feed_private_token'] = self::$DI->share(function ($DI) {
+        };
+        self::$DI['feed_private_token'] = function ($DI) {
             return $DI['app']['repo.feed-tokens']->find(self::$fixtureIds['feed']['private']['token']);
-        });
+        };
 
-        self::$DI['basket_1'] = self::$DI->share(function ($DI) {
+        self::$DI['basket_1'] = function ($DI) {
             return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_1']);
-        });
+        };
 
-        self::$DI['basket_2'] = self::$DI->share(function ($DI) {
+        self::$DI['basket_2'] = function ($DI) {
             return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_2']);
-        });
+        };
 
-        self::$DI['basket_3'] = self::$DI->share(function ($DI) {
+        self::$DI['basket_3'] = function ($DI) {
             return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_3']);
-        });
+        };
 
-        self::$DI['basket_4'] = self::$DI->share(function ($DI) {
+        self::$DI['basket_4'] = function ($DI) {
             return $DI['app']['repo.baskets']->find(self::$fixtureIds['basket']['basket_4']);
-        });
+        };
 
-        self::$DI['token_1'] = self::$DI->share(function ($DI) {
+        self::$DI['token_1'] = function ($DI) {
             return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_1']);
-        });
+        };
 
-        self::$DI['token_2'] = self::$DI->share(function ($DI) {
+        self::$DI['token_2'] = function ($DI) {
             return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_2']);
-        });
+        };
 
-        self::$DI['token_invalid'] = self::$DI->share(function ($DI) {
+        self::$DI['token_invalid'] = function ($DI) {
             return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_invalid']);
-        });
+        };
 
-        self::$DI['token_validation'] = self::$DI->share(function ($DI) {
+        self::$DI['token_validation'] = function ($DI) {
             return $DI['app']['repo.tokens']->find(self::$fixtureIds['token']['token_validation']);
-        });
+        };
 
         $users = [
             'user' => 'test_phpunit',
@@ -156,82 +156,82 @@ abstract class PhraseanetTestCase extends WebTestCase
         };
 
         foreach ($users as $name => $fixtureName) {
-            self::$DI[$name] = self::$DI->share($userFactory($fixtureName));
+            self::$DI[$name] = $userFactory($fixtureName);
         }
 
-        self::$DI['registration_1'] = self::$DI->share(function ($DI) {
+        self::$DI['registration_1'] = function ($DI) {
             return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_1']);
-        });
-        self::$DI['registration_2'] = self::$DI->share(function ($DI) {
+        };
+        self::$DI['registration_2'] = function ($DI) {
             return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_2']);
-        });
-        self::$DI['registration_3'] = self::$DI->share(function ($DI) {
+        };
+        self::$DI['registration_3'] = function ($DI) {
             return $DI['app']['repo.registrations']->find(self::$fixtureIds['registrations']['registration_3']);
-        });
+        };
 
-        self::$DI['oauth2-app-user'] = self::$DI->share(function ($DI) {
+        self::$DI['oauth2-app-user'] = function ($DI) {
             return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user']);
-        });
+        };
 
-        self::$DI['oauth2-app-user1'] = self::$DI->share(function ($DI) {
+        self::$DI['oauth2-app-user1'] = function ($DI) {
             return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user1']);
-        });
+        };
 
-        self::$DI['webhook-event'] = self::$DI->share(function ($DI) {
+        self::$DI['webhook-event'] = function ($DI) {
             return $DI['app']['repo.webhook-event']->find(self::$fixtureIds['webhook']['event']);
-        });
+        };
 
-        self::$DI['oauth2-app-user-not-admin'] = self::$DI->share(function ($DI) {
+        self::$DI['oauth2-app-user-not-admin'] = function ($DI) {
             return $DI['app']['repo.api-applications']->find(self::$fixtureIds['oauth']['user-not-admin']);
-        });
+        };
 
-        self::$DI['oauth2-app-acc-user'] = self::$DI->share(function ($DI) {
+        self::$DI['oauth2-app-acc-user'] = function ($DI) {
             return $DI['app']['repo.api-accounts']->find(self::$fixtureIds['oauth']['acc-user']);
-        });
+        };
 
-        self::$DI['oauth2-app-acc-user-not-admin'] = self::$DI->share(function ($DI) {
+        self::$DI['oauth2-app-acc-user-not-admin'] = function ($DI) {
             return $DI['app']['repo.api-accounts']->find(self::$fixtureIds['oauth']['acc-user-not-admin']);
-        });
+        };
 
-        self::$DI['logger'] = self::$DI->share(function () {
+        self::$DI['logger'] = function () {
             $logger = new Logger('tests');
             $logger->pushHandler(new NullHandler());
 
             return $logger;
-        });
+        };
 
-        self::$DI['collection'] = self::$DI->share(function ($DI) {
+        self::$DI['collection'] = function ($DI) {
             return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll']);
-        });
+        };
 
-        self::$DI['collectionReference'] = self::$DI->share(function ($DI) {
+        self::$DI['collectionReference'] = function ($DI) {
             /** @var \Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository $repo */
             $repo = self::$DI['app']['repo.collection-references'];
             return $repo->find(self::$fixtureIds['collection']['coll']);
-        });
+        };
 
-        self::$DI['collection_no_access'] = self::$DI->share(function ($DI) {
+        self::$DI['collection_no_access'] = function ($DI) {
             return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_access']);
-        });
+        };
 
-        self::$DI['collection_no_access_by_status'] = self::$DI->share(function ($DI) {
+        self::$DI['collection_no_access_by_status'] = function ($DI) {
             return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_status']);
-        });
+        };
 
-        self::$DI['lazaret_1'] = self::$DI->share(function ($DI) {
+        self::$DI['lazaret_1'] = function ($DI) {
             return $DI['app']['orm.em']->find('Phraseanet:LazaretFile', self::$fixtureIds['lazaret']['lazaret_1']);
-        });
+        };
 
         foreach (range(1, 7) as $i) {
-            self::$DI['record_' . $i] = self::$DI->share(function ($DI) use ($i) {
+            self::$DI['record_' . $i] = function ($DI) use ($i) {
                 return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], self::$fixtureIds['record']['record_'.$i]);
-            });
+            };
         }
 
         foreach (range(1, 3) as $i) {
-            self::$DI['record_story_' . $i] = self::$DI->share(function ($DI) use ($i) {
+            self::$DI['record_story_' . $i] = function ($DI) use ($i) {
                 return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], self::$fixtureIds['record']['record_story_'.$i]);
-            });
+            };
         }
 
         self::$DI['record_no_access_resolver'] = self::$DI->protect(function () {
@@ -266,13 +266,13 @@ abstract class PhraseanetTestCase extends WebTestCase
             return self::$fixtureIds['records'][$id];
         });
 
-        self::$DI['record_no_access'] = self::$DI->share(function ($DI) {
+        self::$DI['record_no_access'] = function ($DI) {
             return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_resolver']());
-        });
+        };
 
-        self::$DI['record_no_access_by_status'] = self::$DI->share(function ($DI) {
+        self::$DI['record_no_access_by_status'] = function ($DI) {
             return new \record_adapter($DI['app'], self::$fixtureIds['databox']['records'], $DI['record_no_access_by_status_resolver']());
-        });
+        };
 
         static $decodedFixtureIds;
 
@@ -388,11 +388,11 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function addAppCacheFlush(Application $app)
     {
-        $app['phraseanet.cache-service'] = $app->share($app->extend('phraseanet.cache-service', function (CacheManager $cache) {
+        $app->extend('phraseanet.cache-service', function (CacheManager $cache) {
             $cache->flushAll();
 
             return $cache;
-        }));
+        });
     }
 
     protected function loadDb($app)
@@ -404,38 +404,38 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function addMocks(Application $app)
     {
-        $app['form.csrf_provider'] = $app->share(function () {
+        $app['form.csrf_provider'] = function () {
             return new CsrfTestProvider();
-        });
+        };
 
-        $app['url_generator'] = $app->share($app->extend('url_generator', function ($generator, $app) {
+        $app->extend('url_generator', function ($generator, $app) {
             $host = parse_url($app['conf']->get('servername'), PHP_URL_HOST);
 
             $generator->setContext(new RequestContext('', 'GET', $host ?: $app['conf']->get('servername')));
 
             return $generator;
-        }));
+        });
 
-        $app['task-manager.notifier'] = $app->share($app->extend('task-manager.notifier', function (Notifier $notifier) {
+        $app->extend('task-manager.notifier', function (Notifier $notifier) {
             $notifier->setTimeout(0.0001);
 
             return $notifier;
-        }));
+        });
 
         $app['translator'] = $this->createTranslatorMock();
 
         $app['phraseanet.SE.subscriber'] = new PhraseanetSeTestSubscriber();
 
-        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
+        $app->extend('orm.em', function($em, $app) {
 
             return $app['orm.ems'][$app['db.test.hash.key']];
         });
 
-        $app['browser'] = $app->share($app->extend('browser', function ($browser) {
+        $app->extend('browser', function ($browser) {
             $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
 
             return $browser;
-        }));
+        });
 
         $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
@@ -512,9 +512,9 @@ abstract class PhraseanetTestCase extends WebTestCase
         $app->register(new \Silex\Provider\TwigServiceProvider());
         $app->register(new \Alchemy\Phrasea\Core\Provider\TwigServiceProvider());
 
-        self::$DI['client'] = self::$DI->share(function ($DI) use ($app) {
+        self::$DI['client'] = function ($DI) use ($app) {
             return new Client($app, []);
-        });
+        };
     }
 
     /**

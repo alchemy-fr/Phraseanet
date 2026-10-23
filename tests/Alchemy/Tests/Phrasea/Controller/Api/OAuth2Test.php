@@ -19,9 +19,9 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
     {
         parent::setUp();
 
-        self::$DI['app'] = self::$DI->share(function ($DI) {
+        self::$DI['app'] = function ($DI) {
             return $this->loadApp('/lib/Alchemy/Phrasea/Application/Api.php');
-        });
+        };
 
         $this->queryParameters = [
             "response_type" => "code",

@@ -5,10 +5,11 @@ namespace Alchemy\Phrasea\PhraseanetService\Provider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\PhraseanetService\Controller\PSAdminController;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class PSAdminServiceProvider implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -20,11 +21,11 @@ class PSAdminServiceProvider implements ControllerProviderInterface, ServiceProv
      * This method should only be used to configure services and parameters.
      * It should not get services.
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.ps.admin'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.ps.admin'] = function (PhraseaApplication $app) {
             return new PSAdminController($app);
-        });
+        };
     }
 
     /**
@@ -68,17 +69,5 @@ class PSAdminServiceProvider implements ControllerProviderInterface, ServiceProv
         ;
 
         return $controllers;
-    }
-
-    /**
-     * Bootstraps the application.
-     *
-     * This method is called after all services are registered
-     * and should be used for "dynamic" configuration (whenever
-     * a service must be requested).
-     */
-    public function boot(Application $app)
-    {
-
     }
 }

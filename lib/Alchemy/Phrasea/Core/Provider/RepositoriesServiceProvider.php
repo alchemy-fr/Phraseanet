@@ -27,131 +27,131 @@ use Alchemy\Phrasea\Databox\Field\DataboxFieldFactory;
 use Alchemy\Phrasea\Databox\Field\DbalDataboxFieldRepository;
 use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class RepositoriesServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         if (!$app instanceof PhraseaApplication) {
             throw new \LogicException('Expects $app to be an instance of Phraseanet application');
         }
 
-        $app['repo.users'] = $app->share(function (PhraseaApplication $app) {
+        $app['repo.users'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:User');
-        });
-        $app['repo.auth-failures'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.auth-failures'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:AuthFailure');
-        });
-        $app['repo.sessions'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.sessions'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:Session');
-        });
-        $app['repo.tasks'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.tasks'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:Task');
-        });
-        $app['repo.registrations'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.registrations'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:Registration');
-        });
-        $app['repo.baskets'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.baskets'] = function (PhraseaApplication $app) {
             /** @var BasketRepository $repository */
             $repository = $app['orm.em']->getRepository('Phraseanet:Basket');
             $repository->setTranslator($app['translator']);
 
             return $repository;
-        });
-        $app['repo.basket-elements'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.basket-elements'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:BasketElement');
-        });
-        $app['repo.basket-participants'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.basket-participants'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:BasketParticipant');
-        });
-        $app['repo.story-wz'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.story-wz'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:StoryWZ');
-        });
-        $app['repo.orders'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.orders'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:Order');
-        });
-        $app['repo.order-elements'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.order-elements'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:OrderElement');
-        });
-        $app['repo.feeds'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.feeds'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:Feed');
-        });
-        $app['repo.feed-entries'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.feed-entries'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:FeedEntry');
-        });
-        $app['repo.feed-items'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.feed-items'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:FeedItem');
-        });
-        $app['repo.feed-publishers'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.feed-publishers'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:FeedPublisher');
-        });
-        $app['repo.feed-tokens'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.feed-tokens'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:FeedToken');
-        });
-        $app['repo.aggregate-tokens'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.aggregate-tokens'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:AggregateToken');
-        });
-        $app['repo.usr-lists'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.usr-lists'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:UsrList');
-        });
-        $app['repo.usr-list-owners'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.usr-list-owners'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:UsrListOwner');
-        });
-        $app['repo.usr-list-entries'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.usr-list-entries'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:UsrListEntry');
-        });
-        $app['repo.lazaret-files'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.lazaret-files'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:LazaretFile');
-        });
-        $app['repo.usr-auth-providers'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.usr-auth-providers'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:UsrAuthProvider');
-        });
-        $app['repo.ftp-exports'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.ftp-exports'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:FtpExport');
-        });
-        $app['repo.user-queries'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.user-queries'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:UserQuery');
-        });
-        $app['repo.tokens'] = $app->share(function ($app) {
+        };
+        $app['repo.tokens'] = function ($app) {
             return $app['orm.em']->getRepository('Phraseanet:Token');
-        });
-        $app['repo.presets'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.presets'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:Preset');
-        });
-        $app['repo.api-accounts'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.api-accounts'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:ApiAccount');
-        });
-        $app['repo.api-logs'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.api-logs'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:ApiLog');
-        });
-        $app['repo.api-applications'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.api-applications'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:ApiApplication');
-        });
-        $app['repo.api-oauth-codes'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.api-oauth-codes'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:ApiOauthCode');
-        });
-        $app['repo.api-oauth-tokens'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.api-oauth-tokens'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:ApiOauthToken');
-        });
-        $app['repo.api-oauth-refresh-tokens'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.api-oauth-refresh-tokens'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:ApiOauthRefreshToken');
-        });
-        $app['repo.webhook-event'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.webhook-event'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WebhookEvent');
-        });
-        $app['repo.webhook-delivery'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.webhook-delivery'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WebhookEventDelivery');
-        });
-        $app['repo.worker-running-job'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.worker-running-job'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WorkerRunningJob');
-        });
-        $app['repo.worker-job'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['repo.worker-job'] = function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WorkerJob');
-        });
+        };
 
-        $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
+        $app['repo.databoxes'] = function (PhraseaApplication $app) {
             $appbox = $app->getApplicationBox();
 
             $factory = new DataboxFactory($app);
@@ -167,7 +167,7 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             $factory->setDataboxRepository($repository);
 
             return $repository;
-        });
+        };
 
         $app['repo.fields.factory'] = $app->protect(function (\databox $databox) use ($app) {
             return new DbalDataboxFieldRepository($databox->get_connection(), new DataboxFieldFactory($app, $databox));
@@ -177,13 +177,13 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             return new LegacyRecordRepository($app, $databox, $app['conf']->get(['main', 'key']));
         });
 	
-        $app['repo.collection-references'] = $app->share(function (PhraseaApplication $app) {
+        $app['repo.collection-references'] = function (PhraseaApplication $app) {
             $repository = new DbalCollectionReferenceRepository($app->getApplicationBox()->get_connection());
 
             return new ArrayCacheCollectionReferenceRepository($repository);
-        });
+        };
 
-        $app['repo.collections-registry'] = $app->share(function (PhraseaApplication $app) {
+        $app['repo.collections-registry'] = function (PhraseaApplication $app) {
             $factory = new CollectionFactory($app);
             $connectionProvider = new DataboxConnectionProvider($app->getApplicationBox());
 
@@ -203,11 +203,6 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             $repositoryFactory = new ArrayCachedCollectionRepositoryFactory($repositoryFactory);
 
             return new CollectionRepositoryRegistry($app, $repositoryFactory, $app['repo.collection-references']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 }

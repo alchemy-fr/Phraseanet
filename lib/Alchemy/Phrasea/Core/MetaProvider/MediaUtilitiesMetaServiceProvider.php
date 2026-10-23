@@ -11,13 +11,15 @@ use Neutron\Silex\Provider\ImagineServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use PHPExiftool\Reader;
 use PHPExiftool\Writer;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
-class MediaUtilitiesMetaServiceProvider implements ServiceProviderInterface
+class MediaUtilitiesMetaServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app->register(new ImagineServiceProvider());
         $app->register(new FFMpegServiceProvider());
@@ -27,7 +29,7 @@ class MediaUtilitiesMetaServiceProvider implements ServiceProviderInterface
         $app->register(new MP4BoxServiceProvider());
         $app->register(new PHPExiftoolServiceProvider());
 
-        $app['imagine.factory'] = $app->share(function (Application $app) {
+        $app['imagine.factory'] = function (Application $app) {
             if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
                 return $app['conf']->get(['registry', 'executables', 'imagine-driver']);
             }
@@ -45,7 +47,7 @@ class MediaUtilitiesMetaServiceProvider implements ServiceProviderInterface
             }
 
             throw new \RuntimeException('No Imagine driver available');
-        });
+        };
     }
 
     public function boot(Application $app)

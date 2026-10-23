@@ -17,28 +17,29 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Order\Controller\ProdOrderController;
 use Alchemy\Phrasea\Order\OrderBasketProvider;
 use Alchemy\Phrasea\Order\OrderValidator;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Order implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['provider.order_basket'] = $app->share(function (PhraseaApplication $app) {
+        $app['provider.order_basket'] = function (PhraseaApplication $app) {
             return new OrderBasketProvider($app['orm.em'], $app['translator']);
-        });
+        };
 
-        $app['validator.order'] = $app->share(function (PhraseaApplication $app) {
+        $app['validator.order'] = function (PhraseaApplication $app) {
             $orderValidator = new OrderValidator($app['phraseanet.appbox'], $app['repo.collection-references']);
             $orderValidator->setAclProvider($app['acl']);
 
             return $orderValidator;
-        });
+        };
 
-        $app['controller.prod.order'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.order'] = function (PhraseaApplication $app) {
             $controller = new ProdOrderController(
                 $app,
                 $app['repo.orders'],
@@ -52,12 +53,7 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
                 ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'));
 
             return $controller;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     /**

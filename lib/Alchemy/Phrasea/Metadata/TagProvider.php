@@ -19,7 +19,7 @@ class TagProvider extends ExiftoolTagProvider
     {
         parent::__construct();
 
-        $this['Phraseanet'] = $this->share(function () {
+        $this['Phraseanet'] = function () {
             return [
                 'PdfText'       => new \Alchemy\Phrasea\Metadata\Tag\PdfText(),
                 'TfArchivedate' => new \Alchemy\Phrasea\Metadata\Tag\TfArchivedate(),
@@ -42,7 +42,7 @@ class TagProvider extends ExiftoolTagProvider
                 'TfSize'        => new \Alchemy\Phrasea\Metadata\Tag\TfSize(),
                 'TfWidth'       => new \Alchemy\Phrasea\Metadata\Tag\TfWidth(),
             ];
-        });
+        };
     }
 
     public function getAll()

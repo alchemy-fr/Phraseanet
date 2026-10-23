@@ -11,24 +11,20 @@
 
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
 use Doctrine\DBAL\Migrations\Configuration\YamlConfiguration;
+use Pimple\Container;
 
 class DoctrineMigrationServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['doctrine-migration.configuration'] = $app->share(function ($app) {
+        $app['doctrine-migration.configuration'] = function ($app) {
             $configuration = new YamlConfiguration($app['orm.em']->getConnection());
             $configuration->load(__DIR__.'/../../../../conf.d/migrations.yml');
             $configuration->setMigrationsDirectory(__DIR__.'/../../../../Alchemy/Phrasea/Setup/DoctrineMigration');
 
             return $configuration;
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

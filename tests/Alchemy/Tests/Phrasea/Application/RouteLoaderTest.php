@@ -5,8 +5,8 @@ namespace Alchemy\Tests\Phrasea\Application;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\RouteLoader;
 use Prophecy\Argument;
+use Silex\Api\ControllerProviderInterface;
 use Silex\ControllerCollection;
-use Silex\ControllerProviderInterface;
 use Silex\Route;
 
 class RouteLoaderTest extends \PHPUnit_Framework_TestCase

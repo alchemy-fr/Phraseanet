@@ -48,20 +48,18 @@ class CLI extends Application
 
         $this['session.test'] = true;
 
-        $this['console'] = $this->share(function () use ($name, $version) {
+        $this['console'] = function () use ($name, $version) {
             return new Console\Application($name, $version);
+        };
+
+        $this->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
+            $dispatcher->addListener('phraseanet.notification.sent', function () use ($app) {
+                $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
+            });
+            $dispatcher->addSubscriber(new BridgeSubscriber($app));
+
+            return $dispatcher;
         });
-
-        $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
-                $dispatcher->addListener('phraseanet.notification.sent', function () use ($app) {
-                    $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
-                });
-                $dispatcher->addSubscriber(new BridgeSubscriber($app));
-
-                return $dispatcher;
-            })
-        );
 
         $this->register(new PluginServiceProvider());
         $this->register(new ComposerSetupServiceProvider());
@@ -89,7 +87,7 @@ class CLI extends Application
         }
 
         if ($logger){
-            $this['logger'] = $this->extend('logger', function () {
+            $this->extend('logger', function () {
                 return new Console\Logger\ConsoleLogger(new Console\Output\ConsoleOutput(Console\Output\ConsoleOutput::VERBOSITY_DEBUG));
             });
         }

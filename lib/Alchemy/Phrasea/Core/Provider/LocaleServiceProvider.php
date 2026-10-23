@@ -12,22 +12,23 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class LocaleServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['locale'] = $app->share(function (Application $app) {
+        $app['locale'] = function (Application $app) {
             if (!$app['configuration.store']->isSetup()) {
                 return 'en';
             }
 
             return $app['conf']->get(['languages', 'default'], 'en');
-        });
+        };
 
-        $app['locales.available'] = $app->share(function (Application $app) {
+        $app['locales.available'] = function (Application $app) {
             $availableLanguages = PhraseaApplication::getAvailableLanguages();
 
             if ($app['configuration.store']->isSetup() && 0 < count((array) $app['conf']->get(['languages', 'available']))) {
@@ -51,10 +52,6 @@ class LocaleServiceProvider implements ServiceProviderInterface
             }
 
             return $availableLanguages;
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

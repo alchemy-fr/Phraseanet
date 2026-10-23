@@ -5,9 +5,10 @@ namespace Alchemy\Phrasea\PhraseanetService\Provider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\PhraseanetService\Controller\PSExposeController;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class PSExposeServiceProvider implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -16,11 +17,11 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
     /**
      * @inheritDoc
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.ps.expose'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.ps.expose'] = function (PhraseaApplication $app) {
             return new PSExposeController($app);
-        });
+        };
     }
 
     /**
@@ -110,13 +111,5 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->bind('ps_expose_save_subdef_mapping');
 
         return $controllers;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function boot(Application $app)
-    {
-
     }
 }

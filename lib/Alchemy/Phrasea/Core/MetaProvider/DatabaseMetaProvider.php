@@ -19,14 +19,14 @@ use Doctrine\DBAL\Event\ConnectionEventArgs;
 use Doctrine\DBAL\Events;
 use Doctrine\ORM\Configuration;
 use Gedmo\DoctrineExtensions as GedmoExtension;
-use Silex\Application;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Provider\DoctrineServiceProvider;
-use Silex\ServiceProviderInterface;
 
 class DatabaseMetaProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app->register(new DoctrineServiceProvider());
         $this->setupDBAL($app);
@@ -37,7 +37,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
 
     private function setupDBAL(PhraseaApplication $app)
     {
-        $app['dbs.config'] = $app->share($app->extend('dbs.config', function ($configs, $app) {
+        $app->extend('dbs.config', function ($configs, $app) {
             if (!isset($app['dbal.config.register.loggers'])) {
                 return $configs;
             }
@@ -49,9 +49,9 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             }
 
             return $configs;
-        }));
+        });
 
-        $app['dbs.event_manager'] = $app->share($app->extend('dbs.event_manager', function ($eventManagers, $app) {
+        $app->extend('dbs.event_manager', function ($eventManagers, $app) {
             foreach ($eventManagers->keys() as $name) {
                 /** @var EventManager $eventManager */
                 $eventManager = $eventManagers[$name];
@@ -61,7 +61,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             }
 
             return $eventManagers;
-        }));
+        });
     }
 
     /**
@@ -105,7 +105,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
         $app['orm.auto_generate_proxies'] = $app['debug'];
         $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
 
-        $app['orm.ems'] = $app->share($app->extend('orm.ems', function (\Pimple $ems, $app) {
+        $app->extend('orm.ems', function (\Pimple\Container $ems, $app) {
             GedmoExtension::registerAnnotations();
 
             foreach ($ems->keys() as $key) {
@@ -119,11 +119,6 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             }
 
             return $ems;
-        }));
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        });
     }
 }

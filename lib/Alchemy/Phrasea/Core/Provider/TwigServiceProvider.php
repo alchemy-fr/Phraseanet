@@ -15,8 +15,9 @@ use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 
 class TwigServiceProvider implements ServiceProviderInterface
@@ -30,9 +31,9 @@ class TwigServiceProvider implements ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['twig'] = $app->share($app->extend('twig', function (\Twig_Environment $twig, $app) {
+        $app->extend('twig', function (\Twig_Environment $twig, $app) {
             $twig->setCache($app['cache.path'] . '/twig');
 
             $paths = [];
@@ -87,7 +88,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             $this->registerFilters($twig, $app);
 
             return $twig;
-        }));
+        });
     }
 
     private function registerExtensions(\Twig_Environment $twig, Application $app)
@@ -220,17 +221,5 @@ class TwigServiceProvider implements ServiceProviderInterface
                 return $formattedTime;
             }
         ));
-    }
-
-    /**
-     * Bootstraps the application.
-     *
-     * This method is called after all services are registered
-     * and should be used for "dynamic" configuration (whenever
-     * a service must be requested).
-     */
-    public function boot(Application $app)
-    {
-        // no-op
     }
 }

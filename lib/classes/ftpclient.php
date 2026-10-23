@@ -413,7 +413,7 @@ class ftpclient
 
             $info = preg_split("/[\s]+/", $content, 9);
 
-            $is_dir = $info[0]{0} == 'd';
+            $is_dir = $info[0][0] == 'd';
             if ($is_dir)
                 continue;
             if ($content[0] == '/') {

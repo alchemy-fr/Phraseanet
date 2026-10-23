@@ -13,17 +13,18 @@ namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\Phrasea\Command\Developer\Utils\ComposerDriver;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\Process\ExecutableFinder;
 
 class CLIDriversServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['executable-finder'] = $app->share(function () {
+        $app['executable-finder'] = function () {
             return new ExecutableFinder();
-        });
+        };
 
         $app['driver.binary-finder'] = $app->protect(function ($name, $configName) use ($app) {
             $extraDirs = [];
@@ -43,7 +44,7 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
             return $app['executable-finder']->find($name, null, $extraDirs);
         });
 
-        $app['driver.composer'] = $app->share(function (Application $app) {
+        $app['driver.composer'] = function (Application $app) {
             $composerBinary = $app['driver.binary-finder']('composer', 'composer_binary');
 
             if (null === $composerBinary) {
@@ -51,10 +52,6 @@ class CLIDriversServiceProvider implements ServiceProviderInterface
             }
 
             return ComposerDriver::create(['composer.binaries' => $composerBinary, 'timeout' => 300], $app['monolog']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

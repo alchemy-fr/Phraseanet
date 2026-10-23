@@ -21,9 +21,9 @@ class TaskStopTest extends \PhraseanetTestCase
                 ->with('task_id')
                 ->will($this->returnValue(1));
 
-        self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () {
+        self::$DI['cli']['monolog'] = function () {
             return $this->createMonologMock();
-        });
+        };
 
         $command = new TaskStop();
         $command->setContainer(self::$DI['cli']);

@@ -14,59 +14,56 @@ use Alchemy\Phrasea\Controller\Api\V3\V3StoriesController;
 use Alchemy\Phrasea\Controller\Api\V3\V3SubdefsServiceController;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 
 class V3 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     const VERSION = '3.0.0';
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.api.v3.resulthelpers'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.api.v3.resulthelpers'] = function (PhraseaApplication $app) {
             return (new V3ResultHelpers(
                 $app['conf'],
                 $app['media_accessor.subdef_url_generator'],
                 $app['authentication'],
                 $app['url_generator']))
                 ->setInstanceId($app['conf']);
-        });
-        $app['controller.api.v3.subdefs_service'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.api.v3.subdefs_service'] = function (PhraseaApplication $app) {
             return (new V3SubdefsServiceController($app))
                 ->setJsonBodyHelper($app['json.body_helper'])
                 ->setDispatcher($app['dispatcher'])
                 ;
-        });
-        $app['controller.api.v3.records'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.api.v3.records'] = function (PhraseaApplication $app) {
             return (new V3RecordController($app))
                 ->setJsonBodyHelper($app['json.body_helper'])
                 ->setDispatcher($app['dispatcher'])
                 ;
-        });
-        $app['controller.api.v3.search'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.api.v3.search'] = function (PhraseaApplication $app) {
             return (new V3SearchController($app))
                 ->setInstanceId($app['conf'])
                 ;
-        });
-        $app['controller.api.v3.monitorData'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.api.v3.monitorData'] = function (PhraseaApplication $app) {
             return (new V3MonitorDataController($app));
-        });
-        $app['controller.api.v3.searchraw'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.api.v3.searchraw'] = function (PhraseaApplication $app) {
             return (new V3SearchRawController($app));
-        });
-        $app['controller.api.v3.stories'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.api.v3.stories'] = function (PhraseaApplication $app) {
             return (new V3StoriesController($app));
-        });
-        $app['controller.api.v3'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.api.v3'] = function (PhraseaApplication $app) {
             return (new V3Controller($app));
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

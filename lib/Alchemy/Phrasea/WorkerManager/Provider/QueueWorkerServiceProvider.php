@@ -36,47 +36,45 @@ class QueueWorkerServiceProvider implements PluginProviderInterface
      */
     public function register(Application $app)
     {
-        $app['alchemy_worker.amqp.connection'] = $app->share(function (Application $app) {
+        $app['alchemy_worker.amqp.connection'] = function (Application $app) {
             return new AMQPConnection($app['conf']);
-        });
+        };
 
-        $app['alchemy_worker.message.handler'] = $app->share(function (Application $app) {
+        $app['alchemy_worker.message.handler'] = function (Application $app) {
             return new MessageHandler($app['alchemy_worker.message.publisher']);
-        });
+        };
 
-        $app['alchemy_worker.message.publisher'] = $app->share(function (Application $app) {
+        $app['alchemy_worker.message.publisher'] = function (Application $app) {
             return new MessagePublisher($app['alchemy_worker.amqp.connection'], $app['alchemy_worker.logger']);
-        });
+        };
 
-        $app['alchemy_worker.webhook.publisher'] = $app->share(function (Application $app) {
+        $app['alchemy_worker.webhook.publisher'] = function (Application $app) {
             return new WebhookPublisher($app['alchemy_worker.message.publisher']);
-        });
+        };
 
-        $app['manipulator.webhook-event'] = $app->share(function (Application $app) {
+        $app['manipulator.webhook-event'] = function (Application $app) {
             return new WebhookEventManipulator(
                 $app['orm.em'],
                 $app['repo.webhook-event'],
                 $app['alchemy_worker.webhook.publisher']
             );
+        };
+
+        $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
+
+            $dispatcher->addSubscriber(
+                (new RecordSubscriber($app, new LazyLocator($app, 'phraseanet.appbox')))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+            );
+            $dispatcher->addSubscriber(new ExportSubscriber($app['alchemy_worker.message.publisher']));
+            $dispatcher->addSubscriber(new AssetsIngestSubscriber($app['alchemy_worker.message.publisher'], new LazyLocator($app, 'repo.worker-running-job')));
+            $dispatcher->addSubscriber(new SearchengineSubscriber($app['alchemy_worker.message.publisher'], new LazyLocator($app, 'repo.worker-running-job')));
+            $dispatcher->addSubscriber(new WebhookSubscriber($app['alchemy_worker.message.publisher']));
+            $dispatcher->addSubscriber(new SubtitleSubscriber(new LazyLocator($app, 'repo.worker-job'), $app['alchemy_worker.message.publisher']));
+            $dispatcher->addSubscriber(new ExposeSubscriber($app['alchemy_worker.message.publisher']));
+
+            return $dispatcher;
         });
-
-        $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
-
-                $dispatcher->addSubscriber(
-                    (new RecordSubscriber($app, new LazyLocator($app, 'phraseanet.appbox')))
-                    ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                );
-                $dispatcher->addSubscriber(new ExportSubscriber($app['alchemy_worker.message.publisher']));
-                $dispatcher->addSubscriber(new AssetsIngestSubscriber($app['alchemy_worker.message.publisher'], new LazyLocator($app, 'repo.worker-running-job')));
-                $dispatcher->addSubscriber(new SearchengineSubscriber($app['alchemy_worker.message.publisher'], new LazyLocator($app, 'repo.worker-running-job')));
-                $dispatcher->addSubscriber(new WebhookSubscriber($app['alchemy_worker.message.publisher']));
-                $dispatcher->addSubscriber(new SubtitleSubscriber(new LazyLocator($app, 'repo.worker-job'), $app['alchemy_worker.message.publisher']));
-                $dispatcher->addSubscriber(new ExposeSubscriber($app['alchemy_worker.message.publisher']));
-
-                return $dispatcher;
-            })
-        );
 
     }
 

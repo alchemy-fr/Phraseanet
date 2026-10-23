@@ -15,29 +15,25 @@ use Negotiation\CharsetNegotiator;
 use Negotiation\EncodingNegotiator;
 use Negotiation\LanguageNegotiator;
 use Negotiation\Negotiator;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class ContentNegotiationServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['negotiator'] = $app->share(function () {
+        $app['negotiator'] = function () {
             return new Negotiator();
-        });
+        };
 
-        $app['charset.negotiator'] = $app->share(function () {
+        $app['charset.negotiator'] = function () {
             return new CharsetNegotiator();
-        });
-        $app['encoding.negotiator'] = $app->share(function () {
+        };
+        $app['encoding.negotiator'] = function () {
             return new EncodingNegotiator();
-        });
-        $app['language.negotiator'] = $app->share(function () {
+        };
+        $app['language.negotiator'] = function () {
             return new LanguageNegotiator();
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

@@ -21,9 +21,9 @@ class SchedulerRunTest extends \PhraseanetTestCase
         self::$DI['cli']['task-manager']->expects($this->once())
             ->method('start');
 
-        self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () {
+        self::$DI['cli']['monolog'] = function () {
             return $this->createMonologMock();
-        });
+        };
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
