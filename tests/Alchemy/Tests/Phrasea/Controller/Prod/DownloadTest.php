@@ -90,7 +90,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDownloadBasket()
     {
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $randomValue = $this->setSessionFormToken('prodExportDownload');
 
         $triggered = false;
@@ -116,7 +116,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDownloadBasketValidation()
     {
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $randomValue = $this->setSessionFormToken('prodExportDownload');
 
         $triggered = false;

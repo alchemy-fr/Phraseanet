@@ -2339,7 +2339,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function get_container_baskets(EntityManager $em, User $user)
     {
         return $em
-            ->getRepository('Phraseanet:Basket')
+            ->getRepository('Alchemy\Phrasea\Model\Entities\Basket')
             ->findContainingRecordForUser($this, $user);
     }
 

@@ -176,10 +176,10 @@ class Installer
     {
         $config = $this->app['configuration.store']->initialize()->getConfig();
 
-        $config['main']['database']['host'] = $abConn->getHost();
-        $config['main']['database']['port'] = $abConn->getPort();
-        $config['main']['database']['user'] = $abConn->getUsername();
-        $config['main']['database']['password'] = $abConn->getPassword();
+        $config['main']['database']['host'] = $abConn->getParams()['host'];
+        $config['main']['database']['port'] = ($abConn->getParams()['port'] ?? null);
+        $config['main']['database']['user'] = $abConn->getParams()['user'];
+        $config['main']['database']['password'] = $abConn->getParams()['password'];
         $config['main']['database']['dbname'] = $abConn->getDatabase();
 
         $config['main']['database']['driver'] = 'pdo_mysql';

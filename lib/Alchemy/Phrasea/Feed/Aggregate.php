@@ -115,7 +115,7 @@ class Aggregate implements FeedInterface
     public function getEntries()
     {
         /** @var FeedEntryRepository $feedEntryRepository */
-        $feedEntryRepository = $this->em->getRepository('Phraseanet:FeedEntry');
+        $feedEntryRepository = $this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry');
         return new AggregateEntryCollection($feedEntryRepository, $this->feeds);
     }
 
@@ -201,7 +201,7 @@ class Aggregate implements FeedInterface
         }
 
         /** @var FeedEntryRepository $feedEntryRepository */
-        $feedEntryRepository = $this->em->getRepository('Phraseanet:FeedEntry');
+        $feedEntryRepository = $this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry');
 
         return $feedEntryRepository->countByFeeds($this->feeds->getKeys());
     }

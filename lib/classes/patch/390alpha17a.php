@@ -210,7 +210,7 @@ class patch_390alpha17a extends patchAbstract
     private function setOauthTokenExpiresToNull(EntityManager $em)
     {
         $qb = $em->createQueryBuilder();
-        $q = $qb->update('Phraseanet:ApiOauthToken', 'a')
+        $q = $qb->update('Alchemy\Phrasea\Model\Entities\ApiOauthToken', 'a')
             ->set('a.expires', $qb->expr()->literal(null))
             ->getQuery();
         $q->execute();

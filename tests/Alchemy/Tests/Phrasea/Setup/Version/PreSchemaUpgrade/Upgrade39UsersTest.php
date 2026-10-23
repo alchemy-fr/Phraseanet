@@ -68,7 +68,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
      */
     private function loadUser(EntityManager $em, $id)
     {
-        return $em->find('Phraseanet:User', $id);
+        return $em->find('Alchemy\Phrasea\Model\Entities\User', $id);
     }
 
     private function checkThatNewConstraintsCanBeApplied(EntityManager $em)

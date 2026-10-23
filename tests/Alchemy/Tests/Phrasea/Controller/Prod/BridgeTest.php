@@ -46,7 +46,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testManager()
     {
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         self::$DI['client']->request('POST', '/prod/bridge/manager/', ['ssel' => $basket->getId()]);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());

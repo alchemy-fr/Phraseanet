@@ -64,7 +64,7 @@ class BasketRepository extends EntityRepository
     {
         // checked : 4 usages, "b.elements" is useless
         $dql = "SELECT b\n"
-            . " FROM Phraseanet:Basket b\n"
+            . " FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
             // . " LEFT JOIN b.elements e\n"    //
             . " WHERE b.user = :usr_id\n"
             . " AND b.archived = false";
@@ -122,7 +122,7 @@ class BasketRepository extends EntityRepository
         $basket_ids = $stmt->fetchFirstColumn();
 
         // ... then we fetch the basket objects in dql
-        $dql = "SELECT b FROM Phraseanet:Basket b\n"
+        $dql = "SELECT b FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
             . " WHERE b.id IN (:basket_ids)";
 
         $query = $this->_em->createQuery($dql);
@@ -153,7 +153,7 @@ class BasketRepository extends EntityRepository
     public function findActiveValidationByUser(User $user, $sort = null)
     {
         $dql = 'SELECT b
-            FROM Phraseanet:Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             JOIN b.participants p
             WHERE b.user != :usr_id AND p.user = :usr_id
              AND (
@@ -190,7 +190,7 @@ class BasketRepository extends EntityRepository
     {
         // checked : 3 usages, "b.elements e" seems useless
         $dql = "SELECT b\n"
-            . " FROM Phraseanet:Basket b\n"
+            . " FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
             . " WHERE b.id = :basket_id";
 
         $query = $this->_em->createQuery($dql);
@@ -226,7 +226,7 @@ class BasketRepository extends EntityRepository
     public function findContainingRecordForUser(\record_adapter $record, User $user)
     {
         $dql = 'SELECT b
-            FROM Phraseanet:Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             JOIN b.elements e
             LEFT JOIN b.participants p
             WHERE e.record_id = :record_id AND e.sbas_id = :databox_id
@@ -262,7 +262,7 @@ class BasketRepository extends EntityRepository
         switch ($type) {
             case self::RECEIVED:
                 $dql = "SELECT b\n"
-                    . "FROM Phraseanet:Basket b\n"
+                    . "FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
                 //    . "  JOIN b.elements e\n"
                     . "WHERE b.user = :usr_id AND b.pusher IS NOT NULL";
                 $params = [
@@ -272,7 +272,7 @@ class BasketRepository extends EntityRepository
             case self::VALIDATION_DONE:
                 // todo : check when called, and if "LEFT JOIN b.elements e" is usefull
                 $dql = "SELECT b\n"
-                    . "FROM Phraseanet:Basket b\n"
+                    . "FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
                     . "  JOIN b.elements e\n"
                     . "  JOIN b.participants p\n"
                     . "WHERE b.user != :usr_id AND p.user = :usr_id";
@@ -282,7 +282,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::VALIDATION_SENT:         // we expect initiator = owner
                 $dql = "SELECT b\n"
-                . "FROM Phraseanet:Basket b\n"
+                . "FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
                 . "WHERE b.vote_initiator = :usr_id AND  b.user = :usr_id";
                 $params = [
                     'usr_id' => $user->getId()
@@ -290,7 +290,7 @@ class BasketRepository extends EntityRepository
                 break;
             case self::MYBASKETS:
                 $dql = "SELECT b\n"
-                . "FROM Phraseanet:Basket b\n"
+                . "FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
             //    . "LEFT JOIN b.participants p\n"
                 . "WHERE (b.user = :usr_id)";
                 $params = [
@@ -300,7 +300,7 @@ class BasketRepository extends EntityRepository
             default:
                 // todo : check when called, and if "LEFT JOIN b.elements e" is usefull
                 $dql = "SELECT b\n"
-                . "FROM Phraseanet:Basket b\n"
+                . "FROM Alchemy\Phrasea\Model\Entities\Basket b\n"
             //    . "LEFT JOIN b.elements e\n"
             //    . "LEFT JOIN b.participants p\n"
                 . "WHERE (b.user = :usr_id OR b.vote_initiator = :usr_id)";     // !!!!!!!!!!! always same user ?
@@ -344,7 +344,7 @@ class BasketRepository extends EntityRepository
     {
         // todo : check caller and if "LEFT JOIN b.elements e" is usefull
 //        $dql = 'SELECT b
-//            FROM Phraseanet:Basket b
+//            FROM Alchemy\Phrasea\Model\Entities\Basket b
 //            LEFT JOIN b.elements e
 //            LEFT JOIN b.participants p
 //            WHERE (b.user = :usr_id AND b.archived = false)
@@ -353,7 +353,7 @@ class BasketRepository extends EntityRepository
 //                  )';
 
         $dql = 'SELECT b
-            FROM Phraseanet:Basket b
+            FROM Alchemy\Phrasea\Model\Entities\Basket b
             LEFT JOIN b.participants p
             WHERE (b.user = :usr_id AND b.archived = false)
               OR (b.user != :usr_id AND p.user = :usr_id

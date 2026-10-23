@@ -10,14 +10,14 @@ class TaskRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindActiveTask()
     {
-        $task1 = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task1 = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
         $task1->setStatus(Task::STATUS_STOPPED);
-        $task2 = self::$DI['app']['orm.em']->find('Phraseanet:Task', 2);
+        $task2 = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 2);
 
         self::$DI['app']['orm.em']->persist($task1);
         self::$DI['app']['orm.em']->flush();
 
-        $repository = self::$DI['app']['orm.em']->getRepository('Phraseanet:Task');
+        $repository = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Task');
         $this->assertSame([$task2], $repository->findActiveTasks());
 
         $task1->setStatus(Task::STATUS_STARTED);

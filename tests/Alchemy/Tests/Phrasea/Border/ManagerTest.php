@@ -56,7 +56,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
     {
         parent::setUp();
         $this->object = new Manager(self::$DI['app']);
-        $this->session = self::$DI['app']['orm.em']->find('Phraseanet:LazaretSession', 1);
+        $this->session = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\LazaretSession', 1);
     }
 
     public function tearDown(): void

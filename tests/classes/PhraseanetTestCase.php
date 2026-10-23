@@ -216,7 +216,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         };
 
         self::$DI['lazaret_1'] = function ($DI) {
-            return $DI['app']['orm.em']->find('Phraseanet:LazaretFile', self::$fixtureIds['lazaret']['lazaret_1']);
+            return $DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\LazaretFile', self::$fixtureIds['lazaret']['lazaret_1']);
         };
 
         foreach (range(1, 7) as $i) {

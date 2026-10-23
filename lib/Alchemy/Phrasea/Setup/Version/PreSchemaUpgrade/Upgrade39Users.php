@@ -399,7 +399,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
 
             foreach ($rs as $row) {
                 try {
-                    $user = $em->createQuery('SELECT PARTIAL u.{id} FROM Phraseanet:User u WHERE u.id = :id')
+                    $user = $em->createQuery('SELECT PARTIAL u.{id} FROM Alchemy\Phrasea\Model\Entities\User u WHERE u.id = :id')
                         ->setParameters(['id' => $row['usr_id']])
                         ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                         ->getSingleResult();

@@ -54,7 +54,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $client = $this->getClient();
         $this->logout($app);
 
-        $Basket = $app['orm.em']->find('Phraseanet:Basket', 1);
+        $Basket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $token = $app['manipulator.token']->createBasketAccessToken($Basket, self::$DI['user_alt2']);
 
         $client->request('GET', '/lightbox/?LOG='.$token->getValue());
@@ -67,7 +67,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $client = $this->getClient();
-        $basket = $app['orm.em']->find('Phraseanet:Basket', 4);
+        $basket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $basket_element = $basket->getELements()->first();
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $app);
@@ -93,7 +93,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $client = $this->getClient();
-        $basket_element = $app['orm.em']->find('Phraseanet:BasketElement', 1);
+        $basket_element = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $app);
 
@@ -143,7 +143,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $app);
 
-        $feed = $app['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $entry = $feed->getEntries()->first();
         $item = $entry->getItems()->first();
 
@@ -189,7 +189,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $client = $this->getClient();
         $this->authenticate($app);
-        $basket = $app['orm.em']->find('Phraseanet:Basket', 4);
+        $basket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $path = $app['url_generator']->generate('lightbox_validation', [
             'basket' => $basket->getId()
         ]);
@@ -219,7 +219,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $client = $this->getClient();
         $this->authenticate($app);
 
-        $basket = $app['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $app);
 
@@ -245,7 +245,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $client = $this->getClient();
         $this->authenticate($app);
-        $entry = $app['orm.em']->find('Phraseanet:Feed', 1)->getEntries()->first();
+        $entry = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1)->getEntries()->first();
         $path = $app['url_generator']->generate('lightbox_feed_entry', [
             'entry_id' => $entry->getId()
         ]);
@@ -273,7 +273,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $client = $this->getClient();
-        $validationBasket = $app['orm.em']->find('Phraseanet:Basket', 4);
+        $validationBasket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $app);
         $client->request('GET', '/lightbox/ajax/LOAD_REPORT/' . $validationBasket->getId() . '/');
@@ -285,7 +285,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $client = $this->getClient();
-        $validationBasket = $app['orm.em']->find('Phraseanet:Basket', 4);
+        $validationBasket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $validationBasketElement = $validationBasket->getElements()->first();
 
         $randomValue = $this->setSessionFormToken('lightbox');
@@ -312,7 +312,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $client = $this->getClient();
-        $validationBasket = $app['orm.em']->find('Phraseanet:Basket', 4);
+        $validationBasket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $validationBasketElement = $validationBasket->getElements()->first();
 
         $client->request(
@@ -340,7 +340,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $client = $this->getClient();
-        $basket = $app['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $client->request('POST', '/lightbox/ajax/SET_RELEASE/' . $basket->getId() . '/');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -354,7 +354,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $client = $this->getClient();
-        $validationBasket = $app['orm.em']->find('Phraseanet:Basket', 4);
+        $validationBasket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
 
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone');
         $this->mockUserNotificationSettings('eventsmanager_notify_validationdone');

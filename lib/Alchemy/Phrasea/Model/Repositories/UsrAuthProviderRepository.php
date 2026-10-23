@@ -30,7 +30,7 @@ class UsrAuthProviderRepository extends EntityRepository
     public function findByUser(User $user)
     {
         $dql = 'SELECT u
-                FROM Phraseanet:UsrAuthProvider u
+                FROM Alchemy\Phrasea\Model\Entities\UsrAuthProvider u
                 WHERE u.user = :usrId';
 
         $params = ['usrId' => $user->getId()];
@@ -50,7 +50,7 @@ class UsrAuthProviderRepository extends EntityRepository
     public function findWithProviderAndId($providerId, $distantId)
     {
         $dql = 'SELECT u
-                FROM Phraseanet:UsrAuthProvider u
+                FROM Alchemy\Phrasea\Model\Entities\UsrAuthProvider u
                 WHERE u.provider = :providerId AND u.distant_id = :distantId';
 
         $params = ['providerId' => $providerId, 'distantId' => $distantId];

@@ -149,6 +149,9 @@
     "patches": {
       "alchemy/embed-bundle": {
         "PHP 8.5 and Silex 2 compatibility": "patches/alchemy-embed-bundle.patch"
+      },
+      "dflydev/doctrine-orm-service-provider": {
+        "Doctrine Persistence 2+ namespaces and attribute mapping driver": "patches/dflydev-doctrine-orm-service-provider.patch"
       }
     }
   }

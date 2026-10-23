@@ -85,7 +85,7 @@ class patch_361alpha1a extends patchAbstract
             }
         }
 
-        $dql = "SELECT b FROM Phraseanet:Basket b WHERE b.description != ''";
+        $dql = "SELECT b FROM Alchemy\Phrasea\Model\Entities\Basket b WHERE b.description != ''";
 
         $n = 0;
         $perPage = 100;

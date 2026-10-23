@@ -214,7 +214,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($triggered, 'Order delivered listener not triggered');
 
-        $testOrder = $app['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
 
         $this->assertEquals(0, $testOrder->getTodo());
     }
@@ -240,13 +240,13 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $parameters = [$order->getElements()->first()->getId()];
         $client = $this->getClient();
         $client->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $testOrder = $entityManager->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = $entityManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(1, $testOrder->getTodo());
 
         $parameters = [$orderElement->getId()];
         $client->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
 
-        $testOrder = $entityManager->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = $entityManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 

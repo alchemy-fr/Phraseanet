@@ -39,116 +39,116 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         }
 
         $app['repo.users'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:User');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\User');
         };
         $app['repo.auth-failures'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:AuthFailure');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\AuthFailure');
         };
         $app['repo.sessions'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Session');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Session');
         };
         $app['repo.tasks'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Task');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Task');
         };
         $app['repo.registrations'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Registration');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Registration');
         };
         $app['repo.baskets'] = function (PhraseaApplication $app) {
             /** @var BasketRepository $repository */
-            $repository = $app['orm.em']->getRepository('Phraseanet:Basket');
+            $repository = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
             $repository->setTranslator($app['translator']);
 
             return $repository;
         };
         $app['repo.basket-elements'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:BasketElement');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement');
         };
         $app['repo.basket-participants'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:BasketParticipant');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\BasketParticipant');
         };
         $app['repo.story-wz'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:StoryWZ');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\StoryWZ');
         };
         $app['repo.orders'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Order');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Order');
         };
         $app['repo.order-elements'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:OrderElement');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\OrderElement');
         };
         $app['repo.feeds'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Feed');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Feed');
         };
         $app['repo.feed-entries'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:FeedEntry');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry');
         };
         $app['repo.feed-items'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:FeedItem');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem');
         };
         $app['repo.feed-publishers'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:FeedPublisher');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedPublisher');
         };
         $app['repo.feed-tokens'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:FeedToken');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken');
         };
         $app['repo.aggregate-tokens'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:AggregateToken');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken');
         };
         $app['repo.usr-lists'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:UsrList');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
         };
         $app['repo.usr-list-owners'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:UsrListOwner');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListOwner');
         };
         $app['repo.usr-list-entries'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:UsrListEntry');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListEntry');
         };
         $app['repo.lazaret-files'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:LazaretFile');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\LazaretFile');
         };
         $app['repo.usr-auth-providers'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:UsrAuthProvider');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
         };
         $app['repo.ftp-exports'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:FtpExport');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport');
         };
         $app['repo.user-queries'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:UserQuery');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UserQuery');
         };
         $app['repo.tokens'] = function ($app) {
-            return $app['orm.em']->getRepository('Phraseanet:Token');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Token');
         };
         $app['repo.presets'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:Preset');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Preset');
         };
         $app['repo.api-accounts'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ApiAccount');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\ApiAccount');
         };
         $app['repo.api-logs'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ApiLog');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\ApiLog');
         };
         $app['repo.api-applications'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ApiApplication');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\ApiApplication');
         };
         $app['repo.api-oauth-codes'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ApiOauthCode');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\ApiOauthCode');
         };
         $app['repo.api-oauth-tokens'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ApiOauthToken');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\ApiOauthToken');
         };
         $app['repo.api-oauth-refresh-tokens'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:ApiOauthRefreshToken');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\ApiOauthRefreshToken');
         };
         $app['repo.webhook-event'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:WebhookEvent');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEvent');
         };
         $app['repo.webhook-delivery'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:WebhookEventDelivery');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEventDelivery');
         };
         $app['repo.worker-running-job'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:WorkerRunningJob');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\WorkerRunningJob');
         };
         $app['repo.worker-job'] = function (PhraseaApplication $app) {
-            return $app['orm.em']->getRepository('Phraseanet:WorkerJob');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\WorkerJob');
         };
 
         $app['repo.databoxes'] = function (PhraseaApplication $app) {

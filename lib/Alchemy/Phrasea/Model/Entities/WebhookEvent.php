@@ -75,7 +75,7 @@ class WebhookEvent
     /**
      * @var string
      */
-    #[ORM\Column(type: 'json_array', nullable: false)]
+    #[ORM\Column(type: 'json', nullable: false)]
     private $data;
 
     /**
@@ -92,7 +92,7 @@ class WebhookEvent
      * List of collection base_id concerned
      * @var array
      */
-    #[ORM\Column(name: 'collection_base_ids', type: 'json_array', nullable: true)]
+    #[ORM\Column(name: 'collection_base_ids', type: 'json', nullable: true)]
     private $collectionBaseIds;
 
     /**

@@ -32,7 +32,7 @@ class TaskListTest extends \PhraseanetTestCase
         self::$DI['app']['orm.em']->persist($task3);
         self::$DI['app']['orm.em']->flush();
 
-        return new TaskList(self::$DI['app']['orm.em']->getRepository('Phraseanet:Task'), self::$DI['app']['root.path'], '/path/to/php', '/path/to/php-conf');
+        return new TaskList(self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Task'), self::$DI['app']['root.path'], '/path/to/php', '/path/to/php-conf');
     }
 
     public function testThatProcessHaveNoTimeout()

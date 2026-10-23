@@ -197,10 +197,10 @@ class ApiJsonTest extends ApiTestCase
 
     public function testThatSessionIsClosedAfterRequest()
     {
-        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
         $this->setToken($this->userAccessToken);
         self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
     }
 
     public static function provideEventNames()
@@ -1378,7 +1378,7 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basketElement = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
+        $basketElement = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
         $basket = $basketElement->getBasket();
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/content/';
@@ -1413,7 +1413,7 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setname/';
 
@@ -1461,7 +1461,7 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setdescription/';
 
@@ -1651,7 +1651,7 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedList()
     {
-        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/list/';
@@ -1692,7 +1692,7 @@ class ApiJsonTest extends ApiTestCase
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $created_entry->setAuthorEmail($author_email);
@@ -1742,7 +1742,7 @@ class ApiJsonTest extends ApiTestCase
     {
         self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $this->setToken($this->userAccessToken);
@@ -1767,7 +1767,7 @@ class ApiJsonTest extends ApiTestCase
     {
         self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
-        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
 
         $created_feed->setCollection(self::$DI['collection_no_access']);
@@ -1791,7 +1791,7 @@ class ApiJsonTest extends ApiTestCase
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
 
-        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
         $created_entry->setTitle($entry_title);
         $created_entry->setSubtitle($entry_subtitle);

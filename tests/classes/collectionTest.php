@@ -129,7 +129,7 @@ class collectionTest extends \PhraseanetTestCase
 
     public function testGet_connection()
     {
-        $this->assertInstanceOf('Doctrine\DBAL\Driver\Connection', self::$object->get_connection());
+        $this->assertInstanceOf('Doctrine\DBAL\Connection', self::$object->get_connection());
     }
 
     public function testSet_name()

@@ -393,7 +393,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', $app->getAuthenticatedUser()->getLastName());
 
-        $rs = $app['orm.em']->getRepository('Phraseanet:Registration')->findBy([
+        $rs = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Registration')->findBy([
             'user' => $app->getAuthenticatedUser()->getId(),
             'pending' => true
         ]);

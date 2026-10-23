@@ -1705,7 +1705,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
 
-        $ret = $app['orm.em']->getRepository('Phraseanet:UsrAuthProvider')
+        $ret = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findBy(['user' => $this->getUser()->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
@@ -1775,7 +1775,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(302, $client->getResponse()->getStatusCode());
 
-        $ret = $app['orm.em']->getRepository('Phraseanet:UsrAuthProvider')
+        $ret = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findBy(['user' => $user->getId(), 'provider' => 'provider-test']);
 
         $this->assertCount(1, $ret);
@@ -2003,7 +2003,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     private function deleteRequest()
     {
         $app = $this->getApplication();
-        $query = $app['orm.em']->createQuery('DELETE FROM Phraseanet:Registration d WHERE d.user=?1');
+        $query = $app['orm.em']->createQuery('DELETE FROM Alchemy\Phrasea\Model\Entities\Registration d WHERE d.user=?1');
         $query->setParameter(1, $this->getUser()->getId());
         $query->execute();
     }

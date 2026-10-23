@@ -57,7 +57,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $task->setName('new name');
         $this->assertSame($task, $this->sut->update($task));
         self::$DI['app']['orm.em']->clear();
-        $updated = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $updated = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
         $this->assertEquals($task, $updated);
     }
 

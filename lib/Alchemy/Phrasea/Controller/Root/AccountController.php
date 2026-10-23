@@ -249,7 +249,7 @@ class AccountController extends Controller
      */
     public function accountSessionsAccess()
     {
-        $dql = 'SELECT s FROM Phraseanet:Session s WHERE s.user = :usr_id ORDER BY s.created DESC';
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s WHERE s.user = :usr_id ORDER BY s.created DESC';
 
         $query = $this->getEntityManager()->createQuery($dql);
         $query->setMaxResults(100);

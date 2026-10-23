@@ -11,7 +11,7 @@ class LogFileFactoryTest extends \PhraseanetTestCase
 {
     public function testForTask()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $root = __DIR__ . '/root';
         $factory = new LogFilefactory($root);

@@ -80,7 +80,7 @@ class TokenManipulator implements ManipulatorInterface
                 throw new RuntimeException('Unable to create a token.');
             }
             $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
-            $found = null !== $this->om->getRepository('Phraseanet:Token')->find($value);
+            $found = null !== $this->om->getRepository('Alchemy\Phrasea\Model\Entities\Token')->find($value);
         } while ($found);
 
         $token = new Token();

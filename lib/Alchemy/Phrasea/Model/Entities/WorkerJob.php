@@ -22,7 +22,7 @@ class WorkerJob
     #[ORM\Column(type: 'string', name: 'type')]
     private $type;
 
-    #[ORM\Column(type: 'json_array', name: 'data', nullable: false)]
+    #[ORM\Column(type: 'json', name: 'data', nullable: false)]
     private $data;
 
     #[ORM\Column(type: 'string', name: 'status')]

@@ -663,7 +663,7 @@
           <h5>{{ 'admin::users: no api defined for this user' | trans }}</h5>
         {% endif %}
 
-        {% set apiCodes = app['orm.em'].getRepository('Phraseanet:ApiOauthCode').findByUserAccount(main_user) %}
+        {% set apiCodes = app['orm.em'].getRepository('Alchemy\\Phrasea\\Model\\Entities\\ApiOauthCode').findByUserAccount(main_user) %}
         {% if apiCodes | length > 0 %}
           <h3 style="margin-top: 30px;">{{ 'admin::users: api oauth code list' | trans }}</h3>
           <table style="border-spacing: 20px;width: 80%;">

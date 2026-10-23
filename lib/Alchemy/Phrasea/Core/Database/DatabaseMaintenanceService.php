@@ -708,7 +708,7 @@ class DatabaseMaintenanceService
 
     private function reconnect()
     {
-        if($this->connection->ping() === false) {
+        if(!ConnectionChecker::isAlive($this->connection)) {
             $this->connection->close();
             $this->connection->connect();
         }

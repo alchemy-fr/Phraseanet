@@ -19,7 +19,7 @@ abstract class patchAbstract implements patchInterface
     protected function loadUser(EntityManager $em, $usrId)
     {
         try {
-            return $em->createQuery('SELECT PARTIAL u.{id} FROM Phraseanet:User u WHERE u.id = :id')
+            return $em->createQuery('SELECT PARTIAL u.{id} FROM Alchemy\Phrasea\Model\Entities\User u WHERE u.id = :id')
                 ->setParameters(['id' => $usrId])
                 ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                 ->getSingleResult();

@@ -64,7 +64,7 @@ class patch_383alpha2a extends patchAbstract
 
         foreach ($rows as $row) {
             try {
-                $vsession = $app['orm.em']->createQuery('SELECT PARTIAL s.{id} FROM Phraseanet:ValidationSession s WHERE s.id = :id')
+                $vsession = $app['orm.em']->createQuery('SELECT PARTIAL s.{id} FROM Alchemy\Phrasea\Model\Entities\ValidationSession s WHERE s.id = :id')
                       ->setParameters(['id' => $row['validation_session_id']])
                       ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                       ->getSingleResult();

@@ -36,7 +36,7 @@ class FeedItemRepository extends EntityRepository
     public function isRecordInPublicFeed($sbas_id, $record_id)
     {
         $dql = 'SELECT COUNT(i)
-            FROM Phraseanet:FeedItem i
+            FROM Alchemy\Phrasea\Model\Entities\FeedItem i
             JOIN i.entry e
             JOIN e.feed f
             WHERE i.sbasId = :sbas_id
@@ -64,7 +64,7 @@ class FeedItemRepository extends EntityRepository
 
         do {
             $dql = 'SELECT i
-                FROM Phraseanet:FeedItem i
+                FROM Alchemy\Phrasea\Model\Entities\FeedItem i
                 JOIN i.entry e
                 JOIN e.feed f
                 WHERE f.public = true ORDER BY i.createdOn DESC';

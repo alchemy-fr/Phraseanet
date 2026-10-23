@@ -340,7 +340,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l');
+        $query = self::$DI['app']['orm.em']->createQuery('SELECT COUNT(l.id) FROM Alchemy\Phrasea\Model\Entities\LazaretFile l');
 
         $count = $query->getSingleScalarResult();
 
@@ -360,7 +360,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
         $query = self::$DI['app']['orm.em']->createQuery(
-            'SELECT COUNT(l.id) FROM Phraseanet:LazaretFile l'
+            'SELECT COUNT(l.id) FROM Alchemy\Phrasea\Model\Entities\LazaretFile l'
         );
 
         $count = $query->getSingleScalarResult();

@@ -41,7 +41,7 @@ class BasketMiddlewareProviderTest extends MiddlewareProviderTestCase
         $this->authenticate(self::$DI['app']);
         self::$DI['app']->register(new BasketMiddlewareProvider());
         $request = new Request();
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $request->attributes->set('basket', $basket->getId());
         call_user_func(self::$DI['app']['middleware.basket.converter'], $request, self::$DI['app']);
         $this->assertSame($basket, $request->attributes->get('basket'));
@@ -61,7 +61,7 @@ class BasketMiddlewareProviderTest extends MiddlewareProviderTestCase
         $this->authenticate(self::$DI['app']);
         self::$DI['app']->register(new BasketMiddlewareProvider());
         $request = new Request();
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $request->attributes->set('basket', $basket);
         call_user_func(self::$DI['app']['middleware.basket.user-access'], $request, self::$DI['app']);
     }
@@ -71,7 +71,7 @@ class BasketMiddlewareProviderTest extends MiddlewareProviderTestCase
         $this->authenticate(self::$DI['app']);
         self::$DI['app']->register(new BasketMiddlewareProvider());
         $request = new Request();
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 3);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 3);
         $request->attributes->set('basket', $basket);
         $this->expectException('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException');
         $this->expectExceptionMessage('Current user does not have access to the basket');

@@ -26,7 +26,7 @@ class WebhookServiceProvider implements ServiceProviderInterface
         $this->createAlias($app, 'webhook.delivery_manipulator', 'manipulator.webhook-delivery');
 
         $app['webhook.delivery_payload_repository'] = function ($app) {
-            return $app['orm.em']->getRepository('Phraseanet:WebhookEventPayload');
+            return $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEventPayload');
         };
 
         $app['webhook.processor_factory'] = function ($app) {

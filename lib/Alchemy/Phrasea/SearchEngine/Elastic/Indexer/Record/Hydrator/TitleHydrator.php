@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Connection as DriverConnection;
+use Doctrine\DBAL\Connection as DriverConnection;
 
 class TitleHydrator implements HydratorInterface
 {

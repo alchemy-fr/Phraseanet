@@ -8,7 +8,7 @@ class WebhookEventDeliveryRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindUndeliveredEvents()
     {
-        $events = self::$DI['app']['orm.em']->getRepository('Phraseanet:WebhookEventDelivery')->findUndeliveredEvents();
+        $events = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEventDelivery')->findUndeliveredEvents();
         $this->assertCount(1, $events);
     }
 }

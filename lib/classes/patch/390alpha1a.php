@@ -89,7 +89,7 @@ class patch_390alpha1a extends patchAbstract
             }
 
             try {
-                $basket = $app['orm.em']->createQuery('SELECT PARTIAL b.{id} FROM Phraseanet:Basket b WHERE b.id = :id')
+                $basket = $app['orm.em']->createQuery('SELECT PARTIAL b.{id} FROM Alchemy\Phrasea\Model\Entities\Basket b WHERE b.id = :id')
                     ->setParameters(['id' => $row['ssel_id']])
                     ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                     ->getSingleResult();

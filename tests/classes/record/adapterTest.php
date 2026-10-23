@@ -509,7 +509,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     {
         $app = $this->getApplication();
         /** @var \Alchemy\Phrasea\Model\Entities\Basket $basket */
-        $basket = $app['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $found = $sselcont_id = false;
 
         $record_1 = $this->getRecord1();

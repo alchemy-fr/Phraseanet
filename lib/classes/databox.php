@@ -74,11 +74,11 @@ class databox extends base implements ThumbnailedElement
             throw new \InvalidArgumentException(sprintf('Databox template "%s" not found.', $template->getFilename()));
         }
 
-        $host = $databoxConnection->getHost();
-        $port = $databoxConnection->getPort();
+        $host = $databoxConnection->getParams()['host'];
+        $port = ($databoxConnection->getParams()['port'] ?? null);
         $dbname = $databoxConnection->getDatabase();
-        $user = $databoxConnection->getUsername();
-        $password = $databoxConnection->getPassword();
+        $user = $databoxConnection->getParams()['user'];
+        $password = $databoxConnection->getParams()['password'];
 
         $appbox = $app->getApplicationBox();
 

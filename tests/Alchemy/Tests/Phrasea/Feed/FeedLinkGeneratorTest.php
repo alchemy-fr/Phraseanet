@@ -13,12 +13,12 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
     public function testGenerate($expected, $format, $page, $renew, $alreadyCreated)
     {
         $user = self::$DI['user'];
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $generator = $this->createMock('Symfony\Component\Routing\Generator\UrlGenerator');
 
         if ($alreadyCreated) {
-            $token = self::$DI['app']['orm.em']->find('Phraseanet:FeedToken', 1);
+            $token = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\FeedToken', 1);
             $tokenValue = $token->getValue();
         }
 
@@ -57,10 +57,10 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                 }
 
                 $this->assertCount(0, self::$DI['app']['orm.em']
-                    ->getRepository('Phraseanet:FeedToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                     ->findBy(['value' => $tokenValue]));
                 $this->assertCount(1, self::$DI['app']['orm.em']
-                    ->getRepository('Phraseanet:FeedToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                     ->findBy(['value' => $capture['token']]));
             } else {
                 $expectedParams = [
@@ -76,7 +76,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['orm.em']
-                    ->getRepository('Phraseanet:FeedToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                     ->findBy(['value' => $tokenValue]));
             }
         } else {
@@ -88,7 +88,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
             $this->assertEquals(64, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['orm.em']
-                ->getRepository('Phraseanet:FeedToken')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\FeedToken')
                 ->findBy(['value' => $capture['token']]));
         }
     }
@@ -96,7 +96,7 @@ class FeedLinkGeneratorTest extends \PhraseanetTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('provideGenerationDataPublic')]
     public function testGeneratePublic($expected, $format, $page)
     {
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $generator = $this->createMock('Symfony\Component\Routing\Generator\UrlGenerator');
 

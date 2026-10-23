@@ -27,7 +27,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
         $generator = $this->createMock('Symfony\Component\Routing\Generator\UrlGenerator');
 
         if ($alreadyCreated) {
-            $token = self::$DI['app']['orm.em']->find('Phraseanet:AggregateToken', 1);
+            $token = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\AggregateToken', 1);
             $tokenValue = $token->getValue();
         }
 
@@ -64,10 +64,10 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertNotEquals($tokenValue, $capture['token']);
 
                 $this->assertCount(0, self::$DI['app']['orm.em']
-                    ->getRepository('Phraseanet:AggregateToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
                     ->findBy(['value' => $tokenValue]));
                 $this->assertCount(1, self::$DI['app']['orm.em']
-                    ->getRepository('Phraseanet:AggregateToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
                     ->findBy(['value' => $capture['token']]));
             } else {
                 $expectedParams = [
@@ -82,7 +82,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
                 $this->assertEquals($expectedParams, $capture);
 
                 $this->assertCount(1, self::$DI['app']['orm.em']
-                    ->getRepository('Phraseanet:AggregateToken')
+                    ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
                     ->findBy(['value' => $tokenValue]));
             }
         } else {
@@ -93,7 +93,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
             $this->assertEquals(64, strlen($capture['token']));
 
             $this->assertCount(1, self::$DI['app']['orm.em']
-                ->getRepository('Phraseanet:AggregateToken')
+                ->getRepository('Alchemy\Phrasea\Model\Entities\AggregateToken')
                 ->findBy(['value' => $capture['token']]));
         }
     }

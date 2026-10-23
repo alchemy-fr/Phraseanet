@@ -113,7 +113,7 @@ class ApiApplication
      * List of events to trigger webhook
      * @var array
      */
-    #[ORM\Column(name: 'listened_events', type: 'json_array', nullable: true)]
+    #[ORM\Column(name: 'listened_events', type: 'json', nullable: true)]
     private $listenedEvents;
 
     /**

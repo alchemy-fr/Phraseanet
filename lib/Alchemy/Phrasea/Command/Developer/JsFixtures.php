@@ -66,7 +66,7 @@ class JsFixtures extends Command
 
     private function deleteUser(User $user)
     {
-        $user = $this->container['orm.em']->find('Phraseanet:User', $user->getId());
+        $user = $this->container['orm.em']->find('Alchemy\Phrasea\Model\Entities\User', $user->getId());
         $this->container['manipulator.user']->delete($user);
     }
 

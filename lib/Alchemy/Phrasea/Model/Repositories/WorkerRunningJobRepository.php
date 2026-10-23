@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Core\Database\ConnectionChecker;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DateTime;
@@ -565,7 +566,7 @@ class WorkerRunningJobRepository extends EntityRepository
 
     public function reconnect()
     {
-        if($this->_em->getConnection()->ping() === false) {
+        if(!ConnectionChecker::isAlive($this->_em->getConnection())) {
             $this->_em->getConnection()->close();
             $this->_em->getConnection()->connect();
         }

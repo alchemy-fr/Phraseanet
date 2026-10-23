@@ -65,7 +65,7 @@ class patch_383alpha1a extends patchAbstract
         }
 
         // Remove API sessions
-        $query = $app['orm.em']->createQuery('SELECT s FROM Phraseanet:Session s WHERE s.user_agent LIKE :guzzle');
+        $query = $app['orm.em']->createQuery('SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s WHERE s.user_agent LIKE :guzzle');
         $query->setParameter(':guzzle', 'Guzzle%');
 
         foreach ($query->getResult() as $session) {

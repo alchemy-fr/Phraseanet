@@ -58,7 +58,7 @@ class WorkerRunningJob
     #[ORM\Column(type: 'string', name: 'info', nullable: true)]
     private $info;
 
-    #[ORM\Column(type: 'json_array', name: 'payload', nullable: true)]
+    #[ORM\Column(type: 'json', name: 'payload', nullable: true)]
     private $payload;
 
     #[Gedmo\Timestampable(on: 'create')]

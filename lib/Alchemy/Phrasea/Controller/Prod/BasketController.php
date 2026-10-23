@@ -261,7 +261,7 @@ class BasketController extends Controller
     public function removeBasketElement(Request $request, Basket $basket, $basket_element_id)
     {
         /** @var BasketElement $basketElement */
-        $basketElement = $this->getEntityManager()->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
+        $basketElement = $this->getEntityManager()->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement')->find($basket_element_id);
         $this->getBasketManipulator()->removeElements($basket, [$basketElement]);
 
         $data = ['success' => true, 'message' => $this->app->trans('Record removed from basket')];

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\Connection\Connection as PhraseanetConnection;
 use Alchemy\Phrasea\Core\Connection\ConnectionPoolManager;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
@@ -195,6 +196,11 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $key = $app['hash.dsn']($app['db.dsn']($info));
 
+            // a database mounted again replaces its previous definitions
+            foreach (['dbs.event_manager', 'dbs.config', 'dbs', 'orm.ems'] as $containerId) {
+                unset($app[$containerId][$key]);
+            }
+
             $evm = new EventManager();
             $app['dbal.evm.register.listeners']($evm);
             $app['dbs.event_manager'][$key] = $evm;
@@ -357,6 +363,10 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $info['charset'] = 'utf8';
             }
 
+            if (!isset($info['wrapperClass'])) {
+                $info['wrapperClass'] = PhraseanetConnection::class;
+            }
+
             switch ($info['driver'])
             {
                 case 'pdo_mysql':
@@ -424,7 +434,6 @@ class ORMServiceProvider implements ServiceProviderInterface
             return array(
                 array(
                     "type" => "attribute",
-                    "alias" => "Phraseanet",
                     "namespace" => 'Alchemy\Phrasea\Model\Entities',
                     "path" => $app['root.path'] . '/lib/Alchemy/Phrasea/Model/Entities',
                 )

@@ -69,7 +69,8 @@ class DatabaseMetaProvider implements ServiceProviderInterface
      */
     public function postConnect(ConnectionEventArgs $args)
     {
-        if ('sqlite' == $args->getDatabasePlatform()->getName()) {
+        $params = $args->getConnection()->getParams();
+        if (in_array($params['driver'] ?? null, ['pdo_sqlite', 'sqlite3'], true)) {
             $args->getConnection()->executeStatement('PRAGMA foreign_keys = ON');
         }
     }
