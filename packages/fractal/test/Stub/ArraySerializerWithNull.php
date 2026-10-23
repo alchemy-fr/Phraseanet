@@ -1,0 +1,13 @@
+<?php
+
+namespace League\Fractal\Test\Stub;
+
+use League\Fractal\Serializer\ArraySerializer;
+
+class ArraySerializerWithNull extends ArraySerializer
+{
+    public function null(?string $resourceKey = null): ?array
+    {
+        return null;
+    }
+}
