@@ -65,10 +65,10 @@ class ConfigurationEditor extends Command
                 $this->readConfigurationValue($output, $parameter, $parameterNodes);
             }
             elseif ($command == 'set') {
-                $this->writeConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+                $this->writeConfigurationValue($output, $parameter, $parameterNodes, (string) $input->getArgument('value'));
             }
             elseif ($command == 'add') {
-                $this->appendConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+                $this->appendConfigurationValue($output, $parameter, $parameterNodes, (string) $input->getArgument('value'));
             } else {
                 $output->writeln("<error>Command not found</error>");
             }

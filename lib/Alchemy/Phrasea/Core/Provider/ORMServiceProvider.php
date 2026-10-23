@@ -456,6 +456,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                     'varbinary' => 'Alchemy\Phrasea\Model\Types\VarBinary',
                     'binary' => 'Alchemy\Phrasea\Model\Types\Binary',
                     'binary_string' => 'Alchemy\Phrasea\Model\Types\BinaryString',
+                    'json_array' => 'Alchemy\Phrasea\Model\Types\JsonArray',
                 )
             );
         });
