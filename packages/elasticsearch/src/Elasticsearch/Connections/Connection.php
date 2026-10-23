@@ -555,7 +555,7 @@ class Connection implements ConnectionInterface
     private function process4xxError($request, $response, $ignore)
     {
         $statusCode = $response['status'];
-        $responseBody = $response['body'];
+        $responseBody = (string) $response['body'];
 
         /** @var \Exception $exception */
         $exception = $this->tryDeserialize400Error($response);
@@ -601,7 +601,7 @@ class Connection implements ConnectionInterface
     private function process5xxError($request, $response, $ignore)
     {
         $statusCode = $response['status'];
-        $responseBody = $response['body'];
+        $responseBody = (string) $response['body'];
 
         /** @var \Exception $exception */
         $exception = $this->tryDeserialize500Error($response);
@@ -678,6 +678,6 @@ class Connection implements ConnectionInterface
         }
 
         // <2.0 "i just blew up" nonstructured exception
-        return new $errorClass($error, $response['status']);
+        return new $errorClass((string) $error, $response['status']);
     }
 }
