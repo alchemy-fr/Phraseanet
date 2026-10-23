@@ -15,7 +15,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 class TermNodeTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(TermNode::class, '__toString'), 'Class does not have method __toString');

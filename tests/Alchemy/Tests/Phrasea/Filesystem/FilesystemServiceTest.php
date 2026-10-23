@@ -20,7 +20,6 @@ use Alchemy\Phrasea\Model\RecordInterface;
 class FilesystemServiceTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var FilesystemService
      */

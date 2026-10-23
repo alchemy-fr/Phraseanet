@@ -13,7 +13,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
 class EqualExpressionTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(EqualExpression::class, '__toString'), 'Class does not have method __toString');

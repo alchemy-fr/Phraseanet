@@ -13,7 +13,6 @@ use Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber;
 class SubscriberTest extends \PhraseanetTestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testCallsImplements()
     {
         $app = new Application(Application::ENV_TEST);

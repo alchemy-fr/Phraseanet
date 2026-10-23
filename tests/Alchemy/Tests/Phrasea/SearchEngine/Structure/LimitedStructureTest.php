@@ -13,7 +13,6 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 class LimitedStructureTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testGetUnrestrictedFields()
     {
         $field = new Field('foo', FieldMapping::TYPE_STRING, [

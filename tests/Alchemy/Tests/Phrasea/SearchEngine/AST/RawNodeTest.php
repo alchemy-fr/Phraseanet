@@ -14,7 +14,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 class RawNodeTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(RawNode::class, '__toString'), 'Class does not have method __toString');

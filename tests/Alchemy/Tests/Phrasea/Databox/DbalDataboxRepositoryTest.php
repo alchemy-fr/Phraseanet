@@ -20,7 +20,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 final class DbalDataboxRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     /** @var ObjectProphecy */
     private $connection;
     /** @var ObjectProphecy */

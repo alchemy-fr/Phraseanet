@@ -195,7 +195,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
 
         $this->logout($app);
-        $email = $this->generateEmail();
+        $email = self::generateEmail();
         $token = $app['manipulator.token']->createResetEmailToken($this->getUser(), $email);
         $tokenValue = $token->getValue();
         $app['orm.em']->remove($token);
@@ -216,7 +216,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $client = $this->getClient();
 
         $this->logout($app);
-        $email = $this->generateEmail();
+        $email = self::generateEmail();
         $token = $app['manipulator.token']->createResetEmailToken($this->getUser(), $email);
 
         $this->getUser()->setMailLocked(false);
@@ -236,7 +236,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $app = $this->getApplication();
         $this->logout($app);
-        $email = $this->generateEmail();
+        $email = self::generateEmail();
         $token = $app['manipulator.token']->createResetEmailToken($this->getUser(), $email);
 
         $this->getUser()->setMailLocked(true);
@@ -265,7 +265,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
 
         $this->logout($app);
-        $email = $this->generateEmail();
+        $email = self::generateEmail();
         $user = $app['manipulator.user']->createUser(uniqid('test_'), uniqid('test_'), $email);
         $token = $app['manipulator.token']->createResetEmailToken($user, $email);
         $user->setMailLocked(true);
@@ -662,7 +662,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]) ? 7 : 8);
     }
 
-    public function provideInvalidRegistrationData()
+    public static function provideInvalidRegistrationData()
     {
         return [
             [
@@ -683,7 +683,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                      'password' => 'password',
                      'confirm' => 'password',
                  ],
-                 "email" => $this->generateEmail(),
+                 "email" => self::generateEmail(),
                  "collections" => null,
                  "accept-tou" => '1',
                 ],
@@ -701,7 +701,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                      'password' => 'password',
                      'confirm' => 'passwordMismatch',
                  ],
-                 "email" => $this->generateEmail(),
+                 "email" => self::generateEmail(),
                  "collections" => null,
                  "accept-tou" => '1',
                 ],
@@ -714,7 +714,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                      'password' => 'min',
                      'confirm' => 'min',
                  ],
-                 "email" => $this->generateEmail(),
+                 "email" => self::generateEmail(),
                  "collections" => null,
                  "accept-tou" => '1',
                 ],
@@ -741,7 +741,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                      'password' => 'password',
                      'confirm' => 'password',
                  ],
-                 "email" => $this->generateEmail(),
+                 "email" => self::generateEmail(),
                  "collections" => null,
                  "accept-tou" => '1',
                 ],
@@ -772,7 +772,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                      'password' => 'password',
                      'confirm' => 'password',
                  ],
-                 "email" => $this->generateEmail(),
+                 "email" => self::generateEmail(),
                  "collections" => null,
                 ],
                 [],
@@ -781,7 +781,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    public function provideRegistrationData()
+    public static function provideRegistrationData()
     {
         $factory = new Factory();
         $generator = $factory->getLowStrengthGenerator();
@@ -793,7 +793,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'password' => 'password',
                         'confirm' => 'password',
                     ],
-                    "email" => $this->generateEmail(),
+                    "email" => self::generateEmail(),
                     "collections" => null,
                 ],
                 [],
@@ -804,7 +804,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                         'password' => 'password',
                         'confirm' => 'password',
                     ],
-                    "email" => $this->generateEmail(),
+                    "email" => self::generateEmail(),
                     "collections" => null,
                 ],
                 [
@@ -820,7 +820,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                      'password' => 'password',
                      'confirm' => 'password',
                  ],
-                 "email" => $this->generateEmail(),
+                 "email" => self::generateEmail(),
                  "collections" => null,
                 ],
                 [
@@ -880,7 +880,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                      'password' => 'password',
                      'confirm' => 'password',
                  ],
-                 "email" => $this->generateEmail(),
+                 "email" => self::generateEmail(),
                  "collections" => null,
                  "login" => 'login-' . $generator->generateString(8),
                  "gender" => User::GENDER_MR,
@@ -977,7 +977,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 'password' => 'password',
                 'confirm' => 'password',
             ],
-            "email" => $this->generateEmail(),
+            "email" => self::generateEmail(),
             "collections" => null,
             "provider-id" => 'provider-test',
         ]);
@@ -1011,7 +1011,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 'password' => 'password',
                 'confirm' => 'password',
             ],
-            "email" => $this->generateEmail(),
+            "email" => self::generateEmail(),
             "accept-tou" => '1',
             "collections" => null,
             "provider-id" => 'provider-test',
@@ -1055,7 +1055,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 'password' => 'password',
                 'confirm' => 'password',
             ],
-            "email" => $this->generateEmail(),
+            "email" => self::generateEmail(),
             "accept-tou" => '1',
             "collections" => null,
             "provider-id" => 'provider-test',
@@ -1130,7 +1130,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 'password' => 'password',
                 'confirm' => 'password',
             ],
-            "email" => $this->generateEmail(),
+            "email" => self::generateEmail(),
             "collections" => null,
             "provider-id" => 'provider-test',
         ]);
@@ -2012,7 +2012,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
      * Generate a new valid email adress
      * @return string
      */
-    private function generateEmail()
+    private static function generateEmail()
     {
         $factory = new Factory();
         $generator = $factory->getLowStrengthGenerator();

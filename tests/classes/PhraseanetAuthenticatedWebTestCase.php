@@ -13,7 +13,6 @@ use Symfony\Component\DomCrawler\Crawler;
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     private static $createdDataboxes = [];
 
     /**
@@ -148,7 +147,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $stmt->executeStatement();
     }
 
-    public function provideFlashMessages()
+    public static function provideFlashMessages()
     {
         return [
             ['warning', 'Be careful !'],

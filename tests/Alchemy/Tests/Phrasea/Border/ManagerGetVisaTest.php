@@ -24,7 +24,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 class ManagerGetVisaTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var ObjectProphecy
      */

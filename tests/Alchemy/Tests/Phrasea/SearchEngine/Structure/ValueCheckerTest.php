@@ -12,14 +12,14 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
 class ValueCheckerTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
+
     #[\PHPUnit\Framework\Attributes\DataProvider('valueCheckerProvider')]
-    public function testValueCompatibility($subject, $value, $compatible)
+    public function testValueCompatibility($type, $value, $compatible)
     {
-        $this->assertEquals($compatible, ValueChecker::isValueCompatible($subject, $value));
+        $this->assertEquals($compatible, ValueChecker::isValueCompatible($this->createTypedMock($type), $value));
     }
 
-    public function valueCheckerProvider()
+    public static function valueCheckerProvider()
     {
         $values = [
             [FieldMapping::TYPE_FLOAT  ,  42         , true ],
@@ -62,10 +62,6 @@ class ValueCheckerTest extends \PHPUnit\Framework\TestCase
             [FieldMapping::TYPE_DATE   , '2015/01/01 00:00:00', true],
             [FieldMapping::TYPE_DATE   , 'foo'                , true],
         ];
-
-        foreach ($values as &$value) {
-            $value[0] = $this->createTypedMock($value[0]);
-        }
 
         return $values;
     }

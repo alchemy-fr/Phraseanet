@@ -12,7 +12,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 class StructureTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testEmptiness()
     {
         $structure = new Structure();

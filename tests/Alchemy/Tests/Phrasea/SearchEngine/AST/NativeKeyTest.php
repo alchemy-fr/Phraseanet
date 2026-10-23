@@ -11,7 +11,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 class NativeKeyTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(NativeKey::class, '__toString'), 'Class does not have method __toString');

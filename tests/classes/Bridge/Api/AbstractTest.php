@@ -22,7 +22,7 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
     {
         parent::setUp();
         $this->auth = $this->createMock("Bridge_Api_Auth_Interface");
-        $this->bridgeApi = $this->getMockBuilder('Bridge_Api_Abstract')->setConstructorArgs([self::$DI['app']['url_generator'], self::$DI['app']['conf'], $this->auth, self::$DI['app']['translator']])->onlyMethods(["is_configured"])->getMockForAbstractClass();
+        $this->bridgeApi = $this->getMockBuilder('Bridge_Api_Abstract')->setConstructorArgs([self::$DI['app']['url_generator'], self::$DI['app']['conf'], $this->auth, self::$DI['app']['translator']])->addMethods(["is_configured"])->getMockForAbstractClass();
 
         if (!self::$api) {
             $application = $this->getApplication();

@@ -18,7 +18,6 @@ use Assert\AssertionFailedException;
 class ArrayTechnicalDataSetTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     /** @var ArrayTechnicalDataSet */
     private $sut;
 

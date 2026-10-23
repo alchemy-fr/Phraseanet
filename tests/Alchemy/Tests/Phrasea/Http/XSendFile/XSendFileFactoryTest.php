@@ -61,18 +61,18 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf($classmode, $factory->getMode());
     }
 
-    public function provideTypes()
+    public static function provideTypes()
     {
         return [
-            ['apache', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
-            ['apache2', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
-            ['xsendfile', $this->getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
-            ['nginx',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
-            ['sendfile',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
-            ['xaccel',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
-            ['xaccelredirect',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
-            ['x-accel',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
-            ['x-accel-redirect',$this->getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['apache', self::getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
+            ['apache2', self::getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
+            ['xsendfile', self::getApacheMapping(), 'Alchemy\Phrasea\Http\XSendFile\ApacheMode'],
+            ['nginx',self::getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['sendfile',self::getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['xaccel',self::getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['xaccelredirect',self::getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['x-accel',self::getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
+            ['x-accel-redirect',self::getNginxMapping(), 'Alchemy\Phrasea\Http\XSendFile\NginxMode'],
         ];
     }
 
@@ -113,7 +113,7 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NginxMode', $factory->getMode());
     }
 
-    private function getNginxMapping()
+    private static function getNginxMapping()
     {
         return [[
             'directory' =>  __DIR__ . '/../../../../files/',
@@ -121,7 +121,7 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
         ]];
     }
 
-    private function getApacheMapping()
+    private static function getApacheMapping()
     {
         return [[
             'directory' =>  __DIR__ . '/../../../../files/',

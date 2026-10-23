@@ -11,7 +11,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class EmptyCollectionJobTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var ObjectProphecy
      */

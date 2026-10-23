@@ -19,7 +19,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 final class CachedDataboxRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     /** @var ObjectProphecy */
     private $cache;
     private $cacheKey = 'test_key';

@@ -42,7 +42,7 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
             'prodToolsHDSubstitution_token' => $randomValue
         ], [
             'newHD' => new UploadedFile(
-               $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
+               $this->tmpFile, 'KIKOO.JPG', 'image/jpg'
             )
         ]);
 
@@ -64,7 +64,7 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
             'prodToolsThumbSubstitution_token' => $randomValue
         ], [
             'newThumb' => new UploadedFile(
-               $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
+               $this->tmpFile, 'KIKOO.JPG', 'image/jpg'
             )
         ]);
 

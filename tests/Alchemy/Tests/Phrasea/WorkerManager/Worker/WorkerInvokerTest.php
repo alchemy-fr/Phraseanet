@@ -12,7 +12,6 @@ use Symfony\Component\Process\Process;
 class WorkerInvokerTest extends \PhraseanetTestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testClassImplements()
     {
         $processPool = $this->prophesize(ProcessPool::class);

@@ -13,7 +13,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 class QueryContextTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testFieldNarrowing()
     {
         $structure = $this->prophesize(Structure::class)->reveal();

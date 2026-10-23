@@ -11,8 +11,6 @@ use Alchemy\Phrasea\Webhook\WebhookPublisher;
 class WebhookEventManipulatorTest extends \PhraseanetTestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testCreate()
     {
         $manipulator = $this->createManipulator();

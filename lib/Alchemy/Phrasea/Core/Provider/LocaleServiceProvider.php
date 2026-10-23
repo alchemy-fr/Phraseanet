@@ -25,7 +25,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
                 return 'en';
             }
 
-            return $app['conf']->get(['languages', 'default'], 'en');
+            return $app['conf']->get(['languages', 'default'], 'en') ?: 'en';
         };
 
         $app['locales.available'] = function (Application $app) {

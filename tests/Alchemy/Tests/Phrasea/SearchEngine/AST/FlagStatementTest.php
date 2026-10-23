@@ -12,7 +12,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 class FlagStatementTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(FlagStatement::class, '__toString'), 'Class does not have method __toString');

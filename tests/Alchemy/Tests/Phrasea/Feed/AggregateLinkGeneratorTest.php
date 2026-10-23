@@ -120,7 +120,7 @@ class AggregateLinkGeneratorTest extends \PhraseanetTestCase
         ];
     }
 
-    public function provideGenerationDataPublic()
+    public static function provideGenerationDataPublic()
     {
         return [
             ['doliprane', 'atom', null],

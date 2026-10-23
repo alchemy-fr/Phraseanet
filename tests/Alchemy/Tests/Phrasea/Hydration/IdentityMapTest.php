@@ -17,7 +17,6 @@ use Prophecy\Argument;
 class IdentityMapTest extends \PHPUnit\Framework\TestCase
 {
     use \Prophecy\PhpUnit\ProphecyTrait;
-    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var IdentityMap
      */
