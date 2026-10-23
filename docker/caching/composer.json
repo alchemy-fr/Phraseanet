@@ -131,7 +131,8 @@
   },
   "require-dev": {
     "mikey179/vfsstream": "^1.6.12",
-    "phpunit/phpunit": "^11.5"
+    "phpunit/phpunit": "^11.5",
+    "phpspec/prophecy-phpunit": "^2.3"
   },
   "autoload": {
     "psr-0": {

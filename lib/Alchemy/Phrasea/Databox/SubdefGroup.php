@@ -123,11 +123,13 @@ class SubdefGroup implements \IteratorAggregate, \Countable
         unset($this->subdefs[$subdefName]);
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->subdefs);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->subdefs);

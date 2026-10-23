@@ -69,6 +69,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->cache[$offset]);
@@ -87,6 +88,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->cache[$offset];
@@ -95,6 +97,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->configuration->offsetUnset($offset);

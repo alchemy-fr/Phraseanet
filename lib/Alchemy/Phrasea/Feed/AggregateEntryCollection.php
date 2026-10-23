@@ -48,6 +48,7 @@ class AggregateEntryCollection implements Collection, Selectable
         $this->entries = new ArrayCollection($this->repository->findByFeeds($this->feeds));
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         if (null === $this->entries) {
@@ -129,6 +130,7 @@ class AggregateEntryCollection implements Collection, Selectable
         return $this->entries->removeElement($element);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         if (null === $this->entries) {
@@ -138,6 +140,7 @@ class AggregateEntryCollection implements Collection, Selectable
         return $this->entries->offsetExists($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (null === $this->entries) {
@@ -156,6 +159,7 @@ class AggregateEntryCollection implements Collection, Selectable
         return $this->entries->offsetSet($offset, $value);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if (null === $this->entries) {
@@ -254,6 +258,7 @@ class AggregateEntryCollection implements Collection, Selectable
         return $this->entries->isEmpty();
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         if (null === $this->entries) {

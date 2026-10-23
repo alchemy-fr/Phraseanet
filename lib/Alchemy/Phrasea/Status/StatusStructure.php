@@ -40,6 +40,7 @@ class StatusStructure implements \IteratorAggregate
         $this->url = "/custom/status/" . $unique_id;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->status->getIterator();

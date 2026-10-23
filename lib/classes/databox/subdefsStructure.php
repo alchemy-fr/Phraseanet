@@ -34,11 +34,13 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      *
      * @return ArrayIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->subdefGroups);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         $n = 0;

@@ -79,16 +79,19 @@ class IdentityMap implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->entities = [];
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->entities);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->entities[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->entities[$offset];
@@ -102,11 +105,13 @@ class IdentityMap implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->hydrate($offset, $value);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->entities[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->entities);

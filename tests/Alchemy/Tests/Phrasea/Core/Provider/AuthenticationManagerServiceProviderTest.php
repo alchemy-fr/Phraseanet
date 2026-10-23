@@ -30,12 +30,15 @@ use ReCaptcha\ReCaptcha;
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public function setUp(): void
     {
-        $app = $this->loadApp();
+        parent::setUp();
 
-        $app['conf']->set(['registry', 'webservices', 'recaptcha-private-key'], '123');
+        $this->loadApp()['conf']->set(['registry', 'webservices', 'recaptcha-private-key'], '123');
+    }
 
+    public static function provideServiceDescription()
+    {
         return [
             [
                 AuthenticationManagerServiceProvider::class,

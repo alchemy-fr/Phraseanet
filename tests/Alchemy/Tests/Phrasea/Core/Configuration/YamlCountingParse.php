@@ -10,6 +10,7 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Configuration;
 
+use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlCountingParse extends Yaml
@@ -34,14 +35,14 @@ class YamlCountingParse extends Yaml
         self::$parseCallable = $callable;
     }
 
-    public static function parse($input, $exceptionOnInvalidType = 0, $objectSupport = false, $objectForMap = false)
+    public static function parse(string $input, int $flags = 0, int $maxNestingLevel = Parser::DEFAULT_MAX_NESTING_LEVEL, int $maxAliasesForCollections = Parser::DEFAULT_MAX_ALIASES_FOR_COLLECTIONS): mixed
     {
         self::$parseCount++;
 
         if (null === self::$parseCallable) {
-            return parent::parse($input, $exceptionOnInvalidType, $objectSupport, $objectForMap);
+            return parent::parse($input, $flags, $maxNestingLevel, $maxAliasesForCollections);
         }
 
-        return call_user_func(self::$parseCallable, $input, $exceptionOnInvalidType, $objectSupport, $objectForMap);
+        return call_user_func(self::$parseCallable, $input, $flags);
     }
 }

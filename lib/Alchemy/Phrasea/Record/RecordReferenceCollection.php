@@ -122,6 +122,7 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
         $this->add(RecordReference::createFromDataboxIdAndRecordId($databoxId, $recordId), $index);
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->references);
@@ -175,6 +176,7 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->references[$offset]);
@@ -184,6 +186,7 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset
      * @return RecordReferenceInterface
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->references[$offset];
@@ -204,6 +207,7 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->references[$offset]);
@@ -266,6 +270,7 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
         return array_flip($indexes);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->references);

@@ -47,6 +47,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     /**
      * @return Iterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->elements);
@@ -175,6 +176,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->elements);

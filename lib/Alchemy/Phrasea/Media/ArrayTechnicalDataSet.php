@@ -28,11 +28,13 @@ class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSet
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->data);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         if ($offset instanceof TechnicalData) {
@@ -42,6 +44,7 @@ class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSet
         return isset($this->data[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->data[$offset];
@@ -64,6 +67,7 @@ class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSet
         $this->data[$name] = $value;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if ($offset instanceof TechnicalData) {
@@ -73,6 +77,7 @@ class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSet
         unset($this->data[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->data);
