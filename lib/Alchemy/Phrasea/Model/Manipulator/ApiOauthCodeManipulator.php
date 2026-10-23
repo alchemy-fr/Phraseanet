@@ -73,7 +73,7 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
 
     private function doSetRedirectUri(ApiOauthCode $code, $uri)
     {
-        if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)
+        if (false === filter_var($uri, FILTER_VALIDATE_URL)
             && $uri !== ApiApplication::NATIVE_APP_REDIRECT_URI
         ) {
             throw new InvalidArgumentException(sprintf('Redirect Uri Url %s is not legal.', $uri));

@@ -28,13 +28,14 @@ use Alchemy\Phrasea\WorkerManager\Subscriber\SubtitleSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\WebhookSubscriber;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Pimple\Container;
 
 class QueueWorkerServiceProvider implements PluginProviderInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['alchemy_worker.amqp.connection'] = function (Application $app) {
             return new AMQPConnection($app['conf']);
@@ -75,14 +76,6 @@ class QueueWorkerServiceProvider implements PluginProviderInterface
 
             return $dispatcher;
         });
-
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot(Application $app)
-    {
 
     }
 

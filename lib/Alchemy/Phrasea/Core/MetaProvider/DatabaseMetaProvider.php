@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\MetaProvider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Connection\Connection as PhraseanetConnection;
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
@@ -28,6 +29,9 @@ class DatabaseMetaProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         $app->register(new DoctrineServiceProvider());
+        $app['db.default_options'] = array_replace($app['db.default_options'], [
+            'wrapperClass' => PhraseanetConnection::class,
+        ]);
         $this->setupDBAL($app);
         $app->register(new DoctrineOrmServiceProvider());
         $this->setupOrms($app);

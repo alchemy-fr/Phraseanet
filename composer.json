@@ -152,6 +152,24 @@
       },
       "dflydev/doctrine-orm-service-provider": {
         "Doctrine Persistence 2+ namespaces and attribute mapping driver": "patches/dflydev-doctrine-orm-service-provider.patch"
+      },
+      "hoa/compiler": {
+        "PHP 8.5 deprecations": "patches/hoa-compiler.patch"
+      },
+      "hoa/file": {
+        "PHP 8.5 deprecations": "patches/hoa-file.patch"
+      },
+      "hoa/iterator": {
+        "PHP 8.5 deprecations": "patches/hoa-iterator.patch"
+      },
+      "hoa/protocol": {
+        "PHP 8.5 deprecations": "patches/hoa-protocol.patch"
+      },
+      "hoa/stream": {
+        "PHP 8.5 deprecations": "patches/hoa-stream.patch"
+      },
+      "react/promise": {
+        "PHP 8.5 deprecations": "patches/react-promise.patch"
       }
     }
   }

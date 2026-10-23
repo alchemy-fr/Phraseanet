@@ -30,12 +30,13 @@ use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Pimple\Container;
 use Psr\Log\LoggerAwareInterface;
 use Silex\Application;
 
 class AlchemyWorkerServiceProvider implements PluginProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['alchemy_worker.type_based_worker_resolver'] = function () {
             return new TypeBasedWorkerResolver();
@@ -192,13 +193,6 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SHARE_BASKET_TYPE, new CallableWorkerFactory(function () use ($app) {
             return new ShareBasketWorker($app);
         }));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot(Application $app)
-    {
     }
 
     /**

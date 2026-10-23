@@ -208,7 +208,7 @@ class ConfigurationEditor extends Command
         }
         else {
             if (!$this->quiet) {
-                $output->write(var_export($value));
+                $output->write(var_export($value, true));
             }
         }
 

@@ -1,0 +1,117 @@
+diff --git a/Buffer.php b/Buffer.php
+index 5e027b4..75c0e38 100644
+--- a/Buffer.php
++++ b/Buffer.php
+@@ -103,6 +103,7 @@ class Buffer extends IteratorIterator implements Outer
+      *
+      * @return  \Iterator
+      */
++    #[\ReturnTypeWillChange]
+     public function getInnerIterator()
+     {
+         return $this->_iterator;
+@@ -133,6 +134,7 @@ class Buffer extends IteratorIterator implements Outer
+      *
+      * @return  mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function current()
+     {
+         return $this->getBuffer()->current()[self::BUFFER_VALUE];
+@@ -143,6 +145,7 @@ class Buffer extends IteratorIterator implements Outer
+      *
+      * @return  mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function key()
+     {
+         return $this->getBuffer()->current()[self::BUFFER_KEY];
+@@ -153,6 +156,7 @@ class Buffer extends IteratorIterator implements Outer
+      *
+      * @return  void
+      */
++    #[\ReturnTypeWillChange]
+     public function next()
+     {
+         $innerIterator = $this->getInnerIterator();
+@@ -204,6 +208,7 @@ class Buffer extends IteratorIterator implements Outer
+      *
+      * @return  void
+      */
++    #[\ReturnTypeWillChange]
+     public function rewind()
+     {
+         $innerIterator = $this->getInnerIterator();
+@@ -228,6 +233,7 @@ class Buffer extends IteratorIterator implements Outer
+      *
+      * @return  bool
+      */
++    #[\ReturnTypeWillChange]
+     public function valid()
+     {
+         return
+diff --git a/Lookahead.php b/Lookahead.php
+index 01eff9a..88aceeb 100644
+--- a/Lookahead.php
++++ b/Lookahead.php
+@@ -93,6 +93,7 @@ class Lookahead extends IteratorIterator implements Outer
+      *
+      * @return  \Iterator
+      */
++    #[\ReturnTypeWillChange]
+     public function getInnerIterator()
+     {
+         return $this->_iterator;
+@@ -103,6 +104,7 @@ class Lookahead extends IteratorIterator implements Outer
+      *
+      * @return  mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function current()
+     {
+         return $this->_current;
+@@ -113,6 +115,7 @@ class Lookahead extends IteratorIterator implements Outer
+      *
+      * @return  mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function key()
+     {
+         return $this->_key;
+@@ -123,6 +126,7 @@ class Lookahead extends IteratorIterator implements Outer
+      *
+      * @return  void
+      */
++    #[\ReturnTypeWillChange]
+     public function next()
+     {
+         $innerIterator = $this->getInnerIterator();
+@@ -143,6 +147,7 @@ class Lookahead extends IteratorIterator implements Outer
+      *
+      * @return  void
+      */
++    #[\ReturnTypeWillChange]
+     public function rewind()
+     {
+         $out = $this->getInnerIterator()->rewind();
+@@ -156,6 +161,7 @@ class Lookahead extends IteratorIterator implements Outer
+      *
+      * @return  bool
+      */
++    #[\ReturnTypeWillChange]
+     public function valid()
+     {
+         return $this->_valid;
+diff --git a/RegularExpression.php b/RegularExpression.php
+index f26cb5e..6073d31 100644
+--- a/RegularExpression.php
++++ b/RegularExpression.php
+@@ -242,7 +242,7 @@ class RegularExpression extends Filter
+                 $this->_current = preg_split(
+                     $this->_regex,
+                     $subject,
+-                    null,
++                    0,
+                     $this->_pregFlags
+                 );
+ 

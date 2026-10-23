@@ -204,7 +204,7 @@ class SubdefGenerator
         }
 
         // if we created subdef one by one
-        if (count($wanted_subdefs) == 1) {
+        if (is_array($wanted_subdefs) && count($wanted_subdefs) == 1) {
             $mediaSubdefRepository = $this->getMediaSubdefRepository($record->getDataboxId());
             $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$record->getRecordId()]);
             $medias = [];

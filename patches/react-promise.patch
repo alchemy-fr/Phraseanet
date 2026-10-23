@@ -1,0 +1,153 @@
+diff --git a/src/Deferred.php b/src/Deferred.php
+index 3ca034b..0cd089f 100644
+--- a/src/Deferred.php
++++ b/src/Deferred.php
+@@ -10,7 +10,7 @@ class Deferred implements PromisorInterface
+     private $notifyCallback;
+     private $canceller;
+ 
+-    public function __construct(callable $canceller = null)
++    public function __construct(?callable $canceller = null)
+     {
+         $this->canceller = $canceller;
+     }
+diff --git a/src/ExtendedPromiseInterface.php b/src/ExtendedPromiseInterface.php
+index 13b6369..942fc5e 100644
+--- a/src/ExtendedPromiseInterface.php
++++ b/src/ExtendedPromiseInterface.php
+@@ -19,7 +19,7 @@ interface ExtendedPromiseInterface extends PromiseInterface
+      * @param callable|null $onProgress This argument is deprecated and should not be used anymore.
+      * @return void
+      */
+-    public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null);
++    public function done(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null);
+ 
+     /**
+      * Registers a rejection handler for promise. It is a shortcut for:
+diff --git a/src/FulfilledPromise.php b/src/FulfilledPromise.php
+index 1472752..a61ecc3 100644
+--- a/src/FulfilledPromise.php
++++ b/src/FulfilledPromise.php
+@@ -18,7 +18,7 @@ class FulfilledPromise implements ExtendedPromiseInterface, CancellablePromiseIn
+         $this->value = $value;
+     }
+ 
+-    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function then(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         if (null === $onFulfilled) {
+             return $this;
+@@ -33,7 +33,7 @@ class FulfilledPromise implements ExtendedPromiseInterface, CancellablePromiseIn
+         }
+     }
+ 
+-    public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function done(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         if (null === $onFulfilled) {
+             return;
+diff --git a/src/LazyPromise.php b/src/LazyPromise.php
+index bbe9293..b4b9e2e 100644
+--- a/src/LazyPromise.php
++++ b/src/LazyPromise.php
+@@ -15,12 +15,12 @@ class LazyPromise implements ExtendedPromiseInterface, CancellablePromiseInterfa
+         $this->factory = $factory;
+     }
+ 
+-    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function then(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         return $this->promise()->then($onFulfilled, $onRejected, $onProgress);
+     }
+ 
+-    public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function done(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         return $this->promise()->done($onFulfilled, $onRejected, $onProgress);
+     }
+diff --git a/src/Promise.php b/src/Promise.php
+index 33759e6..35f5d05 100644
+--- a/src/Promise.php
++++ b/src/Promise.php
+@@ -13,7 +13,7 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
+     private $requiredCancelRequests = 0;
+     private $cancelRequests = 0;
+ 
+-    public function __construct(callable $resolver, callable $canceller = null)
++    public function __construct(callable $resolver, ?callable $canceller = null)
+     {
+         $this->canceller = $canceller;
+ 
+@@ -25,7 +25,7 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
+         $this->call($cb);
+     }
+ 
+-    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function then(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         if (null !== $this->result) {
+             return $this->result->then($onFulfilled, $onRejected, $onProgress);
+@@ -55,7 +55,7 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
+         );
+     }
+ 
+-    public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function done(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         if (null !== $this->result) {
+             return $this->result->done($onFulfilled, $onRejected, $onProgress);
+@@ -112,7 +112,7 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
+         $this->call($canceller);
+     }
+ 
+-    private function resolver(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    private function resolver(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         return function ($resolve, $reject, $notify) use ($onFulfilled, $onRejected, $onProgress) {
+             if ($onProgress) {
+diff --git a/src/PromiseInterface.php b/src/PromiseInterface.php
+index edcb007..c4a5edc 100644
+--- a/src/PromiseInterface.php
++++ b/src/PromiseInterface.php
+@@ -37,5 +37,5 @@ interface PromiseInterface
+      * @param callable|null $onProgress This argument is deprecated and should not be used anymore.
+      * @return PromiseInterface
+      */
+-    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null);
++    public function then(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null);
+ }
+diff --git a/src/RejectedPromise.php b/src/RejectedPromise.php
+index 09cd4ab..47cce0f 100644
+--- a/src/RejectedPromise.php
++++ b/src/RejectedPromise.php
+@@ -18,7 +18,7 @@ class RejectedPromise implements ExtendedPromiseInterface, CancellablePromiseInt
+         $this->reason = $reason;
+     }
+ 
+-    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function then(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         if (null === $onRejected) {
+             return $this;
+@@ -33,7 +33,7 @@ class RejectedPromise implements ExtendedPromiseInterface, CancellablePromiseInt
+         }
+     }
+ 
+-    public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
++    public function done(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null)
+     {
+         if (null === $onRejected) {
+             throw UnhandledRejectionException::resolve($this->reason);
+diff --git a/src/functions.php b/src/functions.php
+index 2177dc2..d4bab05 100644
+--- a/src/functions.php
++++ b/src/functions.php
+@@ -366,7 +366,7 @@ function _checkTypehint(callable $callback, $object)
+             break;
+         case $type instanceof \ReflectionIntersectionType:
+             $isTypeUnion = false;
+-        case $type instanceof \ReflectionUnionType;
++        case $type instanceof \ReflectionUnionType:
+             $types = $type->getTypes();
+             break;
+         default:

@@ -139,7 +139,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
             return;
         }
 
-        if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (false === filter_var($uri, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(sprintf('Redirect Uri Url %s is not legal.', $uri));
         }
 
@@ -148,7 +148,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
 
     private function doSetWebsiteUrl(ApiApplication $application, $url)
     {
-        if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(sprintf('Website Url %s is not legal.', $url));
         }
 
@@ -157,7 +157,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
 
     private function doSetWebhookUrl(ApiApplication $application, $url)
     {
-        if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(sprintf('Webhook Url %s is not legal.', $url));
         }
 
