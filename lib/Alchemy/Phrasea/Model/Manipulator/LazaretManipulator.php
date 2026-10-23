@@ -203,7 +203,7 @@ class LazaretManipulator
                             /** @var Metadata $value */
                             $value = $attribute->getValue();
                             // $metadataBag->set($value->getTag()->getTagname(), new Metadata($value->getTag(), $value->getValue()));
-                            $metadataBag->set($value->getTag()->getTagname(), $value);
+                            $metadataBag->set($value->getTagGroup()->getId(), $value);
                             break;
                         case AttributeInterface::NAME_STORY:
                             /** @var \record_adapter $value */

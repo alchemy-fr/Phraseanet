@@ -19,7 +19,7 @@
                 {% for metadata in metadatas %}
                     <tr>
                         <td>
-                            {{ metadata.getTag().getTagname() }}
+                            {{ metadata.getTagGroup().getId() }}
                         </td>
                         <td>
                             {{ metadata.getValue().asString() }}
@@ -27,10 +27,10 @@
                     </tr>
                 {% endfor %}
             {% else %}
-                {% for metadata in metadatas|filter(metadata => 'System' not in metadata.getTag().getTagname()) %}
+                {% for metadata in metadatas|filter(metadata => 'System' not in metadata.getTagGroup().getId()) %}
                     <tr>
                         <td>
-                            {{ metadata.getTag().getTagname() }}
+                            {{ metadata.getTagGroup().getId() }}
                         </td>
                         <td>
                             {{ metadata.getValue().asString() }}

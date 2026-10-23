@@ -195,9 +195,17 @@ class FieldsController extends Controller
     public function getTag($tagname)
     {
         $tag = \databox_field::loadClassFromTagName($tagname);
-        $json = $this->app['serializer']->serialize($tag, 'json');
 
-        return new Response($json, 200, ['Content-Type' => 'application/json']);
+        return $this->app->json([
+            'id'          => $tag->getId(),
+            'name'        => $tag->getName(),
+            'namespace'   => $tag->getGroupName(),
+            'tagname'     => $tag->getTagname(),
+            'description' => $tag->getDescription(),
+            'multi'       => $tag->isMulti(),
+            'writable'    => $tag->isWritable(),
+            'maxlength'   => $tag->getMaxLength(),
+        ]);
     }
 
     public function createField(Request $request, $sbas_id)
