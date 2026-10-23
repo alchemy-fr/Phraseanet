@@ -142,7 +142,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $notifier = $this->createNotifierMock();
 
         $this->assertSame($this->sut, $this->sut->setNotifier($notifier));
-        $this->assertAttributeSame($notifier, 'notifier', $this->sut);
+        $this->assertSame($notifier, (new \ReflectionProperty($this->sut, 'notifier'))->getValue($this->sut));
     }
 
     /**

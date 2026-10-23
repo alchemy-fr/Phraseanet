@@ -65,13 +65,13 @@ class IdentityMapTest extends \PHPUnit\Framework\TestCase
     {
         $instance  = $this->sut->hydrate(42, ['foo' => 'Foo', 'bar' => 'Bar']);
 
-        $this->assertAttributeSame('Foo', 'foo', $instance);
-        $this->assertAttributeSame('Bar', 'bar', $instance);
+        $this->assertSame('Foo', (new \ReflectionProperty($instance, 'foo'))->getValue($instance));
+        $this->assertSame('Bar', (new \ReflectionProperty($instance, 'bar'))->getValue($instance));
 
         $instance2 = $this->sut->hydrate(42, ['foo' => 'new foo value', 'bar' => null]);
 
-        $this->assertAttributeSame('new foo value', 'foo', $instance);
-        $this->assertAttributeSame(null, 'bar', $instance);
+        $this->assertSame('new foo value', (new \ReflectionProperty($instance, 'foo'))->getValue($instance));
+        $this->assertSame(null, (new \ReflectionProperty($instance, 'bar'))->getValue($instance));
 
         $this->assertSame($instance, $instance2, 'Same instance was not rehydrated');
 

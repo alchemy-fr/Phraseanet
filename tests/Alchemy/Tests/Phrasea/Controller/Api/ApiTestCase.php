@@ -75,7 +75,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $route = '/api/v1/nothinghere';
         $this->setToken($this->userAccessToken);
         $client = $this->getClient();
-        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
         $this->evaluateResponseNotFound($client->getResponse());
@@ -90,7 +90,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('user', $content['response']);
@@ -106,7 +106,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('meta_fields', $content['response']);
@@ -122,7 +122,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('subdefs', $content['response']);
@@ -133,7 +133,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/me/collections/';
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertArrayHasKey('collections', $content['response']);
     }
@@ -286,7 +286,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected function evaluateNotFoundRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
             $this->evaluateResponseNotFound(self::$DI['client']->getResponse());
@@ -439,7 +439,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         foreach ($methods as $method) {
             $client = $this->getClient();
-            $client->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            $client->request($method, $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
             $content = $this->unserialize($client->getResponse()->getContent());
             $this->assertTrue($client->getResponse()->headers->has('Allow'));
             $this->evaluateResponseMethodNotAllowed($client->getResponse());
@@ -451,7 +451,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         foreach ($methods as $method) {
             $client = $this->getClient();
-            $client->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            $client->request($method, $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
             $content = $this->unserialize($client->getResponse()->getContent());
             $this->evaluateResponseBadRequest($client->getResponse());
             $this->evaluateMetaBadRequest($content);

@@ -77,7 +77,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var Client $client */
         $client = self::$DI['client'];
 
-        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = $client->getResponse();
 
@@ -120,7 +120,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         ];
         /** @var Client $client */
         $client = self::$DI['client'];
-        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = $client->getResponse();
 
@@ -159,7 +159,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         ];
 
         self::$DI['app']['border-manager']->registerChecker(new Sha256(self::$DI['app']));
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -180,7 +180,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -201,7 +201,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -220,7 +220,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $params = ['base_id' => self::$DI['collection']->get_base_id()];
         $files = ['files' => [$file]];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -241,7 +241,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -265,7 +265,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -294,7 +294,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -331,7 +331,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -354,7 +354,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $params = ['base_id' => self::$DI['collection']->get_base_id()];
         $files = [];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -367,7 +367,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testUploadWithoutAnything()
     {
-        self::$DI['client']->request('POST', '/prod/upload/', [], [], ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', [], [], ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 

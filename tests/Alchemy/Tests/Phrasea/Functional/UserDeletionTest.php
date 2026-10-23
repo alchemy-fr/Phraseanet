@@ -80,7 +80,7 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->userManipulator->delete($this->user);
         $this->assertTrue($this->user->isDeleted(), 'User was not properly deleted');
 
-        $apiLogRepository->clear();
+        $app['orm.em']->clear();
         $this->assertNull($apiLogRepository->find($apiLogId), 'Created api log should have been deleted');
         $this->user = null;
         $this->apiApplication = null;

@@ -38,7 +38,7 @@ class ContentNegotiationSubscriberTest extends \PHPUnit\Framework\TestCase
             array(),
             array(),
             array(
-                'HTTP_Accept' => $accept
+                'HTTP_ACCEPT' => $accept
             )
         );
 
