@@ -49,7 +49,7 @@ class CLI extends Application
         $this['session.test'] = true;
 
         $this['console'] = function () use ($name, $version) {
-            return new Console\Application($name, $version);
+            return new Console\Application($name, (string) $version);
         };
 
         $this->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
