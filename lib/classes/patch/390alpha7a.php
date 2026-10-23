@@ -120,8 +120,7 @@ class patch_390alpha7a extends patchAbstract
             $feed->setUpdatedOn(new \DateTime($row['updated_on']));
             $feed->setBaseId($row['base_id']);
 
-            $fpStmt->execute([':feed_id' => $row['id']]);
-            $fpRes = $fpStmt->fetchAll(\PDO::FETCH_ASSOC);
+            $fpRes = $fpStmt->executeQuery([':feed_id' => $row['id']])->fetchAllAssociative();
 
             foreach ($fpRes as $fpRow) {
                 if (null === $user = $this->loadUser($app['orm.em'], $fpRow['usr_id'])) {
@@ -135,8 +134,7 @@ class patch_390alpha7a extends patchAbstract
                 $feedPublisher->setIsOwner((Boolean) $fpRow['owner']);
                 $feedPublisher->setUser($user);
 
-                $feStmt->execute([':feed_id' => $row['id'], ':publisher_id' => $fpRow['id']]);
-                $feRes = $feStmt->fetchAll(\PDO::FETCH_ASSOC);
+                $feRes = $feStmt->executeQuery([':feed_id' => $row['id'], ':publisher_id' => $fpRow['id']])->fetchAllAssociative();
 
                 foreach ($feRes as $feRow) {
                     $feedEntry = new FeedEntry();
@@ -150,8 +148,7 @@ class patch_390alpha7a extends patchAbstract
                     $feedEntry->setCreatedOn(new \DateTime($feRow['created_on']));
                     $feedEntry->setUpdatedOn(new \DateTime($feRow['updated_on']));
 
-                    $fiStmt->execute([':entry_id' => $feRow['id']]);
-                    $fiRes = $fiStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    $fiRes = $fiStmt->executeQuery([':entry_id' => $feRow['id']])->fetchAllAssociative();
 
                     foreach ($fiRes as $fiRow) {
                         $feedItem = new FeedItem();
@@ -168,8 +165,7 @@ class patch_390alpha7a extends patchAbstract
                 $em->persist($feedPublisher);
             }
 
-            $ftStmt->execute([':feed_id' => $row['id']]);
-            $ftRes = $ftStmt->fetchAll(\PDO::FETCH_ASSOC);
+            $ftRes = $ftStmt->executeQuery([':feed_id' => $row['id']])->fetchAllAssociative();
 
             foreach ($ftRes as $ftRow) {
                 if (null === $user = $this->loadUser($app['orm.em'], $ftRow['usr_id'])) {
@@ -193,11 +189,6 @@ class patch_390alpha7a extends patchAbstract
                 $em->clear();
             }
         }
-
-        $fiStmt->closeCursor();
-        $feStmt->closeCursor();
-        $fpStmt->closeCursor();
-        $ftStmt->closeCursor();
 
         $faStmt = $conn->executeQuery($faSql);
         $faRes = $faStmt->fetchAllAssociative();

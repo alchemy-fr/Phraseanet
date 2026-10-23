@@ -279,7 +279,7 @@ class Session_Logger
         ];
 
         $stmt = $databox->get_connection()->executeQuery($sqlCount, $params);
-        $count = $stmt->fetchColumn(0);
+        $count = $stmt->fetchOne();
 
         $comment = json_encode([
             'finished' => empty($finished) ? '' : $finished->format('Y-m-d H:i:s'),

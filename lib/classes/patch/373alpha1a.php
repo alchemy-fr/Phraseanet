@@ -79,14 +79,11 @@ class patch_373alpha1a extends patchAbstract
         $binaries = ['ghostscript_binary' => null];
 
         foreach ($Regbinaries as $name) {
-            $stmt->execute([':key' => $name]);
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $stmt->executeQuery([':key' => $name])->fetchAssociative();
             $value = is_executable($row['value']) ? $row['value'] : null;
 
             $binaries[$mapping[$name]] = $value;
         }
-
-        $stmt->closeCursor();
 
         $config = $app['configuration.store']->getConfig();
         $config['binaries'] = $binaries;

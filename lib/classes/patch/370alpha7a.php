@@ -150,8 +150,6 @@ class patch_370alpha7a extends patchAbstract
         $app['orm.em']->flush();
         $app['orm.em']->clear();
 
-        $stmt->closeCursor();
-
         return true;
     }
 

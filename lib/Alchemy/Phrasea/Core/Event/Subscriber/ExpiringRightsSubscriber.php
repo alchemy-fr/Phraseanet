@@ -129,7 +129,7 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
                         $stmt = $abox->get_connection()->prepare($sql);
                     }
                     try {
-                        $stmt->execute([
+                        $stmt->executeStatement([
                             ':job'        => $jobname,
                             ':user_id'    => $user_id,
                             ':email'      => $email,
@@ -150,9 +150,6 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
                 }
 
             }
-        }
-        if($stmt) {
-            $stmt->closeCursor();
         }
     }
 

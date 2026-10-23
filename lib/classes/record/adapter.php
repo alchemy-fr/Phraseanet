@@ -2037,7 +2037,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         if ($sqlValues) {
             $connection->transactional(function (Connection $connection) use ($sqlValues) {
                 $statement = $connection->prepare('INSERT INTO technical_datas (record_id, name, value) VALUES (?, ?, ?)');
-                array_walk($sqlValues, [$statement, 'execute']);
+                foreach ($sqlValues as $values) {
+                    $statement->executeStatement($values);
+                }
             });
         }
 
@@ -2070,7 +2072,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $connection = $this->getDataboxConnection();
             $connection->transactional(function (Connection $connection) use ($sqlValues) {
                 $statement = $connection->prepare('INSERT INTO technical_datas (record_id, name, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?');
-                array_walk($sqlValues, [$statement, 'execute']);
+                foreach ($sqlValues as $values) {
+                    $statement->executeStatement($values);
+                }
             });
 
             $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);

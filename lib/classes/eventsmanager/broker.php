@@ -118,10 +118,8 @@ class eventsmanager_broker
         $sql = 'SELECT count(id) as total, sum(unread) as unread
             FROM notifications WHERE usr_id = :usr_id';
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]);
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             $total = $row['total'];
@@ -136,10 +134,8 @@ class eventsmanager_broker
 
         $data = ['notifications' => [], 'next' => ''];
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $type = 'eventsmanager_' . $row['type'];
@@ -156,8 +152,7 @@ class eventsmanager_broker
             if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
                 $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-                $stmt->execute([':id' => $row['id']]);
-                $stmt->closeCursor();
+                $stmt->executeStatement([':id' => $row['id']]);
                 continue;
             }
 
@@ -195,10 +190,8 @@ class eventsmanager_broker
         $sql = 'SELECT count(id) as total
             FROM notifications
             WHERE usr_id = :usr_id AND unread="1"';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             $total = $row['total'];

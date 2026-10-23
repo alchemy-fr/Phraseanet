@@ -326,7 +326,7 @@ class FixAutoincrements extends Command
 
             $sql = "SELECT MAX(`sit_session`) FROM `log` WHERE `site` = :site";
             $stmt = $db->executeQuery($sql, [':site' => $site]);
-            $id = $stmt->fetchColumn(0);
+            $id = $stmt->fetchOne();
 
             $ouputTable->addRow([sprintf("%s.log.sit_session", $databox->get_dbname()), sprintf("%s", is_null($id) ? 'null' : $id)]);
 

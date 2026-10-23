@@ -96,9 +96,8 @@ class module_console_fieldsRename extends Command
         do {
             $output->write("\rUpdating records... <info>".min($start, $total)." / $total</info>");
 
-            $stmt = $builder->execute();
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $builder->executeQuery();
+            $results = $stmt->fetchAllAssociative();
 
             foreach ($results as $row) {
                 $record = $databox->get_record($row['record_id']);

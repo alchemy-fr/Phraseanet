@@ -68,7 +68,7 @@ class CleanWorkerRunningJobCommand extends Command
         }
 
         $stmt = $this->container->getApplicationBox()->get_connection()->executeQuery($sql_count);
-        $n = $stmt->fetchColumn(0);
+        $n = $stmt->fetchOne();
 
         $output->writeln(sprintf("%d WorkerRunningJob will be deleted.", $n));
 

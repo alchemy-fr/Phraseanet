@@ -12,7 +12,6 @@ use Alchemy\Phrasea\WorkerManager\Worker\WorkerInterface;
 use collection;
 use databox;
 use Exception;
-use PDO;
 use Psr\Log\LoggerInterface;
 use record_adapter;
 use SimpleXMLElement;
@@ -382,14 +381,13 @@ class RecordsActionsWorker implements WorkerInterface
 
         $result['n'] = $connbas->executeQuery('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchOne();
 
-        $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
-        if ($stmt->execute([])) {
-            while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
+        try {
+            $stmt = $connbas->executeQuery('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
+            while (($row = $stmt->fetchAssociative())) {
                 $result['rids'][] = $row['record_id'];
             }
-            $stmt->closeCursor();
-        } else {
-            $result['err'] = $connbas->errorInfo();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $result['err'] = $e->getMessage();
         }
 
         return $result;

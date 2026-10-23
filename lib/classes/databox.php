@@ -23,7 +23,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\Status\StatusStructureFactory;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -997,10 +997,9 @@ class databox extends base implements ThumbnailedElement
             ;
         }
 
-        /** @var Statement $stmt */
-        $stmt = $builder->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        /** @var Result $stmt */
+        $stmt = $builder->executeQuery();
+        $rs = $stmt->fetchAllAssociative();
         unset($stmt);
 
         foreach ($rs as $row) {
@@ -1261,7 +1260,7 @@ class databox extends base implements ThumbnailedElement
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':token_and', PhraseaTokens::INDEXING, PDO::PARAM_INT);
         $stmt->bindValue(':token_or',  PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->executeStatement();
 
         $this->app['dispatcher']->dispatch(
             DataboxEvents::REINDEX_ASKED,

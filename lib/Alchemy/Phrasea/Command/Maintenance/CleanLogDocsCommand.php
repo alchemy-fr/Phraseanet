@@ -113,7 +113,7 @@ class CleanLogDocsCommand extends Command
                     }
 
                     $stmt = $databox->get_connection()->executeQuery($sqlCount);
-                    $count = $stmt->fetchColumn(0);
+                    $count = $stmt->fetchOne();
 
 
                     $output->writeln(sprintf("\n \n dry-run , %d log docs entry to delete for databox %s", $count, $databox->get_dbname()));

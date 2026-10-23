@@ -531,8 +531,7 @@ class Bridge_Api
         $statement = $connection->prepare('INSERT INTO bridge_apis (name, disable, disable_time, created_on, updated_on) VALUES (:name, 0, null, :now, :now)');
         $statement->bindValue('name', strtolower($name));
         $statement->bindValue('now', new DateTime('now', new DateTimeZone('UTC')), 'datetime');
-        $statement->execute();
-        $statement->closeCursor();
+        $statement->executeStatement();
 
         $api_id = $connection->lastInsertId();
 

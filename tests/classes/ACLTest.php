@@ -544,8 +544,7 @@ class ACLTest extends \PhraseanetTestCase
         $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
 
         foreach ($bases as $base_id) {
-            $stmt->execute([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->executeQuery([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id])->fetchAssociative();
             $this->assertEquals(1, $row['actif']);
 
             $this->assertTrue($this->object->has_access_to_base($base_id));
@@ -556,8 +555,7 @@ class ACLTest extends \PhraseanetTestCase
                 ]
             );
 
-            $stmt->execute([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->executeQuery([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id])->fetchAssociative();
             $this->assertEquals(0, $row['actif']);
 
             $this->assertFalse($this->object->has_access_to_base($base_id));
@@ -568,8 +566,7 @@ class ACLTest extends \PhraseanetTestCase
                 ]
             );
 
-            $stmt->execute([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->executeQuery([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id])->fetchAssociative();
             $this->assertEquals(1, $row['actif']);
 
             $this->assertTrue($this->object->has_access_to_base($base_id));
@@ -586,7 +583,6 @@ class ACLTest extends \PhraseanetTestCase
         foreach ($bases as $base_id) {
             $this->assertTrue($this->object->has_access_to_base($base_id));
         }
-        $stmt->closeCursor();
     }
 
     public function testGet_granted_base()

@@ -65,11 +65,7 @@ class patch_370alpha8a extends patchAbstract
         $sql = 'SELECT task_id, active, name, class, settings
                 FROM task2
                 WHERE class=\'task_period_workflow01\'';
-        if (($stmt = $conn->prepare($sql)) !== FALSE) {
-            $stmt->execute();
-            $ttasks = $stmt->fetchAll();
-        }
-        $stmt->closeCursor();
+        $ttasks = $conn->executeQuery($sql)->fetchAllAssociative();
 
         $tdom = [];     // key = period
         $taskstodel = [];

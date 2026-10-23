@@ -272,8 +272,7 @@ class ACL implements cache_cacheableInterface
             ':pusher'    => $pusher->getId(),
             ':expireOn'  => $expireOn
         ];
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -305,7 +304,7 @@ class ACL implements cache_cacheableInterface
         $cnx->exec("START TRANSACTION");
 
         try {
-            $n0 = $stmt_upd->execute([
+            $n0 = $stmt_upd->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -324,14 +323,14 @@ class ACL implements cache_cacheableInterface
 //                ]
 //            );
 //
-            $n1 = $stmt_upd->rowCount();
-            $n2 = $cnx->executeQuery("SELECT ROW_COUNT()")->fetchColumn(0);
+            $n1 = $n0;
+            $n2 = $cnx->executeQuery("SELECT ROW_COUNT()")->fetchOne();
             file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", 'u'.$n0.$n1.$n2."\n", FILE_APPEND);
 //            if($n != 1) {
 //                throw new \Exception("no update");
 //            }
 
-            $stmt_ins->execute([
+            $stmt_ins->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -342,7 +341,7 @@ class ACL implements cache_cacheableInterface
         }
         catch (\Exception $e) {
             // file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", sprintf("%s\n", $e->getMessage()), FILE_APPEND);
-            $stmt_upd->execute([
+            $stmt_upd->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -425,7 +424,7 @@ class ACL implements cache_cacheableInterface
 //                throw new \Exception("no update");
 //            }
 
-            $stmt_ins->execute([
+            $stmt_ins->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -436,7 +435,7 @@ class ACL implements cache_cacheableInterface
         }
         catch (\Exception $e) {
             // file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", sprintf("%s\n", $e->getMessage()), FILE_APPEND);
-            $stmt_upd->execute([
+            $stmt_upd->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -474,8 +473,7 @@ class ACL implements cache_cacheableInterface
             ':pusher'    => $pusher->getId()
         ];
 
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -1346,22 +1344,23 @@ class ACL implements cache_cacheableInterface
 
         $errors = 0;
         foreach ($base_ids as $base_id) {
-            if ($stmt_del->execute([':base_id' => $base_id, ':usr_id'  => $usr_id])) {
-                $this->app['dispatcher']->dispatch(
-                    AclEvents::ACCESS_TO_BASE_REVOKED,
-                    new AccessToBaseRevokedEvent(
-                        $this,
-                        [
-                            'base_id' => $base_id
-                        ]
-                    )
-                );
+            try {
+                $stmt_del->executeStatement([':base_id' => $base_id, ':usr_id'  => $usr_id]);
             }
-            else {
+            catch (DBALException $e) {
                 $errors++;
+                continue;
             }
+            $this->app['dispatcher']->dispatch(
+                AclEvents::ACCESS_TO_BASE_REVOKED,
+                new AccessToBaseRevokedEvent(
+                    $this,
+                    [
+                        'base_id' => $base_id
+                    ]
+                )
+            );
         }
-        $stmt_del->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         if($errors > 0) {
@@ -1419,11 +1418,9 @@ class ACL implements cache_cacheableInterface
     {
         $inserted = false;
         try {
-            $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
-            if ($stmt->rowCount() > 0) {
+            if ($stmt->executeStatement([':base_id' => $base_id, ':usr_id' => $usr_id]) > 0) {
                 $inserted = true;
             }
-            $stmt->closeCursor();
         }
         catch(DBALException $e) {
             // no-op, mostly the row did exist
@@ -1434,8 +1431,7 @@ class ACL implements cache_cacheableInterface
 
     private function try_give_access_to_base_update(Statement $stmt, $base_id, $usr_id)
     {
-        $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':base_id' => $base_id, ':usr_id' => $usr_id]);
     }
 
     /**

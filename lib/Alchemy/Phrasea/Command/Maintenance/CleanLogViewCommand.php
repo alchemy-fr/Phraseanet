@@ -70,7 +70,7 @@ class CleanLogViewCommand extends Command
                 if ($dry) {
                     $sqlCount = 'SELECT COUNT(`id`) FROM log_view WHERE ' . $clauseWhere;
                     $stmt = $databox->get_connection()->executeQuery($sqlCount);
-                    $count = $stmt->fetchColumn(0);
+                    $count = $stmt->fetchOne();
 
                     $sql = 'SELECT id, `date`, record_id, coll_id FROM log_view WHERE ' . $clauseWhere . ' LIMIT 1000';
                     $stmt = $databox->get_connection()->executeQuery($sql);

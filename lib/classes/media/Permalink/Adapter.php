@@ -154,8 +154,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         $sql = 'UPDATE permalinks SET token = :token, last_modified = NOW()
             WHERE id = :id';
         $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute([':token' => $this->token, ':id' => $this->get_id()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':token' => $this->token, ':id' => $this->get_id()]);
 
         $this->delete_data_from_cache();
 
@@ -216,7 +215,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             return;
         }
 
-        $data = $this->databox->get_connection()->fetchAssoc(
+        $data = $this->databox->get_connection()->fetchAssociative(
             self::getSelectSql(),
             [':subdef_id' => $this->media_subdef->get_subdef_id()]
         );

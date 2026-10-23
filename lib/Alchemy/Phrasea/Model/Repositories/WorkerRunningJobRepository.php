@@ -111,10 +111,9 @@ class WorkerRunningJobRepository extends EntityRepository
                     . " LIMIT 1";
 
                 $stmt = $cnx->prepare($sql);
-                if ($stmt->execute() === true) {
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                }
-                $stmt->closeCursor();
+                $result = $stmt->execute();
+                $row = $result->fetchAssociative();
+                $result->free();
 
                 if(!$row) {
                     // no job running : create or update (may return false) if error

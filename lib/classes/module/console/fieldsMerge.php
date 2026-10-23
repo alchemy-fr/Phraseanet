@@ -167,9 +167,8 @@ class module_console_fieldsMerge extends Command
             ->setMaxResults($quantity)
         ;
         do {
-            $stmt = $builder->execute();
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $builder->executeQuery();
+            $results = $stmt->fetchAllAssociative();
 
             foreach ($results as $row) {
                 $record = $databox->get_record($row['record_id']);

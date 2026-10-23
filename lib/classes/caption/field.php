@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 
 class caption_field implements cache_cacheableInterface
 {
@@ -282,10 +282,9 @@ class caption_field implements cache_cacheableInterface
             ->setParameter('meta_struct_id', $databox_field->get_id())
         ;
 
-        /** @var Statement $stmt */
-        $stmt = $builder->execute();
-        $rowcount = $stmt->fetchColumn();
-        $stmt->closeCursor();
+        /** @var Result $stmt */
+        $stmt = $builder->executeQuery();
+        $rowcount = $stmt->fetchOne();
         unset($stmt);
 
         $n = 0;
@@ -296,12 +295,12 @@ class caption_field implements cache_cacheableInterface
             ->setMaxResults($increment)
         ;
         while ($n < $rowcount) {
-            /** @var Statement $stmt */
+            /** @var Result $stmt */
             $stmt = $builder
                 ->setFirstResult($n)
-                ->execute();
+                ->executeQuery();
 
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $rs = $stmt->fetchAllAssociative();
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
@@ -333,10 +332,9 @@ class caption_field implements cache_cacheableInterface
             ->setParameter('meta_struct_id', $databox_field->get_id())
         ;
 
-        /** @var Statement $stmt */
-        $stmt = $builder->execute();
-        $rowcount = $stmt->fetchColumn();
-        $stmt->closeCursor();
+        /** @var Result $stmt */
+        $stmt = $builder->executeQuery();
+        $rowcount = $stmt->fetchOne();
         unset($stmt);
 
         $n = 0;
@@ -347,12 +345,12 @@ class caption_field implements cache_cacheableInterface
             ->setMaxResults($increment)
         ;
         while ($n < $rowcount) {
-            /** @var Statement $stmt */
+            /** @var Result $stmt */
             $stmt = $builder
                 ->setFirstResult($n)
-                ->execute();
+                ->executeQuery();
 
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $rs = $stmt->fetchAllAssociative();
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);

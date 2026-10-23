@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Doctrine\DBAL\Driver\ResultStatement;
+use Doctrine\DBAL\Result;
 
 
 class FixLogCollId extends Command
@@ -224,8 +224,8 @@ class FixLogCollId extends Command
                     . "  SUM(IF(`coll_id`>0, 1, 0)) AS `p`,\n"
                     . "  SUM(IF(`coll_id`=0, 1, 0)) AS `z`\n"
                     . "  FROM `log_docs`",
-                'code' => function(ResultStatement $stmt) use($ret) {
-                    $row = $stmt->fetch();
+                'code' => function(Result $stmt) use($ret) {
+                    $row = $stmt->fetchAssociative();
                     if(is_null($row['n'])) {
                         // no coll_id ?
                         $this->output->writeln(sprintf("<error>The \"log_docs\" table has no \"coll_id\" column ? Please apply patch 410alpha12a</error>"));
@@ -284,12 +284,9 @@ class FixLogCollId extends Command
         }
 
         if(!$this->dry) {
-            $stmt_lastid->execute();
-            $stmt_lastid->closeCursor();
+            $stmt_lastid->executeQuery()->free();
 
-            $stmt_insert->execute();
-            $ret = $stmt_insert->rowCount();
-            $stmt_insert->closeCursor();
+            $ret = $stmt_insert->executeStatement();
         }
 
         return $ret;
@@ -319,9 +316,7 @@ class FixLogCollId extends Command
         }
 
         if(!$this->dry) {
-            $stmt->execute();
-            $ret = $stmt->rowCount();
-            $stmt->closeCursor();
+            $ret = $stmt->executeStatement();
         }
 
         return $ret;
@@ -378,15 +373,14 @@ class FixLogCollId extends Command
         }
         $stmt = null;
         if(!$this->dry || ($work['playdry'] & self::PLAYDRY_SQL)) {
-            $stmt = $databox->get_connection()->prepare($work['sql']);
-            $stmt->executeStatement();
+            $stmt = $databox->get_connection()->executeQuery($work['sql']);
         }
         if($work['code'] && (!$this->dry || ($work['playdry'] & self::PLAYDRY_CODE))) {
             $code = $work['code'];
             $code($stmt);
         }
         if(!$this->dry || ($work['playdry'] & self::PLAYDRY_SQL)) {
-            $stmt->closeCursor();
+            $stmt->free();
         }
     }
 }

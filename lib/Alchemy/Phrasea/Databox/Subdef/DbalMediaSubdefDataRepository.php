@@ -67,7 +67,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
 
         try {
             $deleted = array_reduce($subdefIds, function ($carry, $data) use ($statement) {
-                $carry += $statement->execute([
+                $carry += $statement->executeStatement([
                     'record_id' => $data['record_id'],
                     'name' => $data['name'],
                 ]);

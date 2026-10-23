@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Databox\DataboxFactory;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
@@ -43,16 +43,13 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $databox = $this->prophesize(\databox::class);
 
-        $statement = $this->prophesize(Statement::class);
+        $result = $this->prophesize(Result::class);
         $this->connection
-            ->prepare('SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id')
-            ->willReturn($statement->reveal());
-        $statement->execute(['id' => 42])
-            ->shouldBeCalled();
-        $statement->fetch(\PDO::FETCH_ASSOC)
+            ->executeQuery('SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id', ['id' => 42], Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn($result->reveal());
+        $result->fetchAssociative()
             ->willReturn(['foo' => 'bar']);
-        $statement->closeCursor()
-            ->shouldBeCalled();
 
         $this->factory->create(42, ['foo' => 'bar'])
             ->willReturn($databox->reveal());
@@ -62,16 +59,13 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testItReturnsNullOnNonExistentDatabox()
     {
-        $statement = $this->prophesize(Statement::class);
+        $result = $this->prophesize(Result::class);
         $this->connection
-            ->prepare('SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id')
-            ->willReturn($statement->reveal());
-        $statement->execute(['id' => 42])
-            ->shouldBeCalled();
-        $statement->fetch(\PDO::FETCH_ASSOC)
+            ->executeQuery('SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id', ['id' => 42], Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn($result->reveal());
+        $result->fetchAssociative()
             ->willReturn(false);
-        $statement->closeCursor()
-            ->shouldBeCalled();
 
         $this->factory->create(42, Argument::any())
             ->shouldNotBeCalled();
@@ -83,16 +77,13 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $databox = $this->prophesize(\databox::class);
 
-        $statement = $this->prophesize(Statement::class);
+        $result = $this->prophesize(Result::class);
         $this->connection
-            ->prepare('SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas')
-            ->willReturn($statement->reveal());
-        $statement->execute()
-            ->shouldBeCalled();
-        $statement->fetch(\PDO::FETCH_ASSOC)
+            ->executeQuery('SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas', Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn($result->reveal());
+        $result->fetchAssociative()
             ->willReturn(['sbas_id' => 42, 'foo' => 'bar'], false);
-        $statement->closeCursor()
-            ->shouldBeCalled();
 
         $this->factory->createMany([42 => ['foo' => 'bar']])
             ->willReturn([$databox->reveal()]);

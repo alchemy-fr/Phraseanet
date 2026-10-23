@@ -115,8 +115,7 @@ class patch_390alpha6a extends patchAbstract
 
             $em->persist($export);
 
-            $stmt->execute(['export_id' => $row['id']]);
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $rs = $stmt->executeQuery(['export_id' => $row['id']])->fetchAllAssociative();
 
             foreach ($rs as $element_row) {
                 $element = new FtpExportElement();
@@ -144,7 +143,6 @@ class patch_390alpha6a extends patchAbstract
                 $em->clear();
             }
         }
-        $stmt->closeCursor();
 
         $em->flush();
         $em->clear();

@@ -67,7 +67,7 @@ class CleanApiLogsCommand extends Command
         }
 
         $stmt = $this->container->getApplicationBox()->get_connection()->executeQuery($sql_count);
-        $n = $stmt->fetchColumn(0);
+        $n = $stmt->fetchOne();
 
         $output->writeln(sprintf("%d ApiLogs will be deleted.", $n));
 

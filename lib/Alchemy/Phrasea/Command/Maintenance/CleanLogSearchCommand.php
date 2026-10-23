@@ -72,7 +72,7 @@ class CleanLogSearchCommand extends Command
                     $sql = 'SELECT id, `date`, search, results, coll_id FROM log_search WHERE ' . $clauseWhere . ' LIMIT 1000';
 
                     $stmt = $databox->get_connection()->executeQuery($sqlCount);
-                    $count = $stmt->fetchColumn(0);
+                    $count = $stmt->fetchOne();
 
                     $stmt = $databox->get_connection()->executeQuery($sql);
                     $displayedRows = $stmt->fetchAllAssociative();
