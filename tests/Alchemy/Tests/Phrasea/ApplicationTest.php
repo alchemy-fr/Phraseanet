@@ -169,18 +169,16 @@ class ApplicationTest extends \PhraseanetTestCase
 
         $form = $this->createStub('Symfony\Component\Form\Form');
 
-        $type = $this->createStub('Symfony\Component\Form\FormTypeInterface');
+        $type = 'Symfony\Component\Form\Extension\Core\Type\TextType';
         $data = ['some' => 'data'];
-        $options = [];
-
-        $parent = $this->createStub('Symfony\Component\Form\FormBuilder');
+        $options = ['label' => 'some label'];
 
         $factory->expects($this->once())
             ->method('create')
-            ->with($this->equalTo($type), $this->equalTo($data), $this->equalTo($options), $this->equalTo($parent))
+            ->with($this->equalTo($type), $this->equalTo($data), $this->equalTo($options))
             ->will($this->returnValue($form));
 
-        $this->assertEquals($form, $app->form($type, $data, $options, $parent));
+        $this->assertEquals($form, $app->form($type, $data, $options));
     }
 
     public function testAddSetFlash()

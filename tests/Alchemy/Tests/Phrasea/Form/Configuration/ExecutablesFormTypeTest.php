@@ -11,6 +11,11 @@ class ExecutablesFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new ExecutablesFormType(self::$DI['app']['translator']);
+        return new ExecutablesFormType();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['translator' => self::$DI['app']['translator']];
     }
 }

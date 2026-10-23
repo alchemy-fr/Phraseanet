@@ -11,25 +11,16 @@
 
 namespace Alchemy\Phrasea\Form\Configuration;
 
-use JMS\TranslationBundle\Annotation\Ignore;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class WebservicesFormType extends AbstractType
 {
-    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
-    private $translator;
-
-    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('google-charts-enabled', CheckboxType::class, [
@@ -50,7 +41,7 @@ class WebservicesFormType extends AbstractType
         $builder->add('recaptcha-private-key', TextType::class, [
             'label'       => 'Recaptcha private key',
         ]);
-        $builder->add('trials-before-display', \Symfony\Component\Form\Extension\Core\Type\IntegerType::class, [
+        $builder->add('trials-before-display', IntegerType::class, [
             'label'        => 'Trials before display captcha',
             'constraints' => array(
                 new Assert\NotBlank(),
@@ -62,6 +53,6 @@ class WebservicesFormType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

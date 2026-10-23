@@ -11,6 +11,11 @@ class MainConfigurationFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new MainConfigurationFormType(self::$DI['app']['translator'], ['fr' => 'french']);
+        return new MainConfigurationFormType();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['translator' => self::$DI['app']['translator']];
     }
 }

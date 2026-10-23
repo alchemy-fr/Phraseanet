@@ -42,7 +42,7 @@ class EmailFormType extends AbstractType
         ]);
         $builder->add('smtp-secure-mode', ChoiceType::class, [
             'label'        => 'SMTP encryption',
-            'choices'      => ['none' => 'None', 'ssl' => 'SSL', 'tlsv1.1' => 'TLSV1.1', 'tlsv1.2' => 'TLSV1.2'],
+            'choices'      => ['None' => 'none', 'SSL' => 'ssl', 'TLSV1.1' => 'tlsv1.1', 'TLSV1.2' => 'tlsv1.2'],
         ]);
         $builder->add('smtp-user', TextType::class, [
             'label'        => 'SMTP user',
@@ -60,6 +60,6 @@ class EmailFormType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

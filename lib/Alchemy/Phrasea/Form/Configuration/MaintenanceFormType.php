@@ -30,6 +30,6 @@ class MaintenanceFormType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

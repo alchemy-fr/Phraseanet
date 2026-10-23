@@ -11,7 +11,7 @@ class GeonameTypeTest extends \PhraseanetTestCase
     public function testGetParent()
     {
         $geoname = new GeonameType();
-        $this->assertEquals('text', $geoname->getParent());
+        $this->assertEquals('Symfony\Component\Form\Extension\Core\Type\TextType', $geoname->getParent());
     }
 
     public function testGetName()

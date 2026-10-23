@@ -15,18 +15,11 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ModulesFormType extends AbstractType
 {
-    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
-    private $translator;
-
-    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('thesaurus', CheckboxType::class, [
@@ -43,12 +36,18 @@ class ModulesFormType extends AbstractType
         ]);
         $builder->add('anonymous-report', CheckboxType::class, [
             'label'        => 'Anonymous report',
-            'help_message' => /** @Ignore */ $this->translator->trans('Hide information about users'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('Hide information about users'),
         ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired('translator');
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
     }
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

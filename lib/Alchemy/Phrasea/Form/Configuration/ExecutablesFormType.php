@@ -18,23 +18,16 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ExecutablesFormType extends AbstractType
 {
-    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
-    private $translator;
-
-    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('h264-streaming-enabled', CheckboxType::class, [
             'label'        => 'Enable H264 stream mode',
-            'help_message' => /** @Ignore */ $this->translator->trans('Use with mod_token. Attention requires the apache modules and mod_h264_streaming mod_auth_token'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('Use with mod_token. Attention requires the apache modules and mod_h264_streaming mod_auth_token'),
         ]);
         $builder->add('auth-token-directory', TextType::class, [
             'label'        => 'Auth_token mount point',
@@ -44,19 +37,19 @@ class ExecutablesFormType extends AbstractType
         ]);
         $builder->add('auth-token-passphrase', TextType::class, [
             'label'        => 'Auth_token passphrase',
-            'help_message' => /** @Ignore */ $this->translator->trans('Defined in Apache configuration'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('Defined in Apache configuration'),
         ]);
         $builder->add('php-conf-path', TextType::class, [
             'label'        => 'php.ini path',
-            'help_message' => /** @Ignore */ $this->translator->trans('Empty if not used'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('Empty if not used'),
         ]);
 
         $imagineDoc = '<a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a>';
 
         $builder->add('imagine-driver', ChoiceType::class, [
             'label'        => 'Imagine driver',
-            'help_message' => /** @Ignore */ $this->translator->trans('See documentation at %url%', ['%url%' => $imagineDoc]),
-            'choices'      => ['' => 'Auto', 'gmagick' => 'GraphicsMagick', 'imagick' => 'ImageMagick', 'gd' => 'GD'],
+            'help_message' => /** @Ignore */ $options['translator']->trans('See documentation at %url%', ['%url%' => $imagineDoc]),
+            'choices'      => ['Auto' => '', 'GraphicsMagick' => 'gmagick', 'ImageMagick' => 'imagick', 'GD' => 'gd'],
         ]);
 
         $builder->add('ffmpeg-threads', IntegerType::class, [
@@ -67,8 +60,14 @@ class ExecutablesFormType extends AbstractType
         ]);
     }
 
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired('translator');
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
+    }
+
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

@@ -9,16 +9,10 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WorkerValidationReminderType extends AbstractType
 {
-    private $AMQPConnection;
-
-    public function __construct(AMQPConnection $AMQPConnection)
-    {
-        $this->AMQPConnection = $AMQPConnection;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -34,7 +28,7 @@ class WorkerValidationReminderType extends AbstractType
             ]);
 
         // every ttl is in msec, we display this large one (loop q) in sec in form.
-        $defaultInterval = $this->AMQPConnection->getDefaultSetting(MessagePublisher::VALIDATION_REMINDER_TYPE, AMQPConnection::TTL_RETRY) / 1000;
+        $defaultInterval = $options['amqp_connection']->getDefaultSetting(MessagePublisher::VALIDATION_REMINDER_TYPE, AMQPConnection::TTL_RETRY) / 1000;
         $builder
             ->add('ttl_retry', TextType::class, [
                 'label' => 'admin::workermanager:tab:Reminder: Interval in second',
@@ -59,6 +53,12 @@ class WorkerValidationReminderType extends AbstractType
                 ]
             ]);
 */
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired('amqp_connection');
+        $resolver->setAllowedTypes('amqp_connection', AMQPConnection::class);
     }
 
 //    public function getName()

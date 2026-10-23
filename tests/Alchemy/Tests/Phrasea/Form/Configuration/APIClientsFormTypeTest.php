@@ -11,6 +11,11 @@ class APIClientsFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new APIClientsFormType(self::$DI['app']['translator']);
+        return new APIClientsFormType();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['translator' => self::$DI['app']['translator']];
     }
 }

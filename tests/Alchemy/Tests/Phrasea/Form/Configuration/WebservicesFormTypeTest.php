@@ -11,6 +11,6 @@ class WebservicesFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new WebservicesFormType(self::$DI['app']['translator']);
+        return new WebservicesFormType();
     }
 }

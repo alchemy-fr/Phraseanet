@@ -14,53 +14,53 @@ namespace Alchemy\Phrasea\Form\Configuration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MainConfigurationFormType extends AbstractType
 {
-    private $languages;
-    private $translator;
-
-    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator, array $languages)
-    {
-        $this->languages = $languages;
-        $this->translator = $translator;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('general', \Alchemy\Phrasea\Form\Configuration\GeneralFormType::class, [
+        $translator = $options['translator'];
+
+        $builder->add('general', GeneralFormType::class, [
             'label'    => 'General configuration',
         ]);
-        $builder->add('modules', \Alchemy\Phrasea\Form\Configuration\ModulesFormType::class, [
+        $builder->add('modules', ModulesFormType::class, [
             'label' => 'Additionnal modules',
+            'translator' => $translator,
         ]);
-        $builder->add('actions', \Alchemy\Phrasea\Form\Configuration\ActionsFormType::class, [
+        $builder->add('actions', ActionsFormType::class, [
             'label' => 'Push configuration',
+            'translator' => $translator,
         ]);
-        $builder->add('ftp', \Alchemy\Phrasea\Form\Configuration\FtpExportFormType::class, [
+        $builder->add('ftp', FtpExportFormType::class, [
             'label' => 'FTP Export',
+            'translator' => $translator,
         ]);
-        $builder->add('registration', \Alchemy\Phrasea\Form\Configuration\RegistrationFormType::class, [
+        $builder->add('registration', RegistrationFormType::class, [
             'label' => 'Registration',
+            'translator' => $translator,
         ]);
-        $builder->add('maintenance', \Alchemy\Phrasea\Form\Configuration\MaintenanceFormType::class, [
+        $builder->add('maintenance', MaintenanceFormType::class, [
             'label' => 'Maintenance state',
         ]);
-        $builder->add('api-clients', \Alchemy\Phrasea\Form\Configuration\APIClientsFormType::class, [
+        $builder->add('api-clients', APIClientsFormType::class, [
             'label' => 'Phraseanet client API',
+            'translator' => $translator,
         ]);
-        $builder->add('webservices', \Alchemy\Phrasea\Form\Configuration\WebservicesFormType::class, [
+        $builder->add('webservices', WebservicesFormType::class, [
             'label' => 'Webservices connectivity',
         ]);
-        $builder->add('executables', \Alchemy\Phrasea\Form\Configuration\ExecutablesFormType::class, [
+        $builder->add('executables', ExecutablesFormType::class, [
             'label' => 'Executables settings',
+            'translator' => $translator,
         ]);
-        $builder->add('searchengine', \Alchemy\Phrasea\Form\Configuration\SearchEngineFormType::class, [
+        $builder->add('searchengine', SearchEngineFormType::class, [
             'label' => 'Search engine',
+            'translator' => $translator,
         ]);
-        $builder->add('email', \Alchemy\Phrasea\Form\Configuration\EmailFormType::class, [
+        $builder->add('email', EmailFormType::class, [
             'label' => 'Emails',
         ]);
         $builder->add('custom-links', CollectionType::class, [
@@ -71,16 +71,18 @@ class MainConfigurationFormType extends AbstractType
         ]);
     }
 
-    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'required'           => false,
             'allow_extra_fields' => true
         ]);
+        $resolver->setRequired('translator');
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
     }
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

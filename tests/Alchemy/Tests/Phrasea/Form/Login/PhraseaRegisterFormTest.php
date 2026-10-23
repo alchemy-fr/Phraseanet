@@ -2,8 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Form\Login;
 
-use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;;
+use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]
@@ -11,9 +12,14 @@ class PhraseaRegisterFormTest extends FormTestCase
 {
     protected function getForm()
     {
+        return new PhraseaRegisterForm();
+    }
+
+    protected function getFormOptions()
+    {
         $available = [
             'parameter' => [
-                'type' => 'text',
+                'type' => TextType::class,
                 'label' => '',
             ]
         ];
@@ -24,18 +30,22 @@ class PhraseaRegisterFormTest extends FormTestCase
             ]
         ];
 
-        return new PhraseaRegisterForm(self::$DI['app'], $available, $params);
+        return [
+            'app'                 => self::$DI['app'],
+            'available_fields'    => $available,
+            'registration_fields' => $params,
+        ];
     }
 
     public function testFormDoesRegisterValidFields()
     {
         $available = array(
             'extra-parameter' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'label' => '',
             ),
             'extra-parameter2' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'label' => '',
             )
         );
@@ -60,9 +70,13 @@ class PhraseaRegisterFormTest extends FormTestCase
             $expected[] = 'collections';
         }
 
-        $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params);
+        $form = self::$DI['app']->form(PhraseaRegisterForm::class, null, [
+            'app'                 => self::$DI['app'],
+            'available_fields'    => $available,
+            'registration_fields' => $params,
+        ]);
 
-        foreach (array_keys(self::$DI['app']->form($form)->createView()->vars['form']->children) as $name) {
+        foreach (array_keys($form->createView()->children) as $name) {
             $this->assertContains($name, $expected);
         }
     }
@@ -71,7 +85,7 @@ class PhraseaRegisterFormTest extends FormTestCase
     {
         $available = array(
             'extra-parameter' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'label' => '',
             )
         );
@@ -96,9 +110,13 @@ class PhraseaRegisterFormTest extends FormTestCase
             $expected[] = 'collections';
         }
 
-        $form = new PhraseaRegisterForm(self::$DI['app'], $available, $params);
+        $form = self::$DI['app']->form(PhraseaRegisterForm::class, null, [
+            'app'                 => self::$DI['app'],
+            'available_fields'    => $available,
+            'registration_fields' => $params,
+        ]);
 
-        foreach (array_keys(self::$DI['app']->form($form)->createView()->vars['form']->children) as $name) {
+        foreach (array_keys($form->createView()->children) as $name) {
             $this->assertContains($name, $expected);
         }
     }

@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class TaskForm extends AbstractType
@@ -43,22 +43,22 @@ class TaskForm extends AbstractType
         $builder->add('status', ChoiceType::class, [
             'label'       => 'The task status',
             'choices'   => [
-                Task::STATUS_STARTED   => 'Started',
-                Task::STATUS_STOPPED   => 'Stopped',
+                'Started' => Task::STATUS_STARTED,
+                'Stopped' => Task::STATUS_STOPPED,
             ],
         ]);
         $builder->add('settings', HiddenType::class);
     }
 
-    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => 'Alchemy\Phrasea\Model\Entities\Task',
+            'data_class' => Task::class,
         ]);
     }
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Validator\Constraint;
 
 class NewLogin extends Constraint
@@ -20,7 +20,7 @@ class NewLogin extends Constraint
     public $message = 'This login is already registered';
     private $repository;
 
-    public function __construct(\Doctrine\Persistence\ObjectRepository $repository)
+    public function __construct(ObjectRepository $repository)
     {
         $this->repository = $repository;
         parent::__construct();
@@ -33,6 +33,6 @@ class NewLogin extends Constraint
 
     public static function create(Application $app)
     {
-        return new static($app['repo.users']);
+        return new self($app['repo.users']);
     }
 }

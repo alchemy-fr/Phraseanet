@@ -33,7 +33,7 @@ class PhraseaRenewPasswordForm extends AbstractType
         ]);
 
         $builder->add('password', RepeatedType::class, [
-            'type'              => 'password',
+            'type'              => PasswordType::class,
             'required'          => true,
             'invalid_message'   => 'Please provide the same passwords.',
             'first_name'        => 'password',
@@ -49,6 +49,6 @@ class PhraseaRenewPasswordForm extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

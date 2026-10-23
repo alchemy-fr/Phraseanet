@@ -11,6 +11,11 @@ class ModulesFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new ModulesFormType(self::$DI['app']['translator']);
+        return new ModulesFormType();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['translator' => self::$DI['app']['translator']];
     }
 }

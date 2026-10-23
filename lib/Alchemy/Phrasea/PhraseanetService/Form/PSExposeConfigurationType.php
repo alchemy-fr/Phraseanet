@@ -10,16 +10,10 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PSExposeConfigurationType extends AbstractType implements DataMapperInterface
 {
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -34,7 +28,8 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
             ])
             ->add('exposes', CollectionType::class, [
                 'label'         => false,
-                'entry_type'    => \Alchemy\Phrasea\PhraseanetService\Form\PSExposeConnectionType::class,
+                'entry_type'    => PSExposeConnectionType::class,
+                'entry_options' => ['app' => $options['app']],
                 'prototype'     => true,
                 'allow_add'     => true,
                 'allow_delete'  => true,
@@ -46,7 +41,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
     /**
      * @inheritDoc
      */
-    public function mapDataToForms($data, \Traversable $forms)
+    public function mapDataToForms(mixed $data, \Traversable $forms): void
     {
         // there is no data yet, so nothing to prepopulate
         if ($data === null) {
@@ -83,7 +78,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
      *
      * @inheritDoc
      */
-    public function mapFormsToData(\Traversable $forms, &$data)
+    public function mapFormsToData(\Traversable $forms, mixed &$data): void
     {
 
         /** @var FormInterface[] $forms */
@@ -103,6 +98,12 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
 
             $data['exposes'][$exposeName] = $config;
         }
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired('app');
+        $resolver->setAllowedTypes('app', Application::class);
     }
 
     public function getBlockPrefix(): string

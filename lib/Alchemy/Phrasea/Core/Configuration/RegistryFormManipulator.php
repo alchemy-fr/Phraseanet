@@ -46,7 +46,7 @@ class RegistryFormManipulator
      */
     public function createForm(?PropertyAccess $conf = null)
     {
-        $form = $this->factory->create(new MainConfigurationFormType($this->translator, $this->languages));
+        $form = $this->factory->create(MainConfigurationFormType::class, null, ['translator' => $this->translator]);
         $currentConf = $conf ? ($conf->get('registry') ?: []) : [];
         $data = array_replace_recursive($this->getDefaultData($currentConf), $currentConf);
         $form->setData($data);

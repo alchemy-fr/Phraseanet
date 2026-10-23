@@ -20,41 +20,32 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PhraseaRegisterForm extends AbstractType
 {
-    private $available;
-    private $params;
-    /**
-     * @var Application
-     */
-    private $app;
-
-    public function __construct(Application $app, array $available, array $params = [])
-    {
-        $this->app = $app;
-        $this->available = $available;
-        $this->params = $params;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Application $app */
+        $app = $options['app'];
+        $available = $options['available_fields'];
+
         $builder->add('email', EmailType::class, [
             'label'       => 'E-mail',
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Email(),
-                NewEmail::create($this->app),
+                NewEmail::create($app),
             ],
         ]);
 
         $builder->add('password', RepeatedType::class, [
-            'type'              => 'password',
+            'type'              => PasswordType::class,
             'required'          => true,
             'invalid_message'   => 'Please provide the same passwords.',
             'first_name'        => 'password',
@@ -67,7 +58,7 @@ class PhraseaRegisterForm extends AbstractType
             ],
         ]);
 
-        if ($this->app->hasTermsOfUse()) {
+        if ($app->hasTermsOfUse()) {
             $builder->add('accept-tou', CheckboxType::class, [
                 'label'         => 'Terms of Use',
                 'mapped'        => false,
@@ -78,22 +69,26 @@ class PhraseaRegisterForm extends AbstractType
 
         $builder->add('provider-id', HiddenType::class);
 
-        $choices = $baseIds = [];
+        $choices = $baseIds = $collectionNames = [];
 
-        foreach ($this->app['registration.manager']->getRegistrationSummary() as $baseInfo) {
+        foreach ($app['registration.manager']->getRegistrationSummary() as $baseInfo) {
             $dbName = $baseInfo['db-name'];
             foreach ($baseInfo['collections'] as $baseId => $collInfo) {
                 if (false === $collInfo['can-register']) {
                     continue;
                 }
-                $choices[$dbName][$baseId] = $collInfo['coll-name'];
+                $choices[$dbName][] = $baseId;
+                $collectionNames[$baseId] = $collInfo['coll-name'];
                 $baseIds[] = $baseId;
             }
         }
 
-        if (!$this->app['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
+        if (!$app['conf']->get(['registry', 'registration', 'auto-select-collections'])) {
             $builder->add('collections', ChoiceType::class, [
                 'choices'     => $choices,
+                'choice_label' => function ($baseId) use ($collectionNames) {
+                    return $collectionNames[$baseId];
+                },
                 'multiple'    => true,
                 'expanded'    => false,
                 'constraints' => [
@@ -102,45 +97,46 @@ class PhraseaRegisterForm extends AbstractType
             ]);
         }
 
-        foreach ($this->params as $param) {
+        foreach ($options['registration_fields'] as $param) {
             $name = $param['name'];
             if (!preg_match('/[a-zA-Z]+/', $name)) {
-                throw new InvalidArgumentException(sprintf('%s is not a valid fieldname'));
+                throw new InvalidArgumentException(sprintf('%s is not a valid fieldname', $name));
             }
-            if (isset($this->available[$name])) {
-                $options = array_merge($this->available[$name], ['required' => $param['required']]);
+            if (isset($available[$name])) {
+                $fieldOptions = array_merge($available[$name], ['required' => $param['required']]);
                 if (!$param['required']) {
-                    unset($options['constraints']);
+                    unset($fieldOptions['constraints']);
                 }
-                unset($options['type']);
+                unset($fieldOptions['type']);
 
                 $builder->add(
                     // angular does not support hyphens
                     StringHelper::camelize($name, '-'),
-                    $this->getType($name),
-                    $options
+                    $available[$name]['type'],
+                    $fieldOptions
                 );
             }
         }
-        $builder->add('captcha', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
+        $builder->add('captcha', HiddenType::class, [
             'error_bubbling' => false
         ]);
     }
 
-    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'allow_extra_fields' => true,
+            'allow_extra_fields'  => true,
+            'available_fields'    => [],
+            'registration_fields' => [],
         ]);
+        $resolver->setRequired('app');
+        $resolver->setAllowedTypes('app', Application::class);
+        $resolver->setAllowedTypes('available_fields', 'array');
+        $resolver->setAllowedTypes('registration_fields', 'array');
     }
 
     public function getBlockPrefix(): string
     {
-        return null;
-    }
-
-    private function getType($name)
-    {
-        return $this->available[$name]['type'];
+        return '';
     }
 }

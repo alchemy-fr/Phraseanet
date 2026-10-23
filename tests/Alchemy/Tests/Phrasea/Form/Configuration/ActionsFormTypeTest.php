@@ -11,6 +11,11 @@ class ActionsFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new ActionsFormType(self::$DI['app']['translator']);
+        return new ActionsFormType();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['translator' => self::$DI['app']['translator']];
     }
 }

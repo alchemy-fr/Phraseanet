@@ -23,8 +23,8 @@ class PersonalisationLogoFormType extends AbstractType
         $builder->add('logoChoice', ChoiceType::class, [
             'label'    => false,
             'choices'  => [
-                'original' => 'original logo',
-                'personalize' => 'personalize logo'
+                'original logo' => 'original',
+                'personalize logo' => 'personalize'
             ],
             'expanded' => true,
             'multiple' => false,
@@ -47,6 +47,6 @@ class PersonalisationLogoFormType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

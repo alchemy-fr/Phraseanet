@@ -12,7 +12,7 @@ class PasswordTokenValidatorTest extends \PhraseanetTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('provideVoteData')]
     public function testValidate($value, $isValid)
     {
-        $context = $this->createMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock('Symfony\Component\Validator\Context\ExecutionContextInterface');
         $builder = $context
             ->expects($this->exactly($isValid ? 0 : 1))
             ->method('addViolation');

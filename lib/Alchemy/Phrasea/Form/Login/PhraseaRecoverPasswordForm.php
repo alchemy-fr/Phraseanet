@@ -15,8 +15,10 @@ use Alchemy\Phrasea\Form\Constraint\PasswordToken;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -24,24 +26,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class PhraseaRecoverPasswordForm extends AbstractType
 {
-    private $repository;
-
-    public function __construct(EntityRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('token', HiddenType::class, [
             'required'      => true,
             'constraints'   => [
-                new PasswordToken($this->repository)
+                new PasswordToken($options['token_repository'])
             ]
         ]);
 
         $builder->add('password', RepeatedType::class, [
-            'type'              => 'password',
+            'type'              => PasswordType::class,
             'required'          => true,
             'invalid_message'   => 'Please provide the same passwords.',
             'first_name'        => 'password',
@@ -55,8 +50,14 @@ class PhraseaRecoverPasswordForm extends AbstractType
         ]);
     }
 
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired('token_repository');
+        $resolver->setAllowedTypes('token_repository', EntityRepository::class);
+    }
+
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

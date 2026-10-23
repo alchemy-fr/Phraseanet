@@ -11,7 +11,7 @@ class NewEmailValidatorTest extends \PhraseanetTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('provideVoteData')]
     public function testValidate($value, $alreadyRegistered)
     {
-        $context = $this->createMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock('Symfony\Component\Validator\Context\ExecutionContextInterface');
         $builder = $context
             ->expects($this->exactly($alreadyRegistered ? 1 : 0))
             ->method('addViolation');

@@ -11,6 +11,11 @@ class PhraseaAuthenticationFormTest extends FormTestCase
 {
     protected function getForm()
     {
-        return new PhraseaAuthenticationForm(self::$DI['app']);
+        return new PhraseaAuthenticationForm();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['app' => self::$DI['app']];
     }
 }

@@ -11,6 +11,6 @@ class GeneralFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new GeneralFormType(['fr' => 'french']);
+        return new GeneralFormType();
     }
 }

@@ -15,32 +15,31 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FtpExportFormType extends AbstractType
 {
-    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
-    private $translator;
-
-    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('ftp-enabled', CheckboxType::class, [
             'label'        => 'Enable FTP export',
-            'help_message' => /** @Ignore */ $this->translator->trans('Available in multi-export tab'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('Available in multi-export tab'),
         ]);
         $builder->add('ftp-user-access', CheckboxType::class, [
             'label'        => 'Enable FTP for users',
-            'help_message' => /** @Ignore */ $this->translator->trans('By default it is available for admins'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('By default it is available for admins'),
         ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired('translator');
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
     }
 
     public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

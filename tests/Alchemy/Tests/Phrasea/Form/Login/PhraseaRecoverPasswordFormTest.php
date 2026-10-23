@@ -11,6 +11,11 @@ class PhraseaRecoverPasswordFormTest extends FormTestCase
 {
     protected function getForm()
     {
-        return new PhraseaRecoverPasswordForm(self::$DI['app']['repo.tokens']);
+        return new PhraseaRecoverPasswordForm();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['token_repository' => self::$DI['app']['repo.tokens']];
     }
 }

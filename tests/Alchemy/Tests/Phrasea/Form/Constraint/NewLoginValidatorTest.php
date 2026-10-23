@@ -11,7 +11,7 @@ class NewLoginValidatorTest extends \PhraseanetTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('provideVoteData')]
     public function testValidate($value, $alreadyRegistered)
     {
-        $context = $this->createMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock('Symfony\Component\Validator\Context\ExecutionContextInterface');
         $builder = $context
             ->expects($this->exactly($alreadyRegistered ? 1 : 0))
             ->method('addViolation');
@@ -45,6 +45,6 @@ class NewLoginValidatorTest extends \PhraseanetTestCase
 
     private function getConstraint()
     {
-        return $this->createMock('Alchemy\Phrasea\Form\Constraint\NewEmail');
+        return $this->createMock('Alchemy\Phrasea\Form\Constraint\NewLogin');
     }
 }

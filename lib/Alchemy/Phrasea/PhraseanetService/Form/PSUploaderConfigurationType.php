@@ -46,7 +46,7 @@ class PSUploaderConfigurationType extends AbstractType implements DataMapperInte
     /**
      * @inheritDoc
      */
-    public function mapDataToForms($data, \Traversable $forms)
+    public function mapDataToForms(mixed $data, \Traversable $forms): void
     {
         // there is no data yet, so nothing to prepopulate
         if ($data === null) {
@@ -88,7 +88,7 @@ class PSUploaderConfigurationType extends AbstractType implements DataMapperInte
      *
      * @inheritDoc
      */
-    public function mapFormsToData(\Traversable $forms, &$data)
+    public function mapFormsToData(\Traversable $forms, mixed &$data): void
     {
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);

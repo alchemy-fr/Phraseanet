@@ -11,7 +11,7 @@ class GeonameValidatorTest extends \PhraseanetTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('provideData')]
     public function testValidate($valid)
     {
-        $context = $this->createMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock('Symfony\Component\Validator\Context\ExecutionContextInterface');
         $builder = $context
             ->expects($this->exactly($valid ? 0 : 1))
             ->method('addViolation');
