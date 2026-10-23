@@ -24,7 +24,7 @@ use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -99,20 +99,12 @@ class CLI extends Application
 
     /**
      * Executes this application.
-     *
-     * @param bool $interactive runs in an interactive shell if true.
      */
-    public function runCLI($interactive = false)
+    public function runCLI()
     {
         $this->boot();
 
-        $app = $this['console'];
-
-        if ($interactive) {
-            $app = new Console\Shell($app);
-        }
-
-        $app->run();
+        $this['console']->run();
     }
 
     public function boot()
@@ -144,7 +136,7 @@ class CLI extends Application
             $command->setContainer($this);
         }
 
-        $this['console']->add($command);
+        $this['console']->addCommand($command);
     }
 
     /**

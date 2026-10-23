@@ -157,7 +157,6 @@ abstract class Report
                 break;
         }
 
-        // override the open to browser by the writer
         if (!empty($absoluteDirectoryPath)) {
             if (!is_dir($absoluteDirectoryPath)) {
                 @mkdir($absoluteDirectoryPath, 0777, true);
@@ -165,7 +164,7 @@ abstract class Report
 
             $filePath = \p4string::addEndSlash($absoluteDirectoryPath) . $filename;
             @touch($filePath);
-            $excel->getWriter()->openToFile($filePath);
+            $excel->openToFile($filePath);
         }
 
         $excel->addRow($this->getColumnTitles());

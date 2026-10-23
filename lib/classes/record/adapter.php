@@ -45,9 +45,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
-use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Reader;
 use Ramsey\Uuid\Uuid;
 use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
@@ -1287,8 +1285,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function getFileMetadataByTag($tags)
     {
-        $logger = new Logger('exif-tool');
-        $reader = Reader::create($logger);
+        $reader = $this->app['exiftool.reader'];
 
         if(!is_array($tags)) {
             $tags = [$tags];
@@ -1303,9 +1300,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         /** @var Metadata $metadata */
         foreach ($metadatas as $metadata) {
             /** @var string $t */
-            $t = (string)$metadata->getTag();
+            $t = $metadata->getTagGroup()->getId();
             if (array_key_exists($t, $tags)) {
-                $tags[$t] = explode(";", $metadata->getValue());
+                $tags[$t] = $metadata->getValue()->asArray();
                 break;
             }
         }

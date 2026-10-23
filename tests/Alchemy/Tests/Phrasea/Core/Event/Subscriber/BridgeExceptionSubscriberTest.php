@@ -3,7 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeExceptionSubscriber;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]

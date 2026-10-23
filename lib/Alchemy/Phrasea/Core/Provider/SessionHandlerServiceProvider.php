@@ -38,8 +38,13 @@ class SessionHandlerServiceProvider implements ServiceProviderInterface, Bootabl
             return;
         }
 
-        $session = $event->getRequest()->getSession();
-        if ($session && $session->isStarted()) {
+        $request = $event->getRequest();
+        if (!$request->hasSession()) {
+            return;
+        }
+
+        $session = $request->getSession();
+        if ($session->isStarted()) {
             $session->save();
         }
     }

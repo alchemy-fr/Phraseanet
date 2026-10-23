@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator;
 use Alchemy\Phrasea\Plugin\Schema\Manifest;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
@@ -61,7 +61,7 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
 
         foreach ($files as $file) {
             $this->assertFileExists($file);
-            $process = \Symfony\Component\Process\Process::create([$php, '-l', $file])->getProcess();
+            $process = new Process([$php, '-l', $file]);
             $process->run();
             $this->assertTrue($process->isSuccessful(), basename($file) . ' is valid');
         }

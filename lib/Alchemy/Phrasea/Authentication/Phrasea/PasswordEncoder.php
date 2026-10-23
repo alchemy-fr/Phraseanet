@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 
-class PasswordEncoder implements \Symfony\Component\PasswordHasher\PasswordHasherInterface
+class PasswordEncoder implements LegacyPasswordHasherInterface
 {
     private $key;
 
@@ -29,16 +29,21 @@ class PasswordEncoder implements \Symfony\Component\PasswordHasher\PasswordHashe
     /**
      * {@inheritdoc}
      */
-    public function encodePassword($raw, $salt)
+    public function hash(string $plainPassword, ?string $salt = null): string
     {
-        return hash_hmac('sha512', $raw . $salt, $this->key);
+        return hash_hmac('sha512', $plainPassword . $salt, $this->key);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isPasswordValid($encoded, $raw, $salt)
+    public function verify(string $hashedPassword, string $plainPassword, ?string $salt = null): bool
     {
-        return $this->encodePassword($raw, $salt) === $encoded;
+        return hash_equals($hashedPassword, $this->hash($plainPassword, $salt));
+    }
+
+    public function needsRehash(string $hashedPassword): bool
+    {
+        return false;
     }
 }

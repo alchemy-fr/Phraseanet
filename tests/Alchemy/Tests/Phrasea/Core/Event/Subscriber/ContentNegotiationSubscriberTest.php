@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
 class ContentNegotiationSubscriberTest extends \PHPUnit\Framework\TestCase
 {

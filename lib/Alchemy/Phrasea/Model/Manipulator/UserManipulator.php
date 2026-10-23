@@ -21,9 +21,10 @@ use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use RandomLib\Generator;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Alchemy\Phrasea\Core\Event\User\UserEvents;
@@ -36,7 +37,7 @@ use Alchemy\Phrasea\Core\Event\User\DeletedEvent;
 class UserManipulator implements ManipulatorInterface
 {
     /**
-     * @var \Symfony\Component\PasswordHasher\PasswordHasherInterface
+     * @var LegacyPasswordHasherInterface
      */
     protected $passwordEncoder;
 
@@ -67,7 +68,7 @@ class UserManipulator implements ManipulatorInterface
 
     /**
      * @param UserManager $manager
-     * @param \Symfony\Component\PasswordHasher\PasswordHasherInterface $passwordEncoder
+     * @param LegacyPasswordHasherInterface $passwordEncoder
      * @param GeonamesConnector $connector
      * @param EntityRepository $repo
      * @param Generator $generator
@@ -75,7 +76,7 @@ class UserManipulator implements ManipulatorInterface
      */
     public function __construct(
         UserManager $manager,
-        \Symfony\Component\PasswordHasher\PasswordHasherInterface $passwordEncoder,
+        LegacyPasswordHasherInterface $passwordEncoder,
         GeonamesConnector $connector,
         EntityRepository $repo,
         Generator $generator,
@@ -339,7 +340,7 @@ class UserManipulator implements ManipulatorInterface
     private function doSetPassword(User $user, $password)
     {
         $user->setNonce($this->generator->generateString(64));
-        $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
+        $user->setPassword($this->passwordEncoder->hash($password, $user->getNonce()));
         $user->setSaltedPassword(true);
     }
 
@@ -372,7 +373,7 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetEmail(User $user, $email)
     {
-        if (null !== $email && false === (bool) \Swift_Validate::email($email)) {
+        if (null !== $email && false === (bool) EmailValidator::isValid($email)) {
             throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
         }
 

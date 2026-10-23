@@ -3,20 +3,18 @@
   "description": "Phraseanet",
   "license": "GPL-3.0",
   "config": {
-    "bin-dir": "bin/"
+    "bin-dir": "bin/",
+    "allow-plugins": {
+      "cweagans/composer-patches": true
+    },
+    "platform": {
+      "php": "8.5.0"
+    }
   },
   "repositories": [
     {
-      "type": "package",
-      "package": {
-        "name": "facebook/php-sdk",
-        "version": "3.2.3",
-        "source": {
-          "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
-          "type": "git",
-          "reference": "3.2.3"
-        }
-      }
+      "type": "path",
+      "url": "packages/*"
     },
     {
       "type": "package",
@@ -31,115 +29,109 @@
       }
     },
     {
-      "type": "vcs",
-      "url": "https://github.com/alchemy-fr/tcpdf-clone"
-    },
-    {
       "type": "git",
-      "url": "https://github.com/romainneutron/ProcessManager.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/alchemy-fr/imagine"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/alchemy-fr/JMSTranslationBundle"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/alchemy-fr/embed-bundle.git"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/alchemy-fr/fractal.git"
     }
   ],
   "require": {
-    "php": ">=7.0 <7.1",
+    "php": "^8.5",
     "ext-intl": "*",
-    "alchemy-fr/tcpdf-clone": "~6.0",
+    "ext-zmq": "*",
     "alchemy/embed-bundle": "^2.0.16",
-    "alchemy/geonames-api-consumer": "~0.1.0",
-    "alchemy/mediavorus": "^0.4.4",
-    "alchemy/oauth2php": "1.1.0",
+    "alchemy/geonames-api-consumer": "^5.0",
+    "alchemy/mediavorus": "^5.0",
+    "alchemy/oauth2php": "^2.0",
     "alchemy/phlickr": "0.2.9",
-    "alchemy/phpexiftool": "^0.7.0",
-    "alchemy/rest-bundle": "^0.0.5",
-    "alchemy/symfony-cors": "^0.1.0",
-    "alchemy/task-manager": "2.0.x-dev@dev",
-    "alchemy/zippy": "^0.3.0",
-    "beberlei/assert": "^2.3",
-    "cocur/slugify": "^2.0",
-    "dailymotion/sdk": "~1.5",
-    "data-uri/data-uri": "~0.1.0",
-    "dflydev/doctrine-orm-service-provider": "~1.0",
-    "doctrine/cache": "1.6.x-dev",
-    "doctrine/dbal": "^2.4.0",
-    "doctrine/migrations": "^1.0.0",
-    "doctrine/orm": "^2.4.0",
-    "elasticsearch/elasticsearch": "~2.0",
-    "firebase/php-jwt": "^3.0.0",
-    "gedmo/doctrine-extensions": "~2.3.0",
-    "goodby/csv": "^1.3.0",
-    "google/apiclient": "^2.0",
-    "guzzle/guzzle": "~3.0",
-    "hoa/compiler": "~2.0",
-    "hoa/console": "~2.0",
-    "hoa/dispatcher": "~0.0",
-    "hoa/router": "~2.0",
-    "igorw/get-in": "~1.0",
-    "imagine/imagine": "^0.11.0",
-    "jms/serializer": "~0.10",
-    "jms/translation-bundle": "dev-fix-2021-04-19",
-    "justinrainbow/json-schema": "2.0.3 as 1.6.1",
-    "league/flysystem": "^1.0",
-    "league/flysystem-aws-s3-v2": "^1.0",
-    "league/fractal": "dev-webgalleries#af1acc0275438571bc8c1d08a05a4b5af92c9f97 as 0.13.0",
-    "media-alchemyst/media-alchemyst": "^4.1.9",
-    "monolog/monolog": "~1.3",
-    "mrclay/minify": "~2.1.6",
-    "neutron/process-manager": "2.0.x-dev@dev",
-    "neutron/silex-filesystem-provider": "~1.0",
-    "neutron/silex-imagine-provider": "~0.1.0",
-    "neutron/temporary-filesystem": "~2.1",
-    "pagerfanta/pagerfanta": "^1.0",
-    "php-ffmpeg/php-ffmpeg": "^v0.15",
-    "php-xpdf/php-xpdf": "~0.2.1",
+    "alchemy/phpexiftool": "^4.2",
+    "alchemy/queue-bundle": "^5.0",
+    "alchemy/silex": "^3.0",
+    "alchemy/symfony-cors": "^5.0",
+    "alchemy/task-manager": "^6.0",
+    "alchemy/worker-bundle": "^5.0",
+    "alchemy/zippy": "^2.0",
+    "beberlei/assert": "^3.3",
+    "cocur/slugify": "^4.6",
+    "cweagans/composer-patches": "^1.7",
+    "czproject/git-php": "^4.6",
+    "dailymotion/sdk": "^1.7",
+    "data-uri/data-uri": "^1.0",
+    "dflydev/doctrine-orm-service-provider": "^2.0.1",
+    "doctrine/annotations": "^2.0",
+    "doctrine/cache": "^1.13",
+    "doctrine/dbal": "^3.10",
+    "doctrine/migrations": "^3.9",
+    "doctrine/orm": "^2.20",
+    "elasticsearch/elasticsearch": "^2.5",
     "exiftool/exiftool": "^11",
-    "ramsey/uuid": "^3.0",
-    "silex/silex": "^1.3.0",
-    "silex/web-profiler": "~1.0",
-    "simple-bus/doctrine-orm-bridge": "^4.0",
-    "simple-bus/jms-serializer-bridge": "^1.0",
-    "simple-bus/message-bus": "^2.1",
-    "simple-bus/serialization": "^2.0",
-    "sorien/silex-dbal-profiler": "^1.1",
-    "sorien/silex-pimple-dumper": "^1.0",
-    "swiftmailer/swiftmailer": "^5.4.12",
-    "symfony/symfony": "~2.7.10|~2.8.3",
-    "themattharris/tmhoauth": "~0.7",
-    "twig/extensions": "^1.2.0",
-    "twig/twig": "~1.14, >=1.14.2",
-    "vierbergenlars/php-semver": "~2.1",
-    "webmozart/json": "^1.1",
-    "willdurand/negotiation": "^2.0.0-alpha1",
-    "zend/gdata": "~1.12.1",
-    "alchemy/worker-bundle": "^0.1.6",
-    "alchemy/queue-bundle": "^0.1.5",
-    "google/recaptcha": "^1.1",
-    "facebook/graph-sdk": "^5.6",
-    "box/spout": "^2.7",
-    "paragonie/random-lib": "^2.0",
-    "czproject/git-php": "^3.17",
-    "php-amqplib/php-amqplib": "^2.9",
-    "guzzlehttp/guzzle": " 6.3.3",
-    "pusher/pusher-php-server": "^3.4",
-    "phpoffice/phpspreadsheet": "~1.8.0"
+    "firebase/php-jwt": "^7.2",
+    "gedmo/doctrine-extensions": "^3.22",
+    "goodby/csv": "^1.3",
+    "google/recaptcha": "^1.3",
+    "guzzlehttp/guzzle": "^7.9",
+    "hoa/compiler": "^3.17",
+    "igorw/get-in": "^1.0",
+    "imagine/imagine": "^1.5",
+    "janu-software/facebook-php-sdk": "^0.4",
+    "jms/serializer": "^3.32",
+    "jms/translation-bundle": "^2.7",
+    "justinrainbow/json-schema": "^6.13",
+    "league/fractal": "^0.99",
+    "media-alchemyst/media-alchemyst": "^5.0",
+    "monolog/monolog": "^3.9",
+    "mrclay/minify": "^4.0",
+    "neutron/temporary-filesystem": "^4.0",
+    "openspout/openspout": "^5.12",
+    "pagerfanta/pagerfanta": "^4.7",
+    "paragonie/random-lib": "^2.0.3",
+    "php-amqplib/php-amqplib": "^3.7",
+    "php-ffmpeg/php-ffmpeg": "^1.4",
+    "php-mp4box/php-mp4box": "^5.0",
+    "php-unoconv/php-unoconv": "^5.0",
+    "php-xpdf/php-xpdf": "^5.0",
+    "phpoffice/phpspreadsheet": "^5.10",
+    "pimple/pimple": "^3.6",
+    "pusher/pusher-php-server": "^7.3",
+    "ramsey/uuid": "^4.7",
+    "sorien/silex-pimple-dumper": "^2.0",
+    "swiftmailer/swiftmailer": "^6.3",
+    "symfony/browser-kit": "^7.4",
+    "symfony/cache": "^7.4",
+    "symfony/config": "^7.4",
+    "symfony/console": "^7.4",
+    "symfony/css-selector": "^7.4",
+    "symfony/doctrine-bridge": "^7.4",
+    "symfony/dom-crawler": "^7.4",
+    "symfony/error-handler": "^7.4",
+    "symfony/event-dispatcher": "^7.4",
+    "symfony/filesystem": "^7.4",
+    "symfony/finder": "^7.4",
+    "symfony/form": "^7.4",
+    "symfony/http-foundation": "^7.4",
+    "symfony/http-kernel": "^7.4",
+    "symfony/intl": "^7.4",
+    "symfony/mime": "^7.4",
+    "symfony/options-resolver": "^7.4",
+    "symfony/password-hasher": "^7.4",
+    "symfony/process": "^7.4",
+    "symfony/property-access": "^7.4",
+    "symfony/routing": "^7.4",
+    "symfony/security-core": "^7.4",
+    "symfony/security-csrf": "^7.4",
+    "symfony/stopwatch": "^7.4",
+    "symfony/translation": "^7.4",
+    "symfony/twig-bridge": "^7.4",
+    "symfony/validator": "^7.4",
+    "symfony/yaml": "^7.4",
+    "tecnickcom/tcpdf": "^6.11",
+    "themattharris/tmhoauth": "^0.8.4",
+    "twig/twig": "^3.21",
+    "vierbergenlars/php-semver": "^3.0.4",
+    "willdurand/negotiation": "^3.1",
+    "zend/gdata": "~1.12.1"
   },
   "require-dev": {
-    "mikey179/vfsstream": "~1.5",
-    "phpunit/phpunit": "^4.8|^5.0"
+    "mikey179/vfsstream": "^1.6.12",
+    "phpunit/phpunit": "^11.5"
   },
   "autoload": {
     "psr-0": {
@@ -153,6 +145,11 @@
   "extra": {
     "branch-alias": {
       "dev-master": "4.1.x-dev"
+    },
+    "patches": {
+      "alchemy/embed-bundle": {
+        "PHP 8.5 and Silex 2 compatibility": "patches/alchemy-embed-bundle.patch"
+      }
     }
   }
 }

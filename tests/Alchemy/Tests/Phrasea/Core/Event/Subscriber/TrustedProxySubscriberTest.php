@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\Subscriber\TrustedProxySubscriber;
 use Silex\Application as SilexApp;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpFoundation\Request;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]

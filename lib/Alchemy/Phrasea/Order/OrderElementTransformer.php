@@ -16,7 +16,7 @@ use League\Fractal\TransformerAbstract;
 
 class OrderElementTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['resource_links'];
+    protected array $availableIncludes = ['resource_links'];
 
     private $validParams = ['ttl'];
 

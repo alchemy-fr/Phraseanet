@@ -31,6 +31,7 @@ RUN sed -i 's/^Components: main$/Components: main contrib non-free/' /etc/apt/so
         poppler-utils \
         dcraw \
         python3-uno \
+        python3-setuptools \
         libreoffice-base-core \
         libreoffice-impress \
         libreoffice-calc \

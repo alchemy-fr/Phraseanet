@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 use Silex\Application as SilexApp;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\HttpFoundation\Request;

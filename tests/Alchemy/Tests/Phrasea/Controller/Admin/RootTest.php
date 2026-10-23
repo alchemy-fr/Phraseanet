@@ -1,7 +1,7 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
 #[\PHPUnit\Framework\Attributes\Group('legacy')]

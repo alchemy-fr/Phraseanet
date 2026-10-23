@@ -15,7 +15,7 @@ use record_adapter;
 
 class RecordTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'thumbnail',
         'technical_informations',
         'subdefs',
@@ -26,7 +26,7 @@ class RecordTransformer extends TransformerAbstract
         'stories'
     ];
 
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'thumbnail',
         'technical_informations',
 //        'metadatas',

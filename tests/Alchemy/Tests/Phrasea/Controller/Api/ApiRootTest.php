@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpFoundation\Response;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]
@@ -12,7 +12,7 @@ class ApiRootTest extends \PhraseanetWebTestCase
 {
     /**
      *
-     * @var \Symfony\Component\HttpKernel\Client
+     * @var \Symfony\Component\HttpKernel\HttpKernelBrowser
      */
     protected $client;
 

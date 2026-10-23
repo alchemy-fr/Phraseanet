@@ -11,13 +11,13 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\TaskManager\Notifier;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Silex\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\Routing\RequestContext;
 
 abstract class PhraseanetTestCase extends WebTestCase
@@ -31,7 +31,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     const USER_AGENT_IE6 = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; SV1; .NET CLR 1.1.4322)';
     const USER_AGENT_IPHONE = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; fr-fr) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20';
 
-    /** @var \Pimple\Container */
+    /** @var \PhraseanetTestContainer */
     protected static $DI;
 
     private static $recordsInitialized = false;
@@ -51,14 +51,11 @@ abstract class PhraseanetTestCase extends WebTestCase
     {
         parent::setUp();
 
-        self::$DI = new \Pimple\Container();
+        self::$DI = new \PhraseanetTestContainer();
 
         ini_set('memory_limit', '4096M');
 
         error_reporting(-1);
-
-        \PHPUnit\Framework\Error\Warning::$enabled = true;
-        \PHPUnit\Framework\Error\Notice::$enabled = true;
 
         self::$DI['app'] = function ($DI) {
             return $this->loadApp($this->getApplicationPath());
@@ -69,7 +66,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         };
 
         self::$DI['local-guzzle'] = function ($DI) {
-            return new Guzzle(self::$DI['app']['conf']->get('servername'));
+            return new Guzzle(['base_uri' => self::$DI['app']['conf']->get('servername')]);
         };
 
         self::$DI['client'] = function ($DI) {

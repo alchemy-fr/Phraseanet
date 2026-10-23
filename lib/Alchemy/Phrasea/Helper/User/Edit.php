@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -787,7 +788,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $parm = $this->unserializedRequestData($this->request, $infos, 'user_infos');
 
-        if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
+        if ($parm['email'] && !EmailValidator::isValid($parm['email'])) {
             throw new \Exception_InvalidArgument('Email addess is not valid');
         }
 

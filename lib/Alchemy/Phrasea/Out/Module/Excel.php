@@ -11,10 +11,12 @@
 
 namespace Alchemy\Phrasea\Out\Module;
 
-use Box\Spout\Writer;
-use Box\Spout\Writer\WriterFactory;
-use Box\Spout\Common\Type;
-
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\AbstractWriterMultiSheets;
+use OpenSpout\Writer\CSV;
+use OpenSpout\Writer\ODS;
+use OpenSpout\Writer\WriterInterface;
+use OpenSpout\Writer\XLSX;
 
 class Excel
 {
@@ -24,35 +26,35 @@ class Excel
 
     private $format;
 
-    /** @var \Box\Spout\Writer\WriterInterface  */
+    private $filename;
+
+    /** @var WriterInterface */
     private $writer;
 
+    private $opened = false;
 
+    /**
+     * The document is sent to the browser unless openToFile() is called before the first row is added.
+     */
     public function __construct($format, $filename)
     {
         $this->format = $format;
+        $this->filename = $filename;
 
         switch($format) {
             case self::FORMAT_CSV:
-                /** @var Writer\CSV\Writer $writer */
-                $writer = WriterFactory::create(Type::CSV);
-                $writer->setFieldDelimiter(';')
-                       ->setShouldAddBOM(false);
+                $writer = new CSV\Writer(new CSV\Options(FIELD_DELIMITER: ';', SHOULD_ADD_BOM: false));
                 break;
             case self::FORMAT_ODS:
-                /** @var Writer\ODS\Writer $writer */
-                $writer = WriterFactory::create(Type::ODS);
+                $writer = new ODS\Writer();
                 break;
             case self::FORMAT_XLSX:
-                /** @var Writer\XLSX\Writer $writer */
-                $writer = WriterFactory::create(Type::XLSX);
+                $writer = new XLSX\Writer();
                 break;
             default:
-                throw new \InvalidArgumentException(sprintf("format \"%s\" is not handled by Spout"));
-                break;
+                throw new \InvalidArgumentException(sprintf("format \"%s\" is not handled by OpenSpout", $format));
         }
 
-        $writer->openToBrowser($filename);
         $this->writer = $writer;
     }
 
@@ -61,25 +63,32 @@ class Excel
         $this->writer->close();
     }
 
+    public function openToFile($filePath)
+    {
+        $this->writer->openToFile($filePath);
+        $this->opened = true;
+    }
+
     public function getActiveSheet()
     {
-        if($this->format == self::FORMAT_CSV) {
+        if (!$this->writer instanceof AbstractWriterMultiSheets) {
             return "_unique_sheet_";
         }
-        /** @var Writer\XLSX\Writer $w */
-        $w = $this->writer;
-        $sheetIndex = $w->getCurrentSheet()->getIndex();
 
-        return $sheetIndex;
+        $this->open();
+
+        return $this->writer->getCurrentSheet()->getIndex();
     }
 
     public function addRow($row)
     {
-        $this->writer->addRow($row);
+        $this->open();
+        $this->writer->addRow(Row::fromValues($row));
     }
 
     public function render()
     {
+        $this->open();
         $this->writer->close();
     }
 
@@ -88,4 +97,11 @@ class Excel
         return $this->writer;
     }
 
+    private function open()
+    {
+        if (!$this->opened) {
+            $this->writer->openToBrowser($this->filename);
+            $this->opened = true;
+        }
+    }
 }

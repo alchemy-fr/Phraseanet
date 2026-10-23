@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Debug\ExceptionHandler;
+use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -24,7 +24,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
     private $handler;
     private $translator;
 
-    public function __construct(ExceptionHandler $handler, \Symfony\Contracts\Translation\TranslatorInterface $translator)
+    public function __construct(PhraseaExceptionHandler $handler, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->handler = $handler;
         $this->translator = $translator;

@@ -53,7 +53,7 @@ class Deliverer
             throw new LogicException('You must provide a receiver for a mail notification');
         }
 
-        $message = \Swift_Message::newInstance($this->prefix . $mail->getSubject(), $mail->renderHTML(), 'text/html', 'utf-8');
+        $message = new \Swift_Message($this->prefix . $mail->getSubject(), $mail->renderHTML(), 'text/html', 'utf-8');
         $message->addPart($mail->getMessage(), 'text/plain', 'utf-8');
 
         $message->setFrom($this->emitter->getEmail(), $this->emitter->getName());

@@ -19,7 +19,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Exception\GuzzleException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
 abstract class ApiTestCase extends \PhraseanetWebTestCase
 {

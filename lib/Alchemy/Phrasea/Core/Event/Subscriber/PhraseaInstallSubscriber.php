@@ -40,7 +40,7 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
 
     private function generateProxies()
     {
-        $process = new Process(['php', $this->app['root.path'], '/bin/developer', 'orm:generate:proxies']);
+        $process = new Process(['php', $this->app['root.path'] . '/bin/developer', 'orm:generate:proxies']);
         $process->setTimeout(300);
         $process->run();
     }

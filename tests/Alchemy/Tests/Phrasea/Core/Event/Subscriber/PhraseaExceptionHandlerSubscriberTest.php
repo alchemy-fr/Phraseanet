@@ -5,7 +5,7 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[\PHPUnit\Framework\Attributes\Group('functional')]

@@ -44,7 +44,7 @@ class Manager
         }
 
         $string = sprintf('%s_%s', $this->browser->getBrowser(), $this->browser->getPlatform());
-        if (!$this->encoder->isPasswordValid($session->getToken(), $string, $session->getNonce())) {
+        if (!$this->encoder->verify((string) $session->getToken(), $string, $session->getNonce())) {
             return false;
         }
 
