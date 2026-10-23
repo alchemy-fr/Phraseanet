@@ -547,7 +547,7 @@ class CollectionController extends Controller
      */
     public function rename(Request $request, $bas_id)
     {
-        if (trim($name = $request->request->get('name')) === '') {
+        if (trim((string) ($name = $request->request->get('name'))) === '') {
             $this->app->abort(400, $this->app->trans('Missing name parameter'));
         }
 
@@ -801,7 +801,7 @@ class CollectionController extends Controller
         $prefs = $request->request->get('str');
 
         try {
-            if ('' !== trim($prefs)) {
+            if ('' !== trim((string) $prefs)) {
                 $domdoc = new \DOMDocument();
                 if (true === @$domdoc->loadXML($prefs, LIBXML_NONET | LIBXML_NOBLANKS)) {
                     $domdoc->formatOutput = true;

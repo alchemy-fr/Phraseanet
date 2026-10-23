@@ -383,7 +383,7 @@ class PhraseanetExtension extends \Twig\Extension\AbstractExtension
         }
 
         $path = sprintf('/assets/common/images/icons/substitution/%s.png',
-            str_replace('/', '_', $record->getMimeType())
+            str_replace('/', '_', (string) $record->getMimeType())
         );
 
         return $path;

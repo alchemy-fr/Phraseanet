@@ -204,7 +204,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('name', mb_strtolower($name));
 
         $preset = ($preset == 'Choose') ? 'Custom' : $preset ;
-        $subdef->setAttribute('presets', $preset);
+        $subdef->setAttribute('presets', (string) $preset);
 
         $mediaTypeElement = $dom_struct->createElement('mediatype');
         $mediaTypeElement->appendChild($dom_struct->createTextNode($mediatype));
@@ -259,7 +259,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('orderable', ($orderable ? 'true' : 'false'));
         $subdef->setAttribute('tobuild', ($toBuild ? 'true' : 'false'));
         $subdef->setAttribute('substituable', ($substituable ? 'true' : 'false'));
-        $subdef->setAttribute('presets', $preset);
+        $subdef->setAttribute('presets', (string) $preset);
 
         foreach ($labels as $code => $label) {
             $child = $dom_struct->createElement('label');

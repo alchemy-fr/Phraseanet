@@ -47,7 +47,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         parent::__construct($app, $Request);
         $this->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
 
-        $this->users = explode(';', $Request->get('users'));
+        $this->users = explode(';', (string) $Request->get('users'));
 
         $users = [];
         foreach ($this->users as $usr_id) {
@@ -659,7 +659,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             foreach ($parm as $p => $v) {
                 // p is like {bid}_{right} => right-value
-                if (trim($v) == '')
+                if (trim((string) $v) == '')
                     continue;
 
                 $serial = explode('_', $p);
@@ -706,7 +706,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $parm = $this->unserializedRequestData($this->app['request_stack']->getCurrentRequest(), $rights, 'values');
 
             foreach ($parm as $p => $v) {
-                if (trim($v) == '')
+                if (trim((string) $v) == '')
                     continue;
 
                 $serial = explode('_', $p);

@@ -349,7 +349,7 @@ class SubdefGenerator
 
             $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
                     $subdef_class->get_name(),
-                    date('H:i:s', mktime(0,0, $duration)),
+                    date('H:i:s', mktime(0, 0, (int) $duration)),
                     $originFileSize,
                     $subdef_class->get_name(),
                     $generatedFileSize,
@@ -552,7 +552,7 @@ class SubdefGenerator
 
         $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s',
                 $subdef_class->get_name(),
-                date('H:i:s', mktime(0,0, $duration)),
+                date('H:i:s', mktime(0, 0, (int) $duration)),
                 $originFileSize,
                 $subdef_class->get_name(),
                 $generatedFileSize

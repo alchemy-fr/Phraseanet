@@ -566,7 +566,7 @@ class SearchEngineOptions
         }
         $queryFields = array_unique($queryFields);
 
-        $queryDateFields = array_unique(explode('|', $request->get('date_field')));
+        $queryDateFields = array_unique(explode('|', (string) $request->get('date_field')));
 
         $databoxFields = [];
         $databoxDateFields = [];
@@ -739,7 +739,7 @@ class SearchEngineOptions
      */
     public static function hydrate(Application $app, $serialized)
     {
-        $serialized = json_decode($serialized, true);
+        $serialized = json_decode((string) $serialized, true);
         if (!is_array($serialized)) {
             throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
         }

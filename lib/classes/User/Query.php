@@ -491,7 +491,7 @@ class User_Query
      */
     public function like($like_field, $like_value, $like_type = self::LIKE_TYPE_START)
     {
-        $this->like_field[trim($like_field)] = trim($like_value);
+        $this->like_field[trim((string) $like_field)] = trim((string) $like_value);
         $this->like_type = $like_type;
         $this->total = $this->page = $this->total_page = null;
 
@@ -510,7 +510,7 @@ class User_Query
     public function date_filter($dateField, $dateValue, $dateOperator)
     {
         try {
-            $dValue = new \DateTime($dateValue);
+            $dValue = new \DateTime((string) $dateValue);
             $dateValue = $dValue->format('Y-m-d');
         } catch (Exception $e) {
             $dateValue = null;

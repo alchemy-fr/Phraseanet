@@ -113,7 +113,7 @@ class set_export extends set_abstract
 
             $records = new \Alchemy\Phrasea\Record\RecordReferenceCollection();
 
-            foreach (explode(';', $lst) as $basrec) {
+            foreach (explode(';', (string) $lst) as $basrec) {
                 try {
                     $records[] = \Alchemy\Phrasea\Record\RecordReference::createFromRecordReference($basrec);
                 } catch (Exception $exception) {

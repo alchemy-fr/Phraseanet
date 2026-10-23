@@ -255,7 +255,7 @@ class caption_field implements cache_cacheableInterface
     public static function get_multi_values($serialized_value, $separator)
     {
         if (strlen($separator) == 1) {
-            $values = explode($separator, $serialized_value);
+            $values = explode($separator, (string) $serialized_value);
         } else {
             // s'il y'a plusieurs delimiters, on transforme
             // en regexp pour utiliser split

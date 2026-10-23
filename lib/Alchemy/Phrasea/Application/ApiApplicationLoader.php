@@ -67,7 +67,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         // handle API content negotiation
         $app->before(function(Request $request) {
             // set request format according to negotiated content or override format with JSONP if callback parameter is defined
-            if (trim($request->get('callback')) !== '') {
+            if (trim((string) $request->get('callback')) !== '') {
                 $request->setRequestFormat(Result::FORMAT_JSONP);
             }
 

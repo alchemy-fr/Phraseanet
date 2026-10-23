@@ -282,7 +282,7 @@ class UserController extends Controller
     public function searchAction(Request $request)
     {
         // used for back button on user edit
-        $previousSelectedUsers = explode(';', $request->request->get('users'));
+        $previousSelectedUsers = explode(';', (string) $request->request->get('users'));
 
         return $this->render('admin/users.html.twig', array_merge($this->getUserManageHelper($request)->search(), ['previousSelectedUsers' => $previousSelectedUsers]));
     }

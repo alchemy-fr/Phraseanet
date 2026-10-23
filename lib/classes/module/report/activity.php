@@ -779,9 +779,10 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
-            $result[$row['usrid']]['lib'] = $row['user'];
-            $result[$row['usrid']]['nb'] = (int) $row['nb'];
-            $result[$row['usrid']]['id'] = $row['usrid'];
+            $usrId = $row['usrid'] ?? '';
+            $result[$usrId]['lib'] = $row['user'];
+            $result[$usrId]['nb'] = (int) $row['nb'];
+            $result[$usrId]['id'] = $row['usrid'];
         }
 
         return $result;
@@ -1032,9 +1033,10 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
-            $result[$row['usrid']]['lib'] = $row['user'];
-            $result[$row['usrid']]['nb'] = $row['nb'];
-            $result[$row['usrid']]['id'] = $row['usrid'];
+            $usrId = $row['usrid'] ?? '';
+            $result[$usrId]['lib'] = $row['user'];
+            $result[$usrId]['nb'] = $row['nb'];
+            $result[$usrId]['id'] = $row['usrid'];
         }
 
         return $result;

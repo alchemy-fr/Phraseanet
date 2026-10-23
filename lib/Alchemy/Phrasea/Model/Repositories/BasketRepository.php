@@ -309,14 +309,14 @@ class BasketRepository extends EntityRepository
                 ];
         }
 
-        if (ctype_digit($year) && strlen($year) == 4) {
+        if (ctype_digit((string) $year) && strlen($year) == 4) {
             $dql .= "\n AND b.created >= :min_date AND b.created <= :max_date";
 
             $params['min_date'] = sprintf('%d-01-01 00:00:00', $year);
             $params['max_date'] = sprintf('%d-12-31 23:59:59', $year);
         }
 
-        if (trim($query) !== '') {
+        if (trim((string) $query) !== '') {
             $dql .= "\n AND (b.name LIKE :name OR b.description LIKE :description)";
 
             $params['name'] = '%' . $query . '%';

@@ -1079,15 +1079,15 @@ class User
             return $this->getLogin();
         }
 
-        if (trim($this->lastName) !== '' || trim($this->firstName) !== '') {
+        if (trim((string) $this->lastName) !== '' || trim((string) $this->firstName) !== '') {
            return $this->firstName . ('' !== $this->firstName && '' !== $this->lastName ? ' ' : '') . $this->lastName;
         }
 
-        if (trim($this->email) !== '') {
+        if (trim((string) $this->email) !== '') {
             return $this->email;
         }
 
-        if ('' !== trim($this->getLogin())) {
+        if ('' !== trim((string) $this->getLogin())) {
             return $this->getLogin();
         }
 

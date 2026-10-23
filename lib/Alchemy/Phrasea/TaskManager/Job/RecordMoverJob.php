@@ -473,7 +473,7 @@ class RecordMoverJob extends AbstractJob
         }
 
         // criteria <status mask="XXXXX" />
-        $x = trim($sxtask->from->status['mask']);
+        $x = trim((string) $sxtask->from->status['mask']);
         $x = preg_replace('/[^0-1]/', 'x', $x);
 
         $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));

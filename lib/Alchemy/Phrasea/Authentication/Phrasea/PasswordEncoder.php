@@ -20,7 +20,7 @@ class PasswordEncoder implements LegacyPasswordHasherInterface
 
     public function __construct($key)
     {
-        if ('' === trim($key)) {
+        if ('' === trim((string) $key)) {
             throw new InvalidArgumentException('You must provide a non empty key');
         }
         $this->key = $key;

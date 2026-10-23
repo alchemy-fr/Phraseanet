@@ -35,7 +35,7 @@ class XSendFileFactory
     {
         $this->logger = $logger;
         $this->enabled = (bool) $enabled;
-        $this->type = strtolower($type);
+        $this->type = strtolower((string) $type);
         $this->mapping = $mapping;
     }
 

@@ -65,7 +65,7 @@ class ArrayCacheCollectionReferenceRepository implements CollectionReferenceRepo
     {
         $references = $this->findAll();
 
-        if (isset($references[$baseId])) {
+        if (null !== $baseId && isset($references[$baseId])) {
             return $references[$baseId];
         }
 

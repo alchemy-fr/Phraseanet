@@ -365,8 +365,10 @@ class record_preview extends record_adapter
             if ( ! isset($tab[$hour][$site][$action]))
                 $tab[$hour][$site][$action] = [];
 
-            if ( ! isset($tab[$hour][$site][$action][$row['usr_id']])) {
-                $tab[$hour][$site][$action][$row['usr_id']] =
+            $usrId = $row['usr_id'] ?? '';
+
+            if ( ! isset($tab[$hour][$site][$action][$usrId])) {
+                $tab[$hour][$site][$action][$usrId] =
                     [
                         'final' => []
                         , 'comment' => []
@@ -374,15 +376,15 @@ class record_preview extends record_adapter
                 ];
             }
 
-            if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
+            if ( ! in_array($row['final'], $tab[$hour][$site][$action][$usrId]['final'])) {
                 if ($action == 'collection') {
-                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->getDataboxId(), $row['final'], $this->app);
+                    $tab[$hour][$site][$action][$usrId]['final'][] = phrasea::baseFromColl($this->getDataboxId(), $row['final'], $this->app);
                 } else {
-                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = $row['final'];
+                    $tab[$hour][$site][$action][$usrId]['final'][] = $row['final'];
                 }
             }
-            if ( ! in_array($row['comment'], $tab[$hour][$site][$action][$row['usr_id']]['comment']))
-                $tab[$hour][$site][$action][$row['usr_id']]['comment'][] =
+            if ( ! in_array($row['comment'], $tab[$hour][$site][$action][$usrId]['comment']))
+                $tab[$hour][$site][$action][$usrId]['comment'][] =
                     $row['comment'];
         }
 

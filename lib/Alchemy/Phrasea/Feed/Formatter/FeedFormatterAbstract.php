@@ -30,7 +30,7 @@ abstract class FeedFormatterAbstract
     {
         $tag = $document->createElement($tagname);
 
-        if (trim($tagcontent) !== '') {
+        if (trim((string) $tagcontent) !== '') {
             $tag->appendChild($document->createTextNode($tagcontent));
         }
         $node->appendChild($tag);

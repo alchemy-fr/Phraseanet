@@ -109,7 +109,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
         $this->selection = new \set_selection($app);
 
-        if (trim($Request->get('ssel')) !== '') {
+        if (trim((string) $Request->get('ssel')) !== '') {
             $Basket = $app['converter.basket']->convert($Request->get('ssel'));
             $app['acl.basket']->hasAccess($Basket, $app->getAuthenticatedUser());
 
@@ -117,14 +117,14 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
             $this->is_basket = true;
             $this->original_basket = $Basket;
-        } elseif (trim($Request->get('story')) !== '') {
+        } elseif (trim((string) $Request->get('story')) !== '') {
             $repository = $app['repo.story-wz'];
 
             $storyWZ = $repository->findByUserAndId($app, $app->getAuthenticatedUser(), $Request->get('story'));
 
             $this->selection->load_list([$storyWZ->getRecord($this->app)->get_serialize_key()], $this->flatten_groupings);
         } else {
-            $this->selection->load_list(explode(";", $Request->get('lst')), $this->flatten_groupings);
+            $this->selection->load_list(explode(";", (string) $Request->get('lst')), $this->flatten_groupings);
         }
         $this->elements_received = $this->selection->get_count();
 

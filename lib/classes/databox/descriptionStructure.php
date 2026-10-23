@@ -59,7 +59,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
      */
     public function add_element(databox_field $field)
     {
-        $this->elements[$field->get_id()] = $field;
+        $this->elements[$field->get_id() ?? ''] = $field;
 
         if (null !== $this->cache_name_id) {
             $this->cache_name_id[$field->get_name()] = $field->get_id();

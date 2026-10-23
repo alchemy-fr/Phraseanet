@@ -156,6 +156,7 @@ class phrasea
             try {
                 self::$_sbas_names = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_NAMES);
             } catch (\Exception $e) {
+                self::$_sbas_names = [];
                 foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_names[$databox->get_sbas_id()] = $databox->get_viewname();
                 }
@@ -175,6 +176,7 @@ class phrasea
                     throw new \Exception('Invalid data retrieved from cache');
                 }
             } catch (\Exception $e) {
+                self::$_sbas_labels = [];
                 foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_labels[$databox->get_sbas_id()] = [
                         'fr' => $databox->get_label('fr'),

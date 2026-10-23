@@ -65,8 +65,8 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
             }
 
             foreach ($this->locales as $code => $language) {
-                $status['labels_on_i18n'][$code] = '' !== trim($status['labels_on'][$code]) ? $status['labels_on'][$code] : $status['labelon'];
-                $status['labels_off_i18n'][$code] = '' !== trim($status['labels_off'][$code]) ? $status['labels_off'][$code] : $status['labeloff'];
+                $status['labels_on_i18n'][$code] = '' !== trim((string) $status['labels_on'][$code]) ? $status['labels_on'][$code] : $status['labelon'];
+                $status['labels_off_i18n'][$code] = '' !== trim((string) $status['labels_off'][$code]) ? $status['labels_off'][$code] : $status['labeloff'];
             }
 
             $status['img_off'] = null;

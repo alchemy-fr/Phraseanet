@@ -1034,8 +1034,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $title = trim(implode(' - ', $titles));
         }
 
-        if (trim($title) === '') {
-            $title = trim($this->get_original_name($removeExtension));
+        if (trim((string) $title) === '') {
+            $title = trim((string) $this->get_original_name($removeExtension));
             switch ($encode) {
                 case self::ENCODE_FOR_HTML:
                     $title = htmlentities($title);
