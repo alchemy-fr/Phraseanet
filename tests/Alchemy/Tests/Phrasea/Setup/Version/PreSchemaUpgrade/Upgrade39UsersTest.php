@@ -5,8 +5,8 @@ namespace Alchemy\Tests\Phrasea\Setup\Version;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39Users;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Migrations\Configuration\YamlConfiguration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -24,12 +24,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
         $em = $this->loadFixture($fixture);
 
         $upgrader = new Upgrade39Users();
-        $configuration = new YamlConfiguration($em->getConnection());
-
-        $configuration->load(__DIR__.'/../../../../../../../lib/conf.d/migrations.yml');
-        $configuration->setMigrationsDirectory(__DIR__.'/../../../../../../../lib/Alchemy/Phrasea/Setup/DoctrineMigration');
-
-        $upgrader->apply($em, $this->createAppboxMock(), $configuration);
+        $upgrader->apply($em, $this->createAppboxMock(), MigrationRunner::fromEntityManager($em));
 
         $this->assertUsrTableIsSanitized($em);
         // check usr_ids are preserved

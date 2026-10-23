@@ -12,8 +12,9 @@
 namespace Alchemy\Phrasea\Setup\DoctrineMigrations;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Doctrine\DBAL\Migrations\AbstractMigration as BaseMigration;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration as BaseMigration;
 use Doctrine\ORM\EntityManager;
 
 abstract class AbstractMigration extends BaseMigration
@@ -54,25 +55,21 @@ abstract class AbstractMigration extends BaseMigration
     /**
      * @inheritdoc
      */
-    final public function up(Schema $schema)
+    final public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, "Migration can only be executed safely on 'mysql'.");
 
         $this->doUpSql($schema);
-
-        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    final public function down(Schema $schema)
+    final public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, "Migration can only be executed safely on 'mysql'.");
 
         $this->doDownSql($schema);
-
-        return $this;
     }
 
     /**

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -22,7 +22,7 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(EntityManager $em, \appbox $appbox, Configuration $conf)
+    public function apply(EntityManager $em, \appbox $appbox, MigrationRunner $migrations)
     {
         $this->doBackupFeedsTable($em);
     }
@@ -38,7 +38,7 @@ class Upgrade39Feeds implements PreSchemaUpgradeInterface
     /**
      * {@inheritdoc}
      */
-    public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
+    public function rollback(EntityManager $em, \appbox $appbox, MigrationRunner $migrations)
     {
         if ($this->tableExists($em, 'feeds_backup')) {
             $em->getConnection()->getSchemaManager()->renameTable('feeds_backup', 'feeds');

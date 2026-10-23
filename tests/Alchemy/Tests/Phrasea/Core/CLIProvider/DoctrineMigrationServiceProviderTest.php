@@ -11,9 +11,19 @@ class DoctrineMigrationServiceProviderTest extends ServiceProviderTestCase
         return [
             [
                 'Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider',
+                'doctrine-migration.runner',
+                'Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner'
+            ],
+            [
+                'Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider',
+                'doctrine-migration.dependency-factory',
+                'Doctrine\Migrations\DependencyFactory'
+            ],
+            [
+                'Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider',
                 'doctrine-migration.configuration',
-                'Doctrine\DBAL\Migrations\Configuration\YamlConfiguration'
-            ]
+                'Doctrine\Migrations\Configuration\Configuration'
+            ],
         ];
     }
 }

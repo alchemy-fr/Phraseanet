@@ -2,17 +2,18 @@
 
 namespace Alchemy\Phrasea\Setup\DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration as BaseMigration;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration as BaseMigration;
 
 class Version20150519173347 extends BaseMigration
 {
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->skipIf($schema->hasTable('Secrets'), 'Table already exists');
 
@@ -23,9 +24,9 @@ class Version20150519173347 extends BaseMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DROP TABLE Secrets');
     }

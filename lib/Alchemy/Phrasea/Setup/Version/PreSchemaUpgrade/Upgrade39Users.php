@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
+use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
@@ -26,18 +26,16 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
    /**
      * {@inheritdoc}
      */
-    public function apply(EntityManager $em, \appbox $appbox, Configuration $conf)
+    public function apply(EntityManager $em, \appbox $appbox, MigrationRunner $migrations)
     {
         // Sanitize usr table
         $this->sanitizeUsrTable($em);
         // Creates User schema
-        $version = $conf->getVersion('20131118000009');
-        if (false === $version->isMigrated()) {
-            $version->execute('up');
+        if (false === $migrations->isMigrated('20131118000009')) {
+            $migrations->execute('20131118000009', 'up');
         }
-        $version = $conf->getVersion('20131118000007');
-        if (false === $version->isMigrated()) {
-            $version->execute('up');
+        if (false === $migrations->isMigrated('20131118000007')) {
+            $migrations->execute('20131118000007', 'up');
         }
         $this->alterTablesUp($em);
 
@@ -72,19 +70,17 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
     /**
      * {@inheritdoc}
      */
-    public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
+    public function rollback(EntityManager $em, \appbox $appbox, MigrationRunner $migrations)
     {
         // truncate created tables
         $this->emptyTables($em);
         // rollback schema
         $this->alterTablesDown($em);
-        $version = $conf->getVersion('20131118000007');
-        if ($version->isMigrated()) {
-            $version->execute('down');
+        if ($migrations->isMigrated('20131118000007')) {
+            $migrations->execute('20131118000007', 'down');
         }
-        $version = $conf->getVersion('20131118000009');
-        if ($version->isMigrated()) {
-            $version->execute('down');
+        if ($migrations->isMigrated('20131118000009')) {
+            $migrations->execute('20131118000009', 'down');
         }
     }
 

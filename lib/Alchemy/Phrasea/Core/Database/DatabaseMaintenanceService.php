@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Core\Database;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\DoctrineMigrations\AbstractMigration;
+use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -239,7 +240,7 @@ class DatabaseMaintenanceService
                     $k = trim($data['key']);
 
                     if ($k === 'usr_password') {
-                        $data = $this->app['auth.password-encoder']->encodePassword($data, $nonce);
+                        $data = $this->app['auth.password-encoder']->hash((string) $data, $nonce);
                     }
 
                     if ($k === 'nonce') {
@@ -638,25 +639,23 @@ class DatabaseMaintenanceService
         // disable mail
         $this->app['swiftmailer.transport'] = null;
 
+        /** @var MigrationRunner $migrations */
+        $migrations = $this->app['doctrine-migration.runner'];
+
         foreach ($list_patches as $patch) {
 
             $output->writeln(sprintf(" - patch \"%s\" (release %s) should be applied", get_class($patch), $patch->get_release()));
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
-                /** @var \Doctrine\DBAL\Migrations\Version $version */
-                $version = $this->app['doctrine-migration.configuration']->getVersion($doctrineVersion);
                 // Skip if already migrated
-                if ($version->isMigrated()) {
+                if ($migrations->isMigrated($doctrineVersion)) {
                     continue;
                 }
 
-                $migration = $version->getMigration();
+                $migration = $migrations->getMigration($doctrineVersion);
 
                 // Handle legacy migrations
                 if ($migration instanceof AbstractMigration) {
-                    // Inject entity manager
-                    $migration->setEntityManager($this->app['orm.em']);
-
                     // Execute migration if not marked as migrated and not already applied by an older patch
                     if (!$migration->isAlreadyApplied()) {
                         if($dry) {
@@ -665,7 +664,7 @@ class DatabaseMaintenanceService
                         else {
                             $output->writeln(sprintf("    executing(up) legacy migration \"%s\"", get_class($migration)));
                             $this->reconnect();
-                            $version->execute('up');
+                            $migrations->execute($doctrineVersion, 'up');
                         }
                         continue;
                     }
@@ -676,7 +675,7 @@ class DatabaseMaintenanceService
                     }
                     else {
                         $output->writeln(sprintf("    marking migrated legacy migration \"%s\"", get_class($migration)));
-                        $version->markMigrated();
+                        $migrations->markMigrated($doctrineVersion);
                     }
                 }
                 else {
@@ -686,7 +685,7 @@ class DatabaseMaintenanceService
                     else {
                         $output->writeln(sprintf("    executing(up) migration doctrine \"%s\"", get_class($migration)));
                         $this->reconnect();
-                        $version->execute('up');
+                        $migrations->execute($doctrineVersion, 'up');
                     }
                 }
             }
