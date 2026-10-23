@@ -9,24 +9,22 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     public static $createdCollections = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         self::resetUsersRights(self::$DI['app'], self::$DI['user']);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$DI['app']['acl'] = new ACLProvider(self::$DI['app']);
         foreach (self::$createdCollections as $collection) {
@@ -56,8 +54,8 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('success', $content, $response->getContent());
-        $this->assertObjectHasAttribute('msg', $content, $response->getContent());
+        $this->assertObjectHasProperty('success', $content, $response->getContent());
+        $this->assertObjectHasProperty('msg', $content, $response->getContent());
 
         return $content;
     }
@@ -78,11 +76,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         return $collection;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::connect
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::getCollection
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::call
-     */
     public function testGetCollection()
     {
         $this->setAdmin(true);
@@ -91,9 +84,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::getSuggestedValues
-     */
     public function testGetSuggestedValues()
     {
         $this->setAdmin(true);
@@ -102,9 +92,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::getDetails
-     */
     public function testInformationsDetails()
     {
         $this->setAdmin(true);
@@ -116,9 +103,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::submitSuggestedValues
-     */
     public function testPostSuggestedValuesNotJson()
     {
         $this->setAdmin(true);
@@ -128,9 +112,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::submitSuggestedValues
-     */
     public function testPostSuggestedValueUnauthorized()
     {
         $this->setAdmin(false);
@@ -139,9 +120,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::submitSuggestedValues
-     */
     public function testPostSuggestedValue()
     {
         $this->setAdmin(true);
@@ -160,9 +138,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         unset($collection);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::submitSuggestedValues
-     */
     public function testPostSuggestedValuebadXml()
     {
         $this->setAdmin(true);
@@ -177,9 +152,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($json->success);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::enable
-     */
     public function testPostEnableNotJson()
     {
         $this->setAdmin(true);
@@ -189,9 +161,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::enable
-     */
     public function testPostEnableUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -201,9 +170,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::enable
-     */
     public function testPostEnable()
     {
         $this->setAdmin(true);
@@ -218,9 +184,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         unset($collection);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::disabled
-     */
     public function testPostDisabledNotJson()
     {
         $this->setAdmin(true);
@@ -230,9 +193,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::disabled
-     */
     public function testPostDisabledUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -242,9 +202,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::disabled
-     */
     public function testPostDisabled()
     {
         $this->setAdmin(true);
@@ -258,9 +215,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         unset($collection);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setOrderAdmins
-     */
     public function testPostOrderAdminsUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -270,9 +224,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setOrderAdmins
-     */
     public function testPostOrderAdmins()
     {
         $this->setAdmin(true);
@@ -286,9 +237,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['app']->getAclForUser(self::$DI['user_alt1'])->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::ORDER_MASTER));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setPublicationDisplay
-     */
     public function testPostPublicationDisplayNotJson()
     {
         $this->setAdmin(true);
@@ -300,9 +248,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setPublicationDisplay
-     */
     public function testPostPublicationDisplayUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -312,9 +257,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setPublicationDisplay
-     */
     public function testPublicationDisplayBadRequestMissingArguments()
     {
         $this->setAdmin(true);
@@ -323,9 +265,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setPublicationDisplay
-     */
     public function testPublicationDisplay()
     {
         $this->setAdmin(true);
@@ -341,9 +280,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         unset($collection);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
-     */
     public function testPostNameNotJson()
     {
         $this->setAdmin(true);
@@ -358,9 +294,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/admin/collection/' . $collection->get_base_id() . '/?success=1&reload-tree=1', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
-     */
     public function testPostLabelsNotJson()
     {
         $this->setAdmin(true);
@@ -379,9 +312,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertContains('/admin/collection/'.$collection->get_base_id().'/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
-     */
     public function testPostNameUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -391,9 +321,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
-     */
     public function testPostLabelsUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -403,9 +330,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
-     */
     public function testPostNameBadRequestMissingArguments()
     {
         $this->setAdmin(true);
@@ -414,9 +338,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
-     */
     public function testPostLabelsBadRequestMissingArguments()
     {
         $this->setAdmin(true);
@@ -425,9 +346,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
-     */
     public function testPostName()
     {
         $this->setAdmin(true);
@@ -451,9 +369,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $collection->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::labels
-     */
     public function testPostLabels()
     {
         $this->setAdmin(true);
@@ -484,9 +399,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $collection->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
     public function testPostEmptyCollectionNotJson()
     {
         $this->setAdmin(true);
@@ -498,9 +410,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
     public function testPostEmptyCollectionUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -509,9 +418,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
     public function testPostEmptyCollection()
     {
         $this->setAdmin(true);
@@ -531,9 +437,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
     public function testPostEmptyCollectionWithHighRecordAmount()
     {
         $this->markTestSkipped('This tests lasts for 40 sec.');
@@ -581,9 +484,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setMiniLogo
-     */
     public function testSetMiniLogoBadRequest()
     {
         $this->setAdmin(true);
@@ -593,9 +493,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setStamp
-     */
     public function testSetStampBadRequest()
     {
         $this->setAdmin(true);
@@ -605,9 +502,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setWatermark
-     */
     public function testSetWatermarkBadRequest()
     {
         $this->setAdmin(true);
@@ -618,9 +512,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setMiniLogo
-     */
     public function testSetMiniLogo()
     {
         $this->setAdmin(true);
@@ -635,9 +526,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, count(\collection::getLogo(self::$DI['collection']->get_base_id(), self::$DI['app'])));
     }
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteLogo
-     */
     public function testDeleteMiniLogoNotJson()
     {
         $this->setAdmin(true);
@@ -649,9 +537,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteLogo
-     */
     public function testDeleteMiniLogo()
     {
         if (count(\collection::getLogo(self::$DI['collection']->get_base_id(), self::$DI['app'])) === 0) {
@@ -665,9 +550,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
     }
 
-    /**
-     *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setWatermark
-     */
     public function testSetWm()
     {
         $this->setAdmin(true);
@@ -686,9 +568,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, count(\collection::getWatermark($collection->get_base_id())));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteWatermark
-     */
     public function testDeleteWmBadNotJson()
     {
         $this->setAdmin(true);
@@ -700,9 +579,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteWatermark
-     */
     public function testDeleteWm()
     {
         if (count(\collection::getWatermark(self::$DI['collection']->get_base_id())) === 0) {
@@ -716,9 +592,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::setStamp
-     */
     public function testSetStamp()
     {
         $this->setAdmin(true);
@@ -733,9 +606,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, count(\collection::getStamp(self::$DI['collection']->get_base_id())));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteStamp
-     */
     public function testDeleteStampBadNotJson()
     {
         $this->setAdmin(true);
@@ -747,9 +617,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteStamp
-     */
     public function testDeleteStamp()
     {
         if (count(\collection::getStamp(self::$DI['collection']->get_base_id())) === 0) {
@@ -764,9 +631,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::getCollection
-     */
     public function testGetCollectionUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -776,9 +640,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::getSuggestedValues
-     */
     public function testGetSuggestedValuesUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -788,9 +649,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::getDetails
-     */
     public function testInformationsDetailsUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -800,9 +658,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::delete
-     */
     public function testDeleteCollectionNotJson()
     {
         $this->setAdmin(true);
@@ -814,9 +669,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::delete
-     */
     public function testDeleteCollectionUnauthorized()
     {
         $this->setAdmin(false);
@@ -826,9 +678,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::delete
-     */
     public function testDeleteCollection()
     {
         $this->setAdmin(true);
@@ -847,9 +696,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::delete
-     */
     public function testDeleteCollectionNoEmpty()
     {
         $this->setAdmin(true);
@@ -870,10 +716,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $collection->empty_collection();
     }
 
-     /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
-    public function testPostUnmountCollectionNotJson()
+     public function testPostUnmountCollectionNotJson()
     {
         $this->setAdmin(true);
 
@@ -884,9 +727,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
     public function testPostUnmountCollectionUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -895,9 +735,6 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
     public function testPostUnmountCollection()
     {
         $this->setAdmin(true);

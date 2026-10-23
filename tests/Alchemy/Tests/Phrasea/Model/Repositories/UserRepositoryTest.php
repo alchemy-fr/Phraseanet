@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UserRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindAdminsWithNoAdmins()

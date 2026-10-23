@@ -277,7 +277,7 @@ class TaskManagerController extends Controller
 
     public function getTask(Request $request, Task $task)
     {
-        if ('json' === $request->getContentType()) {
+        if ('json' === $request->getContentTypeFormat()) {
             return $this->app->json(array_replace([
                 'id' => $task->getId(),
                 'name' => $task->getName(),

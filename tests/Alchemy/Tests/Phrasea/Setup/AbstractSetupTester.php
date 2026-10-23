@@ -8,7 +8,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 {
     private $tearDownHandlers = [];
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->tearDownHandlers as $handler) {
             $handler();

@@ -20,7 +20,7 @@ class ApiAccountManipulator implements ManipulatorInterface
 {
     private $om;
 
-    public function __construct(ObjectManager $om)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om)
     {
         $this->om = $om;
     }

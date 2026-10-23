@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Media\TechnicalDataSet;
 use ArrayIterator;
 use Assert\AssertionFailedException;
 
-class ArrayTechnicalDataSetTest extends \PHPUnit_Framework_TestCase
+class ArrayTechnicalDataSetTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ArrayTechnicalDataSet */
     private $sut;

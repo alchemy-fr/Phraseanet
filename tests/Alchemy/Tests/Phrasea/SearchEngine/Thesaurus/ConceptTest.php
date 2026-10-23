@@ -8,7 +8,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
  * @group unit
  * @group thesaurus
  */
-class ConceptTest extends \PHPUnit_Framework_TestCase
+class ConceptTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetPath()
     {

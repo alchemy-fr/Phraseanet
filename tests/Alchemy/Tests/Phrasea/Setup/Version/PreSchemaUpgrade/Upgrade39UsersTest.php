@@ -12,17 +12,13 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Types\Type;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Upgrade39UsersTest extends \PhraseanetTestCase
 {
     const DB_NAME = 'update39_test';
 
-    /**
-     * @dataProvider provideVariousFixtures
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVariousFixtures')]
     public function testApply($fixture)
     {
         $em = $this->loadFixture($fixture);
@@ -120,7 +116,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
         $this->assertEquals($total, $expected - 2);
     }
 
-    public function provideVariousFixtures()
+    public static function provideVariousFixtures()
     {
         return [
             ['tests/fixtures/update39_fixtureFrom38.sql'],
@@ -133,7 +129,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
         $em = $this->createEntityManager(null);
         try {
             $em->getConnection()->executeQuery('DROP database '.self::DB_NAME);
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
 
         }
 

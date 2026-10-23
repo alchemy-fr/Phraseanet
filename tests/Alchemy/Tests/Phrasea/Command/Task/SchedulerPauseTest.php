@@ -4,22 +4,18 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Task\SchedulerPauseTasks;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SchedulerPauseTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {
-        self::$DI['cli']['task-manager.status'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\TaskManagerStatus')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['cli']['task-manager.status'] = $this->createStub('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
         self::$DI['cli']['task-manager.status']->expects($this->once())
             ->method('stop');
 
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createStub('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
         self::$DI['cli']['monolog'] = function () {
             return $this->createMonologMock();

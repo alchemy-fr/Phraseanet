@@ -6,18 +6,14 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Client;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeExceptionSubscriber;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class BridgeExceptionSubscriberTest extends \PhraseanetTestCase
 {
     public function testErrorOnBridgeExceptions()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['bridge.account'] = $this->getMockBuilder('Bridge_Account')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['bridge.account'] = $this->createStub('Bridge_Account');
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new BridgeExceptionSubscriber($app));
         $app->get('/', function () {
@@ -33,9 +29,7 @@ class BridgeExceptionSubscriberTest extends \PhraseanetTestCase
     public function testErrorOnOtherExceptions()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['bridge.account'] = $this->getMockBuilder('Bridge_Account')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['bridge.account'] = $this->createStub('Bridge_Account');
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new BridgeExceptionSubscriber($app));
         $app->get('/', function () {
@@ -43,7 +37,7 @@ class BridgeExceptionSubscriberTest extends \PhraseanetTestCase
         });
 
         $client = new Client($app);
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->expectException('\InvalidArgumentException');
         $client->request('GET', '/');
     }
 }

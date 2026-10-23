@@ -18,15 +18,10 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApplicationTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testDebug()
     {
         $app = new Application('prod');
@@ -54,9 +49,6 @@ class ApplicationTest extends \PhraseanetTestCase
         $this->assertEquals('GOT IT !', $client->getResponse()->getContent());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testCookie()
     {
         $app = $this->getApp();
@@ -71,9 +63,7 @@ class ApplicationTest extends \PhraseanetTestCase
         $this->assertEquals(3, count($cookies['']['/']));
     }
 
-    /**
-     * @dataProvider provideDisabledRoutes
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideDisabledRoutes')]
     public function testCookieDisabledOnSomeRoutes($disabled, $route)
     {
         $app = $this->getApp();
@@ -94,7 +84,7 @@ class ApplicationTest extends \PhraseanetTestCase
         }
     }
 
-    public function provideDisabledRoutes()
+    public static function provideDisabledRoutes()
     {
         return [
             [true, '/api/v1/'],
@@ -102,9 +92,6 @@ class ApplicationTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testCookieLocale()
     {
         foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
@@ -115,9 +102,6 @@ class ApplicationTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testNoCookieLocaleReturnsDefaultLocale()
     {
         $app = $this->getAppThatReturnLocale();
@@ -129,9 +113,6 @@ class ApplicationTest extends \PhraseanetTestCase
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testWrongCookieLocaleReturnsDefaultLocale()
     {
         $app = $this->getAppThatReturnLocale();
@@ -145,9 +126,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testGeneratePath()
     {
-        $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $generator = $this->createMock('Symfony\Component\Routing\Generator\UrlGenerator');
 
         $app = new Application(Application::ENV_TEST);
         $app['url_generator'] = $generator;
@@ -165,9 +144,7 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testGenerateUrl()
     {
-        $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $generator = $this->createMock('Symfony\Component\Routing\Generator\UrlGenerator');
 
         $app = new Application(Application::ENV_TEST);
         $app['url_generator'] = $generator;
@@ -185,22 +162,18 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testCreateForm()
     {
-        $factory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
+        $factory = $this->createMock('Symfony\Component\Form\FormFactoryInterface');
 
         $app = new Application(Application::ENV_TEST);
         $app['form.factory'] = $factory;
 
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $form = $this->createStub('Symfony\Component\Form\Form');
 
-        $type = $this->getMock('Symfony\Component\Form\FormTypeInterface');
+        $type = $this->createStub('Symfony\Component\Form\FormTypeInterface');
         $data = ['some' => 'data'];
         $options = [];
 
-        $parent = $this->getMockBuilder('Symfony\Component\Form\FormBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parent = $this->createStub('Symfony\Component\Form\FormBuilder');
 
         $factory->expects($this->once())
             ->method('create')
@@ -221,11 +194,9 @@ class ApplicationTest extends \PhraseanetTestCase
         $this->assertEquals(['BAMBA'], $app->getFlash('success'));
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testAddSetFlashWithInvalidArgument()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $app = new Application(Application::ENV_TEST);
 
         $app->addFlash('caution', 'BAMBA');
@@ -234,11 +205,8 @@ class ApplicationTest extends \PhraseanetTestCase
     public function testAddCaptcha()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']
-            ->expects($this->any())
             ->method('get')
             ->with(['registry', 'webservices', 'captcha-provider'])
             ->will($this->returnValue('reCaptcha'));
@@ -273,9 +241,7 @@ class ApplicationTest extends \PhraseanetTestCase
     public function testUrlGeneratorContext()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']->expects($this->once())
             ->method('get')
             ->with('servername')
@@ -329,9 +295,7 @@ class ApplicationTest extends \PhraseanetTestCase
         $this->assertInstanceOf('MediaAlchemyst\Alchemyst', $app['media-alchemyst']);
     }
 
-    /**
-     * @dataProvider transProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('transProvider')]
     public function testCachedTranslator($key, $locale, $expected)
     {
         $tempDir = sys_get_temp_dir() . '/temp-trans';
@@ -347,7 +311,7 @@ class ApplicationTest extends \PhraseanetTestCase
         $this->assertFileExists($tempDir.'/catalogue.'.($locale ?: 'en').'.php');
     }
 
-    public function transProvider()
+    public static function transProvider()
     {
         return [
             ['key1', 'de', 'The german translation'],
@@ -414,10 +378,8 @@ class ApplicationTest extends \PhraseanetTestCase
     private function mockRegistryAndReturnLocale(Application $app, $locale)
     {
         $database =  $app['conf']->get(['main', 'database']);
-        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getmock();
-        $app['conf']->expects($this->any())
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        $app['conf']
             ->method('get')
             ->will($this->returnCallback(function ($param, $default) use ($locale, $database) {
 
@@ -480,7 +442,7 @@ class TestExceptionHandlerSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::EXCEPTION => ['onSilexError', 0]];
     }

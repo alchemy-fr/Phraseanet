@@ -23,7 +23,7 @@ class Video extends Audio
 
     protected $options = [];
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         parent::__construct($translator);
 

@@ -4,14 +4,11 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SearchEngineLoggerTest extends \PhraseanetTestCase
 {
     /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineLogger::log
      * @todo   Implement testLog().
      */
     public function testLog()

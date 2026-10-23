@@ -20,7 +20,7 @@ class PSExposeConnectionType extends AbstractType
         $this->app = $app;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -107,7 +107,7 @@ class PSExposeConnectionType extends AbstractType
         ;
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'ps_expose_connection';
     }

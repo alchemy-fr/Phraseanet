@@ -65,7 +65,7 @@ class patch_380alpha11a extends patchAbstract
                     FROM cache';
             $stmt = $appbox->get_connection()->executeQuery($sql);
             $rs = $stmt->fetchAllAssociative();
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
             // this may fail on oldest versions
             return false;
         }

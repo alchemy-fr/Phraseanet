@@ -4,21 +4,19 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AddPluginTest extends PluginCommandTestCase
 {
     private $bkp = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->bkp = self::$DI['app']['conf']->get('plugins');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if(is_null($this->bkp)) {
             self::$DI['app']['conf']->remove('plugins');
@@ -34,19 +32,19 @@ class AddPluginTest extends PluginCommandTestCase
     {
         $source = 'TestPlugin';
 
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
         $input->expects($this->once())
             ->method('getArgument')
             ->with($this->equalTo('source'))
             ->will($this->returnValue($source));
 
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
         $command = new AddPlugin();
         $command->setContainer(self::$DI['cli']);
 
         $manifest = $this->createManifestMock();
-        $manifest->expects($this->any())
+        $manifest
             ->method('getName')
             ->will($this->returnValue($source));
 

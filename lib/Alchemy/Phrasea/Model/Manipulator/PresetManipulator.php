@@ -25,7 +25,7 @@ class PresetManipulator implements ManipulatorInterface
     /** @var EntityRepository */
     private $repository;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, EntityRepository $repo)
     {
         $this->om = $om;
         $this->repository = $repo;

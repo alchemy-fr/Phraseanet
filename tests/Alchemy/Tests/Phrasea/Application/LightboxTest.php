@@ -2,12 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
@@ -16,13 +14,11 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
     protected $item;
     protected $validation_basket;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
     }
 
     public function testRouteSlash()
@@ -64,7 +60,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $client->request('GET', '/lightbox/?LOG='.$token->getValue());
 
         $this->assertTrue($client->getResponse()->isRedirect());
-        $this->assertRegExp('/\/lightbox\/validate\/\d+\//', $client->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/\/lightbox\/validate\/\d+\//', $client->getResponse()->headers->get('location'));
     }
 
     public function testAjaxNoteForm()
@@ -106,14 +102,14 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $client->getResponse()->headers->get('Content-type'));
         $datas = json_decode($client->getResponse()->getContent());
 
-        $this->assertObjectHasAttribute('number', $datas);
-        $this->assertObjectHasAttribute('title', $datas);
-        $this->assertObjectHasAttribute('preview', $datas);
-        $this->assertObjectHasAttribute('options_html', $datas);
-        $this->assertObjectHasAttribute('agreement_html', $datas);
-        $this->assertObjectHasAttribute('selector_html', $datas);
-        $this->assertObjectHasAttribute('note_html', $datas);
-        $this->assertObjectHasAttribute('caption', $datas);
+        $this->assertObjectHasProperty('number', $datas);
+        $this->assertObjectHasProperty('title', $datas);
+        $this->assertObjectHasProperty('preview', $datas);
+        $this->assertObjectHasProperty('options_html', $datas);
+        $this->assertObjectHasProperty('agreement_html', $datas);
+        $this->assertObjectHasProperty('selector_html', $datas);
+        $this->assertObjectHasProperty('note_html', $datas);
+        $this->assertObjectHasProperty('caption', $datas);
 
         $this->set_user_agent(self::USER_AGENT_IE6, $app);
 
@@ -122,14 +118,14 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $client->getResponse()->headers->get('Content-type'));
         $datas = json_decode($client->getResponse()->getContent());
 
-        $this->assertObjectHasAttribute('number', $datas);
-        $this->assertObjectHasAttribute('title', $datas);
-        $this->assertObjectHasAttribute('preview', $datas);
-        $this->assertObjectHasAttribute('options_html', $datas);
-        $this->assertObjectHasAttribute('agreement_html', $datas);
-        $this->assertObjectHasAttribute('selector_html', $datas);
-        $this->assertObjectHasAttribute('note_html', $datas);
-        $this->assertObjectHasAttribute('caption', $datas);
+        $this->assertObjectHasProperty('number', $datas);
+        $this->assertObjectHasProperty('title', $datas);
+        $this->assertObjectHasProperty('preview', $datas);
+        $this->assertObjectHasProperty('options_html', $datas);
+        $this->assertObjectHasProperty('agreement_html', $datas);
+        $this->assertObjectHasProperty('selector_html', $datas);
+        $this->assertObjectHasProperty('note_html', $datas);
+        $this->assertObjectHasProperty('caption', $datas);
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, $app);
 
@@ -156,14 +152,14 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $client->getResponse()->headers->get('Content-type'));
         $datas = json_decode($client->getResponse()->getContent());
 
-        $this->assertObjectHasAttribute('number', $datas);
-        $this->assertObjectHasAttribute('title', $datas);
-        $this->assertObjectHasAttribute('preview', $datas);
-        $this->assertObjectHasAttribute('options_html', $datas);
-        $this->assertObjectHasAttribute('agreement_html', $datas);
-        $this->assertObjectHasAttribute('selector_html', $datas);
-        $this->assertObjectHasAttribute('note_html', $datas);
-        $this->assertObjectHasAttribute('caption', $datas);
+        $this->assertObjectHasProperty('number', $datas);
+        $this->assertObjectHasProperty('title', $datas);
+        $this->assertObjectHasProperty('preview', $datas);
+        $this->assertObjectHasProperty('options_html', $datas);
+        $this->assertObjectHasProperty('agreement_html', $datas);
+        $this->assertObjectHasProperty('selector_html', $datas);
+        $this->assertObjectHasProperty('note_html', $datas);
+        $this->assertObjectHasProperty('caption', $datas);
 
         $this->set_user_agent(self::USER_AGENT_IE6, $app);
 
@@ -172,14 +168,14 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $client->getResponse()->headers->get('Content-type'));
         $datas = json_decode($client->getResponse()->getContent());
 
-        $this->assertObjectHasAttribute('number', $datas);
-        $this->assertObjectHasAttribute('title', $datas);
-        $this->assertObjectHasAttribute('preview', $datas);
-        $this->assertObjectHasAttribute('options_html', $datas);
-        $this->assertObjectHasAttribute('agreement_html', $datas);
-        $this->assertObjectHasAttribute('selector_html', $datas);
-        $this->assertObjectHasAttribute('note_html', $datas);
-        $this->assertObjectHasAttribute('caption', $datas);
+        $this->assertObjectHasProperty('number', $datas);
+        $this->assertObjectHasProperty('title', $datas);
+        $this->assertObjectHasProperty('preview', $datas);
+        $this->assertObjectHasProperty('options_html', $datas);
+        $this->assertObjectHasProperty('agreement_html', $datas);
+        $this->assertObjectHasProperty('selector_html', $datas);
+        $this->assertObjectHasProperty('note_html', $datas);
+        $this->assertObjectHasProperty('caption', $datas);
 
         $this->set_user_agent(self::USER_AGENT_IPHONE, $app);
 
@@ -308,8 +304,8 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $datas = json_decode($client->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
-        $this->assertObjectHasAttribute('datas', $datas);
-        $this->assertObjectHasAttribute('error', $datas);
+        $this->assertObjectHasProperty('datas', $datas);
+        $this->assertObjectHasProperty('error', $datas);
     }
 
     public function testAjaxSetAgreement()
@@ -336,8 +332,8 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $datas = json_decode($client->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
-        $this->assertObjectHasAttribute('datas', $datas);
-        $this->assertObjectHasAttribute('error', $datas);
+        $this->assertObjectHasProperty('datas', $datas);
+        $this->assertObjectHasProperty('error', $datas);
     }
 
     public function testAjaxSetReleaseWithRegularBasket()
@@ -375,7 +371,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $datas = json_decode($client->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
-        $this->assertObjectHasAttribute('datas', $datas);
-        $this->assertObjectHasAttribute('error', $datas);
+        $this->assertObjectHasProperty('datas', $datas);
+        $this->assertObjectHasProperty('error', $datas);
     }
 }

@@ -185,7 +185,7 @@ class patch_419PHRAS4078 implements patchInterface
 
         // migrate data from v-1 ?
         try {
-            $appbox->get_connection()->exec("SELECT `id` FROM `_ExpiringRights` LIMIT 1");
+            $appbox->get_connection()->executeStatement("SELECT `id` FROM `_ExpiringRights` LIMIT 1");
         }
         catch (\Exception $e) {
             // failed : no table to copy ?

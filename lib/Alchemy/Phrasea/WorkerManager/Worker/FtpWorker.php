@@ -27,7 +27,7 @@ class FtpWorker implements WorkerInterface
     private $app;
     /** @var LoggerInterface  */
     private $logger;
-    /** @var TranslatorInterface  */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
     private $translator;
     /** @var WorkerRunningJobRepository */
     private $repoWorker;

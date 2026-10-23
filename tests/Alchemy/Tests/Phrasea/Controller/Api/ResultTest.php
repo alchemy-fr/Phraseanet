@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Yaml\Parser;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ResultTest extends \PhraseanetTestCase
 {
     public function testFormatJson()
@@ -25,17 +23,17 @@ class ResultTest extends \PhraseanetTestCase
 
         $apiResult = new Result($request);
         $return = $apiResult->createResponse()->getContent();
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $return);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $return);
         $response = json_decode($return);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $response);
-        $this->assertObjectHasAttribute("meta", $response);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $response->meta);
-        $this->assertObjectHasAttribute("response", $response);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $response->response);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_OBJECT, $response);
+        $this->assertObjectHasProperty("meta", $response);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_OBJECT, $response->meta);
+        $this->assertObjectHasProperty("response", $response);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_OBJECT, $response->response);
         $this->assertEquals(0, sizeof(get_object_vars($response->response)));
         $this->assertEquals(0, sizeof(get_class_methods($response->response)));
-        $this->checkResponseFieldMeta($response, "api_version", '2.0.0', \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
-        $this->checkResponseFieldMeta($response, "request", "GET my/base/path/my/request/uri", \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
+        $this->checkResponseFieldMeta($response, "api_version", '2.0.0', \PHPUnit\Framework\Constraint\IsType::TYPE_STRING);
+        $this->checkResponseFieldMeta($response, "request", "GET my/base/path/my/request/uri", \PHPUnit\Framework\Constraint\IsType::TYPE_STRING);
 
         $date = new \DateTime();
         $now = $date->format('U');
@@ -53,11 +51,11 @@ class ResultTest extends \PhraseanetTestCase
 
         $this->assertLessThan(3, abs($respU - $nowU), 'No more than 3sec between now and the query');
 
-        $this->checkResponseFieldMeta($response, "http_code", 200, \PHPUnit_Framework_Constraint_IsType::TYPE_INT);
-        $this->checkResponseFieldMeta($response, "charset", "UTF-8", \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
-        $this->assertObjectHasAttribute("error_message", $response->meta);
+        $this->checkResponseFieldMeta($response, "http_code", 200, \PHPUnit\Framework\Constraint\IsType::TYPE_INT);
+        $this->checkResponseFieldMeta($response, "charset", "UTF-8", \PHPUnit\Framework\Constraint\IsType::TYPE_STRING);
+        $this->assertObjectHasProperty("error_message", $response->meta);
         $this->assertNull($response->meta->error_message);
-        $this->assertObjectHasAttribute("error_details", $response->meta);
+        $this->assertObjectHasProperty("error_details", $response->meta);
         $this->assertNull($response->meta->error_details);
     }
 
@@ -76,20 +74,20 @@ class ResultTest extends \PhraseanetTestCase
         $apiResult = new Result($request);
         $response = (new Parser())->parse($apiResult->createResponse()->getContent());
 
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $response);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $response);
         $this->assertArrayHasKey("meta", $response);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $response["meta"]);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $response["meta"]);
         $this->assertArrayHasKey("response", $response);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $response["response"]);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $response["response"]);
         $this->assertEquals(0, count($response["response"]));
         $this->assertArrayHasKey("api_version", $response["meta"]);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $response["meta"]["api_version"]);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $response["meta"]["api_version"]);
         $this->assertEquals('1.0.0', $response["meta"]["api_version"]);
         $this->assertArrayHasKey("request", $response["meta"]);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $response["meta"]["request"]);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $response["meta"]["request"]);
         $this->assertEquals("GET my/base/path/my/request/uri", $response["meta"]["request"]);
         $this->assertArrayHasKey("response_time", $response["meta"]);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $response["meta"]["response_time"]);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $response["meta"]["response_time"]);
 
         $this->assertDateAtom($response["meta"]["response_time"]);
         $dateObj1 = \DateTime::createFromFormat(DATE_ATOM, $response["meta"]["response_time"]);
@@ -97,14 +95,14 @@ class ResultTest extends \PhraseanetTestCase
         $this->assertLessThan(3, abs($dateObj1->format('U') - $dateObj2->format('U')), 'No more than 3sec between now and the query');
 
         $this->assertArrayHasKey("http_code", $response["meta"]);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $response["meta"]["http_code"]);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_INT, $response["meta"]["http_code"]);
         $this->assertEquals(200, $response["meta"]["http_code"]);
         $this->assertArrayHasKey("error_message", $response["meta"]);
         $this->assertNull($response["meta"]["error_message"]);
         $this->assertArrayHasKey("error_details", $response["meta"]);
         $this->assertNull($response["meta"]["error_details"]);
         $this->assertArrayHasKey("charset", $response["meta"]);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $response["meta"]["charset"]);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $response["meta"]["charset"]);
         $this->assertEquals("UTF-8", $response["meta"]["charset"]);
     }
 
@@ -113,8 +111,8 @@ class ResultTest extends \PhraseanetTestCase
         $request = new Request(["callback" => "my_callback_function"], [], [], [], [], ["HTTP_ACCEPT"     => "application/yaml"]);
         $apiResult = new Result($request);
         $return = $apiResult->createResponse()->getContent();
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $return);
-        $this->assertRegexp("/my_callback_function\\(\\{.+\\}\\);/", $return);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $return);
+        $this->assertMatchesRegularExpression("/my_callback_function\\(\\{.+\\}\\);/", $return);
         $response = json_decode(substr($return, 25, -2), true);
         $this->assertSame([], $response['response']);
     }
@@ -123,9 +121,9 @@ class ResultTest extends \PhraseanetTestCase
     {
         $apiResult = new Result(new Request(), ["pirouette" => "cacahuete", "black" => true, "bob" => ["bob"]]);
         $response = json_decode($apiResult->createResponse()->getContent());
-        $this->checkResponseFieldResponse($response, "pirouette", "cacahuete", \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
-        $this->checkResponseFieldResponse($response, "black", true, \PHPUnit_Framework_Constraint_IsType::TYPE_BOOL);
-        $this->checkResponseFieldResponse($response, "bob", ["bob"], \PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY);
+        $this->checkResponseFieldResponse($response, "pirouette", "cacahuete", \PHPUnit\Framework\Constraint\IsType::TYPE_STRING);
+        $this->checkResponseFieldResponse($response, "black", true, \PHPUnit\Framework\Constraint\IsType::TYPE_BOOL);
+        $this->checkResponseFieldResponse($response, "bob", ["bob"], \PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY);
     }
 
     public function testEmptyData()
@@ -208,14 +206,14 @@ class ResultTest extends \PhraseanetTestCase
 
     private function checkResponseFieldMeta(\stdClass $response, $field, $expectedValue, $type)
     {
-        $this->assertObjectHasAttribute($field, $response->meta);
+        $this->assertObjectHasProperty($field, $response->meta);
         $this->assertInternalType($type, $response->meta->$field);
         $this->assertEquals($expectedValue, $response->meta->$field);
     }
 
     private function checkResponseFieldResponse(\stdClass $response, $field, $expectedValue, $type)
     {
-        $this->assertObjectHasAttribute($field, $response->response);
+        $this->assertObjectHasProperty($field, $response->response);
         $this->assertInternalType($type, $response->response->$field);
         $this->assertEquals($expectedValue, $response->response->$field);
     }
@@ -223,27 +221,27 @@ class ResultTest extends \PhraseanetTestCase
     private function assertErrorMessage(Result $apiResult, $code, $type, $message, $detail)
     {
         $response = json_decode($apiResult->createResponse()->getContent());
-        $this->checkResponseFieldMeta($response, 'http_code', $code, \PHPUnit_Framework_Constraint_IsType::TYPE_INT);
+        $this->checkResponseFieldMeta($response, 'http_code', $code, \PHPUnit\Framework\Constraint\IsType::TYPE_INT);
 
         if (is_null($type)) {
-            $this->assertObjectHasAttribute('error_type', $response->meta);
+            $this->assertObjectHasProperty('error_type', $response->meta);
             $this->assertNull($response->meta->error_type);
         } else {
-            $this->checkResponseFieldMeta($response, 'error_type', $type, \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
+            $this->checkResponseFieldMeta($response, 'error_type', $type, \PHPUnit\Framework\Constraint\IsType::TYPE_STRING);
         }
 
         if (is_null($message)) {
-            $this->assertObjectHasAttribute('error_message', $response->meta);
+            $this->assertObjectHasProperty('error_message', $response->meta);
             $this->assertNull($response->meta->error_message);
         } else {
-            $this->checkResponseFieldMeta($response, 'error_message', $message, \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
+            $this->checkResponseFieldMeta($response, 'error_message', $message, \PHPUnit\Framework\Constraint\IsType::TYPE_STRING);
         }
 
         if (is_null($detail)) {
-            $this->assertObjectHasAttribute('error_details', $response->meta);
+            $this->assertObjectHasProperty('error_details', $response->meta);
             $this->assertNull($response->meta->error_details);
         } else {
-            $this->checkResponseFieldMeta($response, 'error_details', $detail, \PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
+            $this->checkResponseFieldMeta($response, 'error_details', $detail, \PHPUnit\Framework\Constraint\IsType::TYPE_STRING);
         }
     }
 }

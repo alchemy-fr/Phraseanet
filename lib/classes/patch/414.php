@@ -48,7 +48,7 @@ class patch_414 implements patchInterface
     {
         $cnx = $base->get_connection();
         $sql = "CREATE TEMPORARY TABLE `_logs` ( `usr_id` INT(11) NOT NULL , `connection` DATETIME NOT NULL , INDEX `usr_id` (`usr_id`)) ENGINE = InnoDB";
-        $cnx->exec($sql);
+        $cnx->executeStatement($sql);
 
         $sql = "INSERT INTO `_logs` (`usr_id`, `connection`) VALUES (:usr_id, :connection)";
         $stmti = $cnx->prepare($sql);
@@ -76,7 +76,7 @@ class patch_414 implements patchInterface
         }
 
         $sql = "DROP TABLE `_logs`";
-        $cnx->exec($sql);
+        $cnx->executeStatement($sql);
 
         return true;
     }

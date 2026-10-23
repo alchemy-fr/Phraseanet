@@ -17,23 +17,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Users",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="email_unique",columns={"email"}),
- *          @ORM\UniqueConstraint(name="login_unique",columns={"login"})
- *      },
- *      indexes={
- *          @ORM\index(name="user_login", columns={"login"}),
- *          @ORM\index(name="user_mail", columns={"email"}),
- *          @ORM\index(name="user_model_of", columns={"model_of"}),
- *          @ORM\index(name="user_salted_password", columns={"salted_password"}),
- *          @ORM\index(name="user_admin", columns={"admin"}),
- *          @ORM\index(name="user_guest", columns={"guest"})
- *      }
- * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UserRepository::class)]
+#[ORM\Table(name: 'Users')]
+#[ORM\Index(name: 'user_login', columns: ['login'])]
+#[ORM\Index(name: 'user_mail', columns: ['email'])]
+#[ORM\Index(name: 'user_model_of', columns: ['model_of'])]
+#[ORM\Index(name: 'user_salted_password', columns: ['salted_password'])]
+#[ORM\Index(name: 'user_admin', columns: ['admin'])]
+#[ORM\Index(name: 'user_guest', columns: ['guest'])]
+#[ORM\UniqueConstraint(name: 'email_unique', columns: ['email'])]
+#[ORM\UniqueConstraint(name: 'login_unique', columns: ['login'])]
 class User
 {
     const GENDER_MR = 2;
@@ -43,242 +36,161 @@ class User
     const USER_GUEST = 'guest';
     const USER_AUTOREGISTER = 'autoregister';
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="binary_string", length=128)
-     */
+    #[ORM\Column(type: 'binary_string', length: 128)]
     private $login;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $email;
 
     /**
      * The password can be null when the user is a template.
-     *
-     * @ORM\Column(type="binary_string", length=128, nullable=true)
      */
+    #[ORM\Column(type: 'binary_string', length: 128, nullable: true)]
     private $password;
 
-    /**
-     * @ORM\Column(type="binary_string", length=64, nullable=true)
-     */
+    #[ORM\Column(type: 'binary_string', length: 64, nullable: true)]
     private $nonce;
 
-    /**
-     * @ORM\Column(type="boolean", name="salted_password", options={"default" = 1})
-     */
+    #[ORM\Column(type: 'boolean', name: 'salted_password', options: ['default' => 1])]
     private $saltedPassword = true;
 
-    /**
-     * @ORM\Column(type="string", length=64, name="first_name", options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 64, name: 'first_name', options: ['default' => ''])]
     private $firstName = '';
 
-    /**
-     * @ORM\Column(type="string", length=64, name="last_name", options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 64, name: 'last_name', options: ['default' => ''])]
     private $lastName = '';
 
-    /**
-     * @ORM\Column(type="smallint", nullable=true)
-     */
+    #[ORM\Column(type: 'smallint', nullable: true)]
     private $gender;
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     private $address = '';
 
-    /**
-     * @ORM\Column(type="string", length=64, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     private $city = '';
 
-    /**
-     * @ORM\Column(type="string", length=64, nullable=true, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 64, nullable: true, options: ['default' => ''])]
     private $country = '';
 
-    /**
-     * @ORM\Column(type="string", length=32, name="zip_code", options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 32, name: 'zip_code', options: ['default' => ''])]
     private $zipCode = '';
 
-    /**
-     * @ORM\Column(type="integer", name="geoname_id", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', name: 'geoname_id', nullable: true)]
     private $geonameId;
 
-    /**
-     * @ORM\Column(type="string", length=8, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 8, nullable: true)]
     private $locale;
 
-    /**
-     * @ORM\Column(type="string", length=128, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     private $timezone = '';
 
-    /**
-     * @ORM\Column(type="string", length=128, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     private $job = '';
 
-    /**
-     * @ORM\Column(type="string", length=256, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 256, options: ['default' => ''])]
     private $activity = '';
 
-    /**
-     * @ORM\Column(type="string", length=64, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     private $company = '';
 
-    /**
-     * @ORM\Column(type="string", length=32, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 32, options: ['default' => ''])]
     private $phone = '';
 
-    /**
-     * @ORM\Column(type="string", length=32, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 32, options: ['default' => ''])]
     private $fax = '';
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $admin = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $guest = false;
 
-    /**
-     * @ORM\Column(type="boolean", name="mail_notifications", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'mail_notifications', options: ['default' => 0])]
     private $mailNotificationsActivated = false;
 
-    /**
-     * @ORM\Column(type="boolean", name="request_notifications", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'request_notifications', options: ['default' => 0])]
     private $requestNotificationsActivated = false;
 
-    /**
-     * @ORM\Column(type="boolean", name="ldap_created", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'ldap_created', options: ['default' => 0])]
     private $ldapCreated = false;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="last_model", referencedColumnName="id")
-     **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'last_model', referencedColumnName: 'id')]
     private $lastAppliedTemplate;
 
-    /**
-     * @ORM\Column(type="string", length=255, name="push_list", options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, name: 'push_list', options: ['default' => ''])]
     private $pushList = '';
 
-    /**
-     * @ORM\Column(type="boolean", name="can_change_profil", options={"default" = 1})
-     */
+    #[ORM\Column(type: 'boolean', name: 'can_change_profil', options: ['default' => 1])]
     private $canChangeProfil = true;
 
-    /**
-     * @ORM\Column(type="boolean", name="can_change_ftp_profil", options={"default" = 1})
-     */
+    #[ORM\Column(type: 'boolean', name: 'can_change_ftp_profil', options: ['default' => 1])]
     private $canChangeFtpProfil = true;
 
-    /**
-     * @ORM\Column(type="datetime", name="last_connection", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', name: 'last_connection', nullable: true)]
     private $lastConnection;
 
-    /**
-     * @ORM\Column(type="boolean", name="mail_locked", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'mail_locked', options: ['default' => 0])]
     private $mailLocked = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $deleted = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="model_of", referencedColumnName="id")
      *
      * @var User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'model_of', referencedColumnName: 'id')]
     private $templateOwner;
 
      /**
-     * @ORM\OneToOne(targetEntity="FtpCredential", mappedBy="user", cascade={"all"})
-      *
-      * @var FtpCredential
+     * @var FtpCredential
      **/
+    #[ORM\OneToOne(targetEntity: FtpCredential::class, mappedBy: 'user', cascade: ['all'])]
     private $ftpCredential;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserQuery", mappedBy="user", cascade={"all"})
-     *
      * @var UserQuery[]
      **/
+    #[ORM\OneToMany(targetEntity: UserQuery::class, mappedBy: 'user', cascade: ['all'])]
     private $queries;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserSetting", mappedBy="user", cascade={"all"}, indexBy="name")
-     *
      * @var UserSetting[]
      **/
+    #[ORM\OneToMany(targetEntity: UserSetting::class, mappedBy: 'user', cascade: ['all'], indexBy: 'name')]
     private $settings;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserNotificationSetting", mappedBy="user", cascade={"all"}, indexBy="name")
-     *
      * @var UserNotificationSetting[]
      **/
+    #[ORM\OneToMany(targetEntity: UserNotificationSetting::class, mappedBy: 'user', cascade: ['all'], indexBy: 'name')]
     private $notificationSettings;
 
-    /**
-     * @ORM\Column(type="boolean", name="granted_api", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'granted_api', options: ['default' => 0])]
     private $grantedApi = false;
 
-    /**
-     * @ORM\Column(type="integer", name="nb_inactivity_email", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'integer', name: 'nb_inactivity_email', options: ['default' => 0])]
     private $nbInactivityEmail = 0;
 
-    /**
-     * @ORM\Column(type="datetime", name="last_inactivity_email", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', name: 'last_inactivity_email', nullable: true)]
     private $lastInactivityEmail;
 
-    /**
-     * @ORM\Column(type="boolean", name="can_renew_password", options={"default" = 1})
-     */
+    #[ORM\Column(type: 'boolean', name: 'can_renew_password', options: ['default' => 1])]
     private $canRenewPassword = true;
 
     /**

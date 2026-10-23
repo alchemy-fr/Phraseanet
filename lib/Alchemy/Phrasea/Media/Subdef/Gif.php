@@ -17,7 +17,7 @@ class Gif extends Image
 {
     const OPTION_DELAY = 'delay';
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         parent::__construct($translator);
 

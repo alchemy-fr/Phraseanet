@@ -17,7 +17,7 @@ class WorkerConfigurationType extends AbstractType
         $this->AMQPConnection = $AMQPConnection;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -41,7 +41,7 @@ class WorkerConfigurationType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'worker_configuration';
     }

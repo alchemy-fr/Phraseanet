@@ -5,13 +5,11 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Editor;
 use Alchemy\Phrasea\TaskManager\Editor\RecordMoverEditor;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class RecordMoverEditorTest extends EditorTestCase
 {
-    public function provideDataForXMLUpdatesFromForm()
+    public static function provideDataForXMLUpdatesFromForm()
     {
         return [
             ['<?xml version="1.0" encoding="UTF-8"?>
@@ -47,9 +45,7 @@ class RecordMoverEditorTest extends EditorTestCase
         return new RecordMoverEditor($this->createTranslatorMock());
     }
 
-    /**
-     * @dataProvider provideFacilityActions
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFacilityActions')]
     public function testFacilityWithActions($action)
     {
         $databox = null;
@@ -84,7 +80,7 @@ class RecordMoverEditorTest extends EditorTestCase
         $this->assertEquals('application/json', $response->headers->get('content-type'));
     }
 
-    public function provideFacilityActions()
+    public static function provideFacilityActions()
     {
         return [['CALCTEST'], ['PLAYTEST'], ['CALCSQL']];
     }

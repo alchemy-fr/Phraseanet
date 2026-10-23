@@ -21,16 +21,16 @@ class RegistryFormManipulator
     private $languages;
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
     /**
      * @param FormFactoryInterface $factory
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      * @param array $languages
      */
-    public function __construct(FormFactoryInterface $factory, TranslatorInterface $translator, array $languages)
+    public function __construct(FormFactoryInterface $factory, \Symfony\Contracts\Translation\TranslatorInterface $translator, array $languages)
     {
         $this->factory = $factory;
         $this->languages = $languages;

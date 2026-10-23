@@ -2,21 +2,14 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::prepareDownload
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::connect
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::call
-     */
     public function testPrepareDownload()
     {
         $token = $this->getToken([
@@ -50,9 +43,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::prepareDownload
-     */
     public function testPrepareDownloadTokenNotFound()
     {
         $token = 'AzBdisusjA';
@@ -61,9 +51,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::prepareDownload
-     */
     public function testPrepareDownloadInvalidData()
     {
         $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
@@ -74,9 +61,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(false !== stripos($response->getContent(), 'Whoops, looks like something went wrong'));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     */
     public function testOneDocumentsDownload()
     {
         $this->markTestSkipped("direct download removed by PHRAS-3958");
@@ -124,9 +108,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
         */
     }
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     */
     public function testTwoDocumentsDownload()
     {
         $nbRowLogsBefore = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
@@ -192,16 +173,13 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk(),$response);
-        $this->assertRegExp('#attachment#', $response->headers->get('content-disposition'));
+        $this->assertMatchesRegularExpression('#attachment#', $response->headers->get('content-disposition'));
         $this->assertEquals('application/zip', $response->headers->get('content-type'));
         $nbRowLogsAfter = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $this->assertGreaterThan($nbRowLogsBefore, $nbRowLogsAfter);
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     */
     public function testDocumentsDownloadNotFound()
     {
         $token = $this->getToken([
@@ -235,9 +213,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     */
     public function testDocumentsDownloadTokenNotFound()
     {
         $token = 'AzBdisusjA';
@@ -246,9 +221,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNotFoundResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
-     */
     public function testDocumentsDownloadInvalidData()
     {
         $token = $this->getToken(['bad_string' => base64_decode(serialize(['fail']))]);
@@ -259,9 +231,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(false !== stripos($response->getContent(), 'Whoops, looks like something went wrong'));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadExecute
-     */
     public function testExecuteDownloadInvalidData()
     {
         $token = self::$DI['app']['manipulator.token']->createDownloadToken(
@@ -277,9 +246,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadExecute
-     */
     public function testExecuteDownloadTokenNotFound()
     {
         $token = 'ABCDEFGHJaajKISU';
@@ -292,9 +258,6 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadExecute
-     */
     public function testExecuteDownload()
     {
         $thumbnail = self::$DI['record_1']->get_thumbnail();

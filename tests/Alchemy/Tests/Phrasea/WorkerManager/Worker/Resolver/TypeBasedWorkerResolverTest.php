@@ -8,7 +8,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\Factory\WorkerFactoryInterface;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInterface;
 
-class TypeBasedWorkerResolverTest extends \PHPUnit_Framework_TestCase
+class TypeBasedWorkerResolverTest extends \PHPUnit\Framework\TestCase
 {
     public function testClassImplements()
     {

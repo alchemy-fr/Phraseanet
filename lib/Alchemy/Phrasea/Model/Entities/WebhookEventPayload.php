@@ -14,49 +14,45 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
-/**
- * @ORM\Table(name="WebhookEventPayloads")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WebhookEventPayloadRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\WebhookEventPayloadRepository::class)]
+#[ORM\Table(name: 'WebhookEventPayloads')]
 class WebhookEventPayload
 {
     /**
-     * @ORM\Column(type="guid")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      *
      * @var string
      */
+    #[ORM\Column(type: 'guid')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity="WebhookEventDelivery", inversedBy="payload")
-     * @ORM\JoinColumn(name="delivery_id", referencedColumnName="id")
-     */
+    #[ORM\OneToOne(targetEntity: WebhookEventDelivery::class, inversedBy: 'payload')]
+    #[ORM\JoinColumn(name: 'delivery_id', referencedColumnName: 'id')]
     private $delivery;
 
     /**
-     * @ORM\Column(type="text", name="request")
      * @var string
      */
+    #[ORM\Column(type: 'text', name: 'request')]
     private $requestPayload;
 
     /**
-     * @ORM\Column(type="text", name="response")
      * @var string
      */
+    #[ORM\Column(type: 'text', name: 'response')]
     private $responsePayload;
 
     /**
-     * @ORM\Column(type="integer", name="status")
      * @var int
      */
+    #[ORM\Column(type: 'integer', name: 'status')]
     private $statusCode;
 
     /**
-     * @ORM\Column(type="text")
      * @var string
      */
+    #[ORM\Column(type: 'text')]
     private $headers;
 
     /**

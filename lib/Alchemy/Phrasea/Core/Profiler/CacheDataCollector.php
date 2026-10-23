@@ -58,7 +58,7 @@ class CacheDataCollector implements DataCollectorInterface
      *
      * @return string The collector name
      */
-    public function getName()
+    public function getName(): string
     {
         return 'cache';
     }

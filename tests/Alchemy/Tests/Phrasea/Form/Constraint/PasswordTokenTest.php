@@ -6,19 +6,13 @@ use Alchemy\Phrasea\Form\Constraint\PasswordToken;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PasswordTokenTest extends \PhraseanetTestCase
 {
     public function testInvalidTokenIsNotValid()
     {
-        $repo = $this
-            ->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->setMethods(['findValidToken'])
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
 
         $tokenValue = self::$DI['app']['random.low']->generateString(8);
 
@@ -34,11 +28,7 @@ class PasswordTokenTest extends \PhraseanetTestCase
 
     public function testValidTokenIsValid()
     {
-        $repo = $this
-            ->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->setMethods(['findValidToken'])
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
 
         $tokenValue = self::$DI['app']['random.low']->generateString(8);
         $token = new Token();

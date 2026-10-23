@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_reportTest extends \report_abstractReportTestCase
 {
     protected $ret;
@@ -18,7 +16,7 @@ class report_reportTest extends \report_abstractReportTestCase
     protected $report;
     protected $save_report;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->xml = '<?xml version="1.0" encoding="UTF-8"?>
@@ -151,7 +149,7 @@ class report_reportTest extends \report_abstractReportTestCase
     {
 
         foreach ($this->ret as $sbasid => $collections) {
-            $report = $this->getMock('module_report', ['buildReq', 'buildResult'], [], '', FALSE);
+            $report = $this->createMock('module_report');
             $report->setSbas_id($sbasid);
             $this->assertEquals($sbasid, $report->getSbas_id());
 
@@ -172,8 +170,8 @@ class report_reportTest extends \report_abstractReportTestCase
           appli,
           ip
          FROM log ');
-            $report->expects($this->any())->method('buildReq')->will($this->returnValue(''));
-            $report->expects($this->any())->method('buildResult')->will($this->returnValue([]));
+            $report->method('buildReq')->will($this->returnValue(''));
+            $report->method('buildResult')->will($this->returnValue([]));
             $result = $report->buildReport(false, 'user');
 
         }

@@ -17,17 +17,17 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\User;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ControllerTest extends \PHPUnit_Framework_TestCase
+final class ControllerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ACLProvider|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var ACLProvider|\PHPUnit\Framework\MockObject\MockObject */
     private $aclProvider;
-    /** @var Authenticator|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var Authenticator|\PHPUnit\Framework\MockObject\MockObject */
     private $authenticator;
-    /** @var \Twig\Environment|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \Twig\Environment|\PHPUnit\Framework\MockObject\MockObject */
     private $twig;
-    /** @var \appbox|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \appbox|\PHPUnit\Framework\MockObject\MockObject */
     private $appbox;
-    /** @var Application|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var Application|\PHPUnit\Framework\MockObject\MockObject */
     private $app;
     /** @var Controller */
     private $sut;

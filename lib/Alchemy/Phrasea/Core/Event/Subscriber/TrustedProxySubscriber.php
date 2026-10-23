@@ -26,7 +26,7 @@ class TrustedProxySubscriber implements EventSubscriberInterface
         $this->configuration = $configuration;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['setProxyConf', 1024],

@@ -1,15 +1,15 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\ACL::class, 'get_order_master_collections')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\ACL::class, 'set_order_master')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ACLTest extends \PhraseanetTestCase
 {
     /** @var ACL */
     private $object;
 
-    public function setup()
+    public function setup(): void
     {
         parent::setUp();
 
@@ -17,7 +17,7 @@ class ACLTest extends \PhraseanetTestCase
         $this->object = self::$DI['app']->getAclForUser(self::$DI['user']);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->object = null;
 
@@ -274,10 +274,6 @@ class ACLTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers \ACL::get_order_master_collections
-     * @covers \ACL::set_order_master
-     */
     public function testGetSetOrder_master()
     {
         /** @var Appbox $appbox */

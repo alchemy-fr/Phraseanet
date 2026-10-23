@@ -99,7 +99,7 @@ class BasketSubscriber extends AbstractNotificationSubscriber
         $this->getMessagePublisher()->publishMessage($payload, MessagePublisher::SHARE_BASKET_TYPE);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             /** @uses onPush */

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Utilities;
 
 use Alchemy\Phrasea\Utilities\CrossDomainDumper;
 
-class CrossDomainDumperTest extends \PHPUnit_Framework_TestCase
+class CrossDomainDumperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider crossDomainProvider

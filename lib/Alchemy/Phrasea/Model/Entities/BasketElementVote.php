@@ -14,45 +14,31 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="BasketElementVotes")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'BasketElementVotes')]
 class BasketElementVote
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private $agreement;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $note;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="BasketParticipant", inversedBy="votes", cascade={"persist"})
-     * @ORM\JoinColumn(name="participant_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: BasketParticipant::class, inversedBy: 'votes', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id')]
     private $participant;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="votes", cascade={"persist"})
-     * @ORM\JoinColumn(name="basket_element_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: BasketElement::class, inversedBy: 'votes', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'basket_element_id', referencedColumnName: 'id')]
     private $basket_element;
 
     public function __construct(BasketParticipant $participant, BasketElement $element)

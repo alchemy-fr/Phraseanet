@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class MaintenanceFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('message', TextType::class, [
             'label'       => 'Maintenance message',
@@ -28,7 +28,7 @@ class MaintenanceFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

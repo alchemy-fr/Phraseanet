@@ -4,11 +4,9 @@ namespace Alchemy\Tests\Phrasea\Controller\Api;
 
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ApiYamlTest extends ApiTestCase
 {
     protected function getParameters(array $parameters = [])

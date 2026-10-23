@@ -43,7 +43,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
 
         try {
             $em->getConnection()->beginTransaction();
-            $em->getConnection()->query('SET FOREIGN_KEY_CHECKS=0');
+            $em->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS=0');
             // Creates user entities
             $this->updateUsers($em);
             $this->updateFtpSettings($em);
@@ -51,7 +51,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             $this->updateTemplateOwner($em);
             $this->updateLastAppliedModels($em);
             $this->cleanForeignKeyReferences($em);
-            $em->getConnection()->query('SET FOREIGN_KEY_CHECKS=1');
+            $em->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS=1');
             $em->getConnection()->commit();
             $this->renameTable($em, 'up');
         } catch (\Exception $e) {
@@ -302,9 +302,9 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             $connection->beginTransaction();
 
             try {
-                $connection->query('SET FOREIGN_KEY_CHECKS=0');
+                $connection->executeQuery('SET FOREIGN_KEY_CHECKS=0');
                 $connection->executeStatement($dbPlatform->getTruncateTableSql($meta->getTableName()));
-                $connection->query('SET FOREIGN_KEY_CHECKS=1');
+                $connection->executeQuery('SET FOREIGN_KEY_CHECKS=1');
                 $connection->commit();
             } catch (\Exception $e) {
                 $connection->rollback();

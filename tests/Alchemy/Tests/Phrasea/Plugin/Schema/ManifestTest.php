@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Plugin\Schema;
 
 use Alchemy\Phrasea\Plugin\Schema\Manifest;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ManifestTest extends \PhraseanetTestCase
 {
     public function testGetters()

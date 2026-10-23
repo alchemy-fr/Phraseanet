@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef\Specification;
 
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 
-class PdfTest extends \PHPUnit_Framework_TestCase
+class PdfTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification::getType

@@ -9,21 +9,19 @@ use Alchemy\Phrasea\Plugin\Schema\Manifest;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Process\ExecutableFinder;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AutoloaderGeneratorTest extends \PhraseanetTestCase
 {
     private $bkp = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->bkp = self::$DI['app']['conf']->get('plugins');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if(is_null($this->bkp)) {
             self::$DI['app']['conf']->remove('plugins');
@@ -63,7 +61,7 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
 
         foreach ($files as $file) {
             $this->assertFileExists($file);
-            $process = ProcessBuilder::create([$php, '-l', $file])->getProcess();
+            $process = \Symfony\Component\Process\Process::create([$php, '-l', $file])->getProcess();
             $process->run();
             $this->assertTrue($process->isSuccessful(), basename($file) . ' is valid');
         }
@@ -92,8 +90,8 @@ class AutoloaderGeneratorTest extends \PhraseanetTestCase
         $mapping = require $pluginsDir . '/twig-paths.php';
         $this->assertSame(['plugin-test-plugin' => realpath($pluginsDir) . '/test-plugin/views', realpath($pluginsDir) . '/test-plugin/views', realpath($pluginsDir) . '/test-plugin/twig-views'], $mapping);
 
-        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/login.scss'));
-        $this->assertRegExp('#@import#', file_get_contents($pluginsDir . '/account.scss'));
+        $this->assertMatchesRegularExpression('#@import#', file_get_contents($pluginsDir . '/login.scss'));
+        $this->assertMatchesRegularExpression('#@import#', file_get_contents($pluginsDir . '/account.scss'));
 
         $this->cleanup($files);
     }

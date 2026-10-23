@@ -8,10 +8,8 @@ use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApiLogManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()
@@ -24,13 +22,11 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
         $this->assertGreaterThan($nbLogs, count(self::$DI['app']['repo.api-accounts']->findAll()));
     }
 
-    /**
-     * @dataProvider apiRouteProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('apiRouteProvider')]
     public function testsLogHydration($path, $expected)
     {
-        $emMock  = $this->getMock('\Doctrine\ORM\EntityManager', ['persist', 'flush'], [], '', false);
-        $account = $this->getMock('\Alchemy\Phrasea\Model\Entities\ApiAccount');
+        $emMock  = $this->createStub('\Doctrine\ORM\EntityManager');
+        $account = $this->createStub('\Alchemy\Phrasea\Model\Entities\ApiAccount');
         $manipulator = new ApiLogManipulator($emMock, self::$DI['app']['repo.api-logs']);
         $log = $manipulator->create($account, Request::create($path, 'POST'), new Response());
         $this->assertEquals($expected['resource'], $log->getResource());
@@ -62,7 +58,7 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
         $this->assertEquals('a-new-aspect', $log->getAspect());
     }
 
-    public function apiRouteProvider()
+    public static function apiRouteProvider()
     {
         return [
             ['/databoxes/list/', ['resource' => 'databoxes', 'aspect' => null, 'action' => 'list', 'general' => 'databoxes']],

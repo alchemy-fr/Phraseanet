@@ -34,14 +34,14 @@ class ElasticsearchSettingsFormType extends AbstractType
 
     private $translator;
 
-    public function  __construct(GlobalStructure $g, ElasticsearchOptions $settings, TranslatorInterface $translator)
+    public function  __construct(GlobalStructure $g, ElasticsearchOptions $settings, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->globalStructure = $g;
         $this->esSettings = $settings;
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('host', TextType::class, [
@@ -49,7 +49,7 @@ class ElasticsearchSettingsFormType extends AbstractType
             ])
             ->add('port', IntegerType::class, [
                 'label' => 'ElasticSearch service port',
-                'constraints' => new Range(['min' => 1, 'max' => 65535]),
+                'constraints' => new Range(min: 1, max: 65535),
             ])
             ->add('indexName', TextType::class, [
                 'label' => 'ElasticSearch index name',
@@ -71,15 +71,15 @@ class ElasticsearchSettingsFormType extends AbstractType
             ])
             ->add('shards', IntegerType::class, [
                 'label' => 'Number of shards',
-                'constraints' => new Range(['min' => 1]),
+                'constraints' => new Range(min: 1),
             ])
             ->add('replicas', IntegerType::class, [
                 'label' => 'Number of replicas',
-                'constraints' => new Range(['min' => 0]),
+                'constraints' => new Range(min: 0),
             ])
             ->add('minScore', IntegerType::class, [
                 'label' => 'Thesaurus Min score',
-                'constraints' => new Range(['min' => 0]),
+                'constraints' => new Range(min: 0),
             ])
             ->add('highlight', CheckboxType::class, [
                 'label' => 'Activate highlight',
@@ -166,7 +166,7 @@ class ElasticsearchSettingsFormType extends AbstractType
 
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'elasticsearch_settings';
     }

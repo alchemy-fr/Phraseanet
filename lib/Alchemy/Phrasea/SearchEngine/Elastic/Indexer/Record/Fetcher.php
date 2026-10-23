@@ -102,7 +102,7 @@ class Fetcher
 
     /**
      * @return mixed
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public function fetch()
@@ -119,7 +119,7 @@ class Fetcher
 
     /**
      * @return array
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     private function fetchBatch()
@@ -186,7 +186,7 @@ class Fetcher
 
     /**
      * @return Result
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function getExecutedStatement()
     {

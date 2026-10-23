@@ -26,7 +26,7 @@ class AccountService
     private $authenticationService;
 
     /**
-     * @var PasswordEncoderInterface
+     * @var \Symfony\Component\PasswordHasher\PasswordHasherInterface
      */
     private $passwordEncoder;
 
@@ -86,7 +86,7 @@ class AccountService
 
     public function __construct(
         Authenticator $authenticator,
-        PasswordEncoderInterface $passwordEncoder,
+        \Symfony\Component\PasswordHasher\PasswordHasherInterface $passwordEncoder,
         EventDispatcherInterface $eventDispatcher,
         EntityManager $entityManager,
         UserManager $userManager,

@@ -95,7 +95,7 @@ class CleanLogViewCommand extends Command
                     // group delete by 1000
                     $sqlDelete = 'DELETE FROM log_view WHERE ' . $clauseWhere . ' LIMIT 1000';
                     do {
-                        $nbDeletedRow = $cnx->exec($sqlDelete);
+                        $nbDeletedRow = $cnx->executeStatement($sqlDelete);
                         $count += $nbDeletedRow;
                     } while ($nbDeletedRow > 0);
 

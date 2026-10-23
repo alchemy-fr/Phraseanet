@@ -322,7 +322,7 @@ class eventsmanager_broker
         if(!empty($bad_ids)) {
             // delete broken notifs
             $sql = 'DELETE FROM `notifications` WHERE `id` IN (' . join(',', $bad_ids) . ')';
-            $stmt = $this->app->getApplicationBox()->get_connection()->exec($sql);
+            $stmt = $this->app->getApplicationBox()->get_connection()->executeStatement($sql);
         }
 
         $next_offset = $offset+$limit;
@@ -372,7 +372,7 @@ class eventsmanager_broker
                     'notifications' => Connection::PARAM_INT_ARRAY,
                 ]
             )
-            ->execute()
+            ->executeStatement()
         ;
 
         return $this;
@@ -402,7 +402,7 @@ class eventsmanager_broker
                     'usr_id' => PDO::PARAM_INT,
                 ]
             )
-            ->execute()
+            ->executeStatement()
         ;
 
         return $this;

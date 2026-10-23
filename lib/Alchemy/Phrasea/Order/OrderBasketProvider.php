@@ -24,11 +24,11 @@ class OrderBasketProvider
     private $manager;
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
-    public function __construct(EntityManager $manager, TranslatorInterface $translator)
+    public function __construct(EntityManager $manager, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->manager = $manager;
         $this->translator = $translator;

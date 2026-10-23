@@ -9,7 +9,7 @@ use Silex\Api\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Silex\Route;
 
-class RouteLoaderTest extends \PHPUnit_Framework_TestCase
+class RouteLoaderTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

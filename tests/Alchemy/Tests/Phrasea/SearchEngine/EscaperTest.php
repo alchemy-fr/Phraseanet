@@ -8,7 +8,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
  * @group unit
  * @group searchengine
  */
-class EscaperTest extends \PHPUnit_Framework_TestCase
+class EscaperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider escapeRawProvider

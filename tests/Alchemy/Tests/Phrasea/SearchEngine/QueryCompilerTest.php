@@ -14,7 +14,7 @@ use Hoa\File;
  * @group unit
  * @group searchengine
  */
-class QueryCompilerTest extends \PHPUnit_Framework_TestCase
+class QueryCompilerTest extends \PHPUnit\Framework\TestCase
 {
     private $compiler;
 

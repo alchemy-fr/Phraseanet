@@ -21,12 +21,12 @@ use Doctrine\DBAL\Driver\Connection;
 
 class UserManager
 {
-    /** @var ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     protected $objectManager;
     /** @var \PDO */
     protected $appboxConnection;
 
-    public function __construct(ObjectManager $om, Connection $appboxConnection)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, Connection $appboxConnection)
     {
         $this->objectManager = $om;
         $this->appboxConnection = $appboxConnection;
@@ -80,7 +80,7 @@ class UserManager
     /**
      * Gets the object manager.
      *
-     * @return ObjectManager
+     * @return \Doctrine\Persistence\ObjectManager
      */
     public function getObjectManager()
     {

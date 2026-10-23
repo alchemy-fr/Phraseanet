@@ -121,7 +121,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
     /**
      * @param array $toInsert
      * @return array
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function createMissing(array $toInsert)
     {
@@ -146,7 +146,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
 
     /**
      * @param array $toUpdate
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function updatePresent(array $toUpdate)
     {

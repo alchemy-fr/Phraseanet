@@ -4,19 +4,17 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 require_once __DIR__ . '/../../../../../classes/Bridge/Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $account = null;
     public static $api = null;
     protected $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         try {
@@ -32,7 +30,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (self::$api instanceof \Bridge_Api) {
             self::$api->delete();
@@ -285,7 +283,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf("/prod/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/error/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     public function testActionDeleteElement()
@@ -299,7 +297,7 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf("/prod/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/error/', self::$DI['client']->getResponse()->headers->get('location'));
 
         $url = sprintf("/prod/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         self::$DI['client']->request('POST', $url, ["elements_list" => "element123qcs789"]);
@@ -318,12 +316,12 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $url = sprintf("/prod/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
         self::$DI['client']->request('POST', $url);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/error/', self::$DI['client']->getResponse()->headers->get('location'));
 
         $url = sprintf("/prod/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
         self::$DI['client']->request('POST', $url, ['title'       => 'test', 'description' => 'description']);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/success/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/success/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     public function testActionMoveInto()
@@ -335,12 +333,12 @@ class BridgeTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         self::$DI['client']->request('POST', $url, ["elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()]);
-        $this->assertRegexp('/success/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/success/', self::$DI['client']->getResponse()->headers->get('location'));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
         \Bridge_Api_Apitest::$hasException = true;
         self::$DI['client']->request('POST', $url, ["elements_list" => "containerudt456shn", 'destination'   => self::$account->get_api()->get_connector()->get_default_container_type()]);
-        $this->assertRegexp('/error/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/error/', self::$DI['client']->getResponse()->headers->get('location'));
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 

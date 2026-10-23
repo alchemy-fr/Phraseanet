@@ -13,7 +13,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
  * @group searchengine
  * @group ast
  */
-class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
+class QuotedTextNodeTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerialization()
     {

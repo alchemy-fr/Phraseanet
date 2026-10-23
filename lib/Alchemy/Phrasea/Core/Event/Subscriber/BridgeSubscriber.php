@@ -59,7 +59,7 @@ class BridgeSubscriber extends AbstractNotificationSubscriber
         $this->app['events-manager']->notify($params['usr_id'], 'eventsmanager_notify_bridgeuploadfail', $datas, $mailed);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::BRIDGE_UPLOAD_FAILURE => 'onUploadFailure',

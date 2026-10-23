@@ -16,7 +16,7 @@ use Prophecy\Argument;
  * @group searchengine
  * @group ast
  */
-class RangeExpressionTest extends \PHPUnit_Framework_TestCase
+class RangeExpressionTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerializability()
     {

@@ -2,19 +2,15 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\ConnectedUsers::class, 'connect')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ConnectedUserTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\ConnectedUsers::connect
-     */
     public function testgetSlash()
     {
         self::$DI['client']->request('GET', '/admin/connected-users/');

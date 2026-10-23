@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FirewallSubscriber implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::RESPONSE  => ['onKernelResponse', 0],

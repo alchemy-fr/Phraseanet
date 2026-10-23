@@ -12,7 +12,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
  * @group unit
  * @group searchengine
  */
-class QueryContextTest extends \PHPUnit_Framework_TestCase
+class QueryContextTest extends \PHPUnit\Framework\TestCase
 {
     public function testFieldNarrowing()
     {

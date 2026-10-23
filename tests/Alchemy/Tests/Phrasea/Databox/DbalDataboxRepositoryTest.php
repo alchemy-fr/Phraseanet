@@ -17,7 +17,7 @@ use Doctrine\DBAL\Result;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
+final class DbalDataboxRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ObjectProphecy */
     private $connection;

@@ -68,7 +68,7 @@ class patch_370alpha7a extends patchAbstract
             $sql = 'SELECT * FROM lazaret';
             $stmt = $conn->executeQuery($sql);
             $rs = $stmt->fetchAllAssociative();
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
             // table not found
             if ($e->getCode() == '42S02') {
 

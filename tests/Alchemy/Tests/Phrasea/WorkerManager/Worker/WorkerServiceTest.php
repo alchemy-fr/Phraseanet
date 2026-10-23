@@ -14,7 +14,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
  * @covers Alchemy\Phrasea\WorkerManager\Worker\SubdefCreationWorker
  * @covers Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker
  */
-class WorkerServiceTest extends \PHPUnit_Framework_TestCase
+class WorkerServiceTest extends \PHPUnit\Framework\TestCase
 {
     public function testImplementationClass()
     {

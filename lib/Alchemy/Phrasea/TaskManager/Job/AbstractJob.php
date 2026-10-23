@@ -25,7 +25,7 @@ abstract class AbstractJob extends AbstractTMJob implements JobInterface
     protected $translator;
 
     public function __construct(
-        TranslatorInterface $translator,
+        \Symfony\Contracts\Translation\TranslatorInterface $translator,
         ?EventDispatcherInterface $dispatcher = null,
         ?LoggerInterface $logger = null
     )

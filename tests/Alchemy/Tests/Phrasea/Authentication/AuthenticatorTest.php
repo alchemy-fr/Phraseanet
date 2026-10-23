@@ -6,15 +6,10 @@ use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Session as SessionEntity;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AuthenticatorTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::getUser
-     */
     public function testGetUser()
     {
         $app = $this->loadApp();
@@ -27,9 +22,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $this->assertNull($authenticator->getUser());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::setUser
-     */
     public function testSetUser()
     {
         $app = $this->loadApp();
@@ -47,9 +39,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $this->assertNull($authenticator->getUser());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::openAccount
-     */
     public function testOpenAccount()
     {
         $app = $this->loadApp();
@@ -61,21 +50,17 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['orm.em'] = $em = $this->createEntityManagerMock();
 
         $user = $this->createUserMock();
-        $user->expects($this->any())
+        $user
             ->method('getId')
             ->will($this->returnvalue(self::$DI['user']->getId()));
 
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acl = $this->createMock('ACL');
         $acl->expects($this->once())
             ->method('get_granted_sbas')
             ->will($this->returnValue([]));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
+        $aclProvider = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($acl));
 
@@ -112,9 +97,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $this->assertEquals($capturedSession, $phsession);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::refreshAccount
-     */
     public function testRefreshAccount()
     {
         $app = $this->loadApp();
@@ -134,9 +116,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $prop = $ref->getProperty('id');
         $prop->setValue($session, $sessionId);
 
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
 
         $repo->expects($this->exactly(2))
             ->method('find')
@@ -155,9 +135,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $this->assertEquals($session, $authenticator->refreshAccount($session));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::refreshAccount
-     */
     public function testRefreshAccountWithWrongSessionShouldThrowException()
     {
         $app = $this->loadApp();
@@ -177,9 +154,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $prop = $ref->getProperty('id');
         $prop->setValue($session, $sessionId);
 
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
 
         $repo->expects($this->once())
             ->method('find')
@@ -197,9 +172,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::closeAccount
-     */
     public function testCloseAccount()
     {
         $app = $this->getApplication();
@@ -213,17 +185,13 @@ class AuthenticatorTest extends \PhraseanetTestCase
     }
 
 //    public function testCloseAccountWhenNoSessionThrowsAnException()
-//    {
-//        $app = $this->getApplication();
-//
-//        $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
-//        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'No session to close.');
-//        $authenticator->closeAccount();
-//    }
-
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::isAuthenticated
-     */
+    //    {
+    //        $app = $this->getApplication();
+    //
+    //        $authenticator = new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
+    //        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException', 'No session to close.');
+    //        $authenticator->closeAccount();
+    //    }
     public function testIsAuthenticated()
     {
         $app = $this->loadApp();
@@ -237,22 +205,17 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $app['orm.em'] = $em = $this->createEntityManagerMock();
 
         $app['repo.sessions'] = $this->createEntityRepositoryMock();
-        $app['repo.sessions']->expects($this->any())
+        $app['repo.sessions']
             ->method('find')
             ->with(1)
             ->will($this->returnValue($sessionEntity));
 
-        $userRepository = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\UserRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userRepository = $this->createMock('Alchemy\Phrasea\Model\Repositories\UserRepository');
         $userRepository->expects($this->once())->method('find')->with(
             $this->equalTo(self::$DI['user']->getId())
         )->will($this->returnValue(self::$DI['user']));
 
-        $app['manipulator.user'] = $this
-            ->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['manipulator.user'] = $this->createStub('Alchemy\Phrasea\Model\Manipulator\UserManipulator');
 
         $app['repo.users'] = $userRepository;
 
@@ -264,9 +227,6 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $this->assertEquals(self::$DI['user'], $authenticator->getUser());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Authenticator::isAuthenticated
-     */
     public function testIsNotAuthenticated()
     {
         $app = $this->loadApp();
@@ -284,15 +244,11 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $session = new \Symfony\Component\HttpFoundation\Session\Session(new \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage());
         return $session;
 
-        return $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
     }
 
     private function getBrowserMock()
     {
-        return $this->getMockBuilder('Browser')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Browser');
     }
 }

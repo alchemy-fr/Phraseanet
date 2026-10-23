@@ -6,15 +6,11 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\JsonRequestSubscriber;
 use Symfony\Component\HttpKernel\Client;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class JsonRequestSubscriberTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideRouteParameters
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRouteParameters')]
     public function testRoutes($route, $isJson, $exceptionExpected)
     {
         $app = new Application(Application::ENV_TEST);
@@ -27,7 +23,7 @@ class JsonRequestSubscriberTest extends \PhraseanetTestCase
         $client = new Client($app);
         $headers = $isJson ? ['HTTP_ACCEPT' => 'application/json'] : [];
         if ($exceptionExpected) {
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         }
         $client->request('GET', $route, [], [], $headers);
         if (!$exceptionExpected) {
@@ -40,7 +36,7 @@ class JsonRequestSubscriberTest extends \PhraseanetTestCase
         }
     }
 
-    public function provideRouteParameters()
+    public static function provideRouteParameters()
     {
         return [
             ['/admin/status', true, true],

@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
 {
     /**
@@ -13,7 +11,7 @@ class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->test = [
@@ -35,7 +33,7 @@ class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['description'], $this->object->get_description());
         unset($this->test["description"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_description());
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_description());
         $this->assertEmpty($this->object->get_description());
     }
 
@@ -45,7 +43,7 @@ class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['id'], $this->object->get_id());
         unset($this->test["id"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_id());
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_id());
         $this->assertEmpty($this->object->get_id());
     }
 
@@ -61,7 +59,7 @@ class Bridge_Api_Dailymotion_ContainerTest extends \PhraseanetTestCase
         $this->assertEquals($this->test['name'], $this->object->get_title());
         unset($this->test["name"]);
         $this->object = new Bridge_Api_Dailymotion_Element($this->test, 'blabla');
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_title());
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_STRING, $this->object->get_title());
         $this->assertEmpty($this->object->get_title());
     }
 

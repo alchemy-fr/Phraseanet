@@ -12,7 +12,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
  * @group unit
  * @group structure
  */
-class LimitedStructureTest extends \PHPUnit_Framework_TestCase
+class LimitedStructureTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetUnrestrictedFields()
     {

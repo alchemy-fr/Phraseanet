@@ -1,17 +1,11 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class databoxTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    /**
-     * @covers databox::get_thesaurus
-     * @covers databox::get_dom_thesaurus
-     */
     public function testGetThesaurus()
     {
         $testValue = rand(1000, 9999);
@@ -43,10 +37,6 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
         $databox->delete();
     }
 
-    /**
-     * @covers databox::get_cterms
-     * @covers databox::get_dom_cterms
-     */
     public function test_get_cterms()
     {
         $testValue = rand(1000, 9999);
@@ -119,21 +109,16 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNull($databox->get_label('en', false));
     }
 
-    /**
-     * @dataProvider databoxXmlConfiguration
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('databoxXmlConfiguration')]
     public function testIsRegistrationEnabled($data, $value)
     {
-        $mock = $this->getMockBuilder('\databox')
-            ->disableOriginalConstructor()
-            ->setMethods(['get_sxml_structure'])
-            ->getMock();
+        $mock = $this->createMock('\databox');
 
         $mock->expects($this->once())->method('get_sxml_structure')->will($this->returnValue($data));
         $this->assertEquals($value, $mock->isRegistrationEnabled());
     }
 
-    public function databoxXmlConfiguration()
+    public static function databoxXmlConfiguration()
     {
         $xmlInscript =
 <<<XML

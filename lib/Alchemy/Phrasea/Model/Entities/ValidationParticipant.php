@@ -16,47 +16,31 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table(name="ValidationParticipants")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository::class)]
+#[ORM\Table(name: 'ValidationParticipants')]
 class ValidationParticipant
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $is_aware = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $is_confirmed = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $can_agree = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $can_see_others = false;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $reminded;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="validation_session_id")
-     */
+    #[ORM\Column(type: 'integer', nullable: true, name: 'validation_session_id')]
     private $session;
 
     /**
@@ -77,9 +61,7 @@ class ValidationParticipant
         return $this->id;
     }
 
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="user_id")
-     */
+    #[ORM\Column(type: 'integer', nullable: true, name: 'user_id')]
     private $user;
 
     /**

@@ -60,7 +60,7 @@ class ProcessPool implements LoggerAwareInterface
         $this->detachFinishedProcesses();
         $this->waitForNextSlot($channel);
 
-        $builder = new ProcessBuilder($processArguments);
+        $builder = new \Symfony\Component\Process\Process($processArguments);
 
         $builder->setWorkingDirectory($workingDirectory ?: getcwd());
 

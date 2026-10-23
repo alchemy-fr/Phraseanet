@@ -4,12 +4,10 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class QueryTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testQuery()
@@ -25,7 +23,6 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
                 self::$DI['app']['random.low'],
                 self::$DI['app']['dispatcher'],
             ])
-            ->setMethods(['logQuery'])
             ->getMock();
 
         self::$DI['app']['manipulator.user'] = $userManipulator;
@@ -39,7 +36,7 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         $response = $client->getResponse();
         $this->assertEquals('application/json', $response->headers->get('Content-type'));
         $data = json_decode($response->getContent(), true);
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
     }
 
     public function testQueryAnswerTrain()

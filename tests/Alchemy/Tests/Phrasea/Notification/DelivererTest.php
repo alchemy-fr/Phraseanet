@@ -5,20 +5,15 @@ namespace Alchemy\Tests\Phrasea\Notification;
 use Alchemy\Phrasea\Notification\Deliverer;
 use Alchemy\Phrasea\Exception\LogicException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class DelivererTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliver()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
@@ -32,12 +27,9 @@ class DelivererTest extends \PhraseanetTestCase
         $this->assertEquals(42, $deliverer->deliver($mail));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithoutReceiverShouldThrowAnException()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createStub('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
         $deliverer = new Deliverer($this->getMailerMock(), $this->getEventDispatcherMock(), $this->getEmitterMock());
 
@@ -49,14 +41,11 @@ class DelivererTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithoutReceipt()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
@@ -76,14 +65,11 @@ class DelivererTest extends \PhraseanetTestCase
         $this->assertNull($catchEmail->getReadReceiptTo());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithAReadReceiptWithoutEmitterShouldThrowException()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
@@ -97,30 +83,27 @@ class DelivererTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithReadReceipt()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
         $name = 'replyto-name';
         $email = 'replyto-email@domain.com';
 
-        $emitter = $this->getMock('Alchemy\Phrasea\Notification\EmitterInterface');
-        $emitter->expects($this->any())
+        $emitter = $this->createMock('Alchemy\Phrasea\Notification\EmitterInterface');
+        $emitter
             ->method('getName')
             ->will($this->returnValue($name));
 
-        $emitter->expects($this->any())
+        $emitter
             ->method('getEmail')
             ->will($this->returnValue($email));
 
-        $mail->expects($this->any())
+        $mail
             ->method('getEmitter')
             ->will($this->returnValue($emitter));
 
@@ -140,20 +123,17 @@ class DelivererTest extends \PhraseanetTestCase
         $this->assertEquals([$email => $name], $catchEmail->getReadReceiptTo());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithRightSubject()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
         $subject = 'Un joli message';
 
-        $mail->expects($this->any())
+        $mail
             ->method('getSubject')
             ->will($this->returnValue($subject));
 
@@ -173,20 +153,17 @@ class DelivererTest extends \PhraseanetTestCase
         $this->assertEquals(0, strpos($catchEmail->getSubject(), $subject));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithRightPrefix()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
         $subject = 'Un joli message';
 
-        $mail->expects($this->any())
+        $mail
             ->method('getSubject')
             ->will($this->returnValue($subject));
 
@@ -209,14 +186,11 @@ class DelivererTest extends \PhraseanetTestCase
         $this->assertNotEquals(false, strpos($catchEmail->getSubject(), $subject));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithFromHeader()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
@@ -224,11 +198,11 @@ class DelivererTest extends \PhraseanetTestCase
         $email = 'emitter-email@domain.com';
 
         $emitter = $this->getEmitterMock();
-        $emitter->expects($this->any())
+        $emitter
             ->method('getName')
             ->will($this->returnValue($name));
 
-        $emitter->expects($this->any())
+        $emitter
             ->method('getEmail')
             ->will($this->returnValue($email));
 
@@ -248,26 +222,23 @@ class DelivererTest extends \PhraseanetTestCase
         $this->assertEquals([$email => $name], $catchEmail->getFrom());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithToHeader()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
         $name = 'receiver-name';
         $email = 'receiver-email@domain.com';
 
-        $receiver = $this->getMock('Alchemy\Phrasea\Notification\ReceiverInterface');
-        $receiver->expects($this->any())
+        $receiver = $this->createMock('Alchemy\Phrasea\Notification\ReceiverInterface');
+        $receiver
             ->method('getName')
             ->will($this->returnValue($name));
 
-        $receiver->expects($this->any())
+        $receiver
             ->method('getEmail')
             ->will($this->returnValue($email));
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($receiver));
 
@@ -287,30 +258,27 @@ class DelivererTest extends \PhraseanetTestCase
         $this->assertEquals([$email => $name], $catchEmail->getTo());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Deliverer::deliver
-     */
     public function testDeliverWithReplyToHeader()
     {
-        $mail = $this->getMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
+        $mail = $this->createMock('Alchemy\Phrasea\Notification\Mail\MailInterface');
 
         $name = 'replyto-name';
         $email = 'replyto-email@domain.com';
 
-        $emitter = $this->getMock('Alchemy\Phrasea\Notification\EmitterInterface');
-        $emitter->expects($this->any())
+        $emitter = $this->createMock('Alchemy\Phrasea\Notification\EmitterInterface');
+        $emitter
             ->method('getName')
             ->will($this->returnValue($name));
 
-        $emitter->expects($this->any())
+        $emitter
             ->method('getEmail')
             ->will($this->returnValue($email));
 
-        $mail->expects($this->any())
+        $mail
             ->method('getEmitter')
             ->will($this->returnValue($emitter));
 
-        $mail->expects($this->any())
+        $mail
             ->method('getReceiver')
             ->will($this->returnValue($this->getReceiverMock()));
 
@@ -332,21 +300,19 @@ class DelivererTest extends \PhraseanetTestCase
 
     private function getEventDispatcherMock()
     {
-        return $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        return $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
     }
 
     private function getMailerMock()
     {
-        $mailer = $this->getMockBuilder('\Swift_Mailer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mailer = $this->createMock('\Swift_Mailer');
 
-        $transport = $this->getMock('Swift_Transport');
-        $transport->expects($this->any())
+        $transport = $this->createMock('Swift_Transport');
+        $transport
             ->method('isStarted')
             ->willReturn(true);
 
-        $mailer->expects($this->any())
+        $mailer
             ->method('getTransport')
             ->willReturn($transport);
 
@@ -355,18 +321,18 @@ class DelivererTest extends \PhraseanetTestCase
 
     private function getEmitterMock()
     {
-        return $this->getMock('Alchemy\Phrasea\Notification\EmitterInterface');
+        return $this->createMock('Alchemy\Phrasea\Notification\EmitterInterface');
     }
 
     private function getReceiverMock()
     {
-        $receiver = $this->getMock('Alchemy\Phrasea\Notification\ReceiverInterface');
+        $receiver = $this->createMock('Alchemy\Phrasea\Notification\ReceiverInterface');
 
-        $receiver->expects($this->any())
+        $receiver
             ->method('getName')
             ->will($this->returnValue('name'));
 
-        $receiver->expects($this->any())
+        $receiver
             ->method('getEmail')
             ->will($this->returnValue('name@domain.com'));
 

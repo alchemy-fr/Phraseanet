@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Media\Type;
 use MediaAlchemyst\Specification;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class databox_subdefTest extends \PHPUnit_Framework_TestCase
+class databox_subdefTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
@@ -281,10 +281,10 @@ EOF;
     }
 
     /**
-     * @return PHPUnit_Framework_MockObject_MockObject|TranslatorInterface
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Symfony\Contracts\Translation\TranslatorInterface
      */
     private function getTranslatorMock()
     {
-        return $this->getMock(TranslatorInterface::class);
+        return $this->getMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
     }
 }

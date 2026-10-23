@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FeedItemRepositoryTest extends \PhraseanetTestCase
 {
     public function testIs_record_in_public_feedInPublicFeed()

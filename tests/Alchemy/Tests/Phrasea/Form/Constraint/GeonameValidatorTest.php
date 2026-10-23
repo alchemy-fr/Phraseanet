@@ -4,24 +4,20 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\GeonameValidator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class GeonameValidatorTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideData')]
     public function testValidate($valid)
     {
-        $context = $this->getMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock('Symfony\Component\Validator\ExecutionContextInterface');
         $builder = $context
             ->expects($this->exactly($valid ? 0 : 1))
             ->method('addViolation');
 
         if (!$valid) {
-            $builder->with($this->isType('string'));
+            $builder->with($this->isString());
         }
 
         $validator = new GeonameValidator();
@@ -37,7 +33,7 @@ class GeonameValidatorTest extends \PhraseanetTestCase
         $validator->validate(123456, $constraint);
     }
 
-    public function provideData()
+    public static function provideData()
     {
         return [
             [true],
@@ -47,9 +43,6 @@ class GeonameValidatorTest extends \PhraseanetTestCase
 
     private function getConstraint()
     {
-        return $this
-            ->getMockBuilder('Alchemy\Phrasea\Form\Constraint\Geoname')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Form\Constraint\Geoname');
     }
 }

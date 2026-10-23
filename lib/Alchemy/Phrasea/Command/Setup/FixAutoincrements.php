@@ -130,7 +130,7 @@ class FixAutoincrements extends Command
      * @param $table
      * @param $max_id
      * @param Table $ouputTable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function box_setAutoIncrement($box, $table, $max_id, $ouputTable)
     {
@@ -177,12 +177,11 @@ class FixAutoincrements extends Command
     //============================= Databoxes =======================
     //
     //
-
     /**
      * fix every Databox "record" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function db_fix_coll()
     {
@@ -203,7 +202,7 @@ class FixAutoincrements extends Command
      * fix every Databox "record" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function db_fix_record()
     {
@@ -228,12 +227,11 @@ class FixAutoincrements extends Command
     //============================= ApplicationBox =======================
     //
     //
-
     /**
      * fix AppBox "bas" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_bas()
     {
@@ -259,7 +257,7 @@ class FixAutoincrements extends Command
      * fix AppBox "BasketElements" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_BasketElements()
     {
@@ -279,7 +277,7 @@ class FixAutoincrements extends Command
      * fix AppBox "Baskets" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_Baskets()
     {
@@ -301,7 +299,7 @@ class FixAutoincrements extends Command
      * fix AppBox "Sessions" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_Sessions()
     {

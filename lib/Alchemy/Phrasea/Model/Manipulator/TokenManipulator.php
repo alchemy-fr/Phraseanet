@@ -48,7 +48,7 @@ class TokenManipulator implements ManipulatorInterface
     private $temporaryDownloadPath;
 
     public function __construct(
-        ObjectManager $om,
+        \Doctrine\Persistence\ObjectManager $om,
         Generator $random,
         TokenRepository $repository,
         $temporaryDownloadPath,

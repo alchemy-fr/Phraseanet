@@ -8,12 +8,10 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
@@ -22,24 +20,19 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
      */
     protected $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         self::$DI['app']['dispatcher']->removeSubscriber(self::$DI['app']['phraseanet.session-manager-subscriber']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::listElement
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::call
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::connect
-     */
     public function testListElement()
     {
         $lazaretFile = $this->getOneLazaretFile();
         $route = '/prod/lazaret/';
 
-        /** @var ObjectManager $em */
+        /** @var \Doctrine\Persistence\ObjectManager $em */
         $em = self::$DI['app']['orm.em'];
         $em->persist($lazaretFile);
         $em->flush();
@@ -51,9 +44,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertGreaterThanOrEqual(1, $crawler->filter('.wrapper-item')->count());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::getElement
-     */
     public function testGetElement()
     {
         $lazaretFile = $this->getOneLazaretFile();
@@ -74,20 +64,17 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $content = json_decode($response->getContent());
 
         $this->assertGoodJsonContent($content);
-        $this->assertObjectHasAttribute('message', $content);
-        $this->assertObjectHasAttribute('result', $content);
-        $this->assertObjectHasAttribute('filename', $content->result);
-        $this->assertObjectHasAttribute('base_id', $content->result);
-        $this->assertObjectHasAttribute('created', $content->result);
-        $this->assertObjectHasAttribute('updated', $content->result);
-        $this->assertObjectHasAttribute('pathname', $content->result);
-        $this->assertObjectHasAttribute('sha256', $content->result);
-        $this->assertObjectHasAttribute('uuid', $content->result);
+        $this->assertObjectHasProperty('message', $content);
+        $this->assertObjectHasProperty('result', $content);
+        $this->assertObjectHasProperty('filename', $content->result);
+        $this->assertObjectHasProperty('base_id', $content->result);
+        $this->assertObjectHasProperty('created', $content->result);
+        $this->assertObjectHasProperty('updated', $content->result);
+        $this->assertObjectHasProperty('pathname', $content->result);
+        $this->assertObjectHasProperty('sha256', $content->result);
+        $this->assertObjectHasProperty('uuid', $content->result);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::getElement
-     */
     public function testGetElementException()
     {
         $id = 1;
@@ -106,9 +93,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadJsonContent(json_decode($response->getContent()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::addElement
-     */
     public function testAddElement()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
@@ -124,7 +108,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $lazaretThumbFileName);
 
         //mock lazaret Attribute
-        $lazaretAttribute = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretAttribute', [], [], '', false);
+        $lazaretAttribute = $this->createMock('Alchemy\Phrasea\Model\Entities\LazaretAttribute');
 
         //Expect to be called 3 times since we add 5 attribute to lazaretFile
         //and each one is called to verify if it is an attribute to keep
@@ -189,9 +173,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $story->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::addElement
-     */
     public function testAddElementWithCopyMeta()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
@@ -207,7 +188,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $lazaretSession->setCreated(new \DateTime('-1 day'));
 
         //The lazaret file
-        $lazaretFile = $this->getMock(LazaretFile::class, [], [], '', false);
+        $lazaretFile = $this->createMock(LazaretFile::class);
 //        $lazaretFile->setOriginalName('test');
 
 //        $lazaretFile->setFilename('test001.jpg');
@@ -237,7 +218,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
 
         //mock lazaret Attribute
-        $lazaretAttribute = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretAttribute', [], [], '', false);
+        $lazaretAttribute = $this->createMock('Alchemy\Phrasea\Model\Entities\LazaretAttribute');
 
         //Expect to be called 3 times since we add 5 attribute to lazaretFile
         //and each one is called to verify if it is an attribute to keep
@@ -309,9 +290,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $story->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::addElement
-     */
     public function testAddElementBadRequestException()
     {
         $id = 1;
@@ -331,9 +309,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadJsonContent(json_decode($response->getContent()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::addElement
-     */
     public function testAddElementException()
     {
         $randomValue = $this->setSessionFormToken('prodLazaret');
@@ -351,9 +326,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadJsonContent(json_decode($response->getContent()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::denyElement
-     */
     public function testDenyElement()
     {
         $lazaretFile = self::$DI['lazaret_1'];
@@ -377,9 +349,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $lazaretFile = null;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::denyElement
-     */
     public function testEmptyLazaret()
     {
         $route = sprintf('/prod/lazaret/empty/');
@@ -399,9 +368,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(0, $count);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::denyElement
-     */
     public function testDenyElementException()
     {
         $randomValue = $this->setSessionFormToken('prodLazaret');
@@ -416,16 +382,11 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadJsonContent(json_decode($response->getContent()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::acceptElement
-     */
     public function testAcceptElement()
     {
         $em = $this->createEntityManagerMock();
 
-        self::$DI['app']['subdef.substituer'] = $this->getMockBuilder('Alchemy\Phrasea\Media\SubdefSubstituer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['subdef.substituer'] = $this->createStub('Alchemy\Phrasea\Media\SubdefSubstituer');
         $record = self::$DI['record_2'];
 
         //expect one call to substitute the documents
@@ -433,7 +394,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('substituteDocument')
             ->with($record);
 
-        $databox = $this->getMock('databox', [], [], '', false);
+        $databox = $this->createMock('databox');
 
         //expect to fetch record
         $databox->expects($this->once())
@@ -441,14 +402,14 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
             ->with($this->equalTo(self::$DI['record_1']->get_record_id()))
             ->will($this->returnValue($record));
 
-        $collection = $this->getMock('collection', [], [], '', false);
+        $collection = $this->createMock('collection');
 
         //expect to fetch databox
         $collection->expects($this->once())
             ->method('get_databox')
             ->will($this->returnValue($databox));
 
-        $lazaretFile = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', [], [], '', false);
+        $lazaretFile = $this->createMock('Alchemy\Phrasea\Model\Entities\LazaretFile');
 
         //expect to fetch possible records to subtitute
         $lazaretFile->expects($this->once())
@@ -457,15 +418,15 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
 
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', self::$DI['app']['tmp.lazaret.path'].'/cestlafete.jpg');
 
-        $lazaretFile->expects($this->any())
+        $lazaretFile
             ->method('getFilename')
             ->will($this->returnValue('cestlafete.jpg'));
 
-        $lazaretFile->expects($this->any())
+        $lazaretFile
             ->method('getThumbFilename')
             ->will($this->returnValue('cestlafete.jpg'));
 
-        $lazaretFile->expects($this->any())
+        $lazaretFile
             ->method('getCollection')
             ->will($this->returnValue($collection));
 
@@ -490,9 +451,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['phraseanet.logger'] = self::$DI['app']->protect(function () use (&$called) {
             $called = true;
 
-            return $this->getMockBuilder('\Session_Logger')
-                    ->disableOriginalConstructor()
-                    ->getMock();
+            return $this->createMock('\Session_Logger');
         });
 
         self::$DI['app']['orm.em'] = $em;
@@ -513,14 +472,9 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertGoodJsonContent($content);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::acceptElement
-     */
     public function testAcceptElementNoRecordException()
     {
-        $lazaretFile = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\LazaretFile')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lazaretFile = $this->createMock('Alchemy\Phrasea\Model\Entities\LazaretFile');
 
         //expect to fetch possible records to subtitute
         //no records to subsitute
@@ -551,9 +505,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadJsonContent(json_decode($response->getContent()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::acceptElement
-     */
     public function testAcceptElementException()
     {
         $randomValue = $this->setSessionFormToken('prodLazaret');
@@ -568,9 +519,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadJsonContent(json_decode($response->getContent()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::acceptElement
-     */
     public function testAcceptElementBadRequestException()
     {
         $id = 1;
@@ -586,20 +534,17 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadJsonContent(json_decode($response->getContent()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::thumbnailElement
-     */
     public function testThumbnailElement()
     {
-        $lazaretFile = $this->getMock('Alchemy\Phrasea\Model\Entities\LazaretFile', [], [], '', false);
+        $lazaretFile = $this->createMock('Alchemy\Phrasea\Model\Entities\LazaretFile');
 
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', self::$DI['app']['tmp.lazaret.path'].'/cestlafete.jpg');
 
-        $lazaretFile->expects($this->any())
+        $lazaretFile
             ->method('getThumbFilename')
             ->will($this->returnValue('cestlafete.jpg'));
 
-        $lazaretFile->expects($this->any())
+        $lazaretFile
             ->method('getFilename')
             ->will($this->returnValue('cestlafete.jpg'));
 
@@ -618,9 +563,6 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertResponseOk($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::thumbnailElement
-     */
     public function testThumbnailException()
     {
         $route = sprintf('/prod/lazaret/%s/thumbnail/', '99999');
@@ -659,16 +601,16 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
     private function assertGoodJsonContent($content)
     {
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('success', $content);
-        $this->assertObjectHasAttribute('message', $content);
+        $this->assertObjectHasProperty('success', $content);
+        $this->assertObjectHasProperty('message', $content);
         $this->assertTrue($content->success);
     }
 
     private function assertBadJsonContent($content)
     {
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('success', $content);
-        $this->assertObjectHasAttribute('message', $content);
+        $this->assertObjectHasProperty('success', $content);
+        $this->assertObjectHasProperty('message', $content);
         $this->assertFalse($content->success);
     }
 

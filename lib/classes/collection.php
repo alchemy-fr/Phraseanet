@@ -650,7 +650,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     /**
      * @param int $pass_quantity
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function empty_collection($pass_quantity = 100)
     {
@@ -689,7 +689,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return int|null
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function get_record_amount()
     {
@@ -698,7 +698,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function get_record_details()
     {
@@ -727,7 +727,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function reset_watermark()
     {
@@ -742,7 +742,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     /**
      * @param null $record_id
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function reset_stamp($record_id = null)
     {
@@ -755,7 +755,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete()
     {
@@ -769,7 +769,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function unmount()
     {

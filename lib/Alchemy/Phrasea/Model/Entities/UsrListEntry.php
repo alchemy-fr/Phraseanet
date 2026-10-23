@@ -14,43 +14,34 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="UsrListsContent", uniqueConstraints={@ORM\UniqueConstraint(name="unique_usr_per_list", columns={"user_id", "list_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrListEntryRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UsrListEntryRepository::class)]
+#[ORM\Table(name: 'UsrListsContent')]
+#[ORM\UniqueConstraint(name: 'unique_usr_per_list', columns: ['user_id', 'list_id'])]
 class UsrListEntry
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="UsrList", inversedBy="entries", cascade={"persist"})
-     * @ORM\JoinColumn(name="list_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: UsrList::class, inversedBy: 'entries', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'list_id', referencedColumnName: 'id')]
     private $list;
 
     /**

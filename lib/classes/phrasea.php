@@ -69,7 +69,7 @@ class phrasea
         return self::$_sbas_params;
     }
 
-    public static function modulesName(TranslatorInterface $translator, $array_modules)
+    public static function modulesName(\Symfony\Contracts\Translation\TranslatorInterface $translator, $array_modules)
     {
         $array = [];
 

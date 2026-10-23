@@ -283,7 +283,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     /**
      * delete this subdef
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete()
     {

@@ -65,7 +65,7 @@ class databox extends base implements ThumbnailedElement
      * @param Connection  $databoxConnection
      * @param SplFileInfo $template
      * @return databox
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $template)
     {
@@ -191,11 +191,11 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      * @param  string             $structure
      * @return Array
      */
-    public static function get_structure_errors(TranslatorInterface $translator, $structure)
+    public static function get_structure_errors(\Symfony\Contracts\Translation\TranslatorInterface $translator, $structure)
     {
         $sx_structure = simplexml_load_string($structure);
 

@@ -20,7 +20,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class CustomLinkFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('linkName', TextType::class, [
             'label' => false,
@@ -92,7 +92,7 @@ class CustomLinkFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

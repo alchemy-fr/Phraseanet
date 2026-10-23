@@ -4,41 +4,35 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideVariousOptions
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVariousOptions')]
     public function testRunWithoutProblems($option)
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        $input->expects($this->any())
+        $input
             ->method('getArgument')
             ->with('type')
             ->will($this->returnValue('nginx'));
 
-        $input->expects($this->any())
+        $input
             ->method('getOption')
-            ->with($this->isType('string'))
+            ->with($this->isString())
             ->will($this->returnValue($option));
 
         $command = new XSendFileMappingGenerator();
 
         self::$DI['cli']['monolog'] = function () {
-            return $this->getMockBuilder('Monolog\Logger')->disableOriginalConstructor()->getMock();
+            return $this->createMock('Monolog\Logger');
         };
 
         $originalConf = self::$DI['cli']['conf'];
-        $conf = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $conf->expects($this->any())
+        $conf = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        $conf
             ->method('get')
             ->will($this->returnCallback(function ($property, $defaultValue = null) use ($originalConf) {
                 return $originalConf->get($property, $defaultValue);
@@ -61,12 +55,10 @@ class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
 
     public function testRunWithProblem()
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        $logger = $this->getMockBuilder('Monolog\Logger')
-                  ->disableOriginalConstructor()
-                  ->getMock();
+        $logger = $this->createMock('Monolog\Logger');
         $logger->expects($this->once())
             ->method('error');
 
@@ -74,18 +66,18 @@ class XSendFileMappingGeneratorTest extends \PhraseanetTestCase
             return $logger;
         };
 
-        $input->expects($this->any())
+        $input
             ->method('getArgument')
             ->with('type')
             ->will($this->returnValue(null));
 
         $command = new XSendFileMappingGenerator();
         $command->setContainer(self::$DI['cli']);
-        $this->setExpectedException('Alchemy\Phrasea\Exception\InvalidArgumentException');
+        $this->expectException('Alchemy\Phrasea\Exception\InvalidArgumentException');
         $command->execute($input, $output);
     }
 
-    public function provideVariousOptions()
+    public static function provideVariousOptions()
     {
         return [
             [true],

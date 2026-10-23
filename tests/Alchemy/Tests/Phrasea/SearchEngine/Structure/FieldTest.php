@@ -10,7 +10,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
  * @group unit
  * @group structure
  */
-class FieldTest extends \PHPUnit_Framework_TestCase
+class FieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testBasicMerge()
     {

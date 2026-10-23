@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityRepository;
 class WebhookEventManipulator implements ManipulatorInterface
 {
     /**
-     * @var ObjectManager
+     * @var \Doctrine\Persistence\ObjectManager
      */
     private $om;
 
@@ -33,7 +33,7 @@ class WebhookEventManipulator implements ManipulatorInterface
      */
     private $publisher;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo, WebhookPublisherInterface $publisher)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, EntityRepository $repo, WebhookPublisherInterface $publisher)
     {
         $this->om = $om;
         $this->repository = $repo;

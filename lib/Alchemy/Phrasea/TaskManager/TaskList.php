@@ -72,7 +72,7 @@ class TaskList implements TaskListInterface
         $arguments[] = '--max-memory';
         $arguments[] = $maxmegs << 20;
 
-        $builder = ProcessBuilder::create($arguments);
+        $builder = \Symfony\Component\Process\Process::create($arguments);
         $builder->setTimeout(0);
 
         return new Task($task, $name, $task->isSingleRun() ? 1 : INF, $builder->getProcess());

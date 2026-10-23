@@ -19,15 +19,15 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class FtpExportFormType extends AbstractType
 {
-    /** @var TranslatorInterface  */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
     private $translator;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('ftp-enabled', CheckboxType::class, [
             'label'        => 'Enable FTP export',
@@ -39,7 +39,7 @@ class FtpExportFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

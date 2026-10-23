@@ -6,15 +6,12 @@ use Alchemy\Phrasea\Notification\Mail\AbstractMail;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AbstractMailTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::renderHTML
-     */
     public function testRenderHTML()
     {
         $message = 'HTML sucks !';
@@ -22,20 +19,16 @@ class AbstractMailTest extends \PhraseanetTestCase
 
         $registry = $this->getRegistryMock();
 
-        $urlGenerator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlGenerator = $this->createStub('Symfony\Component\Routing\Generator\UrlGenerator');
 
-        $twig = $this->getMockBuilder('\Twig\Environment')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $twig = $this->createMock('\Twig\Environment');
 
         $twig->expects($this->once())
             ->method('render')
             ->will($this->returnValue($html));
 
         $app = $this->getApplicationMock();
-        $app->expects($this->any())
+        $app
             ->method('offsetGet')
             ->will($this->returnCallback(function ($offset) use ($twig, $urlGenerator, $registry) {
                 switch ($offset) {
@@ -58,9 +51,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals($message, $mail->getMessage());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getPhraseanetTitle
-     */
     public function testGetPhraseanetTitle()
     {
         $registry = $this->getRegistryMock();
@@ -80,9 +70,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals('Super Mario', $mail->getPhraseanetTitle());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getPhraseanetURL
-     */
     public function testGetPhraseanetURL()
     {
         $app = $this->getApplicationMock();
@@ -95,10 +82,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals('http://www.phraseanet.com/BIDULE', $mail->getPhraseanetURL());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getLogoUrl
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::setLogoUrl
-     */
     public function testGetLogoUrl()
     {
         $mail = new AbstractTester($this->getApplicationMock(), $this->getReceiverMock());
@@ -109,15 +92,11 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals($logo, $mail->getLogoUrl());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getLogoText
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::setLogoText
-     */
     public function testGetLogoText()
     {
         $app = $this->getApplicationMock();
 
-        $app->expects($this->any())
+        $app
             ->method('offsetGet')
             ->with($this->equalTo('conf'))
             ->will($this->returnValue($this->getRegistryMock()));
@@ -130,10 +109,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals($text, $mail->getLogoText());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getEmitter
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::setEmitter
-     */
     public function testGetEmitter()
     {
         $mail = new AbstractTester($this->getApplicationMock(), $this->getReceiverMock());
@@ -148,9 +123,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertNull($mail->getEmitter());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getEmitter
-     */
     public function testGetEmitterPassedOnConstructor()
     {
         $emitter = $this->getEmitterMock();
@@ -159,10 +131,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals($emitter, $mail->getEmitter());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getReceiver
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::setReceiver
-     */
     public function testGetReceiver()
     {
         $receiver = $this->getReceiverMock();
@@ -175,18 +143,12 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals($receiver2, $mail->getReceiver());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::getExpiration
-     */
     public function testGetExpiration()
     {
         $mail = new AbstractTester($this->getApplicationMock(), $this->getReceiverMock());
         $this->assertNull($mail->getExpiration());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::create
-     */
     public function testCreate()
     {
         $app = $this->getApplicationMock();
@@ -200,9 +162,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals($receiver, $mail->getReceiver());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::create
-     */
     public function testCreateWithoutEmitter()
     {
         $app = $this->getApplicationMock();
@@ -215,9 +174,6 @@ class AbstractMailTest extends \PhraseanetTestCase
         $this->assertEquals($receiver, $mail->getReceiver());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\AbstractMail::create
-     */
     public function testCreateWithoutMessage()
     {
         $app = $this->getApplicationMock();
@@ -248,26 +204,22 @@ class AbstractMailTest extends \PhraseanetTestCase
 
     protected function getRegistryMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-                ->disableOriginalConstructor()
-                ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
     }
 
     protected function getApplicationMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Application')
-                ->disableOriginalConstructor()
-                ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Application');
     }
 
     protected function getReceiverMock()
     {
-        return $this->getMock('Alchemy\Phrasea\Notification\ReceiverInterface');
+        return $this->createMock('Alchemy\Phrasea\Notification\ReceiverInterface');
     }
 
     protected function getEmitterMock()
     {
-        return $this->getMock('Alchemy\Phrasea\Notification\EmitterInterface');
+        return $this->createMock('Alchemy\Phrasea\Notification\EmitterInterface');
     }
 }
 

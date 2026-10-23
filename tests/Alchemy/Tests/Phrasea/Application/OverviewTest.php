@@ -9,29 +9,23 @@ use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testDatafilesRouteAuthenticated()
     {
         $subdef = 'preview';
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $acl->expects($this->any())
+        $acl = $this->createMock('ACL');
+        $acl
             ->method('has_access_to_subdef')
             ->with($this->isInstanceOf('\record_adapter'), $this->equalTo($subdef))
             ->will($this->returnValue(true));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
+        $aclProvider = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($acl));
 
@@ -68,18 +62,14 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testLastModified()
     {
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $acl->expects($this->any())
+        $acl = $this->createMock('ACL');
+        $acl
             ->method('has_access_to_subdef')
-            ->with($this->isInstanceOf('\record_adapter'), $this->isType('string'))
+            ->with($this->isInstanceOf('\record_adapter'), $this->isString())
             ->will($this->returnValue(true));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
+        $aclProvider = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($acl));
 
@@ -169,7 +159,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
-        $this->assertRegExp('/^attachment;/', $response->headers->get('content-disposition', ''));
+        $this->assertMatchesRegularExpression('/^attachment;/', $response->headers->get('content-disposition', ''));
         $url = self::$DI['app']['url_generator']->generate('permalinks_caption', [
             'sbas_id' => self::$DI['record_1']->get_sbas_id(),
             'record_id' => self::$DI['record_1']->get_record_id(),
@@ -245,13 +235,11 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $media = $this->getMockBuilder('MediaVorus\Media\MediaInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $media = $this->createMock('MediaVorus\Media\MediaInterface');
 
         $symfoFile = new UploadedFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'cestlafete.jpg');
 
-        $media->expects($this->any())
+        $media
             ->method('getFile')
             ->will($this->returnValue($symfoFile));
 
@@ -394,7 +382,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('GET', $path);
         $response = self::$DI['client']->getResponse();
 
-        $this->assertRegExp('/^inline;/', $response->headers->get('content-disposition'));
+        $this->assertMatchesRegularExpression('/^inline;/', $response->headers->get('content-disposition'));
         foreach ($headers as $name => $value) {
             $this->assertEquals($value, $response->headers->get($name));
         }

@@ -39,7 +39,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $this->app = $app;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [
@@ -217,12 +217,12 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $pathInfo = $request->getPathInfo();
 
         // nutifications poll in menubar (header "update-session=0") sent
-        if ($pathInfo === '/user/notifications/' && $request->getContentType() === 'json') {
+        if ($pathInfo === '/user/notifications/' && $request->getContentTypeFormat() === 'json') {
             return true;
         }
 
         // admin/task managers poll tasks
-        if ($pathInfo === '/admin/task-manager/tasks/' && $request->getContentType() === 'json') {
+        if ($pathInfo === '/admin/task-manager/tasks/' && $request->getContentTypeFormat() === 'json') {
             return true;
         }
 

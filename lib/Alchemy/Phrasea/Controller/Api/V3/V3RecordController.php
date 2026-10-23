@@ -74,7 +74,7 @@ class V3RecordController extends Controller
      * @param int $base_id
      *
      * @return Response
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public function indexAction_POST(Request $request, $base_id)

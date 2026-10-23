@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Webhook;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FeedEntryProcessorTest extends \PhraseanetTestCase
 {
 
@@ -62,6 +60,6 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
             self::$DI['app']['repo.feed-entries'],
             self::$DI['app']['phraseanet.user-query']
         );
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $processor->process($event));
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $processor->process($event));
     }
 }

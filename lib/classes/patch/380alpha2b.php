@@ -54,7 +54,7 @@ class patch_380alpha2b extends patchAbstract
 
         if ($row['Auto_increment']) {
             $sql = sprintf('ALTER TABLE Sessions AUTO_INCREMENT = %d', $row['Auto_increment']);
-            $app->getApplicationBox()->get_connection()->exec($sql);
+            $app->getApplicationBox()->get_connection()->executeStatement($sql);
         }
 
         return true;

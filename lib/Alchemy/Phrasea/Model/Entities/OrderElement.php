@@ -14,47 +14,38 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table(name="OrderElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ordercle", columns={"base_id","record_id","order_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\OrderElementRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\OrderElementRepository::class)]
+#[ORM\Table(name: 'OrderElements')]
+#[ORM\UniqueConstraint(name: 'unique_ordercle', columns: ['base_id', 'record_id', 'order_id'])]
 class OrderElement
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", name="base_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'base_id')]
     private $baseId;
 
-    /**
-     * @ORM\Column(type="integer", name="record_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'record_id')]
     private $recordId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="order_master", referencedColumnName="id")
      *
      * @var null|User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'order_master', referencedColumnName: 'id')]
     private $orderMaster;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
      * @var bool|null
      */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private $deny;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Order", inversedBy="elements", cascade={"persist"})
-     * @ORM\JoinColumn(name="order_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'elements', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id')]
     private $order;
 
     /**

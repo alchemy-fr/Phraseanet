@@ -149,7 +149,7 @@ class CleanLogDocsCommand extends Command
 
                             $sqlDeleteAction = 'DELETE FROM log_docs WHERE record_id IN(' . implode(',', $recordsId) . ') LIMIT 1000';
                             do {
-                                $nbDeletedRow = $cnx->exec($sqlDeleteAction);
+                                $nbDeletedRow = $cnx->executeStatement($sqlDeleteAction);
                                 $count += $nbDeletedRow;
                             } while ($nbDeletedRow > 0);
 
@@ -161,7 +161,7 @@ class CleanLogDocsCommand extends Command
                         $cnx = $databox->get_connection();
                         $count = 0;
                         do {
-                            $nbDeletedRow = $cnx->exec($sqlDeleteAction);
+                            $nbDeletedRow = $cnx->executeStatement($sqlDeleteAction);
                             $count += $nbDeletedRow;
                         } while ($nbDeletedRow > 0);
                     }

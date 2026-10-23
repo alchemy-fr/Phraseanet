@@ -31,7 +31,7 @@ class PhraseaRecoverPasswordForm extends AbstractType
         $this->repository = $repository;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('token', HiddenType::class, [
             'required'      => true,
@@ -50,12 +50,12 @@ class PhraseaRecoverPasswordForm extends AbstractType
             'second_options'    => ['label' => 'New password (confirmation)'],
             'constraints'       => [
                 new Assert\NotBlank(),
-                new Assert\Length(['min' => 5]),
+                new Assert\Length(min: 5),
             ],
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

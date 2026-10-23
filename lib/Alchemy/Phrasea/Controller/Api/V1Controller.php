@@ -717,7 +717,7 @@ class V1Controller extends Controller
     private function listLazaretFile(LazaretFile $file)
     {
         $manager = $this->getBorderManager();
-        /** @var TranslatorInterface $translator */
+        /** @var \Symfony\Contracts\Translation\TranslatorInterface $translator */
         $translator = $this->app['translator'];
 
         $checks = array_map(function (LazaretCheck $checker) use ($manager, $translator) {
@@ -3072,7 +3072,7 @@ class V1Controller extends Controller
 
         $form->submit($data);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $service->updatePassword($command, null);
                 $ret = ['success' => true];
@@ -3243,7 +3243,7 @@ class V1Controller extends Controller
 
     public function ensureJsonContentType(Request $request)
     {
-        if ($request->getContentType() != 'json') {
+        if ($request->getContentTypeFormat() != 'json') {
             $this->app->abort(406, 'Invalid Content Type given.');
         }
     }

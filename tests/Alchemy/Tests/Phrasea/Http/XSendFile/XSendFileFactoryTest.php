@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 
 use Alchemy\Phrasea\Http\XSendFile\XSendFileFactory;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class XSendFileFactoryTest extends \PhraseanetTestCase
 {
     public function testFactoryCreation()
@@ -18,7 +16,7 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
 
     public function testFactoryWithXsendFileEnable()
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $logger = $this->createStub('Psr\Log\LoggerInterface');
 
         $factory = new XSendFileFactory($logger, true, 'nginx', $this->getNginxMapping());
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\ModeInterface', $factory->getMode());
@@ -26,19 +24,17 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
 
     public function testFactoryWithXsendFileDisabled()
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $logger = $this->createStub('Psr\Log\LoggerInterface');
 
         $factory = new XSendFileFactory($logger, false, 'nginx',$this->getNginxMapping());
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NullMode', $factory->getMode());
         $this->assertFalse($factory->isXSendFileModeEnabled());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testFactoryWithWrongTypeThrowsAnExceptionIfRequired()
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
+        $logger = $this->createStub('Psr\Log\LoggerInterface');
 
         $factory = new XSendFileFactory($logger, true, 'wrong-type', $this->getNginxMapping());
         $factory->getMode(true);
@@ -46,22 +42,20 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
 
     public function testFactoryWithWrongTypeDoesNotThrowsAnExceptio()
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $logger = $this->createMock('Psr\Log\LoggerInterface');
 
         $logger->expects($this->once())
                 ->method('error')
-                ->with($this->isType('string'));
+                ->with($this->isString());
 
         $factory = new XSendFileFactory($logger, true, 'wrong-type', $this->getNginxMapping());
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NullMode', $factory->getMode(false));
     }
 
-     /**
-     * @dataProvider provideTypes
-     */
+     #[\PHPUnit\Framework\Attributes\DataProvider('provideTypes')]
     public function testFactoryType($type, $mapping, $classmode)
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $logger = $this->createStub('Psr\Log\LoggerInterface');
 
         $factory = new XSendFileFactory($logger, true, $type, $mapping);
         $this->assertInstanceOf($classmode, $factory->getMode());
@@ -84,24 +78,24 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
 
     public function testInvalidMappingThrowsAnExceptionIfRequired()
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $logger = $this->createMock('Psr\Log\LoggerInterface');
 
         $logger->expects($this->once())
                 ->method('error')
-                ->with($this->isType('string'));
+                ->with($this->isString());
 
         $factory = new XSendFileFactory($logger, true, 'nginx', []);
-        $this->setExpectedException('Alchemy\Phrasea\Exception\RuntimeException');
+        $this->expectException('Alchemy\Phrasea\Exception\RuntimeException');
         $factory->getMode(true);
     }
 
     public function testInvalidMappingDoesNotThrowsAnException()
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $logger = $this->createMock('Psr\Log\LoggerInterface');
 
         $logger->expects($this->once())
                 ->method('error')
-                ->with($this->isType('string'));
+                ->with($this->isString());
 
         $factory = new XSendFileFactory($logger, true, 'nginx', []);
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NginxMode', $factory->getMode(false));
@@ -109,11 +103,11 @@ class XSendFileFactoryTest extends \PhraseanetTestCase
 
     public function testInvalidMappingDoesNotThrowsAnExceptionByDefault()
     {
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $logger = $this->createMock('Psr\Log\LoggerInterface');
 
         $logger->expects($this->once())
                 ->method('error')
-                ->with($this->isType('string'));
+                ->with($this->isString());
 
         $factory = new XSendFileFactory($logger, true, 'nginx', []);
         $this->assertInstanceOf('Alchemy\Phrasea\Http\XSendFile\NginxMode', $factory->getMode());

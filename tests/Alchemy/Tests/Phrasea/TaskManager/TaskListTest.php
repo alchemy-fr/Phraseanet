@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\TaskManager;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\TaskList;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TaskListTest extends \PhraseanetTestCase
 {
     public function testThatRefreshReturnsAnArrayOfTaskInterface()

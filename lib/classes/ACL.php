@@ -301,7 +301,7 @@ class ACL implements cache_cacheableInterface
             $stmt_ins = $cnx->prepare($sql);
         }
 
-        $cnx->exec("START TRANSACTION");
+        $cnx->executeStatement("START TRANSACTION");
 
         try {
             $n0 = $stmt_upd->executeStatement([
@@ -352,7 +352,7 @@ class ACL implements cache_cacheableInterface
         }
 
         // $stmt->closeCursor();
-        $cnx->exec("COMMIT");
+        $cnx->executeStatement("COMMIT");
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -388,7 +388,7 @@ class ACL implements cache_cacheableInterface
             $stmt_ins = $cnx->prepare($sql);
         }
 
-        $cnx->exec("START TRANSACTION");
+        $cnx->executeStatement("START TRANSACTION");
 
 //        $stmt_del->execute([
 //            ':usr_id'    => $this->user->getId(),
@@ -446,7 +446,7 @@ class ACL implements cache_cacheableInterface
         }
 
         // $stmt->closeCursor();
-        $cnx->exec("COMMIT");
+        $cnx->executeStatement("COMMIT");
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -1347,7 +1347,7 @@ class ACL implements cache_cacheableInterface
             try {
                 $stmt_del->executeStatement([':base_id' => $base_id, ':usr_id'  => $usr_id]);
             }
-            catch (DBALException $e) {
+            catch (\Doctrine\DBAL\Exception $e) {
                 $errors++;
                 continue;
             }
@@ -1422,7 +1422,7 @@ class ACL implements cache_cacheableInterface
                 $inserted = true;
             }
         }
-        catch(DBALException $e) {
+        catch(\Doctrine\DBAL\Exception $e) {
             // no-op, mostly the row did exist
         }
 
@@ -1460,7 +1460,7 @@ class ACL implements cache_cacheableInterface
                         ),
                         AclEvents::ACCESS_TO_SBAS_GRANTED
                     );
-                } catch (DBALException $e) {
+                } catch (\Doctrine\DBAL\Exception $e) {
 
                 }
             }
@@ -1550,7 +1550,7 @@ class ACL implements cache_cacheableInterface
      * @param $sbas_id
      * @param $rights
      * @return $this
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public function update_rights_to_sbas($sbas_id, $rights)
@@ -1777,7 +1777,7 @@ class ACL implements cache_cacheableInterface
                     ':mask_xor' => $this->get_mask_xor($collection->get_base_id()),
                     ':ord'      => $iord++
                 ]);
-            } catch (DBALException $e) {
+            } catch (\Doctrine\DBAL\Exception $e) {
 
             }
         }

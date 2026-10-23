@@ -4,15 +4,10 @@ namespace Alchemy\Tests\Phrasea\Utilities\String;
 
 use Alchemy\Phrasea\Utilities\StringHelper;
 
-/**
- * @group unit
- */
+#[\PHPUnit\Framework\Attributes\Group('unit')]
 class StringHelperTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideStringsForCamelize
-     * @covers Alchemy\Phrasea\Utilities\StringHelper::camelize
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideStringsForCamelize')]
     public function testCamelize($string, $separator, $expected, $pascalize)
     {
         $result = StringHelper::camelize($string, $separator, $pascalize);
@@ -20,7 +15,7 @@ class StringHelperTest extends \PhraseanetTestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function provideStringsForCamelize()
+    public static function provideStringsForCamelize()
     {
         return [
             ['string-test', '-', 'stringTest', false],
@@ -32,10 +27,7 @@ class StringHelperTest extends \PhraseanetTestCase
 
 
 
-    /**
-     * @dataProvider provideStringsForCrLfNormalize
-     * @covers Alchemy\Phrasea\Utilities\StringHelper::crlfNormalize
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideStringsForCrLfNormalize')]
     public function testCrLfNormalize($string, $expected)
     {
         $result = StringHelper::crlfNormalize($string);
@@ -43,7 +35,7 @@ class StringHelperTest extends \PhraseanetTestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function provideStringsForCrLfNormalize()
+    public static function provideStringsForCrLfNormalize()
     {
         return [
             ["ABC\rDEF", "ABC\nDEF"],
@@ -53,10 +45,7 @@ class StringHelperTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideStringsForSqlQuote
-     * @covers Alchemy\Phrasea\Utilities\StringHelper::SqlQuote
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideStringsForSqlQuote')]
     public function testSqlQuote($string, $mode, $expected)
     {
         $result = StringHelper::SqlQuote($string, $mode);
@@ -64,7 +53,7 @@ class StringHelperTest extends \PhraseanetTestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function provideStringsForSqlQuote()
+    public static function provideStringsForSqlQuote()
     {
         return [
             ["azerty",  StringHelper::SQL_VALUE, "'azerty'"],

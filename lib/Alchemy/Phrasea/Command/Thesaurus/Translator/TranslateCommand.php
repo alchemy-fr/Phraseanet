@@ -40,7 +40,7 @@ class TranslateCommand extends phrCommand
     /** @var GlobalConfiguration */
     private $config;
 
-    public function configure()
+    public function configure(): void
     {
         $this->setName('thesaurus:translate')
             ->setDescription('(BETA) Translate fields values using thesaurus')

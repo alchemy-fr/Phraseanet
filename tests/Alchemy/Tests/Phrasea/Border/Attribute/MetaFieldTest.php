@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MetaFieldTest extends \PhraseanetTestCase
 {
     /**
@@ -19,10 +17,7 @@ class MetaFieldTest extends \PhraseanetTestCase
     protected $beforeNotice;
     protected $databox_field;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->value = ["Un éléphant ça trompe"];
@@ -35,87 +30,60 @@ class MetaFieldTest extends \PhraseanetTestCase
         }
         $this->object = new MetaField($this->databox_field, $this->value);
 
-        $this->before = \PHPUnit_Framework_Error_Warning::$enabled;
-        $this->beforeNotice = \PHPUnit_Framework_Error_Notice::$enabled;
+        $this->before = \PHPUnit\Framework\Error\Warning::$enabled;
+        $this->beforeNotice = \PHPUnit\Framework\Error\Notice::$enabled;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::__destruct
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
-        \PHPUnit_Framework_Error_Warning::$enabled = $this->before;
-        \PHPUnit_Framework_Error_Notice::$enabled = $this->beforeNotice;
+        \PHPUnit\Framework\Error\Warning::$enabled = $this->before;
+        \PHPUnit\Framework\Error\Notice::$enabled = $this->beforeNotice;
         $this->object = null;
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::__construct
-     */
     public function testConstruct()
     {
         new MetaField($this->databox_field, [0.57]);
         new MetaField($this->databox_field, [3]);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::getName
-     */
     public function testGetName()
     {
         $this->assertEquals(AttributeInterface::NAME_METAFIELD, $this->object->getName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::getField
-     */
     public function testGetField()
     {
         $this->assertEquals($this->databox_field, $this->object->getField());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::getValue
-     */
     public function testGetValue()
     {
         $this->assertEquals($this->value, $this->object->getValue());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::asString
-     */
     public function testAsString()
     {
-        $this->assertInternalType('string', $this->object->asString());
+        $this->assertIsString($this->object->asString());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::loadFromString
-     */
     public function testLoadFromString()
     {
         $this->assertEquals($this->object, MetaField::loadFromString(self::$DI['app'], $this->object->asString()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::loadFromString
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadFromStringFail()
     {
+        $this->expectException(\InvalidArgumentException::class);
         MetaField::loadFromString(self::$DI['app'], 'Elephant');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\MetaField::loadFromString
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadFromStringFailSerialize()
     {
-        \PHPUnit_Framework_Error_Warning::$enabled = false;
-        \PHPUnit_Framework_Error_Notice::$enabled = false;
+        $this->expectException(\InvalidArgumentException::class);
+        \PHPUnit\Framework\Error\Warning::$enabled = false;
+        \PHPUnit\Framework\Error\Notice::$enabled = false;
         MetaField::loadFromString(self::$DI['app'], serialize(['Elephant', 'sbas_id' => self::$DI['collection']->get_sbas_id(), 'id' => 0]));
     }
 }

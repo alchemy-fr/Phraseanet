@@ -14,28 +14,20 @@ use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * @ORM\Table(name="LazaretChecks")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'LazaretChecks')]
 class LazaretCheck
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=512)
-     */
+    #[ORM\Column(type: 'string', length: 512)]
     private $checkClassname;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="LazaretFile", inversedBy="checks", cascade={"persist"})
-     * @ORM\JoinColumn(name="lazaret_file_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: LazaretFile::class, inversedBy: 'checks', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'lazaret_file_id', referencedColumnName: 'id')]
     private $lazaretFile;
 
     /**
@@ -95,10 +87,10 @@ class LazaretCheck
     }
 
     /**
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      * @return string   the reason why a record is in lazaret
      */
-    public function getReason(TranslatorInterface $translator)
+    public function getReason(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $className = $this->getCheckClassname();
         if (method_exists($className, "getReason")) {

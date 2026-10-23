@@ -5,15 +5,11 @@ namespace Alchemy\Tests\Phrasea\Webhook;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Webhook\EventProcessorFactory;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class EventProcessorFactoryTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider eventProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('eventProvider')]
     public function testGet($type, $expected)
     {
         $factory = new EventProcessorFactory(self::$DI['app']);
@@ -22,17 +18,15 @@ class EventProcessorFactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf($expected, $factory->get($event));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testUnknownProcessor()
     {
+        $this->expectException(\RuntimeException::class);
         $factory = new EventProcessorFactory(self::$DI['app']);
         $event = new WebhookEvent();
         $factory->get($event);
     }
 
-    public function eventProvider()
+    public static function eventProvider()
     {
         return [
             [WebhookEvent::FEED_ENTRY_TYPE, 'Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessor'],

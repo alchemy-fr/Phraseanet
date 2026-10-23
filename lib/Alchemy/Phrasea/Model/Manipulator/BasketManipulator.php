@@ -23,10 +23,10 @@ class BasketManipulator
     private $app;
     /** @var BasketRepository */
     private $repository;
-    /** @var ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $manager;
 
-    public function __construct(Application $app, BasketRepository $repository, ObjectManager $manager)
+    public function __construct(Application $app, BasketRepository $repository, \Doctrine\Persistence\ObjectManager $manager)
     {
         $this->app = $app;
         $this->repository = $repository;

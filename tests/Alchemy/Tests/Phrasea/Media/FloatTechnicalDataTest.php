@@ -12,7 +12,7 @@ namespace Alchemy\Tests\Phrasea\Media;
 use Alchemy\Phrasea\Media\FloatTechnicalData;
 use Alchemy\Phrasea\Media\TechnicalData;
 
-final class FloatTechnicalDataTest extends \PHPUnit_Framework_TestCase
+final class FloatTechnicalDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testItImplementsTechnicalData()
     {

@@ -29,7 +29,7 @@ class MockedAuthenticatedVoter implements VoterInterface
         return true;
     }
 
-    public function vote(TokenInterface $token, $object, array $attributes)
+    public function vote(TokenInterface $token, $object, array $attributes, ?\Symfony\Component\Security\Core\Authorization\Voter\Vote $vote = null): int
     {
         $result = VoterInterface::ACCESS_ABSTAIN;
         foreach ($attributes as $attribute) {

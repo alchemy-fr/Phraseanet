@@ -144,7 +144,7 @@ class DatabaseMaintenanceService
         $sql = 'ALTER TABLE `' . $tableName . '` ENGINE = ' . $engine;
 
         try {
-            $this->connection->exec($sql);
+            $this->connection->executeStatement($sql);
         } catch (\Exception $e) {
             $recommends[] = [
                 'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%',
@@ -275,7 +275,7 @@ class DatabaseMaintenanceService
         $create_stmt .= implode(',', $field_stmt);
         $create_stmt .= ") ENGINE=" . $engine . " CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
 
-        $this->connection->exec($create_stmt);
+        $this->connection->executeStatement($create_stmt);
 
         foreach ($defaults_stmt as $def) {
             $stmt = $this->connection->prepare($def['sql']);
@@ -547,7 +547,7 @@ class DatabaseMaintenanceService
 
             try {
                 $output->writeln(sprintf("%s \n", $a));
-                $this->connection->exec($a);
+                $this->connection->executeStatement($a);
             } catch (\Exception $e) {
                 $return[] = [
                     'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%',
@@ -562,7 +562,7 @@ class DatabaseMaintenanceService
 
             try {
                 $output->writeln(sprintf("%s \n", $a));
-                $this->connection->exec($a);
+                $this->connection->executeStatement($a);
             } catch (\Exception $e) {
                 $return[] = [
                     'message' => $this->app->trans('Erreur lors de la tentative ; errreur : %message%',

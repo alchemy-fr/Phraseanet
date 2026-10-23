@@ -7,10 +7,8 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Client;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FirewallSubscriberTest extends \PhraseanetTestCase
 {
     public function testRedirection()
@@ -39,7 +37,7 @@ class FirewallSubscriberTest extends \PhraseanetTestCase
         });
 
         $client = new Client($app);
-        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\HttpException');
+        $this->expectException('Symfony\Component\HttpKernel\Exception\HttpException');
         $client->request('GET', '/');
     }
 }

@@ -7,15 +7,11 @@ use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AccessRestrictionTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideVariousConfiguration
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVariousConfiguration')]
     public function testRestrictionConfigurations($conf, $restricted, array $collAccess, array $collNoAccess, array $databoxAccess, array $databoxNoAccess)
     {
         $conf = new MockArrayConf($conf);

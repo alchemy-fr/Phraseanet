@@ -5,15 +5,10 @@ namespace Alchemy\Tests\Phrasea\Authentication\PersistentCookie;
 use Alchemy\Phrasea\Authentication\PersistentCookie\Manager;
 use Alchemy\Phrasea\Model\Entities\Session;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ManagerTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Authentication\PersistentCookie\Manager::getSession
-     */
     public function testGetSession()
     {
         $encoder = $this->getPasswordEncoderMock();
@@ -31,9 +26,7 @@ class ManagerTest extends \PhraseanetTestCase
         $session = new Session();
         $session->setNonce('prettyN0nce');
 
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
 
         $repo->expects($this->once())
             ->method('findOneBy')
@@ -50,9 +43,6 @@ class ManagerTest extends \PhraseanetTestCase
         $this->assertSame($session, $manager->getSession($tokenValue));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\PersistentCookie\Manager::getSession
-     */
     public function testGetSessionReturnFalse()
     {
         $encoder = $this->getPasswordEncoderMock();
@@ -70,9 +60,7 @@ class ManagerTest extends \PhraseanetTestCase
         $session = new Session();
         $session->setNonce('prettyN0nce');
 
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
 
         $repo->expects($this->once())
             ->method('findOneBy')
@@ -88,18 +76,13 @@ class ManagerTest extends \PhraseanetTestCase
 
         $this->assertFalse($manager->getSession($tokenValue));
     }
-    /**
-     * @covers Alchemy\Phrasea\Authentication\PersistentCookie\Manager::getSession
-     */
     public function testSessionNotFound()
     {
         $encoder = $this->getPasswordEncoderMock();
         $browser = $this->getBrowserMock();
         $tokenValue = 'encrypted-persistent-value';
 
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository');
 
         $repo->expects($this->once())
             ->method('findOneBy')
@@ -113,15 +96,11 @@ class ManagerTest extends \PhraseanetTestCase
 
     private function getPasswordEncoderMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder');
     }
 
     private function getBrowserMock()
     {
-        return $this->getMockBuilder('Browser')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Browser');
     }
 }

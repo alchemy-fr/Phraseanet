@@ -5,11 +5,9 @@ namespace Alchemy\Tests\Phrasea\Controller\Api;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ApiRootTest extends \PhraseanetWebTestCase
 {
     /**
@@ -18,7 +16,7 @@ class ApiRootTest extends \PhraseanetWebTestCase
      */
     protected $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

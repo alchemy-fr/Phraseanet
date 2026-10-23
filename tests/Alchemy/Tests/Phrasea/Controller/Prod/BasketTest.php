@@ -4,12 +4,10 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Doctrine\ORM\EntityManager;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;

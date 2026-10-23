@@ -5,10 +5,9 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="WebhookEvents", indexes={@ORM\Index(name="webhook_event_name", columns={"name"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WebhookEventRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\WebhookEventRepository::class)]
+#[ORM\Table(name: 'WebhookEvents')]
+#[ORM\Index(name: 'webhook_event_name', columns: ['name'])]
 class WebhookEvent
 {
     const WEBHOOK_VERSION = 1;
@@ -62,49 +61,38 @@ class WebhookEvent
             self::ORDER_DENIED              => [\ACL::ACCESS, \ACL::ACTIF, \ACL::ORDER_MASTER]
     ];
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=64, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 64, nullable: false)]
     private $name;
 
-    /**
-     *  @ORM\Column(type="string", length=64, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 64, nullable: false)]
     private $type;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="json_array", nullable=false)
      */
+    #[ORM\Column(type: 'json_array', nullable: false)]
     private $data;
 
     /**
      * @var boolean
-     *
-     * @ORM\Column(type="boolean", nullable=false, options={"default" = 0})
      */
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
     private $processed = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
     /**
      * List of collection base_id concerned
      * @var array
-     *
-     * @ORM\Column(name="collection_base_ids", type="json_array", nullable=true)
      */
+    #[ORM\Column(name: 'collection_base_ids', type: 'json_array', nullable: true)]
     private $collectionBaseIds;
 
     /**

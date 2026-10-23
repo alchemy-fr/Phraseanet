@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexDropCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('searchengine:index:drop')

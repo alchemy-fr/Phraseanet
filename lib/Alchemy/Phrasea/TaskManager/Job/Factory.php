@@ -22,7 +22,7 @@ class Factory
     private $logger;
     private $translator;
 
-    public function __construct(EventDispatcherInterface $dispatcher, LoggerInterface $logger, TranslatorInterface $translator)
+    public function __construct(EventDispatcherInterface $dispatcher, LoggerInterface $logger, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;

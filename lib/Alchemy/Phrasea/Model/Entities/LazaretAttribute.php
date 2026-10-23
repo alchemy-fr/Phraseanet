@@ -14,45 +14,31 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="LazaretAttributes")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'LazaretAttributes')]
 class LazaretAttribute
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     */
+    #[ORM\Column(type: 'string', length: 64)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=2048)
-     */
+    #[ORM\Column(type: 'string', length: 2048)]
     private $value;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="LazaretFile", inversedBy="attributes", cascade={"persist"})
-     * @ORM\JoinColumn(name="lazaret_file_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: LazaretFile::class, inversedBy: 'attributes', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'lazaret_file_id', referencedColumnName: 'id')]
     private $lazaretFile;
 
     /**

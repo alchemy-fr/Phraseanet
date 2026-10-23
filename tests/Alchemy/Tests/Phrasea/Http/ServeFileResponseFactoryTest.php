@@ -7,11 +7,9 @@ use Alchemy\Phrasea\Http\XSendFile\NginxMode;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 {
     protected $factory;
@@ -104,11 +102,9 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $this->assertEquals('/protected/cestlafete.jpg', $response->headers->get('x-accel-redirect'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException
-     */
     public function testDeliverUnexistingFile()
     {
+        $this->expectException(\Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException::class);
         BinaryFileResponse::trustXSendfileTypeHeader();
         $this->factory = new ServeFileResponseFactory(new \unicode());
 

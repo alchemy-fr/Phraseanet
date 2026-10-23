@@ -20,7 +20,7 @@ class NewEmail extends Constraint
     public $message = 'This email is already bound to an account';
     private $repository;
 
-    public function __construct(ObjectRepository $repository)
+    public function __construct(\Doctrine\Persistence\ObjectRepository $repository)
     {
         $this->repository = $repository;
         parent::__construct();

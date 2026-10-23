@@ -22,15 +22,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class WebservicesFormType extends AbstractType
 {
-    /** @var TranslatorInterface  */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
     private $translator;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('google-charts-enabled', CheckboxType::class, [
             'label'        => 'Use Google Chart API',
@@ -50,21 +50,17 @@ class WebservicesFormType extends AbstractType
         $builder->add('recaptcha-private-key', TextType::class, [
             'label'       => 'Recaptcha private key',
         ]);
-        $builder->add('trials-before-display', 'integer', [
+        $builder->add('trials-before-display', \Symfony\Component\Form\Extension\Core\Type\IntegerType::class, [
             'label'        => 'Trials before display captcha',
             'constraints' => array(
                 new Assert\NotBlank(),
                 new Assert\Type('integer'),
-                new Assert\Regex(array(
-                        'pattern' => '/^[0-9]\d*$/',
-                        'message' => 'Please use only positive numbers.'
-                    )
-                ),
+                new Assert\Regex(pattern: '/^[0-9]\d*$/', message: 'Please use only positive numbers.'),
             ),
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

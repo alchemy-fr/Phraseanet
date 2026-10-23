@@ -313,7 +313,7 @@ class ElasticsearchOptions
         $this->_customValues = igorw\assoc_in($this->_customValues, $keys, $value);
     }
 
-    public static function getAggregableTechnicalFields(TranslatorInterface $translator)
+    public static function getAggregableTechnicalFields(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return [
             '_base' => [

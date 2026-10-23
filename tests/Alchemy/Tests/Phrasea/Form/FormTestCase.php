@@ -8,10 +8,7 @@ abstract class FormTestCase extends \PhraseanetTestCase
     {
         $form = $this->getForm();
 
-        $builder = $this
-            ->getMockBuilder('Symfony\Component\Form\FormBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $builder = $this->createStub('Symfony\Component\Form\FormBuilder');
 
         $form->buildForm($builder, ['disabled' => false]);
     }

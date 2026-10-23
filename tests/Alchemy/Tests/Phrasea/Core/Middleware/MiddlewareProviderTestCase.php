@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Core\Middleware;
 
 abstract class MiddlewareProviderTestCase extends \PhraseanetTestCase
 {
-    /**
-     * @test
-     * @dataProvider provideDescription
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideDescription')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function differentInstancesShouldBereturnedEveryTime($service, $key)
     {
         self::$DI['app']->register(new $service());
@@ -19,5 +17,5 @@ abstract class MiddlewareProviderTestCase extends \PhraseanetTestCase
         $this->assertSame($instance1, $instance2);
     }
 
-    abstract public function provideDescription();
+    abstract public static function provideDescription();
 }

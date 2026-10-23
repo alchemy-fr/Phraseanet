@@ -7,15 +7,10 @@ use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SearchEngineOptionsTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineOptions
-     */
     public function testSerialize()
     {
         /** @var Application $app */
@@ -48,9 +43,6 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         $this->assertEquals($options, SearchEngineOptions::hydrate($app, $serialized));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineOptions::fromRequest
-     */
     public function testFromRequest()
     {
         /** @var Application $app */
@@ -86,9 +78,6 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineOptions::fromRequest
-     */
     public function testFromRequestUnauthenticated()
     {
         foreach ($this->provideRequestData() as $pack) {
@@ -118,9 +107,6 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineOptions::fromRequest
-     */
     public function testFromRequestEmptyUnauthenticated()
     {
         $options = SearchEngineOptions::fromRequest(self::$DI['app'], new Request());

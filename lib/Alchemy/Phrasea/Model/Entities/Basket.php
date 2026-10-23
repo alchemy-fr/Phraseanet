@@ -20,118 +20,86 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use record_adapter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @ORM\Table(name="Baskets")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\BasketRepository::class)]
+#[ORM\Table(name: 'Baskets')]
 class Basket
 {
     const ELEMENTSORDER_NAT = 'nat';
     const ELEMENTSORDER_DESC = 'desc';
     const ELEMENTSORDER_ASC = 'asc';
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Column(type: 'string', length: 128)]
     private $name;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(name="is_read", type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(name: 'is_read', type: 'boolean', options: ['default' => 0])]
     private $isRead = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="pusher_id", referencedColumnName="id")
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'pusher_id', referencedColumnName: 'id')]
     private $pusher;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $archived = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="vote_initiator_id", referencedColumnName="id", nullable=true)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'vote_initiator_id', referencedColumnName: 'id', nullable: true)]
     private $vote_initiator;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $vote_created;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $vote_updated;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $vote_expires;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $share_expires;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $wip;
 
-    /**
-     * @ORM\OneToMany(targetEntity="BasketElement", mappedBy="basket", cascade={"ALL"})
-     * @ORM\OrderBy({"ord" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: BasketElement::class, mappedBy: 'basket', cascade: ['ALL'])]
+    #[ORM\OrderBy(['ord' => 'ASC'])]
     private $elements;
 
-    /**
-     * @ORM\OneToMany(targetEntity="BasketParticipant", mappedBy="basket", cascade={"ALL"})
-     */
+    #[ORM\OneToMany(targetEntity: BasketParticipant::class, mappedBy: 'basket', cascade: ['ALL'])]
     private $participants;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Order", mappedBy="basket", cascade={"ALL"})
-     */
+    #[ORM\OneToOne(targetEntity: Order::class, mappedBy: 'basket', cascade: ['ALL'])]
     private $order;
 
     /**

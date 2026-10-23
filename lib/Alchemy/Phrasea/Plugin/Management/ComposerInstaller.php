@@ -61,7 +61,7 @@ class ComposerInstaller
     }
 
     /**
-     * @return ProcessBuilder
+     * @return \Symfony\Component\Process\Process
      */
     private function createProcessBuilder()
     {
@@ -72,12 +72,12 @@ class ComposerInstaller
                 throw new ComposerInstallException('Unable to install composer.', $e->getCode(), $e);
             }
         } else {
-            $process = ProcessBuilder::create([
+            $process = \Symfony\Component\Process\Process::create([
                 $this->phpExecutable, $this->composer, 'self-update'
             ])->getProcess();
             $process->run();
         }
 
-        return ProcessBuilder::create([$this->phpExecutable, $this->composer]);
+        return \Symfony\Component\Process\Process::create([$this->phpExecutable, $this->composer]);
     }
 }

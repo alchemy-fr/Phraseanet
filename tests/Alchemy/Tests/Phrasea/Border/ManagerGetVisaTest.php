@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class ManagerGetVisaTest extends \PHPUnit_Framework_TestCase
+class ManagerGetVisaTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectProphecy

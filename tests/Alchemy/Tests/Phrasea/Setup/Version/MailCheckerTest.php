@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Setup\Version;
 
 use Alchemy\Phrasea\Setup\Version\MailChecker;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailCheckerTest extends \PhraseanetTestCase
 {
     public function testMailChecker()

@@ -41,7 +41,7 @@ class Extension extends AbstractChecker
         return new Response($boolean, $this);
     }
 
-    public function getMessage(TranslatorInterface $translator)
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('The file does not match available extensions');
     }

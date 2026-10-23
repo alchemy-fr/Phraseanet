@@ -178,7 +178,7 @@ class HelpMessageExtractor implements FileVisitorInterface, NodeVisitor, LoggerA
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig\Node\Node $ast) { }
 
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(\Psr\Log\LoggerInterface $logger)
     {
         $this->logger = $logger;
     }

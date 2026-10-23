@@ -16,7 +16,7 @@ use Symfony\Component\Console\Helper\DialogHelper;
 class CreateDataboxCommand extends Command
 {
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('databox:create')
             ->addArgument('databox', InputArgument::REQUIRED, 'Database name for the databox', null)

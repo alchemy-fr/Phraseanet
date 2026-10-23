@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class PhraseaRenewPasswordForm extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('oldPassword', PasswordType::class, [
             'label'         => 'Current password',
@@ -42,12 +42,12 @@ class PhraseaRenewPasswordForm extends AbstractType
             'second_options'    => ['label' => 'New password (confirmation)'],
             'constraints'       => [
                 new Assert\NotBlank(),
-                new Assert\Length(['min' => 5]),
+                new Assert\Length(min: 5),
             ],
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

@@ -7,15 +7,10 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SearchEngineResultTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineResult
-     */
     public function testBasic()
     {
         $options = new SearchEngineOptions(self::$DI['app']['repo.collection-references']);

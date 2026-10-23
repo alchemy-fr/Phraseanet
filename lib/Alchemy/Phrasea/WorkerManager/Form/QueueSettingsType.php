@@ -19,7 +19,7 @@ class QueueSettingsType extends AbstractType
         $this->baseQueueName  = $baseQueueName;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -61,7 +61,7 @@ class QueueSettingsType extends AbstractType
         }
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'queue_settings';
     }

@@ -11,37 +11,35 @@ namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table(name="Secrets")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SecretRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\SecretRepository::class)]
+#[ORM\Table(name: 'Secrets')]
 class Secret
 {
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
      * @var int
      */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
      * @var \DateTime
      */
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
     /**
-     * @ORM\Column(type="binary_string", length=40)
      * @var string
      */
+    #[ORM\Column(type: 'binary_string', length: 40)]
     private $token;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=false)
      * @var User
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'id', nullable: false)]
     private $creator;
 
     /**

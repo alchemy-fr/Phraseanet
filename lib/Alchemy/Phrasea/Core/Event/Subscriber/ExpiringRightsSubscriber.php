@@ -158,7 +158,7 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
      *
      * @param RecordEdit $event
      * @param string $eventName
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function onRecordEdit(RecordEdit $event, $eventName)
     {
@@ -193,7 +193,7 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
     }
 
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             /** @uses onRecordEdit */

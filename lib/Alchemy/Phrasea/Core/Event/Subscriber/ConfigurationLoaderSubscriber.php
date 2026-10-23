@@ -26,7 +26,7 @@ class ConfigurationLoaderSubscriber implements EventSubscriberInterface
         $this->configuration = $configuration;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [

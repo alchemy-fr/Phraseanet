@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\CustomExtensionGuesser;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class CustomExtensionGuesserTest extends \PhraseanetTestCase
 {
     public function testGuess()

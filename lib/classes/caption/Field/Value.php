@@ -212,7 +212,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
     /**
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function removeVocabulary()
     {
@@ -233,7 +233,7 @@ class caption_Field_Value implements cache_cacheableInterface
      * @param ControlProviderInterface $vocabulary
      * @param mixed $vocab_id
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function setVocab(ControlProviderInterface $vocabulary, $vocab_id)
     {
@@ -255,7 +255,7 @@ class caption_Field_Value implements cache_cacheableInterface
      * @param ControlProviderInterface|null $vocabulary
      * @param mixed|null $vocabularyId
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function changeVocabulary(?ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
@@ -269,7 +269,7 @@ class caption_Field_Value implements cache_cacheableInterface
     /**
      * @param string $value
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function set_value($value)
     {

@@ -11,15 +11,11 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApiExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideExceptionsAndCode
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideExceptionsAndCode')]
     public function testError($exception, $code)
     {
         $app = new Application(Application::ENV_TEST);
@@ -34,7 +30,7 @@ class ApiExceptionHandlerSubscriberTest extends \PhraseanetTestCase
         $this->assertEquals($code, $client->getResponse()->getStatusCode());
     }
 
-    public function provideExceptionsAndCode()
+    public static function provideExceptionsAndCode()
     {
         return [
             [new MethodNotAllowedHttpException(['PUT', 'HEAD']), 405],

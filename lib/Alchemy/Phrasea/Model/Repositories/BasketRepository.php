@@ -28,11 +28,11 @@ class BasketRepository extends EntityRepository
     const VALIDATION_DONE = 'validation_done';
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
-    public function setTranslator(?TranslatorInterface $translator = null)
+    public function setTranslator(?\Symfony\Contracts\Translation\TranslatorInterface $translator = null)
     {
         $this->translator = $translator;
     }

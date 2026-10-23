@@ -15,7 +15,7 @@ class FacetsResponse
     private $facets = array();
     private $translator;
 
-    public function __construct(ElasticsearchOptions $options, Escaper $escaper, TranslatorInterface $translator, array $response, GlobalStructure $structure)
+    public function __construct(ElasticsearchOptions $options, Escaper $escaper, \Symfony\Contracts\Translation\TranslatorInterface $translator, array $response, GlobalStructure $structure)
     {
         $this->escaper = $escaper;
         $this->translator = $translator;

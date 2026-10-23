@@ -19,15 +19,15 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class APIClientsFormType extends AbstractType
 {
-    /** @var TranslatorInterface  */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
     private $translator;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('api-enabled', CheckboxType::class, [
             'label' => 'Enable Phraseanet Web API',
@@ -35,7 +35,7 @@ class APIClientsFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

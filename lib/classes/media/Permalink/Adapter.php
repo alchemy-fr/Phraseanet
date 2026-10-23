@@ -351,7 +351,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             return $found;
         }
 
-        $dbalData = $databox->get_connection()->fetchAll(
+        $dbalData = $databox->get_connection()->fetchAllAssociative(
             self::getSelectSql(),
             ['subdef_id' => array_values($missing)],
             ['subdef_id' => Connection::PARAM_INT_ARRAY]
@@ -409,7 +409,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         $sql = "INSERT INTO permalinks (subdef_id, token, activated, created_on, last_modified, label)\n"
             . " VALUES " . $inserts;
         try {
-            $connection->exec($sql);
+            $connection->executeStatement($sql);
             $n_created += count($subdef_ids);
         }
         catch (Exception $e) {

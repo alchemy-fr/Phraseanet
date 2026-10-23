@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Upgrade\Step31;
 use Alchemy\Phrasea\Command\Upgrade\Step35;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UpgradeDBDatasTest extends \PhraseanetTestCase
 {
     /**
@@ -17,20 +15,12 @@ class UpgradeDBDatasTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    /**
-     * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new UpgradeDBDatas('commandname');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::setUpgrades
-     * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::addUpgrade
-     * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::getUpgrades
-     */
     public function testSetUpgrades()
     {
         $this->object->setUpgrades([]);
@@ -43,9 +33,6 @@ class UpgradeDBDatasTest extends \PhraseanetTestCase
         $this->assertEquals($upgrades, $this->object->getUpgrades());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::addUpgrade
-     */
     public function testAddUpgrade()
     {
         $this->assertEquals([], $this->object->getUpgrades());
@@ -62,7 +49,6 @@ class UpgradeDBDatasTest extends \PhraseanetTestCase
     }
 
     /**
-     * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::execute
      * @todo Implement testExecute().
      */
     public function testExecute()

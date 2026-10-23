@@ -32,16 +32,16 @@ class BinaryString extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        if ($platform->getName() === 'mysql') {
+        if ($platform instanceof \Doctrine\DBAL\Platforms\MySQLPlatform) {
             /** @var MySqlPlatform $platform */
-            return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration)
+            return $platform->getStringTypeDeclarationSQL($fieldDeclaration)
                 // . " CHARACTER SET utf8"
                 . " " . $platform->getColumnCollationDeclarationSQL('utf8_bin')
                 . " COMMENT '(DC2Type:binary_string)'"
                 ;
         }
 
-        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getStringTypeDeclarationSQL($fieldDeclaration);
     }
 
     /**

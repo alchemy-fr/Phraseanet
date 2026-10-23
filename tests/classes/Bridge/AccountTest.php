@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_AccountTest extends \PhraseanetTestCase
 {
     /**
@@ -17,7 +15,7 @@ class Bridge_AccountTest extends \PhraseanetTestCase
     private static $named;
     private static $id;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
 
@@ -45,7 +43,7 @@ class Bridge_AccountTest extends \PhraseanetTestCase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$object) {
             self::$object->delete();

@@ -53,7 +53,7 @@ class TermIndexer
     /**
      * @param BulkOperation $bulk
      * @param databox $databox
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function populateIndex(BulkOperation $bulk, databox $databox)
     {

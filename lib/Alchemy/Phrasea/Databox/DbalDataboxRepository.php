@@ -69,7 +69,7 @@ final class DbalDataboxRepository implements DataboxRepository
     /**
      * @param int $id
      * @return false|array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function fetchRow($id)
     {
@@ -82,7 +82,7 @@ final class DbalDataboxRepository implements DataboxRepository
 
     /**
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function fetchRows()
     {

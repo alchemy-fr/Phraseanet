@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Controller\Admin\ConnectedUsersController;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class ConnectedUsersControllerTest extends \PHPUnit_Framework_TestCase
+class ConnectedUsersControllerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider provideModuleNames
@@ -24,7 +24,7 @@ class ConnectedUsersControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testItProperlyTranslateModuleNames($id, $expected)
     {
-        $translator = $this->getMock(TranslatorInterface::class);
+        $translator = $this->getMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
         $translator
             ->expects($this->exactly(9))
             ->method('trans')

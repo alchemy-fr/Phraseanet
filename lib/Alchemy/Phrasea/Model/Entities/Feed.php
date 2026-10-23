@@ -18,70 +18,46 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Feeds")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FeedRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FeedRepository::class)]
+#[ORM\Table(name: 'Feeds')]
 class Feed implements FeedInterface
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $public = false;
 
-    /**
-     * @ORM\Column(type="boolean", name="icon_url", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'icon_url', options: ['default' => 0])]
     private $iconUrl = false;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="base_id")
-     */
+    #[ORM\Column(type: 'integer', nullable: true, name: 'base_id')]
     private $baseId;
 
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Column(type: 'string', length: 128)]
     private $title;
 
-    /**
-     * @ORM\Column(type="string", length=1024, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private $subtitle;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_on")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime', name: 'created_on')]
     private $createdOn;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", name="updated_on")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime', name: 'updated_on')]
     private $updatedOn;
 
-    /**
-     * @ORM\OneToMany(targetEntity="FeedPublisher", mappedBy="feed", cascade={"ALL"})
-     */
+    #[ORM\OneToMany(targetEntity: FeedPublisher::class, mappedBy: 'feed', cascade: ['ALL'])]
     private $publishers;
 
-    /**
-     * @ORM\OneToMany(targetEntity="FeedEntry", mappedBy="feed", cascade={"ALL"})
-     * @ORM\OrderBy({"createdOn" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: FeedEntry::class, mappedBy: 'feed', cascade: ['ALL'])]
+    #[ORM\OrderBy(['createdOn' => 'ASC'])]
     private $entries;
 
-    /**
-     * @ORM\OneToMany(targetEntity="FeedToken", mappedBy="feed", cascade={"ALL"})
-     */
+    #[ORM\OneToMany(targetEntity: FeedToken::class, mappedBy: 'feed', cascade: ['ALL'])]
     private $tokens;
 
     /**

@@ -25,7 +25,7 @@ class StructureChangeSubscriber implements EventSubscriberInterface
         $this->searchEngineStructure = $se1;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RecordStructureEvents::FIELD_UPDATED => 'onStructureChange',

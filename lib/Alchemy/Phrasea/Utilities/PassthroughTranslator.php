@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Utilities;
 
 use Symfony\Component\Translation\TranslatorInterface;
 
-class PassthroughTranslator implements TranslatorInterface
+class PassthroughTranslator implements \Symfony\Contracts\Translation\TranslatorInterface
 {
     /**
      * @var string

@@ -14,7 +14,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
  * @group searchengine
  * @group ast
  */
-class TextNodeTest extends \PHPUnit_Framework_TestCase
+class TextNodeTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerialization()
     {

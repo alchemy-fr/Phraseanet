@@ -11,7 +11,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
  * @group unit
  * @group searchengine
  */
-class AggregationHelperTest extends \PHPUnit_Framework_TestCase
+class AggregationHelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testAggregationWrappingOnPrivateField()
     {

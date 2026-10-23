@@ -9,12 +9,8 @@ use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\ExecutableFinder;
 
 // use Symfony\Component\Filesystem\Filesystem;
-
-
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ComposerInstallerTest extends \PhraseanetTestCase
 {
     public function testInstall()
@@ -34,9 +30,7 @@ class ComposerInstallerTest extends \PhraseanetTestCase
             $this->markTestSkipped('Unable to find PHP executable.');
         }
 
-        $setupMock = $this->getMockBuilder('Alchemy\Phrasea\Utilities\ComposerSetup')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $setupMock = $this->createStub('Alchemy\Phrasea\Utilities\ComposerSetup');
 
         $installer = new ComposerInstaller(new ComposerSetup(new Guzzle()), __DIR__, $php);
         $installer->install(__DIR__ . '/../Fixtures/PluginDir/TestPlugin');
@@ -44,7 +38,7 @@ class ComposerInstallerTest extends \PhraseanetTestCase
         $this->assertFileExists($composer);
         unlink($composer);
 
-        $this->assertFileNotExists($installFile);
+        $this->assertFileDoesNotExist($installFile);
         $this->assertFileExists($vendorDir);
 
         $fs->remove($vendorDir);

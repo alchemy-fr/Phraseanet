@@ -21,15 +21,15 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchEngineFormType extends AbstractType
 {
-    /** @var TranslatorInterface  */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface  */
     private $translator;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('min-letters-truncation', IntegerType::class, [
             'label'        => 'Minimum number of letters before truncation',
@@ -45,7 +45,7 @@ class SearchEngineFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

@@ -20,7 +20,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class EmailFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('emitter-email', TextType::class, [
             'label'        => 'Default mail sender address',
@@ -58,7 +58,7 @@ class EmailFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

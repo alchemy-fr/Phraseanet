@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FindConceptsCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('thesaurus:find:concepts')

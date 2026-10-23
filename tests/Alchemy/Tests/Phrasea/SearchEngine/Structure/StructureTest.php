@@ -11,7 +11,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
  * @group unit
  * @group structure
  */
-class StructureTest extends \PHPUnit_Framework_TestCase
+class StructureTest extends \PHPUnit\Framework\TestCase
 {
     public function testEmptiness()
     {

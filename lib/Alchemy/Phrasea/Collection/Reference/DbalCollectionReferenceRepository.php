@@ -64,7 +64,7 @@ WHERE base_id = :baseId';
      */
     public function findAll()
     {
-        return $this->createManyReferences($this->connection->fetchAll(self::$selectQuery));
+        return $this->createManyReferences($this->connection->fetchAllAssociative(self::$selectQuery));
     }
 
     /**
@@ -185,7 +185,7 @@ WHERE base_id = :baseId';
 
     /**
      * @param CollectionReference $collectionReference
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete(CollectionReference $collectionReference)
     {

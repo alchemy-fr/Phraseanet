@@ -7,10 +7,8 @@ use Guzzle\Http\Client as Guzzle;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\ProcessBuilder;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ComposerSetupTest extends \PhraseanetTestCase
 {
     public function testSetup()
@@ -27,7 +25,7 @@ class ComposerSetupTest extends \PhraseanetTestCase
         $finder = new PhpExecutableFinder();
         $php = $finder->find();
 
-        $process = ProcessBuilder::create([$php, $target, '--version'])->getProcess();
+        $process = \Symfony\Component\Process\Process::create([$php, $target, '--version'])->getProcess();
         $process->run();
 
         $this->assertTrue($process->isSuccessful());

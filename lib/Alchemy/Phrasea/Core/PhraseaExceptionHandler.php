@@ -25,7 +25,7 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerA
 {
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
@@ -50,9 +50,9 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerA
     }
 
     /**
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      */
-    public function setTranslator(TranslatorInterface $translator)
+    public function setTranslator(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }

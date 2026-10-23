@@ -2,19 +2,17 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $account = null;
     public static $api = null;
     protected $client;
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$account = self::$api = null;
         parent::tearDownAfterClass();
@@ -28,9 +26,9 @@ class PublicationTest extends \PhraseanetAuthenticatedWebTestCase
         $feeds = self::$DI['app']['orm.em']->getRepository('Phraseanet:Feed')->getAllForUser(self::$DI['app']->getAclForUser(self::$DI['user']));
 
         foreach ($feeds as $feed) {
-            $this->assertRegExp('/\/admin\/publications\/feed\/' . $feed->getId() . '/', $pageContent);
+            $this->assertMatchesRegularExpression('/\/admin\/publications\/feed\/' . $feed->getId() . '/', $pageContent);
             if ($feed->getCollection(self::$DI['app']) != null) {
-                $this->assertRegExp('/' . $feed->getCollection()->get_label(self::$DI['app']['locale']) . '/', $pageContent);
+                $this->assertMatchesRegularExpression('/' . $feed->getCollection()->get_label(self::$DI['app']['locale']) . '/', $pageContent);
             }
             if ($feed->isOwner(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//form[@action='/admin/publications/feed/" . $feed->getId() . "/delete/']")->count());

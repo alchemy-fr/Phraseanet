@@ -7,10 +7,8 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class LogoutSubscriberTest extends \PhraseanetTestCase
 {
     public function testThatSearchEngineCacheIsCleaned()
@@ -18,7 +16,7 @@ class LogoutSubscriberTest extends \PhraseanetTestCase
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new LogoutSubscriber());
 
-        $app['phraseanet.SE'] = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        $app['phraseanet.SE'] = $this->createStub('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
 
         // the method is actually called two times because the event is registered two times
         // in this test and in the applicaton constructor

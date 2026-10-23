@@ -10,13 +10,11 @@ use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class InstallerTest extends \PhraseanetTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         $app = new Application(Application::ENV_TEST);
         \phrasea::reset_sbasDatas($app['phraseanet.appbox']);
@@ -81,7 +79,7 @@ class InstallerTest extends \PhraseanetTestCase
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
 
         $databox = current($app->getDataboxes());
-        $this->assertContains('<path>'.realpath($dataPath).'/db_setup_test/subdefs</path>', $databox->get_structure());
+        $this->assertStringContainsString('<path>'.realpath($dataPath).'/db_setup_test/subdefs</path>', $databox->get_structure());
 
         $conf = $app['configuration.store']->getConfig();
         $this->assertArrayHasKey('main', $conf);

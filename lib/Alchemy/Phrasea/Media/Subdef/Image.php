@@ -29,7 +29,7 @@ class Image extends Provider
 
     protected $options = [];
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
 

@@ -849,7 +849,7 @@ class module_report
             try {
                 $stmt = $conn->executeQuery($this->req, $this->params);
                 $rs = $stmt->fetchAllAssociative();
-            } catch (DBALException $e) {
+            } catch (\Doctrine\DBAL\Exception $e) {
 
                 return;
             }

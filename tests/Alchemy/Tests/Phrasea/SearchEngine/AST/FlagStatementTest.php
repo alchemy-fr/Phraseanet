@@ -11,7 +11,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
  * @group searchengine
  * @group ast
  */
-class FlagStatementTest extends \PHPUnit_Framework_TestCase
+class FlagStatementTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerialization()
     {

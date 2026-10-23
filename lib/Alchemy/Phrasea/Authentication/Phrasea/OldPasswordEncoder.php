@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Authentication\Phrasea;
 
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
-class OldPasswordEncoder implements PasswordEncoderInterface
+class OldPasswordEncoder implements \Symfony\Component\PasswordHasher\PasswordHasherInterface
 {
     /**
      * {@inheritdoc}

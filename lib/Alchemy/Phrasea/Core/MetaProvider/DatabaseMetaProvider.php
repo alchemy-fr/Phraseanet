@@ -18,7 +18,6 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use Doctrine\DBAL\Events;
 use Doctrine\ORM\Configuration;
-use Gedmo\DoctrineExtensions as GedmoExtension;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Provider\DoctrineServiceProvider;
@@ -66,12 +65,12 @@ class DatabaseMetaProvider implements ServiceProviderInterface
 
     /**
      * @param ConnectionEventArgs $args
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function postConnect(ConnectionEventArgs $args)
     {
         if ('sqlite' == $args->getDatabasePlatform()->getName()) {
-            $args->getConnection()->exec('PRAGMA foreign_keys = ON');
+            $args->getConnection()->executeStatement('PRAGMA foreign_keys = ON');
         }
     }
 
@@ -106,10 +105,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
         $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
 
         $app->extend('orm.ems', function (\Pimple\Container $ems, $app) {
-            GedmoExtension::registerAnnotations();
-
             foreach ($ems->keys() as $key) {
-                $app['orm.annotation.register']($key);
                 $connection = $ems[$key]->getConnection();
 
                 $app['connection.pool.manager']->add($connection);

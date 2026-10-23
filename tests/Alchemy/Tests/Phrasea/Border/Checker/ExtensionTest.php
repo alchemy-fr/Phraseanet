@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Extension;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ExtensionTest extends \PhraseanetTestCase
 {
     /**
@@ -16,19 +14,12 @@ class ExtensionTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
-     * @covers Alchemy\Phrasea\Border\Checker\Extension::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Extension(self::$DI['app'], ['extensions' => ['jpg', 'png', 'tiff']]);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Extension::check
-     */
     public function testCheck()
     {
         $tests = [
@@ -40,17 +31,14 @@ class ExtensionTest extends \PhraseanetTestCase
 
         foreach ($tests as $extension => $result) {
 
-            $spl = $this->getMock('\\Symfony\\Component\\HttpFoundation\\File\\File', ['getExtension'], [__DIR__ . '/../../../../../files/test001.jpg']);
+            $spl = $this->createMock('\\Symfony\\Component\\HttpFoundation\\File\\File');
 
-            $spl->expects($this->any())
+            $spl
                 ->method('getExtension')
                 ->will($this->returnValue($extension));
 
-            $media = $this
-                ->getMockBuilder('\\MediaVorus\\Media\\Image')
-                ->disableOriginalConstructor()
-                ->getMock();
-            $media->expects($this->any())
+            $media = $this->createMock('\\MediaVorus\\Media\\Image');
+            $media
                 ->method('getFile')
                 ->will($this->returnValue($spl));
 
@@ -62,19 +50,14 @@ class ExtensionTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Extension::getMessage
-     */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
+        $this->assertIsString($this->object->getMessage($this->createTranslatorMock()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testContructorInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new Extension(self::$DI['app'], [['jpg', 'png', 'tiff']]);
     }
 }

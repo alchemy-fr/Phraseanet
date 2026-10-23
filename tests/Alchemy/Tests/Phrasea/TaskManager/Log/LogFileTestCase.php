@@ -9,7 +9,7 @@ abstract class LogFileTestCase extends \PhraseanetTestCase
 {
     protected $root;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->root = __DIR__ . '/root';
@@ -18,7 +18,7 @@ abstract class LogFileTestCase extends \PhraseanetTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $finder = new Finder();
         $finder->files()->in($this->root);

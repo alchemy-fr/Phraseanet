@@ -97,7 +97,7 @@ class CleanLogSearchCommand extends Command
                     // group delete by 1000 to avoid memory leak
                     $sqlDelete = 'DELETE FROM log_search WHERE ' . $clauseWhere . '  LIMIT 1000';
                     do {
-                        $nbDeletedRow = $cnx->exec($sqlDelete);
+                        $nbDeletedRow = $cnx->executeStatement($sqlDelete);
                         $count += $nbDeletedRow;
                     } while ($nbDeletedRow > 0);
 

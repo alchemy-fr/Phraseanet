@@ -56,7 +56,7 @@ class Response
      *
      * @return string
      */
-    public function getMessage(TranslatorInterface $translator)
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $this->checker->getMessage($translator);
     }

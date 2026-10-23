@@ -6,15 +6,13 @@ use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Alchemy\Phrasea\Exception\RuntimeException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ManagerTest extends \PhraseanetTestCase
 {
     private $file;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->file = __DIR__ . '/tmp-file.php';
@@ -22,7 +20,7 @@ class ManagerTest extends \PhraseanetTestCase
         $this->clean();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->clean();
         parent::tearDown();
@@ -42,20 +40,14 @@ class ManagerTest extends \PhraseanetTestCase
 
     public function testFactoryCreateOne()
     {
-        $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger = $this->getMockBuilder('Monolog\Logger')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $factory = $this->getMockBuilder('Alchemy\Phrasea\Cache\Factory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
+        $logger = $this->createStub('Monolog\Logger');
+        $factory = $this->createMock('Alchemy\Phrasea\Cache\Factory');
 
         $compiler->expects($this->once())
             ->method('compile');
 
-        $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
+        $cache = $this->createStub('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'array';
         $values = ['option', 'value'];
@@ -78,20 +70,14 @@ class ManagerTest extends \PhraseanetTestCase
     {
         file_put_contents($this->file, $this->compiler->compile(["custom-type" => "array"]));
 
-        $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger = $this->getMockBuilder('Monolog\Logger')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $factory = $this->getMockBuilder('Alchemy\Phrasea\Cache\Factory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
+        $logger = $this->createStub('Monolog\Logger');
+        $factory = $this->createMock('Alchemy\Phrasea\Cache\Factory');
 
         $compiler->expects($this->never())
             ->method('compile');
 
-        $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
+        $cache = $this->createStub('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'array';
         $values = ['option', 'value'];
@@ -113,20 +99,14 @@ class ManagerTest extends \PhraseanetTestCase
             "yet-another-type" => "array",
         ]));
 
-        $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger = $this->getMockBuilder('Monolog\Logger')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $factory = $this->getMockBuilder('Alchemy\Phrasea\Cache\Factory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
+        $logger = $this->createStub('Monolog\Logger');
+        $factory = $this->createMock('Alchemy\Phrasea\Cache\Factory');
 
         $compiler->expects($this->never())
             ->method('compile');
 
-        $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
+        $cache = $this->createStub('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'array';
         $values = ['option', 'value'];
@@ -154,15 +134,9 @@ class ManagerTest extends \PhraseanetTestCase
             "custom-type" => "unknown",
         ]));
 
-        $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger = $this->getMockBuilder('Monolog\Logger')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $factory = $this->getMockBuilder('Alchemy\Phrasea\Cache\Factory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
+        $logger = $this->createMock('Monolog\Logger');
+        $factory = $this->createMock('Alchemy\Phrasea\Cache\Factory');
 
         $compiler->expects($this->never())
             ->method('compile');
@@ -170,7 +144,7 @@ class ManagerTest extends \PhraseanetTestCase
         $logger->expects($this->once())
             ->method('error');
 
-        $cache = $this->getMock('Alchemy\Phrasea\Cache\Cache');
+        $cache = $this->createStub('Alchemy\Phrasea\Cache\Cache');
 
         $name = 'unknown';
         $values = ['option', 'value'];

@@ -29,7 +29,7 @@ class GeneralFormType extends AbstractType
         $this->availableLanguages = $availableLanguages;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('title', TextType::class, [
             'label'         => 'Application title',
@@ -65,9 +65,9 @@ class GeneralFormType extends AbstractType
         $builder->add('default-subdef-url-ttl', IntegerType::class, [
             'label'       => 'Default TTL in seconds of sub-definition url',
             'attr'        => ['min' => -1],
-            'constraints' => new GreaterThanOrEqual(['value' => -1]),
+            'constraints' => new GreaterThanOrEqual(value: -1),
         ]);
-        $builder->add('personalize-logo-choice', new PersonalisationLogoFormType(), [
+        $builder->add('personalize-logo-choice', \Alchemy\Phrasea\Form\Configuration\PersonalisationLogoFormType::class, [
             'label' => 'Design of personalization logo section',
             'attr'  => [
                 'id' => 'personalize-logo-container'
@@ -75,7 +75,7 @@ class GeneralFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

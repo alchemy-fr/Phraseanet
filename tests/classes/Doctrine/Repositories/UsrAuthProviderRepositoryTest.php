@@ -2,10 +2,8 @@
 
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UsrAuthProviderRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindWithProviderAndIdIsNullWhenNotFound()

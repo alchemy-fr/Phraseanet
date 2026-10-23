@@ -6,61 +6,50 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="ApiAccounts", indexes={
- *      @ORM\Index(name="api_account_user_id", columns={"user_id"}),
- *      @ORM\Index(name="api_account_application_id", columns={"application_id"})
- * })
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiAccountRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ApiAccountRepository::class)]
+#[ORM\Table(name: 'ApiAccounts')]
+#[ORM\Index(name: 'api_account_user_id', columns: ['user_id'])]
+#[ORM\Index(name: 'api_account_application_id', columns: ['application_id'])]
 class ApiAccount
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(type="boolean", options={"default" = 0})
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $revoked = false;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="api_version", type="string", length=16, nullable=false)
      */
+    #[ORM\Column(name: 'api_version', type: 'string', length: 16, nullable: false)]
     private $apiVersion;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiApplication", inversedBy="accounts")
-     * @ORM\JoinColumn(name="application_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiApplication
      **/
+    #[ORM\ManyToOne(targetEntity: ApiApplication::class, inversedBy: 'accounts')]
+    #[ORM\JoinColumn(name: 'application_id', referencedColumnName: 'id', nullable: false)]
     private $application;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ApiOauthToken", mappedBy="account", cascade={"remove"})
-     **/
+    #[ORM\OneToMany(targetEntity: ApiOauthToken::class, mappedBy: 'account', cascade: ['remove'])]
     private $tokens;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
     public function __construct()

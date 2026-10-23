@@ -30,7 +30,7 @@ class PhraseaAuthenticationForm extends AbstractType
         $this->app = $app;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('login', TextType::class, [
             'label'       => 'Login',
@@ -72,12 +72,12 @@ class PhraseaAuthenticationForm extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
     {
         $csrf = true;
         if (isset($this->app['phraseanet.configuration']['auth-csrf-protection'])) {

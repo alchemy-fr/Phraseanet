@@ -20,11 +20,9 @@ use Alchemy\Phrasea\Model\Repositories\ApiLogRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @group functional
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /** @var UserManipulator */
@@ -36,7 +34,7 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
     /** @var ApiApplication */
     private $apiApplication;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -98,7 +96,7 @@ class UserDeletionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNotEquals('login', $this->user->getLogin());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->apiApplication) {
             $this->apiApplicationManipulator->delete($this->apiApplication);

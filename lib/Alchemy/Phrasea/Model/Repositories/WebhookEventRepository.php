@@ -38,6 +38,6 @@ class WebhookEventRepository extends EntityRepository
         $queryBuilder = $this->createQueryBuilder('e')
             ->where('e.processed = 0');
 
-        return $queryBuilder->getQuery()->iterate();
+        return $queryBuilder->getQuery()->toIterable();
     }
 }

@@ -15,114 +15,80 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="FtpExports")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FtpExportRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FtpExportRepository::class)]
+#[ORM\Table(name: 'FtpExports')]
 class FtpExport
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private $crash = 0;
 
-    /**
-     * @ORM\Column(type="integer", options={"default" = 3})
-     */
+    #[ORM\Column(type: 'integer', options: ['default' => 3])]
     private $nbretry = 3;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $mail;
 
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Column(type: 'string', length: 128)]
     private $addr;
 
-    /**
-     * @ORM\Column(type="boolean", name="use_ssl", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'use_ssl', options: ['default' => 0])]
     private $ssl = false;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $login;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $pwd;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $passif = false;
 
-    /**
-     * @ORM\Column(type="string", length=128, options={"default" = "/"})
-     */
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => '/'])]
     private $destfolder = '/';
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true, options={"default" = 1})
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true, options: ['default' => 1])]
     private $sendermail;
 
-    /**
-     * @ORM\Column(type="string", length=128, name="text_mail_sender", nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, name: 'text_mail_sender', nullable: true)]
     private $textMailSender;
 
-    /**
-     * @ORM\Column(type="string", length=128, name="text_mail_receiver", nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, name: 'text_mail_receiver', nullable: true)]
     private $textMailReceiver;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $foldertocreate;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $logfile = false;
 
-    /**
-     * @ORM\OneToMany(targetEntity="FtpExportElement", mappedBy="export", cascade={"ALL"})
-     */
+    #[ORM\OneToMany(targetEntity: FtpExportElement::class, mappedBy: 'export', cascade: ['ALL'])]
     private $elements;
 
     /**
      * @var \DateTime
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
      */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
     /**
      * @var \DateTime
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
      */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

@@ -70,8 +70,8 @@ class patch_361alpha1a extends patchAbstract
                 $connbas = $app->findDataboxById($sbas_id)->get_connection();
                 $connbas->connect();
             } catch (\Exception $e) {
-                $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
-                $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
+                $conn->executeStatement('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
+                $conn->executeStatement('DELETE FROM BasketElements WHERE id = ' . $row['id']);
                 continue;
             }
 
@@ -80,8 +80,8 @@ class patch_361alpha1a extends patchAbstract
             $rowCount = $stmt->rowCount();
 
             if ($rowCount == 0) {
-                $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
-                $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
+                $conn->executeStatement('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
+                $conn->executeStatement('DELETE FROM BasketElements WHERE id = ' . $row['id']);
             }
         }
 

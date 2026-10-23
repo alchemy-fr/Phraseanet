@@ -60,7 +60,7 @@ class caption_record implements cache_cacheableInterface
 
     /**
      * @return \caption_field[]
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     protected function retrieve_fields()
     {

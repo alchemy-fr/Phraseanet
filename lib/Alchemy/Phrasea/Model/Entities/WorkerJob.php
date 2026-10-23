@@ -5,52 +5,37 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="WorkerJob", indexes={@ORM\Index(name="worker_job_type", columns={"type"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerJobRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\WorkerJobRepository::class)]
+#[ORM\Table(name: 'WorkerJob')]
+#[ORM\Index(name: 'worker_job_type', columns: ['type'])]
 class WorkerJob
 {
     const WAITING   = "waiting";
     const RUNNING   = "running";
     const FINISHED  = "finished";
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", name="type")
-     */
+    #[ORM\Column(type: 'string', name: 'type')]
     private $type;
 
-    /**
-     * @ORM\Column(type="json_array", name="data", nullable=false)
-     */
+    #[ORM\Column(type: 'json_array', name: 'data', nullable: false)]
     private $data;
 
-    /**
-     * @ORM\Column(type="string", name="status")
-     */
+    #[ORM\Column(type: 'string', name: 'status')]
     private $status;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $started;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $finished;
 
     /**

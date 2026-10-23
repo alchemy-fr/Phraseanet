@@ -9,15 +9,13 @@ use Alchemy\Phrasea\Setup\Version\Migration\Migration35;
 use Alchemy\Tests\Phrasea\Setup\AbstractSetupTester;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Migration35Test extends AbstractSetupTester
 {
     private $specifications;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->specifications) {
             $this->specifications->delete();

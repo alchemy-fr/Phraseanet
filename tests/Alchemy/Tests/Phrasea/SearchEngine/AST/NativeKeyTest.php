@@ -10,7 +10,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
  * @group searchengine
  * @group ast
  */
-class NativeKeyTest extends \PHPUnit_Framework_TestCase
+class NativeKeyTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerialization()
     {

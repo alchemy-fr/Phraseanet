@@ -37,7 +37,7 @@ class WebhookJob extends AbstractJob
     private $firstRun = true;
 
     public function __construct(
-        TranslatorInterface $translator,
+        \Symfony\Contracts\Translation\TranslatorInterface $translator,
         ?EventDispatcherInterface $dispatcher = null,
         ?LoggerInterface $logger = null,
         ?GuzzleClient $httpClient = null

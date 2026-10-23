@@ -2,10 +2,8 @@
 
 use Alchemy\Phrasea\Application;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class databox_fieldTest extends \PhraseanetTestCase
 {
     /** @var databox_field */
@@ -17,7 +15,7 @@ class databox_fieldTest extends \PhraseanetTestCase
     protected $name_mono;
     protected $name_multi;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -41,7 +39,7 @@ class databox_fieldTest extends \PhraseanetTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->object_mono instanceof databox_field) {
             $this->object_mono->delete();
@@ -331,9 +329,7 @@ class databox_fieldTest extends \PhraseanetTestCase
         $this->assertFalse($this->object_multi->is_on_error());
     }
 
-    /**
-     * @dataProvider provideLanguageCodes
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideLanguageCodes')]
     public function testGetSetLabel($code)
     {
         $this->object_mono->set_label($code, 'value')->save();
@@ -346,7 +342,7 @@ class databox_fieldTest extends \PhraseanetTestCase
         $this->assertEquals($this->object_mono->get_name(), $this->object_mono->get_label($code));
     }
 
-    public function provideLanguageCodes()
+    public static function provideLanguageCodes()
     {
         $codes = [];
 
@@ -358,27 +354,21 @@ class databox_fieldTest extends \PhraseanetTestCase
         return $codes;
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testGetInvalidCodeLabel()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $this->object_mono->get_label('gloubi');
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testSetNullInvalidCodeLabel()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $this->object_mono->set_label('gloubi', null);
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testSetInvalidCodeLabel()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $this->object_mono->set_label('gloubi', 'value');
     }
 
@@ -407,29 +397,29 @@ class databox_fieldTest extends \PhraseanetTestCase
         foreach ([$this->object_mono, $this->object_multi] as $object) {
             $data = $object->toArray();
 
-            $this->assertInternalType('array', $data);
-            $this->assertInternalType('integer', $data['id']);
-            $this->assertInternalType('string', $data['name']);
-            $this->assertInternalType('string', $data['tag']);
-            $this->assertInternalType('boolean', $data['business']);
-            $this->assertInternalType('string', $data['type']);
+            $this->assertIsArray($data);
+            $this->assertIsInt($data['id']);
+            $this->assertIsString($data['name']);
+            $this->assertIsString($data['tag']);
+            $this->assertIsBool($data['business']);
+            $this->assertIsString($data['type']);
             if (!is_null($data['thumbtitle'])) {
-                $this->assertInternalType('string', $data['thumbtitle']);
+                $this->assertIsString($data['thumbtitle']);
             }
-            $this->assertInternalType('string', $data['tbranch']);
-            $this->assertInternalType('string', $data['separator']);
-            $this->assertInternalType('boolean', $data['required']);
-            $this->assertInternalType('boolean', $data['report']);
-            $this->assertInternalType('boolean', $data['readonly']);
-            $this->assertInternalType('boolean', $data['multi']);
-            $this->assertInternalType('boolean', $data['indexable']);
+            $this->assertIsString($data['tbranch']);
+            $this->assertIsString($data['separator']);
+            $this->assertIsBool($data['required']);
+            $this->assertIsBool($data['report']);
+            $this->assertIsBool($data['readonly']);
+            $this->assertIsBool($data['multi']);
+            $this->assertIsBool($data['indexable']);
             if (!is_null($data['dces-element'])) {
                 $this->assertInternalType('', $data['dces-element']);
             }
             if (!is_null($data['vocabulary-type'])) {
-                $this->assertInternalType('string', $data['vocabulary-type']);
+                $this->assertIsString($data['vocabulary-type']);
             }
-            $this->assertInternalType('boolean', $data['vocabulary-restricted']);
+            $this->assertIsBool($data['vocabulary-restricted']);
         }
     }
 }

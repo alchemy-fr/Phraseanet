@@ -15,54 +15,39 @@ use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Registrations",uniqueConstraints={
- *      @ORM\UniqueConstraint(name="unique_registration", columns={"user_id","base_id","pending"})
- * })
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\RegistrationRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\RegistrationRepository::class)]
+#[ORM\Table(name: 'Registrations')]
+#[ORM\UniqueConstraint(name: 'unique_registration', columns: ['user_id', 'base_id', 'pending'])]
 class Registration
 {
-   /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+   #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="integer", name="base_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'base_id')]
     private $baseId;
 
-    /**
-     * @ORM\Column(type="boolean", name="pending", options={"default" = 1})
-     */
+    #[ORM\Column(type: 'boolean', name: 'pending', options: ['default' => 1])]
     private $pending = true;
 
-    /**
-     * @ORM\Column(type="boolean", name="rejected", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'rejected', options: ['default' => 0])]
     private $rejected = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

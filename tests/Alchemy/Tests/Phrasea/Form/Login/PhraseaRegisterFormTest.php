@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Form\Login;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PhraseaRegisterFormTest extends FormTestCase
 {
     protected function getForm()

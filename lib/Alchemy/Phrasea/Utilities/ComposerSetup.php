@@ -70,7 +70,7 @@ class ComposerSetup
             throw new RuntimeException('Unable to move to target directory for composer install.');
         }
 
-        $process = ProcessBuilder::create([$this->phpExecutable, $installer])
+        $process = \Symfony\Component\Process\Process::create([$this->phpExecutable, $installer])
             ->setTimeout(300)
             ->getProcess()
         ;

@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Authentication\Phrasea;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
-class PasswordEncoder implements PasswordEncoderInterface
+class PasswordEncoder implements \Symfony\Component\PasswordHasher\PasswordHasherInterface
 {
     private $key;
 

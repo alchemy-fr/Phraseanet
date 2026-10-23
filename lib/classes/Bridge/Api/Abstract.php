@@ -34,11 +34,11 @@ abstract class Bridge_Api_Abstract
     /**
      * @param UrlGenerator        $generator
      * @param PropertyAccess      $conf
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      *
      * @param Bridge_Api_Auth_Interface $auth
      */
-    public function __construct(UrlGenerator $generator, PropertyAccess $conf, Bridge_Api_Auth_Interface $auth, TranslatorInterface $translator)
+    public function __construct(UrlGenerator $generator, PropertyAccess $conf, Bridge_Api_Auth_Interface $auth, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
         $this->conf = $conf;

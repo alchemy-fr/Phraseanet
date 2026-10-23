@@ -6,19 +6,17 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\Version\Migration\Migration38;
 use Alchemy\Tests\Phrasea\Setup\AbstractSetupTester;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Migration38Test extends AbstractSetupTester
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->revert();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->revert();
         parent::tearDown();
@@ -36,7 +34,7 @@ class Migration38Test extends AbstractSetupTester
     public function testMigrate()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration.store'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
         $app['root.path'] = __DIR__ . '/../Probe/fixtures-3807';
 
         $app['configuration.store']->expects($this->once())

@@ -398,7 +398,7 @@ class record_preview extends record_adapter
      * @param int $nbDays
      * @return array|bool       false if user is not allowed to see stats (aka report)
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getStatistics($nbDays)
     {

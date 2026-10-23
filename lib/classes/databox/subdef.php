@@ -69,10 +69,10 @@ class databox_subdef
      *
      * @param SubdefType $type
      * @param SimpleXMLElement $sd
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      * @param databox|null $databox
      */
-    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator, ?databox $databox = null)
+    public function __construct(SubdefType $type, SimpleXMLElement $sd, \Symfony\Contracts\Translation\TranslatorInterface $translator, ?databox $databox = null)
     {
         $this->databox = $databox;
         $this->subdef_group = $type;

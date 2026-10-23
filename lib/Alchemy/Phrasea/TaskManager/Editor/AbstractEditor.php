@@ -20,10 +20,10 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class AbstractEditor implements EditorInterface
 {
-    /** @var TranslatorInterface */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface */
     protected $translator;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }

@@ -2,12 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Report;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
     private $dmin;

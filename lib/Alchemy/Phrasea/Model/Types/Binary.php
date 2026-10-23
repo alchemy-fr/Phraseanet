@@ -20,7 +20,7 @@ class Binary extends Type
 
     public function getName()
     {
-        return static::BINARY;
+        return \Doctrine\DBAL\Types\Types::BINARY;
     }
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)

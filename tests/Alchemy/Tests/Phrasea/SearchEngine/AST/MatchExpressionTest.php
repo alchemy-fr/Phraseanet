@@ -13,7 +13,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
  * @group searchengine
  * @group ast
  */
-class MatchExpressionTest extends \PHPUnit_Framework_TestCase
+class MatchExpressionTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerialization()
     {

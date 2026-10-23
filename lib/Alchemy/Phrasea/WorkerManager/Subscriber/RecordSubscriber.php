@@ -357,7 +357,7 @@ class RecordSubscriber implements EventSubscriberInterface
         $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             /** @uses onRecordCreated */

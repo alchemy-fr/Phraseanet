@@ -7,17 +7,13 @@ use Silex\Application as SilexApp;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TrustedProxySubscriberTest extends \PhraseanetTestCase
 {
     private function getConfigurationMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Configuration')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Core\Configuration\Configuration');
     }
 
     public function testAllowedIpsAreSetAsArray()

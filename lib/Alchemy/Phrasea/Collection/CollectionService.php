@@ -56,7 +56,7 @@ class CollectionService
     /**
      * @param Collection $collection
      * @return int|null
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getRecordCount(Collection $collection)
     {
@@ -103,7 +103,7 @@ class CollectionService
     /**
      * @param Collection $collection
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function resetWatermark(Collection $collection)
     {
@@ -125,7 +125,7 @@ class CollectionService
      * @param Collection $collection
      * @param int|null $record_id
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function resetStamp(Collection $collection, $record_id = null)
     {
@@ -155,7 +155,7 @@ class CollectionService
      * @param \databox $databox
      * @param Collection $collection
      * @param CollectionReference $reference
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete(\databox $databox, Collection $collection, CollectionReference $reference)
     {
@@ -185,7 +185,7 @@ class CollectionService
      * @param Collection $collection
      * @param int $pass_quantity
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function emptyCollection(\databox $databox, Collection $collection, $pass_quantity = 100)
     {
@@ -232,7 +232,7 @@ class CollectionService
     /**
      * @param CollectionReference $reference
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function unmountCollection(CollectionReference $reference)
     {

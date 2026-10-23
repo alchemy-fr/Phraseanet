@@ -110,7 +110,7 @@ WHERE `share_expires` IS NULL AND `vote_expires` IS NOT NULL AND `vote_expires` 
         ];
 
         foreach($sqls as $sql) {
-            $cnx->exec($sql);
+            $cnx->executeStatement($sql);
         }
     }
 }

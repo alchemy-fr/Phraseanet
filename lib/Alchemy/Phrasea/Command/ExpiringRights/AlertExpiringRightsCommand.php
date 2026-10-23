@@ -43,7 +43,7 @@ class AlertExpiringRightsCommand extends Command
 
     private $now = null;
 
-    public function configure()
+    public function configure(): void
     {
         $this->setName("workflow:expiring:run")
             ->setDescription('alert owners and users of expiring records')
@@ -118,7 +118,7 @@ class AlertExpiringRightsCommand extends Command
      * @param $jobname
      * @param $job
      * @return bool
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function playJob($jobname, $job)
     {
@@ -515,7 +515,7 @@ class AlertExpiringRightsCommand extends Command
                 . " WHERE " . $sql_where;
             $stmt = $this->appbox->get_connection()->prepare($sql);
             $stmt->executeStatement([]);
-            $this->appbox->get_connection()->exec($sql);
+            $this->appbox->get_connection()->executeStatement($sql);
         }
 
         $this->output->writeln(

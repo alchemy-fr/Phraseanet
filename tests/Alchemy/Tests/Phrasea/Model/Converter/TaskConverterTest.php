@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TaskConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()
@@ -18,12 +16,10 @@ class TaskConverterTest extends \PhraseanetTestCase
         $this->assertSame($task, $converter->convert(1));
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @expectedExceptionMessage Task prout not found.
-     */
     public function testConvertFailure()
     {
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+        $this->expectExceptionMessage('Task prout not found.');
         $converter = new TaskConverter(self::$DI['app']['orm.em']->getRepository('Phraseanet:Task'));
         $converter->convert('prout');
     }

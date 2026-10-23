@@ -16,7 +16,7 @@ use Doctrine\Common\Cache\Cache;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
+final class CachedDataboxRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ObjectProphecy */
     private $cache;

@@ -41,7 +41,7 @@ class PhraseaRegisterForm extends AbstractType
         $this->params = $params;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('email', EmailType::class, [
             'label'       => 'E-mail',
@@ -63,7 +63,7 @@ class PhraseaRegisterForm extends AbstractType
             'second_options'    => ['label' => 'Password (confirmation)'],
             'constraints'       => [
                 new Assert\NotBlank(),
-                new Assert\Length(['min' => 5]),
+                new Assert\Length(min: 5),
             ],
         ]);
 
@@ -72,9 +72,7 @@ class PhraseaRegisterForm extends AbstractType
                 'label'         => 'Terms of Use',
                 'mapped'        => false,
                 "constraints"   => [
-                    new Assert\IsTrue([
-                        "message" => "Please accept the Terms and conditions in order to register."
-                    ])],
+                    new Assert\IsTrue(message: "Please accept the Terms and conditions in order to register.")],
             ]);
         }
 
@@ -99,12 +97,7 @@ class PhraseaRegisterForm extends AbstractType
                 'multiple'    => true,
                 'expanded'    => false,
                 'constraints' => [
-                    new Assert\Choice([
-                        'choices' => $baseIds,
-                        'minMessage' => 'You must select at least %s collection.',
-                        'multiple' => true,
-                        'min'      => 1,
-                    ]),
+                    new Assert\Choice(choices: $baseIds, minMessage: 'You must select at least %s collection.', multiple: true, min: 1),
                 ],
             ]);
         }
@@ -129,19 +122,19 @@ class PhraseaRegisterForm extends AbstractType
                 );
             }
         }
-        $builder->add('captcha', 'hidden', [
+        $builder->add('captcha', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
             'error_bubbling' => false
         ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'allow_extra_fields' => true,
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

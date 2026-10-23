@@ -7,10 +7,8 @@ use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Facebook\Authentication\AccessToken;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FacebookTest extends ProviderTestCase
 {
     const TOKEN = 'aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789';
@@ -110,20 +108,17 @@ class FacebookTest extends ProviderTestCase
 
     private function getFacebookMock($ValidAccessToken = false)
     {
-        $facebook = $this->getMockBuilder('Facebook\Facebook')
-            ->disableOriginalConstructor()
-            ->setMethods(['getRedirectLoginHelper', 'get', 'getOAuth2Client'])
-            ->getMock();
+        $facebook = $this->createMock('Facebook\Facebook');
 
         $helper = $this->getFacebookRedirectLoginHelperMock($ValidAccessToken);
 
-        $facebook->expects($this->any())
+        $facebook
             ->method('getRedirectLoginHelper')
             ->will($this->returnValue($helper));
 
         $OAuth2Client = $this->getOAuth2ClientMock();
 
-        $facebook->expects($this->any())
+        $facebook
             ->method('getOAuth2Client')
             ->will($this->returnValue($OAuth2Client));
 
@@ -131,7 +126,7 @@ class FacebookTest extends ProviderTestCase
         {
             $FacebookResponse = $this->getFacebookResponseMock();
 
-            $facebook->expects($this->any())
+            $facebook
                 ->method('get')
                 ->will($this->returnValue($FacebookResponse));
         }
@@ -149,20 +144,17 @@ class FacebookTest extends ProviderTestCase
     {
         $accessToken = $this->getAccessTokenMock($ValidAccessToken);
 
-        $helper = $this->getMockBuilder('Facebook\Helpers\FacebookRedirectLoginHelper')
-            ->disableOriginalConstructor()
-            ->setMethods(['getLoginUrl', 'getAccessToken', 'getError'])
-            ->getMock();
+        $helper = $this->createMock('Facebook\Helpers\FacebookRedirectLoginHelper');
 
-        $helper->expects($this->any())
+        $helper
             ->method('getLoginUrl')
             ->will($this->returnValue('http://www.facebook.com/'));
 
-        $helper->expects($this->any())
+        $helper
             ->method('getAccessToken')
             ->will($this->returnValue($accessToken));
 
-        $helper->expects($this->any())
+        $helper
             ->method('getError')
             ->will($this->returnValue(null));
 
@@ -171,12 +163,9 @@ class FacebookTest extends ProviderTestCase
 
     private function getOAuth2ClientMock()
     {
-        $OAuth2Client = $this->getMockBuilder('Facebook\Authentication\OAuth2Client')
-            ->disableOriginalConstructor()
-            ->setMethods(['getLongLivedAccessToken'])
-            ->getMock();
+        $OAuth2Client = $this->createMock('Facebook\Authentication\OAuth2Client');
 
-        $OAuth2Client->expects($this->any())
+        $OAuth2Client
             ->method('getLongLivedAccessToken')
             ->will($this->returnValue(self::TOKEN));
 
@@ -185,12 +174,9 @@ class FacebookTest extends ProviderTestCase
 
     private function getFacebookResponseMock()
     {
-        $FacebookResponse = $this->getMockBuilder('Facebook\FacebookResponse')
-            ->disableOriginalConstructor()
-            ->setMethods(['getGraphUser'])
-            ->getMock();
+        $FacebookResponse = $this->createMock('Facebook\FacebookResponse');
 
-        $FacebookResponse->expects($this->any())
+        $FacebookResponse
             ->method('getGraphUser')
             ->will($this->returnValue([
                 'id'    => self::ID,

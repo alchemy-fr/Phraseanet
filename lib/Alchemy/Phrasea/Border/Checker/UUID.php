@@ -71,7 +71,7 @@ class UUID extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getReason(TranslatorInterface $translator)
+    public static function getReason(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('same UUID');
     }
@@ -79,7 +79,7 @@ class UUID extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public function getMessage(TranslatorInterface $translator)
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('A file with the same UUID already exists in database');
     }

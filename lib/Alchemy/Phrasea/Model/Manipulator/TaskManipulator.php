@@ -23,12 +23,12 @@ class TaskManipulator implements ManipulatorInterface
 {
     /** @var NotifierInterface */
     private $notifier;
-    /** @var ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $om;
-    /** @var TranslatorInterface */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface */
     private $translator;
 
-    public function __construct(ObjectManager $om, TranslatorInterface $translator, ?NotifierInterface $notifier = null)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, \Symfony\Contracts\Translation\TranslatorInterface $translator, ?NotifierInterface $notifier = null)
     {
         $this->om = $om;
         $this->translator = $translator;

@@ -1,6 +1,6 @@
 <?php
 
-class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
+class PhraseanetPHPUnitListener implements \PHPUnit\Framework\TestListener
 {
     private static $logEcho = true;
     private static $logSQL = false;
@@ -8,22 +8,22 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
     private static $conn;
     private static $booted = false;
 
-    public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addError(\PHPUnit\Framework\Test $test, Exception $e, $time)
     {
         static::$data[self::generateName($test)]['status'] = 'error';
     }
 
-    public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
+    public function addFailure(\PHPUnit\Framework\Test $test, \PHPUnit\Framework\AssertionFailedError $e, $time)
     {
         static::$data[self::generateName($test)]['status'] = 'fail';
     }
 
-    public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addIncompleteTest(\PHPUnit\Framework\Test $test, Exception $e, $time)
     {
         static::$data[self::generateName($test)]['status'] = 'incomplete';
     }
 
-    public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addSkippedTest(\PHPUnit\Framework\Test $test, Exception $e, $time)
     {
         static::$data[self::generateName($test)]['status'] = 'skipped';
     }
@@ -38,7 +38,7 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
         return static::$durationByTest;
     }
 
-    public function startTest(PHPUnit_Framework_Test $test)
+    public function startTest(\PHPUnit\Framework\Test $test)
     {
         static::$data[self::generateName($test)] = [
             'duration' => microtime(true),
@@ -48,7 +48,7 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
         ];
     }
 
-    public function endTest(PHPUnit_Framework_Test $test, $time)
+    public function endTest(\PHPUnit\Framework\Test $test, $time)
     {
         $name = self::generateName($test);
         static::$data[$name]['duration'] = microtime(true) - static::$data[$name]['duration'];
@@ -61,7 +61,7 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
         }
     }
 
-    public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
+    public function startTestSuite(\PHPUnit\Framework\TestSuite $suite)
     {
         if (!class_exists($suite->getName())) {
             return;
@@ -88,14 +88,14 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
         }
     }
 
-    public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
+    public function endTestSuite(\PHPUnit\Framework\TestSuite $suite)
     {
         if (!class_exists($suite->getName())) {
             return;
         }
      }
 
-    private static function generateName(PHPUnit_Framework_Test $test)
+    private static function generateName(\PHPUnit\Framework\Test $test)
     {
         $reflect = new \ReflectionClass($test);
 

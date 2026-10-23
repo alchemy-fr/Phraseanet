@@ -4,12 +4,14 @@ namespace Alchemy\Tests\Phrasea\Core\Connection;
 
 use Alchemy\Phrasea\Core\Connection\ConnectionProvider;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ConnectionPoolManager extends \PhraseanetTestCase
 {
+    public function __construct()
+    {
+        parent::__construct(static::class);
+    }
     public function testMysqlTimeoutIsHandled()
     {
         $this->markTestSkipped();

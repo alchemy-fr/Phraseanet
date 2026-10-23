@@ -21,7 +21,7 @@ class PhraseanetExtension extends \Twig\Extension\AbstractExtension
         $this->app = $app;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return array(
             new \Twig\TwigFilter('sort_collections', array(CollectionHelper::class, 'sort')),
@@ -31,7 +31,7 @@ class PhraseanetExtension extends \Twig\Extension\AbstractExtension
         );
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return array(
             new \Twig\TwigFunction('user_setting', array($this, 'getUserSetting')),

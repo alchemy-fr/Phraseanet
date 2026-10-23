@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Authentication\Provider\Linkedin;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class LinkedinTest extends ProviderTestCase
 {
     public function provideDataForFailingCallback()
@@ -35,25 +33,21 @@ class LinkedinTest extends ProviderTestCase
         $request = $this->getRequestMock();
         $this->addQueryParameter($request, ['state' => $state]);
 
-        $mock = $this->getMock('Guzzle\Http\ClientInterface');
+        $mock = $this->createMock('Guzzle\Http\ClientInterface');
 
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->getMock('Guzzle\Http\Message\RequestInterface');
+        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
+        $requestPost = $this->createMock('Guzzle\Http\Message\RequestInterface');
 
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $queryString->expects($this->any())
+        $queryString = $this->createMock('Guzzle\Http\QueryString');
+        $queryString
             ->method('add')
             ->will($this->returnSelf());
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('getQuery')
             ->will($this->returnValue($queryString));
 
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $response = $this->createMock('Guzzle\Http\Message\Response');
 
         $response->expects($this->at(0))
             ->method('getStatusCode')
@@ -63,19 +57,19 @@ class LinkedinTest extends ProviderTestCase
             ->method('getStatusCode')
             ->will($this->returnValue(401));
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('send')
             ->will($this->returnValue($response));
 
-        $requestPost->expects($this->any())
+        $requestPost
             ->method('send')
             ->will($this->returnValue($response));
 
-        $mock->expects($this->any())
+        $mock
             ->method('get')
             ->will($this->returnValue($requestGet));
 
-        $mock->expects($this->any())
+        $mock
             ->method('post')
             ->will($this->returnValue($requestPost));
 
@@ -97,44 +91,40 @@ class LinkedinTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
+        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
 
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->getMock('Guzzle\Http\Message\EntityEnclosingRequestInterface');
+        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
+        $requestPost = $this->createMock('Guzzle\Http\Message\EntityEnclosingRequestInterface');
 
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $queryString = $this->createMock('Guzzle\Http\QueryString');
 
-        $queryString->expects($this->any())
+        $queryString
             ->method('add')
             ->will($this->returnSelf());
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('getQuery')
             ->will($this->returnValue($queryString));
 
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $response = $this->createMock('Guzzle\Http\Message\Response');
 
-        $response->expects($this->any())
+        $response
             ->method('getStatusCode')
             ->will($this->returnValue(200));
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('send')
             ->will($this->returnValue($response));
 
-        $requestPost->expects($this->any())
+        $requestPost
             ->method('send')
             ->will($this->returnValue($response));
 
-        $guzzle->expects($this->any())
+        $guzzle
             ->method('get')
             ->will($this->returnValue($requestGet));
 
-        $guzzle->expects($this->any())
+        $guzzle
             ->method('post')
             ->will($this->returnValue($requestPost));
 
@@ -163,31 +153,27 @@ class LinkedinTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
+        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
 
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
+        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
 
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $queryString = $this->createMock('Guzzle\Http\QueryString');
 
-        $queryString->expects($this->any())
+        $queryString
             ->method('add')
             ->will($this->returnSelf());
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('getQuery')
             ->will($this->returnValue($queryString));
 
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $response = $this->createMock('Guzzle\Http\Message\Response');
 
-        $response->expects($this->any())
+        $response
             ->method('getStatusCode')
             ->will($this->returnValue(200));
 
-        $response->expects($this->any())
+        $response
             ->method('getBody')
             ->with($this->equalTo(true))
             ->will($this->returnValue(json_encode([
@@ -208,11 +194,11 @@ class LinkedinTest extends ProviderTestCase
                 'lastName'     => self::LASTNAME,
             ])));
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('send')
             ->will($this->returnValue($response));
 
-        $guzzle->expects($this->any())
+        $guzzle
             ->method('get')
             ->will($this->returnValue($requestGet));
 
@@ -243,35 +229,31 @@ class LinkedinTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
+        $guzzle = $this->createMock('Guzzle\Http\ClientInterface');
 
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
+        $requestGet = $this->createMock('Guzzle\Http\Message\RequestInterface');
 
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $queryString = $this->createMock('Guzzle\Http\QueryString');
 
-        $queryString->expects($this->any())
+        $queryString
             ->method('add')
             ->will($this->returnSelf());
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('getQuery')
             ->will($this->returnValue($queryString));
 
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $response = $this->createMock('Guzzle\Http\Message\Response');
 
-        $response->expects($this->any())
+        $response
             ->method('getStatusCode')
             ->will($this->returnValue(401));
 
-        $requestGet->expects($this->any())
+        $requestGet
             ->method('send')
             ->will($this->returnValue($response));
 
-        $guzzle->expects($this->any())
+        $guzzle
             ->method('get')
             ->will($this->returnValue($requestGet));
 

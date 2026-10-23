@@ -206,7 +206,7 @@ class UserController extends Controller
         try {
             $rights = $this->getUserEditHelper($request);
 
-            $resetBeforeApply = (bool) $request->request->get('reset_before_apply', false);
+            $resetBeforeApply = $request->request->getBoolean('reset_before_apply');
             if (!$resetBeforeApply) {
                 $rights->apply_rights();
             }

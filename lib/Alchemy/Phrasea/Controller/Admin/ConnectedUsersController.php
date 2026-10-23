@@ -23,7 +23,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ConnectedUsersController extends Controller
 {
-    /** @var TranslatorInterface */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface */
     private $translator;
     protected $moduleNames;
     /** @var LoggerInterface */

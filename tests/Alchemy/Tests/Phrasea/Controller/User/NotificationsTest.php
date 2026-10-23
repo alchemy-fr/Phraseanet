@@ -2,19 +2,14 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\User;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\User\Notifications::listNotifications
-     */
     public function testListNotifications()
     {
 //        $response = $this->XMLHTTPRequest('GET', '/user/notifications/');
@@ -23,9 +18,6 @@ class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->markTestSkipped();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\User\Notifications::listNotifications
-     */
     public function testListNotificationsNoXMLHTTPRequests()
     {
 //        self::$DI['client']->request('GET', '/user/notifications/');
@@ -35,9 +27,6 @@ class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->markTestSkipped();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\User\Notifications::setNotificationsReaded
-     */
     public function testSetNotificationsReadedNoXMLHTTPRequests()
     {
 //        self::$DI['client']->request('POST', '/user/notifications/read/');
@@ -47,9 +36,6 @@ class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->markTestSkipped();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\User\Notifications::setNotificationsReaded
-     */
     public function testSetNotificationsReaded()
     {
 //        $response = $this->XMLHTTPRequest('POST', '/user/notifications/read/', [
@@ -64,16 +50,9 @@ class NotificationsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->markTestSkipped();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\User\Notifications::connect
-     * @covers Alchemy\Phrasea\Controller\User\Notifications::call
-     */
     public function testRequireAuthentication()
     {
-        self::$DI['app']['authentication']->setUser($this->getMockBuilder('Alchemy\Phrasea\Model\Entities\User')
-            ->setMethods(['isGuest'])
-            ->disableOriginalConstructor()
-            ->getMock());
+        self::$DI['app']['authentication']->setUser($this->createMock('Alchemy\Phrasea\Model\Entities\User'));
 
         self::$DI['app']->getAuthenticatedUser()->expects($this->once())
             ->method('isGuest')

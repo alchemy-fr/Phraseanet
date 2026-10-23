@@ -4,22 +4,17 @@ namespace Alchemy\Tests\Phrasea\Metadata;
 
 use Alchemy\Phrasea\Metadata\TagProvider;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TagProviderTest extends \PhraseanetTestCase
 {
     private $object;
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new TagProvider;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Metadata\TagProvider::getAll
-     */
     public function testGetAll()
     {
         $this->markTestSkipped('This test lasts more than 30 seconds');
@@ -28,9 +23,6 @@ class TagProviderTest extends \PhraseanetTestCase
         $this->assertCount(20, $all['Phraseanet']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Metadata\TagProvider::getLookupTable
-     */
     public function testGetLookupTable()
     {
         $lookup = $this->object->getLookupTable();

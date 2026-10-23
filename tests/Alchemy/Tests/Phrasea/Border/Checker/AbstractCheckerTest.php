@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Checker\AbstractChecker;
 use Alchemy\Phrasea\Border\File;
 
-class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
+class AbstractCheckerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Application

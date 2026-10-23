@@ -6,12 +6,10 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Symfony\Component\CssSelector\CssSelector;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRequestAvailable()
@@ -28,9 +26,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testEntryCreate()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         self::$DI['app']['notification.deliverer']->expects($this->atLeastOnce())
             ->method('deliver')
@@ -75,9 +71,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 3);
 
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         self::$DI['app']['notification.deliverer']->expects($this->never())
             ->method('deliver');
@@ -143,7 +137,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($pageContent->error);
         $this->assertTrue(is_string($pageContent->message));
         $this->assertTrue(is_string($pageContent->datas));
-        $this->assertRegExp("/entry_" . $entry->getId() . "/", $pageContent->datas);
+        $this->assertMatchesRegularExpression("/entry_" . $entry->getId() . "/", $pageContent->datas);
     }
 
     public function testEntryUpdateChangeFeed()
@@ -168,7 +162,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($pageContent->error);
         $this->assertTrue(is_string($pageContent->message));
         $this->assertTrue(is_string($pageContent->datas));
-        $this->assertRegExp("/entry_" . $entry->getId() . "/", $pageContent->datas);
+        $this->assertMatchesRegularExpression("/entry_" . $entry->getId() . "/", $pageContent->datas);
 
         $retrievedentry = self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedEntry')->find($entry->getId());
         $this->assertEquals($newfeed->getId(), $retrievedentry->getFeed()->getId());
@@ -372,12 +366,8 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testSuscribeAggregate()
     {
-        self::$DI['app']['feed.aggregate-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLink')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['feed.aggregate-link-generator'] = $this->createStub('Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator');
+        $link = $this->createMock('Alchemy\Phrasea\Feed\Link\FeedLink');
         $link->expects($this->once())
             ->method('getURI')
             ->will($this->returnValue('http://aggregated-link/'));
@@ -396,22 +386,18 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('texte', $pageContent);
         $this->assertArrayHasKey('titre', $pageContent);
 
-        $this->assertInternalType('string', $pageContent['texte']);
-        $this->assertInternalType('string', $pageContent['titre']);
+        $this->assertIsString($pageContent['texte']);
+        $this->assertIsString($pageContent['titre']);
 
-        $this->assertContains('http://aggregated-link/', $pageContent['texte']);
+        $this->assertStringContainsString('http://aggregated-link/', $pageContent['texte']);
     }
 
     public function testSuscribe()
     {
         $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
 
-        self::$DI['app']['feed.user-link-generator'] = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLinkGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $link = $this->getMockBuilder('Alchemy\Phrasea\Feed\Link\FeedLink')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['feed.user-link-generator'] = $this->createStub('Alchemy\Phrasea\Feed\Link\FeedLinkGenerator');
+        $link = $this->createMock('Alchemy\Phrasea\Feed\Link\FeedLink');
         $link->expects($this->once())
             ->method('getURI')
             ->will($this->returnValue('http://user-link/'));
@@ -430,9 +416,9 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('texte', $pageContent);
         $this->assertArrayHasKey('titre', $pageContent);
 
-        $this->assertInternalType('string', $pageContent['texte']);
-        $this->assertInternalType('string', $pageContent['titre']);
+        $this->assertIsString($pageContent['texte']);
+        $this->assertIsString($pageContent['titre']);
 
-        $this->assertContains('http://user-link/', $pageContent['texte']);
+        $this->assertStringContainsString('http://user-link/', $pageContent['texte']);
     }
 }

@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PhraseaForgotPasswordForm extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('email', EmailType::class, [
             'label' => 'E-mail',
@@ -30,19 +30,19 @@ class PhraseaForgotPasswordForm extends AbstractType
                 ],
         ]);
 
-        $builder->add('captcha', 'hidden', [
+        $builder->add('captcha', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
             'error_bubbling' => false
         ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'allow_extra_fields' => true,
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

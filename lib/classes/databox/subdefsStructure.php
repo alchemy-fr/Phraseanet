@@ -21,7 +21,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     protected $subdefGroups = [];
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
@@ -50,7 +50,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         return $n;
     }
 
-    public function __construct(databox $databox, TranslatorInterface $translator)
+    public function __construct(databox $databox, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->databox = $databox;
         $this->translator = $translator;

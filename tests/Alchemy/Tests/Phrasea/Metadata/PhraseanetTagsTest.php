@@ -12,7 +12,7 @@ namespace Alchemy\Tests\Phrasea\Metadata;
 
 use Alchemy\Phrasea\Metadata\Tag;
 
-class PhraseanetTagsTest extends \PHPUnit_Framework_TestCase
+class PhraseanetTagsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider provideSUTs

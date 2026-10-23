@@ -22,45 +22,45 @@ class MainConfigurationFormType extends AbstractType
     private $languages;
     private $translator;
 
-    public function __construct(TranslatorInterface $translator, array $languages)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator, array $languages)
     {
         $this->languages = $languages;
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('general', new GeneralFormType($this->languages), [
+        $builder->add('general', \Alchemy\Phrasea\Form\Configuration\GeneralFormType::class, [
             'label'    => 'General configuration',
         ]);
-        $builder->add('modules', new ModulesFormType($this->translator), [
+        $builder->add('modules', \Alchemy\Phrasea\Form\Configuration\ModulesFormType::class, [
             'label' => 'Additionnal modules',
         ]);
-        $builder->add('actions', new ActionsFormType($this->translator), [
+        $builder->add('actions', \Alchemy\Phrasea\Form\Configuration\ActionsFormType::class, [
             'label' => 'Push configuration',
         ]);
-        $builder->add('ftp', new FtpExportFormType($this->translator), [
+        $builder->add('ftp', \Alchemy\Phrasea\Form\Configuration\FtpExportFormType::class, [
             'label' => 'FTP Export',
         ]);
-        $builder->add('registration', new RegistrationFormType($this->translator), [
+        $builder->add('registration', \Alchemy\Phrasea\Form\Configuration\RegistrationFormType::class, [
             'label' => 'Registration',
         ]);
-        $builder->add('maintenance', new MaintenanceFormType(), [
+        $builder->add('maintenance', \Alchemy\Phrasea\Form\Configuration\MaintenanceFormType::class, [
             'label' => 'Maintenance state',
         ]);
-        $builder->add('api-clients', new APIClientsFormType($this->translator), [
+        $builder->add('api-clients', \Alchemy\Phrasea\Form\Configuration\APIClientsFormType::class, [
             'label' => 'Phraseanet client API',
         ]);
-        $builder->add('webservices', new WebservicesFormType($this->translator), [
+        $builder->add('webservices', \Alchemy\Phrasea\Form\Configuration\WebservicesFormType::class, [
             'label' => 'Webservices connectivity',
         ]);
-        $builder->add('executables', new ExecutablesFormType($this->translator), [
+        $builder->add('executables', \Alchemy\Phrasea\Form\Configuration\ExecutablesFormType::class, [
             'label' => 'Executables settings',
         ]);
-        $builder->add('searchengine', new SearchEngineFormType($this->translator), [
+        $builder->add('searchengine', \Alchemy\Phrasea\Form\Configuration\SearchEngineFormType::class, [
             'label' => 'Search engine',
         ]);
-        $builder->add('email', new EmailFormType(), [
+        $builder->add('email', \Alchemy\Phrasea\Form\Configuration\EmailFormType::class, [
             'label' => 'Emails',
         ]);
         $builder->add('custom-links', CollectionType::class, [
@@ -71,7 +71,7 @@ class MainConfigurationFormType extends AbstractType
         ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'required'           => false,
@@ -79,7 +79,7 @@ class MainConfigurationFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

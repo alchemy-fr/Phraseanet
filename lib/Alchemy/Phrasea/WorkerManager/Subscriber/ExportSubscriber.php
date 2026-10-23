@@ -85,7 +85,7 @@ class ExportSubscriber implements EventSubscriberInterface
         );
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::DOWNLOAD_ASYNC_CREATE   => 'onDownloadAsyncCreate',

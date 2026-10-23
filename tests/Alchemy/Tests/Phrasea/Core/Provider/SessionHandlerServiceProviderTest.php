@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class SessionHandlerServiceProviderTest extends \PHPUnit_Framework_TestCase
+class SessionHandlerServiceProviderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var SessionHandlerServiceProvider */
     private $sut;

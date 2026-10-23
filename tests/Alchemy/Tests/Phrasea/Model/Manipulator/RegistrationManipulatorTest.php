@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Registration;
 use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class RegistrationManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateRegistration()
@@ -36,7 +34,7 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
     {
         $registration = self::$DI['registration_1'];
 
-        $aclMock = $this->getMockBuilder('ACL')->disableOriginalConstructor()->getMock();
+        $aclMock = $this->createMock('ACL');
         $aclMock->expects($this->once())->method('give_access_to_sbas')->with($this->equalTo([self::$DI['collection']->get_sbas_id()]));
         $aclMock->expects($this->once())->method('give_access_to_base')->with($this->equalTo([self::$DI['collection']->get_base_id()]));
         $aclMock->expects($this->once())->method('update_rights_to_base')->with($this->equalTo(self::$DI['collection']->get_base_id()), $this->equalTo([
@@ -47,8 +45,8 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
             \ACL::ACTIF           => true,
         ]));
 
-        $aclProviderMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')->disableOriginalConstructor()->getMock();
-        $aclProviderMock->expects($this->any())->method('get')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'))->will($this->returnvalue($aclMock));
+        $aclProviderMock = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProviderMock->method('get')->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'))->will($this->returnvalue($aclMock));
 
         self::$DI['app']['acl'] = $aclProviderMock;
 

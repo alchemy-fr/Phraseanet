@@ -18,12 +18,15 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Login::class, 'registerConfirm')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Login::class, 'renewPassword')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Login::class, 'logout')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Login::class, 'sendConfirmMail')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Login::class, 'authenticate')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public static $registrationCollections;
@@ -32,7 +35,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     public static $email;
     public static $termsOfUse;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -63,13 +66,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->enableRegistration();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->resetTOU();
         parent::tearDown();
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$registrationCollections = self::$collections = self::$login = self::$email = self::$termsOfUse = null;
         parent::tearDownAfterClass();
@@ -138,10 +141,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideFlashMessages
      * @param string $type
      * @param string $message
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFlashMessages')]
     public function testLoginError($type, $message)
     {
         $app = $this->getApplication();
@@ -157,9 +160,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessage($crawler, $type, 1, $message);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::registerConfirm
-     */
     public function testRegisterConfirmMailNoCode()
     {
         $app = $this->getApplication();
@@ -174,9 +174,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::registerConfirm
-     */
     public function testRegisterConfirmMailWrongCode()
     {
         $app = $this->getApplication();
@@ -193,9 +190,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::registerConfirm
-     */
     public function testRegisterConfirmMailUserNotFound()
     {
         $app = $this->getApplication();
@@ -216,9 +210,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::registerConfirm
-     */
     public function testRegisterConfirmMailUnlocked()
     {
         $app = $this->getApplication();
@@ -296,9 +287,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($this->getUser()->isMailLocked());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::renewPassword
-     */
     public function testRenewPasswordInvalidEmail()
     {
         $this->logout($this->getApplication());
@@ -315,9 +303,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFormError($crawler, 1);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::renewPassword
-     */
     public function testRenewPasswordUnknowEmail()
     {
         $this->logout($this->getApplication());
@@ -351,9 +336,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($this->getApplication(), 'info', 1);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::renewPassword
-     */
     public function testRenewPasswordBadArguments()
     {
         $app = $this->getApplication();
@@ -434,9 +416,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/prod/', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::renewPassword
-     */
     public function testRenewPassword()
     {
         $app = $this->getApplication();
@@ -460,10 +439,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideFlashMessages
      * @param string $type
      * @param string $message
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFlashMessages')]
     public function testRenewPasswordPageShowsFlashMessages($type, $message)
     {
         $application = $this->getApplication();
@@ -554,10 +533,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideFlashMessages
      * @param string $type
      * @param string $message
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFlashMessages')]
     public function testGetRegister($type, $message)
     {
         $application = $this->getApplication();
@@ -578,21 +557,17 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $this->logout($app);
 
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
 
-        $providersCollectionMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ProvidersCollection')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $providersCollectionMock = $this->createMock('Alchemy\Phrasea\Authentication\ProvidersCollection');
 
-        $providersCollectionMock->expects($this->any())
+        $providersCollectionMock
             ->method('get')
             ->with($this->equalTo('provider-test'))
             ->will($this->returnValue($provider));
         $app['authentication.providers'] = $providersCollectionMock;
 
-        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $identity = $this->createMock('Alchemy\Phrasea\Authentication\Provider\Token\Identity');
 
         $provider->expects($this->once())
             ->method('getIdentity')
@@ -609,7 +584,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, $crawler->filterXPath("//input[@value='supermail@superprovider.com' and @name='email']")->count());
     }
 
-    public function provideRegistrationRouteAndMethods()
+    public static function provideRegistrationRouteAndMethods()
     {
         return [
             ['GET', '/login/register/'],
@@ -619,10 +594,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideRegistrationRouteAndMethods
      * @param string $method
      * @param string $route
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRegistrationRouteAndMethods')]
     public function testGetPostRegisterWhenRegistrationDisabled($method, $route)
     {
         $this->disableRegistration();
@@ -632,11 +607,11 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideInvalidRegistrationData
      * @param array $parameters
      * @param array $extraParameters
      * @param array $errors
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidRegistrationData')]
     public function testPostRegisterBadArguments($parameters, $extraParameters, $errors)
     {
         $this->enableTOU();
@@ -981,12 +956,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app['registration.fields'] = [];
         $this->logout($app);
 
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock(ProviderInterface::class);
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock(ProviderInterface::class);
         $this->addProvider('provider-test', $provider);
 
-        $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
-        $entity->expects($this->any())
+        $entity = $this->createMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
+        $entity
             ->method('getUser')
             ->will($this->returnValue($this->getUser()));
 
@@ -1068,10 +1043,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app['registration.fields'] = [];
         $this->logout($app);
 
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
-        $provider->expects($this->any())
+        $provider
             ->method('getToken')
             ->will($this->throwException(new NotAuthenticatedException('Not authenticated')));
 
@@ -1119,9 +1094,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             'Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered' => 0,
         ];
 
-        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $nativeQueryMock = $this->createMock('Alchemy\Phrasea\Model\NativeQueryProvider');
 
         $nativeQueryMock
             ->expects($this->once())
@@ -1140,17 +1113,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockNotificationsDeliverer($emails);
         $this->mockUserNotificationSettings('eventsmanager_notify_register');
 
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acl = $this->createMock('ACL');
         $acl->expects($this->once())
             ->method('get_granted_base')
             ->will($this->returnValue([]));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
+        $aclProvider = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($acl));
 
@@ -1166,21 +1135,19 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             "provider-id" => 'provider-test',
         ]);
 
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock(ProviderInterface::class);
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock(ProviderInterface::class);
         $this->addProvider('provider-test', $provider);
 
         $token = new Token($provider, 42);
 
-        $provider->expects($this->any())
+        $provider
             ->method('getToken')
             ->will($this->returnValue($token));
 
-        $repoUsrAuthProvider = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')
-            ->setMethods(['findWithProviderAndId'])
-            ->getMock();
+        $repoUsrAuthProvider = $this->createMock('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository');
 
-        $repoUsrAuthProvider->expects($this->any())
+        $repoUsrAuthProvider
             ->method('findWithProviderAndId')
             ->with('provider-test', $token->getId())
             ->will($this->returnValue(null));
@@ -1218,15 +1185,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideRegistrationData
      * @param array $parameters
      * @param array $extraParameters
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRegistrationData')]
     public function testPostRegister($parameters, $extraParameters)
     {
-        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $nativeQueryMock = $this->createMock('Alchemy\Phrasea\Model\NativeQueryProvider');
 
         $nativeQueryMock->expects($this->once())->method('getAdminsOfBases')->will($this->returnValue([
             [
@@ -1238,17 +1203,13 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $app['orm.em.native-query'] = $nativeQueryMock;
 
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acl = $this->createMock('ACL');
         $acl->expects($this->once())
             ->method('get_granted_base')
             ->will($this->returnValue([]));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
+        $aclProvider = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($acl));
 
@@ -1299,9 +1260,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app['manipulator.user']->delete($user);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::logout
-     */
     public function testGetLogout()
     {
         $app = $this->getApplication();
@@ -1315,9 +1273,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($client->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::sendConfirmMail
-     */
     public function testSendConfirmMailBadRequest()
     {
         $this->logout($this->getApplication());
@@ -1343,9 +1298,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::sendConfirmMail
-     */
     public function testSendConfirmMailWrongUser()
     {
         $app = $this->getApplication();
@@ -1359,9 +1311,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
     public function testAuthenticate()
     {
         $app = $this->getApplication();
@@ -1382,15 +1331,15 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             '_token' => 'token',
         ]);
         $this->assertTrue($client->getResponse()->isRedirect());
-        $this->assertRegExp('/^\/prod\/$/', $client->getResponse()->headers->get('Location'));
+        $this->assertMatchesRegularExpression('/^\/prod\/$/', $client->getResponse()->headers->get('Location'));
     }
 
     /**
-     * @dataProvider provideEventNames
      * @param string $eventName
      * @param string $className
      * @param string $context
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideEventNames')]
     public function testAuthenticateTriggersEvents($eventName, $className, $context)
     {
         $app = $this->getApplication();
@@ -1419,7 +1368,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, $preEvent);
     }
 
-    public function provideEventNames()
+    public static function provideEventNames()
     {
         return [
             [PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_NATIVE],
@@ -1427,7 +1376,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    public function provideGuestEventNames()
+    public static function provideGuestEventNames()
     {
         return [
             [PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', Context::CONTEXT_GUEST],
@@ -1435,9 +1384,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
     public function testAuthenticateCheckRedirect()
     {
         $app = $this->getApplication();
@@ -1458,12 +1404,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $this->assertTrue($client->getResponse()->isRedirect());
-        $this->assertRegExp('/admin/', $client->getResponse()->headers->get('Location'));
+        $this->assertMatchesRegularExpression('/admin/', $client->getResponse()->headers->get('Location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
     public function testGuestAuthenticate()
     {
         $app = $this->getApplication();
@@ -1475,7 +1418,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $client = $this->getClient();
         $client->request('POST', '/login/authenticate/guest/');
         $this->assertTrue($client->getResponse()->isRedirect());
-        $this->assertRegExp('/^\/prod\/$/', $client->getResponse()->headers->get('Location'));
+        $this->assertMatchesRegularExpression('/^\/prod\/$/', $client->getResponse()->headers->get('Location'));
 
         $cookies = $client->getResponse()->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
 
@@ -1483,15 +1426,15 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var Cookie $inviteUsrIdCookie */
         $inviteUsrIdCookie = $cookies['']['/']['invite-usr-id'];
         $this->assertInstanceOf(Cookie::class, $inviteUsrIdCookie);
-        $this->assertInternalType('integer', $inviteUsrIdCookie->getValue());
+        $this->assertIsInt($inviteUsrIdCookie->getValue());
     }
 
     /**
-     * @dataProvider provideGuestEventNames
      * @param string $eventName
      * @param string $className
      * @param string $context
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideGuestEventNames')]
     public function testGuestAuthenticateTriggersEvents($eventName, $className, $context)
     {
         $preEvent = 0;
@@ -1512,9 +1455,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, $preEvent);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
     public function testGuestAuthenticateWithGetMethod()
     {
         $app = $this->getApplication();
@@ -1525,7 +1465,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $client = $this->getClient();
         $client->request('GET', '/login/authenticate/guest/');
         $this->assertTrue($client->getResponse()->isRedirect());
-        $this->assertRegExp('/^\/prod\/$/', $client->getResponse()->headers->get('Location'));
+        $this->assertMatchesRegularExpression('/^\/prod\/$/', $client->getResponse()->headers->get('Location'));
 
         $cookies = $client->getResponse()->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
 
@@ -1533,12 +1473,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var Cookie $inviteUsrIdCookie */
         $inviteUsrIdCookie = $cookies['']['/']['invite-usr-id'];
         $this->assertInstanceOf(Cookie::class, $inviteUsrIdCookie);
-        $this->assertInternalType('integer', $inviteUsrIdCookie->getValue());
+        $this->assertIsInt($inviteUsrIdCookie->getValue());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
     public function testBadAuthenticate()
     {
         $app = $this->getApplication();
@@ -1555,9 +1492,6 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($app['authentication']->isAuthenticated());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
     public function testBadAuthenticateCheckRedirect()
     {
         $app = $this->getApplication();
@@ -1572,13 +1506,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $this->assertTrue($client->getResponse()->isRedirect());
-        $this->assertRegExp('/redirect=prod/', $client->getResponse()->headers->get('Location'));
+        $this->assertMatchesRegularExpression('/redirect=prod/', $client->getResponse()->headers->get('Location'));
         $this->assertFalse($app['authentication']->isAuthenticated());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
-     */
     public function testMailLockedAuthenticate()
     {
         $app = $this->getApplication();
@@ -1601,14 +1532,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateWithProvider()
     {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
 
         $app = $this->getApplication();
-        $providersCollectionMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ProvidersCollection')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $providersCollectionMock = $this->createMock('Alchemy\Phrasea\Authentication\ProvidersCollection');
 
-        $providersCollectionMock->expects($this->any())
+        $providersCollectionMock
             ->method('get')
             ->with($this->equalTo('provider-test'))
             ->will($this->returnValue($provider));
@@ -1631,10 +1560,10 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideAuthProvidersRoutesAndMethods
      * @param string $method
      * @param string $route
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideAuthProvidersRoutesAndMethods')]
     public function testAuthenticateProviderWhileConnected($method, $route)
     {
         $client = $this->getClient();
@@ -1644,7 +1573,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertSame('/prod/', $client->getResponse()->headers->get('location'));
     }
 
-    public function provideAuthProvidersRoutesAndMethods()
+    public static function provideAuthProvidersRoutesAndMethods()
     {
         return [
             ['GET', '/login/provider/provider-test/authenticate/'],
@@ -1654,18 +1583,16 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     }
 
     /**
-     * @dataProvider provideAuthProvidersRoutesAndMethods
      * @param string $method
      * @param string $route
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideAuthProvidersRoutesAndMethods')]
     public function testAuthenticateWithInvalidProvider($method, $route)
     {
         $app = $this->getApplication();
-        $providersCollectionMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ProvidersCollection')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $providersCollectionMock = $this->createMock('Alchemy\Phrasea\Authentication\ProvidersCollection');
 
-        $providersCollectionMock->expects($this->any())
+        $providersCollectionMock
             ->method('get')
             ->with($this->equalTo('provider-test'))
             ->will($this->throwException(new InvalidArgumentException('Provider not found')));
@@ -1677,28 +1604,26 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(404, $this->getClient()->getResponse()->getStatusCode());
     }
 
-    private function addProvider($name, \PHPUnit_Framework_MockObject_MockObject $provider)
+    private function addProvider($name, \PHPUnit\Framework\MockObject\MockObject $provider)
     {
         $app = $this->getApplication();
 
-        $providersCollectionMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ProvidersCollection')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $providersCollectionMock = $this->createMock('Alchemy\Phrasea\Authentication\ProvidersCollection');
 
-        $providersCollectionMock->expects($this->any())
+        $providersCollectionMock
             ->method('get')
             ->with($this->equalTo($name))
             ->will($this->returnValue($provider));
         $app['authentication.providers'] = $providersCollectionMock;
 
-        $provider->expects($this->any())
+        $provider
             ->method('getId')
             ->will($this->returnValue($name));
     }
 
     public function testAuthenticateProviderCallbackWithNotAuthenticatedException()
     {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
         $provider->expects($this->once())
@@ -1717,15 +1642,15 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateProviderCallbackAlreadyBound()
     {
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
         $provider->expects($this->once())
             ->method('onCallback');
 
-        $entity = $this->getMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
-        $entity->expects($this->any())
+        $entity = $this->createMock('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
+        $entity
             ->method('getUser')
             ->will($this->returnValue($this->getUser()));
 
@@ -1749,8 +1674,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateProviderCallbackWithSuggestionBindProviderToUser()
     {
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
         $provider->expects($this->once())
@@ -1758,16 +1683,14 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $token = new Token($provider, 42);
 
-        $provider->expects($this->any())
+        $provider
             ->method('getToken')
             ->will($this->returnValue($token));
 
         $app = $this->getApplication();
         $user = $this->getUser();
 
-        $suggestionFinder = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $suggestionFinder = $this->createMock('Alchemy\Phrasea\Authentication\SuggestionFinder');
 
         $suggestionFinder->expects($this->once())
             ->method('find')
@@ -1795,8 +1718,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateProviderCallbackWithAccountCreatorEnabled()
     {
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
         $provider->expects($this->once())
@@ -1804,14 +1727,12 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $token = new Token($provider, 42);
 
-        $provider->expects($this->any())
+        $provider
             ->method('getToken')
             ->will($this->returnValue($token));
 
         $app = $this->getApplication();
-        $suggestionFinder = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $suggestionFinder = $this->createMock('Alchemy\Phrasea\Authentication\SuggestionFinder');
 
         $suggestionFinder->expects($this->once())
             ->method('find')
@@ -1819,11 +1740,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue(null));
         $app['authentication.suggestion-finder'] = $suggestionFinder;
 
-        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $identity = $this->createMock('Alchemy\Phrasea\Authentication\Provider\Token\Identity');
 
-        $provider->expects($this->any())
+        $provider
             ->method('getIdentity')
             ->will($this->returnValue($identity));
 
@@ -1840,9 +1759,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             $user = $app['manipulator.user']->createUser('temporary-' . $random, $random, 'supermail@superprovider.com');
         }
 
-        $accountCreatorMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\AccountCreator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $accountCreatorMock = $this->createMock('Alchemy\Phrasea\Authentication\AccountCreator');
         $accountCreatorMock->expects($this->once())
             ->method('create')
             ->with($app, 42, 'supermail@superprovider.com', [])
@@ -1872,22 +1789,20 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateProviderCallbackWithRegistrationEnabled()
     {
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
 
         $provider->expects($this->once())->method('onCallback');
 
         $token = new Token($provider, 42);
 
-        $provider->expects($this->any())
+        $provider
             ->method('getToken')
             ->will($this->returnValue($token));
 
         $app = $this->getApplication();
-        $suggestionFinder = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $suggestionFinder = $this->createMock('Alchemy\Phrasea\Authentication\SuggestionFinder');
 
         $suggestionFinder->expects($this->once())
             ->method('find')
@@ -1895,9 +1810,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue(null));
         $app['authentication.suggestion-finder'] = $suggestionFinder;
 
-        $accountCreatorMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\AccountCreator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $accountCreatorMock = $this->createMock('Alchemy\Phrasea\Authentication\AccountCreator');
         $accountCreatorMock->expects($this->never())
             ->method('create');
         $accountCreatorMock->expects($this->once())
@@ -1917,20 +1830,18 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAuthenticateProviderCallbackWithoutRegistrationEnabled()
     {
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $this->addProvider('provider-test', $provider);
         $provider->expects($this->once())->method('onCallback');
         $token = new Token($provider, 42);
 
-        $provider->expects($this->any())
+        $provider
             ->method('getToken')
             ->will($this->returnValue($token));
 
         $app = $this->getApplication();
-        $suggestionFinder = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $suggestionFinder = $this->createMock('Alchemy\Phrasea\Authentication\SuggestionFinder');
 
         $suggestionFinder->expects($this->once())
             ->method('find')
@@ -1938,9 +1849,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue(null));
         $app['authentication.suggestion-finder'] = $suggestionFinder;
 
-        $accountCreatorMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\AccountCreator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $accountCreatorMock = $this->createMock('Alchemy\Phrasea\Authentication\AccountCreator');
         $accountCreatorMock->expects($this->never())
             ->method('create');
         $accountCreatorMock->expects($this->once())
@@ -1999,9 +1908,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $this->logout($app);
 
-        /** @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject $provider */
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
-        $provider->expects($this->any())
+        /** @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject $provider */
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider
             ->method('getId')
             ->will($this->returnValue('test-provider'));
 
@@ -2057,12 +1966,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
     {
-        $repo = $this->getMockBuilder('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository')
-            ->setMethods(['findWithProviderAndId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repo = $this->createMock('Doctrine\ORM\EntityRepository\UsrAuthProviderRepository');
 
-        $repo->expects($this->any())
+        $repo
             ->method('findWithProviderAndId')
             ->with('provider-test', $id)
             ->will($this->returnValue($out));
@@ -2072,9 +1978,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $app['repo.usr-auth-providers'] = $repo;
 
-        $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repo = $this->createMock('Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository');
 
         /*
         $repo->expects($participants ? $this->once() : $this->never())
@@ -2089,9 +1993,7 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
 
-        $app['authentication.suggestion-finder'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\SuggestionFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['authentication.suggestion-finder'] = $this->createMock('Alchemy\Phrasea\Authentication\SuggestionFinder');
     }
 
     /**
@@ -2213,10 +2115,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 $app['repo.registrations'],
                 $app['locale'],
             ])
-            ->setMethods(['isRegistrationEnabled'])
             ->getMock();
 
-        $managerMock->expects($this->any())->method('isRegistrationEnabled')->will($this->returnValue(true));
+        $managerMock->method('isRegistrationEnabled')->will($this->returnValue(true));
         $app['registration.manager'] = $managerMock;
     }
 
@@ -2229,10 +2130,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
                 $app['repo.registrations'],
                 $app['locale'],
             ])
-            ->setMethods(['isRegistrationEnabled'])
             ->getMock();
 
-        $managerMock->expects($this->any())->method('isRegistrationEnabled')->will($this->returnValue(false));
+        $managerMock->method('isRegistrationEnabled')->will($this->returnValue(false));
         $app['registration.manager'] = $managerMock;
     }
 
@@ -2247,11 +2147,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     private function mockNotificationsDeliverer(array &$expectedMails)
     {
         $app = $this->getApplication();
-        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
 
-        $app['notification.deliverer']->expects($this->any())
+        $app['notification.deliverer']
             ->method('deliver')
             ->will($this->returnCallback(function ($email, $receipt) use (&$expectedMails) {
                 $this->assertTrue(isset($expectedMails[get_class($email)]));

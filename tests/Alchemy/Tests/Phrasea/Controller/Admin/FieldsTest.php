@@ -4,12 +4,10 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use PHPExiftool\Driver\Tag\IPTC\ObjectName;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRoot()
@@ -52,7 +50,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals("application/json", $response->headers->get("content-type"));
 
         $data = json_decode($response->getContent(), true);
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
 
         foreach ($data as $dc) {
             $this->assertArrayHasKey('label', $dc);
@@ -71,7 +69,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $data = json_decode($response->getContent(), true);
 
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
 
         foreach ($data as $vocabulary) {
             $this->assertArrayHasKey('type', $vocabulary);
@@ -265,7 +263,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $data = json_decode($response->getContent(), true);
 
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
 
         foreach ($data as $field) {
             $this->assertField($field);

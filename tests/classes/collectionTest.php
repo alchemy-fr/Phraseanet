@@ -3,10 +3,8 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class collectionTest extends \PhraseanetTestCase
 {
     /**
@@ -18,7 +16,7 @@ class collectionTest extends \PhraseanetTestCase
      */
     private static $objectDisable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
 
@@ -49,7 +47,7 @@ class collectionTest extends \PhraseanetTestCase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$object instanceof \collection) {
             self::$object->delete();
@@ -219,21 +217,16 @@ class collectionTest extends \PhraseanetTestCase
         $this->assertTrue(trim(strip_tags(self::$object->get_name())) === self::$object->get_name());
     }
 
-    /**
-     * @dataProvider collectionXmlConfiguration
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('collectionXmlConfiguration')]
     public function testIsRegistrationEnabled($data, $value)
     {
-        $mock = $this->getMockBuilder('\collection')
-            ->disableOriginalConstructor()
-            ->setMethods(['get_prefs'])
-            ->getMock();
+        $mock = $this->createMock('\collection');
 
         $mock->expects($this->once())->method('get_prefs')->will($this->returnValue($data));
         $this->assertEquals($value, $mock->isRegistrationEnabled());
     }
 
-    public function collectionXmlConfiguration()
+    public static function collectionXmlConfiguration()
     {
         $xmlInscript =
 <<<XML

@@ -5,50 +5,41 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="ApiOauthRefreshTokens", indexes={@ORM\Index(name="api_oauth_refresh_token_account_id", columns={"account_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiOauthRefreshTokenRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ApiOauthRefreshTokenRepository::class)]
+#[ORM\Table(name: 'ApiOauthRefreshTokens')]
+#[ORM\Index(name: 'api_oauth_refresh_token_account_id', columns: ['account_id'])]
 class ApiOauthRefreshToken
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="refresh_token", type="string", length=128, nullable=false)
-     * @ORM\Id
      */
+    #[ORM\Column(name: 'refresh_token', type: 'string', length: 128, nullable: false)]
+    #[ORM\Id]
     private $refreshToken;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiAccount")
-     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiAccount
      **/
+    #[ORM\ManyToOne(targetEntity: ApiAccount::class)]
+    #[ORM\JoinColumn(name: 'account_id', referencedColumnName: 'id', nullable: false)]
     private $account;
 
-    /**
-     * @ORM\Column(type="integer", nullable=false)
-     */
+    #[ORM\Column(type: 'integer', nullable: false)]
     private $expires;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $scope;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

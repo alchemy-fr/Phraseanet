@@ -30,7 +30,7 @@ class FeedbackReportCommand extends phrCommand
     /** @var GlobalConfiguration */
     private $config;
 
-    public function configure()
+    public function configure(): void
     {
         $this->setName('feedback:report')
             ->setDescription('Report ended feedback results (votes) on records (set status-bits)')
@@ -45,7 +45,7 @@ class FeedbackReportCommand extends phrCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws \Throwable
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)

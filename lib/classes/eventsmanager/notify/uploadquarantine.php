@@ -33,7 +33,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     {
         /** @var Manager $manager */
         $manager = $this->app['border-manager'];
-        /** @var TranslatorInterface $translator */
+        /** @var \Symfony\Contracts\Translation\TranslatorInterface $translator */
         $translator = $this->app['translator'];
 
         $reasons = array_map(function ($checkerFQCN) use ($manager, $translator) {

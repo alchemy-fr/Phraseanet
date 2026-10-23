@@ -134,7 +134,7 @@ class DataboxesController extends Controller
         catch (\InvalidArgumentException $exception) {
             return $this->handleInvalidArgument($exception);
         }
-        catch (DBALException $e) {
+        catch (\Doctrine\DBAL\Exception $e) {
             return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
         }
         catch (\Exception $e) {

@@ -322,7 +322,7 @@ class V3SubdefsServiceController extends Controller
     }
 
     /**
-     * @return TranslatorInterface
+     * @return \Symfony\Contracts\Translation\TranslatorInterface
      */
     private function getTranslator()
     {

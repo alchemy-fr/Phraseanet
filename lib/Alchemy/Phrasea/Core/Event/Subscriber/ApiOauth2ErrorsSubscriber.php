@@ -24,13 +24,13 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
     private $handler;
     private $translator;
 
-    public function __construct(ExceptionHandler $handler, TranslatorInterface $translator)
+    public function __construct(ExceptionHandler $handler, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->handler = $handler;
         $this->translator = $translator;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::EXCEPTION => ['onSilexError', 20],

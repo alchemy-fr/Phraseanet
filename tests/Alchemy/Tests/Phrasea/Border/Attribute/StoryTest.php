@@ -5,24 +5,16 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Story;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class StoryTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::getName
-     */
     public function testGetName()
     {
         $story = new Story(self::$DI['record_story_1']);
         $this->assertEquals(AttributeInterface::NAME_STORY, $story->getName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::getValue
-     */
     public function testGetValue()
     {
         $record = self::$DI['record_story_1'];
@@ -30,18 +22,12 @@ class StoryTest extends \PhraseanetTestCase
         $this->assertSame($record, $story->getValue());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::asString
-     */
     public function testAsString()
     {
         $story = new Story(self::$DI['record_story_1']);
-        $this->assertInternalType('string', $story->asString());
+        $this->assertIsString($story->asString());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::loadFromString
-     */
     public function testLoadFromString()
     {
         $story = new Story(self::$DI['record_story_1']);
@@ -49,31 +35,22 @@ class StoryTest extends \PhraseanetTestCase
         $this->assertEquals($story, $loaded);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::__construct
-     * @expectedException \InvalidArgumentException
-     */
     public function testConstructWrongElement()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new Story(self::$DI['record_1']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::loadFromString
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadFromStringWrongElement()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Story::loadFromString(self::$DI['app'], self::$DI['record_1']->get_serialize_key());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Story::loadFromString
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadFromStringWrongStory()
     {
-        \PHPUnit_Framework_Error_Warning::$enabled = false;
+        $this->expectException(\InvalidArgumentException::class);
+        \PHPUnit\Framework\Error\Warning::$enabled = false;
 
         Story::loadFromString(self::$DI['app'], self::$DI['collection']->get_databox()->get_sbas_id() . '_0');
     }

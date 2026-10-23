@@ -5,17 +5,15 @@ namespace Alchemy\Tests\Phrasea\Http\XSendFile;
 use Alchemy\Phrasea\Http\XSendFile\ApacheMode;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApacheModeTest extends \PhraseanetTestCase
 {
     public function testGetVirtualHost()
     {
         $mode = new ApacheMode([['directory' => __DIR__ ]]);
         $conf = $mode->getVirtualHostConfiguration();
-        $this->assertRegExp('#'.__DIR__ . '#', $conf);
+        $this->assertMatchesRegularExpression('#'.__DIR__ . '#', $conf);
     }
 
     public function testSetValidHeaders()
@@ -32,16 +30,14 @@ class ApacheModeTest extends \PhraseanetTestCase
         $this->assertEquals([], $mode->getMapping());
     }
 
-    /**
-     * @dataProvider provideMappings
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideMappings')]
     public function testInvalidMapping($mapping)
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         new ApacheMode($mapping);
     }
 
-    public function provideMappings()
+    public static function provideMappings()
     {
         return [
             [[['wrong-key' => __DIR__]]],

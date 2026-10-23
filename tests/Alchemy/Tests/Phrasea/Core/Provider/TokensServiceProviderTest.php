@@ -3,13 +3,13 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\TokensServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TokensServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             ['Alchemy\Phrasea\Core\Provider\TokensServiceProvider', 'tokens', '\random'],

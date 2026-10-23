@@ -12,12 +12,13 @@ use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     private static $createdDataboxes = [];
 
     /**
      * @param bool  $bool
      * @param array $stubs List of Closure to call indexed by method names, null to avoid calls
-     * @return PHPUnit_Framework_MockObject_MockObject The stubbedACL
+     * @return \PHPUnit\Framework\MockObject\MockObject The stubbedACL
      */
     public function setAdmin($bool, array $stubs = [])
     {
@@ -39,25 +40,25 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             return $stubs;
         }
 
-        $returnBool = function (PHPUnit_Framework_MockObject_MockObject $acl, $method, $is_admin) {
-            $acl->expects($this->any())
+        $returnBool = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method, $is_admin) {
+            $acl
                 ->method($method)
                 ->will($this->returnValue($is_admin));
         };
 
-        $returnSelf = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
-            $acl->expects($this->any())
+        $returnSelf = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method) {
+            $acl
                 ->method($method)
                 ->will($this->returnSelf());
         };
 
-        $stubGrantedBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
-            $acl->expects($this->any())
+        $stubGrantedBase = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method) {
+            $acl
                 ->method($method)
                 ->will($this->returnValue([$this->getCollection()]));
         };
-        $stubGrantedSBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
-            $acl->expects($this->any())
+        $stubGrantedSBase = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method) {
+            $acl
                 ->method($method)
                 ->will($this->returnValue([$this->getCollection()->get_databox()]));
         };
@@ -96,7 +97,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
                 'dbname'   => 'unit_test_db',
             ]);
             $conn->connect();
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
             $this->markTestSkipped('Could not reach DB');
         }
 

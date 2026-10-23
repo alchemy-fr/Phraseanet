@@ -54,7 +54,7 @@ abstract class BaseVoter implements VoterInterface
         return false;
     }
 
-    public function vote(TokenInterface $token, $object, array $attributes)
+    public function vote(TokenInterface $token, $object, array $attributes, ?\Symfony\Component\Security\Core\Authorization\Voter\Vote $vote = null): int
     {
         if (!$object || !$this->supportsClass(get_class($object))) {
             return self::ACCESS_ABSTAIN;

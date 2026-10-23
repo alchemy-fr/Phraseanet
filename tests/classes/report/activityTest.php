@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_activityTest extends \report_abstractReportTestCase
 {
     protected $ret;
@@ -16,7 +14,7 @@ class report_activityTest extends \report_abstractReportTestCase
      */
     protected $report;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $date = new Datetime();
@@ -81,92 +79,92 @@ class report_activityTest extends \report_abstractReportTestCase
     public function activerPerHours($report)
     {
         $activityHours = $report->getActivityPerHours();
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $activityHours);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $activityHours);
     }
 
     public function allQuestion($report)
     {
         $allQuestion = $report->getAllQuestionByUser(self::$DI['user']->getId(), 'usrid');
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allQuestion);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $allQuestion);
     }
 
     public function topQuestion($report)
     {
         $topQuestion = $report->getTopQuestion();
         $topQuestion2 = $report->getTopQuestion(false, true);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $topQuestion);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $topQuestion2);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $topQuestion);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $topQuestion2);
     }
 
     public function allDownloadByUserBase($report)
     {
         $allDownload = $report->getAllDownloadByUserBase(self::$DI['user']->getId());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allDownload);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $allDownload);
     }
 
     public function downloadByBaseByDay($report)
     {
         $dlBaseDay = $report->getDownloadByBaseByDay();
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $dlBaseDay);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $dlBaseDay);
     }
 
     public function ConnexionBase($report)
     {
         $connexionBase = $report->getConnexionBase();
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $connexionBase);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $connexionBase);
     }
 
     public function detailDownload($report)
     {
         $detailDl = $report->getDetailDownload();
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $detailDl);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $detailDl);
     }
 
     public function topTenUser($report, $sbasid, $colllist)
     {
         $result = $report->topTenUser(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 
     public function activity($report, $sbasid, $colllist)
     {
         $result = $report->activity(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 
     public function activityDay($report, $sbasid, $colllist)
     {
         $result = $report->activityDay(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 
     public function activityQuestion($report, $sbasid, $colllist)
     {
         $result = $report->activityQuestion(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteTopTenSiteView($report, $sbasid, $colllist)
     {
         $result = $report->activiteTopTenSiteView(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteAddedDocument($report, $sbasid, $colllist)
     {
         $result = $report->activiteAddedDocument(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteEditedDocument($report, $sbasid, $colllist)
     {
         $result = $report->activiteEditedDocument(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteAddedTopTenUser($report, $sbasid, $colllist)
     {
         $result = $report->activiteAddedTopTenUser(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
+        $this->assertInternalType(\PHPUnit\Framework\Constraint\IsType::TYPE_ARRAY, $result);
     }
 }

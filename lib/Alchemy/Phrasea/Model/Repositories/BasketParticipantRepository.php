@@ -68,7 +68,7 @@ class BasketParticipantRepository extends EntityRepository
         $q->setParameter('percent', (float)($timeLeftPercent/100));
 
         if($today !== null) {
-            $q->setParameter('today', $today, Type::DATETIME);
+            $q->setParameter('today', $today, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE);
         }
 
         return $q->getResult();

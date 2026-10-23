@@ -9,7 +9,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\GpsPosition;
  * @group searchengine
  * @group indexer
  */
-class GpsPositionTest extends \PHPUnit_Framework_TestCase
+class GpsPositionTest extends \PHPUnit\Framework\TestCase
 {
     // 48.856578_N_2.351828_E
 

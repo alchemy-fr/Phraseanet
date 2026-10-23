@@ -4,27 +4,21 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ListPluginTest extends PluginCommandTestCase
 {
     public function testExecute()
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createStub('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        $table = $this->getMockBuilder('Symfony\Component\Console\Helper\TableHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $table = $this->createMock('Symfony\Component\Console\Helper\TableHelper');
         $table->expects($this->once())
             ->method('setHeaders')
             ->will($this->returnSelf());
 
-        $helperSet = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helperSet = $this->createMock('Symfony\Component\Console\Helper\HelperSet');
         $helperSet->expects($this->once())
             ->method('get')
             ->will($this->returnValue($table));

@@ -1,10 +1,8 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
 class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
 {
     /**

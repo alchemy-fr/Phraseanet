@@ -5,24 +5,16 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(
- *     name="WorkerRunningJob",
- *     uniqueConstraints={
- *          @ORM\uniqueConstraint(name="flock", columns={"databox_id", "record_id", "flock"})
- *      },
- *     indexes={
- *          @ORM\index(name="worker_running_job_databox_id", columns={"databox_id"}),
- *          @ORM\index(name="worker_running_job_record_id", columns={"record_id"}),
- *          @ORM\index(name="worker_running_job_work", columns={"work"}),
- *          @ORM\index(name="worker_running_job_created", columns={"created"}),
- *          @ORM\index(name="worker_running_job_published", columns={"published"}),
- *          @ORM\index(name="worker_running_job_finished", columns={"finished"}),
- *          @ORM\index(name="worker_running_job_status", columns={"status"})
- *      }
- * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository::class)]
+#[ORM\Table(name: 'WorkerRunningJob')]
+#[ORM\Index(name: 'worker_running_job_databox_id', columns: ['databox_id'])]
+#[ORM\Index(name: 'worker_running_job_record_id', columns: ['record_id'])]
+#[ORM\Index(name: 'worker_running_job_work', columns: ['work'])]
+#[ORM\Index(name: 'worker_running_job_created', columns: ['created'])]
+#[ORM\Index(name: 'worker_running_job_published', columns: ['published'])]
+#[ORM\Index(name: 'worker_running_job_finished', columns: ['finished'])]
+#[ORM\Index(name: 'worker_running_job_status', columns: ['status'])]
+#[ORM\UniqueConstraint(name: 'flock', columns: ['databox_id', 'record_id', 'flock'])]
 class WorkerRunningJob
 {
     const FINISHED = 'finished';
@@ -37,77 +29,49 @@ class WorkerRunningJob
 
     const MAX_RESULT = 500;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", name="databox_id", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', name: 'databox_id', nullable: true)]
     private $databoxId;
 
-    /**
-     * @ORM\Column(type="integer", name="record_id", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', name: 'record_id', nullable: true)]
     private $recordId;
 
-    /**
-     * @ORM\Column(type="string", length=64, name="flock", nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 64, name: 'flock', nullable: true)]
     private $flock;
 
-    /**
-     * @ORM\Column(type="string", length=64, name="work", nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 64, name: 'work', nullable: true)]
     private $work;
 
-    /**
-     * @ORM\Column(type="string", length=64, name="work_on", nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 64, name: 'work_on', nullable: true)]
     private $workOn;
 
-    /**
-     * @ORM\Column(type="string", name="commit_id", nullable=true)
-     */
+    #[ORM\Column(type: 'string', name: 'commit_id', nullable: true)]
     private $commitId;
 
-    /**
-     * @ORM\Column(type="string", name="asset_id", nullable=true)
-     */
+    #[ORM\Column(type: 'string', name: 'asset_id', nullable: true)]
     private $assetId;
 
-    /**
-     * @ORM\Column(type="string", name="info", nullable=true)
-     */
+    #[ORM\Column(type: 'string', name: 'info', nullable: true)]
     private $info;
 
-    /**
-     * @ORM\Column(type="json_array", name="payload", nullable=true)
-     */
+    #[ORM\Column(type: 'json_array', name: 'payload', nullable: true)]
     private $payload;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $published;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $finished;
 
-    /**
-     * @ORM\Column(type="string", name="status")
-     */
+    #[ORM\Column(type: 'string', name: 'status')]
     private $status;
 
     /**

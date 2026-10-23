@@ -278,7 +278,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param  string $type
      * @return $this
      * @throws Exception
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @deprecated use {@link self::setType} instead.
      */
     public function set_type($type)
@@ -292,7 +292,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      *
      * @return $this
      * @throws Exception
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function setType($type, $shouldSubdefsBeRebuilt = true)
     {
@@ -358,7 +358,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param bool $shouldSubdefsBeRebuilt
      *
      * @return $this
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function setMimeType($mime, $shouldSubdefsBeRebuilt = true)
     {
@@ -1875,7 +1875,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param Application $app
      *
      * @return record_adapter|null
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function createFromFile(File $file, Application $app)
     {
@@ -1930,7 +1930,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param Application $app
      *
      * @return record_adapter|null
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function create(collection $collection, Application $app)
     {
@@ -1952,7 +1952,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param Application $app
      * @param File|null $file
      * @return record_adapter|null
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private static function _create(collection $collection, Application $app, ?File $file=null)
     {
@@ -2418,7 +2418,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @return set_selection|record_adapter[]
      * @throws Exception
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @deprecated use {@link self::getChildren} instead.
      */
     public function get_children()
@@ -2432,7 +2432,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      *
      * @return set_selection|record_adapter[]
      * @throws Exception
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getChildren($offset = 0, $max_items = null)
     {

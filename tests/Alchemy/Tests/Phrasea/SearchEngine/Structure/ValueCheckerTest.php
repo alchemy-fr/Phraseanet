@@ -11,7 +11,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
  * @group unit
  * @group structure
  */
-class ValueCheckerTest extends \PHPUnit_Framework_TestCase
+class ValueCheckerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider valueCheckerProvider

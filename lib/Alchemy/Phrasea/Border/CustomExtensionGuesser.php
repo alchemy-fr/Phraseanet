@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Border;
 
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface;
 
-class CustomExtensionGuesser implements MimeTypeGuesserInterface
+class CustomExtensionGuesser implements \Symfony\Component\Mime\MimeTypesInterface
 {
     private $mapping;
 

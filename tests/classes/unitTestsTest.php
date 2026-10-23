@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class unitTestsTest extends \PhraseanetTestCase
 {
     public function testFiles()
@@ -31,7 +29,7 @@ class unitTestsTest extends \PhraseanetTestCase
             if (in_array($file->getFilename(), $reserved))
                 continue;
 
-            $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test(Case)?.php/', $file->getPathname(), 'Verify that all tests files names');
+            $this->assertMatchesRegularExpression('/[a-zA-Z0-9-_\.]+Test(Case)?.php/', $file->getPathname(), 'Verify that all tests files names');
         }
     }
 }

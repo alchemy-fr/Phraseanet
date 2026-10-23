@@ -8,11 +8,11 @@ use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\TaskManager\TaskManager;
 use Psr\Log\LoggerInterface;
 
-class NotifierTest extends \PHPUnit_Framework_TestCase
+class NotifierTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var \ZMQSocket|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \ZMQSocket|\PHPUnit\Framework\MockObject\MockObject */
     private $socket;
-    /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $logger;
 
     /** @var Notifier */

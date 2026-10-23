@@ -21,11 +21,12 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\API_V1_adapter::class, 'get_record_embed')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\API_V1_adapter::class, 'list_embedable_media')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\API_V1_adapter::class, 'list_permalink')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ApiJsonTest extends ApiTestCase
 {
     protected function getParameters(array $parameters = [])
@@ -176,9 +177,7 @@ class ApiJsonTest extends ApiTestCase
         $record->delete();
     }
 
-    /**
-     * @dataProvider provideEventNames
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideEventNames')]
     public function testThatEventsAreDispatched($eventName, $className, $route, $context)
     {
         $preEvent = 0;
@@ -204,7 +203,7 @@ class ApiJsonTest extends ApiTestCase
         $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:Session')->findAll());
     }
 
-    public function provideEventNames()
+    public static function provideEventNames()
     {
         return [
             [PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/api/v1/databoxes/list/', Context::CONTEXT_OAUTH2_TOKEN],
@@ -332,7 +331,7 @@ class ApiJsonTest extends ApiTestCase
         $this->evaluateMeta200($content);
         $response = $content['response'];
 
-        $this->assertInternalType('array', $response['scheduler']);
+        $this->assertIsArray($response['scheduler']);
 
         $this->assertArrayHasKey('state', $response['scheduler']);
         $this->assertArrayHasKey('pid', $response['scheduler']);
@@ -372,10 +371,10 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayHasKey('period', $task);
         $this->assertArrayHasKey('jobId', $task);
 
-        $this->assertInternalType('integer', $task['id']);
+        $this->assertIsInt($task['id']);
 
         if (!is_null($task['pid'])) {
-            $this->assertInternalType('integer', $task['pid']);
+            $this->assertIsInt($task['pid']);
         }
 
         $av_states = [
@@ -384,8 +383,8 @@ class ApiJsonTest extends ApiTestCase
         ];
 
         $this->assertContains($task['state'], $av_states);
-        $this->assertInternalType('string', $task['name']);
-        $this->assertInternalType('string', $task['title']);
+        $this->assertIsString($task['name']);
+        $this->assertIsString($task['title']);
 
         if (!is_null($task['last_exec_time'])) {
             $this->assertDateAtom($task['last_exec_time']);
@@ -500,9 +499,9 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayHasKey('cache', $content['response']);
         $this->assertArrayHasKey('phraseanet', $content['response']);
 
-        $this->assertInternalType('array', $content['response']['global_values']);
-        $this->assertInternalType('array', $content['response']['cache']);
-        $this->assertInternalType('array', $content['response']['phraseanet']);
+        $this->assertIsArray($content['response']['global_values']);
+        $this->assertIsArray($content['response']['cache']);
+        $this->assertIsArray($content['response']['phraseanet']);
     }
 
     public function testRecordRoute()
@@ -774,7 +773,6 @@ class ApiJsonTest extends ApiTestCase
                 $app['random.low'],
                 $app['dispatcher'],
             ])
-            ->setMethods(['logQuery'])
             ->getMock();
 
         $app['manipulator.user']->expects($this->once())->method('logQuery');
@@ -853,22 +851,18 @@ class ApiJsonTest extends ApiTestCase
         }
     }
 
-    /**
-     * @dataProvider provideAvailableSearchMethods
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideAvailableSearchMethods')]
     public function testRecordsSearchRouteWithQuery($method)
     {
         $this->setToken($this->userAccessToken);
-        $searchEngine = $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $searchEngine = $this->createMock('Alchemy\Phrasea\SearchEngine\SearchEngineResult');
 
-        $searchEngine->expects($this->any())
+        $searchEngine
             ->method('getSuggestions')
             ->will($this->returnValue(new ArrayCollection()));
 
         $app = $this->getApplication();
-        $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        $mock = $this->createMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
         $app['phraseanet.SE'] = $mock;
 
         $mock
@@ -876,14 +870,12 @@ class ApiJsonTest extends ApiTestCase
             ->method('query')
             ->withAnyParameters()
             ->will($this->returnValue(
-                $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
-                    ->disableOriginalConstructor()
-                    ->getMock()
+                $this->createStub('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
             ));
         self::$DI['client']->request($method, '/api/v1/records/search/', $this->getParameters(['query' => 'koala']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
     }
 
-    public function provideAvailableSearchMethods()
+    public static function provideAvailableSearchMethods()
     {
         return [['POST'], ['GET']];
     }
@@ -1066,11 +1058,6 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayNotHasKey('preview', array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed'])));
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_embed
-     * @covers \API_V1_adapter::list_embedable_media
-     * @covers \API_V1_adapter::list_permalink
-     */
     public function testStoriesEmbedRoute()
     {
         $this->setToken($this->userAccessToken);
@@ -1558,7 +1545,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->assertArrayHasKey('entity', $datas);
         $this->assertArrayHasKey('url', $datas);
-        $this->assertRegExp('/\/records\/\d+\/\d+\//', $datas['url']);
+        $this->assertMatchesRegularExpression('/\/records\/\d+\/\d+\//', $datas['url']);
 
         // if forced, there is no reason
         $this->assertEquals('0', $datas['entity']);
@@ -1583,7 +1570,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->assertArrayHasKey('entity', $datas);
         $this->assertArrayHasKey('url', $datas);
-        $this->assertRegExp('/\/quarantine\/item\/\d+\//', $datas['url']);
+        $this->assertMatchesRegularExpression('/\/quarantine\/item\/\d+\//', $datas['url']);
 
         $this->assertEquals('1', $datas['entity']);
     }
@@ -1698,9 +1685,7 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedsContent()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
@@ -1755,9 +1740,7 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedEntry()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $created_entry = $feed->getEntries()->first();
@@ -1782,9 +1765,7 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedEntryNoAccess()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
@@ -1805,9 +1786,7 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedContent()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
@@ -1943,7 +1922,7 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayHasKey('created_on', $item);
         $this->assertArrayHasKey('updated_on', $item);
 
-        $this->assertInternalType('boolean', $item['forced']);
+        $this->assertIsBool($item['forced']);
         $this->assertDateAtom($item['updated_on']);
         $this->assertDateAtom($item['created_on']);
     }

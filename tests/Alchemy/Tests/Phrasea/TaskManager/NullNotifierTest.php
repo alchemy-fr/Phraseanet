@@ -13,7 +13,7 @@ namespace Alchemy\Tests\Phrasea\TaskManager;
 use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\TaskManager\NullNotifier;
 
-class NullNotifierTest extends \PHPUnit_Framework_TestCase
+class NullNotifierTest extends \PHPUnit\Framework\TestCase
 {
     public function testItImplementsNotifierInterface()
     {

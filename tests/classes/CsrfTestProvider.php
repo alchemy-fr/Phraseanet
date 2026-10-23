@@ -5,7 +5,7 @@ use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
 /**
  * This class is used to provide CRSF token in PHPUNIT test suite.
  */
-class CsrfTestProvider implements CsrfProviderInterface
+class CsrfTestProvider implements \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface
 {
     public function generateCsrfToken($intention)
     {

@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Notification;
 
 use Alchemy\Phrasea\Notification\Attachment;
 
-class AttachmentTest extends \PHPUnit_Framework_TestCase
+class AttachmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Attachment

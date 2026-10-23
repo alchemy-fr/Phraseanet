@@ -5,60 +5,45 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="WebhookEventDeliveries",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_app_delivery",columns={"application_id", "event_id"})
- *      }
- * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository::class)]
+#[ORM\Table(name: 'WebhookEventDeliveries')]
+#[ORM\UniqueConstraint(name: 'unique_app_delivery', columns: ['application_id', 'event_id'])]
 class WebhookEventDelivery
 {
     const MAX_DELIVERY_TRIES = 3;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiApplication")
-     * @ORM\JoinColumn(name="application_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiApplication
      **/
+    #[ORM\ManyToOne(targetEntity: ApiApplication::class)]
+    #[ORM\JoinColumn(name: 'application_id', referencedColumnName: 'id', nullable: false)]
     private $application;
 
     /**
-     * @ORM\ManyToOne(targetEntity="WebhookEvent")
-     * @ORM\JoinColumn(name="event_id", referencedColumnName="id", nullable=false)
      *
      * @return WebhookEvent
      **/
+    #[ORM\ManyToOne(targetEntity: WebhookEvent::class)]
+    #[ORM\JoinColumn(name: 'event_id', referencedColumnName: 'id', nullable: false)]
     private $event;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=false, options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
     private $delivered = false;
 
-    /**
-     * @ORM\Column(type="integer", nullable=false, options={"default" = 0})
-     */
+    #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     private $deliveryTries = 0;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @ORM\OneToOne(targetEntity="WebhookEventPayload", mappedBy="delivery")
-     */
+    #[ORM\OneToOne(targetEntity: WebhookEventPayload::class, mappedBy: 'delivery')]
     private $payload;
 
     /**

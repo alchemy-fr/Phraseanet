@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormInterface;
 
 class PSUploaderConfigurationType extends AbstractType implements DataMapperInterface
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -46,7 +46,7 @@ class PSUploaderConfigurationType extends AbstractType implements DataMapperInte
     /**
      * @inheritDoc
      */
-    public function mapDataToForms($data, $forms)
+    public function mapDataToForms($data, \Traversable $forms)
     {
         // there is no data yet, so nothing to prepopulate
         if ($data === null) {
@@ -88,7 +88,7 @@ class PSUploaderConfigurationType extends AbstractType implements DataMapperInte
      *
      * @inheritDoc
      */
-    public function mapFormsToData($forms, &$data)
+    public function mapFormsToData(\Traversable $forms, &$data)
     {
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
@@ -111,7 +111,7 @@ class PSUploaderConfigurationType extends AbstractType implements DataMapperInte
         }
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'ps_uploader_configuration';
     }

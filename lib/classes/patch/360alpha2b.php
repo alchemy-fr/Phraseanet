@@ -72,7 +72,7 @@ class patch_360alpha2b extends patchAbstract
                     )';
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->executeStatement();
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
 
         }
 
@@ -81,7 +81,7 @@ class patch_360alpha2b extends patchAbstract
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->executeStatement();
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
 
         }
 

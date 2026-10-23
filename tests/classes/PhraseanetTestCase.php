@@ -47,7 +47,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         return '/lib/Alchemy/Phrasea/Application/Root.php';
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -57,8 +57,8 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         error_reporting(-1);
 
-        \PHPUnit_Framework_Error_Warning::$enabled = true;
-        \PHPUnit_Framework_Error_Notice::$enabled = true;
+        \PHPUnit\Framework\Error\Warning::$enabled = true;
+        \PHPUnit\Framework\Error\Notice::$enabled = true;
 
         self::$DI['app'] = function ($DI) {
             return $this->loadApp($this->getApplicationPath());
@@ -348,7 +348,7 @@ abstract class PhraseanetTestCase extends WebTestCase
         return self::$DI['collectionReference'];
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         gc_collect_cycles();
         parent::tearDownAfterClass();
@@ -437,16 +437,14 @@ abstract class PhraseanetTestCase extends WebTestCase
             return $browser;
         });
 
-        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
 
-        $app['notification.deliverer']->expects($this->any())
+        $app['notification.deliverer']
             ->method('deliver')
             ->willReturn(0);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         ACLProvider::purge();
         \collection::purge();
@@ -501,7 +499,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function assertDateAtom($date)
     {
-        return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
+        return $this->assertMatchesRegularExpression('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
     }
 
     protected function set_user_agent($user_agent, Application $app)
@@ -712,9 +710,7 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function mockNotificationDeliverer($expectedMail, $qty = 1, $receipt = null)
     {
         $app = $this->getApplication();
-        $delivererMock = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $delivererMock = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
         $delivererMock->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
@@ -724,14 +720,11 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function mockUserNotificationSettings($notificationName, $returnValue = true)
     {
         $app = $this->getApplication();
-        if (false === $app['settings'] instanceof \PHPUnit_Framework_MockObject_MockObject) {
-            $app['settings'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\DisplaySettingService')
-                ->disableOriginalConstructor()
-                ->getMock();
+        if (false === $app['settings'] instanceof \PHPUnit\Framework\MockObject\MockObject) {
+            $app['settings'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\DisplaySettingService');
         }
 
         $app['settings']
-            ->expects($this->any())
             ->method('getUserNotificationSetting')
             ->with(
                 $this->isInstanceOf('Alchemy\Phrasea\Model\Entities\User'),
@@ -744,21 +737,17 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     public function createGeneratorMock()
     {
-        return $this->getMockBuilder('Randomlib\Generator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Randomlib\Generator');
     }
 
     public function createAppboxMock()
     {
-        return $this->getMockBuilder('appbox')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('appbox');
     }
 
     public function createUserMock()
     {
-        return $this->getMock('Alchemy\Phrasea\Model\Entities\User');
+        return $this->createMock('Alchemy\Phrasea\Model\Entities\User');
     }
 
     public function removeUser(Application $app, User $user)
@@ -769,28 +758,22 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function createLoggerMock()
     {
-        return $this->getMock('Psr\Log\LoggerInterface');
+        return $this->createMock('Psr\Log\LoggerInterface');
     }
 
     protected function createMonologMock()
     {
-        return $this->getMockBuilder('Monolog\Logger')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Monolog\Logger');
     }
 
     protected function createEntityRepositoryMock()
     {
-        return $this->getMockBuilder('Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Doctrine\ORM\EntityRepository');
     }
 
     protected function createEntityManagerMock()
     {
-        return $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Doctrine\ORM\EntityManager');
     }
 
     protected function assertDateNear($expected, $tested, $precision = 1)
@@ -803,8 +786,8 @@ abstract class PhraseanetTestCase extends WebTestCase
 
     protected function createSearchEngineMock()
     {
-        $mock = $this->getMock(SearchEngineInterface::class);
-        $mock->expects($this->any())
+        $mock = $this->createMock(SearchEngineInterface::class);
+        $mock
             ->method('getStatus')
             ->will($this->returnValue([]));
 

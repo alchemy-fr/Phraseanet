@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Core\CLIProvider;
 use Alchemy\Phrasea\Command\Developer\Utils\ConstraintExtractor;
 use Alchemy\Phrasea\Command\Developer\Utils\HelpMessageExtractor;
 use Doctrine\Common\Annotations\DocParser;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Gedmo\SoftDeleteable\Mapping\Driver\Annotation;
 use JMS\TranslationBundle\Translation\Dumper\SymfonyDumperAdapter;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
@@ -87,8 +86,6 @@ class TranslationExtractorServiceProvider implements ServiceProviderInterface
         };
 
         $app['translation-extractor.updater'] = function (Application $app) {
-            AnnotationRegistry::registerAutoloadNamespace('JMS\TranslationBundle\Annotation', $app['root.path'].'/vendor/jms/translation-bundle');
-
             return new Updater($app['translation-extractor.loader-manager'], $app['translation-extractor.extractor-manager'], $app['translation-extractor.logger'], $app['translation-extractor.writer']);
         };
     }

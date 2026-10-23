@@ -64,7 +64,7 @@ class Sha256 extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getReason(TranslatorInterface $translator)
+    public static function getReason(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('same checksum');
     }
@@ -72,7 +72,7 @@ class Sha256 extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public function getMessage(TranslatorInterface $translator)
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('A file with the same checksum already exists in database');
     }

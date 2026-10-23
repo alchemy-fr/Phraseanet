@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\ACL;
 
 use Alchemy\Phrasea\ACL\BasketACL;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class BasketACLTest extends \PhraseanetTestCase
 {
     public function testOwnerIsOwner()

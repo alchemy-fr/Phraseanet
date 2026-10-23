@@ -9,15 +9,10 @@ use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FailureManagerTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::saveFailure
-     */
     public function testSaveFailure()
     {
         $repo = $this->createAuthFailureRepositoryMock();
@@ -28,13 +23,13 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $request = $this->getRequestMock();
-        $request->expects($this->any())
+        $request
             ->method('getClientIp')
             ->will($this->returnValue($ip));
 
         $oldFailures = [
-            $this->getMock(AuthFailure::class),
-            $this->getMock(AuthFailure::class)
+            $this->createStub(AuthFailure::class),
+            $this->createStub(AuthFailure::class)
         ];
 
         $repo->expects($this->once())
@@ -63,9 +58,6 @@ class FailureManagerTest extends \PhraseanetTestCase
         $this->assertEquals($username, $catchFailure->getUsername());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
-     */
     public function testCheckFailures()
     {
         $repo = $this->createAuthFailureRepositoryMock();
@@ -85,9 +77,6 @@ class FailureManagerTest extends \PhraseanetTestCase
         $manager->checkFailures($username, $request);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
-     */
     public function testCheckFailuresLessThan9()
     {
         $repo = $this->createAuthFailureRepositoryMock();
@@ -98,7 +87,7 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock(AuthFailure::class);
+            return $this->createMock(AuthFailure::class);
         }, 8);
 
         $repo->expects($this->once())
@@ -109,9 +98,6 @@ class FailureManagerTest extends \PhraseanetTestCase
         $manager->checkFailures($username, $request);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
-     */
     public function testCheckFailuresMoreThan9WithoutCaptcha()
     {
         $repo = $this->createAuthFailureRepositoryMock();
@@ -122,21 +108,19 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock(AuthFailure::class);
+            return $this->createMock(AuthFailure::class);
         }, 10);
 
         $repo->expects($this->once())
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $this->setExpectedException(RequireCaptchaException::class, "Too many failures, require captcha");
+        $this->expectException(RequireCaptchaException::class);
+        $this->expectExceptionMessage("Too many failures, require captcha");
         $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
-     */
     public function testCheckFailuresMoreThan9WithCorrectCaptcha()
     {
         $repo = $this->createAuthFailureRepositoryMock();
@@ -147,25 +131,23 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock(AuthFailure::class);
+            return $this->createMock(AuthFailure::class);
         }, 10);
 
         $repo->expects($this->once())
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $this->setExpectedException(RequireCaptchaException::class, "Too many failures, require captcha");
+        $this->expectException(RequireCaptchaException::class);
+        $this->expectExceptionMessage("Too many failures, require captcha");
 
         $manager = new FailureManager($repo, $em, $recaptcha, 9);
         $manager->checkFailures($username, $request);
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
-     */
     public function testCheckFailuresMoreThan9WithIncorrectCaptcha()
     {
+        $this->expectException(\Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException::class);
         $repo = $this->createAuthFailureRepositoryMock();
         $em = $this->createEntityManagerMock();
         $request = $this->getRequestMock();
@@ -174,7 +156,7 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock(AuthFailure::class);
+            return $this->createMock(AuthFailure::class);
         }, 10);
 
         $repo->expects($this->once())
@@ -195,14 +177,15 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock(AuthFailure::class);
+            return $this->createMock(AuthFailure::class);
         }, 2);
 
         $repo->expects($this->once())
             ->method('findLockedFailuresMatching')
             ->will($this->returnValue($oldFailures));
 
-        $this->setExpectedException(RequireCaptchaException::class, "Too many failures, require captcha");
+        $this->expectException(RequireCaptchaException::class);
+        $this->expectExceptionMessage("Too many failures, require captcha");
         $manager = new FailureManager($repo, $em, $recaptcha, 2);
         $manager->checkFailures($username, $request);
     }
@@ -216,12 +199,9 @@ class FailureManagerTest extends \PhraseanetTestCase
         $this->assertEquals(2, $manager->getTrials());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\FailureManager::checkFailures
-     */
     public function testCheckFailuresTrialsIsConfigurableOverThreshold()
     {
+        $this->expectException(\Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException::class);
         $repo = $this->createAuthFailureRepositoryMock();
         $em = $this->createEntityManagerMock();
         $request = $this->getRequestMock();
@@ -230,7 +210,7 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $oldFailures = $this->ArrayIze(function () {
-            return $this->getMock(AuthFailure::class);
+            return $this->createMock(AuthFailure::class);
         }, 3);
 
         $repo->expects($this->once())
@@ -250,7 +230,7 @@ class FailureManagerTest extends \PhraseanetTestCase
         $username = 'romainneutron';
 
         $request = $this->getRequestMock();
-        $request->expects($this->any())
+        $request
             ->method('getClientIp')
             ->will($this->returnValue($ip));
 
@@ -283,25 +263,19 @@ class FailureManagerTest extends \PhraseanetTestCase
 
     private function getReCaptchaMock($isSetup = true, ?Request $request = null, $isValid = false)
     {
-        return $this->getMockBuilder('ReCaptcha\ReCaptcha')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('ReCaptcha\ReCaptcha');
     }
 
     private function getRequestMock()
     {
-        return $this->getMockBuilder(Request::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock(Request::class);
     }
 
     /**
-     * @return AuthFailureRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @return AuthFailureRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createAuthFailureRepositoryMock()
     {
-        return $this->getMockBuilder(AuthFailureRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock(AuthFailureRepository::class);
     }
 }

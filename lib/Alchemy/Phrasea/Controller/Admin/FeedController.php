@@ -293,7 +293,7 @@ class FeedController extends Controller
     }
 
     /**
-     * @return ObjectManager
+     * @return \Doctrine\Persistence\ObjectManager
      */
     public function getObjectManager()
     {

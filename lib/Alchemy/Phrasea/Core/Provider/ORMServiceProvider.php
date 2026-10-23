@@ -19,13 +19,10 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Configuration;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\CachedReader;
-use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration as ORMConfig;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Gedmo\Timestampable\TimestampableListener;
 use Monolog\Handler\RotatingFileHandler;
 use Silex\Application;
@@ -211,8 +208,6 @@ class ORMServiceProvider implements ServiceProviderInterface
             $options = $app['orm.options']($key);
             $config = $app['orm.config.new']($key, $options);
 
-            $app['orm.annotation.register']($key);
-
             $app['orm.ems'][$key] = function ($ems) use ($app, $key, $options, $config) {
                 $connection = $app['dbs'][$key];
                 $app['connection.pool.manager']->add($connection);
@@ -220,7 +215,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $types = $options['types'];
                 $app['dbal.type.register']($connection, $types);
 
-                return EntityManager::create(
+                return new EntityManager(
                     $connection,
                     $config,
                     $app['dbs.event_manager'][$options['connection']]
@@ -244,15 +239,6 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
         });
 
-        $app['orm.annotation.register'] = $app->protect(function ($key) use($app) {
-            $driver = new AnnotationDriver($app['orm.annotation.reader'], array(
-                $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity/MappedSuperclass',
-                $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity/MappedSuperclass',
-                $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity/MappedSuperclass',
-            ));
-
-            $app['orm.add_mapping_driver']($driver, 'Gedmo', $key);
-        });
 
         $app['dbal.type.register'] = $app->protect(function (Connection $connection, $types) {
             $platform = $connection->getDatabasePlatform();
@@ -303,12 +289,8 @@ class ORMServiceProvider implements ServiceProviderInterface
 
                 switch ($entity['type'])
                 {
-                    case 'annotation':
-                        $useSimpleAnnotationReader =
-                            isset($entity['use_simple_annotation_reader'])
-                                ? $entity['use_simple_annotation_reader']
-                                : true;
-                        $driver = $config->newDefaultAnnotationDriver((array) $entity['path'], $useSimpleAnnotationReader);
+                    case 'attribute':
+                        $driver = new AttributeDriver((array) $entity['path']);
                         $chain->addDriver($driver, $entity['namespace']);
                         break;
                     case 'yml':
@@ -441,9 +423,8 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['orm.options.mappings'] = function (PhraseaApplication $app) {
             return array(
                 array(
-                    "type" => "annotation",
+                    "type" => "attribute",
                     "alias" => "Phraseanet",
-                    "use_simple_annotation_reader" => false,
                     "namespace" => 'Alchemy\Phrasea\Model\Entities',
                     "path" => $app['root.path'] . '/lib/Alchemy/Phrasea/Model/Entities',
                 )
@@ -554,18 +535,5 @@ class ORMServiceProvider implements ServiceProviderInterface
             return new NativeQueryProvider($app['orm.em']);
         };
 
-        /**
-         * Return an instance of annotation cache reader
-         */
-        $app['orm.annotation.reader'] = function () use ($app) {
-            $cache = new ArrayCache();
-            if ($app->getEnvironment() !== PhraseaApplication::ENV_DEV) {
-                $cache = $app['phraseanet.cache-service']->factory(
-                    'ORM_annotation', $app['orm.cache.driver'], $app['orm.cache.options']
-                );
-            }
-
-            return new CachedReader(new AnnotationReader(), $cache);
-        };
     }
 }

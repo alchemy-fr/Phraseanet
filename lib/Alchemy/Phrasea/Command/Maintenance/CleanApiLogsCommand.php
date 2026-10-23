@@ -77,7 +77,7 @@ class CleanApiLogsCommand extends Command
             // group delete by 1000
             $sql_delete =  $sql_delete . ' LIMIT 1000';
             do {
-                $nbDeletedRow = $cnx->exec($sql_delete);
+                $nbDeletedRow = $cnx->executeStatement($sql_delete);
                 $count += $nbDeletedRow;
             } while ($nbDeletedRow > 0);
 

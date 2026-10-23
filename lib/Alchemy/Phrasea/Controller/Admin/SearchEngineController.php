@@ -143,7 +143,7 @@ class SearchEngineController extends Controller
     }
 
     /**
-     * @return TranslatorInterface
+     * @return \Symfony\Contracts\Translation\TranslatorInterface
      */
     private function getTranslator()
     {

@@ -21,7 +21,7 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Prophecy\Argument;
 
-class BasketElementRepositoryTest extends \PHPUnit_Framework_TestCase
+class BasketElementRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testFindByRecordIdsWithBasketSucceed()
     {

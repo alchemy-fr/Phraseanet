@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class RemovePluginTest extends PluginCommandTestCase
 {
     public function testExecute()
@@ -15,20 +13,18 @@ class RemovePluginTest extends PluginCommandTestCase
         $name = 'test-plugin';
         @mkdir(self::$DI['cli']['plugin.path']);
 
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
         $input->expects($this->once())
               ->method('getArgument')
               ->with($this->equalTo('name'))
               ->will($this->returnValue($name));
 
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
         $command = new RemovePlugin();
         $command->setContainer(self::$DI['cli']);
 
-        self::$DI['cli']['plugins.manager'] = $this->getMockBuilder('Alchemy\Phrasea\Plugin\PluginManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['cli']['plugins.manager'] = $this->createStub('Alchemy\Phrasea\Plugin\PluginManager');
 
         self::$DI['cli']['plugins.manager']->expects($this->once())
             ->method('hasPlugin')

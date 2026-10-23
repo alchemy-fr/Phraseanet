@@ -5,17 +5,15 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 use \Databox;
 use Symfony\Component\HttpKernel\Client;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $usersParameters;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->usersParameters = ["users" => implode(';', [self::$DI['user']->getId(), self::$DI['user_alt1']->getId()])];
@@ -329,8 +327,8 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/users/export/csv/');
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOK());
-        $this->assertRegexp("#text/csv#", $response->headers->get("content-type"));
-        $this->assertRegexp("#charset=UTF-8#", $response->headers->get("content-type"));
+        $this->assertMatchesRegularExpression("#text/csv#", $response->headers->get("content-type"));
+        $this->assertMatchesRegularExpression("#charset=UTF-8#", $response->headers->get("content-type"));
         $date = new \DateTime();
         $this->assertEquals('attachment; filename="user_export_'.$date->format('Ymd').'.csv"', $response->headers->get("content-disposition"));
     }
@@ -398,9 +396,9 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $baseId = self::$DI['collection']->get_base_id();
         $param = sprintf('%s_%s', $id, $baseId);
 
-        $stmt = $this->getMock('PDOStatement');
+        $stmt = $this->createMock('PDOStatement');
 
-        $stmt->expects($this->any())
+        $stmt
             ->method('fetchAll')
             ->will($this->returnValue([
                 'usr_id' => $id,
@@ -409,18 +407,15 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
                 'refuser' => 0,
             ]));
 
-        $pdo = $this->getMock('PDOMock');
+        $pdo = $this->createMock('PDOMock');
 
-        $pdo->expects($this->any())
+        $pdo
             ->method('prepare')
             ->will($this->returnValue($stmt));
 
-        $appbox = $this->getMockBuilder('\appbox')
-            ->setMethods(['get_connection'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $appbox = $this->createMock('\appbox');
 
-        $appbox->expects($this->any())
+        $appbox
             ->method('get_connection')
             ->will($this->returnValue($pdo));
 
@@ -460,9 +455,7 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
                 );
         }
 
-        $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $nativeQueryMock = $this->createMock('Alchemy\Phrasea\Model\NativeQueryProvider');
 
         $nativeQueryMock->expects($this->once())->method('getModelForUser')->will($this->returnValue([
             $user

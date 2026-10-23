@@ -12,7 +12,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
  * @group searchengine
  * @group ast
  */
-class EqualExpressionTest extends \PHPUnit_Framework_TestCase
+class EqualExpressionTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerialization()
     {

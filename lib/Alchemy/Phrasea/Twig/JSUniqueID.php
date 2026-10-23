@@ -17,7 +17,7 @@ class JSUniqueID extends \Twig\Extension\AbstractExtension
      *
      * @return array
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new \Twig\TwigFilter('JSUniqueID', [$this, 'JSUniqueID']),

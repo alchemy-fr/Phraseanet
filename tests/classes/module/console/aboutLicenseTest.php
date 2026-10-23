@@ -3,10 +3,8 @@
 use Alchemy\Phrasea\CLI;
 use Symfony\Component\Console\Tester\CommandTester;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class module_console_aboutLicenseTest extends \PhraseanetTestCase
 {
     /**
@@ -14,9 +12,6 @@ class module_console_aboutLicenseTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    /**
-     * @covers module_console_aboutAuthors::execute
-     */
     public function testExecute()
     {
         $application = new CLI('test', null, 'test');

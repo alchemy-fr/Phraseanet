@@ -73,7 +73,7 @@ final class DbalDataboxFieldRepository implements DataboxFieldRepository
     /**
      * @param int $id
      * @return false|array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function fetchRow($id)
     {

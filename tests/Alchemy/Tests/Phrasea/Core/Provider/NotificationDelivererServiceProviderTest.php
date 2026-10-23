@@ -5,30 +5,26 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             ['Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider', 'notification.deliverer', 'Alchemy\\Phrasea\\Notification\\Deliverer'],
         ];
     }
 
-    /**
-     * @dataProvider provideConfigurationData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideConfigurationData')]
     public function testWithoutSmtpSettings($instance, $values)
     {
         self::$DI['app']->register(new NotificationDelivererServiceProvider());
 
-        self::$DI['app']['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
-        self::$DI['app']['conf']->expects($this->any())
+        self::$DI['app']['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        self::$DI['app']['conf']
             ->method('get')
             ->will($this->returnCallback(function ($key) use ($values) {
                 if (!is_scalar($key)) {
@@ -53,7 +49,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
         }
     }
 
-    public function provideConfigurationData()
+    public static function provideConfigurationData()
     {
         return [
             ['\Swift_Transport_EsmtpTransport', [

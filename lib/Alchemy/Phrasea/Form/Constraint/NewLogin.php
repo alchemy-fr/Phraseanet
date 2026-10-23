@@ -20,7 +20,7 @@ class NewLogin extends Constraint
     public $message = 'This login is already registered';
     private $repository;
 
-    public function __construct(ObjectRepository $repository)
+    public function __construct(\Doctrine\Persistence\ObjectRepository $repository)
     {
         $this->repository = $repository;
         parent::__construct();

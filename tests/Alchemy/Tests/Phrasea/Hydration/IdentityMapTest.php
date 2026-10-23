@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Hydration\Hydrator;
 use Alchemy\Phrasea\Hydration\IdentityMap;
 use Prophecy\Argument;
 
-class IdentityMapTest extends \PHPUnit_Framework_TestCase
+class IdentityMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var IdentityMap

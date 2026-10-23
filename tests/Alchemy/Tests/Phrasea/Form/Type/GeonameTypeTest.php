@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Form\Type;
 
 use Alchemy\Phrasea\Form\Type\GeonameType;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class GeonameTypeTest extends \PhraseanetTestCase
 {
     public function testGetParent()
@@ -19,6 +17,6 @@ class GeonameTypeTest extends \PhraseanetTestCase
     public function testGetName()
     {
         $geoname = new GeonameType();
-        $this->assertEquals('geoname', $geoname->getName());
+        $this->assertEquals('geoname', $geoname->getBlockPrefix());
     }
 }

@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Model\RecordInterface;
 // use Symfony\Component\Filesystem\Filesystem;
 
 
-class FilesystemServiceTest extends \PHPUnit_Framework_TestCase
+class FilesystemServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FilesystemService

@@ -133,7 +133,7 @@ class Installer
                 $sql = 'DROP TABLE IF EXISTS `' . $table['name'] . '`';
                 $stmt = $abConn->prepare($sql);
                 $stmt->executeStatement();
-            } catch (DBALException $e) {
+            } catch (\Doctrine\DBAL\Exception $e) {
 
             }
         }
@@ -143,7 +143,7 @@ class Installer
                     $sql = 'DROP TABLE IF EXISTS `' . $table['name'] . '`';
                     $stmt = $dbConn->prepare($sql);
                     $stmt->executeStatement();
-                } catch (DBALException $e) {
+                } catch (\Doctrine\DBAL\Exception $e) {
 
                 }
             }

@@ -35,7 +35,7 @@ class ContentNegotiationSubscriber implements EventSubscriberInterface
         $this->customFormats = $customFormats;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return array(
             KernelEvents::REQUEST => array('onKernelRequest', Application::EARLY_EVENT),

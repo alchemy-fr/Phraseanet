@@ -20,7 +20,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
         $this->app = $app;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -34,7 +34,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
             ])
             ->add('exposes', CollectionType::class, [
                 'label'         => false,
-                'entry_type'    => new PSExposeConnectionType($this->app),
+                'entry_type'    => \Alchemy\Phrasea\PhraseanetService\Form\PSExposeConnectionType::class,
                 'prototype'     => true,
                 'allow_add'     => true,
                 'allow_delete'  => true,
@@ -46,7 +46,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
     /**
      * @inheritDoc
      */
-    public function mapDataToForms($data, $forms)
+    public function mapDataToForms($data, \Traversable $forms)
     {
         // there is no data yet, so nothing to prepopulate
         if ($data === null) {
@@ -83,7 +83,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
      *
      * @inheritDoc
      */
-    public function mapFormsToData($forms, &$data)
+    public function mapFormsToData(\Traversable $forms, &$data)
     {
 
         /** @var FormInterface[] $forms */
@@ -105,7 +105,7 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
         }
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'ps_expose_configuration';
     }

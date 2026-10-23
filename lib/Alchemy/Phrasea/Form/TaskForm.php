@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class TaskForm extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('name', TextType::class, [
             'label'       => 'Task name',
@@ -37,7 +37,7 @@ class TaskForm extends AbstractType
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
-                new Assert\GreaterThan(['value' => 0]),
+                new Assert\GreaterThan(value: 0),
             ],
         ]);
         $builder->add('status', ChoiceType::class, [
@@ -50,14 +50,14 @@ class TaskForm extends AbstractType
         $builder->add('settings', HiddenType::class);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => 'Alchemy\Phrasea\Model\Entities\Task',
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return null;
     }

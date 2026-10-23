@@ -77,7 +77,7 @@ class Filename extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getReason(TranslatorInterface $translator)
+    public static function getReason(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('same filename');
     }
@@ -85,7 +85,7 @@ class Filename extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public function getMessage(TranslatorInterface $translator)
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('A file with the same filename already exists in database');
     }

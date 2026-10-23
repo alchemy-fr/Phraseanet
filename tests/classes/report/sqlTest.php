@@ -1,17 +1,15 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_sqlTest extends \report_abstractReportTestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        $report = $this->getMock('module_report', [], [], '', false);
-        $report->expects($this->any())
+        $report = $this->createMock('module_report');
+        $report
             ->method('getSbasId')
             ->will($this->returnValue(self::$DI['collection']->get_databox()->get_sbas_id()));
         $this->sql = new module_report_sql(self::$DI['app'], $report);
@@ -19,8 +17,8 @@ class report_sqlTest extends \report_abstractReportTestCase
 
     public function testSql()
     {
-        $sqlFilter = $this->getMock('module_report_sqlfilter', ['getCorFilter'], [], '', false);
-        $sqlFilter->expects($this->any())->method('getCorFilter')->will($this->onConsecutiveCalls([], ['hello' => 'world']));
+        $sqlFilter = $this->createMock('module_report_sqlfilter');
+        $sqlFilter->method('getCorFilter')->will($this->onConsecutiveCalls([], ['hello' => 'world']));
         $this->sql->setFilter($sqlFilter);
         $this->assertEquals('hello', $this->sql->getTransQuery('hello'));
         $this->assertEquals('world', $this->sql->getTransQuery('hello'));

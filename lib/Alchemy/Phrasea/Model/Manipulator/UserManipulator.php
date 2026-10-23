@@ -36,7 +36,7 @@ use Alchemy\Phrasea\Core\Event\User\DeletedEvent;
 class UserManipulator implements ManipulatorInterface
 {
     /**
-     * @var PasswordEncoderInterface
+     * @var \Symfony\Component\PasswordHasher\PasswordHasherInterface
      */
     protected $passwordEncoder;
 
@@ -67,7 +67,7 @@ class UserManipulator implements ManipulatorInterface
 
     /**
      * @param UserManager $manager
-     * @param PasswordEncoderInterface $passwordEncoder
+     * @param \Symfony\Component\PasswordHasher\PasswordHasherInterface $passwordEncoder
      * @param GeonamesConnector $connector
      * @param EntityRepository $repo
      * @param Generator $generator
@@ -75,7 +75,7 @@ class UserManipulator implements ManipulatorInterface
      */
     public function __construct(
         UserManager $manager,
-        PasswordEncoderInterface $passwordEncoder,
+        \Symfony\Component\PasswordHasher\PasswordHasherInterface $passwordEncoder,
         GeonamesConnector $connector,
         EntityRepository $repo,
         Generator $generator,
