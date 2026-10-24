@@ -83,7 +83,7 @@ class RecordSubscriber implements EventSubscriberInterface
     public function onDelete(DeleteEvent $event)
     {
         //  first remove record from the grid answer, so first delete the record in the index elastic
-        $this->app['dispatcher']->dispatch(WorkerEvents::RECORD_DELETE_INDEX, new DeletedEvent($event->getRecord()));
+        $this->app['dispatcher']->dispatch(new DeletedEvent($event->getRecord()), WorkerEvents::RECORD_DELETE_INDEX);
 
         //  publish payload to queue
         $payload = [
@@ -357,7 +357,7 @@ class RecordSubscriber implements EventSubscriberInterface
         $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             /** @uses onRecordCreated */

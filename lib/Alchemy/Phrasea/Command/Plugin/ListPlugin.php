@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Plugin\Plugin;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,13 +41,13 @@ class ListPlugin extends AbstractPluginCommand
         if ($input->getOption('json')) {
             $output->writeln(json_encode(['plugins' => array_values($plugins)]));
         } else {
-            $table = $this->getHelperSet()->get('table');
+            $table = new Table($output);
             $table
                 ->setHeaders(['Name', 'Version', 'Description'])
                 ->setRows($plugins)
             ;
 
-            $table->render($output);
+            $table->render();
         }
 
         return 0;

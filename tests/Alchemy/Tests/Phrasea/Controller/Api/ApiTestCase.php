@@ -16,10 +16,10 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\Common\Collections\ArrayCollection;
-use Guzzle\Common\Exception\GuzzleException;
+use GuzzleHttp\Exception\GuzzleException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
 abstract class ApiTestCase extends \PhraseanetWebTestCase
 {
@@ -30,7 +30,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected $adminAccessToken;
     protected $userAccessToken;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->unsetToken();
         parent::tearDown();
@@ -41,7 +41,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         return '/lib/Alchemy/Phrasea/Application/Api.php';
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -75,7 +75,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $route = '/api/v1/nothinghere';
         $this->setToken($this->userAccessToken);
         $client = $this->getClient();
-        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
         $this->evaluateResponseNotFound($client->getResponse());
@@ -90,7 +90,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('user', $content['response']);
@@ -106,7 +106,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('meta_fields', $content['response']);
@@ -122,7 +122,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('subdefs', $content['response']);
@@ -133,7 +133,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/me/collections/';
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->assertArrayHasKey('collections', $content['response']);
     }
@@ -183,16 +183,16 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('created_on', $feed);
         $this->assertArrayHasKey('updated_on', $feed);
 
-        $this->assertInternalType('integer', $feed['id']);
-        $this->assertInternalType('string', $feed['title']);
-        $this->assertInternalType('string', $feed['subtitle']);
-        $this->assertInternalType('integer', $feed['total_entries']);
-        $this->assertInternalType('boolean', $feed['icon']);
-        $this->assertInternalType('boolean', $feed['public']);
-        $this->assertInternalType('boolean', $feed['readonly']);
-        $this->assertInternalType('boolean', $feed['deletable']);
-        $this->assertInternalType('string', $feed['created_on']);
-        $this->assertInternalType('string', $feed['updated_on']);
+        $this->assertIsInt($feed['id']);
+        $this->assertIsString($feed['title']);
+        $this->assertIsString($feed['subtitle']);
+        $this->assertIsInt($feed['total_entries']);
+        $this->assertIsBool($feed['icon']);
+        $this->assertIsBool($feed['public']);
+        $this->assertIsBool($feed['readonly']);
+        $this->assertIsBool($feed['deletable']);
+        $this->assertIsString($feed['created_on']);
+        $this->assertIsString($feed['updated_on']);
 
         $this->assertDateAtom($feed['created_on']);
         $this->assertDateAtom($feed['updated_on']);
@@ -211,21 +211,21 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('url', $entry);
         $this->assertArrayHasKey('feed_url', $entry);
 
-        $this->assertInternalType('string', $entry['author_email']);
-        $this->assertInternalType('string', $entry['author_name']);
+        $this->assertIsString($entry['author_email']);
+        $this->assertIsString($entry['author_name']);
         $this->assertDateAtom($entry['created_on']);
         $this->assertDateAtom($entry['updated_on']);
-        $this->assertInternalType('string', $entry['title']);
-        $this->assertInternalType('string', $entry['subtitle']);
-        $this->assertInternalType('array', $entry['items']);
+        $this->assertIsString($entry['title']);
+        $this->assertIsString($entry['subtitle']);
+        $this->assertIsArray($entry['items']);
 
         foreach ($entry['items'] as $item) {
-            $this->assertInternalType('integer', $item['item_id']);
+            $this->assertIsInt($item['item_id']);
             $this->evaluateGoodRecord($item['record']);
         }
 
-        $this->assertRegExp('/\/feeds\/entry\/[0-9]+\//', $entry['url']);
-        $this->assertRegExp('/\/feeds\/[0-9]+\/content\//', $entry['feed_url']);
+        $this->assertMatchesRegularExpression('/\/feeds\/entry\/[0-9]+\//', $entry['url']);
+        $this->assertMatchesRegularExpression('/\/feeds\/[0-9]+\/content\//', $entry['feed_url']);
     }
 
     protected function getAddRecordParameters()
@@ -258,25 +258,25 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->assertArrayHasKey('created_on', $file);
         $this->assertArrayHasKey('updated_on', $file);
 
-        $this->assertInternalType('integer', $file['id']);
-        $this->assertInternalType('array', $file['session']);
-        $this->assertInternalType('integer', $file['base_id']);
-        $this->assertInternalType('string', $file['original_name']);
-        $this->assertInternalType('string', $file['sha256']);
-        $this->assertInternalType('string', $file['uuid']);
-        $this->assertInternalType('boolean', $file['forced']);
-        $this->assertInternalType('array', $file['checks']);
-        $this->assertInternalType('string', $file['updated_on']);
-        $this->assertInternalType('string', $file['created_on']);
+        $this->assertIsInt($file['id']);
+        $this->assertIsArray($file['session']);
+        $this->assertIsInt($file['base_id']);
+        $this->assertIsString($file['original_name']);
+        $this->assertIsString($file['sha256']);
+        $this->assertIsString($file['uuid']);
+        $this->assertIsBool($file['forced']);
+        $this->assertIsArray($file['checks']);
+        $this->assertIsString($file['updated_on']);
+        $this->assertIsString($file['created_on']);
 
         $this->assertArrayHasKey('id', $file['session']);
         $this->assertArrayHasKey('usr_id', $file['session']);
 
-        $this->assertRegExp('/[a-f0-9]{64}/i', $file['sha256']);
-        $this->assertRegExp('/[a-f0-9-]+/i', $file['uuid']);
+        $this->assertMatchesRegularExpression('/[a-f0-9]{64}/i', $file['sha256']);
+        $this->assertMatchesRegularExpression('/[a-f0-9-]+/i', $file['uuid']);
 
         foreach ($file['checks'] as $check) {
-            $this->assertInternalType('string', $check);
+            $this->assertIsString($check);
         }
 
         $this->assertDateAtom($file['updated_on']);
@@ -286,7 +286,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     protected function evaluateNotFoundRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            self::$DI['client']->request($method, $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
             $this->evaluateResponseNotFound(self::$DI['client']->getResponse());
@@ -305,22 +305,22 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->checkPermalink($embed['permalink'], $subdef);
         $this->assertArrayHasKey("height", $embed);
         $this->assertEquals($embed['height'], $subdef->get_height());
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['height']);
+        $this->assertIsInt($embed['height']);
         $this->assertArrayHasKey("width", $embed);
         $this->assertEquals($embed['width'], $subdef->get_width());
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['width']);
+        $this->assertIsInt($embed['width']);
         $this->assertArrayHasKey("filesize", $embed);
         $this->assertEquals($embed['filesize'], $subdef->get_size());
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['filesize']);
+        $this->assertIsInt($embed['filesize']);
         $this->assertArrayHasKey("player_type", $embed);
         $this->assertEquals($embed['player_type'], $subdef->get_type());
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $embed['player_type']);
+        $this->assertIsString($embed['player_type']);
         $this->assertArrayHasKey("mime_type", $embed);
         $this->assertEquals($embed['mime_type'], $subdef->get_mime());
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $embed['mime_type']);
+        $this->assertIsString($embed['mime_type']);
         $this->assertArrayHasKey("devices", $embed);
         $this->assertEquals($embed['devices'], $subdef->getDevices());
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $embed['devices']);
+        $this->assertIsArray($embed['devices']);
     }
 
     protected function checkPermalink($permalink, \media_subdef $subdef)
@@ -330,43 +330,42 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
         $start = microtime(true);
         $this->assertNotNull($subdef->get_permalink());
-        $this->assertInternalType('array', $permalink);
+        $this->assertIsArray($permalink);
         $this->assertArrayHasKey("created_on", $permalink);
         $now = new \Datetime($permalink['created_on']);
-        $interval = $now->diff($subdef->get_permalink()->get_created_on());
-        $this->assertTrue(abs($interval->format('U')) < 2);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['created_on']);
+        $this->assertLessThan(2, abs($now->getTimestamp() - $subdef->get_permalink()->get_created_on()->getTimestamp()));
+        $this->assertIsString($permalink['created_on']);
         $this->assertDateAtom($permalink['created_on']);
         $this->assertArrayHasKey("id", $permalink);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $permalink['id']);
+        $this->assertIsInt($permalink['id']);
         $this->assertEquals($subdef->get_permalink()->get_id(), $permalink['id']);
         $this->assertArrayHasKey("is_activated", $permalink);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_BOOL, $permalink['is_activated']);
+        $this->assertIsBool($permalink['is_activated']);
         $this->assertEquals($subdef->get_permalink()->get_is_activated(), $permalink['is_activated']);
         $this->assertArrayHasKey("label", $permalink);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['label']);
+        $this->assertIsString($permalink['label']);
         $this->assertArrayHasKey("updated_on", $permalink);
 
         $expected = $subdef->get_permalink()->get_last_modified();
         $found = \DateTime::createFromFormat(DATE_ATOM, $permalink['updated_on']);
 
-        $this->assertLessThanOrEqual(1, $expected->diff($found)->format('U'));
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['updated_on']);
+        $this->assertLessThanOrEqual(1, abs($expected->getTimestamp() - $found->getTimestamp()));
+        $this->assertIsString($permalink['updated_on']);
         $this->assertDateAtom($permalink['updated_on']);
         $this->assertArrayHasKey("page_url", $permalink);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['page_url']);
+        $this->assertIsString($permalink['page_url']);
         $this->assertEquals($subdef->get_permalink()->get_page(), $permalink['page_url']);
         $this->checkUrlCode200($permalink['page_url']);
         $this->assertPermalinkHeaders($permalink['page_url'], $subdef);
 
         $this->assertArrayHasKey("url", $permalink);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['url']);
+        $this->assertIsString($permalink['url']);
         $this->assertEquals($subdef->get_permalink()->get_url(), $permalink['url']);
         $this->checkUrlCode200($permalink['url']);
         $this->assertPermalinkHeaders($permalink['url'], $subdef, "url");
 
         $this->assertArrayHasKey("download_url", $permalink);
-        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['download_url']);
+        $this->assertIsString($permalink['download_url']);
         $this->assertEquals($subdef->get_permalink()->get_url() . '&download=1', $permalink['download_url']);
         $this->checkUrlCode200($permalink['download_url']);
         $this->assertPermalinkHeaders($permalink['download_url'], $subdef, "download_url");
@@ -384,7 +383,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         if (null === $webserver) {
             try {
-                $code = self::$DI['local-guzzle']->head('/api/')->send()->getStatusCode();
+                $code = self::$DI['local-guzzle']->request('HEAD', '/api/')->getStatusCode();
             } catch (GuzzleException $e) {
                 $code = null;
             }
@@ -393,11 +392,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         if (false === $webserver) {
             $this->markTestSkipped('Install does not seem to rely on a webserver');
         }
-        if (0 === strpos($url, $webserver)) {
+        if (0 === strpos($url, (string) $webserver)) {
             $url = substr($url, strlen($webserver));
         }
 
-        return $request[$url] = self::$DI['local-guzzle']->head($url)->send();
+        return $request[$url] = self::$DI['local-guzzle']->request('HEAD', $url);
     }
 
     protected function assertPermalinkHeaders($url, \media_subdef $subdef, $type_url = "page_url")
@@ -408,21 +407,21 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
         switch ($type_url) {
             case "page_url" :
-                $this->assertTrue(strpos((string) $response->getHeader('content-type'), "text/html") === 0);
+                $this->assertTrue(strpos($response->getHeaderLine('content-type'), "text/html") === 0);
                 if ($response->hasHeader('content-length')) {
-                    $this->assertNotEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                    $this->assertNotEquals($subdef->get_size(), $response->getHeaderLine('content-length'));
                 }
                 break;
             case "url" :
-                $this->assertTrue(strpos((string) $response->getHeader('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . (string) $response->getHeader('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
+                $this->assertTrue(strpos($response->getHeaderLine('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . $response->getHeaderLine('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
                 if ($response->hasHeader('content-length')) {
-                    $this->assertEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                    $this->assertEquals($subdef->get_size(), $response->getHeaderLine('content-length'));
                 }
                 break;
             case "download_url" :
-                $this->assertTrue(strpos((string) $response->getHeader('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . (string) $response->getHeader('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
+                $this->assertTrue(strpos($response->getHeaderLine('content-type'), $subdef->get_mime()) === 0, 'Verify that header ' . $response->getHeaderLine('content-type') . ' contains subdef mime type ' . $subdef->get_mime());
                 if ($response->hasHeader('content-length')) {
-                    $this->assertEquals($subdef->get_size(), (string) $response->getHeader('content-length'));
+                    $this->assertEquals($subdef->get_size(), $response->getHeaderLine('content-length'));
                 }
                 break;
         }
@@ -439,7 +438,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         foreach ($methods as $method) {
             $client = $this->getClient();
-            $client->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            $client->request($method, $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
             $content = $this->unserialize($client->getResponse()->getContent());
             $this->assertTrue($client->getResponse()->headers->has('Allow'));
             $this->evaluateResponseMethodNotAllowed($client->getResponse());
@@ -451,7 +450,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         foreach ($methods as $method) {
             $client = $this->getClient();
-            $client->request($method, $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+            $client->request($method, $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
             $content = $this->unserialize($client->getResponse()->getContent());
             $this->evaluateResponseBadRequest($client->getResponse());
             $this->evaluateMetaBadRequest($content);
@@ -623,7 +622,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $value = $technical['value'];
             if (is_string($value)) {
                 $this->assertFalse(ctype_digit($value));
-                $this->assertEquals(0, preg_match('/[0-9]?\.[0-9]+/', $value));
+                $this->assertDoesNotMatchRegularExpression('/[0-9]?\.[0-9]+/', $value);
             } elseif (is_float($value)) {
                 $this->assertTrue(is_float($value));
             } elseif (is_int($value)) {
@@ -668,11 +667,11 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         }
 
         $this->assertArrayHasKey('records', $story);
-        $this->assertInternalType('array', $story['records']);
+        $this->assertIsArray($story['records']);
 
         foreach ($story['metadatas'] as $key => $metadata) {
             if (null !== $metadata) {
-                $this->assertInternalType('string', $metadata);
+                $this->assertIsString($metadata);
             }
             if ($key === '@entity@') {
                 continue;

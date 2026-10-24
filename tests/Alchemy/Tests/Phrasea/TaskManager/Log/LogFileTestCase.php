@@ -9,7 +9,7 @@ abstract class LogFileTestCase extends \PhraseanetTestCase
 {
     protected $root;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->root = __DIR__ . '/root';
@@ -18,7 +18,7 @@ abstract class LogFileTestCase extends \PhraseanetTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $finder = new Finder();
         $finder->files()->in($this->root);
@@ -33,7 +33,7 @@ abstract class LogFileTestCase extends \PhraseanetTestCase
     public function testGetPathIsInRoot()
     {
         $log = $this->getLogFile($this->root);
-        $this->assertSame(0, strpos($log->getPath(), $this->root));
+        $this->assertSame(0, strpos($log->getPath(), (string) $this->root));
     }
 
     public function testGetContent()

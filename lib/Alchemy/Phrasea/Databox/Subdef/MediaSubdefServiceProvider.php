@@ -13,12 +13,13 @@ namespace Alchemy\Phrasea\Databox\Subdef;
 use Alchemy\Phrasea\Databox\DataboxBoundRepositoryProvider;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Record\RecordReference;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class MediaSubdefServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['provider.factory.media_subdef'] = $app->protect(function ($databoxId) use ($app) {
             return function (array $data) use ($app, $databoxId) {
@@ -28,22 +29,17 @@ class MediaSubdefServiceProvider implements ServiceProviderInterface
             };
         });
 
-        $app['provider.repo.media_subdef'] = $app->share(function (Application $app) {
+        $app['provider.repo.media_subdef'] = function (Application $app) {
             $connectionProvider = new DataboxConnectionProvider($app['phraseanet.appbox']);
             $factoryProvider = $app['provider.factory.media_subdef'];
 
             $repositoryFactory = new MediaSubdefRepositoryFactory($connectionProvider, $app['cache'], $factoryProvider);
 
             return new DataboxBoundRepositoryProvider($repositoryFactory);
-        });
+        };
 
-        $app['service.media_subdef'] = $app->share(function (Application $app) {
+        $app['service.media_subdef'] = function (Application $app) {
             return new MediaSubdefService($app['provider.repo.media_subdef']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 }

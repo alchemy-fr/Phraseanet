@@ -13,36 +13,28 @@ namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table(name="FeedTokens")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FeedTokenRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FeedTokenRepository::class)]
+#[ORM\Table(name: 'FeedTokens')]
 class FeedToken
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=64, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private $value;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Feed", inversedBy="tokens", cascade={"persist"})
-     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Feed::class, inversedBy: 'tokens', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'feed_id', referencedColumnName: 'id')]
     private $feed;
 
     /**
@@ -81,7 +73,7 @@ class FeedToken
      * @param  Feed      $feed
      * @return FeedToken
      */
-    public function setFeed(Feed $feed = null)
+    public function setFeed(?Feed $feed = null)
     {
         $this->feed = $feed;
 

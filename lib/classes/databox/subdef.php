@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Media\Subdef\Unknown;
 use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 use MediaAlchemyst\Specification\SpecificationInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class databox_subdef
 {
@@ -37,6 +37,8 @@ class databox_subdef
     protected $path;
     protected $preset;
     protected $subdef_group;
+    /** @var \Alchemy\Phrasea\Media\Subdef\Subdef */
+    protected $subdef_type;
     protected $labels = [];
     /**
      * @var bool
@@ -69,10 +71,10 @@ class databox_subdef
      *
      * @param SubdefType $type
      * @param SimpleXMLElement $sd
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      * @param databox|null $databox
      */
-    public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator, databox $databox = null)
+    public function __construct(SubdefType $type, SimpleXMLElement $sd, \Symfony\Contracts\Translation\TranslatorInterface $translator, ?databox $databox = null)
     {
         $this->databox = $databox;
         $this->subdef_group = $type;
@@ -430,8 +432,7 @@ class databox_subdef
                             $mediatype_obj = new Unknown($this->translator);
                             break;
                         default:
-                            continue;
-                            break;
+                            continue 2;
                     }
                 }
                 $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi($this->translator->trans('Target Device'),

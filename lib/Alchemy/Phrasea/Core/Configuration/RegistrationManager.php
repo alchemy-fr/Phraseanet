@@ -20,6 +20,7 @@ class RegistrationManager
     /** @var \appbox */
     private $appbox;
     private $repository;
+    private $locale;
 
     public function __construct(\appbox $appbox, RegistrationRepository $repository, $locale)
     {
@@ -53,7 +54,7 @@ class RegistrationManager
      *
      * @return array
      */
-    public function getRegistrationSummary(User $user = null)
+    public function getRegistrationSummary(?User $user = null)
     {
         $data = $userData = [];
 
@@ -112,10 +113,10 @@ class RegistrationManager
 
                     if(!is_null($userRegistration['active'])) {
                         // rights are set in basusr, we don't really care about registration
-                        $isTimeLimited = (Boolean) $userRegistration['time-limited'];
+                        $isTimeLimited = (bool) $userRegistration['time-limited'];
                         if($isTimeLimited) {
                             // any time limit overrides (=automates) the 'active' value
-                            $isOnTime = (Boolean) $userRegistration['in-time'];
+                            $isOnTime = (bool) $userRegistration['in-time'];
                             $type = $isOnTime ? 'in-time' : 'out-dated';
                         }
                         else {

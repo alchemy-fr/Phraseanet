@@ -16,7 +16,7 @@ use League\Fractal\TransformerAbstract;
 
 class OrderElementTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['resource_links'];
+    protected array $availableIncludes = ['resource_links'];
 
     private $validParams = ['ttl'];
 
@@ -53,7 +53,7 @@ class OrderElementTransformer extends TransformerAbstract
         return $data;
     }
 
-    public function includeResourceLinks(OrderElementView $model, ParamBag $params = null)
+    public function includeResourceLinks(OrderElementView $model, ?ParamBag $params = null)
     {
         $parameterArray = $this->extractParamBagValues($params);
         $usedParams = array_keys(array_filter($parameterArray));
@@ -93,7 +93,7 @@ class OrderElementTransformer extends TransformerAbstract
      * @param ParamBag|null $params
      * @return array
      */
-    private function extractParamBagValues(ParamBag $params = null)
+    private function extractParamBagValues(?ParamBag $params = null)
     {
         $array = array_fill_keys($this->validParams, null);
 

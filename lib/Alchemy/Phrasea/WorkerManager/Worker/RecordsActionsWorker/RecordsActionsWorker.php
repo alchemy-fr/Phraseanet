@@ -12,7 +12,6 @@ use Alchemy\Phrasea\WorkerManager\Worker\WorkerInterface;
 use collection;
 use databox;
 use Exception;
-use PDO;
 use Psr\Log\LoggerInterface;
 use record_adapter;
 use SimpleXMLElement;
@@ -153,9 +152,8 @@ class RecordsActionsWorker implements WorkerInterface
                 $to_coll = $coll;
             }
 
-            $stmt = $databox->get_connection()->prepare($task['sql']['real']['sql']);
-            $stmt->execute();
-            while (false !== $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stmt = $databox->get_connection()->executeQuery($task['sql']['real']['sql']);
+            while (false !== $row = $stmt->fetchAssociative()) {
                 $tmp = [
                     'databoxId'   => $databox->get_sbas_id(),
                     'record_id' => $row['record_id'],
@@ -201,7 +199,6 @@ class RecordsActionsWorker implements WorkerInterface
                         break;
                 }
             }
-            $stmt->closeCursor();
         }
 
         return $ret;
@@ -382,16 +379,15 @@ class RecordsActionsWorker implements WorkerInterface
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
-        $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();
+        $result['n'] = $connbas->executeQuery('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchOne();
 
-        $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
-        if ($stmt->execute([])) {
-            while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
+        try {
+            $stmt = $connbas->executeQuery('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
+            while (($row = $stmt->fetchAssociative())) {
                 $result['rids'][] = $row['record_id'];
             }
-            $stmt->closeCursor();
-        } else {
-            $result['err'] = $connbas->errorInfo();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $result['err'] = $e->getMessage();
         }
 
         return $result;
@@ -424,7 +420,7 @@ class RecordsActionsWorker implements WorkerInterface
 
         // criteria <number field="XXX" compare="OP" value="ZZZ" />
         foreach ($sxIf->number as $x) {
-            $this->add_IF_NumberClause($sqlBuilder, $databox, trim($x['field']), trim($x['compare']), (double)($x['value']));
+            $this->add_IF_NumberClause($sqlBuilder, $databox, trim($x['field']), trim($x['compare']), (float) $x['value']);
         }
 
         // criteria <is_set field="XXX" />

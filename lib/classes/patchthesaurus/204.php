@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 class patchthesaurus_204 implements patchthesaurus_interface
 {
@@ -55,8 +55,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                     $sql2 = "DELETE FROM thit WHERE value LIKE :like";
 
                     $stmt = $connbas->prepare($sql2);
-                    $stmt->execute([':like' => str_replace(".", "d", $node->getAttribute("id")) . "d%"]);
-                    $stmt->closeCursor();
+                    $stmt->executeStatement([':like' => str_replace(".", "d", $node->getAttribute("id")) . "d%"]);
 
                     $node->parentNode->removeChild($node);
                     $ctdel ++;
@@ -66,8 +65,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                 $sql2 = "UPDATE record SET status=((status | 15) & ~2)";
 
                 $stmt = $connbas->prepare($sql2);
-                $stmt->execute();
-                $stmt->closeCursor();
+                $stmt->executeStatement();
             }
 
             $sy = $xp->query("//sy");
@@ -119,8 +117,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                 $sql = "UPDATE thit SET value = :newid WHERE value = :oldid";
 
                 $stmt = $connbas->prepare($sql);
-                $stmt->execute([':newid' => $newid, ':oldid' => $id]);
-                $stmt->closeCursor();
+                $stmt->executeStatement([':newid' => $newid, ':oldid' => $id]);
             }
         }
         for ($n = $node->firstChild; $n; $n = $n->nextSibling)
@@ -147,8 +144,7 @@ class patchthesaurus_204 implements patchthesaurus_interface
                     $sql = "UPDATE thit SET value = :newid WHERE value = :oldid";
 
                     $stmt = $connbas->prepare($sql);
-                    $stmt->execute([':newid' => $newid, ':oldid' => $id]);
-                    $stmt->closeCursor();
+                    $stmt->executeStatement([':newid' => $newid, ':oldid' => $id]);
                 }
             }
         }

@@ -21,8 +21,9 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Prophecy\Argument;
 
-class BasketElementRepositoryTest extends \PHPUnit_Framework_TestCase
+class BasketElementRepositoryTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testFindByRecordIdsWithBasketSucceed()
     {
         $result = [(object)['fake_object' => 'basket_element']];

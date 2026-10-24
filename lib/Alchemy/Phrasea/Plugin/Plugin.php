@@ -20,7 +20,7 @@ class Plugin
     private $manifest;
     private $name;
 
-    public function __construct($name, Manifest $manifest = null, PluginValidationException $error = null)
+    public function __construct($name, ?Manifest $manifest = null, ?PluginValidationException $error = null)
     {
         if ($manifest === $error || (null !== $manifest && null !== $error)) {
             throw new \LogicException('A plugin is either installed (with a stable manifest) or on error (given its error).');

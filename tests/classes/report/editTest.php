@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_editTest extends \report_abstractReportTestCase
 {
     protected $ret;
@@ -11,7 +9,7 @@ class report_editTest extends \report_abstractReportTestCase
     protected $dmax;
     protected $report;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $date = new Datetime();
@@ -98,7 +96,7 @@ class report_editTest extends \report_abstractReportTestCase
 
     public function manyCol($ret)
     {
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $ret);
+        $this->assertIsArray($ret);
         foreach ($ret as $result) {
             $this->assertArrayHasKey('val', $result);
             $this->assertArrayHasKey('value', $result);

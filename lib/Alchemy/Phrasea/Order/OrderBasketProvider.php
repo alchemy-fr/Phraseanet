@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class OrderBasketProvider
 {
@@ -24,11 +24,11 @@ class OrderBasketProvider
     private $manager;
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
-    public function __construct(EntityManager $manager, TranslatorInterface $translator)
+    public function __construct(EntityManager $manager, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->manager = $manager;
         $this->translator = $translator;

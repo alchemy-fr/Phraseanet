@@ -5,30 +5,26 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             ['Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider', 'notification.deliverer', 'Alchemy\\Phrasea\\Notification\\Deliverer'],
         ];
     }
 
-    /**
-     * @dataProvider provideConfigurationData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideConfigurationData')]
     public function testWithoutSmtpSettings($instance, $values)
     {
         self::$DI['app']->register(new NotificationDelivererServiceProvider());
 
-        self::$DI['app']['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
-        self::$DI['app']['conf']->expects($this->any())
+        self::$DI['app']['conf'] = $this->createStub('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
+        self::$DI['app']['conf']
             ->method('get')
             ->will($this->returnCallback(function ($key) use ($values) {
                 if (!is_scalar($key)) {
@@ -43,7 +39,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
 
         $this->assertInstanceOf($instance, self::$DI['app']['swiftmailer.transport']);
 
-        if (!self::$DI['app']['swiftmailer.transport'] instanceof \Swift_Transport_MailTransport) {
+        if (!self::$DI['app']['swiftmailer.transport'] instanceof \Swift_Transport_SendmailTransport) {
             $this->assertEquals($values['expected-host'], self::$DI['app']['swiftmailer.transport']->getHost());
             $this->assertEquals($values['expected-port'], self::$DI['app']['swiftmailer.transport']->getPort());
             $this->assertEquals($values['expected-encryption'], self::$DI['app']['swiftmailer.transport']->getEncryption());
@@ -53,7 +49,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
         }
     }
 
-    public function provideConfigurationData()
+    public static function provideConfigurationData()
     {
         return [
             ['\Swift_Transport_EsmtpTransport', [
@@ -71,7 +67,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
                 'expected-password' => 'b4tm4n',
                 'expected-authmode' => null,
             ]],
-            ['\Swift_Transport_MailTransport', [
+            ['\Swift_Transport_SendmailTransport', [
                 serialize(['registry', 'email', 'smtp-enabled']) => false,
                 serialize(['registry', 'email', 'smtp-auth-enabled']) => true,
                 serialize(['registry', 'email', 'smtp-host']) => 'special.host.mail',
@@ -101,7 +97,7 @@ class NotificationDelivererServiceProviderTest extends ServiceProviderTestCase
                 'expected-password' => null,
                 'expected-authmode' => null,
             ]],
-            ['\Swift_Transport_MailTransport', [
+            ['\Swift_Transport_SendmailTransport', [
                 serialize(['registry', 'email', 'smtp-enabled']) => false,
                 serialize(['registry', 'email', 'smtp-auth-enabled']) => false,
                 'expected-host' => null,

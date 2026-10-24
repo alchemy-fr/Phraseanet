@@ -108,7 +108,7 @@ class FixAutoincrements extends Command
 
         $stmt = $box->get_connection()->executeQuery($sql, [':dbname' => $box->get_dbname()]);
         $max_id = 0;
-        $rows = $stmt->fetchAll();
+        $rows = $stmt->fetchAllAssociative();
         foreach($rows as $row) {
             $id = $row['id'];
 
@@ -121,7 +121,6 @@ class FixAutoincrements extends Command
                 }
             }
         }
-        $stmt->closeCursor();
 
         return $max_id;
     }
@@ -131,7 +130,7 @@ class FixAutoincrements extends Command
      * @param $table
      * @param $max_id
      * @param Table $ouputTable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function box_setAutoIncrement($box, $table, $max_id, $ouputTable)
     {
@@ -161,7 +160,6 @@ class FixAutoincrements extends Command
         else {
             try {
                 $stmt = $box->get_connection()->executeQuery($sql, $parms);
-                $stmt->closeCursor();
 
                 $msg[1] = sprintf("<info>%s</info>", $msg[1]);
                 $ouputTable->addRow($msg);
@@ -179,12 +177,11 @@ class FixAutoincrements extends Command
     //============================= Databoxes =======================
     //
     //
-
     /**
      * fix every Databox "record" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function db_fix_coll()
     {
@@ -205,7 +202,7 @@ class FixAutoincrements extends Command
      * fix every Databox "record" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function db_fix_record()
     {
@@ -230,12 +227,11 @@ class FixAutoincrements extends Command
     //============================= ApplicationBox =======================
     //
     //
-
     /**
      * fix AppBox "bas" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_bas()
     {
@@ -261,7 +257,7 @@ class FixAutoincrements extends Command
      * fix AppBox "BasketElements" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_BasketElements()
     {
@@ -281,7 +277,7 @@ class FixAutoincrements extends Command
      * fix AppBox "Baskets" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_Baskets()
     {
@@ -303,7 +299,7 @@ class FixAutoincrements extends Command
      * fix AppBox "Sessions" autoincrement
      *
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function ab_fix_Sessions()
     {
@@ -328,7 +324,7 @@ class FixAutoincrements extends Command
 
             $sql = "SELECT MAX(`sit_session`) FROM `log` WHERE `site` = :site";
             $stmt = $db->executeQuery($sql, [':site' => $site]);
-            $id = $stmt->fetchColumn(0);
+            $id = $stmt->fetchOne();
 
             $ouputTable->addRow([sprintf("%s.log.sit_session", $databox->get_dbname()), sprintf("%s", is_null($id) ? 'null' : $id)]);
 
@@ -338,7 +334,6 @@ class FixAutoincrements extends Command
                     $max_SessionId = $id;
                 }
             }
-            $stmt->closeCursor();
         }
 
         // fix using different methods

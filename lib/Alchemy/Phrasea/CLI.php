@@ -24,7 +24,7 @@ use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -48,20 +48,18 @@ class CLI extends Application
 
         $this['session.test'] = true;
 
-        $this['console'] = $this->share(function () use ($name, $version) {
-            return new Console\Application($name, $version);
+        $this['console'] = function () use ($name, $version) {
+            return new Console\Application($name, (string) $version);
+        };
+
+        $this->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
+            $dispatcher->addListener('phraseanet.notification.sent', function () use ($app) {
+                $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
+            });
+            $dispatcher->addSubscriber(new BridgeSubscriber($app));
+
+            return $dispatcher;
         });
-
-        $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
-                $dispatcher->addListener('phraseanet.notification.sent', function () use ($app) {
-                    $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
-                });
-                $dispatcher->addSubscriber(new BridgeSubscriber($app));
-
-                return $dispatcher;
-            })
-        );
 
         $this->register(new PluginServiceProvider());
         $this->register(new ComposerSetupServiceProvider());
@@ -89,7 +87,7 @@ class CLI extends Application
         }
 
         if ($logger){
-            $this['logger'] = $this->extend('logger', function () {
+            $this->extend('logger', function () {
                 return new Console\Logger\ConsoleLogger(new Console\Output\ConsoleOutput(Console\Output\ConsoleOutput::VERBOSITY_DEBUG));
             });
         }
@@ -101,20 +99,12 @@ class CLI extends Application
 
     /**
      * Executes this application.
-     *
-     * @param bool $interactive runs in an interactive shell if true.
      */
-    public function runCLI($interactive = false)
+    public function runCLI()
     {
         $this->boot();
 
-        $app = $this['console'];
-
-        if ($interactive) {
-            $app = new Console\Shell($app);
-        }
-
-        $app->run();
+        $this['console']->run();
     }
 
     public function boot()
@@ -124,7 +114,7 @@ class CLI extends Application
         $this['console']->setDispatcher($this['dispatcher']);
     }
 
-    public function run(\Symfony\Component\HttpFoundation\Request $request = null)
+    public function run(?\Symfony\Component\HttpFoundation\Request $request = null)
     {
         if (null !== $request) {
             throw new RuntimeException('Phraseanet Konsole can not run Http Requests.');
@@ -146,7 +136,7 @@ class CLI extends Application
             $command->setContainer($this);
         }
 
-        $this['console']->add($command);
+        $this['console']->addCommand($command);
     }
 
     /**

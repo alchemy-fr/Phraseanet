@@ -15,77 +15,51 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Tasks")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\TaskRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\TaskRepository::class)]
+#[ORM\Table(name: 'Tasks')]
 class Task
 {
     const STATUS_STARTED = 'started';
     const STATUS_STOPPED = 'stopped';
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private $name;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private $jobId;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings></tasksettings>';
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $completed = false;
 
-    /**
-     * @ORM\Column(type="string", options={"default" = "started"})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => 'started'])]
     private $status = self::STATUS_STARTED;
 
-    /**
-     * @ORM\Column(type="integer", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private $crashed = 0;
 
-    /**
-     * @ORM\Column(type="boolean", name="single_run", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'single_run', options: ['default' => 0])]
     private $singleRun = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true, name="last_execution")
-     */
+    #[ORM\Column(type: 'datetime', nullable: true, name: 'last_execution')]
     private $lastExecution;
 
-    /**
-     * @ORM\Column(type="integer", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private $period = 0;
 
     /**
@@ -248,7 +222,7 @@ class Task
      */
     public function setSingleRun($singleRun)
     {
-        $this->singleRun = (Boolean) $singleRun;
+        $this->singleRun = (bool) $singleRun;
 
         return $this;
     }
@@ -339,7 +313,7 @@ class Task
 
     public function setPeriod($period)
     {
-        $this->period = (integer) $period;
+        $this->period = (int) $period;
 
         return $this;
     }

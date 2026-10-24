@@ -22,6 +22,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 {
     protected $rootPath;
     protected $locales;
+    protected $fs;
 
     public function __construct($rootPath, $locales, $fs = null)
     {
@@ -64,8 +65,8 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
             }
 
             foreach ($this->locales as $code => $language) {
-                $status['labels_on_i18n'][$code] = '' !== trim($status['labels_on'][$code]) ? $status['labels_on'][$code] : $status['labelon'];
-                $status['labels_off_i18n'][$code] = '' !== trim($status['labels_off'][$code]) ? $status['labels_off'][$code] : $status['labeloff'];
+                $status['labels_on_i18n'][$code] = '' !== trim((string) $status['labels_on'][$code]) ? $status['labels_on'][$code] : $status['labelon'];
+                $status['labels_off_i18n'][$code] = '' !== trim((string) $status['labels_off'][$code]) ? $status['labels_off'][$code] : $status['labeloff'];
             }
 
             $status['img_off'] = null;
@@ -114,8 +115,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
             if ($sbit->parentNode->removeChild($sbit)) {
                 $sql = 'UPDATE record SET status = status&(~(1<<' . $bit . '))';
                 $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
+                $stmt->executeStatement();
             }
         }
 
@@ -219,8 +219,8 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 
         $status['labelon'] = $properties['labelon'];
         $status['labeloff'] = $properties['labeloff'];
-        $status['searchable'] = (Boolean) $properties['searchable'];
-        $status['printable'] = (Boolean) $properties['printable'];
+        $status['searchable'] = (bool) $properties['searchable'];
+        $status['printable'] = (bool) $properties['printable'];
 
 //        if (!isset($properties['img_on'])) {
 //            $status['img_on'] = null;

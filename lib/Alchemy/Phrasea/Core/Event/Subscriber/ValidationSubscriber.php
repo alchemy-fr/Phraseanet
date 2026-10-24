@@ -180,7 +180,7 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
     }
     */
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::VALIDATION_CREATE => 'onCreate',

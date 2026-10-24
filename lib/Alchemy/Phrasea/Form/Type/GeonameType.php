@@ -15,12 +15,12 @@ use Symfony\Component\Form\AbstractType;
 
 class GeonameType extends AbstractType
 {
-    public function getParent()
+    public function getParent(): ?string
     {
-        return 'text';
+        return \Symfony\Component\Form\Extension\Core\Type\TextType::class;
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'geoname';
     }

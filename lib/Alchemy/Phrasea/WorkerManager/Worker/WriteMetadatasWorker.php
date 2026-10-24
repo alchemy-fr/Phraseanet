@@ -19,7 +19,6 @@ use Exception;
 use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
-use PHPExiftool\Driver\Tag;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
 use PHPExiftool\Exception\TagUnknown;
@@ -131,14 +130,15 @@ class WriteMetadatasWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
-            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+            $this->dispatch(new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName,
                 SubdefinitionWritemetaEvent::FAILED,
                 $workerMessage,
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_WRITE_META);
 
             // the subscriber will mark the job as errored, no need to do it here
             return ;
@@ -148,14 +148,15 @@ class WriteMetadatasWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
-            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+            $this->dispatch(new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName,
                 SubdefinitionWritemetaEvent::FAILED,
                 'Subdef is not physically present!',
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_WRITE_META);
 
             // the subscriber will mark the job as errored, no need to do it here
             return ;
@@ -169,19 +170,19 @@ class WriteMetadatasWorker implements WorkerInterface
         if ($record->getUuid()) {
             $metadata->add(
                 new Metadata(
-                    new Tag\XMPExif\ImageUniqueID(),
+                    TagFactory::getFromRDFTagname('XMP-exif:ImageUniqueID'),
                     new Mono($record->getUuid())
                 )
             );
             $metadata->add(
                 new Metadata(
-                    new Tag\ExifIFD\ImageUniqueID(),
+                    TagFactory::getFromRDFTagname('ExifIFD:ImageUniqueID'),
                     new Mono($record->getUuid())
                 )
             );
             $metadata->add(
                 new Metadata(
-                    new Tag\IPTC\UniqueDocumentID(),
+                    TagFactory::getFromRDFTagname('IPTC:UniqueDocumentID'),
                     new Mono($record->getUuid())
                 )
             );
@@ -307,14 +308,15 @@ class WriteMetadatasWorker implements WorkerInterface
                 $count = isset($payload['count']) ? $payload['count'] + 1 : 2;
 
                 /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
-                $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                $this->dispatch(new SubdefinitionWritemetaEvent(
                     $record,
                     $subdefName,
                     SubdefinitionWritemetaEvent::FAILED,
                     $workerMessage,
                     $count,
                     $workerRunningJobId
-                ));
+                ),
+                WorkerEvents::SUBDEFINITION_WRITE_META);
                 // the subscriber will "unlock" the row, no need to do it here
             }
             else {
@@ -350,13 +352,12 @@ class WriteMetadatasWorker implements WorkerInterface
         $connection->beginTransaction();
         $stmt = $connection->prepare('UPDATE record SET jeton=(jeton & ~(:token)), moddate=NOW() WHERE record_id = :record_id');
 
-        $stmt->execute([
+        $stmt->executeStatement([
             ':record_id'    => $record->getRecordId(),
             ':token'        => PhraseaTokens::WRITE_META,
         ]);
 
         $connection->commit();
-        $stmt->closeCursor();
     }
 
     /**

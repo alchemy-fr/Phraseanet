@@ -25,7 +25,7 @@ class DataboxVersionRepository implements VersionRepository
      */
     public function getVersion()
     {
-        $result = $this->connection->fetchAssoc('SELECT value AS version FROM pref WHERE prop="version"');
+        $result = $this->connection->fetchAssociative('SELECT value AS version FROM pref WHERE prop="version"');
 
         if ($result !== false) {
             return $result['version'];
@@ -37,11 +37,11 @@ class DataboxVersionRepository implements VersionRepository
     /**
      * @param Version $version
      * @return bool
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function saveVersion(Version $version)
     {
-        $this->connection->exec("DELETE FROM pref WHERE prop='version'");
+        $this->connection->executeStatement("DELETE FROM pref WHERE prop='version'");
 
         $statement = $this->connection->executeQuery(
             'INSERT INTO pref (prop, value, locale, updated_on) VALUES ("version", :version, "", NOW())',

@@ -25,7 +25,7 @@ class AppboxVersionRepository implements VersionRepository
      */
     public function getVersion()
     {
-        $result = $this->connection->fetchAssoc('SELECT version FROM sitepreff');
+        $result = $this->connection->fetchAssociative('SELECT version FROM sitepreff');
 
         if ($result !== false) {
             return $result['version'];

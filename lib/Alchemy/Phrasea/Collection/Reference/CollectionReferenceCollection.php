@@ -51,6 +51,7 @@ class CollectionReferenceCollection implements \IteratorAggregate
     /**
      * @return \ArrayIterator|CollectionReference[]
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->references);

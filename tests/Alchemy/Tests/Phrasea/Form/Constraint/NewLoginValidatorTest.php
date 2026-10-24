@@ -4,24 +4,20 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Form\Constraint\NewLoginValidator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class NewLoginValidatorTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideVoteData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVoteData')]
     public function testValidate($value, $alreadyRegistered)
     {
-        $context = $this->getMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock('Symfony\Component\Validator\Context\ExecutionContextInterface');
         $builder = $context
             ->expects($this->exactly($alreadyRegistered ? 1 : 0))
             ->method('addViolation');
 
         if ($alreadyRegistered) {
-            $builder->with($this->isType('string'));
+            $builder->with($this->isString());
         }
 
         $validator = new NewLoginValidator();
@@ -37,7 +33,7 @@ class NewLoginValidatorTest extends \PhraseanetTestCase
         $validator->validate($value, $constraint);
     }
 
-    public function provideVoteData()
+    public static function provideVoteData()
     {
         return [
             ['romainneutron', true],
@@ -49,9 +45,6 @@ class NewLoginValidatorTest extends \PhraseanetTestCase
 
     private function getConstraint()
     {
-        return $this
-            ->getMockBuilder('Alchemy\Phrasea\Form\Constraint\NewEmail')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Form\Constraint\NewLogin');
     }
 }

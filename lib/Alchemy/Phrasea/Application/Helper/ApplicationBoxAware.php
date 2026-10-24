@@ -40,7 +40,7 @@ trait ApplicationBoxAware
             return $this->applicationBox;
         }
 
-        if (null === $this->applicationBox && $this instanceof \Pimple && $this->offsetExists('phraseanet.appbox')) {
+        if (null === $this->applicationBox && $this instanceof \Pimple\Container && $this->offsetExists('phraseanet.appbox')) {
             $this->applicationBox = function () {
                 return $this['phraseanet.appbox'];
             };

@@ -3,10 +3,12 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Account\AccountService;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
-class AccountServiceProvider implements ServiceProviderInterface
+class AccountServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
 
     /**
@@ -17,9 +19,9 @@ class AccountServiceProvider implements ServiceProviderInterface
      *
      * @param Application $app An Application instance
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['accounts.service'] = $app->share(function () use ($app) {
+        $app['accounts.service'] = function () use ($app) {
             return new AccountService(
                 $app['authentication'],
                 $app['auth.password-encoder'],
@@ -29,7 +31,7 @@ class AccountServiceProvider implements ServiceProviderInterface
                 $app['manipulator.user'],
                 $app['repo.users']
             );
-        });
+        };
     }
 
     /**

@@ -104,7 +104,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class V1Controller extends Controller
@@ -232,16 +232,15 @@ class V1Controller extends Controller
     public function sendAssetsInQueue(Request $request)
     {
         $jsonBodyHelper = $this->getJsonBodyHelper();
-        $schema = $this->app['json-schema.ref_resolver']->resolve($this->app['json-schema.base_uri']. 'assets_enqueue.json');
         $data = $request->getContent();
 
-        $errors = $jsonBodyHelper->validateJson(json_decode($data), $schema);
+        $errors = $jsonBodyHelper->validateJson(json_decode($data), 'assets_enqueue.json');
 
         if (count($errors) > 0) {
             return Result::createError($request, 422, $errors[0])->createResponse();
         }
 
-        $this->dispatch(WorkerEvents::ASSETS_CREATE, new AssetsCreateEvent(json_decode($data, true)));
+        $this->dispatch(new AssetsCreateEvent(json_decode($data, true)), WorkerEvents::ASSETS_CREATE);
 
         return Result::create($request, [
             "data" => json_decode($data),
@@ -717,7 +716,7 @@ class V1Controller extends Controller
     private function listLazaretFile(LazaretFile $file)
     {
         $manager = $this->getBorderManager();
-        /** @var TranslatorInterface $translator */
+        /** @var \Symfony\Contracts\Translation\TranslatorInterface $translator */
         $translator = $this->app['translator'];
 
         $checks = array_map(function (LazaretCheck $checker) use ($manager, $translator) {
@@ -906,13 +905,13 @@ class V1Controller extends Controller
     {
         $service = $this->getAccountService();
         $command = new UpdatePasswordCommand();
-        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+        $form = $this->app->form(PhraseaRenewPasswordForm::class, $command, [
             'csrf_protection' => false,
         ]);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $service->updatePassword($command, $login);
 
@@ -952,8 +951,8 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        if (count($request->files->get('file')) == 0) {
-            if(count($request->get('url')) == 0) {
+        if (!$request->files->get('file')) {
+            if (null === $request->get('url')) {
                 return $this->getBadRequestAction($request, 'Missing file parameter');
             }
             else {
@@ -1057,7 +1056,7 @@ class V1Controller extends Controller
         if ($output instanceof record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
-            $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
+            $this->dispatch(new RecordEdit($output), PhraseaEvents::RECORD_UPLOAD);
         }
         if ($output instanceof LazaretFile) {
             $ret['entity'] = '1';
@@ -1071,7 +1070,7 @@ class V1Controller extends Controller
     {
         $ret = array();
 
-        if (count($request->files->get('file')) == 0) {
+        if (!$request->files->get('file')) {
             return $this->getBadRequestAction($request, 'Missing file parameter');
         }
         $file = $request->files->get('file');
@@ -1186,8 +1185,7 @@ class V1Controller extends Controller
 
     private function listPermalink(\media_Permalink_Adapter $permalink)
     {
-        $downloadUrl = $permalink->get_url();
-        $downloadUrl->getQuery()->set('download', '1');
+        $downloadUrl = \GuzzleHttp\Psr7\Uri::withQueryValue($permalink->get_url(), 'download', '1');
 
         return [
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
@@ -1465,7 +1463,7 @@ class V1Controller extends Controller
      * @param int $urlTTL
      * @return SubdefView[][]
      */
-    private function buildSubdefsViews($references, array $names = null, $urlTTL)
+    private function buildSubdefsViews($references, ?array $names = null, $urlTTL = null)
     {
         $subdefGroups = $this->app['service.media_subdef']
             ->findSubdefsByRecordReferenceFromCollection($references, $names);
@@ -2000,8 +1998,8 @@ class V1Controller extends Controller
         $record->set_metadatas($metadata);
 
         // order to write meta in file
-        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$record->getRecordId()], $databox_id));
+        $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $databox_id),
+            WorkerEvents::RECORDS_WRITE_META);
 
         return Result::create($request, [
             "record_metadatas" => $this->listRecordMetadata($record),
@@ -2045,7 +2043,7 @@ class V1Controller extends Controller
         $record->setStatus(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
+        $this->dispatch(new RecordEdit($record, $previousDescription), PhraseaEvents::RECORD_EDIT);
 
         $ret = ["status" => $this->listRecordStatus($record)];
 
@@ -2350,7 +2348,7 @@ class V1Controller extends Controller
      *
      * @return array
      */
-    private function listPublication(Feed $feed, User $user = null)
+    private function listPublication(Feed $feed, ?User $user = null)
     {
         return [
             'id'            => $feed->getId(),
@@ -2622,8 +2620,8 @@ class V1Controller extends Controller
             $story->set_metadatas($metadatas);
 
             // order to write meta in file
-            $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
+            $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()),
+                WorkerEvents::RECORDS_WRITE_META);
         }
 
         if (isset($data->{'story_records'})) {
@@ -2643,7 +2641,7 @@ class V1Controller extends Controller
         $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
         $result = Result::create($request, array('records' => $records));
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescriptions));
+        $this->dispatch(new RecordEdit($story, $previousDescriptions), PhraseaEvents::RECORD_EDIT);
 
         return $result->createResponse();
     }
@@ -3066,13 +3064,13 @@ class V1Controller extends Controller
         $data = json_decode($request->getContent(false), true);
         $command = new UpdatePasswordCommand();
         /** @var Form $form */
-        $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
+        $form = $this->app->form(PhraseaRenewPasswordForm::class, $command, [
             'csrf_protection' => false,
         ]);
 
         $form->submit($data);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $service->updatePassword($command, null);
                 $ret = ['success' => true];
@@ -3081,7 +3079,7 @@ class V1Controller extends Controller
                 $ret = [ 'success' => false, 'message' => $exception->getMessage() ];
             }
         } else {
-            $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];
+            $ret = [ 'success' => false, 'message' => (string) $form->getErrors(true, false) ];
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -3243,7 +3241,7 @@ class V1Controller extends Controller
 
     public function ensureJsonContentType(Request $request)
     {
-        if ($request->getContentType() != 'json') {
+        if ($request->getContentTypeFormat() != 'json') {
             $this->app->abort(406, 'Invalid Content Type given.');
         }
     }
@@ -3392,7 +3390,7 @@ class V1Controller extends Controller
         });
 
         if ($groups) {
-            return call_user_func_array('array_merge', $groups);
+            return array_merge(...array_values($groups));
         }
 
         return [];

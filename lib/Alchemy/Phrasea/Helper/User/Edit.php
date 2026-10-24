@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -46,7 +47,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         parent::__construct($app, $Request);
         $this->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
 
-        $this->users = explode(';', $Request->get('users'));
+        $this->users = explode(';', (string) $Request->get('users'));
 
         $users = [];
         foreach ($this->users as $usr_id) {
@@ -143,7 +144,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             . " GROUP BY b.base_id\n"
             . " ORDER BY s.ord, s.sbas_id, b.ord, b.base_id ";
 
-        $rs = $this->app->getApplicationBox()->get_connection()->fetchAll(
+        $rs = $this->app->getApplicationBox()->get_connection()->fetchAllAssociative(
             $sql,
             [
                 'users' => $this->users,
@@ -159,7 +160,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             . " WHERE (usr_id IN (:users)) AND (base_id IN (:bases))\n"
             . " GROUP BY base_id";
 
-        $access = $this->app->getApplicationBox()->get_connection()->fetchAll(
+        $access = $this->app->getApplicationBox()->get_connection()->fetchAllAssociative(
             $sql,
             [
                 'users' => $this->users,
@@ -322,10 +323,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
               . " ORDER BY rr.id DESC limit 200 \n"
         ;
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, $params);
+        $rows = $stmt->fetchAllAssociative();
 
         $sql = "SELECT count(*) as nb \n"
             . " FROM records_rights rr \n"
@@ -333,10 +332,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             . $whereClause
         ;
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $totalCount = $stmt->fetchColumn();
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, $params);
+        $totalCount = $stmt->fetchOne();
 
         return [
             'records_acl' => $rows,
@@ -355,7 +352,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'base_id' => $this->base_id,
                 'users' => $this->users,
@@ -388,7 +385,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'base_id' => $this->base_id,
                 'users' => $this->users,
@@ -491,7 +488,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'base_id' => $this->base_id,
                 'users' => $this->users,
@@ -553,7 +550,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         /** @var Connection $conn */
         $conn = $this->app->getApplicationBox()->get_connection();
-        $rs = $conn->fetchAll($sql,
+        $rs = $conn->fetchAllAssociative($sql,
             [
                 'sbas_id' => $sbas_id,
                 'users' => $this->users,
@@ -658,11 +655,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             // todo : wtf check if parm contains good types (a checkbox should be a bool, not a "0" or "1"
             //        as required by ACL::update_rights_to_bas(...)
-            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request_stack']->getCurrentRequest(), $rights, 'values');
 
             foreach ($parm as $p => $v) {
                 // p is like {bid}_{right} => right-value
-                if (trim($v) == '')
+                if (trim((string) $v) == '')
                     continue;
 
                 $serial = explode('_', $p);
@@ -706,10 +703,10 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             // todo : wtf check if parm contains good types (a checkbox should be a bool, not a "0" or "1"
             //        as required by ACL::update_rights_to_sbas(...)
-            $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
+            $parm = $this->unserializedRequestData($this->app['request_stack']->getCurrentRequest(), $rights, 'values');
 
             foreach ($parm as $p => $v) {
-                if (trim($v) == '')
+                if (trim((string) $v) == '')
                     continue;
 
                 $serial = explode('_', $p);
@@ -791,7 +788,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $parm = $this->unserializedRequestData($this->request, $infos, 'user_infos');
 
-        if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
+        if ($parm['email'] && !EmailValidator::isValid($parm['email'])) {
             throw new \Exception_InvalidArgument('Email addess is not valid');
         }
 

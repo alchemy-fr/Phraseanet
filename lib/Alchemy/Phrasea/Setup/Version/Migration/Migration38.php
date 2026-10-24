@@ -74,7 +74,7 @@ class Migration38 implements MigrationInterface
     private function migrateBinaries(array &$conf)
     {
         if (is_file($this->binariesYaml)) {
-            $binaries = $this->yaml->parse($this->binariesYaml);
+            $binaries = $this->yaml->parse(file_get_contents($this->binariesYaml));
             foreach ($binaries['binaries'] as $key => $value) {
                 $conf['main']['binaries'][$key] = $value;
             }
@@ -86,7 +86,7 @@ class Migration38 implements MigrationInterface
         $opcodeCacheService = $cacheService = null;
 
         if (is_file($this->configYaml)) {
-            $data = $this->yaml->parse($this->configYaml);
+            $data = $this->yaml->parse(file_get_contents($this->configYaml));
             $key = isset($data['key']) ? $data['key'] : $this->fetchInstanceKey();
             $conf['main']['key'] = $key;
             $env = $data['environment'];
@@ -98,7 +98,7 @@ class Migration38 implements MigrationInterface
         }
 
         if (is_file($this->servicesYaml)) {
-            $services = $this->yaml->parse($this->servicesYaml);
+            $services = $this->yaml->parse(file_get_contents($this->servicesYaml));
             if (null !== $cacheService) {
                 $conf['main']['cache']['type'] = str_replace('Cache\\', '', $services['Cache'][$cacheService]['type']);
                 if (isset($services['Cache'][$cacheService]['options'])) {
@@ -116,7 +116,7 @@ class Migration38 implements MigrationInterface
     private function migrateConnexions(array &$conf)
     {
         if (is_file($this->connexionsYaml)) {
-            $data = $this->yaml->parse($this->connexionsYaml);
+            $data = $this->yaml->parse(file_get_contents($this->connexionsYaml));
 
             $conf['main']['database'] = $data['main_connexion'];
             $conf['main']['database-test'] = $data['test_connexion'];
@@ -125,10 +125,8 @@ class Migration38 implements MigrationInterface
 
     private function fetchInstanceKey()
     {
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare('SELECT `value` FROM registry WHERE `key` = "GV_sit"');
-        $stmt->execute();
-        $rs = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery('SELECT `value` FROM registry WHERE `key` = "GV_sit"');
+        $rs = $stmt->fetchAssociative();
 
         if (!$rs) {
             throw new RuntimeException('Unable to fetch GV_SIT key from registry table.');

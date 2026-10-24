@@ -8,12 +8,12 @@ abstract class MailTestCase extends \PhraseanetTestCase
 {
     public function testGetSubject()
     {
-        $this->assertInternalType('string', $this->getMail()->getSubject());
+        $this->assertIsString($this->getMail()->getSubject());
     }
 
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->getMail()->getMessage());
+        $this->assertIsString($this->getMail()->getMessage());
     }
 
     public function testGetButtonText()
@@ -22,7 +22,7 @@ abstract class MailTestCase extends \PhraseanetTestCase
             return;
         }
 
-        $this->assertInternalType('string', $this->getMail()->getButtonText());
+        $this->assertIsString($this->getMail()->getButtonText());
     }
 
     public function testGetButtonURL()
@@ -36,12 +36,12 @@ abstract class MailTestCase extends \PhraseanetTestCase
 
     public function getReceiverMock()
     {
-        return $this->getMock('Alchemy\Phrasea\Notification\ReceiverInterface');
+        return $this->createMock('Alchemy\Phrasea\Notification\ReceiverInterface');
     }
 
     public function getEmitterMock()
     {
-        return $this->getMock('Alchemy\Phrasea\Notification\EmitterInterface');
+        return $this->createMock('Alchemy\Phrasea\Notification\EmitterInterface');
     }
 
     public function getMessage()

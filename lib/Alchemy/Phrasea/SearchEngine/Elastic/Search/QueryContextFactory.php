@@ -9,6 +9,8 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 class QueryContextFactory
 {
     private $structure;
+    private $locales;
+    private $current_locale;
 
     /**
      * QueryContextFactory constructor.
@@ -36,7 +38,7 @@ class QueryContextFactory
     }
 
 
-    public function createContext(SearchEngineOptions $options = null)
+    public function createContext(?SearchEngineOptions $options = null)
     {
         $structure = $options
             ? $this->getLimitedStructure($options)

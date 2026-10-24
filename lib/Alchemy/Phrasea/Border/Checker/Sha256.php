@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Checks if a file with the same Sha256 checksum already exists in the
@@ -64,7 +64,7 @@ class Sha256 extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public static function getReason(TranslatorInterface $translator)
+    public static function getReason(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('same checksum');
     }
@@ -72,7 +72,7 @@ class Sha256 extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    public function getMessage(TranslatorInterface $translator)
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('A file with the same checksum already exists in database');
     }

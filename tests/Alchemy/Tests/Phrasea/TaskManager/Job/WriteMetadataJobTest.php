@@ -6,10 +6,8 @@ use Alchemy\Phrasea\TaskManager\Job\WriteMetadataJob;
 use Alchemy\Phrasea\TaskManager\Job\JobData;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class WriteMetadataJobTest extends JobTestCase
 {
     protected function getJob()

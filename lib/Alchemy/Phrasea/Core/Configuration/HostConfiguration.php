@@ -32,7 +32,7 @@ class HostConfiguration implements ConfigurationInterface
      */
     public function setHost($host)
     {
-        $this->host = trim(strtolower($host));
+        $this->host = trim(strtolower((string) $host));
 
         if ('' === $this->host) {
             $this->merge();
@@ -69,6 +69,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->cache[$offset]);
@@ -77,6 +78,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->configuration[$offset] = $value;
@@ -87,6 +89,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->cache[$offset];
@@ -95,6 +98,7 @@ class HostConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->configuration->offsetUnset($offset);

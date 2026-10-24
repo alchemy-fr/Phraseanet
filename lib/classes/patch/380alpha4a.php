@@ -61,10 +61,8 @@ class patch_380alpha4a extends patchAbstract
         $sql = 'SELECT date, login, ip, locked
                 FROM badlog
                 ORDER BY id ASC';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $n = 1;
 

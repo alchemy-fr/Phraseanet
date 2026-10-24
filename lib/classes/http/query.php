@@ -40,8 +40,6 @@ class http_query
         curl_exec($ch);
         $result = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        curl_close($ch);
-
         return $result;
     }
 
@@ -68,7 +66,6 @@ class http_query
 
         curl_exec($ch);
         $result = curl_getinfo($ch);
-        curl_close($ch);
 
         return $result;
     }
@@ -103,7 +100,6 @@ class http_query
         }
 
         $result = (curl_exec($ch));
-        curl_close($ch);
 
         return $result;
     }

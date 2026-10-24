@@ -32,7 +32,7 @@ class Factory
      */
     public function create($name, $options)
     {
-        switch (strtolower($name)) {
+        switch (strtolower((string) $name)) {
             case 'apc':
             case 'apccache':
                 $cache = $this->createApc();

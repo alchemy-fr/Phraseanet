@@ -16,16 +16,17 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Guzzle\Common\Exception\GuzzleException;
+use GuzzleHttp\Exception\GuzzleException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\API_V1_adapter::class, 'get_record_embed')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\API_V1_adapter::class, 'list_embedable_media')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\API_V1_adapter::class, 'list_permalink')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ApiJsonTest extends ApiTestCase
 {
     protected function getParameters(array $parameters = [])
@@ -176,9 +177,7 @@ class ApiJsonTest extends ApiTestCase
         $record->delete();
     }
 
-    /**
-     * @dataProvider provideEventNames
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideEventNames')]
     public function testThatEventsAreDispatched($eventName, $className, $route, $context)
     {
         $preEvent = 0;
@@ -191,20 +190,20 @@ class ApiJsonTest extends ApiTestCase
         });
 
         $this->setToken($this->userAccessToken);
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
 
         $this->assertEquals(1, $preEvent);
     }
 
     public function testThatSessionIsClosedAfterRequest()
     {
-        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:Session')->findAll());
+        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
         $this->setToken($this->userAccessToken);
-        self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Phraseanet:Session')->findAll());
+        self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
+        $this->assertCount(0, self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Session')->findAll());
     }
 
-    public function provideEventNames()
+    public static function provideEventNames()
     {
         return [
             [PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate', '/api/v1/databoxes/list/', Context::CONTEXT_OAUTH2_TOKEN],
@@ -220,7 +219,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/nothinghere';
         $this->setToken($this->userAccessToken);
         $client = $this->getClient();
-        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
         $this->evaluateResponseNotFound($client->getResponse());
@@ -230,7 +229,7 @@ class ApiJsonTest extends ApiTestCase
     public function testDataboxListRoute()
     {
         $this->setToken($this->userAccessToken);
-        self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', '/api/v1/databoxes/list/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -261,31 +260,31 @@ class ApiJsonTest extends ApiTestCase
 
         $client = $this->getClient();
 
-        $client->request('GET', '/api/v1/monitor/tasks/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', '/api/v1/monitor/tasks/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $client->request('GET', '/api/v1/monitor/scheduler/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', '/api/v1/monitor/scheduler/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $client->request('GET', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $client->request('POST', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('POST', '/api/v1/monitor/task/1/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $client->request('POST', '/api/v1/monitor/task/1/start/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('POST', '/api/v1/monitor/task/1/start/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $client->request('POST', '/api/v1/monitor/task/1/stop/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('POST', '/api/v1/monitor/task/1/stop/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $client->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
     }
@@ -300,7 +299,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/monitor/tasks/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -325,14 +324,14 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/monitor/scheduler/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
         $response = $content['response'];
 
-        $this->assertInternalType('array', $response['scheduler']);
+        $this->assertIsArray($response['scheduler']);
 
         $this->assertArrayHasKey('state', $response['scheduler']);
         $this->assertArrayHasKey('pid', $response['scheduler']);
@@ -372,10 +371,10 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayHasKey('period', $task);
         $this->assertArrayHasKey('jobId', $task);
 
-        $this->assertInternalType('integer', $task['id']);
+        $this->assertIsInt($task['id']);
 
         if (!is_null($task['pid'])) {
-            $this->assertInternalType('integer', $task['pid']);
+            $this->assertIsInt($task['pid']);
         }
 
         $av_states = [
@@ -384,8 +383,8 @@ class ApiJsonTest extends ApiTestCase
         ];
 
         $this->assertContains($task['state'], $av_states);
-        $this->assertInternalType('string', $task['name']);
-        $this->assertInternalType('string', $task['title']);
+        $this->assertIsString($task['name']);
+        $this->assertIsString($task['title']);
 
         if (!is_null($task['last_exec_time'])) {
             $this->assertDateAtom($task['last_exec_time']);
@@ -401,7 +400,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, ['PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -421,7 +420,7 @@ class ApiJsonTest extends ApiTestCase
 
         $title = 'newTitle' . mt_rand();
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['title' => $title]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['title' => $title]), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -438,7 +437,7 @@ class ApiJsonTest extends ApiTestCase
         }
         $this->setToken($this->adminAccessToken);
         self::$DI['client']->followRedirects();
-        self::$DI['client']->request('GET', '/api/v1/monitor/task/0/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', '/api/v1/monitor/task/0/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateMetaNotFound($content);
     }
@@ -452,7 +451,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/monitor/task/' . $idTask . '/start/';
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -473,7 +472,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/monitor/task/' . $idTask . '/stop/';
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -491,7 +490,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->setToken($this->adminAccessToken);
 
-        self::$DI['client']->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', '/api/v1/monitor/phraseanet/', $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -500,9 +499,9 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayHasKey('cache', $content['response']);
         $this->assertArrayHasKey('phraseanet', $content['response']);
 
-        $this->assertInternalType('array', $content['response']['global_values']);
-        $this->assertInternalType('array', $content['response']['cache']);
-        $this->assertInternalType('array', $content['response']['phraseanet']);
+        $this->assertIsArray($content['response']['global_values']);
+        $this->assertIsArray($content['response']['cache']);
+        $this->assertIsArray($content['response']['phraseanet']);
     }
 
     public function testRecordRoute()
@@ -514,7 +513,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . $record_1->getDataboxId() . '/' . $record_1->getRecordId() . '/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT']);
-        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
         $this->evaluateResponse200($client->getResponse());
@@ -542,7 +541,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/stories/' . self::$DI['record_story_1']->get_sbas_id() . '/' . self::$DI['record_story_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -568,7 +567,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/databoxes/' . $databox_id . '/collections/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -610,7 +609,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/databoxes/' . $databox_id . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -667,7 +666,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/databoxes/' . $databox_id . '/metadatas/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -740,7 +739,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/databoxes/' . $databox_id . '/termsOfUse/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
         $this->evaluateResponse200(self::$DI['client']->getResponse());
         $this->evaluateMeta200($content);
@@ -774,14 +773,14 @@ class ApiJsonTest extends ApiTestCase
                 $app['random.low'],
                 $app['dispatcher'],
             ])
-            ->setMethods(['logQuery'])
+            ->onlyMethods(['logQuery'])
             ->getMock();
 
         $app['manipulator.user']->expects($this->once())->method('logQuery');
 
         $this->setToken($this->userAccessToken);
         $response = $this->request('POST', '/api/v1/search/', $this->getParameters(), [
-            'HTTP_Accept' => $this->getAcceptMimeType(),
+            'HTTP_ACCEPT' => $this->getAcceptMimeType(),
         ]);
         $content = $this->unserialize($response->getContent());
 
@@ -808,7 +807,7 @@ class ApiJsonTest extends ApiTestCase
             'POST',
             '/api/v1/search/',
             $this->getParameters(['search_type' => SearchEngineOptions::RECORD_GROUPING]),
-            ['HTTP_Accept' => $this->getAcceptMimeType()]
+            ['HTTP_ACCEPT' => $this->getAcceptMimeType()]
         );
         $content = $this->unserialize($response->getContent());
 
@@ -838,7 +837,7 @@ class ApiJsonTest extends ApiTestCase
     public function testRecordsSearchRoute()
     {
         $this->setToken($this->userAccessToken);
-        $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($response->getContent());
         $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
@@ -853,22 +852,18 @@ class ApiJsonTest extends ApiTestCase
         }
     }
 
-    /**
-     * @dataProvider provideAvailableSearchMethods
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideAvailableSearchMethods')]
     public function testRecordsSearchRouteWithQuery($method)
     {
         $this->setToken($this->userAccessToken);
-        $searchEngine = $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $searchEngine = $this->createMock('Alchemy\Phrasea\SearchEngine\SearchEngineResult');
 
-        $searchEngine->expects($this->any())
+        $searchEngine
             ->method('getSuggestions')
             ->will($this->returnValue(new ArrayCollection()));
 
         $app = $this->getApplication();
-        $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        $mock = $this->createMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
         $app['phraseanet.SE'] = $mock;
 
         $mock
@@ -876,14 +871,12 @@ class ApiJsonTest extends ApiTestCase
             ->method('query')
             ->withAnyParameters()
             ->will($this->returnValue(
-                $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
-                    ->disableOriginalConstructor()
-                    ->getMock()
+                $this->createStub('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
             ));
-        self::$DI['client']->request($method, '/api/v1/records/search/', $this->getParameters(['query' => 'koala']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request($method, '/api/v1/records/search/', $this->getParameters(['query' => 'koala']), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
     }
 
-    public function provideAvailableSearchMethods()
+    public static function provideAvailableSearchMethods()
     {
         return [['POST'], ['GET']];
     }
@@ -898,7 +891,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/caption/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -921,7 +914,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/metadatas/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -944,7 +937,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -987,7 +980,7 @@ class ApiJsonTest extends ApiTestCase
 
         /** @var Client $client */
         $client = self::$DI['client'];
-        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
         $this->evaluateResponse200($client->getResponse());
@@ -1027,7 +1020,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_ACCEPT' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1055,7 +1048,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_ACCEPT' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1066,11 +1059,6 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayNotHasKey('preview', array_flip(array_map(function($subdef) {return $subdef['name'];},$content['response']['embed'])));
     }
 
-    /**
-     * @covers \API_V1_adapter::get_record_embed
-     * @covers \API_V1_adapter::list_embedable_media
-     * @covers \API_V1_adapter::list_permalink
-     */
     public function testStoriesEmbedRoute()
     {
         $this->setToken($this->userAccessToken);
@@ -1082,7 +1070,7 @@ class ApiJsonTest extends ApiTestCase
 
         /** @var Client $client */
         $client = self::$DI['client'];
-        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
         $this->evaluateResponse200($client->getResponse());
@@ -1107,7 +1095,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(['mimes' => ['image/png']]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(['mimes' => ['image/png']]), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('embed', $content['response']);
@@ -1121,7 +1109,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(['devices' => ['nodevice']]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(['devices' => ['nodevice']]), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertEquals(0, count($content['response']['embed']));
@@ -1134,7 +1122,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/related/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1185,7 +1173,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['metadatas' => $toupdate]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['metadatas' => $toupdate]), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1253,7 +1241,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($response->getContent());
 
         // Get fresh record_1
@@ -1276,7 +1264,7 @@ class ApiJsonTest extends ApiTestCase
         $pos = strpos($record_status, '1', 4);
         $bitToChange[$pos] = '1';
 
-        $response = $this->request('POST', $route, $this->getParameters(['status' => $bitToChange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $bitToChange]), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($response->getContent());
 
         // Get fresh record_1
@@ -1295,7 +1283,7 @@ class ApiJsonTest extends ApiTestCase
             $tochange[$n] = $value == '0' ? '1' : '0';
         }
 
-        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($response->getContent());
 
         // Get fresh record_1
@@ -1339,7 +1327,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['base_id' => $base_id]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['base_id' => $base_id]), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1354,7 +1342,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/baskets/list/';
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1375,7 +1363,7 @@ class ApiJsonTest extends ApiTestCase
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
         $client = $this->getClient();
-        $client->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $client->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
         $this->evaluateResponse200($client->getResponse());
@@ -1391,14 +1379,14 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basketElement = self::$DI['app']['orm.em']->find('Phraseanet:BasketElement', 1);
+        $basketElement = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\BasketElement', 1);
         $basket = $basketElement->getBasket();
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1426,13 +1414,13 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setname/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1444,7 +1432,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => 'un Joli Nom']), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1458,7 +1446,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => '<strong>aéaa']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['name' => '<strong>aéaa']), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1474,13 +1462,13 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->adminAccessToken);
 
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $route = '/api/v1/baskets/' . $basket->getId() . '/setdescription/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['description' => 'une belle desc']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(['description' => 'une belle desc']), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1499,7 +1487,7 @@ class ApiJsonTest extends ApiTestCase
         $route = '/api/v1/baskets/1/delete/';
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1527,7 +1515,7 @@ class ApiJsonTest extends ApiTestCase
         $params = $this->getAddRecordParameters();
         $params['status'] = '0b10000';
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1547,7 +1535,7 @@ class ApiJsonTest extends ApiTestCase
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '0';
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1558,7 +1546,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->assertArrayHasKey('entity', $datas);
         $this->assertArrayHasKey('url', $datas);
-        $this->assertRegExp('/\/records\/\d+\/\d+\//', $datas['url']);
+        $this->assertMatchesRegularExpression('/\/records\/\d+\/\d+\//', $datas['url']);
 
         // if forced, there is no reason
         $this->assertEquals('0', $datas['entity']);
@@ -1572,7 +1560,7 @@ class ApiJsonTest extends ApiTestCase
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '1';
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1583,7 +1571,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->assertArrayHasKey('entity', $datas);
         $this->assertArrayHasKey('url', $datas);
-        $this->assertRegExp('/\/quarantine\/item\/\d+\//', $datas['url']);
+        $this->assertMatchesRegularExpression('/\/quarantine\/item\/\d+\//', $datas['url']);
 
         $this->assertEquals('1', $datas['entity']);
     }
@@ -1596,7 +1584,7 @@ class ApiJsonTest extends ApiTestCase
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '2';
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest(self::$DI['client']->getResponse());
@@ -1611,7 +1599,7 @@ class ApiJsonTest extends ApiTestCase
         $params = $this->getAddRecordParameters();
         $params['base_id'] = self::$DI['collection_no_access']->get_base_id();
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponseForbidden(self::$DI['client']->getResponse());
@@ -1626,7 +1614,7 @@ class ApiJsonTest extends ApiTestCase
         $params = $this->getAddRecordParameters();
         unset($params['base_id']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest(self::$DI['client']->getResponse());
@@ -1643,7 +1631,7 @@ class ApiJsonTest extends ApiTestCase
             new \Symfony\Component\HttpFoundation\File\UploadedFile(self::$DI['app']['root.path'].'/tests/files/rectb_logo.gif', 'rectb_logo.gif'),
         ];
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), ['file' => $file], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), ['file' => $file], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest(self::$DI['client']->getResponse());
@@ -1655,7 +1643,7 @@ class ApiJsonTest extends ApiTestCase
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/records/add/';
 
-        self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest(self::$DI['client']->getResponse());
@@ -1664,14 +1652,14 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedList()
     {
-        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
 
         $this->setToken($this->userAccessToken);
         $route = '/api/v1/feeds/list/';
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1698,16 +1686,14 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedsContent()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $created_entry->setAuthorEmail($author_email);
@@ -1722,7 +1708,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1755,11 +1741,9 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedEntry()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $feed->getEntries()->first();
 
         $this->setToken($this->userAccessToken);
@@ -1767,7 +1751,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1782,11 +1766,9 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedEntryNoAccess()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
-        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
 
         $created_feed->setCollection(self::$DI['collection_no_access']);
@@ -1796,7 +1778,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponseForbidden(self::$DI['client']->getResponse());
@@ -1805,14 +1787,12 @@ class ApiJsonTest extends ApiTestCase
 
     public function testFeedContent()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $entry_title = 'Superman';
         $entry_subtitle = 'Wonder Woman';
 
-        $created_feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $created_feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $created_entry = $created_feed->getEntries()->first();
         $created_entry->setTitle($entry_title);
         $created_entry->setSubtitle($entry_subtitle);
@@ -1824,7 +1804,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1862,7 +1842,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('offset_start', $content['response']);
@@ -1893,7 +1873,7 @@ class ApiJsonTest extends ApiTestCase
 
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_ACCEPT' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('quarantine_item', $content['response']);
@@ -1943,7 +1923,7 @@ class ApiJsonTest extends ApiTestCase
         $this->assertArrayHasKey('created_on', $item);
         $this->assertArrayHasKey('updated_on', $item);
 
-        $this->assertInternalType('boolean', $item['forced']);
+        $this->assertIsBool($item['forced']);
         $this->assertDateAtom($item['updated_on']);
         $this->assertDateAtom($item['created_on']);
     }

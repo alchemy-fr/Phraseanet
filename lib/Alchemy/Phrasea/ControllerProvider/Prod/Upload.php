@@ -16,16 +16,17 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\UploadController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class Upload implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.upload'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.upload'] = function (PhraseaApplication $app) {
             return (new UploadController($app))
                 ->setBorderManagerLocator(new LazyLocator($app, 'border-manager'))
                 ->setDispatcher($app['dispatcher'])
@@ -35,12 +36,7 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
                 ->setTemporaryFileSystemLocator(new LazyLocator($app, 'temporary-filesystem'))
                 ->setSubDefinitionSubstituerLocator(new LazyLocator($app, 'subdef.substituer'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     /**

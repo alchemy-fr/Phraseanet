@@ -18,8 +18,9 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class V1 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -31,9 +32,9 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
         'jsonp' => ['application/vnd.phraseanet.record-extended+jsonp'],
     ];
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.api.v1'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.api.v1'] = function (PhraseaApplication $app) {
             return (new V1Controller($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
@@ -41,11 +42,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
                 ->setJsonBodyHelper(new LazyLocator($app, 'json.body_helper'))
                 ->setInstanceId($app['conf'])
                 ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

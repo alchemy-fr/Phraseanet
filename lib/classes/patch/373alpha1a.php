@@ -79,14 +79,11 @@ class patch_373alpha1a extends patchAbstract
         $binaries = ['ghostscript_binary' => null];
 
         foreach ($Regbinaries as $name) {
-            $stmt->execute([':key' => $name]);
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $stmt->executeQuery([':key' => $name])->fetchAssociative();
             $value = is_executable($row['value']) ? $row['value'] : null;
 
             $binaries[$mapping[$name]] = $value;
         }
-
-        $stmt->closeCursor();
 
         $config = $app['configuration.store']->getConfig();
         $config['binaries'] = $binaries;
@@ -95,16 +92,12 @@ class patch_373alpha1a extends patchAbstract
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
 
         foreach ($Regbinaries as $name) {
-            $stmt->execute([':key' => $name]);
+            $stmt->executeStatement([':key' => $name]);
         }
 
-        $stmt->closeCursor();
-
         $sql = 'SELECT value FROM registry WHERE `key` = :key';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':key'=>'GV_sit']);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':key'=>'GV_sit']);
+        $row = $stmt->fetchAssociative();
 
         $config['main']['key'] = $row['value'];
 
@@ -112,8 +105,7 @@ class patch_373alpha1a extends patchAbstract
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':key'=>'GV_sit']);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':key'=>'GV_sit']);
 
         return true;
     }

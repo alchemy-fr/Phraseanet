@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Symfony\Contracts\EventDispatcher\Event as SfEvent;
 
 class PushEvent extends SfEvent
 {
@@ -26,7 +26,7 @@ class PushEvent extends SfEvent
         $this->basket = $basket;
         $this->message = $message;
         $this->url = $url;
-        $this->receipt = (Boolean) $receipt;
+        $this->receipt = (bool) $receipt;
     }
 
     /**

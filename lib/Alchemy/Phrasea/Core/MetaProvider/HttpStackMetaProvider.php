@@ -8,11 +8,11 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
 use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\SessionServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Routing\RequestContext;
@@ -20,14 +20,13 @@ use Symfony\Component\Routing\RequestContext;
 class HttpStackMetaProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
         if (! $app instanceof PhraseaApplication) {
             throw new \LogicException('Expected an instance Alchemy\Phrasea\Application');
         }
 
         $app->register(new HttpFragmentServiceProvider());
-        $app->register(new UrlGeneratorServiceProvider());
 
         $this->setupRequestContext($app);
 
@@ -37,16 +36,16 @@ class HttpStackMetaProvider implements ServiceProviderInterface
             'session.storage.options' => ['cookie_lifetime' => 0]
         ]);
 
-        $app['session.storage.test'] = $app->share(function () {
+        $app['session.storage.test'] = function () {
             return new MockArraySessionStorage();
-        });
+        };
 
-        $app['session.storage.handler'] = $app->share(function (Application $app) {
+        $app['session.storage.handler'] = function (Application $app) {
             if (!$app['phraseanet.configuration-tester']->isInstalled()) {
                 return new NullSessionHandler();
             }
             return $app['session.storage.handler.factory']->create($app['conf']);
-        });
+        };
 
         $app->register(new ControllerProviderServiceProvider());
 
@@ -55,9 +54,9 @@ class HttpStackMetaProvider implements ServiceProviderInterface
 
     public function setupRequestContext(Application $app)
     {
-        $app['request_context'] = $app->share($app->extend('request_context', function (RequestContext $context, Application $app) {
+        $app->extend('request_context', function (RequestContext $context, Application $app) {
             if ($app['configuration.store']->isSetup()) {
-                $data = parse_url($app['conf']->get('servername'));
+                $data = parse_url((string) $app['conf']->get('servername'));
 
                 if (isset($data['scheme'])) {
                     $context->setScheme($data['scheme']);
@@ -68,7 +67,7 @@ class HttpStackMetaProvider implements ServiceProviderInterface
             }
 
             return $context;
-        }));
+        });
     }
 
     public function registerCors(Application $app)
@@ -81,7 +80,7 @@ class HttpStackMetaProvider implements ServiceProviderInterface
             },
         ]);
 
-        $app['phraseanet.api_cors.options_provider'] = function (Application $app) {
+        $app['phraseanet.api_cors.options_provider'] = $app->factory(function (Application $app) {
             $paths = [];
 
             if (isset($app['phraseanet.configuration']['api_cors'])) {
@@ -101,13 +100,8 @@ class HttpStackMetaProvider implements ServiceProviderInterface
             }
 
             return new DefaultProvider($paths, []);
-        };
+        });
 
         $app['alchemy_cors.options_providers'][] = 'phraseanet.api_cors.options_provider';
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
     }
 }

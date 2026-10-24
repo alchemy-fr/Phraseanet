@@ -7,16 +7,14 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MaintenanceSubscriberTest extends \PhraseanetTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         if (is_file(__DIR__ . '/Fixtures/configuration-maintenance.php')) {
             unlink(__DIR__ . '/Fixtures/configuration-maintenance.php');

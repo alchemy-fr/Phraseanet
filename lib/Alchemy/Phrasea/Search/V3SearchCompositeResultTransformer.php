@@ -17,12 +17,12 @@ class V3SearchCompositeResultTransformer extends TransformerAbstract
     /**
      * @var string[]
      */
-    protected $availableIncludes = ['stories', 'records'];
+    protected array $availableIncludes = ['stories', 'records'];
 
     /**
      * @var string[]
      */
-    protected $defaultIncludes = ['stories', 'records'];
+    protected array $defaultIncludes = ['stories', 'records'];
 
     /**
      * @var RecordTransformer

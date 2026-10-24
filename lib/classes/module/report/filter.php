@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application;
 class module_report_filter
 {
     private $app;
+    private $tab_filter;
     private $posting_filter = [];
     private $cor_query = [];
     private $active_column = [];
@@ -28,7 +29,7 @@ class module_report_filter
     private function checkSameFilter($field, $operator, $value)
     {
         $test = true;
-        if (sizeof($this->tab_filter) > 0) {
+        if (count((array) $this->tab_filter) > 0) {
             foreach ($this->tab_filter as $filters => $a_filter) {
                 if (in_array($field, $a_filter) &&
                     in_array($operator, $a_filter) && in_array($value, $a_filter)) {
@@ -54,7 +55,7 @@ class module_report_filter
 
     public function getPostingFilter()
     {
-        if (sizeof($this->tab_filter) > 0) {
+        if (count((array) $this->tab_filter) > 0) {
             foreach ($this->tab_filter as $key => $filter) {
                 if (empty($filter['v']))
                     $value = $this->app->trans('report:: non-renseigne');

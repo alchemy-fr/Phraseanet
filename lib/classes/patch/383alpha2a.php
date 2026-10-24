@@ -59,14 +59,12 @@ class patch_383alpha2a extends patchAbstract
     {
         // Clean validation sessions where initiator_id does not exist anymore
         $sql = 'SELECT DISTINCT(v.id) AS validation_session_id FROM `ValidationSessions` v LEFT JOIN Users u ON (v.initiator_id = u.id) WHERE u.id IS NULL';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         foreach ($rows as $row) {
             try {
-                $vsession = $app['orm.em']->createQuery('SELECT PARTIAL s.{id} FROM Phraseanet:ValidationSession s WHERE s.id = :id')
+                $vsession = $app['orm.em']->createQuery('SELECT PARTIAL s.{id} FROM Alchemy\Phrasea\Model\Entities\ValidationSession s WHERE s.id = :id')
                       ->setParameters(['id' => $row['validation_session_id']])
                       ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                       ->getSingleResult();

@@ -111,7 +111,7 @@ class Firewall
         return $this;
     }
 
-    public function requireAuthentication(Request $request = null)
+    public function requireAuthentication(?Request $request = null)
     {
         $params = [];
         if (null !== $request) {

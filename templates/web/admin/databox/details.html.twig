@@ -11,14 +11,14 @@
     <thead>
         <tr>
             <th class='col'>
-                {% if app['request'].query.get('sort') == 'col' %}
+                {% if app['request_stack'].currentRequest.query.get('sort') == 'col' %}
                     <img src="/assets/common/images/icons/tsort_desc.gif">
                 {% endif %}
                 {{ 'Collection' | trans }}
             </th>
 
             <th class="obj">
-                {% if app['request'].query.get('sort') == 'obj' %}
+                {% if app['request_stack'].currentRequest.query.get('sort') == 'obj' %}
                     <img src="/assets/common/images/icons/tsort_desc.gif">
                 {% endif %}
                 {{ 'Subdef' | trans }}

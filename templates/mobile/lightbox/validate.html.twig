@@ -10,8 +10,8 @@
     {% if basket.isVoteBasket %}
     var lightboxApp = lightboxMobileApplication.bootstrap({
         lang: '{{ app.locale }}',
-        baseUrl: '{{ app['request'].getUriForPath('/') }}',
-        basePath: '{{ app.request.basePath|e('js') }}',
+        baseUrl: '{{ app['request_stack'].currentRequest.getUriForPath('/') }}',
+        basePath: '{{ app['request_stack'].currentRequest.basePath|e('js') }}',
         releasable: {% if basket.getVoteInitiator().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     });
 

@@ -14,13 +14,13 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class ApiAccountManipulator implements ManipulatorInterface
 {
     private $om;
 
-    public function __construct(ObjectManager $om)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om)
     {
         $this->om = $om;
     }

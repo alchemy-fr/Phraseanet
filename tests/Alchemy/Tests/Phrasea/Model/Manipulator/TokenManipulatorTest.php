@@ -6,15 +6,11 @@ use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use DateTime;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TokenManipulatorTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideConstructorArguments
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideConstructorArguments')]
     public function testCreate($user, $type, $expiration, $data)
     {
         $user = $user ? self::$DI['user'] : null;
@@ -27,11 +23,11 @@ class TokenManipulatorTest extends \PhraseanetTestCase
         $this->assertSame($expiration, $token->getExpiration());
         $this->assertSame($data, $token->getData());
 
-        $this->assertInternalType('string', $token->getValue());
+        $this->assertIsString($token->getValue());
         $this->assertEquals(32, strlen($token->getValue()));
     }
 
-    public function provideConstructorArguments()
+    public static function provideConstructorArguments()
     {
         return [
             [true, TokenManipulator::TYPE_RSS, null, null],

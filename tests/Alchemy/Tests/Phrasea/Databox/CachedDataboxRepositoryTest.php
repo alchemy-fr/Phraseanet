@@ -16,8 +16,9 @@ use Doctrine\Common\Cache\Cache;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
+final class CachedDataboxRepositoryTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /** @var ObjectProphecy */
     private $cache;
     private $cacheKey = 'test_key';
@@ -29,7 +30,7 @@ final class CachedDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     /** @var CachingDataboxRepositoryDecorator */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cache = $this->prophesize(Cache::class);
         $this->repository = $this->prophesize(DataboxRepository::class);

@@ -43,7 +43,7 @@ class DbalRecordTechnicalDataSetRepository implements RecordTechnicalDataSetRepo
             return [];
         }
 
-        $data = $this->connection->fetchAll(
+        $data = $this->connection->fetchAllAssociative(
             'SELECT record_id, name, value FROM technical_datas WHERE record_id IN (:recordIds)',
             ['recordIds' => $recordIds],
             ['recordIds' => Connection::PARAM_INT_ARRAY]

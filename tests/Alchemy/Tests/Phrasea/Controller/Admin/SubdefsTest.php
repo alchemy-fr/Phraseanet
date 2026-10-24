@@ -3,17 +3,15 @@
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Media\Subdef\Image;
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     protected $databox_id;
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $databoxes = $this->getApplication()->getDataboxes();

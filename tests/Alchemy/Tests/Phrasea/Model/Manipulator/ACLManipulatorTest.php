@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use \ACL;
 use \Databox;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ACLManipulatorTest extends \PhraseanetTestCase
 {
     public function testResetAdminRights()

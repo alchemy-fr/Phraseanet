@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Collection;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class CollectionEvent extends Event
 {
@@ -24,7 +24,7 @@ abstract class CollectionEvent extends Event
      * @param \collection|null $collection
      * @param array|null $args
      */
-    public function __construct($collection, array $args = null)
+    public function __construct($collection, ?array $args = null)
     {
         $this->collection = $collection;
         $this->args = $args;

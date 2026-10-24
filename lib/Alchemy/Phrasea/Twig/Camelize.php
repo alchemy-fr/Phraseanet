@@ -13,25 +13,16 @@ namespace Alchemy\Phrasea\Twig;
 
 use Alchemy\Phrasea\Utilities\StringHelper;
 
-class Camelize extends \Twig_Extension
+class Camelize extends \Twig\Extension\AbstractExtension
 {
-    /**
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'camelize';
-    }
-
     /**
      *
      * @return array
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            'camelize' => new \Twig_Filter_Method($this, 'toCamelCase'),
+            new \Twig\TwigFilter('camelize', [$this, 'toCamelCase']),
         ];
     }
 

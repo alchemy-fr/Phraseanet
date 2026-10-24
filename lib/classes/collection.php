@@ -59,7 +59,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         return $registry->getRepositoryByDatabox($databoxId);
     }
 
-    public static function create(Application $app, databox $databox, appbox $appbox, $name, User $user = null)
+    public static function create(Application $app, databox $databox, appbox $appbox, $name, ?User $user = null)
     {
         $databoxId = $databox->get_sbas_id();
 
@@ -95,10 +95,10 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         }
 
         $app['dispatcher']->dispatch(
-            CollectionEvents::CREATED,
             new CreatedEvent(
                 $collection
-            )
+            ),
+            CollectionEvents::CREATED
         );
 
         return $collection;
@@ -115,10 +115,10 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $collection->collectionService->grantAdminRights($collection->reference, $user);
 
         $app['dispatcher']->dispatch(
-            CollectionEvents::MOUNTED,
             new MountedEvent(
                 $collection
-            )
+            ),
+            CollectionEvents::MOUNTED
         );
 
         return $reference->getBaseId();
@@ -323,9 +323,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      * @param $eventName
      * @param CollectionEvent $event
      */
-    private function dispatch($eventName, CollectionEvent $event)
+    private function dispatch(CollectionEvent $event, $eventName)
     {
-        $this->app['dispatcher']->dispatch($eventName, $event);
+        $this->app['dispatcher']->dispatch($event, $eventName);
     }
 
     /**
@@ -438,11 +438,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getCollectionRepository()->save($this->collectionVO);
         $this->app['repo.collections-registry']->purgeRegistry();
 
-        $this->dispatch(CollectionEvents::NAME_CHANGED,
-            new NameChangedEvent(
+        $this->dispatch(new NameChangedEvent(
                 $this,
                 array("name_before"=>$old_name)
-            )
+            ),
+            CollectionEvents::NAME_CHANGED
         );
 
         return $this;
@@ -462,10 +462,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getCollectionRepository()->save($this->collectionVO);
         $this->app['repo.collections-registry']->purgeRegistry();
 
-        $this->dispatch(CollectionEvents::LABEL_CHANGED, new LabelChangedEvent($this, array(
+        $this->dispatch(new LabelChangedEvent($this, array(
             "lng"=>$code,
             "label_before"=>$old_label,
-        )));
+        )),
+        CollectionEvents::LABEL_CHANGED);
 
         return $this;
     }
@@ -556,13 +557,13 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->app['repo.collections-registry']->purgeRegistry();
 
         $this->dispatch(
-            CollectionEvents::SETTINGS_CHANGED,
             new SettingsChangedEvent(
                 $this,
                 array(
                     'settings_before' => $oldPreferences
                 )
-            )
+            ),
+            CollectionEvents::SETTINGS_CHANGED
         );
 
         return $this->collectionVO->getPreferences();
@@ -618,7 +619,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
-	    $this->dispatch(CollectionEvents::DISABLED, new DisabledEvent($this));
+	    $this->dispatch(new DisabledEvent($this), CollectionEvents::DISABLED);
 	
         return $this;
     }
@@ -641,7 +642,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
-	    $this->dispatch(CollectionEvents::ENABLED, new EnabledEvent($this));
+	    $this->dispatch(new EnabledEvent($this), CollectionEvents::ENABLED);
 	
         return $this;
     }
@@ -649,12 +650,12 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     /**
      * @param int $pass_quantity
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function empty_collection($pass_quantity = 100)
     {
         $this->collectionService->emptyCollection($this->databox, $this->collectionVO, $pass_quantity);
-        $this->dispatch(CollectionEvents::EMPTIED, new EmptiedEvent($this));
+        $this->dispatch(new EmptiedEvent($this), CollectionEvents::EMPTIED);
         return $this;
     }
 
@@ -667,10 +668,10 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      * @param string $thumbnailType
      * @param File $file
      */
-    public function updateThumbnail($thumbnailType, File $file = null)
+    public function updateThumbnail($thumbnailType, ?File $file = null)
     {
         switch ($thumbnailType) {
-            case ThumbnailManager::TYPE_WM;
+            case ThumbnailManager::TYPE_WM:
                 $this->reset_watermark();
                 break;
             case ThumbnailManager::TYPE_LOGO:
@@ -688,7 +689,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return int|null
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function get_record_amount()
     {
@@ -697,7 +698,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function get_record_details()
     {
@@ -708,7 +709,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      * @param SplFileInfo $pathfile
      * @return $this
      */
-    public function update_logo(\SplFileInfo $pathfile = null)
+    public function update_logo(?\SplFileInfo $pathfile = null)
     {
         $fileContents = null;
 
@@ -726,7 +727,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function reset_watermark()
     {
@@ -741,7 +742,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     /**
      * @param null $record_id
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function reset_stamp($record_id = null)
     {
@@ -754,7 +755,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete()
     {
@@ -768,7 +769,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function unmount()
     {
@@ -783,14 +784,14 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->collectionRepositoryRegistry->purgeRegistry();
 
         $this->dispatch(
-            CollectionEvents::UNMOUNTED,
             new UnmountedEvent(
                 null,                   // the coll is not available anymore
                 array(
                     'coll_id' => $old_coll_id,
                     'coll_name' => $old_name
                 )
-            )
+            ),
+            CollectionEvents::UNMOUNTED
         );
 
         return $this;

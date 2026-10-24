@@ -4,16 +4,14 @@ namespace Alchemy\Tests\Phrasea\Plugin;
 
 use Alchemy\Phrasea\Plugin\Plugin;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PluginTest extends PluginTestCase
 {
     public function testGetters()
     {
         $manifest = $this->createManifestMock();
-        $error = $this->getMock('Alchemy\Phrasea\Plugin\Exception\PluginValidationException');
+        $error = $this->createStub('Alchemy\Phrasea\Plugin\Exception\PluginValidationException');
 
         $plugin = new Plugin('toto', $manifest, null);
         $this->assertSame('toto', $plugin->getName());
@@ -28,21 +26,17 @@ class PluginTest extends PluginTestCase
         $this->assertTrue($plugin->isErroneous());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testBothNull()
     {
+        $this->expectException(\LogicException::class);
         new Plugin('toto', null, null);
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testBothNotNull()
     {
+        $this->expectException(\LogicException::class);
         $manifest = $this->createManifestMock();
-        $error = $this->getMock('Alchemy\Phrasea\Plugin\Exception\PluginValidationException');
+        $error = $this->createStub('Alchemy\Phrasea\Plugin\Exception\PluginValidationException');
 
         new Plugin('toto', $manifest, $error);
     }

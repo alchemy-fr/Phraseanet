@@ -11,18 +11,12 @@
 
 namespace Alchemy\Phrasea\Twig;
 
-class Fit extends \Twig_Extension
+class Fit extends \Twig\Extension\AbstractExtension
 {
-
-    public function getName()
-    {
-        return 'fit';
-    }
-
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            'fitIn' => new \Twig_Function_Method($this, 'fitIn')
+            new \Twig\TwigFunction('fitIn', [$this, 'fitIn'])
         ];
     }
 

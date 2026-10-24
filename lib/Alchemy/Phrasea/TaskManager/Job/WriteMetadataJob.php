@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
-use PHPExiftool\Driver\Tag;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Writer as ExifWriter;
 use PHPExiftool\Exception\TagUnknown;
@@ -69,10 +68,8 @@ class WriteMetadataJob extends AbstractJob
         foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
 
-            $statement = $connection->prepare('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)');
-            $statement->execute(['token' => PhraseaTokens::WRITE_META]);
-            $rs = $statement->fetchAll(\PDO::FETCH_ASSOC);
-            $statement->closeCursor();
+            $statement = $connection->executeQuery('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)', ['token' => PhraseaTokens::WRITE_META]);
+            $rs = $statement->fetchAllAssociative();
 
             foreach ($rs as $row) {
                 $record_id = $row['record_id'];
@@ -96,19 +93,19 @@ class WriteMetadataJob extends AbstractJob
                 if ($record->getUuid()) {
                     $metadata->add(
                         new Metadata\Metadata(
-                            new Tag\XMPExif\ImageUniqueID(),
+                            TagFactory::getFromRDFTagname('XMP-exif:ImageUniqueID'),
                             new Value\Mono($record->getUuid())
                         )
                     );
                     $metadata->add(
                         new Metadata\Metadata(
-                            new Tag\ExifIFD\ImageUniqueID(),
+                            TagFactory::getFromRDFTagname('ExifIFD:ImageUniqueID'),
                             new Value\Mono($record->getUuid())
                         )
                     );
                     $metadata->add(
                         new Metadata\Metadata(
-                            new Tag\IPTC\UniqueDocumentID(),
+                            TagFactory::getFromRDFTagname('IPTC:UniqueDocumentID'),
                             new Value\Mono($record->getUuid())
                         )
                     );
@@ -194,16 +191,15 @@ class WriteMetadataJob extends AbstractJob
 
                         $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {
-                        $this->log('error',sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()));
+                        $this->log('error',sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"', $databox->get_sbas_id(), $record_id, $name, $e->getMessage()));
                     }
                 }
 
                 $statement = $connection->prepare('UPDATE record SET jeton=jeton & ~:token WHERE record_id = :record_id');
-                $statement->execute([
+                $statement->executeStatement([
                     'record_id' => $record_id,
                     'token' => PhraseaTokens::WRITE_META,
                 ]);
-                $statement->closeCursor();
             }
         }
     }

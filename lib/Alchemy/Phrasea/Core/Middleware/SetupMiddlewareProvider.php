@@ -3,8 +3,9 @@
 namespace Alchemy\Phrasea\Core\Middleware;
 
 use Assert\Assertion;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class SetupMiddlewareProvider implements ServiceProviderInterface
@@ -16,7 +17,7 @@ class SetupMiddlewareProvider implements ServiceProviderInterface
      * It should not get services.
      * @param Application $app
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         Assertion::isInstanceOf($app, \Alchemy\Phrasea\Application::class);
 
@@ -24,7 +25,7 @@ class SetupMiddlewareProvider implements ServiceProviderInterface
             if (0 === strpos($request->getPathInfo(), '/setup')) {
                 if (!$app['phraseanet.configuration-tester']->isInstalled()) {
                     if (!$app['phraseanet.configuration-tester']->isBlank()) {
-                        if ('setup_upgrade_instructions' !== $app['request']->attributes->get('_route')) {
+                        if ('setup_upgrade_instructions' !== $app['request_stack']->getCurrentRequest()->attributes->get('_route')) {
                             return $app->redirectPath('setup_upgrade_instructions');
                         }
                     }
@@ -37,17 +38,5 @@ class SetupMiddlewareProvider implements ServiceProviderInterface
                 }
             }
         });
-    }
-
-    /**
-     * Bootstraps the application.
-     *
-     * This method is called after all services are registered
-     * and should be used for "dynamic" configuration (whenever
-     * a service must be requested).
-     */
-    public function boot(Application $app)
-    {
-        // no-op
     }
 }

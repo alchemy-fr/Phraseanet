@@ -166,9 +166,11 @@ class LoginController extends Controller
             $this->app->abort(404, 'Registration is disabled');
         }
 
-        $form = $this->app->form(new PhraseaRegisterForm(
-            $this->app, $this->getOptionalRegistrationFields(), $this->getRegistrationFields()
-        ));
+        $form = $this->app->form(PhraseaRegisterForm::class, null, [
+            'app'                 => $this->app,
+            'available_fields'    => $this->getOptionalRegistrationFields(),
+            'registration_fields' => $this->getRegistrationFields(),
+        ]);
 
         if ('POST' === $request->getMethod()) {
             $requestData = $request->request->all();
@@ -234,7 +236,7 @@ class LoginController extends Controller
             }
 
             try {
-                if ($form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
                     $registrationService = $this->getRegistrationService();
                     $providerId = isset($data['provider-id']) ? $data['provider-id'] : null;
                     $selectedCollections = isset($data['collections']) ? $data['collections'] : null;
@@ -398,12 +400,14 @@ class LoginController extends Controller
     {
         $service = $this->getRecoveryService();
 
-        $form = $this->app->form(new PhraseaRecoverPasswordForm($this->getTokenRepository()));
+        $form = $this->app->form(PhraseaRecoverPasswordForm::class, null, [
+            'token_repository' => $this->getTokenRepository(),
+        ]);
         $form->setData(['token' => $request->get('token') ]);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
-            if ($form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
 
                 $service->resetPassword($data['token'], $data['password']);
@@ -427,7 +431,7 @@ class LoginController extends Controller
      */
     public function forgotPassword(Request $request)
     {
-        $form = $this->app->form(new PhraseaForgotPasswordForm());
+        $form = $this->app->form(PhraseaForgotPasswordForm::class);
         $service = $this->getRecoveryService();
         $flashMessage = $this->app->trans('login:: request password mail sent');
 
@@ -446,7 +450,7 @@ class LoginController extends Controller
                     $form->get('captcha')->addError($dataError);
                 }
 
-                if ($form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
                     $data = $form->getData();
 
                     try {
@@ -512,7 +516,7 @@ class LoginController extends Controller
                 $response = $provider->logoutAndRedirect($redirectToPhr);
             }
             else {
-                $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+                $this->dispatch(new LogoutEvent($this->app), PhraseaEvents::LOGOUT);
                 $this->getAuthenticator()->closeAccount();
 
                 $response = $provider->logout();
@@ -524,7 +528,7 @@ class LoginController extends Controller
         }
         else {
             // no provider logout : use ours
-            $this->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($this->app));
+            $this->dispatch(new LogoutEvent($this->app), PhraseaEvents::LOGOUT);
             $this->getAuthenticator()->closeAccount();
 
             $this->app->addFlash('info', $this->app->trans('Vous etes maintenant deconnecte. A bientot.'));
@@ -555,7 +559,7 @@ class LoginController extends Controller
 
         $feeds = $this->getFeedRepository()->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
-        $form = $this->app->form(new PhraseaAuthenticationForm($this->app));
+        $form = $this->app->form(PhraseaAuthenticationForm::class, null, ['app' => $this->app]);
         $form->setData([
             'redirect' => $request->query->get('redirect')
         ]);
@@ -576,7 +580,7 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $form = $this->app->form(new PhraseaAuthenticationForm($this->app));
+        $form = $this->app->form(PhraseaAuthenticationForm::class, null, ['app' => $this->app]);
         $redirector = function (array $params = []) {
             return $this->app->redirectPath('homepage', $params);
         };
@@ -595,7 +599,7 @@ class LoginController extends Controller
         }
 
         $context = new Context(Context::CONTEXT_GUEST);
-        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(new PreAuthenticate($request, $context), PhraseaEvents::PRE_AUTHENTICATE);
 
         do {
             $login = uniqid('guest');
@@ -617,7 +621,7 @@ class LoginController extends Controller
         $response->headers->setCookie(new Cookie('invite-usr-id', $user->getId()));
 
         $event = new PostAuthenticate($request, $response, $user, $context);
-        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+        $this->dispatch($event, PhraseaEvents::POST_AUTHENTICATE);
 
         return $response;
     }
@@ -825,10 +829,10 @@ class LoginController extends Controller
         }
 
         $context = new Context(Context::CONTEXT_NATIVE);
-        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+        $this->dispatch(new PreAuthenticate($request, $context), PhraseaEvents::PRE_AUTHENTICATE);
 
         $form->handleRequest($request);
-        if (!$form->isValid()) {
+        if (!$form->isSubmitted() || !$form->isValid()) {
             $this->app->addFlash('error', $this->app->trans('An unexpected error occurred during authentication process, please contact an admin'));
 
             throw new AuthenticationException(call_user_func($redirector));
@@ -875,7 +879,7 @@ class LoginController extends Controller
             $string = $this->getBrowser()->getBrowser() . '_' . $this->getBrowser()->getPlatform();
 
             $token = $this->getPasswordEncoder()
-                ->encodePassword($string, $nonce);
+                ->hash($string, $nonce);
 
             $session->setToken($token)->setNonce($nonce);
 
@@ -887,7 +891,7 @@ class LoginController extends Controller
         }
 
         $event = new PostAuthenticate($request, $response, $user, $context);
-        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+        $this->dispatch($event, PhraseaEvents::POST_AUTHENTICATE);
 
         return $event->getResponse();
     }

@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\ErrorHandler\ErrorHandler;
 
 require_once __DIR__ . '/../lib/autoload.php';
 

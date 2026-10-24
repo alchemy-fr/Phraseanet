@@ -18,6 +18,7 @@ use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DateTime;
 use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\TagGroupInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhraseanetMetadataSetter
@@ -118,8 +119,8 @@ class PhraseanetMetadataSetter
              */
             // order to write meta in file
 
-            $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+            $this->dispatcher->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()),
+                WorkerEvents::RECORDS_WRITE_META);
             /*
              * end of section to comment
              */
@@ -159,7 +160,7 @@ class PhraseanetMetadataSetter
         $metadataPerField = [];
 
         foreach ($metadataCollection as $metadata) {
-            $tagName = $this->extractTagNameFromTag($metadata->getTag());
+            $tagName = $this->extractTagNameFromTag($metadata->getTagGroup());
 
             if (!isset($databoxFields[$tagName])) {
                 continue;
@@ -216,11 +217,11 @@ class PhraseanetMetadataSetter
     }
 
     /**
-     * @param object $tag TagInterface
+     * @param TagGroupInterface $tag
      * @return string
      */
-    private function extractTagNameFromTag($tag)
+    private function extractTagNameFromTag(TagGroupInterface $tag)
     {
-        return $tag instanceof NoSource ? $tag->getFieldName() : $tag->getTagname();
+        return $tag instanceof NoSource ? $tag->getFieldName() : $tag->getId();
     }
 }

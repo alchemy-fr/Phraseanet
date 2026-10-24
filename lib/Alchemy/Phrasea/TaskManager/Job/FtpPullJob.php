@@ -64,8 +64,8 @@ class FtpPullJob extends AbstractJob
         $port = (string) $settings->port;
         $user = (string) $settings->user;
         $password = (string) $settings->password;
-        $ssl = (Boolean) (string) $settings->ssl;
-        $passive = (Boolean) (string) $settings->passive;
+        $ssl = (bool) (string) $settings->ssl;
+        $passive = (bool) (string) $settings->passive;
 
         foreach ([
             'localpath' => $localPath,

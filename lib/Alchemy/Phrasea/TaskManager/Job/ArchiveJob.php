@@ -1069,12 +1069,12 @@ class ArchiveJob extends AbstractJob
         }
 
         // order to write meta in file
-        $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
+        $this->dispatcher->dispatch(new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()),
+            WorkerEvents::RECORDS_WRITE_META);
 
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
 
-        $app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($story));
+        $app['dispatcher']->dispatch(new SubdefinitionCreateEvent($story), RecordEvents::SUBDEFINITION_CREATE);
 
         unset($media);
 
@@ -1271,7 +1271,7 @@ class ArchiveJob extends AbstractJob
      * @param $moveError
      * @param $moveArchived
      */
-    private function archiveFileAndCaption(Application $app, \databox $databox, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel, $stat0, $stat1, $moveError, $moveArchived)
+    private function archiveFileAndCaption(Application $app, \databox $databox, \DOMElement $node, ?\DOMElement $captionFileNode = null, $path = null, $path_archived = null, $path_error = null, $grp_rid = null, array &$nodesToDel = [], $stat0 = null, $stat1 = null, $moveError = null, $moveArchived = null)
     {
         // quick fix to reconnect if mysql is lost
         $app->getApplicationBox()->get_connection();

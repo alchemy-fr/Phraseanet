@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoBasketShared;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoBasketSharedTest extends MailWithLinkTestCase
 {
     public function testSetTitle()
@@ -30,7 +30,7 @@ class MailInfoBasketSharedTest extends MailWithLinkTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
@@ -76,7 +76,7 @@ class MailInfoBasketSharedTest extends MailWithLinkTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 

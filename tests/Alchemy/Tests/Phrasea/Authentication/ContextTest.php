@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\Context;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ContextTest extends \PhraseanetTestCase
 {
     public function testWithValidCOntext()
@@ -20,11 +18,9 @@ class ContextTest extends \PhraseanetTestCase
         $this->assertEquals(Context::CONTEXT_OAUTH2_NATIVE, $context->getContext());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testWithInvalidCOntext()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         new Context('No context like this');
     }
 }

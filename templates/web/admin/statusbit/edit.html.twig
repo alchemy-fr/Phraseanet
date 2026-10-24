@@ -6,10 +6,10 @@
 {% endif %}
 
 <h1 style='padding-left:30px;'>
-    {{ 'status:: numero de bit' | trans }} {{ app['request'].get('bit') }} ({{ flag_slugify(status['labelon']) }})
+    {{ 'status:: numero de bit' | trans }} {{ app['request_stack'].currentRequest.get('bit') }} ({{ flag_slugify(status['labelon']) }})
 </h1>
 
-<form id="fileupload" class="form-horizontal" target="_self" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request'].get('databox_id'), 'bit' : app['request'].get('bit') }) }}">
+<form id="fileupload" class="form-horizontal" target="_self" enctype="multipart/form-data" method="post" action="{{ path('database_submit_statusbit', { 'databox_id' : app['request_stack'].currentRequest.get('databox_id'), 'bit' : app['request_stack'].currentRequest.get('bit') }) }}">
     <div class="row-fluid">
         <div class="span12 well">
             <span class="label">{{ 'admin::status: case B' | trans }}</span>
@@ -159,7 +159,7 @@
                 <button id="form_submitter" class="btn btn-primary" type="button">
                     {{ 'boutton::valider' | trans }}
                 </button>
-                <a style='text-decoration:none;' target='right' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request'].get('databox_id') }) }}">
+                <a style='text-decoration:none;' target='right' class="btn" href="{{ path('database_display_statusbit', { 'databox_id' : app['request_stack'].currentRequest.get('databox_id') }) }}">
                     {{ 'boutton::retour' | trans }}
                 </a>
             </div>

@@ -77,7 +77,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
             'grant_type'    => 'authorization_code'
         ];
 
-        $response_json = http_query::getUrl($this->token_endpoint, $post_params);
+        $response_json = (string) http_query::getUrl($this->token_endpoint, $post_params);
         $response = json_decode($response_json, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
         if ( ! is_array($response) || ! isset($response['refresh_token']) || ! isset($response['access_token']))
@@ -99,7 +99,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
             'grant_type'    => 'refresh_token'
         ];
 
-        $response = http_query::getUrl($this->token_endpoint, $post_params);
+        $response = (string) http_query::getUrl($this->token_endpoint, $post_params);
         $response = json_decode($response, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
         if ( ! is_array($response) || ! isset($response['access_token']))
@@ -180,6 +180,6 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
             'scope'         => $this->scope
             ], $supp_parameters);
 
-        return sprintf('%s?%s', $this->auth_endpoint, http_build_query($params, null, '&'));
+        return sprintf('%s?%s', $this->auth_endpoint, http_build_query($params, '', '&'));
     }
 }

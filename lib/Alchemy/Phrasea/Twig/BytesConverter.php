@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Twig;
 
-class BytesConverter extends \Twig_Extension
+class BytesConverter extends \Twig\Extension\AbstractExtension
 {
     protected $unit;
 
@@ -29,15 +29,11 @@ class BytesConverter extends \Twig_Extension
         $this->unit['YB'] = 'Yottabytes'; // 1.20892582e24 bytes
     }
 
-    public function getName()
-    {
-        return 'bytes_converter';
-    }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            'bytesTo*' => new \Twig_Filter_Method($this, 'bytes2Filter')
+            new \Twig\TwigFilter('bytesTo*', [$this, 'bytes2Filter'])
         ];
     }
 

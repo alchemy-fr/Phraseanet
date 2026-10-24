@@ -258,7 +258,7 @@ class QueryVisitor implements Visit
             }
         }
 
-        return new AST\TermNode(implode($words), $context);
+        return new AST\TermNode(implode('', $words), $context);
     }
 
     private function visitText(Element $element)
@@ -320,7 +320,7 @@ class QueryVisitor implements Visit
             $tokens[] = $value['value'];
         }
 
-        return implode($tokens);
+        return implode('', $tokens);
     }
 
     private function visitFlagStatementNode(TreeNode $node)

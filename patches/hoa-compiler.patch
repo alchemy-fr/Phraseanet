@@ -1,0 +1,77 @@
+diff --git a/Llk/Parser.php b/Llk/Parser.php
+index e8a4dfe..767e155 100644
+--- a/Llk/Parser.php
++++ b/Llk/Parser.php
+@@ -169,7 +169,7 @@ class Parser
+         $this->_trace      = [];
+         $this->_todo       = [];
+ 
+-        if (false === array_key_exists($rule, $this->_rules)) {
++        if (null === $rule || false === array_key_exists($rule, $this->_rules)) {
+             $rule = $this->getRootRule();
+         }
+ 
+diff --git a/Llk/Rule/Invocation.php b/Llk/Rule/Invocation.php
+index 24cf946..1f3c3b6 100644
+--- a/Llk/Rule/Invocation.php
++++ b/Llk/Rule/Invocation.php
+@@ -95,7 +95,7 @@ abstract class Invocation
+     public function __construct(
+         $rule,
+         $data,
+-        array $todo = null,
++        ?array $todo = null,
+         $depth      = -1
+     ) {
+         $this->_rule         = $rule;
+diff --git a/Llk/Rule/Rule.php b/Llk/Rule/Rule.php
+index 1a0b566..9aa4e06 100644
+--- a/Llk/Rule/Rule.php
++++ b/Llk/Rule/Rule.php
+@@ -181,7 +181,7 @@ abstract class Rule
+     {
+         $old = $this->_nodeId;
+ 
+-        if (false !== $pos = strpos($nodeId, ':')) {
++        if (false !== $pos = strpos((string) $nodeId, ':')) {
+             $this->_nodeId      = substr($nodeId, 0, $pos);
+             $this->_nodeOptions = str_split(substr($nodeId, $pos + 1));
+         } else {
+diff --git a/Llk/Sampler/Uniform.php b/Llk/Sampler/Uniform.php
+index f15ac9d..53b8972 100644
+--- a/Llk/Sampler/Uniform.php
++++ b/Llk/Sampler/Uniform.php
+@@ -100,7 +100,7 @@ class Uniform extends Sampler
+      * @param   int                     $n       Size.
+      * @return  string
+      */
+-    public function uniform(Compiler\Llk\Rule $rule = null, $n = -1)
++    public function uniform(?Compiler\Llk\Rule $rule = null, $n = -1)
+     {
+         if (null === $rule && -1 === $n) {
+             $rule = $this->_rules[$this->_rootRuleName];
+@@ -175,7 +175,7 @@ class Uniform extends Sampler
+      * @param   int                     $n       Size.
+      * @return  int
+      */
+-    public function count(Compiler\Llk\Rule $rule = null, $n = -1)
++    public function count(?Compiler\Llk\Rule $rule = null, $n = -1)
+     {
+         if (null === $rule || -1 === $n) {
+             return 0;
+diff --git a/Llk/TreeNode.php b/Llk/TreeNode.php
+index 1cfb7fa..9a9fe58 100644
+--- a/Llk/TreeNode.php
++++ b/Llk/TreeNode.php
+@@ -95,9 +95,9 @@ class TreeNode implements Visitor\Element
+      */
+     public function __construct(
+         $id,
+-        array $value    = null,
++        ?array $value    = null,
+         array $children = [],
+-        self  $parent   = null
++        ?self  $parent   = null
+     ) {
+         $this->setId($id);
+ 

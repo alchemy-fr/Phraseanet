@@ -62,7 +62,7 @@ class patch_415PHRAS3584 implements patchInterface
         $cnx = $databox->get_connection();
         $sql = "ALTER TABLE `record` ADD `cover_record_id` INT(11) NULL DEFAULT NULL AFTER `parent_record_id`, ADD INDEX `cover_record_id` (`cover_record_id`);";
         try {
-            $cnx->exec($sql);
+            $cnx->executeStatement($sql);
         }
         catch (\Exception $e) {
             // the field already exist ?

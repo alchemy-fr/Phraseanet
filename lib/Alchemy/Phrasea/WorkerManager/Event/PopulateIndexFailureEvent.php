@@ -2,7 +2,7 @@
 
 namespace  Alchemy\Phrasea\WorkerManager\Event;
 
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Symfony\Contracts\EventDispatcher\Event as SfEvent;
 
 class PopulateIndexFailureEvent extends SfEvent
 {

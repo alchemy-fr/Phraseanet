@@ -134,7 +134,7 @@ class module_report_sqlfilter
         $this->filter['user'] = false;
         $f = $report->getTabFilter();
 
-        if (sizeof($f) > 0) {
+        if (count((array) $f) > 0) {
             $filter = [];
             $params = [];
             $n = 0;
@@ -188,7 +188,7 @@ class module_report_sqlfilter
     private function orderFilter(module_report $report)
     {
         $this->filter['order'] = false;
-        if (sizeof($report->getOrder()) > 0) {
+        if (count((array) $report->getOrder()) > 0) {
             $this->filter['order'] = " ORDER BY "
                 . $this->cor_query[$report->getOrder('champ')]
                 . ' ' . $report->getOrder('order');
@@ -225,7 +225,7 @@ class module_report_sqlfilter
 
     private function overrideOrderFilter($customFieldMap)
     {
-        if (sizeof($this->report->getOrder()) > 0) {
+        if (count((array) $this->report->getOrder()) > 0) {
             if (!isset($customFieldMap[$this->cor_query[$this->report->getOrder('champ')]])) {
                 return false;
             }

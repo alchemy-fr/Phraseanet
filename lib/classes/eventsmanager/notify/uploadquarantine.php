@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 {
@@ -33,7 +33,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
     {
         /** @var Manager $manager */
         $manager = $this->app['border-manager'];
-        /** @var TranslatorInterface $translator */
+        /** @var \Symfony\Contracts\Translation\TranslatorInterface $translator */
         $translator = $this->app['translator'];
 
         $reasons = array_map(function ($checkerFQCN) use ($manager, $translator) {

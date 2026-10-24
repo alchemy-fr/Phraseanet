@@ -9,10 +9,9 @@ use Alchemy\Phrasea\Command\Command as phrCommand;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use collection;
 use databox;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use Guzzle\Http\Client as Guzzle;
 use igorw;
 use MediaVorus\MediaVorus;
 use Neutron\TemporaryFilesystem\TemporaryFilesystem;
@@ -40,7 +39,7 @@ class TranslateCommand extends phrCommand
     /** @var GlobalConfiguration */
     private $config;
 
-    public function configure()
+    public function configure(): void
     {
         $this->setName('thesaurus:translate')
             ->setDescription('(BETA) Translate fields values using thesaurus')

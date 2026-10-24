@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class SessionsCommand extends Command
 {
@@ -37,25 +38,25 @@ class SessionsCommand extends Command
         //multiple options allowed
 
         if ($input->getOption('truncate')) {
-            $this->truncateTable($output, $isInteractive);
+            $this->truncateTable($input, $output, $isInteractive);
         }
 
         if ($input->getOption('drop')) {
-            $this->dropTable($output, $isInteractive);
+            $this->dropTable($input, $output, $isInteractive);
         }
 
         if ($input->getOption('create')) {
-            $this->createTable($output, $isInteractive);
+            $this->createTable($input, $output, $isInteractive);
         }
     }
 
-    private function truncateTable(OutputInterface $output, $isInteractive)
+    private function truncateTable(InputInterface $input, OutputInterface $output, $isInteractive)
     {
         if ($isInteractive) {
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('question');
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question> Do you want to truncate session tables ? (Y/n)</question>', 'Y'));
+                $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question> Do you want to truncate session tables ? (Y/n)</question>', 'Y')));
             } while (!in_array($continue, ['y', 'n']));
         } else {
             $continue = 'y';
@@ -68,8 +69,8 @@ class SessionsCommand extends Command
 
             try {
                 $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 0;');
-                $connection->executeUpdate($platform->getTruncateTableSQL('SessionModules', true));
-                $connection->executeUpdate($platform->getTruncateTableSQL('Sessions', true));
+                $connection->executeStatement($platform->getTruncateTableSQL('SessionModules', true));
+                $connection->executeStatement($platform->getTruncateTableSQL('Sessions', true));
                 $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1;');
 
                 $this->em->commit();
@@ -84,13 +85,13 @@ class SessionsCommand extends Command
         }
     }
 
-    private function createTable(OutputInterface $output, $isInteractive)
+    private function createTable(InputInterface $input, OutputInterface $output, $isInteractive)
     {
         if ($isInteractive) {
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('question');
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question> Do you want to create session tables ? (Y/n)</question>', 'Y'));
+                $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question> Do you want to create session tables ? (Y/n)</question>', 'Y')));
             } while (!in_array($continue, ['y', 'n']));
         } else {
             $continue = 'y';
@@ -103,10 +104,8 @@ class SessionsCommand extends Command
 
             // check table if exist
             $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :db_name AND TABLE_NAME = 'Sessions';";
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([':db_name' => $dbName]);
-            $row = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $connection->executeQuery($sql, [':db_name' => $dbName]);
+            $row = $stmt->fetchAllAssociative();
             /**********************/
 
             if (count($row) == 1) {
@@ -124,10 +123,8 @@ class SessionsCommand extends Command
 
             // check table if exist
             $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :db_name AND TABLE_NAME = 'SessionModules';";
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([':db_name' => $dbName]);
-            $row = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $connection->executeQuery($sql, [':db_name' => $dbName]);
+            $row = $stmt->fetchAllAssociative();
             /**********************/
 
             if (count($row) == 1) {
@@ -147,13 +144,13 @@ class SessionsCommand extends Command
         }
     }
 
-    private function dropTable(OutputInterface $output, $isInteractive)
+    private function dropTable(InputInterface $input, OutputInterface $output, $isInteractive)
     {
         if ($isInteractive) {
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('question');
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question> Do you want to drop session tables ? (Y/n)</question>', 'Y'));
+                $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question> Do you want to drop session tables ? (Y/n)</question>', 'Y')));
             } while (!in_array($continue, ['y', 'n']));
         } else {
             $continue = 'y';

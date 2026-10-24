@@ -7,11 +7,9 @@ use Alchemy\Phrasea\Http\XSendFile\NginxMode;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
 {
     protected $factory;
@@ -23,7 +21,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals('inline; filename="cestlafete.jpg"', $response->headers->get('content-disposition'));
+        $this->assertEquals('inline; filename=cestlafete.jpg', $response->headers->get('content-disposition'));
         $this->assertEquals(0, $response->getMaxAge());
         $response->setPrivate();
         $this->assertTrue($response->headers->getCacheControlDirective('private'));
@@ -45,7 +43,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals('inline; filename="toto.jpg"', $response->headers->get('content-disposition'));
+        $this->assertEquals('inline; filename=toto.jpg', $response->headers->get('content-disposition'));
     }
 
     public function testDeliverFileWithFilenameAndDisposition()
@@ -55,7 +53,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response = $this->factory->deliverFile(__DIR__ . '/../../../../files/cestlafete.jpg', 'toto.jpg', 'attachment');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
+        $this->assertEquals('attachment; filename=toto.jpg', $response->headers->get('content-disposition'));
     }
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFile()
@@ -77,8 +75,8 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response->prepare($request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
-        $this->assertEquals('/protected/cestlafete.jpg', $response->headers->get('x-accel-redirect'));
+        $this->assertEquals('attachment; filename=toto.jpg', $response->headers->get('content-disposition'));
+        $this->assertEquals(rawurlencode('/protected/cestlafete.jpg'), $response->headers->get('x-accel-redirect'));
     }
 
     public function testDeliverFileWithFilenameAndDispositionAndXSendFileAndNoTrailingSlashes()
@@ -100,15 +98,13 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response->prepare($request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals('attachment; filename="toto.jpg"', $response->headers->get('content-disposition'));
-        $this->assertEquals('/protected/cestlafete.jpg', $response->headers->get('x-accel-redirect'));
+        $this->assertEquals('attachment; filename=toto.jpg', $response->headers->get('content-disposition'));
+        $this->assertEquals(rawurlencode('/protected/cestlafete.jpg'), $response->headers->get('x-accel-redirect'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException
-     */
     public function testDeliverUnexistingFile()
     {
+        $this->expectException(\Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException::class);
         BinaryFileResponse::trustXSendfileTypeHeader();
         $this->factory = new ServeFileResponseFactory(new \unicode());
 
@@ -136,7 +132,7 @@ class ServeFileResponseFactoryTest extends \PhraseanetWebTestCase
         $response->prepare($request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals('attachment; filename="PhraseanetTestCase.php"', $response->headers->get('content-disposition'));
-        $this->assertEquals(realpath($file), $response->headers->get('x-accel-redirect'));
+        $this->assertEquals('attachment; filename=PhraseanetTestCase.php', $response->headers->get('content-disposition'));
+        $this->assertNull($response->headers->get('x-accel-redirect'));
     }
 }

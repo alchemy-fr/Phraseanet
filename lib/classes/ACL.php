@@ -29,7 +29,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Statement;
 
 
@@ -215,7 +215,7 @@ class ACL implements cache_cacheableInterface
 
         $sql = "UPDATE records_rights SET `case`=:act, `expire_on`=:expire_on WHERE `usr_id` = :usr_id AND `sbas_id`=:sbas_id AND `record_id`=:record_id AND `document`=1";
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([
+        $stmt->executeStatement([
             ':usr_id'   => $this->user->getId(),
             ':sbas_id'  => $record->getDataboxId(),
             ':record_id' => $record->getRecordId(),
@@ -272,8 +272,7 @@ class ACL implements cache_cacheableInterface
             ':pusher'    => $pusher->getId(),
             ':expireOn'  => $expireOn
         ];
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -302,10 +301,10 @@ class ACL implements cache_cacheableInterface
             $stmt_ins = $cnx->prepare($sql);
         }
 
-        $cnx->exec("START TRANSACTION");
+        $cnx->executeStatement("START TRANSACTION");
 
         try {
-            $n0 = $stmt_upd->execute([
+            $n0 = $stmt_upd->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -324,14 +323,14 @@ class ACL implements cache_cacheableInterface
 //                ]
 //            );
 //
-            $n1 = $stmt_upd->rowCount();
-            $n2 = $cnx->executeQuery("SELECT ROW_COUNT()")->fetchColumn(0);
+            $n1 = $n0;
+            $n2 = $cnx->executeQuery("SELECT ROW_COUNT()")->fetchOne();
             file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", 'u'.$n0.$n1.$n2."\n", FILE_APPEND);
 //            if($n != 1) {
 //                throw new \Exception("no update");
 //            }
 
-            $stmt_ins->execute([
+            $stmt_ins->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -342,7 +341,7 @@ class ACL implements cache_cacheableInterface
         }
         catch (\Exception $e) {
             // file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", sprintf("%s\n", $e->getMessage()), FILE_APPEND);
-            $stmt_upd->execute([
+            $stmt_upd->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -353,7 +352,7 @@ class ACL implements cache_cacheableInterface
         }
 
         // $stmt->closeCursor();
-        $cnx->exec("COMMIT");
+        $cnx->executeStatement("COMMIT");
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -389,7 +388,7 @@ class ACL implements cache_cacheableInterface
             $stmt_ins = $cnx->prepare($sql);
         }
 
-        $cnx->exec("START TRANSACTION");
+        $cnx->executeStatement("START TRANSACTION");
 
 //        $stmt_del->execute([
 //            ':usr_id'    => $this->user->getId(),
@@ -425,7 +424,7 @@ class ACL implements cache_cacheableInterface
 //                throw new \Exception("no update");
 //            }
 
-            $stmt_ins->execute([
+            $stmt_ins->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -436,7 +435,7 @@ class ACL implements cache_cacheableInterface
         }
         catch (\Exception $e) {
             // file_put_contents("/var/alchemy/Phraseanet/tmp/phraseanet-log.txt", sprintf("%s\n", $e->getMessage()), FILE_APPEND);
-            $stmt_upd->execute([
+            $stmt_upd->executeStatement([
                 ':usr_id'    => $this->user->getId(),
                 ':sbas_id'   => $record->getDataboxId(),
                 ':record_id' => $record->getRecordId(),
@@ -447,7 +446,7 @@ class ACL implements cache_cacheableInterface
         }
 
         // $stmt->closeCursor();
-        $cnx->exec("COMMIT");
+        $cnx->executeStatement("COMMIT");
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -474,8 +473,7 @@ class ACL implements cache_cacheableInterface
             ':pusher'    => $pusher->getId()
         ];
 
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_RECORDS);
 
@@ -955,7 +953,7 @@ class ACL implements cache_cacheableInterface
      * @param  array|null $sbas_ids Optionnal sbas_id to restrict the query on
      * @return collection[] An array of collection
      */
-    public function get_granted_base(Array $rights = [], array $sbas_ids = null)
+    public function get_granted_base(Array $rights = [], ?array $sbas_ids = null)
     {
         $this->load_rights_bas();
         $ret = [];
@@ -1082,13 +1080,13 @@ class ACL implements cache_cacheableInterface
         }
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::SYSADMIN_CHANGED,
             new SysadminChangedEvent(
                 $this,
                 array(
                     'is_sysadmin'=>$boolean
                 )
-            )
+            ),
+            AclEvents::SYSADMIN_CHANGED
         );
 
         return $this;
@@ -1116,10 +1114,8 @@ class ACL implements cache_cacheableInterface
         }
         $sql = "SELECT sbas_id, record_id, preview, document, expire_on FROM records_rights WHERE usr_id = :usr_id";
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->user->getId()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $this->user->getId()]);
+        $rs = $stmt->fetchAllAssociative();
         unset($stmt);
 
         $this->_rights_records_preview = [];
@@ -1187,10 +1183,8 @@ class ACL implements cache_cacheableInterface
 
         $sql = "SELECT sbasusr.* FROM sbasusr INNER JOIN sbas USING(sbas_id) WHERE usr_id= :usr_id";
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->user->getId()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $this->user->getId()]);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->_rights_sbas = [];
 
@@ -1250,10 +1244,8 @@ class ACL implements cache_cacheableInterface
             . " AND b.base_id = u.base_id\n"
             . " AND s.sbas_id = b.sbas_id";
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->user->getId()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $this->user->getId()]);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->_rights_bas = $this->_limited = [];
 
@@ -1352,22 +1344,23 @@ class ACL implements cache_cacheableInterface
 
         $errors = 0;
         foreach ($base_ids as $base_id) {
-            if ($stmt_del->execute([':base_id' => $base_id, ':usr_id'  => $usr_id])) {
-                $this->app['dispatcher']->dispatch(
-                    AclEvents::ACCESS_TO_BASE_REVOKED,
-                    new AccessToBaseRevokedEvent(
-                        $this,
-                        [
-                            'base_id' => $base_id
-                        ]
-                    )
-                );
+            try {
+                $stmt_del->executeStatement([':base_id' => $base_id, ':usr_id'  => $usr_id]);
             }
-            else {
+            catch (\Doctrine\DBAL\Exception $e) {
                 $errors++;
+                continue;
             }
+            $this->app['dispatcher']->dispatch(
+                new AccessToBaseRevokedEvent(
+                    $this,
+                    [
+                        'base_id' => $base_id
+                    ]
+                ),
+                AclEvents::ACCESS_TO_BASE_REVOKED
+            );
         }
-        $stmt_del->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         if($errors > 0) {
@@ -1401,13 +1394,13 @@ class ACL implements cache_cacheableInterface
 
             if($this->try_give_access_to_base_insert($stmt_i, $base_id, $usr_id) == true) {
                 $this->app['dispatcher']->dispatch(
-                    AclEvents::ACCESS_TO_BASE_GRANTED,
                     new AccessToBaseGrantedEvent(
                         $this,
                         array(
                             'base_id'=>$base_id
                         )
-                    )
+                    ),
+                    AclEvents::ACCESS_TO_BASE_GRANTED
                 );
             }
             else {
@@ -1425,13 +1418,11 @@ class ACL implements cache_cacheableInterface
     {
         $inserted = false;
         try {
-            $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
-            if ($stmt->rowCount() > 0) {
+            if ($stmt->executeStatement([':base_id' => $base_id, ':usr_id' => $usr_id]) > 0) {
                 $inserted = true;
             }
-            $stmt->closeCursor();
         }
-        catch(DBALException $e) {
+        catch(\Doctrine\DBAL\Exception $e) {
             // no-op, mostly the row did exist
         }
 
@@ -1440,8 +1431,7 @@ class ACL implements cache_cacheableInterface
 
     private function try_give_access_to_base_update(Statement $stmt, $base_id, $usr_id)
     {
-        $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':base_id' => $base_id, ':usr_id' => $usr_id]);
     }
 
     /**
@@ -1459,24 +1449,23 @@ class ACL implements cache_cacheableInterface
         foreach ($sbas_ids as $sbas_id) {
             if (!$this->has_access_to_sbas($sbas_id)) {
                 try {
-                    $stmt_ins->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
+                    $stmt_ins->executeStatement([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id]);
 
                     $this->app['dispatcher']->dispatch(
-                        AclEvents::ACCESS_TO_SBAS_GRANTED,
                         new AccessToSbasGrantedEvent(
                             $this,
                             array(
                                 'sbas_id'=>$sbas_id
                             )
-                        )
+                        ),
+                        AclEvents::ACCESS_TO_SBAS_GRANTED
                     );
-                } catch (DBALException $e) {
+                } catch (\Doctrine\DBAL\Exception $e) {
 
                 }
             }
             $this->app->getApplicationBox()->get_databox($sbas_id)->clearCache(databox::CACHE_COLLECTIONS);
         }
-        $stmt_ins->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
         // $this->delete_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
@@ -1517,20 +1506,19 @@ class ACL implements cache_cacheableInterface
             . " WHERE base_id = :base_id AND usr_id = :usr_id";
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute([':base_id' => $base_id, ':usr_id' => $this->user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':base_id' => $base_id, ':usr_id' => $this->user->getId()]);
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::RIGHTS_TO_BASE_CHANGED,
             new RightsToBaseChangedEvent(
                 $this,
                 [
                     'base_id' => $base_id,
                     'rights'  => $rights
                 ]
-            )
+            ),
+            AclEvents::RIGHTS_TO_BASE_CHANGED
         );
 
         return $this;
@@ -1551,8 +1539,7 @@ class ACL implements cache_cacheableInterface
         $params = [':usr_id_1' => $usr_id, ':usr_id_2' => $usr_id];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
 
@@ -1563,7 +1550,7 @@ class ACL implements cache_cacheableInterface
      * @param $sbas_id
      * @param $rights
      * @return $this
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public function update_rights_to_sbas($sbas_id, $rights)
@@ -1591,8 +1578,7 @@ class ACL implements cache_cacheableInterface
             . " WHERE sbas_id = :sbas_id AND usr_id = :usr_id";
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute([':sbas_id' => $sbas_id, ':usr_id' => $this->user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':sbas_id' => $sbas_id, ':usr_id' => $this->user->getId()]);
 
         $this->app->getApplicationBox()->get_databox($sbas_id)->clearCache(databox::CACHE_COLLECTIONS);
 
@@ -1600,14 +1586,14 @@ class ACL implements cache_cacheableInterface
         // $this->delete_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::RIGHTS_TO_SBAS_CHANGED,
             new RightsToSbasChangedEvent(
                 $this,
                 [
                     'sbas_id' => $sbas_id,
                     'rights'  => $rights
                 ]
-            )
+            ),
+            AclEvents::RIGHTS_TO_SBAS_CHANGED
         );
 
         return $this;
@@ -1624,20 +1610,19 @@ class ACL implements cache_cacheableInterface
             . " WHERE usr_id = :usr_id AND base_id = :base_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id'  => $this->user->getId(), ':base_id' => $base_id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':usr_id'  => $this->user->getId(), ':base_id' => $base_id]);
 
         unset($stmt);
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_REMOVED,
             new DownloadQuotasOnBaseRemovedEvent(
                 $this,
                 array(
                     'base_id'=>$base_id
                 )
-            )
+            ),
+            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_REMOVED
         );
 
         return $this;
@@ -1650,22 +1635,20 @@ class ACL implements cache_cacheableInterface
             . " AND usr_id = :usr_id"
             . " AND MONTH(lastconn) != MONTH(NOW()) AND restrict_dwnld = 1";
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':usr_id' => $this->user->getId()]);
 
         $sql = "UPDATE basusr SET lastconn=NOW() WHERE usr_id = :usr_id AND actif = 1";
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':usr_id' => $this->user->getId()]);
 
         unset($stmt);
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::DOWNLOAD_QUOTAS_RESET,
             new DownloadQuotasResetEvent(
                 $this
-            )
+            ),
+            AclEvents::DOWNLOAD_QUOTAS_RESET
         );
 
         return $this;
@@ -1691,14 +1674,12 @@ class ACL implements cache_cacheableInterface
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         unset($stmt);
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_CHANGED,
             new DownloadQuotasOnBaseChangedEvent(
                 $this,
                 array(
@@ -1706,7 +1687,8 @@ class ACL implements cache_cacheableInterface
                     'remain_dwnld'=>$restes,
                     'month_dwnld_max'=>$droits
                 )
-            )
+            ),
+            AclEvents::DOWNLOAD_QUOTAS_ON_BASE_CHANGED
         );
 
         return $this;
@@ -1721,10 +1703,8 @@ class ACL implements cache_cacheableInterface
             ':usr_id'    => $this->user->getId()
         ];
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, $params);
+        $row = $stmt->fetchAssociative();
 
         if (!$row) {
             return $this;
@@ -1789,7 +1769,7 @@ class ACL implements cache_cacheableInterface
 
         foreach ($this->get_granted_base([], [$databox->get_sbas_id()]) as $collection) {
             try {
-                $stmt->execute([
+                $stmt->executeStatement([
                     ':site_id'  => $this->app['conf']->get(['main', 'key']),
                     ':usr_id'   => $this->user->getId(),
                     ':coll_id'  => $collection->get_coll_id(),
@@ -1797,12 +1777,10 @@ class ACL implements cache_cacheableInterface
                     ':mask_xor' => $this->get_mask_xor($collection->get_base_id()),
                     ':ord'      => $iord++
                 ]);
-            } catch (DBALException $e) {
+            } catch (\Doctrine\DBAL\Exception $e) {
 
             }
         }
-
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -1820,10 +1798,9 @@ class ACL implements cache_cacheableInterface
     {
         $sql = 'DELETE FROM collusr WHERE usr_id = :usr_id AND site = :site';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute([
+        $stmt->executeStatement([
             ':usr_id' => $this->user->getId(), ':site'   => $this->app['conf']->get(['main', 'key'])
         ]);
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -1858,21 +1835,20 @@ class ACL implements cache_cacheableInterface
             . " WHERE usr_id = :usr_id and base_id = :base_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':base_id' => $base_id, ':usr_id'  => $this->user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':base_id' => $base_id, ':usr_id'  => $this->user->getId()]);
 
         unset($stmt);
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::MASKS_ON_BASE_CHANGED,
             new MasksOnBaseChangedEvent(
                 $this,
                 array(
                     'base_id'=>$base_id
                 )
-            )
+            ),
+            AclEvents::MASKS_ON_BASE_CHANGED
         );
 
         return $this;
@@ -1912,32 +1888,31 @@ class ACL implements cache_cacheableInterface
         return $this->_limited[$base_id];
     }
 
-    public function set_limits($base_id, $limit, DateTime $limit_from = null, DateTime $limit_to = null)
+    public function set_limits($base_id, $limit, ?DateTime $limit_from = null, ?DateTime $limit_to = null)
     {
         $sql = "UPDATE basusr\n"
             . " SET time_limited = :time_limited, limited_from = :limited_from, limited_to = :limited_to\n"
             . " WHERE base_id = :base_id AND usr_id = :usr_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([
+        $stmt->executeStatement([
             ':time_limited' => $limit ? 1 : 0,
             ':usr_id' => $this->user->getId(),
             ':base_id' => $base_id,
             ':limited_from' => NullableDateTime::format($limit_from),
             ':limited_to' => NullableDateTime::format($limit_to),
         ]);
-        $stmt->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_LIMITS_BAS);
 
         $this->app['dispatcher']->dispatch(
-            AclEvents::ACCESS_PERIOD_CHANGED,
             new AccessPeriodChangedEvent(
                 $this,
                 array(
                     'base_id'=>$base_id
                 )
-            )
+            ),
+            AclEvents::ACCESS_PERIOD_CHANGED
         );
 
         return $this;
@@ -1965,8 +1940,7 @@ class ACL implements cache_cacheableInterface
         $sql = "SELECT base_id FROM basusr WHERE order_master='1' AND usr_id= :usr_id";
         $result = $this->app->getApplicationBox()
             ->get_connection()
-            ->executeQuery($sql, [':usr_id' => $this->user->getId()])
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery($sql, [':usr_id' => $this->user->getId()])->fetchAllAssociative();
 
 
         $baseIds = [];
@@ -2016,12 +1990,11 @@ class ACL implements cache_cacheableInterface
         $sql = "UPDATE basusr SET order_master = :master WHERE usr_id = :usr_id AND base_id = :base_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([
+        $stmt->executeStatement([
             ':master'    => $bool ? 1 : 0,
             ':usr_id'    => $this->user->getId(),
             ':base_id'   => $collection->get_base_id()
         ]);
-        $stmt->closeCursor();
 
         return $this;
     }

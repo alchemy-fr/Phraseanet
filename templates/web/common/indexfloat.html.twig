@@ -5,7 +5,7 @@
     <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ module_name }} </title>
     <meta property="og:title" content="{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ module_name }}">
     <meta property="og:site_name" content="{{ app['conf'].get(['registry', 'general', 'title']) }}">
-    <meta property="og:url" content="{{ app['request'].getUri }}">
+    <meta property="og:url" content="{{ app['request_stack'].currentRequest.getUri }}">
     {% block rss %}{% endblock %}
     {% block stylesheet %}{% endblock %}
     {% block icon %}{% endblock %}

@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class PhraseaExceptionHandlerSubscriber implements EventSubscriberInterface
@@ -32,19 +32,19 @@ class PhraseaExceptionHandlerSubscriber implements EventSubscriberInterface
         $this->enabled = false;
     }
 
-    public function onSilexError(GetResponseForExceptionEvent $event)
+    public function onSilexError(ExceptionEvent $event)
     {
         if (!$this->enabled) {
             return;
         }
 
-        $event->setResponse($this->handler->createResponse($event->getException()));
+        $event->setResponse($this->handler->createResponse($event->getThrowable()));
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::EXCEPTION => ['onSilexError', -2]];
     }

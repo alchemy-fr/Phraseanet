@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
 
 class record_preview extends record_adapter
 {
@@ -76,7 +76,7 @@ class record_preview extends record_adapter
 
     protected $statistics;
 
-    public function __construct(Application $app, $env, $pos, $contId, SearchEngineInterface $search_engine = null, $query = '', SearchEngineOptions $options = null)
+    public function __construct(Application $app, $env, $pos, $contId, ?SearchEngineInterface $search_engine = null, $query = '', ?SearchEngineOptions $options = null)
     {
         $number = null;
         $this->env = $env;
@@ -349,7 +349,7 @@ class record_preview extends record_adapter
 
         $sql .= 'ORDER BY d.date, usrid DESC';
 
-        foreach ($this->getDataboxConnection()->executeQuery($sql, $params)->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($this->getDataboxConnection()->executeQuery($sql, $params)->fetchAllAssociative() as $row) {
             $hour = $row['date'];
 
             if ( ! isset($tab[$hour]))
@@ -365,8 +365,10 @@ class record_preview extends record_adapter
             if ( ! isset($tab[$hour][$site][$action]))
                 $tab[$hour][$site][$action] = [];
 
-            if ( ! isset($tab[$hour][$site][$action][$row['usr_id']])) {
-                $tab[$hour][$site][$action][$row['usr_id']] =
+            $usrId = $row['usr_id'] ?? '';
+
+            if ( ! isset($tab[$hour][$site][$action][$usrId])) {
+                $tab[$hour][$site][$action][$usrId] =
                     [
                         'final' => []
                         , 'comment' => []
@@ -374,15 +376,15 @@ class record_preview extends record_adapter
                 ];
             }
 
-            if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
+            if ( ! in_array($row['final'], $tab[$hour][$site][$action][$usrId]['final'])) {
                 if ($action == 'collection') {
-                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->getDataboxId(), $row['final'], $this->app);
+                    $tab[$hour][$site][$action][$usrId]['final'][] = phrasea::baseFromColl($this->getDataboxId(), $row['final'], $this->app);
                 } else {
-                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = $row['final'];
+                    $tab[$hour][$site][$action][$usrId]['final'][] = $row['final'];
                 }
             }
-            if ( ! in_array($row['comment'], $tab[$hour][$site][$action][$row['usr_id']]['comment']))
-                $tab[$hour][$site][$action][$row['usr_id']]['comment'][] =
+            if ( ! in_array($row['comment'], $tab[$hour][$site][$action][$usrId]['comment']))
+                $tab[$hour][$site][$action][$usrId]['comment'][] =
                     $row['comment'];
         }
 
@@ -398,7 +400,7 @@ class record_preview extends record_adapter
      * @param int $nbDays
      * @return array|bool       false if user is not allowed to see stats (aka report)
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getStatistics($nbDays)
     {
@@ -480,8 +482,7 @@ class record_preview extends record_adapter
                     ':site'      => $this->app['conf']->get(['main', 'key']),
                     ':from'      => $this->statistics['from'],
                     ':to'        => $this->statistics['to']
-                ])
-                ->fetchAll(PDO::FETCH_ASSOC);
+                ])->fetchAllAssociative();
             foreach ($result as $row) {
                 $date = $row['datee'];
                 if(array_key_exists($date, $this->statistics['by_day'])) {
@@ -507,8 +508,7 @@ class record_preview extends record_adapter
                     ':site'      => $this->app['conf']->get(['main', 'key']),
                     ':from'      => $this->statistics['from'],
                     ':to'        => $this->statistics['to']
-                ])
-                ->fetchAll(PDO::FETCH_ASSOC);
+                ])->fetchAllAssociative();
             foreach ($result as $row) {
                 $date = $row['datee'];
                 if(array_key_exists($date, $this->statistics['by_day'])) {
@@ -529,8 +529,7 @@ class record_preview extends record_adapter
                     ':record_id' => $this->getRecordId(),
                     ':from'      => $this->statistics['from'],
                     ':to'        => $this->statistics['to']
-                ])
-                ->fetchAll(PDO::FETCH_ASSOC);
+                ])->fetchAllAssociative();
             foreach ($result as $row) {
                 $k = $row['referrer'];
                 if ($k == 'NO REFERRER') {
@@ -618,8 +617,7 @@ class record_preview extends record_adapter
             ->executeQuery($sql, [
                 ':record_id' => $this->getRecordId(),
                 ':site' => $this->app['conf']->get(['main', 'key'])
-            ])
-            ->fetchAll(PDO::FETCH_ASSOC);
+            ])->fetchAllAssociative();
 
         foreach ($result as $row) {
             if (isset($views[$row['datee']])) {
@@ -639,7 +637,7 @@ class record_preview extends record_adapter
 
         $width = 350;
         $height = 150;
-        $url = Url::factory('https://chart.googleapis.com/chart?' .
+        $url = new Uri('https://chart.googleapis.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $views) .
             '&cht=lc' .
@@ -684,8 +682,7 @@ class record_preview extends record_adapter
             GROUP BY referrer ORDER BY referrer ASC';
 
         $result = $this->getDataboxConnection()
-            ->executeQuery($sql, [':record_id' => $this->getRecordId()])
-            ->fetchAll(PDO::FETCH_ASSOC);
+            ->executeQuery($sql, [':record_id' => $this->getRecordId()])->fetchAllAssociative();
 
         $referrers = [];
 
@@ -715,7 +712,7 @@ class record_preview extends record_adapter
         $width = 550;
         $height = 100;
 
-        $url = Url::factory('https://chart.googleapis.com/chart?'
+        $url = new Uri('https://chart.googleapis.com/chart?'
             . 'cht=p3&chf=bg,s,00000000&chd=t:'
             . implode(',', $referrers)
             . '&chs=' . $width . 'x' . $height
@@ -771,8 +768,7 @@ class record_preview extends record_adapter
             ->executeQuery($sql, [
                 ':record_id' => $this->getRecordId(),
                 ':site'      => $this->app['conf']->get(['main', 'key'])
-            ])
-            ->fetchAll(PDO::FETCH_ASSOC);
+            ])->fetchAllAssociative();
 
         $top = 10;
 
@@ -785,7 +781,7 @@ class record_preview extends record_adapter
 
         $width = 250;
         $height = 150;
-        $url = Url::factory('https://chart.googleapis.com/chart?' .
+        $url = new Uri('https://chart.googleapis.com/chart?' .
             'chs=' . $width . 'x' . $height .
             '&chd=t:' . implode(',', $dwnls) .
             '&cht=lc' .

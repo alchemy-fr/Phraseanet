@@ -17,37 +17,41 @@ use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\TaskManager\Editor\DefaultEditor;
 use Alchemy\Phrasea\Webhook\EventProcessorFactory;
-use Guzzle\Http\Client as GuzzleClient;
-use Guzzle\Batch\BatchBuilder;
-use Guzzle\Http\Message\Request;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Silex\Application;
-use Guzzle\Common\Event;
-use Guzzle\Plugin\Backoff\BackoffPlugin;
-use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
-use Guzzle\Plugin\Backoff\CallbackBackoffStrategy;
-use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WebhookJob extends AbstractJob
 {
     private $httpClient;
 
+    private $userAgent;
+
     private $firstRun = true;
 
     public function __construct(
-        TranslatorInterface $translator,
-        EventDispatcherInterface $dispatcher = null,
-        LoggerInterface $logger = null,
-        GuzzleClient $httpClient = null
+        \Symfony\Contracts\Translation\TranslatorInterface $translator,
+        ?EventDispatcherInterface $dispatcher = null,
+        ?LoggerInterface $logger = null,
+        ?ClientInterface $httpClient = null
     )
     {
         parent::__construct($translator, $dispatcher, $logger);
 
-        $this->httpClient = $httpClient ?: new GuzzleClient();
+        $this->httpClient = $httpClient ?: new GuzzleClient(['handler' => HandlerStack::create()]);
         $version = new Version();
-        $this->httpClient->setUserAgent(sprintf('Phraseanet/%s (%s)', $version->getNumber(), $version->getName()));
+        $this->userAgent = sprintf('Phraseanet/%s (%s)', $version->getNumber(), $version->getName());
     }
 
     /**
@@ -92,21 +96,27 @@ class WebhookJob extends AbstractJob
         $that = $this;
 
         if ($this->firstRun) {
-            $this->httpClient->getEventDispatcher()->addListener('request.error', function (Event $event) {
-                // override guzzle default behavior of throwing exceptions
-                // when 4xx & 5xx responses are encountered
-                $event->stopPropagation();
-            }, -254);
+            $handler = $this->httpClient->getConfig('handler');
 
-            // Set callback which logs success or failure
-            $subscriber = new CallbackBackoffStrategy(function ($retries, Request $request, $response, $e) use ($app, $that) {
-                $retry = true;
-                if ($response && (null !== $deliverId = parse_url($request->getUrl(), PHP_URL_FRAGMENT))) {
+            if ($handler instanceof HandlerStack) {
+                // logs success or failure of each delivery attempt and retries failed ones
+                $decider = function ($retries, RequestInterface $request, ?ResponseInterface $response = null, $exception = null) use ($app, $that) {
+                    if ($retries >= WebhookEventDelivery::MAX_DELIVERY_TRIES) {
+                        return false;
+                    }
+
+                    $deliverId = $request->getUri()->getFragment();
+
+                    if (null === $response || '' === $deliverId) {
+                        return $exception instanceof ConnectException;
+                    }
+
                     $delivery = $app['repo.webhook-delivery']->find($deliverId);
 
-                    $logContext = [ 'host' => $request->getHost() ];
+                    $logContext = [ 'host' => $request->getUri()->getHost() ];
 
-                    if ($response->isSuccessful()) {
+                    $statusCode = $response->getStatusCode();
+                    if (($statusCode >= 200 && $statusCode < 300) || $statusCode === 304) {
                         $app['manipulator.webhook-delivery']->deliverySuccess($delivery);
 
                         $logType = 'info';
@@ -124,19 +134,19 @@ class WebhookJob extends AbstractJob
                             $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
                             $delivery->getThirdPartyApplication()->getName()
                         );
+
+                        $retry = true;
                     }
 
                     $that->log($logType, $logEntry, $logContext);
 
                     return $retry;
-                }
-            }, true, new CurlBackoffStrategy());
+                };
 
-            // set max retries
-            $subscriber = new TruncatedBackoffStrategy(WebhookEventDelivery::MAX_DELIVERY_TRIES, $subscriber);
-            $subscriber = new BackoffPlugin($subscriber);
-
-            $this->httpClient->addSubscriber($subscriber);
+                $handler->push(Middleware::retry($decider, function () {
+                    return 0;
+                }), 'webhook_retry');
+            }
 
             $this->firstRun = false;
         }
@@ -168,10 +178,7 @@ class WebhookJob extends AbstractJob
         $eventProcessor = $eventFactory->get($event);
         $data = $eventProcessor->process($event);
 
-        // batch requests
-        $batch = BatchBuilder::factory()
-            ->transferRequests(10)
-            ->build();
+        $requests = [];
 
         foreach ($thirdPartyApplications as $thirdPartyApplication) {
             $delivery = $app['manipulator.webhook-delivery']->create($thirdPartyApplication, $event);
@@ -180,12 +187,22 @@ class WebhookJob extends AbstractJob
             $uniqueUrl = $this->getUrl($thirdPartyApplication, $delivery);
 
             // create http request with data as request body
-            $batch->add($this->httpClient->createRequest('POST', $uniqueUrl, [
-                'Content-Type' => 'application/vnd.phraseanet.event+json'
-            ], json_encode($data)));
+            $requests[] = new Request('POST', $uniqueUrl, [
+                'Content-Type' => 'application/vnd.phraseanet.event+json',
+                'User-Agent' => $this->userAgent,
+            ], json_encode($data));
         }
 
-        $batch->flush();
+        // send requests by batches of 10; 4xx and 5xx responses are handled as delivery failures, not thrown
+        $pool = new Pool($this->httpClient, $requests, [
+            'concurrency' => 10,
+            'options' => [RequestOptions::HTTP_ERRORS => false],
+            'rejected' => function ($reason) {
+                $this->log('error', sprintf('Webhook delivery failed: %s', $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason));
+            },
+        ]);
+
+        $pool->promise()->wait();
     }
 
     private function getUrl(ApiApplication $application, WebhookEventDelivery $delivery)

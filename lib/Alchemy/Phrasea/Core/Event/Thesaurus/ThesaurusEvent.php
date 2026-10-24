@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Thesaurus;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class ThesaurusEvent extends Event
 {

@@ -31,6 +31,6 @@ class AuthorizationChecker
             $attributes = [$attributes];
         }
 
-        return $this->accessDecisionManager->decide($this->token, $attributes, $object);
+        return $this->accessDecisionManager->decide($this->token, $attributes, $object, null, true);
     }
 }

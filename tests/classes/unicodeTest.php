@@ -1,9 +1,14 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\unicode::class, 'convert')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\unicode::class, 'remove_diacritics')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\unicode::class, 'remove_nonazAZ09')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\unicode::class, 'remove_first_digits')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\unicode::class, 'substituteCtrlCharacters')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\unicode::class, 'toUTF8')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\unicode::class, 'parseDate')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class unicodeTest extends \PhraseanetTestCase
 {
     /**
@@ -11,19 +16,16 @@ class unicodeTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->object = new unicode();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // no-op
     }
 
-    /**
-     * @covers \unicode::convert
-     */
     public function testConvert()
     {
         $testStr = 'ÉLÉPHANT à rôtir';
@@ -32,27 +34,18 @@ class unicodeTest extends \PhraseanetTestCase
         $this->assertEquals('elephant a rotir', $this->object->convert($testStr, unicode::CONVERT_TO_LCND));
     }
 
-    /**
-     * @covers \unicode::convert
-     * @expectedException        \Exception_InvalidArgument
-     */
     public function testConvertError()
     {
+        $this->expectException(\Exception_InvalidArgument::class);
         $this->object->convert('ÉLÉPHANT à rôtir', 'UNDEFINED_CONSTANT');
     }
 
-    /**
-     * @covers \unicode::remove_diacritics
-     */
     public function testRemove_diacritics()
     {
         $testStr = '&é"\'(-èÉ_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿';
         $this->assertEquals('&e"\'(-eE_ca)=$*u:;,?./§%μ£°0987654321Œ3~#{[|^`@]}e32÷×¿',$this->object->remove_diacritics($testStr));
     }
 
-    /**
-     * @covers \unicode::remove_nonazAZ09
-     */
     public function testRemove_nonazAZ09()
     {
         $testStr = 'É&é"\'(-è_çà)=$*ù:;,?./§%µ£°0987654321Œ3~#{[|^`@]}ê³²÷×¿';
@@ -63,9 +56,6 @@ class unicodeTest extends \PhraseanetTestCase
         $this->assertEquals('Eeecau09876543213e32'   , $this->object->remove_nonazAZ09($testStr, false, false, false));
     }
 
-    /**
-     * @covers \unicode::remove_first_digits
-     */
     public function testRemove_first_digits()
     {
         $this->assertEquals('', $this->object->remove_first_digits('123456789'));
@@ -74,9 +64,6 @@ class unicodeTest extends \PhraseanetTestCase
         $this->assertEquals('a2b5cdeé', $this->object->remove_first_digits('4a2b5cdeé'));
     }
 
-    /**
-     * @covers \unicode::substituteCtrlCharacters
-     */
     public function testSubstituteCtrlCharacters()
     {
         $string = 'Hello' . chr(30) . 'World !';
@@ -86,9 +73,6 @@ class unicodeTest extends \PhraseanetTestCase
         $this->assertEquals($string, $this->object->substituteCtrlCharacters($string, '+'));
     }
 
-    /**
-     * @covers \unicode::toUTF8
-     */
     public function testToUTF8()
     {
         $reference = 'Un éléphant ça trompe énormément !';
@@ -102,9 +86,6 @@ class unicodeTest extends \PhraseanetTestCase
         $this->assertEquals($reference, $this->object->toUTF8(file_get_contents(__DIR__ . '/../files/WindowsLatin2.txt')));
     }
 
-    /**
-     * @covers \unicode::parseDate
-     */
     public function testparseDate()
     {
         $this->assertEquals('2012/00/00 00:00:00', $this->object->parseDate('2012'));

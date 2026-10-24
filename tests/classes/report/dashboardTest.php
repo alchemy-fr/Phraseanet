@@ -1,32 +1,30 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_dashboardTest extends \report_abstractReportTestCase
 {
     protected $dashboard;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->dashboard = new module_report_dashboard(self::$DI['app'], self::$DI['user']);
         $this->dashboard->setDate('-2 month', 'now');
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $this->dashboard->legendDay);
+        $this->assertIsArray($this->dashboard->legendDay);
         $this->assertNotNull($this->dashboard->dmin);
         $this->assertNotNull($this->dashboard->dmax);
         $this->assertGreaterThanOrEqual(1, count($this->dashboard->authorizedCollection));
         $this->assertEquals($this->dashboard->authorizedCollection, $this->dashboard->authorizedCollection());
 
         foreach ($this->dashboard->authorizedCollection as $coll) {
-            $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $coll);
+            $this->assertIsArray($coll);
             $this->assertArrayHasKey('sbas_id', $coll);
             $this->assertArrayHasKey('coll', $coll);
             $this->assertArrayHasKey('name', $coll);
-            $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $coll['sbas_id']);
-            $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $coll['name']);
-            $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $coll['coll']);
+            $this->assertIsInt($coll['sbas_id']);
+            $this->assertIsString($coll['name']);
+            $this->assertIsString($coll['coll']);
         }
     }
 
@@ -53,9 +51,9 @@ class report_dashboardTest extends \report_abstractReportTestCase
                 continue;
 
             if (in_array($key, $int))
-                $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $dash);
+                $this->assertIsInt($dash);
             elseif (in_array($key, $top)) {
-                $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $dash);
+                $this->assertIsArray($dash);
                 $this->assertLessThanOrEqual($this->dashboard->nbtop, count($dash));
                 $lastvalue = null;
                 foreach ($dash as $value) {
@@ -79,8 +77,8 @@ class report_dashboardTest extends \report_abstractReportTestCase
 
     public function testGetTitleDate()
     {
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->dashboard->getTitleDate('dmax'));
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->dashboard->getTitleDate('dmin'));
+        $this->assertIsString($this->dashboard->getTitleDate('dmax'));
+        $this->assertIsString($this->dashboard->getTitleDate('dmin'));
         try {
             $this->dashboard->getTitleDate('none');
             $this->fail('must throw an axception right here');
@@ -91,7 +89,7 @@ class report_dashboardTest extends \report_abstractReportTestCase
 
     public function testGetListeBase()
     {
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->dashboard->getListeBase(' '));
+        $this->assertIsString($this->dashboard->getListeBase(' '));
     }
 
     public function testGroup()

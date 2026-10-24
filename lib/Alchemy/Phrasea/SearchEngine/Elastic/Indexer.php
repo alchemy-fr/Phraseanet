@@ -69,7 +69,7 @@ class Indexer
         Index $index,
         TermIndexer $termIndexer,
         RecordIndexer $recordIndexer,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     )
     {
         $this->client = $client;
@@ -320,12 +320,12 @@ class Indexer
 
     public function indexRecord(RecordInterface $record)
     {
-        $this->indexQueue->attach($record);
+        $this->indexQueue->offsetSet($record);
     }
 
     public function deleteRecord(RecordInterface $record)
     {
-        $this->deleteQueue->attach($record);
+        $this->deleteQueue->offsetSet($record);
     }
 
     /**

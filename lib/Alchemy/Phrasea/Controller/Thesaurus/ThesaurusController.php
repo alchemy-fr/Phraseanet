@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -708,8 +708,8 @@ class ThesaurusController extends Controller
                 }
 
                 $this->dispatch(
-                    ThesaurusEvents::IMPORTED,
-                    new ThesaurusEvent\Imported($databox)
+                    new ThesaurusEvent\Imported($databox),
+                    ThesaurusEvents::IMPORTED
                 );
             }
         } catch (\Exception $e) {
@@ -757,10 +757,8 @@ class ThesaurusController extends Controller
         $bases = $languages = [];
 
         $appbox = $this->getApplicationBox();
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->getAuthenticatedUser()->getId()]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql, [':usr_id' => $this->getAuthenticatedUser()->getId()]);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             try {
@@ -996,8 +994,8 @@ class ThesaurusController extends Controller
 
             if ($request->get("reindex")) {
                 $this->dispatch(
-                    ThesaurusEvents::FIELD_LINKED,
-                    new ThesaurusEvent\FieldLinked($databox)
+                    new ThesaurusEvent\FieldLinked($databox),
+                    ThesaurusEvents::FIELD_LINKED
                 );
             }
         } catch (\Exception $e) {
@@ -1246,7 +1244,7 @@ class ThesaurusController extends Controller
         $data['indexName'] = $options->getIndexName();
         $data['databoxIds'] = [$request->get('databox_id')];
 
-        $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($data));
+        $this->getDispatcher()->dispatch(new PopulateIndexEvent($data), WorkerEvents::POPULATE_INDEX);
 
         return $this->app->json(["status" => "success"]);
     }
@@ -1399,8 +1397,8 @@ class ThesaurusController extends Controller
                                 $databox->saveThesaurus($domth);
 
                                 $this->dispatch(
-                                    ThesaurusEvents::CANDIDATE_ACCEPTED_AS_CONCEPT,
-                                    new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id'))
+                                    new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id')),
+                                    ThesaurusEvents::CANDIDATE_ACCEPTED_AS_CONCEPT
                                 );
 
                                 /** @var \DOMElement $r */
@@ -1443,8 +1441,8 @@ class ThesaurusController extends Controller
                                     $databox->saveThesaurus($domth);
 
                                     $this->dispatch(
-                                        ThesaurusEvents::CANDIDATE_ACCEPTED_AS_SYNONYM,
-                                        new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id'))
+                                        new ThesaurusEvent\CandidateAccepted($databox, $new_te->getAttribute('id')),
+                                        ThesaurusEvents::CANDIDATE_ACCEPTED_AS_SYNONYM
                                     );
                                 }
                                 /** @var \DOMElement $r */
@@ -1532,8 +1530,8 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            ThesaurusEvents::SYNONYM_LNG_CHANGED,
-                            new ThesaurusEvent\SynonymLngChanged($databox, $sy0->getAttribute('id'))
+                            new ThesaurusEvent\SynonymLngChanged($databox, $sy0->getAttribute('id')),
+                            ThesaurusEvents::SYNONYM_LNG_CHANGED
                         );
                     }
 
@@ -1614,8 +1612,8 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            ThesaurusEvents::SYNONYM_POSITION_CHANGED,
-                            new ThesaurusEvent\SynonymPositionChanged($databox, $sy0->getAttribute('id'))
+                            new ThesaurusEvent\SynonymPositionChanged($databox, $sy0->getAttribute('id')),
+                            ThesaurusEvents::SYNONYM_POSITION_CHANGED
                         );
 
                     }
@@ -1759,8 +1757,8 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            ThesaurusEvents::SYNONYM_TRASHED,
-                            new ThesaurusEvent\ItemTrashed($databox, $te->getAttribute('id'), $delsy->getAttribute('id'))
+                            new ThesaurusEvent\ItemTrashed($databox, $te->getAttribute('id'), $delsy->getAttribute('id')),
+                            ThesaurusEvents::SYNONYM_TRASHED
                         );
 
                         $r = $refresh_list->appendChild($ret->createElement("refresh"));
@@ -1876,8 +1874,8 @@ class ThesaurusController extends Controller
                         $databox->saveCterms($domct);
 
                         $this->dispatch(
-                            ThesaurusEvents::CONCEPT_TRASHED,
-                            new ThesaurusEvent\ItemTrashed($databox, $thnode_parent->getAttribute('id'), $newte->getAttribute('id'))
+                            new ThesaurusEvent\ItemTrashed($databox, $thnode_parent->getAttribute('id'), $newte->getAttribute('id')),
+                            ThesaurusEvents::CONCEPT_TRASHED
                         );
 
                         $thnode_parent->removeChild($thnode);
@@ -2321,8 +2319,8 @@ class ThesaurusController extends Controller
                         $databox->saveThesaurus($dom);
 
                         $this->dispatch(
-                            ThesaurusEvents::CONCEPT_DELETED,
-                            new ThesaurusEvent\ConceptDeleted($databox, $refrid, $sy_evt_parm)
+                            new ThesaurusEvent\ConceptDeleted($databox, $refrid, $sy_evt_parm),
+                            ThesaurusEvents::CONCEPT_DELETED
                         );
 
                         /** @var \DOMElement $r */
@@ -2430,8 +2428,8 @@ class ThesaurusController extends Controller
                     $databox->saveThesaurus($domth);
 
                     $this->dispatch(
-                        ThesaurusEvents::SYNONYM_ADDED,
-                        new ThesaurusEvent\ItemAdded($databox, $syid)
+                        new ThesaurusEvent\ItemAdded($databox, $syid),
+                        ThesaurusEvents::SYNONYM_ADDED
                     );
 
                     /** @var \DOMElement $r */
@@ -2535,8 +2533,8 @@ class ThesaurusController extends Controller
                     $databox->saveThesaurus($domth);
 
                     $this->dispatch(
-                        ThesaurusEvents::CONCEPT_ADDED,
-                        new ThesaurusEvent\ItemAdded($databox, $syid)
+                        new ThesaurusEvent\ItemAdded($databox, $syid),
+                        ThesaurusEvents::CONCEPT_ADDED
                     );
 
                     /** @var \DOMElement $r */

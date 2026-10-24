@@ -45,7 +45,7 @@ class TaskManagerController extends Controller
         );
 
         $this->getDispatcher()->addListener(KernelEvents::TERMINATE, function () use ($cmdLine) {
-            $process = new Process($cmdLine);
+            $process = Process::fromShellCommandline($cmdLine);
 
             $process->setTimeout(0);
             $process->disableOutput();
@@ -245,17 +245,19 @@ class TaskManagerController extends Controller
             return $this->app->json(['success' => false, 'message' => sprintf('Unable to load XML %s', $request->request->get('xml'))]);
         }
 
-        $form = $this->app->form(new TaskForm());
+        $form = $this->app->form(TaskForm::class);
         $form->setData($task);
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getTaskManipulator()->update($task);
 
             return $this->app->json(['success' => true]);
         }
         return $this->app->json([
             'success' => false,
-            'message' => implode("\n", iterator_to_array($form->getErrors())),
+            'message' => implode("\n", array_map(function ($error) {
+                return $error->getMessage();
+            }, iterator_to_array($form->getErrors()))),
         ]);
     }
 
@@ -277,7 +279,7 @@ class TaskManagerController extends Controller
 
     public function getTask(Request $request, Task $task)
     {
-        if ('json' === $request->getContentType()) {
+        if ('json' === $request->getContentTypeFormat()) {
             return $this->app->json(array_replace([
                 'id' => $task->getId(),
                 'name' => $task->getName(),
@@ -291,7 +293,7 @@ class TaskManagerController extends Controller
             ->create($task->getJobId())
             ->getEditor();
 
-        $form = $this->app->form(new TaskForm());
+        $form = $this->app->form(TaskForm::class);
         $form->setData($task);
 
         return $this->render($editor->getTemplatePath(), [
@@ -311,7 +313,7 @@ class TaskManagerController extends Controller
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->strictErrorChecking = true;
 
-        return (Boolean) @$dom->loadXML($string);
+        return (bool) @$dom->loadXML($string);
     }
 
     private function getTaskResourceUrls($taskId)

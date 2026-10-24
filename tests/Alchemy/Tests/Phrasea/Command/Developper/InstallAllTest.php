@@ -4,40 +4,27 @@ namespace Alchemy\Tests\Phrasea\Command\Developper;
 
 use Alchemy\Phrasea\Command\Developer\InstallAll;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class InstallAllTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createStub('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        self::$DI['cli']['console'] = $this->getMockBuilder('Symfony\Component\Console\Application')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['cli']['console'] = $this->createMock('Symfony\Component\Console\Application');
 
-        $n = 0;
-        foreach ([
-            'dependencies:composer'
-        ] as $name) {
-            $command = $this->getMockBuilder('Symfony\Component\Console\Command\Command')
-                ->setMethods(['execute'])
-                ->disableOriginalConstructor()
-                ->getMock();
-            $command->expects($this->once())
-                ->method('execute')
-                ->with($input, $output)
-                ->will($this->returnValue(0));
+        $command = $this->createMock('Symfony\Component\Console\Command\Command');
+        $command->expects($this->once())
+            ->method('run')
+            ->with($input, $output)
+            ->willReturn(0);
 
-            self::$DI['cli']['console']->expects($this->at($n))
-                ->method('get')
-                ->with($name)
-                ->will($this->returnValue($command));
-            $n++;
-        }
+        self::$DI['cli']['console']->expects($this->once())
+            ->method('get')
+            ->with('dependencies:composer')
+            ->willReturn($command);
 
         $command = new InstallAll();
         $command->setContainer(self::$DI['cli']);

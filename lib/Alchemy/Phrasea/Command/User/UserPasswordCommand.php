@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputOption;
 
 class UserPasswordCommand extends Command
@@ -50,7 +51,7 @@ class UserPasswordCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $dialog             = $this->getHelperSet()->get('dialog');
+        $dialog             = $this->getHelper('question');
         $userRepository     = $this->container['repo.users'];
         $userManipulator    = $this->container['manipulator.user'];
 
@@ -106,7 +107,7 @@ class UserPasswordCommand extends Command
         if ($password) {
             if (!$yes) {
                 do {
-                    $continue = mb_strtolower($dialog->ask($output, '<question>Do you want really set password to this user? (y/N)</question>', 'N'));
+                    $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question>Do you want really set password to this user? (y/N)</question>', 'N')));
                 } while (!in_array($continue, ['y', 'n']));
 
                 if ($continue !== 'y') {
@@ -165,7 +166,7 @@ class UserPasswordCommand extends Command
 
         $token = $this->container['manipulator.token']->createResetPasswordToken($user);
                  
-        $url = $this->container['url_generator']->generate('login_renew_password', [ 'token' => $token->getValue() ], true);
+        $url = $this->container['url_generator']->generate('login_renew_password', [ 'token' => $token->getValue() ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
         $mail = MailRequestPasswordUpdate::create($this->container, $receiver);
         $servername = $this->container['conf']->get('servername');
         $mail->setButtonUrl($url);

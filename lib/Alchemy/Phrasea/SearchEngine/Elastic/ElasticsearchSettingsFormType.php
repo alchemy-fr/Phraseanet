@@ -20,36 +20,29 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
 class ElasticsearchSettingsFormType extends AbstractType
 {
-    /** @var GlobalStructure  */
-    private $globalStructure;
-
-    /** @var ElasticsearchOptions  */
-    private $esSettings;
-
-    private $translator;
-
-    public function  __construct(GlobalStructure $g, ElasticsearchOptions $settings, TranslatorInterface $translator)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->globalStructure = $g;
-        $this->esSettings = $settings;
-        $this->translator = $translator;
-    }
+        /** @var GlobalStructure $globalStructure */
+        $globalStructure = $options['global_structure'];
+        /** @var ElasticsearchOptions $esSettings */
+        $esSettings = $options['elasticsearch_options'];
+        /** @var TranslatorInterface $translator */
+        $translator = $options['translator'];
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
         $builder
             ->add('host', TextType::class, [
                 'label' => 'ElasticSearch server host',
             ])
             ->add('port', IntegerType::class, [
                 'label' => 'ElasticSearch service port',
-                'constraints' => new Range(['min' => 1, 'max' => 65535]),
+                'constraints' => new Range(min: 1, max: 65535),
             ])
             ->add('indexName', TextType::class, [
                 'label' => 'ElasticSearch index name',
@@ -71,15 +64,15 @@ class ElasticsearchSettingsFormType extends AbstractType
             ])
             ->add('shards', IntegerType::class, [
                 'label' => 'Number of shards',
-                'constraints' => new Range(['min' => 1]),
+                'constraints' => new Range(min: 1),
             ])
             ->add('replicas', IntegerType::class, [
                 'label' => 'Number of replicas',
-                'constraints' => new Range(['min' => 0]),
+                'constraints' => new Range(min: 0),
             ])
             ->add('minScore', IntegerType::class, [
                 'label' => 'Thesaurus Min score',
-                'constraints' => new Range(['min' => 0]),
+                'constraints' => new Range(min: 0),
             ])
             ->add('highlight', CheckboxType::class, [
                 'label' => 'Activate highlight',
@@ -119,7 +112,6 @@ class ElasticsearchSettingsFormType extends AbstractType
             $choices = array_merge(["not aggregated" => 0], $choices);  //  add this option always as first choice
             $aggs[$k] = [   // default value will be replaced by hardcoded tech fields & all databoxes fields
                 'label'              => $label,
-                'choices_as_values'  => true,
                 'choices' => $choices,
                 'attr'               => [
                     'class' => 'aggregate'
@@ -131,30 +123,30 @@ class ElasticsearchSettingsFormType extends AbstractType
         };
 
         // all fields fron conf
-        foreach($this->esSettings->getAggregableFields() as $k=>$f) {
+        foreach($esSettings->getAggregableFields() as $k=>$f) {
             // default value will be replaced by hardcoded tech fields & all databoxes fields
-            $addAgg($k, "/?\\ " . $k, $this->translator->trans("admin:searchengine:aggregates:This field does not exists in current databoxes."), true);
+            $addAgg($k, "/?\\ " . $k, $translator->trans("admin:searchengine:aggregates:This field does not exists in current databoxes."), true);
         }
 
         // add or replace hardcoded tech fields
-        foreach(ElasticsearchOptions::getAggregableTechnicalFields($this->translator) as $k => $f) {
+        foreach(ElasticsearchOptions::getAggregableTechnicalFields($translator) as $k => $f) {
             $choices = array_key_exists('choices', $f) ? $f['choices'] : null;   // a tech-field can publish it's own choices
             $help = null;
             $label = '#' . $k;
             if(!array_key_exists($k, $aggs)) {
                 $label = "/!\\ " . $label;
-                $help = $this->translator->trans("admin:searchengine:aggregates:New field, please confirm setting.");
+                $help = $translator->trans("admin:searchengine:aggregates:New field, please confirm setting.");
             }
             $addAgg($k, $label, $help, false, $choices);
         }
 
         // add or replace all databoxes fields (nb: new db field - unknown in conf - will be a the end)
-        foreach($this->globalStructure->getAllFields() as $field) {
+        foreach($globalStructure->getAllFields() as $field) {
             $k = $label = $field->getName();
             $help = null;
             if(!array_key_exists($field->getName(), $aggs)) {
                 $label = "/!\\ " . $label;
-                $help = $this->translator->trans("admin:searchengine:aggregates:New field, please confirm setting.");
+                $help = $translator->trans("admin:searchengine:aggregates:New field, please confirm setting.");
             }
             $addAgg($k, $label, $help);     // default choices
         }
@@ -166,7 +158,15 @@ class ElasticsearchSettingsFormType extends AbstractType
 
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired(['global_structure', 'elasticsearch_options', 'translator']);
+        $resolver->setAllowedTypes('global_structure', GlobalStructure::class);
+        $resolver->setAllowedTypes('elasticsearch_options', ElasticsearchOptions::class);
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
+    }
+
+    public function getBlockPrefix(): string
     {
         return 'elasticsearch_settings';
     }

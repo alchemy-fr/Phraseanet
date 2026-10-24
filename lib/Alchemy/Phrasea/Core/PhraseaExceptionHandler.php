@@ -15,14 +15,16 @@ use Alchemy\Phrasea\Utilities\PassthroughTranslator;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
-use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerAwareInterface
+class PhraseaExceptionHandler implements LoggerAwareInterface
 {
+    private $debug;
+
+    private $charset;
 
     /**
      * @var TranslatorInterface
@@ -30,36 +32,71 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerA
     private $translator;
 
     /**
-     * @var NullLogger
+     * @var LoggerInterface
      */
     private $logger;
 
-    public function __construct()
+    public function __construct($debug = true, $charset = null)
     {
+        $this->debug = (bool) $debug;
+        $this->charset = $charset ?: (ini_get('default_charset') ?: 'UTF-8');
         $this->logger = new NullLogger();
         $this->translator = new PassthroughTranslator();
     }
 
     /**
-     * @param LoggerInterface $logger
-     * @return null
+     * Registers the exception handler as the PHP exception handler.
+     *
+     * @return static
      */
-    public function setLogger(LoggerInterface $logger)
+    public static function register($debug = true, $charset = null)
+    {
+        $handler = new static($debug, $charset);
+
+        set_exception_handler([$handler, 'handle']);
+
+        return $handler;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
 
-    /**
-     * @param TranslatorInterface $translator
-     */
     public function setTranslator(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
+    /**
+     * Sends a response for an uncaught exception.
+     */
+    public function handle(\Throwable $exception)
+    {
+        $this->createResponse($exception)->send();
+    }
+
     public function createResponseBasedOnRequest(Request $request, $exception)
     {
-        return parent::createResponse($exception);
+        return $this->createResponse($exception);
+    }
+
+    /**
+     * @param \Throwable|FlattenException $exception
+     *
+     * @return Response
+     */
+    public function createResponse($exception)
+    {
+        if (!$exception instanceof FlattenException) {
+            $exception = FlattenException::createFromThrowable($exception);
+        }
+
+        return new Response(
+            $this->decorate($this->getContent($exception), $this->getStylesheet($exception)),
+            $exception->getStatusCode(),
+            $exception->getHeaders()
+        );
     }
 
     public function getContent(FlattenException $exception)
@@ -91,14 +128,15 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerA
                 $title = $this->translator->trans('Whoops, looks like something went wrong.');
         }
 
-        $content = parent::getContent($exception);
-        $start = strpos($content, '</h1>');
+        $content = '';
+        if ($this->debug) {
+            $content = $this->getDebugContent($exception);
+        }
 
-        $content = '<div id="sf-resetcontent" class="sf-reset">'
+        return '<div id="sf-resetcontent" class="sf-reset">'
             . '<h1><span>' . $title . '</span></h1>'
-            . substr($content, $start + 5);
-
-        return $content;
+            . $content
+            . '</div>';
     }
 
     public function getStylesheet(FlattenException $exception)
@@ -185,5 +223,65 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerA
             }
             .sf-reset h1 span { color:#646363; display:inline-block; margin-top:430px; margin-left:190px; font-size:28px; }
 EOF;
+    }
+
+    private function getDebugContent(FlattenException $exception)
+    {
+        $exceptions = $exception->toArray();
+        $total = count($exceptions);
+        $content = '';
+
+        foreach ($exceptions as $position => $e) {
+            $traces = '';
+            foreach ($e['trace'] as $trace) {
+                $traces .= '<li>';
+                if ($trace['function']) {
+                    $traces .= sprintf('at %s%s%s()', $this->escape($trace['class']), $this->escape($trace['type']), $this->escape($trace['function']));
+                }
+                if (isset($trace['file']) && isset($trace['line'])) {
+                    $traces .= sprintf(' in %s line %d', $this->escape($trace['file']), $trace['line']);
+                }
+                $traces .= '</li>';
+            }
+
+            $content .= sprintf(
+                '<h2 class="block_exception clear_fix"><span class="exception_counter">%d/%d</span> <span class="exception_title">%s</span> <span class="exception_message">%s</span></h2>'
+                . '<div class="block"><ol class="traces list_exception">%s</ol></div>',
+                $total - $position,
+                $total,
+                $this->escape($e['class']),
+                nl2br($this->escape($e['message'])),
+                $traces
+            );
+        }
+
+        return $content;
+    }
+
+    private function decorate($content, $css)
+    {
+        return <<<EOF
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="{$this->charset}" />
+        <meta name="robots" content="noindex,nofollow" />
+        <style>
+            html { background: #eee; padding: 10px }
+            img { border: 0; }
+            #sf-resetcontent { width:970px; margin:0 auto; }
+            $css
+        </style>
+    </head>
+    <body>
+        $content
+    </body>
+</html>
+EOF;
+    }
+
+    private function escape($value)
+    {
+        return htmlspecialchars((string) $value, ENT_COMPAT | ENT_SUBSTITUTE, $this->charset);
     }
 }

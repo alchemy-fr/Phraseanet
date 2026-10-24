@@ -5,15 +5,13 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 use Silex\Application as SilexApp;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
 {
     public function testBasic()
@@ -78,9 +76,6 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $this->assertEquals('en', $settedCookie->getValue());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testNoCookieLocaleReturnsDefaultLocale()
     {
         $app = $this->getAppThatReturnLocale();
@@ -92,9 +87,6 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Application
-     */
     public function testWrongCookieLocaleReturnsDefaultLocale()
     {
         $app = $this->getAppThatReturnLocale();
@@ -111,13 +103,11 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $app = new SilexApp();
         $app['debug'] = true;
         $app->register(new LocaleServiceProvider());
-        $app['configuration.store'] = $this->getMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
-        $app['configuration.store']->expects($this->any())
+        $app['configuration.store'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\ConfigurationInterface');
+        $app['configuration.store']
             ->method('isSetup')
             ->will($this->returnValue(true));
-        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
 
         $app['dispatcher']->addSubscriber(new PhraseaLocaleSubscriber($app));
 
@@ -130,7 +120,7 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
 
     private function mockRegistryAndReturnLocale(SilexApp $app, $locale)
     {
-        $app['conf']->expects($this->any())
+        $app['conf']
             ->method('get')
             ->will($this->returnCallback(function ($param) use ($locale) {
 

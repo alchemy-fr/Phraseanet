@@ -16,10 +16,11 @@ use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Report\Controller\ApiReportController;
 use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportService;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\Controller;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 
 class ApiReportControllerProvider extends Api implements ControllerProviderInterface, ServiceProviderInterface
@@ -29,43 +30,32 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
 
     const VERSION = '2.0.0';
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.api.v2.report'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new ApiReportController(
-                    $app['report.factory'],
-                    $app['report.service'],
-                    $app['conf']->get(['registry', 'modules', 'anonymous-report']),
-                    $app->getAclForUser($app->getAuthenticatedUser())
-                ));
-            }
-        );
+        $app['controller.api.v2.report'] = function (PhraseaApplication $app) {
+            return (new ApiReportController(
+                $app['report.factory'],
+                $app['report.service'],
+                $app['conf']->get(['registry', 'modules', 'anonymous-report']),
+                $app->getAclForUser($app->getAuthenticatedUser())
+            ));
+        };
 
-        $app['report.factory'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new ReportFactory(
-                    $app['conf']->get(['main', 'key']),
-                    $app['phraseanet.appbox'],
-                    $app->getAclForUser($app->getAuthenticatedUser())
-                ));
-            }
-        );
+        $app['report.factory'] = function (PhraseaApplication $app) {
+            return (new ReportFactory(
+                $app['conf']->get(['main', 'key']),
+                $app['phraseanet.appbox'],
+                $app->getAclForUser($app->getAuthenticatedUser())
+            ));
+        };
 
-        $app['report.service'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new ReportService(
-                    $app['conf']->get(['main', 'key']),
-                    $app['phraseanet.appbox'],
-                    $app->getAclForUser($app->getAuthenticatedUser())
-                ));
-            }
-        );
-    }
-
-    public function boot(Application $app)
-    {
-        // Intentionally left empty
+        $app['report.service'] = function (PhraseaApplication $app) {
+            return (new ReportService(
+                $app['conf']->get(['main', 'key']),
+                $app['phraseanet.appbox'],
+                $app->getAclForUser($app->getAuthenticatedUser())
+            ));
+        };
     }
 
     public function connect(Application $app)

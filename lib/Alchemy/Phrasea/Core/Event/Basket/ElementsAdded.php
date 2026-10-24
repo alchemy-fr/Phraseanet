@@ -11,7 +11,7 @@ namespace Alchemy\Phrasea\Core\Event\Basket;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ElementsAdded extends Event
 {

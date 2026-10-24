@@ -56,22 +56,19 @@ class patch_390alpha9a extends patchAbstract
     private function updateRegistry(Application $app)
     {
         $sql = 'SELECT `value` FROM registry WHERE `key` = :key';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':key' => 'GV_default_lng']);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':key' => 'GV_default_lng']);
+        $row = $stmt->fetchAssociative();
 
         $locale = null !== $row ? $row['value'] : 'fr';
 
         $sql = 'UPDATE registry SET `value` = :value WHERE `key` = :key';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':key' => 'GV_default_lng', ':value' => $this->extractLocale($locale)]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':key' => 'GV_default_lng', ':value' => $this->extractLocale($locale)]);
     }
 
     private function updateDoctrineUsers(Application $app)
     {
-        $dql = 'SELECT u FROM Phraseanet:User u WHERE u.locale IS NOT NULL';
+        $dql = 'SELECT u FROM Alchemy\Phrasea\Model\Entities\User u WHERE u.locale IS NOT NULL';
         $users = $app['orm.em']->createQuery($dql)->getResult();
 
         foreach ($users as $user) {
@@ -86,22 +83,18 @@ class patch_390alpha9a extends patchAbstract
     {
         foreach ($appbox->get_databoxes() as $databox) {
             $sql = 'SELECT id, locale FROM pref WHERE prop = "ToU"';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $databox->get_connection()->executeQuery($sql);
+            $rows = $stmt->fetchAllAssociative();
 
             $sql = 'UPDATE pref SET locale = :locale WHERE id = :id';
             $stmt = $databox->get_connection()->prepare($sql);
 
             foreach ($rows as $row) {
-                $stmt->execute([
+                $stmt->executeStatement([
                     ':locale' => $this->extractLocale($row['locale']),
                     ':id'     => $row['id'],
                 ]);
             }
-
-            $stmt->closeCursor();
         }
     }
 

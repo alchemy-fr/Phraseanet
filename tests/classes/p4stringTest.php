@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class p4stringTest extends \PhraseanetTestCase
 {
     public function testAddEndSlash()
@@ -66,12 +64,12 @@ class p4stringTest extends \PhraseanetTestCase
         $size = 102;
         $this->assertEquals('102 o', p4string::format_octets($size));
         $size = 10245335;
-        $this->assertRegExp('/^9[,\.]{1}77 Mo$/', p4string::format_octets($size));
+        $this->assertMatchesRegularExpression('/^9[,\.]{1}77 Mo$/', p4string::format_octets($size));
         $size = 10245335;
-        $this->assertRegExp('/^9[,\.]{1}771 Mo$/', p4string::format_octets($size, 3));
+        $this->assertMatchesRegularExpression('/^9[,\.]{1}771 Mo$/', p4string::format_octets($size, 3));
         $this->assertEquals('10 Mo', p4string::format_octets($size, 0));
         $size = 9990245335123153;
-        $this->assertRegexp('/^9086[,\.]{1}08 To$/', p4string::format_octets($size));
+        $this->assertMatchesRegularExpression('/^9086[,\.]{1}08 To$/', p4string::format_octets($size));
         $size = 2048;
         $this->assertEquals('2 ko', p4string::format_octets($size));
     }

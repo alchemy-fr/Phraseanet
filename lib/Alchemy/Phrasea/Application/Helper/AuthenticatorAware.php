@@ -45,7 +45,7 @@ trait AuthenticatorAware
             return $this->authenticator;
         }
 
-        if (null === $this->authenticator && $this instanceof \Pimple && $this->offsetExists('authentication')) {
+        if (null === $this->authenticator && $this instanceof \Pimple\Container && $this->offsetExists('authentication')) {
             $this->authenticator = function () {
                 return $this['authentication'];
             };

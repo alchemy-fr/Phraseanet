@@ -14,24 +14,21 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 use Alchemy\Phrasea\Controller\Admin\TaskManagerController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Model\Converter\TaskConverter;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class TaskManager implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.admin.task'] = $app->share(function (\Alchemy\Phrasea\Application $app) {
+        $app['controller.admin.task'] = function (\Alchemy\Phrasea\Application $app) {
             return (new TaskManagerController($app))
                 ->setDispatcher($app['dispatcher']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

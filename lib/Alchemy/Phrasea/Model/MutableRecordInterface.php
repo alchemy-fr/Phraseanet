@@ -23,7 +23,7 @@ interface MutableRecordInterface
     public function setIsStory($isStory);
 
     /** @param \DateTime $created */
-    public function setCreated(\DateTime $created = null);
+    public function setCreated(?\DateTime $created = null);
 
     /** @param integer $databoxId */
     public function setDataboxId($databoxId);
@@ -38,7 +38,7 @@ interface MutableRecordInterface
     public function setStatusBitField($status);
 
     /** @param \DateTime $updated */
-    public function setUpdated(\DateTime $updated = null);
+    public function setUpdated(?\DateTime $updated = null);
 
     /** @param string $type */
     public function setType($type);

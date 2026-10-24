@@ -17,6 +17,8 @@ class Bridge_Api_Dailymotion_Container implements Bridge_Api_ContainerInterface
      */
     protected $entry;
 
+    protected $url;
+
     /**
      *
      * @var string

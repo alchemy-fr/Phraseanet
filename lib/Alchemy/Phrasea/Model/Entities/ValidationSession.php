@@ -19,45 +19,33 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @ORM\Table(name="ValidationSessions")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository::class)]
+#[ORM\Table(name: 'ValidationSessions')]
 class ValidationSession
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="initiator_id")
-     */
+    #[ORM\Column(type: 'integer', nullable: true, name: 'initiator_id')]
     private $initiator;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $expires;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="basket_id")
-     */
+    #[ORM\Column(type: 'integer', nullable: true, name: 'basket_id')]
     private $basket;
+
+    private $participants;
 
     /**
      * Constructor
@@ -184,7 +172,7 @@ class ValidationSession
      * @param  Basket            $basket
      * @return ValidationSession
      */
-    public function setBasket(Basket $basket = null)
+    public function setBasket(?Basket $basket = null)
     {
         $this->basket = $basket;
 

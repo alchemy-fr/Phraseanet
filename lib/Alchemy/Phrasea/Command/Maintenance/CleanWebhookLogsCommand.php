@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command\Maintenance;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -65,19 +66,15 @@ class CleanWebhookLogsCommand extends Command
         $sql = 'SELECT id, `name`, `type`, created FROM WebhookEvents WHERE ' . $clauseWhere;
         $connection = $this->container->getApplicationBox()->get_connection();
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute();
-        $webhookEventsList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connection->executeQuery($sql);
+        $webhookEventsList = $stmt->fetchAllAssociative();
 
         $webhookEventsId = array_column($webhookEventsList, 'id');
 
         if (!empty($webhookEventsId)) {
             $sqlDelivery = "SELECT id, application_id, event_id, created FROM WebhookEventDeliveries WHERE event_id IN (" . implode(', ', $webhookEventsId) . ")";
-            $stmt = $connection->prepare($sqlDelivery);
-            $stmt->execute();
-            $webhookEventDeliveryList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $connection->executeQuery($sqlDelivery);
+            $webhookEventDeliveryList = $stmt->fetchAllAssociative();
 
             $deliveryIds = array_column($webhookEventDeliveryList, 'id');
         }
@@ -88,36 +85,34 @@ class CleanWebhookLogsCommand extends Command
 
         if ($dry) {
             $output->writeln(sprintf("\n \n dry-run , %d WebhookEvents entry to delete", count($webhookEventsList)));
-            $eventEntryTable = $this->getHelperSet()->get('table');
+            $eventEntryTable = new Table($output);
             $headers = ['id', 'name', 'type', 'created'];
             $eventEntryTable
                 ->setHeaders($headers)
                 ->setRows($webhookEventsList)
-                ->render($output);
+                ->render();
 
             if (!empty($webhookEventsId)) {
                 $output->writeln(sprintf("\n \n dry-run , %d WebhookEventDelivery entry to delete", count($webhookEventDeliveryList)));
-                $deliveryEntryTable = $this->getHelperSet()->get('table');
+                $deliveryEntryTable = new Table($output);
                 $headers = ['id', 'application_id', 'event_id', 'created'];
                 $deliveryEntryTable
                     ->setHeaders($headers)
                     ->setRows($webhookEventDeliveryList)
-                    ->render($output);
+                    ->render();
 
                 if (!empty($deliveryIds)) {
                     $sqlPayload = "SELECT id, delivery_id, status FROM WebhookEventPayloads WHERE delivery_id IN (". implode(', ', $deliveryIds).")";
-                    $stmt = $connection->prepare($sqlPayload);
-                    $stmt->execute();
-                    $webhookEventPayloadsList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
+                    $stmt = $connection->executeQuery($sqlPayload);
+                    $webhookEventPayloadsList = $stmt->fetchAllAssociative();
 
                     $output->writeln(sprintf("\n \n dry-run , %d WebhookEventPayloads entry to delete", count($webhookEventPayloadsList)));
-                    $payloadEntryTable = $this->getHelperSet()->get('table');
+                    $payloadEntryTable = new Table($output);
                     $headers = ['id', 'delivery_id', 'status'];
                     $payloadEntryTable
                         ->setHeaders($headers)
                         ->setRows($webhookEventPayloadsList)
-                        ->render($output);
+                        ->render();
                 }
             }
         } else {

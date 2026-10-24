@@ -4,14 +4,11 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SearchEngineLoggerTest extends \PhraseanetTestCase
 {
     /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineLogger::log
      * @todo   Implement testLog().
      */
     public function testLog()
@@ -30,10 +27,8 @@ class SearchEngineLoggerTest extends \PhraseanetTestCase
                 FROM log_search
                 ORDER BY id DESC
                 LIMIT 1';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         $this->assertEquals($query, $row['search']);
         $this->assertEquals($answers, $row['results']);

@@ -14,26 +14,22 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Status\CacheStatusStructureProvider;
 use Alchemy\Phrasea\Status\StatusStructureFactory;
 use Alchemy\Phrasea\Status\XmlStatusStructureProvider;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class StatusServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['status.provider'] = $app->share(function() use ($app) {
+        $app['status.provider'] = function() use ($app) {
             return new CacheStatusStructureProvider(
                 $app['cache'],
                 new XmlStatusStructureProvider($app['root.path'], $app['locales.available'])
             );
-        });
+        };
 
-        $app['factory.status-structure'] = $app->share(function() use ($app) {
+        $app['factory.status-structure'] = function() use ($app) {
             return new StatusStructureFactory($app['status.provider']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

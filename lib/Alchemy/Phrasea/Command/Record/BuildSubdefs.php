@@ -387,14 +387,14 @@ class BuildSubdefs extends Command
 
         $sqlCount = sprintf('SELECT COUNT(*) FROM (%s) AS c', $sql);
 
-        $totalRecords = (int)$this->connection->executeQuery($sqlCount)->fetchColumn();
+        $totalRecords = (int)$this->connection->executeQuery($sqlCount)->fetchOne();
 
         $nRecordsDone = 0;
 
         $again = true;
 
         $stmt = $this->connection->executeQuery($sql);
-        while($again && ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) ) {
+        while($again && ($row = $stmt->fetchAssociative()) ) {
 
             if($output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE && $progress === null) {
                 $progress = new ProgressBar($output, $totalRecords);
@@ -520,7 +520,7 @@ class BuildSubdefs extends Command
                         $msg[] = "jeton[\"write_met_subdef\"]=1";
                     }
                     if(!$this->dry) {
-                        $this->connection->executeUpdate($sql, [
+                        $this->connection->executeStatement($sql, [
                             ':record_id' => $row['record_id'],
                             ':flag_and' => ($this->reset_subdef_flag ? PhraseaTokens::MAKE_SUBDEF : 0),
                             ':flag_or' => ($this->set_writemeta_flag ? PhraseaTokens::WRITE_META_SUBDEF : 0)

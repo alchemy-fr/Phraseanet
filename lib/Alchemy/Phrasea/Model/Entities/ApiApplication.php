@@ -6,13 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="ApiApplications", uniqueConstraints={
- *      @ORM\UniqueConstraint(name="client_id", columns={"client_id"})}, indexes={
- *          @ORM\Index(name="api_application_creator_id", columns={"creator_id"})
- *      })
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository::class)]
+#[ORM\Table(name: 'ApiApplications')]
+#[ORM\Index(name: 'api_application_creator_id', columns: ['creator_id'])]
+#[ORM\UniqueConstraint(name: 'client_id', columns: ['client_id'])]
 class ApiApplication
 {
     /** desktop application */
@@ -22,135 +19,113 @@ class ApiApplication
     /** Uniform Resource Name */
     const NATIVE_APP_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=true)
      *
      * @return User|null
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'id', nullable: true)]
     private $creator;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128, nullable=false)
      */
+    #[ORM\Column(type: 'string', length: 128, nullable: false)]
     private $type;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128, nullable=false)
      */
+    #[ORM\Column(type: 'string', length: 128, nullable: false)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="text", nullable=false)
      */
+    #[ORM\Column(type: 'text', nullable: false)]
     private $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128, nullable=false)
      */
+    #[ORM\Column(type: 'string', length: 128, nullable: false)]
     private $website;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="client_id", type="string", length=128, nullable=false)
      */
+    #[ORM\Column(name: 'client_id', type: 'string', length: 128, nullable: false)]
     private $clientId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="client_secret", type="string", length=128, nullable=false)
      */
+    #[ORM\Column(name: 'client_secret', type: 'string', length: 128, nullable: false)]
     private $clientSecret;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=64, nullable=false)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: false)]
     private $nonce;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="redirect_uri", type="string", length=128, nullable=false)
      */
+    #[ORM\Column(name: 'redirect_uri', type: 'string', length: 128, nullable: false)]
     private $redirectUri;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(type="boolean", nullable=false)
      */
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private $activated = true;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="grant_password", type="boolean", nullable=false)
      */
+    #[ORM\Column(name: 'grant_password', type: 'boolean', nullable: false)]
     private $grantPassword = false;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ApiAccount", mappedBy="application", cascade={"remove"})
-     **/
+    #[ORM\OneToMany(targetEntity: ApiAccount::class, mappedBy: 'application', cascade: ['remove'])]
     private $accounts;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="webhook_url", type="string", length=1024, nullable=true)
      */
+    #[ORM\Column(name: 'webhook_url', type: 'string', length: 1024, nullable: true)]
     private $webhookUrl;
 
     /**
      * List of events to trigger webhook
      * @var array
-     *
-     * @ORM\Column(name="listened_events", type="json_array", nullable=true)
      */
+    #[ORM\Column(name: 'listened_events', type: 'json', nullable: true)]
     private $listenedEvents;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="hmac_key", type="string", length=1024, nullable=true)
      */
+    #[ORM\Column(name: 'hmac_key', type: 'string', length: 1024, nullable: true)]
     private $hmacKey;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="webhook_active", type="boolean", nullable=false)
      */
+    #[ORM\Column(name: 'webhook_active', type: 'boolean', nullable: false)]
     private $webhookActive = false;
 
     public function __construct()
@@ -165,7 +140,7 @@ class ApiApplication
      */
     public function setActivated($activated)
     {
-        $this->activated = (Boolean) $activated;
+        $this->activated = (bool) $activated;
 
         return $this;
     }
@@ -243,7 +218,7 @@ class ApiApplication
      *
      * @return ApiApplication
      */
-    public function setCreator(User $creator = null)
+    public function setCreator(?User $creator = null)
     {
         $this->creator = $creator;
 
@@ -285,7 +260,7 @@ class ApiApplication
      */
     public function setGrantPassword($grantPassword)
     {
-        $this->grantPassword = (Boolean) $grantPassword;
+        $this->grantPassword = (bool) $grantPassword;
 
         return $this;
     }
@@ -516,6 +491,6 @@ class ApiApplication
      */
     public function setWebhookActive($webhookActive)
     {
-        $this->webhookActive = (Boolean) $webhookActive;
+        $this->webhookActive = (bool) $webhookActive;
     }
 }

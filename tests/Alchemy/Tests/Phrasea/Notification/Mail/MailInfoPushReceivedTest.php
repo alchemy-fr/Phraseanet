@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoPushReceived
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoPushReceivedTest extends MailWithLinkTestCase
 {
     public function testSetBasket()
@@ -32,7 +32,7 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getFirstName')
             ->will($this->returnValue('JeanFirstName'));
 
@@ -64,8 +64,8 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
             $this->getExpiration()
         );
 
-        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
-        $basket->expects($this->any())
+        $basket = $this->createMock('Alchemy\Phrasea\Model\Entities\Basket');
+        $basket
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
 
@@ -97,22 +97,22 @@ class MailInfoPushReceivedTest extends MailWithLinkTestCase
             $this->getExpiration()
         );
 
-        $collection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
-        $collection->expects($this->any())
+        $collection = $this->createMock('Doctrine\Common\Collections\ArrayCollection');
+        $collection
             ->method('count')
             ->will($this->returnValue(5));
 
-        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
-        $basket->expects($this->any())
+        $basket = $this->createMock('Alchemy\Phrasea\Model\Entities\Basket');
+        $basket
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
-        $basket->expects($this->any())
+        $basket
             ->method('getElements')
             ->will($this->returnValue($collection));
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 

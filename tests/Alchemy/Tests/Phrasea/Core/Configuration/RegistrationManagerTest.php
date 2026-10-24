@@ -7,30 +7,20 @@ use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class RegistrationManagerTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider getRegistrationProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getRegistrationProvider')]
     public function testRegistrationIsEnabled($enabledOnColl, $expected)
     {
-        $mockColl = $this->getMockBuilder('\collection')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockColl = $this->createMock('\collection');
 
         $mockColl->expects($this->once())->method('isRegistrationEnabled')->will($this->returnValue($enabledOnColl));
 
-        $mockDatabox = $this->getMockBuilder('\databox')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockDatabox = $this->createMock('\databox');
 
-        $mockAppbox = $this->getMockBuilder('\appbox')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockAppbox = $this->createMock('\appbox');
 
         $mockColl->expects($this->once())->method('isRegistrationEnabled')->will($this->returnValue(false));
 
@@ -41,7 +31,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $this->assertEquals($expected, $service->isRegistrationEnabled());
     }
 
-    public function getRegistrationProvider()
+    public static function getRegistrationProvider()
     {
         return [
             [false, false],
@@ -49,15 +39,10 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @dataProvider userDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('userDataProvider')]
     public function testGetRegistrationSummaryWithUserData($data, $type, $value)
     {
-        $repoMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\RegistrationRepository')
-            ->disableOriginalConstructor()
-            ->setMethods(['getRegistrationsSummaryForUser'])
-            ->getMock();
+        $repoMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\RegistrationRepository')->disableOriginalConstructor()->onlyMethods(['getRegistrationsSummaryForUser'])->getMock();
         $repoMock->expects($this->once())->method('getRegistrationsSummaryForUser')->will($this->returnValue($data));
 
         $service = new RegistrationManager(self::$DI['app']['phraseanet.appbox'], $repoMock, self::$DI['app']['locale']);
@@ -70,7 +55,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations-by-type'][$type]));
     }
 
-    public function userDataProvider()
+    public static function userDataProvider()
     {
         $pendingRegistration = new Registration();
         $pendingRegistration->setBaseId(1);

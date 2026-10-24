@@ -38,7 +38,7 @@ class TraceableCache implements Cache, PhraseaCache
     /*s*
      * @param PhraseaCache $cache
      */
-    public function __construct(PhraseaCache $cache, Stopwatch $stopwatch = null)
+    public function __construct(PhraseaCache $cache, ?Stopwatch $stopwatch = null)
     {
         $this->cache = $cache;
         $this->stopWatch = $stopwatch ?: new Stopwatch();

@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Plugin\Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser;
 
 class JsFixtures extends Command
 {
@@ -44,7 +44,7 @@ class JsFixtures extends Command
             throw new RuntimeException('You must generate sqlite db first, run "bin/developer phraseanet:regenerate-sqlite" command.');
         }
 
-        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
+        $this->container->extend('orm.em', function($em, $app) {
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
 
@@ -66,7 +66,7 @@ class JsFixtures extends Command
 
     private function deleteUser(User $user)
     {
-        $user = $this->container['orm.em']->find('Phraseanet:User', $user->getId());
+        $user = $this->container['orm.em']->find('Alchemy\Phrasea\Model\Entities\User', $user->getId());
         $this->container['manipulator.user']->delete($user);
     }
 
@@ -116,7 +116,7 @@ class JsFixtures extends Command
         $environment = Application::ENV_TEST;
         /** @var Application $app */
         $app = require __DIR__ . '/../../Application/Root.php';
-        $app['orm.em'] = $app->extend('orm.em', function($em, $app) {
+        $app->extend('orm.em', function($em, $app) {
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
 
@@ -124,7 +124,7 @@ class JsFixtures extends Command
 
         // force load of non cached template
         $app['twig']->enableAutoReload();
-        $client = new Client($app);
+        $client = new HttpKernelBrowser($app);
         $fixturePath =  'www/scripts/tests/fixtures';
         $target = sprintf('%s/%s/%s', $app['root.path'],$fixturePath, $to);
         $output->writeln(sprintf("Generating %s", $target));

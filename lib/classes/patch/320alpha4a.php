@@ -50,18 +50,15 @@ class patch_320alpha4a extends patchAbstract
     {
         $sql = 'TRUNCATE metadatas';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'TRUNCATE metadatas_structure';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'TRUNCATE technical_datas';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $phrasea_maps = [
             'pdftext'        => 'Phraseanet:pdftext'
@@ -112,8 +109,7 @@ class patch_320alpha4a extends patchAbstract
 
         $sql = 'DELETE FROM `task2` WHERE class="readmeta"';
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         unset($stmt);
 
         return true;

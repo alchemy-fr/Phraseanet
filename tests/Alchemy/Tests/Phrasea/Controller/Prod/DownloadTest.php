@@ -4,21 +4,16 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Download::download
-     */
     public function testDownloadRecords()
     {
         $triggered = false;
@@ -38,14 +33,11 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
+        $this->assertMatchesRegularExpression('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         $this->assertTrue($triggered);
         unset($response, $eventManagerStub);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Download::download
-     */
     public function testDownloadRestricted()
     {
         $triggered = false;
@@ -56,29 +48,25 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
         });
         self::$DI['app']['authentication']->setUser(self::$DI['user']);
 
-        $stubbedACL = $this->getMockBuilder('\ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $stubbedACL = $this->createMock('\ACL');
 
         //has_right_on_base return true
-        $stubbedACL->expects($this->any())
+        $stubbedACL
             ->method('has_right_on_base')
             ->will($this->returnValue(false));
 
         //has_access_to_subdef return true
-        $stubbedACL->expects($this->any())
+        $stubbedACL
             ->method('is_restricted_download')
             ->will($this->returnValue(true));
 
         //has_access_to_subdef return true
-        $stubbedACL->expects($this->any())
+        $stubbedACL
             ->method('remaining_download')
             ->will($this->returnValue(0));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
+        $aclProvider = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($stubbedACL));
 
@@ -96,16 +84,13 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertTrue($triggered);
-        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
+        $this->assertMatchesRegularExpression('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Download::download
-     */
     public function testDownloadBasket()
     {
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $randomValue = $this->setSessionFormToken('prodExportDownload');
 
         $triggered = false;
@@ -125,16 +110,13 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertTrue($triggered);
-        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
+        $this->assertMatchesRegularExpression('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Download::download
-     */
     public function testDownloadBasketValidation()
     {
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 4);
         $randomValue = $this->setSessionFormToken('prodExportDownload');
 
         $triggered = false;
@@ -154,14 +136,10 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertTrue($triggered);
-        $this->assertRegExp('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
+        $this->assertMatchesRegularExpression('#/download/[a-zA-Z0-9]{8,32}/#', $response->headers->get('location'));
         unset($response, $eventManagerStub);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Download::connect
-     * @covers Alchemy\Phrasea\Controller\Prod\Download::call
-     */
     public function testRequireAuthentication()
     {
         $this->logout(self::$DI['app']);

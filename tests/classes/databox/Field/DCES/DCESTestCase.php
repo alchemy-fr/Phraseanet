@@ -1,11 +1,14 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class databox_Field_DCES_DCESTestCase extends \PhraseanetTestCase
 {
+    /**
+     * @var databox_Field_DCESAbstract
+     */
+    protected $object;
+
     public function testGet_label()
     {
         $data = explode('_', get_class($this));
@@ -21,7 +24,7 @@ class databox_Field_DCES_DCESTestCase extends \PhraseanetTestCase
 
     public function testGet_documentation_link()
     {
-        $this->assertRegExp('/^http:\/\/dublincore\.org\/documents\/dces\/#[a-z]+$/', $this->object->get_documentation_link());
+        $this->assertMatchesRegularExpression('/^http:\/\/dublincore\.org\/documents\/dces\/#[a-z]+$/', $this->object->get_documentation_link());
     }
 
     public function testSerialization()
@@ -30,15 +33,15 @@ class databox_Field_DCES_DCESTestCase extends \PhraseanetTestCase
 
         $data = json_decode($serializer->serialize($this->object, 'json'), true);
 
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
         $this->assertCount(3, $data);
 
         $this->assertArrayHasKey('label', $data);
         $this->assertArrayHasKey('definition', $data);
         $this->assertArrayHasKey('URI', $data);
 
-        $this->assertInternalType('string', $data['label']);
-        $this->assertInternalType('string', $data['definition']);
-        $this->assertInternalType('string', $data['URI']);
+        $this->assertIsString($data['label']);
+        $this->assertIsString($data['definition']);
+        $this->assertIsString($data['URI']);
     }
 }

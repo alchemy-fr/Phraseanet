@@ -8,12 +8,12 @@ use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 /**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
@@ -143,21 +143,21 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $data = json_decode($response->getContent());
-        $this->assertObjectHasAttribute('desc', $data);
-        $this->assertObjectHasAttribute('html_preview', $data);
-        $this->assertObjectHasAttribute('current', $data);
-        $this->assertObjectHasAttribute('others', $data);
-        $this->assertObjectHasAttribute('history', $data);
-        $this->assertObjectHasAttribute('popularity', $data);
-        $this->assertObjectHasAttribute('tools', $data);
-        $this->assertObjectHasAttribute('pos', $data);
-        $this->assertObjectHasAttribute('title', $data);
+        $this->assertObjectHasProperty('desc', $data);
+        $this->assertObjectHasProperty('html_preview', $data);
+        $this->assertObjectHasProperty('current', $data);
+        $this->assertObjectHasProperty('others', $data);
+        $this->assertObjectHasProperty('history', $data);
+        $this->assertObjectHasProperty('popularity', $data);
+        $this->assertObjectHasProperty('tools', $data);
+        $this->assertObjectHasProperty('pos', $data);
+        $this->assertObjectHasProperty('title', $data);
     }
 
     public function testGetRecordDetailBasket()
     {
         $this->authenticate(self::$DI['app']);
-        $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
 
         $response = $this->XMLHTTPRequest('POST', '/prod/records/', [
             'env' => 'BASK',
@@ -168,15 +168,15 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $data = json_decode($response->getContent());
 
-        $this->assertObjectHasAttribute('desc', $data);
-        $this->assertObjectHasAttribute('html_preview', $data);
-        $this->assertObjectHasAttribute('current', $data);
-        $this->assertObjectHasAttribute('others', $data);
-        $this->assertObjectHasAttribute('history', $data);
-        $this->assertObjectHasAttribute('popularity', $data);
-        $this->assertObjectHasAttribute('tools', $data);
-        $this->assertObjectHasAttribute('pos', $data);
-        $this->assertObjectHasAttribute('title', $data);
+        $this->assertObjectHasProperty('desc', $data);
+        $this->assertObjectHasProperty('html_preview', $data);
+        $this->assertObjectHasProperty('current', $data);
+        $this->assertObjectHasProperty('others', $data);
+        $this->assertObjectHasProperty('history', $data);
+        $this->assertObjectHasProperty('popularity', $data);
+        $this->assertObjectHasProperty('tools', $data);
+        $this->assertObjectHasProperty('pos', $data);
+        $this->assertObjectHasProperty('title', $data);
 
         unset($response, $data);
     }
@@ -185,11 +185,9 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
         $feedEntry = $feed->getEntries()->first();
 
         $response = $this->XMLHTTPRequest('POST', '/prod/records/', [
@@ -200,15 +198,15 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $data = json_decode($response->getContent());
-        $this->assertObjectHasAttribute('desc', $data);
-        $this->assertObjectHasAttribute('html_preview', $data);
-        $this->assertObjectHasAttribute('current', $data);
-        $this->assertObjectHasAttribute('others', $data);
-        $this->assertObjectHasAttribute('history', $data);
-        $this->assertObjectHasAttribute('popularity', $data);
-        $this->assertObjectHasAttribute('tools', $data);
-        $this->assertObjectHasAttribute('pos', $data);
-        $this->assertObjectHasAttribute('title', $data);
+        $this->assertObjectHasProperty('desc', $data);
+        $this->assertObjectHasProperty('html_preview', $data);
+        $this->assertObjectHasProperty('current', $data);
+        $this->assertObjectHasProperty('others', $data);
+        $this->assertObjectHasProperty('history', $data);
+        $this->assertObjectHasProperty('popularity', $data);
+        $this->assertObjectHasProperty('tools', $data);
+        $this->assertObjectHasProperty('pos', $data);
+        $this->assertObjectHasProperty('title', $data);
 
         unset($response, $data);
     }

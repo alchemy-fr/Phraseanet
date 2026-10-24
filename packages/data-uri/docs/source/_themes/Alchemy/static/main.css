@@ -1,0 +1,23 @@
+/**
+ * Here you write your customizations
+ */
+html, body {
+     background-color:#8AB4BF;
+     color:#17293D;
+}
+
+.hero-unit{
+     background-color:#8AB4BF;
+ }
+
+#searchbox{
+     background-color:#8AB4BF;
+}
+
+hr{
+     color: #17293D;
+}
+
+a:visited{
+    color: darkslateblue;
+}

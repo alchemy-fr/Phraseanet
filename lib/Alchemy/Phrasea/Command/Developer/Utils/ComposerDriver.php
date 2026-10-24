@@ -32,7 +32,7 @@ class ComposerDriver extends AbstractBinary
      *
      * @return ComposerDriver
      */
-    public static function create($conf = [], LoggerInterface $logger = null)
+    public static function create($conf = [], ?LoggerInterface $logger = null)
     {
         if (!$conf instanceof ConfigurationInterface) {
             $conf = new Configuration($conf);

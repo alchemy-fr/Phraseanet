@@ -7,7 +7,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FacetsResponse
 {
@@ -15,7 +15,7 @@ class FacetsResponse
     private $facets = array();
     private $translator;
 
-    public function __construct(ElasticsearchOptions $options, Escaper $escaper, TranslatorInterface $translator, array $response, GlobalStructure $structure)
+    public function __construct(ElasticsearchOptions $options, Escaper $escaper, \Symfony\Contracts\Translation\TranslatorInterface $translator, array $response, GlobalStructure $structure)
     {
         $this->escaper = $escaper;
         $this->translator = $translator;

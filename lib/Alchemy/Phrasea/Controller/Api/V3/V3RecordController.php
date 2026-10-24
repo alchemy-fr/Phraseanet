@@ -19,7 +19,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use collection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use GuzzleHttp\Client as Guzzle;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
@@ -74,7 +74,7 @@ class V3RecordController extends Controller
      * @param int $base_id
      *
      * @return Response
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public function indexAction_POST(Request $request, $base_id)
@@ -205,7 +205,7 @@ class V3RecordController extends Controller
                 }
 
                 $ret['url'] = '/records/' . $output->getDataboxId() . '/' . $output->getRecordId() . '/';
-                $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($output));
+                $this->dispatch(new RecordEdit($output), PhraseaEvents::RECORD_UPLOAD);
             }
             elseif ($output instanceof LazaretFile) {
 
@@ -266,7 +266,7 @@ class V3RecordController extends Controller
         }
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
+        $this->dispatch(new RecordEdit($record, $previousDescription), PhraseaEvents::RECORD_EDIT);
 
         $ret = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
 

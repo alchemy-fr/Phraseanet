@@ -6,21 +6,19 @@ use Alchemy\Phrasea\Command\Setup\Install;
 use Symfony\Component\Yaml\Yaml;
 use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class InstallTest extends \PhraseanetTestCase
 {
     private $bkp = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->bkp = self::$DI['app']['conf']->get('main');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$DI['app']['conf']->set('main', $this->bkp);
         parent::tearDown();
@@ -29,8 +27,8 @@ class InstallTest extends \PhraseanetTestCase
 
     public function testRunWithoutProblems()
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
         $email = 'jean@dupont.io';
         $password = 'sup4ssw0rd';
@@ -47,20 +45,16 @@ class InstallTest extends \PhraseanetTestCase
 
         $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
 
-        $helperSet = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helperSet = $this->createMock('Symfony\Component\Console\Helper\HelperSet');
 
-        $dialog = $this->getMockBuilder('Symfony\Component\Console\Helper\DialogHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dialog = $this->createStub('Symfony\Component\Console\Helper\QuestionHelper');
 
         $helperSet->expects($this->once())
             ->method('get')
-            ->with('dialog')
+            ->with('question')
             ->will($this->returnValue($dialog));
 
-        $input->expects($this->any())
+        $input
             ->method('getOption')
             ->will($this->returnCallback(function ($option) use ($infoDb, $template, $email, $password, $serverName, $dataPath) {
                 switch ($option) {
@@ -116,13 +110,11 @@ class InstallTest extends \PhraseanetTestCase
                 }
             }));
 
-        self::$DI['cli']['phraseanet.installer'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\Installer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['cli']['phraseanet.installer'] = $this->createMock('Alchemy\Phrasea\Setup\Installer');
 
         self::$DI['cli']['phraseanet.installer']->expects($this->once())
             ->method('install')
-            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $storagePaths, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
+            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Connection'), $serverName, $storagePaths, $this->isInstanceOf('Doctrine\DBAL\Connection'), $template, $this->anything());
 
         $structureTemplate = self::$DI['cli']['phraseanet.structure-template'];
 

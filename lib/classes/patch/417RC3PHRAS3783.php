@@ -88,8 +88,7 @@ class patch_417RC3PHRAS3783 implements patchInterface
 
         $sql = 'UPDATE `records_rights` SET `expire_on` = :expire_on WHERE `case` = "order" AND `expire_on` IS NULL';
         $stmt = $cnx->prepare($sql);
-        $stmt->execute([':expire_on' => $expireOn]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':expire_on' => $expireOn]);
 
         // get all todoorder an set column to 0 if all element are processed
         /** @var OrderRepository $orderRepository */

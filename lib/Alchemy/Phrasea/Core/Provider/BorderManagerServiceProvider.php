@@ -13,15 +13,17 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\MimeGuesserConfiguration;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
-class BorderManagerServiceProvider implements ServiceProviderInterface
+class BorderManagerServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['border-manager'] = $app->share(function (Application $app) {
+        $app['border-manager'] = function (Application $app) {
             $borderManager = new Manager($app);
 
             $options = $app['conf']->get('border-manager');
@@ -105,11 +107,11 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
             $borderManager->registerCheckers($registeredCheckers);
 
             return $borderManager;
-        });
+        };
 
-        $app['border-manager.mime-guesser-configuration'] = $app->share(function (Application $app) {
+        $app['border-manager.mime-guesser-configuration'] = function (Application $app) {
             return new MimeGuesserConfiguration($app['conf']);
-        });
+        };
     }
 
     public function boot(Application $app)

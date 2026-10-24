@@ -121,13 +121,14 @@ class SubdefCreationWorker implements WorkerInterface
             $this->logger->error($workerMessage);
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionCreationFailure() */
-            $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+            $this->dispatcher->dispatch(new SubdefinitionCreationFailureEvent(
                 $record,
                 $subdefName,
                 $workerMessage,
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_CREATION_FAILURE);
 
             // the subscriber will "unlock" the row, no need to do it here
             return ;
@@ -147,13 +148,14 @@ class SubdefCreationWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionCreationFailure() */
-            $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+            $this->dispatcher->dispatch(new SubdefinitionCreationFailureEvent(
                 $record,
                 $subdefName,
                 'Subdef generation failed !',
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_CREATION_FAILURE);
 
             $this->subdefGenerator->setLogger($oldLogger);
 
@@ -166,11 +168,11 @@ class SubdefCreationWorker implements WorkerInterface
         // order to write meta for the subdef if needed
         /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
         $this->dispatcher->dispatch(
-            WorkerEvents::SUBDEFINITION_WRITE_META,
             new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName
-            )
+            ),
+            WorkerEvents::SUBDEFINITION_WRITE_META
         );
 
         $this->subdefGenerator->setLogger($oldLogger);
@@ -187,7 +189,7 @@ class SubdefCreationWorker implements WorkerInterface
                 if (self::checkIfFirstChild($story, $record)) {
                     $data = implode('_', [$databoxId, $story->getRecordId(), $recordId, $payload['subdefName']]);
 
-                    $this->dispatcher->dispatch(WorkerEvents::STORY_CREATE_COVER, new StoryCreateCoverEvent($data));
+                    $this->dispatcher->dispatch(new StoryCreateCoverEvent($data), WorkerEvents::STORY_CREATE_COVER);
                 }
             }
         }
@@ -210,17 +212,13 @@ class SubdefCreationWorker implements WorkerInterface
 
         $connection = $record->getDatabox()->get_connection();
 
-        $stmt = $connection->prepare($sql);
-
-        $stmt->execute([
+        $stmt = $connection->executeQuery($sql, [
             ':parent_record_id' => $story->getRecordId(),
             ':children_id'      => $record->getRecordId(),
             ':ord'              => 0,
         ]);
 
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             return true;
@@ -241,12 +239,11 @@ class SubdefCreationWorker implements WorkerInterface
 
         $stmt = $connection->prepare($sql);
 
-        $stmt->execute([
+        $stmt->executeStatement([
             ':record_id'    => $record->getRecordId(),
             ':token'        => PhraseaTokens::MAKE_SUBDEF,
         ]);
 
         $connection->commit();
-        $stmt->closeCursor();
     }
 }

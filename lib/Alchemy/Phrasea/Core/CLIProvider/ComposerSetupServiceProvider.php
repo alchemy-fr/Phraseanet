@@ -12,23 +12,20 @@
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Alchemy\Phrasea\Utilities\ComposerSetup;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class ComposerSetupServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['composer-setup.guzzle'] = $app->share(function (Application $app) {
+        $app['composer-setup.guzzle'] = function (Application $app) {
            return new Guzzle();
-        });
-        $app['composer-setup'] = $app->share(function (Application $app) {
+        };
+        $app['composer-setup'] = function (Application $app) {
            return new ComposerSetup($app['composer-setup.guzzle']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

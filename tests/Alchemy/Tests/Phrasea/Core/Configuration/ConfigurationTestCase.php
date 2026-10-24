@@ -10,14 +10,14 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
 {
     protected $compiled;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->compiled = __DIR__ . '/Fixtures/configuration-compiled.php';
         $this->clean();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->clean();
         parent::tearDown();
@@ -31,13 +31,11 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         }
     }
 
-    abstract protected function provideConfiguration($confFile, $compiledFile = null, Compiler $compiler = null, Yaml $yaml = null);
+    abstract protected function provideConfiguration($confFile, $compiledFile = null, ?Compiler $compiler = null, ?Yaml $yaml = null);
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     */
     public function testGetConfigInvalidConfig()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\RuntimeException::class);
         $config = __DIR__ . '/Fixtures/configuration-unknown.yml';
 
         $conf = $this->provideConfiguration($config);
@@ -65,11 +63,9 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         unlink($configFile);
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     */
     public function testInitializeWrongPath()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\RuntimeException::class);
         $configFile = __DIR__ . '/Fixtures/configuration.yml';
         $compiled = __DIR__ . '/path/to/unknwon/folder/file.php';
 
@@ -88,14 +84,14 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $conf['extra-key'] = 'extra-value';
         $this->assertEquals('extra-value', $conf['extra-key']);
 
-        $updated = $yaml->parse($config);
+        $updated = $yaml->parse(file_get_contents($config));
         $this->assertEquals('extra-value', $updated['extra-key']);
 
         $this->assertTrue(isset($conf['extra-key']));
         unset($conf['extra-key']);
         $this->assertFalse(isset($conf['extra-key']));
 
-        $updated = $yaml->parse($config);
+        $updated = $yaml->parse(file_get_contents($config));
         $this->assertFalse(isset($updated['extra-key']));
     }
 
@@ -107,7 +103,7 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         $conf = $this->provideConfiguration($config);
         $conf->initialize();
         $conf->delete();
-        $this->assertFileNotExists($compiled);
+        $this->assertFileDoesNotExist($compiled);
     }
 
     public function testIsSetup()
@@ -133,12 +129,12 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         unset($config['main']);
         $conf->setConfig($config);
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertFalse(isset($updated['main']));
 
         $conf->setDefault('main');
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertTrue(isset($updated['main']));
     }
 
@@ -153,20 +149,18 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
         unset($config['main']['cache']);
         $conf->setConfig($config);
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertFalse(isset($updated['main']['cache']));
 
         $conf->setDefault('main', 'cache');
 
-        $updated = $yaml->parse($configFile);
+        $updated = $yaml->parse(file_get_contents($configFile));
         $this->assertTrue(isset($updated['main']['cache']));
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testSetdefaultInvalidKey()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $configFile = __DIR__ . '/Fixtures/configuration.yml';
 
         $conf = $this->provideConfiguration($configFile);
@@ -203,11 +197,9 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
 
         $yaml = new Yaml();
         $compiler = new Compiler();
-        file_put_contents($this->compiled, $compiler->compile($yaml->parse($configFile)));
+        file_put_contents($this->compiled, $compiler->compile($yaml->parse(file_get_contents($configFile))));
 
-        $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
-                         ->disableOriginalConstructor()
-                         ->getMock();
+        $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
         $compiler->expects($this->never())
                  ->method('compile');
 
@@ -233,16 +225,14 @@ abstract class ConfigurationTestCase extends \PhraseanetTestCase
 
         $yaml = new Yaml();
         $compiler = new Compiler();
-        file_put_contents($this->compiled, $compiler->compile($yaml->parse($configFile)));
+        file_put_contents($this->compiled, $compiler->compile($yaml->parse(file_get_contents($configFile))));
 
         // compilation is older than config
         touch($this->compiled, time()-2);
         touch($configFile, time()-1);
         clearstatcache();
 
-        $compiler = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\Compiler')
-                         ->disableOriginalConstructor()
-                         ->getMock();
+        $compiler = $this->createMock('Alchemy\Phrasea\Core\Configuration\Compiler');
         $compiler->expects($this->once())
                  ->method('compile')
                  ->with(['main' => 'tiptop'])

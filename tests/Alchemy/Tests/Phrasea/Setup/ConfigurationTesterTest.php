@@ -5,16 +5,11 @@ namespace Alchemy\Tests\Phrasea\Setup;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\ConfigurationTester;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ConfigurationTesterTest extends AbstractSetupTester
 {
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\ConfigurationTester
-     */
     public function testStatus()
     {
         $tester = $this->getTester();
@@ -44,9 +39,6 @@ class ConfigurationTesterTest extends AbstractSetupTester
         unlink($connexionFile);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\ConfigurationTester
-     */
     public function testUninstalled()
     {
         $tester = $this->getTester();
@@ -60,9 +52,6 @@ class ConfigurationTesterTest extends AbstractSetupTester
         $this->assertFalse($tester->isUpgradable());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\ConfigurationTester
-     */
     public function test31()
     {
         $tester = $this->getTester();
@@ -76,26 +65,19 @@ class ConfigurationTesterTest extends AbstractSetupTester
         $this->assertFalse($tester->isUpgradable());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\ConfigurationTester
-     */
     public function testNewMigration()
     {
-        $probe = $this->getMockBuilder('Alchemy\\Phrasea\\Setup\\Version\\Probe\\ProbeInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $probe->expects($this->any())
+        $probe = $this->createMock('Alchemy\\Phrasea\\Setup\\Version\\Probe\\ProbeInterface');
+        $probe
             ->method('isMigrable')
             ->will($this->returnValue(true));
 
         $app = new Application(Application::ENV_TEST);
 
-        $app['phraseanet.version'] = $this->getMockBuilder('Alchemy\\Phrasea\\Core\\Version')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['phraseanet.version'] = $this->createStub('Alchemy\\Phrasea\\Core\\Version');
 
         // Must return version + 1
-        $app['phraseanet.version']->expects($this->any())
+        $app['phraseanet.version']
             ->method('getNumber')
             ->will($this->returnValue('4.2'));
 
@@ -106,9 +88,6 @@ class ConfigurationTesterTest extends AbstractSetupTester
         $this->assertTrue($tester->isMigrable());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\ConfigurationTester
-     */
     public function test35()
     {
         $tester = $this->getTester();
@@ -122,21 +101,16 @@ class ConfigurationTesterTest extends AbstractSetupTester
         $this->assertFalse($tester->isUpgradable());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Setup\ConfigurationTester
-     */
     public function testUpgradable()
     {
         $app = new Application(Application::ENV_TEST);
 
-        $app['phraseanet.version'] = $this->getMockBuilder('Alchemy\\Phrasea\\Core\\Version')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['phraseanet.version'] = $this->createStub('Alchemy\\Phrasea\\Core\\Version');
 
         /**
          * Must return version + 1
          */
-        $app['phraseanet.version']->expects($this->any())
+        $app['phraseanet.version']
             ->method('getNumber')
             ->will($this->returnValue('4.2'));
 
@@ -159,7 +133,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
         }
     }
 
-    private function getTester(Application $app = null)
+    private function getTester(?Application $app = null)
     {
         $app = $app ? : new Application(Application::ENV_TEST);
 

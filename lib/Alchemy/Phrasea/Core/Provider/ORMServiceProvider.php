@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Core\Connection\Connection as PhraseanetConnection;
 use Alchemy\Phrasea\Core\Connection\ConnectionPoolManager;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
@@ -19,21 +20,19 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Configuration;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\NativeQueryProvider;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\CachedReader;
-use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration as ORMConfig;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Gedmo\Timestampable\TimestampableListener;
 use Monolog\Handler\RotatingFileHandler;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class ORMServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         // Provides DSN string using database information
         $app['db.dsn'] = $app->protect(function (array $params) use ($app) {
@@ -66,26 +65,26 @@ class ORMServiceProvider implements ServiceProviderInterface
         });
 
         // Return database test configuration
-        $app['db.test.info'] = $app->share(function () use ($app) {
+        $app['db.test.info'] = function () use ($app) {
             return $app['conf']->get(['main', 'database-test'], array());
-        });
+        };
 
         // Return application box database configuration
-        $app['db.appbox.info'] = $app->share(function () use ($app) {
+        $app['db.appbox.info'] = function () use ($app) {
             return $app['conf']->get(['main', 'database'], array());
-        });
+        };
 
         // Return database fixture configuration
-        $app['db.fixture.info'] = $app->share(function () use ($app) {
+        $app['db.fixture.info'] = function () use ($app) {
             return [
                 'driver'  => 'pdo_sqlite',
                 'path'    => sprintf('%s/%s', $app['tmp.path'], 'db-ref.sqlite'),
                 'charset' => 'UTF8',
             ];
-        });
+        };
 
         // Return databox database configuration
-        $app['db.databox.info'] = $app->share(function () use ($app) {
+        $app['db.databox.info'] = function () use ($app) {
             if (false === $app['phraseanet.configuration']->isSetup()) {
                 return array();
             }
@@ -98,50 +97,50 @@ class ORMServiceProvider implements ServiceProviderInterface
                     . " host, port, `user`, COALESCE(pwd, '') AS password, dbname, 'utf8' AS charset, 'pdo_mysql' AS driver"
                     . " FROM sbas";
 
-                return $connection->fetchAll($sql);
+                return $connection->fetchAllAssociative($sql);
             } catch (\Exception $e) {
                 return [];
             }
-        });
+        };
 
         // Return unique key for fixture database
-        $app['db.fixture.hash.key'] = $app->share(function () use ($app) {
+        $app['db.fixture.hash.key'] = function () use ($app) {
             $info = $app['db.fixture.info'];
 
             return $app['hash.dsn']($app['db.dsn']($info));
-        });
+        };
 
         // Return unique key for test database
-        $app['db.test.hash.key'] = $app->share(function () use ($app) {
+        $app['db.test.hash.key'] = function () use ($app) {
             $info = $app['db.test.info'];
 
             return $app['hash.dsn']($app['db.dsn']($info));
-        });
+        };
 
         // Return unique for appbox database
-        $app['db.appbox.hash.key'] = $app->share(function () use ($app) {
+        $app['db.appbox.hash.key'] = function () use ($app) {
             $info = $app['db.appbox.info'];
 
             return $app['hash.dsn']($app['db.dsn']($info));
-        });
+        };
 
         // Return configuration option for test database in DoctrineServiceProvider
-        $app['db.test.options'] = $app->share(function () use ($app) {
+        $app['db.test.options'] = function () use ($app) {
             return array($app['db.test.hash.key'] => $app['db.test.info']);
-        });
+        };
 
         // Return configuration option for test database in DoctrineServiceProvider
-        $app['db.fixture.options'] = $app->share(function () use ($app) {
+        $app['db.fixture.options'] = function () use ($app) {
             return array($app['db.fixture.hash.key'] => $app['db.fixture.info']);
-        });
+        };
 
         // Return configuration option for appbox database in DoctrineServiceProvider
-        $app['db.appbox.options'] = $app->share(function () use ($app) {
+        $app['db.appbox.options'] = function () use ($app) {
             return array($app['db.appbox.hash.key'] => $app['db.appbox.info']);
-        });
+        };
 
         // Return configuration option for databox databases in DoctrineServiceProvider
-        $app['dbs.databox.options'] = $app->share(function () use ($app) {
+        $app['dbs.databox.options'] = function () use ($app) {
             $options = array();
 
             foreach ($app['db.databox.info'] as $info) {
@@ -153,11 +152,11 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
 
             return $options;
-        });
+        };
 
         // Return DoctrineServiceProvider database options, it merges all previous
         // set database configuration
-        $app['dbs.options'] = $app->share(function () use ($app) {
+        $app['dbs.options'] = function () use ($app) {
             if (false === $app['phraseanet.configuration']->isSetup()) {
                 return [];
             }
@@ -168,7 +167,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $app['db.fixture.options'],
                 $app['db.test.options']
             );
-        });
+        };
 
         // Return DoctrineORMServiceProvider information for a database from its parameters
         $app['orm.em.options.from_info'] = $app->protect(function (array $info) use ($app) {
@@ -197,42 +196,49 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             $key = $app['hash.dsn']($app['db.dsn']($info));
 
+            // a database mounted again replaces its previous definitions; the containers are built
+            // first, as building "dbs" reads the definitions of the default database
+            $containers = array_map(function ($containerId) use ($app) {
+                return $app[$containerId];
+            }, ['dbs', 'orm.ems', 'dbs.event_manager', 'dbs.config']);
+            foreach ($containers as $container) {
+                unset($container[$key]);
+            }
+
             $evm = new EventManager();
             $app['dbal.evm.register.listeners']($evm);
             $app['dbs.event_manager'][$key] = $evm;
 
             $app['dbs.config'][$key] = new Configuration();
 
-            $app['dbs'][$key] = $app['dbs']->share(function () use ($app, $info, $key) {
+            $app['dbs'][$key] = function () use ($app, $info, $key) {
                 return DriverManager::getConnection($info, $app['dbs.config'][$key], $app['dbs.event_manager'][$key]);
-            });
+            };
 
             $options = $app['orm.options']($key);
             $config = $app['orm.config.new']($key, $options);
 
-            $app['orm.annotation.register']($key);
-
-            $app['orm.ems'][$key] = $app['orm.ems']->share(function ($ems) use ($app, $key, $options, $config) {
+            $app['orm.ems'][$key] = function ($ems) use ($app, $key, $options, $config) {
                 $connection = $app['dbs'][$key];
                 $app['connection.pool.manager']->add($connection);
 
                 $types = $options['types'];
                 $app['dbal.type.register']($connection, $types);
 
-                return EntityManager::create(
+                return new EntityManager(
                     $connection,
                     $config,
                     $app['dbs.event_manager'][$options['connection']]
                 );
-            });
+            };
 
             return $key;
         });
 
         // Listeners should be attached with their events as info.
-        $app['dbal.evm.listeners'] = $app->share(function () {
+        $app['dbal.evm.listeners'] = function () {
             return new \SplObjectStorage();
-        });
+        };
 
         $app['dbal.evm.register.listeners'] = $app->protect(function (EventManager $evm) use ($app) {
             $evm->addEventSubscriber(new TimestampableListener());
@@ -243,15 +249,6 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
         });
 
-        $app['orm.annotation.register'] = $app->protect(function ($key) use($app) {
-            $driver = new AnnotationDriver($app['orm.annotation.reader'], array(
-                $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity/MappedSuperclass',
-                $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity/MappedSuperclass',
-                $app['root.path'] . '/vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity/MappedSuperclass',
-            ));
-
-            $app['orm.add_mapping_driver']($driver, 'Gedmo', $key);
-        });
 
         $app['dbal.type.register'] = $app->protect(function (Connection $connection, $types) {
             $platform = $connection->getDatabasePlatform();
@@ -302,12 +299,8 @@ class ORMServiceProvider implements ServiceProviderInterface
 
                 switch ($entity['type'])
                 {
-                    case 'annotation':
-                        $useSimpleAnnotationReader =
-                            isset($entity['use_simple_annotation_reader'])
-                                ? $entity['use_simple_annotation_reader']
-                                : true;
-                        $driver = $config->newDefaultAnnotationDriver((array) $entity['path'], $useSimpleAnnotationReader);
+                    case 'attribute':
+                        $driver = new AttributeDriver((array) $entity['path']);
                         $chain->addDriver($driver, $entity['namespace']);
                         break;
                     case 'yml':
@@ -348,7 +341,7 @@ class ORMServiceProvider implements ServiceProviderInterface
             return $config;
         });
 
-        $app['orm.ems.options'] = $app->share(function () use ($app) {
+        $app['orm.ems.options'] = function () use ($app) {
             if (false === $app['phraseanet.configuration']->isSetup()) {
                 return [];
             }
@@ -360,7 +353,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $app['orm.em.test.options']
 
             );
-        });
+        };
 
         /**
          * Check database connection information
@@ -372,6 +365,10 @@ class ORMServiceProvider implements ServiceProviderInterface
 
             if (!isset($info['charset'])) {
                 $info['charset'] = 'utf8';
+            }
+
+            if (!isset($info['wrapperClass'])) {
+                $info['wrapperClass'] = PhraseanetConnection::class;
             }
 
             switch ($info['driver'])
@@ -396,34 +393,34 @@ class ORMServiceProvider implements ServiceProviderInterface
         /**
          * Return configuration option for appbox database in DoctrineORMServiceProvider
          */
-        $app['orm.em.appbox.options'] = $app->share(function () use ($app) {
+        $app['orm.em.appbox.options'] = function () use ($app) {
             $key = $app['db.appbox.hash.key'];
 
             return array($key => $app['orm.options']($key));
-        });
+        };
 
         /**
          * Return configuration option for fixture database in DoctrineORMServiceProvider
          */
-        $app['orm.em.fixture.options'] = $app->share(function () use ($app) {
+        $app['orm.em.fixture.options'] = function () use ($app) {
             $key = $app['db.fixture.hash.key'];
 
             return array($key => $app['orm.options']($key));
-        });
+        };
 
         /**
          * Return configuration option for test database in DoctrineORMServiceProvider
          */
-        $app['orm.em.test.options'] = $app->share(function () use ($app) {
+        $app['orm.em.test.options'] = function () use ($app) {
             $key = $app['db.test.hash.key'];
 
             return array($key => $app['orm.options']($key));
-        });
+        };
 
         /**
          * Return configuration option for databox databases in DoctrineORMServiceProvider
          */
-        $app['orm.ems.databox.options'] = $app->share(function () use ($app) {
+        $app['orm.ems.databox.options'] = function () use ($app) {
             $options = array();
 
             foreach ($app['db.databox.info'] as $base) {
@@ -435,19 +432,17 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
 
             return $options;
-        });
+        };
 
-        $app['orm.options.mappings'] = $app->share(function (PhraseaApplication $app) {
+        $app['orm.options.mappings'] = function (PhraseaApplication $app) {
             return array(
                 array(
-                    "type" => "annotation",
-                    "alias" => "Phraseanet",
-                    "use_simple_annotation_reader" => false,
+                    "type" => "attribute",
                     "namespace" => 'Alchemy\Phrasea\Model\Entities',
                     "path" => $app['root.path'] . '/lib/Alchemy/Phrasea/Model/Entities',
                 )
             );
-        });
+        };
 
         // Return orm configuration for a connection given its unique id
         $app['orm.options'] = $app->protect(function ($connection) use ($app) {
@@ -461,6 +456,7 @@ class ORMServiceProvider implements ServiceProviderInterface
                     'varbinary' => 'Alchemy\Phrasea\Model\Types\VarBinary',
                     'binary' => 'Alchemy\Phrasea\Model\Types\Binary',
                     'binary_string' => 'Alchemy\Phrasea\Model\Types\BinaryString',
+                    'json_array' => 'Alchemy\Phrasea\Model\Types\JsonArray',
                 )
             );
         });
@@ -468,9 +464,9 @@ class ORMServiceProvider implements ServiceProviderInterface
         /**
          * Path to doctrine log file
          */
-        $app['orm.monolog.handler.file'] = $app->share(function (Application $app) {
+        $app['orm.monolog.handler.file'] = function (Application $app) {
             return $app['log.path'] . '/doctrine.log';
-        });
+        };
 
         /**
          * Maximum files of logs
@@ -480,42 +476,42 @@ class ORMServiceProvider implements ServiceProviderInterface
         /**
          * Monolog handler for doctrine
          */
-        $app['orm.monolog.handler'] = $app->share(function (Application $app) {
+        $app['orm.monolog.handler'] = function (Application $app) {
             return new RotatingFileHandler($app['orm.monolog.handler.file'], $app['orm.monolog.handler.file.max-files']);
-        });
+        };
 
         /**
          * Monolog instance for doctrine
          */
-        $app['orm.monolog.logger'] = $app->share(function (Application $app) {
+        $app['orm.monolog.logger'] = function (Application $app) {
             $logger = new $app['monolog.logger.class']('doctrine-logger');
 
             $logger->pushHandler($app['orm.monolog.handler']);
 
             return $logger;
-        });
+        };
 
         /**
          * Return cache driver
          */
-        $app['orm.cache.driver'] = $app->share(function (Application $app) {
+        $app['orm.cache.driver'] = function (Application $app) {
             if ($app['configuration.store']->isSetup()) {
                 return $app['conf']->get(['main', 'cache', 'type']);
             }
 
             return 'array';
-        });
+        };
 
         /**
          * Return cache options
          */
-        $app['orm.cache.options'] = $app->share(function (Application $app) {
+        $app['orm.cache.options'] = function (Application $app) {
             if ($app['configuration.store']->isSetup()) {
                 return $app['conf']->get(['main', 'cache', 'options']);
             }
 
             return [];
-        });
+        };
 
         /**
          * Retrieve a registered DBALConnection using configuration parameters
@@ -541,34 +537,17 @@ class ORMServiceProvider implements ServiceProviderInterface
             return $manager->get($info);
         });
 
-        $app['connection.pool.manager'] = $app->share(function () {
+        $app['connection.pool.manager'] = function () {
             return new ConnectionPoolManager();
-        });
+        };
 
         /**
          * Return an instance of native cache query for default ORM
          * @todo return an instance of NativeQueryProvider for given orm;
          */
-        $app['orm.em.native-query'] = $app->share(function ($app) {
+        $app['orm.em.native-query'] = function ($app) {
             return new NativeQueryProvider($app['orm.em']);
-        });
+        };
 
-        /**
-         * Return an instance of annotation cache reader
-         */
-        $app['orm.annotation.reader'] = $app->share(function () use ($app) {
-            $cache = new ArrayCache();
-            if ($app->getEnvironment() !== PhraseaApplication::ENV_DEV) {
-                $cache = $app['phraseanet.cache-service']->factory(
-                    'ORM_annotation', $app['orm.cache.driver'], $app['orm.cache.options']
-                );
-            }
-
-            return new CachedReader(new AnnotationReader(), $cache);
-        });
-    }
-
-    public function boot(Application $app)
-    {
     }
 }

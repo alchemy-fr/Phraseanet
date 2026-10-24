@@ -95,7 +95,7 @@ class RSSFeedController extends Controller
      * @param int $page
      * @return Response
      */
-    private function createFormattedFeedResponse($format, $feed, $page, User $user = null, $generator = 'Phraseanet')
+    private function createFormattedFeedResponse($format, $feed, $page, ?User $user = null, $generator = 'Phraseanet')
     {
         /** @var FeedFormatterInterface $formatter */
         $formatter = $this->app['feed.formatter-strategy']($format);

@@ -7,10 +7,8 @@ use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class LiveInformationTest extends \PhraseanetTestCase
 {
     public function testItReturnsWorkingManagerStatus()
@@ -53,7 +51,7 @@ class LiveInformationTest extends \PhraseanetTestCase
 
     public function testItReturnsWorkingTaskStatus()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())
@@ -82,7 +80,7 @@ class LiveInformationTest extends \PhraseanetTestCase
 
     public function testItReturnsNonWorkingTaskStatus()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $notifier = $this->createNotifierMock();
         $notifier->expects($this->once())
@@ -101,10 +99,8 @@ class LiveInformationTest extends \PhraseanetTestCase
 
     private function createStatusMock($status)
     {
-        $managerStatus = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\TaskManagerStatus')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $managerStatus->expects($this->any())
+        $managerStatus = $this->createMock('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
+        $managerStatus
                 ->method('getStatus')
                 ->will($this->returnValue($status));
 
@@ -113,6 +109,6 @@ class LiveInformationTest extends \PhraseanetTestCase
 
     private function createNotifierMock()
     {
-        return $this->getMock(NotifierInterface::class);
+        return $this->createMock(NotifierInterface::class);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Command\Feedback\Report;
 
-use Twig_Environment;
+use Twig\Environment;
 
 class MetadataAction extends Action implements ActionInterface
 {
@@ -14,7 +14,7 @@ class MetadataAction extends Action implements ActionInterface
     /** @var string  */
     private $delimiter;
 
-    public function __construct(Twig_Environment $twig, string $fieldName, array $action_conf)
+    public function __construct(Environment $twig, string $fieldName, array $action_conf)
     {
         parent::__construct($twig, $action_conf);
         $this->fieldName = $fieldName;

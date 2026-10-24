@@ -23,7 +23,7 @@ class StatusStructure implements \IteratorAggregate
     private $url;
     private $path;
 
-    public function __construct(\databox $databox, ArrayCollection $status = null)
+    public function __construct(\databox $databox, ?ArrayCollection $status = null)
     {
         $this->databox = $databox;
         $this->status = $status ?: new ArrayCollection();
@@ -40,6 +40,7 @@ class StatusStructure implements \IteratorAggregate
         $this->url = "/custom/status/" . $unique_id;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->status->getIterator();

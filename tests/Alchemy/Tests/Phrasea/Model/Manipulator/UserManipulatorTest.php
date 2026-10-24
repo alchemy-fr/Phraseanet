@@ -3,13 +3,11 @@
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UserManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateUser()
@@ -52,15 +50,11 @@ class UserManipulatorTest extends \PhraseanetTestCase
 
     public function testSetGeonameId()
     {
-        $manager = $this->getMockBuilder('Alchemy\Phrasea\Model\Manager\UserManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $manager = $this->createStub('Alchemy\Phrasea\Model\Manager\UserManager');
 
-        $geoname = $this->getMockBuilder('Alchemy\Geonames\Geoname')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $geoname = $this->createMock('Alchemy\Geonames\Geoname');
 
-        $geoname->expects($this->any())
+        $geoname
             ->method('get')
             ->will($this->returnCallback(function ($prop) {
                 switch ($prop) {
@@ -71,17 +65,14 @@ class UserManipulatorTest extends \PhraseanetTestCase
                 }
             }));
 
-        $geonamesConnector = $this->getMockBuilder('Alchemy\Geonames\Connector')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $geonamesConnector = $this->createMock('Alchemy\Geonames\Connector');
 
         $geonamesConnector->expects($this->once())
             ->method('geoname')
             ->with($this->equalTo(4))
             ->will($this->returnValue($geoname));
 
-        $passwordInterface = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface')
-            ->getMock();
+        $passwordInterface = $this->createStub('Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface');
 
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks'], self::$DI['app']['random.low'], self::$DI['app']['dispatcher']);
@@ -116,45 +107,38 @@ class UserManipulatorTest extends \PhraseanetTestCase
     {
         self::$DI['app']['manipulator.user']->createUser('login', 'password', 'test@test.fr');
         $user = self::$DI['app']['manipulator.user']->createUser('login2', 'password', 'test2@test.fr');
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\RuntimeException',
-            'User with email test@test.fr already exists.'
+        $this->expectException(
+            'Alchemy\Phrasea\Exception\RuntimeException'
         );
+        $this->expectExceptionMessage('User with email test@test.fr already exists.');
         self::$DI['app']['manipulator.user']->setEmail($user, 'test@test.fr');
     }
 
     public function testInvalidGeonamedId()
     {
-        $manager = $this->getMockBuilder('Alchemy\Phrasea\Model\Manager\UserManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $manager = $this->createStub('Alchemy\Phrasea\Model\Manager\UserManager');
 
-        $geoname = $this->getMockBuilder('Alchemy\Geonames\Geoname')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $geoname = $this->createMock('Alchemy\Geonames\Geoname');
 
         $geoname->expects($this->once())
             ->method('get')
             ->with($this->equalTo('country'))
             ->will($this->returnValue(['code' => 'fr']));
 
-        $geonamesConnector = $this->getMockBuilder('Alchemy\Geonames\Connector')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $geonamesConnector = $this->createMock('Alchemy\Geonames\Connector');
 
         $geonamesConnector->expects($this->once())
             ->method('geoname')
             ->with($this->equalTo(-1))
             ->will($this->returnValue($geoname));
 
-        $passwordInterface = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface')
-            ->getMock();
+        $passwordInterface = $this->createStub('Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface');
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
         $manipulator = new UserManipulator($manager, $passwordInterface, $geonamesConnector, self::$DI['app']['repo.tasks'], self::$DI['app']['random.low'], self::$DI['app']['dispatcher']);
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Invalid geonameid -1.'
+        $this->expectException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException'
         );
+        $this->expectExceptionMessage('Invalid geonameid -1.');
         $manipulator->setGeonameId($user, -1);
     }
 
@@ -162,20 +146,20 @@ class UserManipulatorTest extends \PhraseanetTestCase
     {
         self::$DI['app']['manipulator.user']->createUser('login', 'password', 'test@test.fr');
         $user = self::$DI['app']['manipulator.user']->createUser('login2', 'password', 'test2@test.fr');
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Email testtest.fr is not legal.'
+        $this->expectException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException'
         );
+        $this->expectExceptionMessage('Email testtest.fr is not legal.');
         self::$DI['app']['manipulator.user']->setEmail($user, 'testtest.fr');
     }
 
     public function testInvalidSetTemplateOwner()
     {
         $user = self::$DI['app']['manipulator.user']->createUser('login', 'password');
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\RuntimeException',
-            'User with login login already exists.'
+        $this->expectException(
+            'Alchemy\Phrasea\Exception\RuntimeException'
         );
+        $this->expectExceptionMessage('User with login login already exists.');
         self::$DI['app']['manipulator.user']->createTemplate('login', $user);
     }
 

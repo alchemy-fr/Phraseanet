@@ -4,25 +4,23 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     protected $tmpFile;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->tmpFile = sys_get_temp_dir() . '/' . time() . mt_rand(1000, 9999) . '.jpg';
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $this->tmpFile);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists($this->tmpFile)) {
             unlink($this->tmpFile);
@@ -44,7 +42,7 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
             'prodToolsHDSubstitution_token' => $randomValue
         ], [
             'newHD' => new UploadedFile(
-               $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
+               $this->tmpFile, 'KIKOO.JPG', 'image/jpg'
             )
         ]);
 
@@ -66,7 +64,7 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
             'prodToolsThumbSubstitution_token' => $randomValue
         ], [
             'newThumb' => new UploadedFile(
-               $this->tmpFile, 'KIKOO.JPG', 'image/jpg', 2000
+               $this->tmpFile, 'KIKOO.JPG', 'image/jpg'
             )
         ]);
 

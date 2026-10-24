@@ -31,21 +31,9 @@ class setup
                 'name'    => 'ImageMagick (composite)',
                 'binary'  => $finder->find('composite')
             ],
-            'pdf2swf' => [
-                'name'    => 'PDF 2 SWF',
-                'binary'  => $finder->find('pdf2swf')
-            ],
             'unoconv' => [
                 'name'       => 'Unoconv',
                 'binary'     => $finder->find('unoconv')
-            ],
-            'swfextract' => [
-                'name'      => 'SWFextract',
-                'binary'    => $finder->find('swfextract')
-            ],
-            'swfrender' => [
-                'name'   => 'SWFrender',
-                'binary' => $finder->find('swfrender')
             ],
             'MP4Box' => [
                 'name'   => 'MP4Box',

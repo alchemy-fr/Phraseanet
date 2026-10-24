@@ -6,21 +6,19 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\DebuggerSubscriber;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class DebuggerSubscriberTest extends \PhraseanetTestCase
 {
     private $bkp = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->bkp = self::$DI['app']['conf']->get('debugger');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if(is_null($this->bkp)) {
             self::$DI['app']['conf']->remove('debugger');
@@ -34,9 +32,7 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
         parent::tearDown();
     }
 
-    /**
-     * @dataProvider provideIpsAndEnvironments
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideIpsAndEnvironments')]
     public function testIpsAndEnvironments($exceptionThrown, $env, $incomingIp, $authorized)
     {
         $app = new Application($env);
@@ -59,13 +55,13 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
         $app->boot();
 
         if ($exceptionThrown) {
-            $this->setExpectedException('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException');
+            $this->expectException('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException');
         }
 
         $app->handle(new Request([], [], [], [], [], ['REMOTE_ADDR' => $incomingIp]));
     }
 
-    public function provideIpsAndEnvironments()
+    public static function provideIpsAndEnvironments()
     {
         return [
             [false, Application::ENV_PROD, '127.0.0.1', []],

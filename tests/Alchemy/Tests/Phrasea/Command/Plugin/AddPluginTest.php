@@ -4,21 +4,19 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AddPluginTest extends PluginCommandTestCase
 {
     private $bkp = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->bkp = self::$DI['app']['conf']->get('plugins');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if(is_null($this->bkp)) {
             self::$DI['app']['conf']->remove('plugins');
@@ -34,19 +32,19 @@ class AddPluginTest extends PluginCommandTestCase
     {
         $source = 'TestPlugin';
 
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
         $input->expects($this->once())
             ->method('getArgument')
             ->with($this->equalTo('source'))
             ->will($this->returnValue($source));
 
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
         $command = new AddPlugin();
         $command->setContainer(self::$DI['cli']);
 
         $manifest = $this->createManifestMock();
-        $manifest->expects($this->any())
+        $manifest
             ->method('getName')
             ->will($this->returnValue($source));
 
@@ -67,29 +65,27 @@ class AddPluginTest extends PluginCommandTestCase
             ->with($source, 'tempdir');
 
         // the plugin is checked when updating config files
-        self::$DI['cli']['plugins.plugins-validator']->expects($this->at(0))
+        $validated = [];
+        self::$DI['cli']['plugins.plugins-validator']->expects($this->exactly(2))
             ->method('validatePlugin')
-            ->with('TestPlugin')
-            ->will($this->returnValue($manifest));
+            ->willReturnCallback(function ($path) use (&$validated, $manifest) {
+                $validated[] = $path;
 
-        self::$DI['cli']['plugins.plugins-validator']->expects($this->at(1))
-            ->method('validatePlugin')
-            ->with(self::$DI['cli']['plugin.path'].'/TestPlugin')
-            ->will($this->returnValue($manifest));
+                return $manifest;
+            });
 
         self::$DI['cli']['plugins.composer-installer']->expects($this->once())
             ->method('install')
             ->with('tempdir');
 
-        self::$DI['cli']['filesystem']->expects($this->at(0))
+        $mirrored = [];
+        self::$DI['cli']['filesystem']->expects($this->exactly(2))
             ->method('mirror')
-            ->with('tempdir', self::$DI['cli']['plugin.path'].'/TestPlugin');
+            ->willReturnCallback(function ($origin, $target) use (&$mirrored) {
+                $mirrored[] = [$origin, $target];
+            });
 
-        self::$DI['cli']['filesystem']->expects($this->at(1))
-            ->method('mirror')
-            ->with(self::$DI['cli']['plugin.path'].'/TestPlugin/public', self::$DI['cli']['root.path'].'/www/plugins/TestPlugin');
-
-        self::$DI['cli']['filesystem']->expects($this->at(2))
+        self::$DI['cli']['filesystem']->expects($this->once())
             ->method('remove')
             ->with('tempdir');
 
@@ -100,5 +96,10 @@ class AddPluginTest extends PluginCommandTestCase
         $result = $command->execute($input, $output);
 
         $this->assertSame(0, $result);
+        $this->assertSame(['TestPlugin', self::$DI['cli']['plugin.path'].'/TestPlugin'], $validated);
+        $this->assertSame([
+            ['tempdir', self::$DI['cli']['plugin.path'].'/TestPlugin'],
+            [self::$DI['cli']['plugin.path'].'/TestPlugin/public', self::$DI['cli']['root.path'].'/www/plugins/TestPlugin'],
+        ], $mirrored);
     }
 }

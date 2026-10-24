@@ -15,32 +15,29 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\FieldsController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Fields implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['vocabularies'] = $app->share(function (PhraseaApplication $app) {
-            $vocabularies = new \Pimple();
+        $app['vocabularies'] = function (PhraseaApplication $app) {
+            $vocabularies = new \Pimple\Container();
 
-            $vocabularies['user'] = $vocabularies->share(function () use ($app) {
+            $vocabularies['user'] = function () use ($app) {
                 return new UserProvider($app);
-            });
+            };
 
             return $vocabularies;
-        });
-        $app['controller.admin.fields'] = $app->share(function (PhraseaApplication $app) {
+        };
+        $app['controller.admin.fields'] = function (PhraseaApplication $app) {
             return new FieldsController($app);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

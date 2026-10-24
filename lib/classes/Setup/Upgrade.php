@@ -31,6 +31,8 @@ class Setup_Upgrade
 
     public function __construct(Application $app, InputInterface $input, OutputInterface $output, $force = false)
     {
+        $this->app = $app;
+
         if ($force) {
             $this->remove_lock_file();
         }
@@ -38,8 +40,6 @@ class Setup_Upgrade
         if ($this->lock_exists()) {
             throw new Exception_Setup_UpgradeAlreadyStarted('The upgrade is already started');
         }
-
-        $this->app = $app;
 
         $checker = new MailChecker($app['phraseanet.appbox']);
         if ($checker->hasWrongEmailUsers()) {

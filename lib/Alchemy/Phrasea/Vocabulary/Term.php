@@ -43,7 +43,7 @@ class Term
      * @param ControlProviderInterface $type    A Vocabulary Controller
      * @param mixed                    $id      The id of the term in the Vocabulary Controller
      */
-    public function __construct($value, $context = null, ControlProviderInterface $type = null, $id = null)
+    public function __construct($value, $context = null, ?ControlProviderInterface $type = null, $id = null)
     {
         Assertion::string($value, 'A Term value should be a string');
 

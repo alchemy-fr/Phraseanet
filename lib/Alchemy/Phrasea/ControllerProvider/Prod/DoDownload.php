@@ -16,27 +16,23 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\DoDownloadController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class DoDownload implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.do-download'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.do-download'] = function (PhraseaApplication $app) {
             return (new DoDownloadController($app))
                 ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
                 ->setDispatcher($app['dispatcher'])
                 ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     /**

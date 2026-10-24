@@ -47,13 +47,13 @@ class Deliverer
      * @throws LogicException In case no Receiver provided
      * @throws LogicException In case a read-receipt is asked but no Emitter provided
      */
-    public function deliver(MailInterface $mail, $readReceipt = false, array $attachments = null)
+    public function deliver(MailInterface $mail, $readReceipt = false, ?array $attachments = null)
     {
         if (!$mail->getReceiver()) {
             throw new LogicException('You must provide a receiver for a mail notification');
         }
 
-        $message = \Swift_Message::newInstance($this->prefix . $mail->getSubject(), $mail->renderHTML(), 'text/html', 'utf-8');
+        $message = new \Swift_Message($this->prefix . $mail->getSubject(), $mail->renderHTML(), 'text/html', 'utf-8');
         $message->addPart($mail->getMessage(), 'text/plain', 'utf-8');
 
         $message->setFrom($this->emitter->getEmail(), $this->emitter->getName());
@@ -82,7 +82,7 @@ class Deliverer
         $ret = $this->mailer->send($message);
         $this->mailer->getTransport()->stop();
 
-        $this->dispatcher->dispatch('phraseanet.notification.sent');
+        $this->dispatcher->dispatch(new \Symfony\Contracts\EventDispatcher\Event(), 'phraseanet.notification.sent');
 
         return $ret;
     }

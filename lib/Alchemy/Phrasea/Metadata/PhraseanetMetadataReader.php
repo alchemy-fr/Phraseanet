@@ -21,7 +21,7 @@ use MediaVorus\Media\MediaInterface;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use XPDF\PdfToText;
-use XPDF\Exception\Exception as XPDFException;
+use XPDF\Exception\ExceptionInterface as XPDFException;
 
 class PhraseanetMetadataReader
 {

@@ -106,7 +106,7 @@ class RegistrationManipulator implements ManipulatorInterface
     public function deleteUserRegistrations(User $user, array $collections)
     {
         $qb = $this->repository->createQueryBuilder('d');
-        $qb->delete('Phraseanet:Registration', 'd');
+        $qb->delete('Alchemy\Phrasea\Model\Entities\Registration', 'd');
         $qb->where($qb->expr()->eq('d.user', ':user'));
         $qb->setParameter(':user', $user->getId());
 
@@ -126,7 +126,7 @@ class RegistrationManipulator implements ManipulatorInterface
     public function deleteOldRegistrations()
     {
         $qb = $this->repository->createQueryBuilder('d');
-        $qb->delete('Phraseanet:Registration', 'd');
+        $qb->delete('Alchemy\Phrasea\Model\Entities\Registration', 'd');
         $qb->where($qb->expr()->lt('d.created', ':date'));
         $qb->setParameter(':date', new \DateTime('-1 month'));
         $qb->getQuery()->execute();
@@ -140,7 +140,7 @@ class RegistrationManipulator implements ManipulatorInterface
     public function deleteRegistrationsOnCollection(\collection $collection)
     {
         $qb = $this->repository->createQueryBuilder('d');
-        $qb->delete('Phraseanet:Registration', 'd');
+        $qb->delete('Alchemy\Phrasea\Model\Entities\Registration', 'd');
         $qb->where($qb->expr()->eq('d.baseId', ':base'));
         $qb->setParameter(':base', $collection->get_base_id());
         $qb->getQuery()->execute();

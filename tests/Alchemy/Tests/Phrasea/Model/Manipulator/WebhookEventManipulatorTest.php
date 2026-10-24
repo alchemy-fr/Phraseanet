@@ -6,12 +6,11 @@ use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Webhook\WebhookPublisher;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class WebhookEventManipulatorTest extends \PhraseanetTestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testCreate()
     {
         $manipulator = $this->createManipulator();

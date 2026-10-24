@@ -11,7 +11,7 @@
 namespace Alchemy\Phrasea\Databox\Subdef;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception\DriverException;
 
 class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
@@ -31,7 +31,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[]|null $names
      * @return array[]
      */
-    public function findByRecordIdsAndNames(array $recordIds, array $names = null)
+    public function findByRecordIdsAndNames(array $recordIds, ?array $names = null)
     {
         if (!$recordIds || (null !== $names && !$names)) {
             return [];
@@ -47,7 +47,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
             $types['names'] = Connection::PARAM_STR_ARRAY;
         }
 
-        return array_map([$this, 'sqlToPhp'], $this->connection->fetchAll($sql, $params, $types));
+        return array_map([$this, 'sqlToPhp'], $this->connection->fetchAllAssociative($sql, $params, $types));
     }
 
     /**
@@ -67,7 +67,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
 
         try {
             $deleted = array_reduce($subdefIds, function ($carry, $data) use ($statement) {
-                $carry += $statement->execute([
+                $carry += $statement->executeStatement([
                     'record_id' => $data['record_id'],
                     'name' => $data['name'],
                 ]);
@@ -121,7 +121,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
     /**
      * @param array $toInsert
      * @return array
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function createMissing(array $toInsert)
     {
@@ -135,7 +135,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
 
         foreach ($toInsert as $index => $data) {
             try {
-                $statement->execute($this->phpToSql($data));
+                $statement->executeStatement($this->phpToSql($data));
             } catch (DriverException $exception) {
                 $updateNeeded[$index] = $data;
             }
@@ -146,7 +146,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
 
     /**
      * @param array $toUpdate
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function updatePresent(array $toUpdate)
     {
@@ -157,7 +157,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
         $statement = $this->connection->prepare($this->getUpdateSql());
 
         foreach ($toUpdate as $data) {
-            $statement->execute($this->phpToSql($data));
+            $statement->executeStatement($this->phpToSql($data));
         }
     }
 

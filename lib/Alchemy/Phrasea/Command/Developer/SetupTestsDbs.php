@@ -48,7 +48,7 @@ class SetupTestsDbs extends Command
 
         /** @var Connection $connection */
         $connection = $this->container['orm.em']->getConnection();
-        $schema = $connection->getSchemaManager();
+        $schema = $connection->createSchemaManager();
 
         foreach($dbs as $name) {
             $output->writeln('Creating database "'.$name.'"...<info>OK</info>');
@@ -75,7 +75,7 @@ class SetupTestsDbs extends Command
             'GRANT ALL PRIVILEGES ON '.$db_name.'.* TO '.$user.'@'.$host
         );
 */
-        $this->container['orm.em']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
+        $this->container['orm.em']->getConnection()->executeStatement('SET @@global.sql_mode= ""');
 
         return 0;
     }

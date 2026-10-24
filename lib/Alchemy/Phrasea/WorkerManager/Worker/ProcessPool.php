@@ -7,7 +7,6 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 
 class ProcessPool implements LoggerAwareInterface
 {
@@ -44,7 +43,7 @@ class ProcessPool implements LoggerAwareInterface
      * @param LoggerInterface $logger
      * @return void
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
@@ -60,11 +59,11 @@ class ProcessPool implements LoggerAwareInterface
         $this->detachFinishedProcesses();
         $this->waitForNextSlot($channel);
 
-        $builder = new ProcessBuilder($processArguments);
+        $process = new Process($processArguments);
 
-        $builder->setWorkingDirectory($workingDirectory ?: getcwd());
+        $process->setWorkingDirectory($workingDirectory ?: getcwd());
 
-        return ($this->processes[] = $builder->getProcess());
+        return ($this->processes[] = $process);
     }
 
     private function detachFinishedProcesses()

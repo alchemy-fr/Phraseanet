@@ -29,7 +29,7 @@ abstract class AbstractRoutesDumper extends Command
 
         foreach ($routes as $name => $route) {
             $methods = implode('|', $route->getMethods());
-            $pattern = $route->getPattern();
+            $pattern = $route->getPath();
             $warning = false;
 
             $maxNameLength = max($maxNameLength, strlen($name));

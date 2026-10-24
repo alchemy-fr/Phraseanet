@@ -432,7 +432,7 @@ class V3SearchController extends Controller
      * @param int $urlTTL
      * @return SubdefView[][]
      */
-    private function buildSubdefsViews($references, array $names = null, $urlTTL)
+    private function buildSubdefsViews($references, ?array $names = null, $urlTTL = null)
     {
         /** @var MediaSubdefService $MediaSubdefService */
         $MediaSubdefService = $this->app['service.media_subdef'];
@@ -506,7 +506,7 @@ class V3SearchController extends Controller
         });
 
         if ($groups) {
-            return call_user_func_array('array_merge', $groups);
+            return array_merge(...array_values($groups));
         }
 
         return [];

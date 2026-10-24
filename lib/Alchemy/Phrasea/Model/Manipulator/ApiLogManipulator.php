@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiLog;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +23,7 @@ class ApiLogManipulator implements ManipulatorInterface
     private $om;
     private $repository;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, EntityRepository $repo)
     {
         $this->om = $om;
         $this->repository = $repo;

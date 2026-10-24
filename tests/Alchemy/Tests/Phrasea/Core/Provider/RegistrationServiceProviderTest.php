@@ -5,21 +5,21 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class RegistrationServiceProviderTest extends ServiceProviderTestCase
 {
     private $fields;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->fields = self::$DI['app']['conf']->get('registration-fields', []);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$DI['app']['conf']->set('registration-fields', $this->fields);
         parent::tearDown();
@@ -33,10 +33,10 @@ class RegistrationServiceProviderTest extends ServiceProviderTestCase
         $this->assertEquals(['plop'], self::$DI['app']['registration.fields']);
         $this->assertEquals(['plop'], self::$DI['app']['registration.fields']);
 
-        $this->assertInternalType('array', self::$DI['app']['registration.optional-fields']);
+        $this->assertIsArray(self::$DI['app']['registration.optional-fields']);
     }
 
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             ['Alchemy\Phrasea\Core\Provider\RegistrationServiceProvider', 'registration.manager', 'Alchemy\Phrasea\Core\Configuration\RegistrationManager'],

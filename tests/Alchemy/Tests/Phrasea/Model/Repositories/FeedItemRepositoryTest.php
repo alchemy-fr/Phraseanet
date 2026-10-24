@@ -4,37 +4,35 @@ namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FeedItemRepositoryTest extends \PhraseanetTestCase
 {
     public function testIs_record_in_public_feedInPublicFeed()
     {
         $record = self::$DI['record_7'];
-        $this->assertTrue(self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->isRecordInPublicFeed($record->get_sbas_id(), $record->get_record_id()));
+        $this->assertTrue(self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->isRecordInPublicFeed($record->get_sbas_id(), $record->get_record_id()));
     }
 
     public function testIs_record_in_public_feedInPrivateFeed()
     {
         $record = self::$DI['record_2'];
-        $this->assertFalse(self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->isRecordInPublicFeed($record->get_sbas_id(), $record->get_record_id()));
+        $this->assertFalse(self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->isRecordInPublicFeed($record->get_sbas_id(), $record->get_record_id()));
     }
 
     public function testLoadLatestItems()
     {
-        $this->assertCount(3, self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->loadLatest(self::$DI['app'], 20));
+        $this->assertCount(3, self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest(self::$DI['app'], 20));
     }
 
     public function testLoadLatestItemsLessItems()
     {
-        $this->assertCount(1, self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->loadLatest(self::$DI['app'], 1));
+        $this->assertCount(1, self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest(self::$DI['app'], 1));
     }
 
     public function testLoadLatestWithDeletedDatabox()
     {
-        $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 2);
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 2);
         $entry = $feed->getEntries()->first();
         $item = new FeedItem();
         $item->setEntry($entry)
@@ -65,6 +63,6 @@ class FeedItemRepositoryTest extends \PhraseanetTestCase
         self::$DI['app']['orm.em']->persist($entry);
         self::$DI['app']['orm.em']->flush();
 
-        $this->assertCount(3, self::$DI['app']['orm.em']->getRepository('Phraseanet:FeedItem')->loadLatest(self::$DI['app'], 20));
+        $this->assertCount(3, self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\FeedItem')->loadLatest(self::$DI['app'], 20));
     }
 }

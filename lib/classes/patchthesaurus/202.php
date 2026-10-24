@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 class patchthesaurus_202 implements patchthesaurus_interface
 {
@@ -21,18 +21,15 @@ class patchthesaurus_202 implements patchthesaurus_interface
 
             $sql = "ALTER TABLE `pref` ADD `cterms_moddate` DATETIME";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
 
             $sql = "ALTER TABLE `pref` ADD `thesaurus_moddate` DATETIME";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
 
             $sql = "UPDATE pref SET thesaurus_moddate = :date1, cterms_moddate = :date2";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute([':date1' => $th->getAttribute("modification_date"), ':date2' => $ct->getAttribute("modification_date")]);
-            $stmt->closeCursor();
+            $stmt->executeStatement([':date1' => $th->getAttribute("modification_date"), ':date2' => $ct->getAttribute("modification_date")]);
 
             $ct->setAttribute("version", $version = "2.0.3");
             $th->setAttribute("version", $version = "2.0.3");

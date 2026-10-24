@@ -13,18 +13,18 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Admin\ConnectedUsersController;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ConnectedUsersControllerTest extends \PHPUnit_Framework_TestCase
+class ConnectedUsersControllerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @dataProvider provideModuleNames
      * @param string      $id
      * @param string|null $expected
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideModuleNames')]
     public function testItProperlyTranslateModuleNames($id, $expected)
     {
-        $translator = $this->getMock(TranslatorInterface::class);
+        $translator = $this->createMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
         $translator
             ->expects($this->exactly(9))
             ->method('trans')
@@ -41,15 +41,13 @@ class ConnectedUsersControllerTest extends \PHPUnit_Framework_TestCase
                 [null, [], null, null, null],
             ]);
 
-        $app = $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->getMock()
+        $app = $this->createMock(Application::class)
         ;
-        $app->expects($this->any())
+        $app
             ->method('offsetGet')
             ->willReturnMap([
                 ['translator', $translator],
-                ['monolog', $this->getMock(LoggerInterface::class)],
+                ['monolog', $this->createStub(LoggerInterface::class)],
             ]);
 
         $controller = new ConnectedUsersController($app);
@@ -59,7 +57,7 @@ class ConnectedUsersControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $controller->getModuleNameFromId($id));
     }
 
-    public function provideModuleNames()
+    public static function provideModuleNames()
     {
         return [
             ['0', 'module0'],

@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../../vendor/autoload.php';
+
+if (!class_exists('Symfony\Component\Console\Application')) {
+    echo "Composer dev dependencies must be installed to run this example. Run `composer install --dev` to solve this.\n";
+    exit(1);
+}
+
+require_once __DIR__ . '/../src/RandomTask.php';
+require_once __DIR__ . '/../src/RunJobCommand.php';
+require_once __DIR__ . '/../src/RunJobTask.php';
+require_once __DIR__ . '/../src/Job.php';
+require_once __DIR__ . '/../src/TaskList.php';
+require_once __DIR__ . '/../src/TaskManagerCommand.php';
+
+use Alchemy\TaskManager\Demo\TaskManagerCommand;
+use Alchemy\TaskManager\Demo\RunJobCommand;
+use Symfony\Component\Console\Application;
+
+declare(ticks=1);
+
+$app = new Application('Task Manager', 'demo');
+$app->addCommands(array(new TaskManagerCommand(), new RunJobCommand()));
+
+return $app->run();

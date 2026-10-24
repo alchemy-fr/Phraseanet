@@ -5,10 +5,10 @@ namespace Alchemy\Tests\Phrasea\Notification\Mail;
 use Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoSomebodyAutoregistered
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoSomebodyAutoregisteredTest extends MailWithLinkTestCase
 {
     public function getMail()

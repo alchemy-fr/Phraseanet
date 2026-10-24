@@ -19,11 +19,11 @@ use Alchemy\Phrasea\Model\Repositories\SessionRepository;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ConnectedUsersController extends Controller
 {
-    /** @var TranslatorInterface */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface */
     private $translator;
     protected $moduleNames;
     /** @var LoggerInterface */
@@ -38,7 +38,7 @@ class ConnectedUsersController extends Controller
 
     public function listConnectedUsers(Request $request)
     {
-        $dql = 'SELECT s FROM Phraseanet:Session s WHERE s.updated > :date ORDER BY s.updated DESC';
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s WHERE s.updated > :date ORDER BY s.updated DESC';
         $date = new \DateTime('-2 hours');
 
         /** @var EntityManager $manager */

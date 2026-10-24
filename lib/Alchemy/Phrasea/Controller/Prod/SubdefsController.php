@@ -10,10 +10,11 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
-use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Driver\Value\Mono;
+use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Reader;
 
 class SubdefsController extends Controller
@@ -29,14 +30,14 @@ class SubdefsController extends Controller
                 ->first();
             $metadatas = $fileEntity->getMetadatas();
             foreach($metadatas as $metadata){
-                $valuedata = $fileEntity->executeQuery($metadata->getTag()->getTagname()."[not(@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#base64Binary')]");
+                $valuedata = $fileEntity->executeQuery($metadata->getTagGroup()->getId()."[not(@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#base64Binary')]");
                 if(empty($valuedata)){
                     $valuedata = new Mono($this->app->trans('Binary data'));
-                    $tag = TagFactory::getFromRDFTagname($metadata->getTag()->getTagname());
+                    $tag = TagFactory::getFromRDFTagname($metadata->getTagGroup()->getId());
                     $metadataBagElement = new Metadata($tag, $valuedata);
-                    $metadataBag->set($metadata->getTag()->getTagname(), $metadataBagElement);
+                    $metadataBag->set($metadata->getTagGroup()->getId(), $metadataBagElement);
                 }else{
-                    $metadataBag->set($metadata->getTag()->getTagname(), $metadata);
+                    $metadataBag->set($metadata->getTagGroup()->getId(), $metadata);
                 }
             }
         } catch (PHPExiftoolException $e) {

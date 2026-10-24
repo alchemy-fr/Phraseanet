@@ -5,7 +5,7 @@ install:
 	make install_assets
 
 install_composer:
-	composer install --ignore-platform-reqs --no-dev --no-suggest --classmap-authoritative --no-interaction
+	composer install --no-dev --classmap-authoritative --no-interaction
 
 install_composer_dev:
 	composer install

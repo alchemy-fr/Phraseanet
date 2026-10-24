@@ -9,8 +9,7 @@
  */
 namespace Alchemy\Phrasea\Authorization;
 
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
@@ -29,7 +28,7 @@ class MockedAuthenticatedVoter implements VoterInterface
         return true;
     }
 
-    public function vote(TokenInterface $token, $object, array $attributes)
+    public function vote(TokenInterface $token, $object, array $attributes, ?\Symfony\Component\Security\Core\Authorization\Voter\Vote $vote = null): int
     {
         $result = VoterInterface::ACCESS_ABSTAIN;
         foreach ($attributes as $attribute) {
@@ -40,13 +39,13 @@ class MockedAuthenticatedVoter implements VoterInterface
             $result = VoterInterface::ACCESS_DENIED;
 
             if (self::IS_AUTHENTICATED_FULLY === $attribute
-                && $token instanceof PreAuthenticatedToken
+                && $token instanceof UserIdToken
             ) {
                 return VoterInterface::ACCESS_GRANTED;
             }
 
             if (self::IS_AUTHENTICATED_ANONYMOUSLY === $attribute
-                && $token instanceof AnonymousToken
+                && $token instanceof NullToken
             ) {
                 return VoterInterface::ACCESS_GRANTED;
             }

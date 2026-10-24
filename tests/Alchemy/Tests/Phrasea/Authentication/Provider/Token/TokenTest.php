@@ -4,15 +4,13 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider\Token;
 
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TokenTest extends \PhraseanetTestCase
 {
     public function testGetIdAndProvider()
     {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $id = 'Id-' . mt_rand();
 
         $token = new Token($provider, $id);
@@ -24,12 +22,10 @@ class TokenTest extends \PhraseanetTestCase
 
     public function testGetIdentity()
     {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $id = 'Id-' . mt_rand();
 
-        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $identity = $this->createStub('Alchemy\Phrasea\Authentication\Provider\Token\Identity');
 
         $provider->expects($this->once())
             ->method('getIdentity')
@@ -41,12 +37,10 @@ class TokenTest extends \PhraseanetTestCase
 
     public function getTemplates()
     {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
         $id = 'Id-' . mt_rand();
 
-        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $identity = $this->createMock('Alchemy\Phrasea\Authentication\Provider\Token\Identity');
 
         $provider->expects($this->once())
             ->method('getIdentity')

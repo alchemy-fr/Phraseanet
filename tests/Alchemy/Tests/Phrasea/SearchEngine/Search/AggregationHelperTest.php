@@ -7,11 +7,9 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
-/**
- * @group unit
- * @group searchengine
- */
-class AggregationHelperTest extends \PHPUnit_Framework_TestCase
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+class AggregationHelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testAggregationWrappingOnPrivateField()
     {

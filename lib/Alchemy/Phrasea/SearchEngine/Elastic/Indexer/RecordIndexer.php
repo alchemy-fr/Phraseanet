@@ -59,7 +59,7 @@ class RecordIndexer
         DataboxFetcherFactory $fetcherFactory,
         RecordHelper $helper,
         EventDispatcherInterface $eventDispatcher,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->fetcherFactory = $fetcherFactory;
@@ -261,11 +261,11 @@ class RecordIndexer
         $sql = "SELECT prop FROM pref WHERE prop IN('thesaurus','thesaurus_index')"
             . " ORDER BY updated_on DESC, IF(prop='thesaurus', 'a', 'z') DESC LIMIT 1";
 
-        if ($databox->get_connection()->fetchColumn($sql) == 'thesaurus') {
+        if ($databox->get_connection()->fetchOne($sql) == 'thesaurus') {
             // The thesaurus was modified, enforce index
             $this->eventDispatcher->dispatch(
-                ThesaurusEvents::REINDEX_REQUIRED,
-                new ReindexRequiredEvent($databox)
+                new ReindexRequiredEvent($databox),
+                ThesaurusEvents::REINDEX_REQUIRED
             );
         }
 

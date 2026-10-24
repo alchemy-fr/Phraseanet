@@ -5,24 +5,20 @@ namespace Alchemy\Tests\Phrasea\Form\Constraint;
 use Alchemy\Phrasea\Form\Constraint\PasswordTokenValidator;
 use RandomLib\Factory;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PasswordTokenValidatorTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideVoteData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVoteData')]
     public function testValidate($value, $isValid)
     {
-        $context = $this->getMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock('Symfony\Component\Validator\Context\ExecutionContextInterface');
         $builder = $context
             ->expects($this->exactly($isValid ? 0 : 1))
             ->method('addViolation');
 
         if (!$isValid) {
-            $builder->with($this->isType('string'));
+            $builder->with($this->isString());
         }
 
         $validator = new PasswordTokenValidator();
@@ -38,7 +34,7 @@ class PasswordTokenValidatorTest extends \PhraseanetTestCase
         $validator->validate($value, $constraint);
     }
 
-    public function provideVoteData()
+    public static function provideVoteData()
     {
         $factory = new Factory();
         $generator = $factory->getLowStrengthGenerator();
@@ -51,9 +47,6 @@ class PasswordTokenValidatorTest extends \PhraseanetTestCase
 
     private function getConstraint()
     {
-        return $this
-            ->getMockBuilder('Alchemy\Phrasea\Form\Constraint\PasswordToken')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Form\Constraint\PasswordToken');
     }
 }

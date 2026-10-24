@@ -8,7 +8,7 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 {
     private $tearDownHandlers = [];
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->tearDownHandlers as $handler) {
             $handler();
@@ -38,10 +38,10 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
         file_put_contents( __DIR__ . '/../../../../../config/_GV.php', str_replace('http://local.phrasea/', 'http://local.phrasea.tester/', file_get_contents( __DIR__ . '/../../../../../config/_GV.php')));
 
         file_put_contents(__DIR__ . '/../../../../../config/connexion.inc', "<?php\n
-\$hostname = '".$conn->getHost()."';
-\$port = '".$conn->getPort()."';
-\$user = '".$conn->getUsername()."';
-\$password = '".$conn->getPassword()."';
+\$hostname = '".$conn->getParams()['host']."';
+\$port = '".$conn->getParams()['port']."';
+\$user = '".$conn->getParams()['user']."';
+\$password = '".$conn->getParams()['password']."';
 \$dbname = 'ab_setup_test';
             ");
 
@@ -60,10 +60,10 @@ abstract class AbstractSetupTester extends \PhraseanetTestCase
 
         file_put_contents(__DIR__ . '/../../../../../config/config.inc', "<?php\n\$servername = 'http://local.phrasea';\n");
         file_put_contents(__DIR__ . '/../../../../../config/connexion.inc', "<?php\n
-\$hostname = '".$conn->getHost()."';
-\$port = '".$conn->getPort()."';
-\$user = '".$conn->getUsername()."';
-\$password = '".$conn->getPassword()."';
+\$hostname = '".$conn->getParams()['host']."';
+\$port = '".$conn->getParams()['port']."';
+\$user = '".$conn->getParams()['user']."';
+\$password = '".$conn->getParams()['password']."';
 \$dbname = '".$conn->getDatabase()."';
             ");
 

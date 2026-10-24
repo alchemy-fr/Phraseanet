@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Extension extends AbstractChecker
 {
@@ -41,7 +41,7 @@ class Extension extends AbstractChecker
         return new Response($boolean, $this);
     }
 
-    public function getMessage(TranslatorInterface $translator)
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return $translator->trans('The file does not match available extensions');
     }

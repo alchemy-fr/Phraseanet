@@ -11,23 +11,28 @@
 
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 
-class OldPasswordEncoder implements PasswordEncoderInterface
+class OldPasswordEncoder implements LegacyPasswordHasherInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function encodePassword($raw, $salt)
+    public function hash(string $plainPassword, ?string $salt = null): string
     {
-        return hash('sha256', $raw);
+        return hash('sha256', $plainPassword);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isPasswordValid($encoded, $raw, $salt)
+    public function verify(string $hashedPassword, string $plainPassword, ?string $salt = null): bool
     {
-        return $this->encodePassword($raw, $salt) === $encoded;
+        return hash_equals($hashedPassword, $this->hash($plainPassword, $salt));
+    }
+
+    public function needsRehash(string $hashedPassword): bool
+    {
+        return false;
     }
 }

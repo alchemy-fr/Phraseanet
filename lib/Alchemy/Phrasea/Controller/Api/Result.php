@@ -68,7 +68,7 @@ class Result
     const ERROR_UNACCEPTABLE = 'Unacceptable';
     const ERROR_UNPROCESSABLEENTITY = 'Unprocessable Entity';
 
-    public function __construct(Request $request, array $data = null, $code = 200, $errorType = null, $errorMessage = null, $errorDetails = null)
+    public function __construct(Request $request, ?array $data = null, $code = 200, $errorType = null, $errorMessage = null, $errorDetails = null)
     {
         $date = new \DateTime();
 
@@ -191,7 +191,7 @@ class Result
 
     private function parseResponseType()
     {
-        if (trim($this->request->get('callback')) !== '') {
+        if (trim((string) $this->request->get('callback')) !== '') {
             return $this->responseType = self::FORMAT_JSONP;
         }
 
@@ -220,7 +220,7 @@ class Result
      *
      * @return Result
      */
-    private function setData(array $data = null)
+    private function setData(?array $data = null)
     {
         if (null === $data || count($data) === 0) {
             $data = new \stdClass();

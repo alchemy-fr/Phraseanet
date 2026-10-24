@@ -15,6 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Symfony\Component\Console\Question\Question;
 
 class module_console_fieldsRename extends Command
 {
@@ -55,12 +56,12 @@ class module_console_fieldsRename extends Command
             return 1;
         }
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('question');
         $continue = mb_strtolower(
             $dialog->ask(
-                $output
-                , "<question>About to rename " . $field->get_name() . " into " . $new_name . " (y/N)</question>"
-                , 'n'
+                $input
+                , $output
+                , new Question("<question>About to rename " . $field->get_name() . " into " . $new_name . " (y/N)</question>", 'n')
             )
         );
 
@@ -78,10 +79,8 @@ class module_console_fieldsRename extends Command
         $output->writeln("<info>OK</info>");
 
         $sql = 'SELECT count(record_id) as total FROM record';
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $data = $stmt->fetchAssociative();
 
         $total = $data['total'];
         $start = 0;
@@ -98,9 +97,8 @@ class module_console_fieldsRename extends Command
         do {
             $output->write("\rUpdating records... <info>".min($start, $total)." / $total</info>");
 
-            $stmt = $builder->execute();
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $builder->executeQuery();
+            $results = $stmt->fetchAllAssociative();
 
             foreach ($results as $row) {
                 $record = $databox->get_record($row['record_id']);
@@ -109,8 +107,8 @@ class module_console_fieldsRename extends Command
             }
 
             // order to write metas for those records
-            $this->container['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id'))
+            $this->container['dispatcher']->dispatch(new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id')),
+                WorkerEvents::RECORDS_WRITE_META
             );
 
             $start += $quantity;

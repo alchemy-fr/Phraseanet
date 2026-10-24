@@ -145,7 +145,7 @@ class OrderSubscriber extends AbstractNotificationSubscriber
         );
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::ORDER_CREATE => 'onCreate',

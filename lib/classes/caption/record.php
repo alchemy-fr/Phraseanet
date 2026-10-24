@@ -35,7 +35,7 @@ class caption_record implements cache_cacheableInterface
      * @param RecordReferenceInterface $record
      * @param array[]|null $fieldsData
      */
-    public function __construct(Application $app, RecordReferenceInterface $record, array $fieldsData = null)
+    public function __construct(Application $app, RecordReferenceInterface $record, ?array $fieldsData = null)
     {
         $this->app = $app;
         $this->record = $record;
@@ -60,7 +60,7 @@ class caption_record implements cache_cacheableInterface
 
     /**
      * @return \caption_field[]
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     protected function retrieve_fields()
     {
@@ -81,7 +81,7 @@ class caption_record implements cache_cacheableInterface
      *
      * @return \caption_field[]
      */
-    public function get_fields(array $grep_fields = null, $includeBusiness = false)
+    public function get_fields(?array $grep_fields = null, $includeBusiness = false)
     {
         $fields = [];
 
@@ -164,7 +164,7 @@ class caption_record implements cache_cacheableInterface
      * @param bool $includeBusiness
      * @return array
      */
-    public function get_highlight_fields(array $grep_fields = null, $includeBusiness = false)
+    public function get_highlight_fields(?array $grep_fields = null, $includeBusiness = false)
     {
         $fields = [];
 

@@ -66,10 +66,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 'd.comment'     => 'tt.comment'
             ];
 
-            $stmt = $this->getConnBas()->prepare($this->sql);
-            $stmt->execute($this->params);
+            $stmt = $this->getConnBas()->executeQuery($this->sql, $this->params);
             $this->total_row = $stmt->rowCount();
-            $stmt->closeCursor();
 
             $this->sql .= $this->filter->getOrderFilter($customFieldMap) ? : '';
             $this->sql .= $this->filter->getLimitFilter() ? : '';
@@ -89,10 +87,8 @@ class module_report_sqlaction extends module_report_sql implements module_report
                 GROUP BY " . $this->groupby . "
                 ORDER BY nombre";
 
-            $stmt = $this->getConnBas()->prepare($this->sql);
-            $stmt->execute($this->params);
+            $stmt = $this->getConnBas()->executeQuery($this->sql, $this->params);
             $this->total_row = $stmt->rowCount();
-            $stmt->closeCursor();
         }
 
         return $this;

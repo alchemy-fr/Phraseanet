@@ -51,8 +51,7 @@ class patch_379alpha1a extends patchAbstract
         $sql = 'UPDATE permalinks SET label = "untitled"
                 WHERE label = ""';
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

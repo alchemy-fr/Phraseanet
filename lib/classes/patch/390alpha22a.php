@@ -58,7 +58,7 @@ class patch_390alpha22a implements patchInterface
     {
         $sql = "UPDATE metadatas_structure SET `aggregable`=20 WHERE `aggregable`=1";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt->executeStatement();
 
         return true;
     }

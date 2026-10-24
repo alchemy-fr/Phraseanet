@@ -56,17 +56,15 @@ class patch_390alpha9b extends patchAbstract
     private function upgradeRegistry(Application $app)
     {
         $sql = 'SELECT `key`, `value`, `type` FROM registry';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         $oldRegistry = [];
 
         foreach ($rows as $row) {
             switch ($row['type']) {
                 case 'boolean':
-                    $value = (Boolean) $row['value'];
+                    $value = (bool) $row['value'];
                     break;
                 case 'integer':
                     $value = (int) $row['value'];

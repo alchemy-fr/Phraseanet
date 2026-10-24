@@ -38,6 +38,6 @@ class PasswordToken extends Constraint
 
     public static function create(Application $app)
     {
-        return new static($app['repo.tokens']);
+        return new self($app['repo.tokens']);
     }
 }

@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -26,7 +26,7 @@ class DebuggerSubscriber implements EventSubscriberInterface
         $this->app = $app;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [
@@ -35,7 +35,7 @@ class DebuggerSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function checkIp(GetResponseEvent $event)
+    public function checkIp(RequestEvent $event)
     {
         if ($this->app['configuration.store']->isSetup() && $this->app['conf']->has(['debugger', 'allowed-ips'])) {
             $allowedIps = $this->app['conf']->get(['debugger', 'allowed-ips']);

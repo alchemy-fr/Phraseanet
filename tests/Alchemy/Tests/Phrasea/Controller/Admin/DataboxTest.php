@@ -7,24 +7,42 @@ use Alchemy\Phrasea\Border\File;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'getDatabase')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'connect')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'call')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'getReorder')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'setReorder')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'getDatabaseCGU')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'updateDatabaseCGU')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'progressBarInfos')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'getDetails')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'getNewCollection')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'reindex')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'setIndexable')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'clearLogs')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'changeViewName')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'deleteBase')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'mountCollection')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'sendLogoPdf')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'deleteLogoPdf')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'unmountDatabase')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'emptyDatabase')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     private static $createdCollections = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->dropDatabase();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (!self::$createdCollections) {
             parent::tearDown();
@@ -56,8 +74,8 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('success', $content, $response->getContent());
-        $this->assertObjectHasAttribute('msg', $content, $response->getContent());
+        $this->assertObjectHasProperty('success', $content, $response->getContent());
+        $this->assertObjectHasProperty('msg', $content, $response->getContent());
 
         return $content;
     }
@@ -78,11 +96,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals($location, $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabase
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::connect
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::call
-     */
     public function testGetDatabox()
     {
         $this->setAdmin(true);
@@ -91,9 +104,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getReorder
-     */
     public function testGetCollectionOrder()
     {
         $this->setAdmin(true);
@@ -102,9 +112,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::setReorder
-     */
     public function testSetReorder()
     {
         $databox = $this->createDatabox();
@@ -129,13 +136,10 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
          */
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabaseCGU
-     */
     public function testGetCGUHasNoRights()
     {
         $this->setAdmin(true, [
-            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+            'has_right_on_sbas'=> function (\PHPUnit\Framework\MockObject\MockObject $acl) {
                 $acl->expects($this->once())
                     ->method('has_right_on_sbas')
                     ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), \ACL::BAS_MODIFY_STRUCT)
@@ -148,13 +152,10 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabaseCGU
-     */
     public function testGetCGU()
     {
         $this->setAdmin(true, [
-            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+            'has_right_on_sbas'=> function (\PHPUnit\Framework\MockObject\MockObject $acl) {
                 $acl->expects($this->once())
                     ->method('has_right_on_sbas')
                     ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), \ACL::BAS_MODIFY_STRUCT)
@@ -166,9 +167,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::updateDatabaseCGU
-     */
     public function testUpdateDatabaseCGNotJson()
     {
         $this->setAdmin(true);
@@ -182,13 +180,10 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::updateDatabaseCGU
-     */
     public function testUpdateDatabaseCGU()
     {
         $this->setAdmin(true, [
-            'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
+            'has_right_on_sbas'=> function (\PHPUnit\Framework\MockObject\MockObject $acl) {
                 $acl->expects($this->once())
                     ->method('has_right_on_sbas')
                     ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), \ACL::BAS_MODIFY_STRUCT)
@@ -210,9 +205,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         unset($databox);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::progressBarInfos
-     */
     public function testGetInformationDocumentBadRequest()
     {
         $this->setAdmin(true);
@@ -222,9 +214,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::progressBarInfos
-     */
     public function testGetInformationDocument()
     {
         $this->setAdmin(true);
@@ -233,16 +222,13 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson($response);
         $this->assertTrue($json->success);
-        $this->assertObjectHasAttribute('sbas_id', $json);
-        $this->assertObjectHasAttribute('indexable', $json);
-        $this->assertObjectHasAttribute('counts', $json);
-        $this->assertObjectHasAttribute('viewname', $json);
-        $this->assertObjectHasAttribute('printLogoURL', $json);
+        $this->assertObjectHasProperty('sbas_id', $json);
+        $this->assertObjectHasProperty('indexable', $json);
+        $this->assertObjectHasProperty('counts', $json);
+        $this->assertObjectHasProperty('viewname', $json);
+        $this->assertObjectHasProperty('printLogoURL', $json);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDetails
-     */
     public function testGetInformationDetails()
     {
         $this->setAdmin(true);
@@ -251,9 +237,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getNewCollection
-     */
     public function testGetNewCollection()
     {
         $this->setAdmin(true);
@@ -262,9 +245,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabase
-     */
     public function testGetDataboxUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -274,9 +254,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getReorder
-     */
     public function testGetCollectionOrderUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -286,9 +263,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDatabaseCGU
-     */
     public function testGetCGUUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -298,10 +272,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDetails
-     *
-     */
     public function testGetInformationDocumentUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -310,9 +280,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::progressBarInfos
-     */
     public function testGetInformationDetailsUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -322,9 +289,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::getNewCollection
-     */
     public function testGetNewCollectionUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -334,9 +298,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::reindex
-     */
     public function testPostReindexNotJson()
     {
         $collection = $this->createOneCollection();
@@ -346,9 +307,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::reindex
-     */
     public function testPostReindex()
     {
         $this->setAdmin(true);
@@ -358,12 +316,9 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
+        $this->assertObjectHasProperty('sbas_id', $content, $response->getContent());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::setIndexable
-     */
     public function testPostIndexableNotJson()
     {
         $this->setAdmin(true);
@@ -375,9 +330,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::setIndexable
-     */
     public function testPostIndexable()
     {
         $this->setAdmin(true);
@@ -390,15 +342,12 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
+        $this->assertObjectHasProperty('sbas_id', $content, $response->getContent());
 
         $app = $this->getApplication();
         $this->assertTrue(!!$app->getApplicationBox()->is_databox_indexable($app->findDataboxById(self::$DI['collection']->get_sbas_id())));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::clearLogs
-     */
     public function testPostClearLogNotJson()
     {
         $this->setAdmin(true);
@@ -410,9 +359,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::clearLogs
-     */
     public function testPostClearLogs()
     {
         $this->setAdmin(true);
@@ -423,12 +369,9 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
+        $this->assertObjectHasProperty('sbas_id', $content, $response->getContent());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::changeViewName
-     */
     public function testChangeViewNotJson()
     {
         $this->setAdmin(true);
@@ -442,9 +385,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::changeViewName
-     */
     public function testPostViewNameBadRequestArguments()
     {
         $this->setAdmin(true);
@@ -453,9 +393,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertXMLHTTPBadJsonResponse($response);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::changeViewName
-     */
     public function testPostViewName()
     {
         $this->setAdmin(true);
@@ -473,15 +410,12 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('sbas_id', $content, $response->getContent());
+        $this->assertObjectHasProperty('sbas_id', $content, $response->getContent());
 
         $databox = self::$DI['app']->findDataboxById(self::$DI['collection']->get_sbas_id());
         $this->assertEquals('new_databox_name', $databox->get_viewname());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::deleteBase
-     */
     public function testDeleteBase()
     {
         $this->setAdmin(true);
@@ -492,7 +426,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson($response);
         $this->assertTrue($json->success);
-        $this->assertObjectHasAttribute('sbas_id', $json);
+        $this->assertObjectHasProperty('sbas_id', $json);
 
         try {
             self::$DI['app']->findDataboxById((int) $json->sbas_id);
@@ -502,9 +436,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::mountCollection
-     */
     public function testMountCollection()
     {
         $this->setAdmin(true);
@@ -519,16 +450,12 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         // delete mounted collection
         $sql = "DELETE FROM bas ORDER BY base_id DESC LIMIT 1";
         $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         unset($stmt);
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/databox/' . $collection->get_sbas_id() . '/?mount=ok');
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::sendLogoPdf
-     */
     public function testSendLogoPdf()
     {
         $this->setAdmin(true);
@@ -543,9 +470,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertNotEmpty(\databox::getPrintLogo(self::$DI['collection']->get_sbas_id()));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::deleteLogoPdf
-     */
     public function testDeleteLogoPdf()
     {
         $this->setAdmin(true);
@@ -561,9 +485,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEmpty(\databox::getPrintLogo(self::$DI['collection']->get_sbas_id()));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::unmountDatabase
-     */
     public function testUnmountDatabox()
     {
         $this->setAdmin(true);
@@ -574,7 +495,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $json = $this->getJson($response);
         $this->assertTrue($json->success);
-        $this->assertObjectHasAttribute('sbas_id', $json);
+        $this->assertObjectHasProperty('sbas_id', $json);
 
         try {
             self::$DI['app']->findDataboxById((int) $json->sbas_id);
@@ -587,9 +508,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         unset($base);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::emptyDatabase
-     */
     public function testEmptyDatabase()
     {
         $this->setAdmin(true);
@@ -650,9 +568,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('dutch label', $base->get_label('nl', false));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Database::emptyDatabase
-     */
     public function testPostEmptyBaseWithHighRecordAmount()
     {
         $this->setAdmin(true);
@@ -672,7 +587,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $stmt = $base->get_connection()->prepare($sql);
         $i = 0;
         while ($i < 502) {
-            $stmt->execute([
+            $stmt->executeStatement([
                 ':coll_id'          => $collection->get_coll_id(),
                 ':parent_record_id' => 0,
                 ':type'             => 'unknown',
@@ -684,8 +599,6 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
             $i++;
         }
 
-        $stmt->closeCursor();
-
         if ($collection->get_record_amount() < 500) {
             $this->markTestSkipped('No enough records added');
         }
@@ -695,7 +608,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
         $json = $this->getJson($response);
         $this->assertTrue($json->success);
 
-        if (count(self::$DI['app']['orm.em']->getRepository('Phraseanet:Task')->findAll()) === 0) {
+        if (count(self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Task')->findAll()) === 0) {
             $this->fail('Task for empty collection has not been created');
         }
 

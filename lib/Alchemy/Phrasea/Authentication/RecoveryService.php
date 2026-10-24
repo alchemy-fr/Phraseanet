@@ -123,7 +123,7 @@ class RecoveryService
         $token = $this->tokenManipulator->createResetPasswordToken($user);
 
         if ($notifyUser && $user->canRenewPassword()) {
-            $url = $this->urlGenerator->generate('login_renew_password', [ 'token' => $token->getValue() ], true);
+            $url = $this->urlGenerator->generate('login_renew_password', [ 'token' => $token->getValue() ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
 
             $mail = MailRequestPasswordUpdate::create($this->application, $receiver);
             $mail->setLogin($user->getLogin());

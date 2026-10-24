@@ -10,15 +10,15 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LanguageController
 {
-    /** @var TranslatorInterface */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface */
     private $translator;
     private $serverName;
 
-    public function __construct(TranslatorInterface $translator, $serverName)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator, $serverName)
     {
         $this->translator = $translator;
         $this->serverName = $serverName;

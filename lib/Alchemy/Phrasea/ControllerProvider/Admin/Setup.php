@@ -14,22 +14,19 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\SetupController;
 use Alchemy\Phrasea\Security\Firewall;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Setup implements ControllerProviderInterface, ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.admin.setup'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.admin.setup'] = function (PhraseaApplication $app) {
             return new SetupController($app, $app['registry.manipulator'], $app['conf']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

@@ -18,21 +18,18 @@ use org\bovigo\vfs\vfsStreamDirectory;
 // use Symfony\Component\Filesystem\Filesystem;
 
 
-class LazaretPathBookerTest extends \PHPUnit_Framework_TestCase
+class LazaretPathBookerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var vfsStreamDirectory
      */
     private $root;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->root = vfsStream::setup();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::bookLazaretPathfile
-     */
     public function testBookFile()
     {
         $mockedPathResolver = function ($path) {

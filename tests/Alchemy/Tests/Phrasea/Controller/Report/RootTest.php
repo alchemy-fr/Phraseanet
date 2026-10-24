@@ -2,19 +2,19 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Report;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
     private $dmin;
     private $dmax;
 
-    public function __construct()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $this->dmax = new \DateTime('now');
         $this->dmin = new \DateTime('-1 month');
     }

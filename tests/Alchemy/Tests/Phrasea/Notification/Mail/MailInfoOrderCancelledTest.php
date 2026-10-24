@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoOrderCancelledTest extends MailTestCase
 {
     public function testSetQuantity()
@@ -33,7 +33,7 @@ class MailInfoOrderCancelledTest extends MailTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
@@ -76,7 +76,7 @@ class MailInfoOrderCancelledTest extends MailTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 

@@ -21,9 +21,10 @@ use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use RandomLib\Generator;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Alchemy\Phrasea\Core\Event\User\UserEvents;
@@ -36,7 +37,7 @@ use Alchemy\Phrasea\Core\Event\User\DeletedEvent;
 class UserManipulator implements ManipulatorInterface
 {
     /**
-     * @var PasswordEncoderInterface
+     * @var LegacyPasswordHasherInterface
      */
     protected $passwordEncoder;
 
@@ -67,7 +68,7 @@ class UserManipulator implements ManipulatorInterface
 
     /**
      * @param UserManager $manager
-     * @param PasswordEncoderInterface $passwordEncoder
+     * @param LegacyPasswordHasherInterface $passwordEncoder
      * @param GeonamesConnector $connector
      * @param EntityRepository $repo
      * @param Generator $generator
@@ -75,7 +76,7 @@ class UserManipulator implements ManipulatorInterface
      */
     public function __construct(
         UserManager $manager,
-        PasswordEncoderInterface $passwordEncoder,
+        LegacyPasswordHasherInterface $passwordEncoder,
         GeonamesConnector $connector,
         EntityRepository $repo,
         Generator $generator,
@@ -113,10 +114,10 @@ class UserManipulator implements ManipulatorInterface
         $this->manager->update($user);
 
         $this->dispatcher->dispatch(
-            UserEvents::CREATED,
             new CreatedEvent(
                 $user
-            )
+            ),
+            UserEvents::CREATED
         );
 
         return $user;
@@ -143,7 +144,6 @@ class UserManipulator implements ManipulatorInterface
             $this->manager->delete($user);
 
             $this->dispatcher->dispatch(
-                UserEvents::DELETED,
                 new DeletedEvent(
                     null,
                     array(
@@ -152,7 +152,8 @@ class UserManipulator implements ManipulatorInterface
                         'email'             => $old_email,
                         'grantedBaseIds'    => isset($grantedBaseIdList[$old_id]) ? $grantedBaseIdList[$old_id] : []
                     )
-                )
+                ),
+                UserEvents::DELETED
             );
         }
     }
@@ -301,7 +302,7 @@ class UserManipulator implements ManipulatorInterface
     public function setNotificationSetting(User $user, $name, $value)
     {
         if ($user->getNotificationSettings()->containsKey($name)) {
-            $user->getNotificationSettings()->get($name)->setValue((Boolean) $value);
+            $user->getNotificationSettings()->get($name)->setValue((bool) $value);
         } else {
             $userSetting = new UserNotificationSetting();
             $userSetting->setUser($user);
@@ -339,7 +340,7 @@ class UserManipulator implements ManipulatorInterface
     private function doSetPassword(User $user, $password)
     {
         $user->setNonce($this->generator->generateString(64));
-        $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
+        $user->setPassword($this->passwordEncoder->hash($password, $user->getNonce()));
         $user->setSaltedPassword(true);
     }
 
@@ -372,7 +373,7 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetEmail(User $user, $email)
     {
-        if (null !== $email && false === (Boolean) \Swift_Validate::email($email)) {
+        if (null !== $email && false === (bool) EmailValidator::isValid($email)) {
             throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
         }
 

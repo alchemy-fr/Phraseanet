@@ -49,10 +49,8 @@ class patch_370alpha4a extends patchAbstract
     public function apply(base $databox, Application $app)
     {
         $sql = 'SELECT id, src FROM metadatas_structure';
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $update = [];
 
@@ -73,10 +71,8 @@ class patch_370alpha4a extends patchAbstract
         $stmt = $databox->get_connection()->prepare($sql);
 
         foreach ($update as $row) {
-            $stmt->execute([':src' => $row['src'], ':id'  => $row['id']]);
+            $stmt->executeStatement([':src' => $row['src'], ':id'  => $row['id']]);
         }
-
-        $stmt->closeCursor();
 
         return true;
     }

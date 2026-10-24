@@ -53,7 +53,7 @@ class TermIndexer
     /**
      * @param BulkOperation $bulk
      * @param databox $databox
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function populateIndex(BulkOperation $bulk, databox $databox)
     {
@@ -82,12 +82,12 @@ class TermIndexer
         });
 
 
-        $indexDate = $databox->get_connection()->fetchColumn("SELECT updated_on FROM pref WHERE prop='thesaurus'");
+        $indexDate = $databox->get_connection()->fetchOne("SELECT updated_on FROM pref WHERE prop='thesaurus'");
 
         $document = Helper::thesaurusFromDatabox($databox);
         $this->navigator->walk($document, $visitor);
 
-        $databox->get_connection()->executeUpdate(
+        $databox->get_connection()->executeStatement(
             "INSERT INTO pref (prop, value, locale, updated_on, created_on)"
             . " VALUES ('thesaurus_index', '', '-', ?, NOW())"
             . " ON DUPLICATE KEY UPDATE updated_on=?",
