@@ -1,5 +1,5 @@
 
-FROM alchemyfr/phraseanet-base:1.3.0 AS builder
+FROM alchemyfr/phraseanet-base:1.4.0 AS builder
 
 COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 
@@ -9,8 +9,9 @@ RUN cd /tmp \
     && curl -O https://nodejs.org/download/release/v10.24.1/node-v10.24.1-linux-x64.tar.gz \
     && tar -xvf node-v10.24.1-linux-x64.tar.gz \
     && cp -Rf node-v10.24.1-linux-x64/* /usr/ \
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
         yarn \
@@ -72,7 +73,7 @@ CMD []
 # Phraseanet install and setup application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.3.0 AS phraseanet-setup
+FROM alchemyfr/phraseanet-base:1.4.0 AS phraseanet-setup
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -85,7 +86,7 @@ CMD []
 # Phraseanet web application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.3.0 AS phraseanet-fpm
+FROM alchemyfr/phraseanet-base:1.4.0 AS phraseanet-fpm
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -97,7 +98,7 @@ CMD ["php-fpm", "-F"]
 # Phraseanet worker application image
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.3.0 AS phraseanet-worker
+FROM alchemyfr/phraseanet-base:1.4.0 AS phraseanet-worker
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
@@ -139,7 +140,7 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 # phraseanet adapted simplesaml service provider 
 #########################################################################
 
-FROM alchemyfr/phraseanet-base:1.3.0 AS phraseanet-saml-sp
+FROM alchemyfr/phraseanet-base:1.4.0 AS phraseanet-saml-sp
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
