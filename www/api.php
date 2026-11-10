@@ -14,6 +14,9 @@ use Symfony\Component\Debug\ErrorHandler;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
+// Symfony 2.8 lets these IIS headers override the request path, bypassing proxy and nginx path rules.
+unset($_SERVER['HTTP_X_ORIGINAL_URL'], $_SERVER['HTTP_X_REWRITE_URL']);
+
 error_reporting(0);
 
 ErrorHandler::register();

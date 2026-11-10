@@ -24,6 +24,11 @@ server {
     index        index.php;
     client_max_body_size $MAX_BODY_SIZE;
 
+    # Security: block the internal Symfony/Silex HTTP-fragment route from the outside (RCE vector).
+    location ~* ^/_fragment {
+        return 403;
+    }
+
     location /api {
         if (-f /var/alchemy/Phraseanet/datas/nginx/maintenance.html) {
             return 503;
@@ -52,6 +57,9 @@ server {
         fastcgi_pass   backend;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
+        # Security: strip IIS rewrite headers so they can't override the request path (fragment RCE vector).
+        fastcgi_param  HTTP_X_ORIGINAL_URL  "";
+        fastcgi_param  HTTP_X_REWRITE_URL   "";
         $GATEWAY_FASTCGI_HTTPS
         include        restrictions;
     }
