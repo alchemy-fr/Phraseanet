@@ -9,7 +9,6 @@ use Alchemy\Phrasea\ControllerProvider\ControllerProviderServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ContentNegotiationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
 use Silex\Application;
-use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\ServiceProviderInterface;
@@ -26,7 +25,8 @@ class HttpStackMetaProvider implements ServiceProviderInterface
             throw new \LogicException('Expected an instance Alchemy\Phrasea\Application');
         }
 
-        $app->register(new HttpFragmentServiceProvider());
+        // HttpFragmentServiceProvider must not be registered: its /_fragment listener lets anyone holding
+        // the (predictable) uri_signer secret dispatch an arbitrary _controller, including PHP functions.
         $app->register(new UrlGeneratorServiceProvider());
 
         $this->setupRequestContext($app);
