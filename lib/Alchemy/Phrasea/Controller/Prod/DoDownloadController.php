@@ -152,9 +152,14 @@ class DoDownloadController extends Controller
 
         set_time_limit(0);
         // Force the session to be saved and closed.
+        // Guard on isStarted(): on PHP 8, NativeSessionStorage::save() reads the $_SESSION
+        // superglobal, which is undefined when no session was started, raising a warning that
+        // the error handler turns into a 500. Nothing to persist when it isn't started anyway.
         /** @var Session $session */
         $session = $this->app['session'];
-        $session->save();
+        if ($session->isStarted()) {
+            $session->save();
+        }
         ignore_user_abort(true);
 
 //        if ($list['count'] > 1 || $list['cgu']) {
