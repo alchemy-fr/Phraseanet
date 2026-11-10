@@ -1,0 +1,20 @@
+--- a/src/Alchemy/BinaryDriver/Listeners/Listeners.php
++++ b/src/Alchemy/BinaryDriver/Listeners/Listeners.php
+@@ -38,7 +38,7 @@
+             $EElisteners = $this->forwardEvents($listener, $target, $listener->forwardedEvents());
+         }
+ 
+-        $this->storage->attach($listener, $EElisteners);
++        $this->storage->offsetSet($listener, $EElisteners);
+ 
+         return $this;
+     }
+@@ -62,7 +62,7 @@
+             $listener->removeListener($event, $EElistener);
+         }
+ 
+-        $this->storage->detach($listener);
++        $this->storage->offsetUnset($listener);
+ 
+         return $this;
+     }

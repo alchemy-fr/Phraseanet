@@ -175,6 +175,9 @@
       "hoa/stream": {
         "PHP 8.5 deprecations": "patches/hoa-stream.patch"
       },
+      "php-ffmpeg/php-ffmpeg": {
+        "PHP 8.5 deprecations": "patches/php-ffmpeg-php85-deprecations.patch"
+      },
       "react/promise": {
         "PHP 8.5 deprecations": "patches/react-promise.patch"
       },
