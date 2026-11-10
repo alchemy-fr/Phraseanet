@@ -1,0 +1,10 @@
+--- a/src/Client/CurlMultiHandler.php
++++ b/src/Client/CurlMultiHandler.php
+@@ -25,6 +25,7 @@
+     private $handles = [];
+     private $delays = [];
+     private $maxHandles;
++    private $_mh;
+ 
+     /**
+      * This handler accepts the following options:

@@ -157,6 +157,9 @@
       "goodby/csv": {
         "PHP 8 SplFileObject::fputcsv() signature": "patches/goodby-csv.patch"
       },
+      "guzzlehttp/ringphp": {
+        "PHP 8.5 deprecations": "patches/guzzle-ringphp-php85-deprecations.patch"
+      },
       "hoa/compiler": {
         "PHP 8.5 deprecations": "patches/hoa-compiler.patch"
       },
