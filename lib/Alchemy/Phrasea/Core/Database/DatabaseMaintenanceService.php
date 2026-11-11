@@ -368,12 +368,15 @@ class DatabaseMaintenanceService
             $f_name = $row2['Field'];
 
             // accept alias collations as same as in lib/conf.d/bases_structure.xml (utf8_unicode_ci)
-            if(in_array(strtolower($row2['Collation']), ['utf8mb3_unicode_ci', 'utf8mb4_unicode_ci'])) {
+            // Collation is NULL for non-text columns (SHOW FULL FIELDS): cast to avoid
+            // "strtolower(): Passing null" deprecation under PHP 8.x. '' matches nothing here.
+            if(in_array(strtolower((string)$row2['Collation']), ['utf8mb3_unicode_ci', 'utf8mb4_unicode_ci'])) {
                 $row2['Collation'] = 'utf8_unicode_ci';
             }
 
             // accept current_timestamp() as result of CURRENT_TIMESTAMP
-            if(strtolower($row2['Default']) === 'current_timestamp()') {
+            // Default is NULL for columns without a default value: cast for the same reason.
+            if(strtolower((string)$row2['Default']) === 'current_timestamp()') {
                 $row2['Default'] = "CURRENT_TIMESTAMP";
             }
 
