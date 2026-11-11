@@ -113,6 +113,12 @@ class ElasticsearchSettingsFormType extends AbstractType
             $aggs[$k] = [   // default value will be replaced by hardcoded tech fields & all databoxes fields
                 'label'              => $label,
                 'choices' => $choices,
+                // These "facets:<k>:limit" fields are NOT backed by a property on ElasticsearchOptions:
+                // their names are used as labels and re-read manually by SearchEngineController from the
+                // raw request (preg_match('/^facets:(.+):limit$/', ...)). Keep them unmapped, otherwise
+                // Symfony's (now strict) PropertyAccess throws "Can't read property facets:...:limit"
+                // during form initialization and the whole admin search-engine page returns a 500.
+                'mapped'             => false,
                 'attr'               => [
                     'class' => 'aggregate'
                 ],
