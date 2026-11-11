@@ -138,3 +138,45 @@ Je peux appliquer BUG-1 immédiatement (1 ligne) et investiguer BUG-2 dans la fo
 | #6 | Smoke-test navigateur de non-régression | ✅ ajouté — `tests/ui-smoke/` (16/16 vert) | `878ba23540` |
 
 **Smoke-test de référence :** `cd tests/ui-smoke && PPASS='…' npm run smoke` → 16 étapes, exit 0.
+
+---
+
+## 8. Tests fonctionnels mutants (écritures) + incidents majeurs découverts
+
+Tests d'écriture exécutés sur l'instance (données jetables autorisées).
+
+| Test | Méthode | Résultat |
+|---|---|---|
+| **Création de collection** | `POST /admin/databox/1/collection/` | ✅ OK — nouvelle collection `base_id 5`, active |
+| **Édition de métadonnées** | `POST /prod/records/edit/applyjs/` (JSON) sur record 6, champ Title | ✅ OK — valeur persistée en base **après correction des incidents ci-dessous** |
+| **Upload (ajout)** | `POST /prod/upload/` (multipart + token `prodUpload`) sur base 1 | ✅ OK — record 10 créé + **tous les subdefs générés** (document, preview, preview_mobile, thumbnail, thumbnail_mobile) |
+| **Thésaurus (ajout de terme)** | `GET /thesaurus/xmlhttp/newts.x.php` sous `T76.2` | ✅ OK — terme créé et présent dans l'XML du thésaurus |
+| **Téléchargement** | — | ✅ validé plus tôt dans la session |
+
+### 🔴 INCIDENT A — Workers tués par le garde de version (DB non migrée)
+
+**Symptôme :** l'édition de métadonnées ne se persistait pas ; les messages s'empilaient dans la file `mainQueue` (**0 consommateur**). Des éditions antérieures (records 7, 8, 9) étaient **silencieusement bloquées** depuis la session précédente.
+
+**Cause racine :** la base était en version **`4.1.25`** (appbox *et* databox) alors que le code est en **`4.2.0`** — très probablement remise à 4.1.25 lors du **re-dump des datastores**. Le garde de [`bin/console`](bin/console#L105) (`ConfigurationTester::isUpToDate()`) lève alors `Phraseanet is not up-to-date` et **tue tout worker au démarrage**. Les workers lancés *avant* le bump continuaient ; tout worker **redémarré après** mourait → files sans consommateur.
+
+**Correctif appliqué :** `php bin/setup system:upgrade -y` → versions passées à **4.2.0** (aucune migration de schéma 4.1.25→4.2.0, simple bump). Le garde passe de nouveau.
+
+**Règle durable :** **tout bump de version OU toute restauration de datastore doit être suivi d'un `bin/setup system:upgrade`.**
+
+### 🔴 INCIDENT B — Attribution des files worker non déterministe (setup dev)
+
+**Symptôme :** après redémarrage simultané des workers, certaines files se retrouvent **sans consommateur** (editRecord, writeMetadatas, downloadAsync, exportMail, exposeUpload, assetsIngest, shareBasket) et d'autres **sur-abonnées** (ex. pullAssets = 4). Un conteneur nommé `w-editRecord` exécutait en réalité `worker:execute --queue-name=populateIndex`.
+
+**Cause racine :** [`docker/phraseanet/worker/entrypoint.sh`](docker/phraseanet/worker/entrypoint.sh#L94) fait `rm -rf bin/run-worker.sh` puis régénère le script selon l'env du conteneur. Or en **dev**, `docker-compose.override.yml` monte toute la source (`.:/var/alchemy/Phraseanet`), donc `bin/` est **partagé** entre tous les conteneurs : au démarrage simultané, ils écrasent concurremment le **même** `bin/run-worker.sh` (race) → attribution des files corrompue. **En production ce bug n'existe pas** (chaque image a son propre `bin/`, non partagé).
+
+**Correctif appliqué (opérationnel) :** redémarrage **séquentiel** des workers (chaque conteneur seul régénère et lit son script sans race) → chaque file retrouve son consommateur.
+
+**Correctif durable proposé (dev) :** générer le script worker hors du répertoire bind-mounté — p.ex. écrire `/tmp/run-worker.sh` dans l'entrypoint et pointer la `command` du service worker dessus. Supprime la race sans impacter la prod. *(non appliqué — nécessite de modifier entrypoint + `command` compose ; à valider ensemble.)*
+
+### Artefacts de test laissés en base (données jetables)
+- Collection `base_id 5` (`TEST-CLAUDE-*`)
+- Record 10 (upload `test1.jpg`)
+- Record 6 : Title = `TEST-CLAUDE-EDIT-*`
+- Terme thésaurus `TESTCLAUDETERM*` sous T76.2
+
+À purger sur demande.
