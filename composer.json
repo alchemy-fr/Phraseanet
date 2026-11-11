@@ -149,7 +149,8 @@
     },
     "patches": {
       "alchemy/embed-bundle": {
-        "PHP 8.5 and Silex 2 compatibility": "patches/alchemy-embed-bundle.patch"
+        "PHP 8.5 and Silex 2 compatibility": "patches/alchemy-embed-bundle.patch",
+        "Return 404 instead of 500 when embed url is not a routable resource": "patches/alchemy-embed-bundle-404-on-nonroutable-url.patch"
       },
       "dflydev/doctrine-orm-service-provider": {
         "Doctrine Persistence 2+ namespaces and attribute mapping driver": "patches/dflydev-doctrine-orm-service-provider.patch"

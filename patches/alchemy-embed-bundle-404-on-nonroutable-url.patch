@@ -1,0 +1,26 @@
+--- a/src/Component/Embed/EmbedController.php
++++ b/src/Component/Embed/EmbedController.php
+@@ -17,6 +17,7 @@
+ use Symfony\Component\HttpFoundation\Response;
+ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
++use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+ 
+ class EmbedController
+ {
+@@ -225,7 +226,14 @@
+      */
+     public function matchResourceRequest(Request $resourceRequest)
+     {
+-        $urlParams = $this->app['request_matcher']->matchRequest($resourceRequest);
++        try {
++            $urlParams = $this->app['request_matcher']->matchRequest($resourceRequest);
++        } catch (ResourceNotFoundException $e) {
++            // The url does not point to a routable Phraseanet resource (e.g. a static
++            // substitution icon such as /assets/.../substitution/video_mp4.png). Return a
++            // clean 404 instead of letting the routing exception bubble up as a 500.
++            throw new NotFoundHttpException(sprintf('No embeddable resource for "%s"', $resourceRequest->getPathInfo()), $e);
++        }
+ 
+         return $this->app['alchemy_embed.resource_resolver']->resolve(
+             $resourceRequest,
