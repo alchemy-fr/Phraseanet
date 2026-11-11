@@ -102,9 +102,15 @@ class PhraseaExceptionHandler implements LoggerAwareInterface
     public function getContent(FlattenException $exception)
     {
         if ($exception->getStatusCode() == '500') {
+            // Log a compact, readable call chain instead of the full structured trace.
+            // getTrace() serialises every stack frame WITH its arguments, which Monolog
+            // then dumps as a single multi-kilobyte JSON line per 500 - unreadable and
+            // noisy. getTraceAsString() keeps the file/line/function chain (what you need
+            // to locate the fault) without the serialised object/array args.
             $this->logger->error($exception->getMessage(), [
                 'code' => $exception->getCode(),
-                'trace' => $exception->getTrace()
+                'class' => $exception->getClass(),
+                'trace' => $exception->getTraceAsString()
             ]);
         }
 
