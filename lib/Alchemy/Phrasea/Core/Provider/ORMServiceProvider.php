@@ -379,6 +379,29 @@ class ORMServiceProvider implements ServiceProviderInterface
                             throw new InvalidArgumentException(sprintf('Missing "%s" argument for database connection using driver %s', $param, $info['driver']));
                         }
                     }
+
+                    // Bound how long a connection may block on the MySQL socket.
+                    // Without a read timeout, a half-open connection (server gone
+                    // without a TCP reset: container restart, wait_timeout, network
+                    // blip) makes the next read() block FOREVER. That silently wedges
+                    // long-running CLI workers: the stuck process never acks its
+                    // message and, with prefetch=1, stalls its whole queue - edits
+                    // then never reach the database or the search index.
+                    // A finite read timeout turns that infinite hang into a fast,
+                    // catchable error so ConnectionChecker::isAlive() and
+                    // base::get_connection() can actually close and reconnect.
+                    // Values are generous backstops (not a per-query budget) and can
+                    // be overridden per connection via an explicit "driverOptions".
+                    $driverOptions = (isset($info['driverOptions']) && is_array($info['driverOptions']))
+                        ? $info['driverOptions'] : array();
+                    if (!array_key_exists(\PDO::ATTR_TIMEOUT, $driverOptions)) {
+                        $driverOptions[\PDO::ATTR_TIMEOUT] = 5;             // connect timeout (seconds)
+                    }
+                    if (defined('PDO::MYSQL_ATTR_READ_TIMEOUT')
+                        && !array_key_exists(\PDO::MYSQL_ATTR_READ_TIMEOUT, $driverOptions)) {
+                        $driverOptions[\PDO::MYSQL_ATTR_READ_TIMEOUT] = 300; // socket read timeout (seconds)
+                    }
+                    $info['driverOptions'] = $driverOptions;
                 break;
                 case 'pdo_sqlite':
                     if (!array_key_exists('path', $info)) {

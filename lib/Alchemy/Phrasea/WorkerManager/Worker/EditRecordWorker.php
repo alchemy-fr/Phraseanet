@@ -37,6 +37,12 @@ class EditRecordWorker implements WorkerInterface
             return;
         }
 
+        // Ensure the databox DB connection is alive BEFORE touching any record.
+        // A worker can stay idle long enough for MySQL to drop the connection;
+        // get_connection() pings and reconnects when needed. Bounded by the socket
+        // read timeout set in db.info, so this can no longer hang on a dead socket.
+        $databox->get_connection();
+
         $recordIds = [];
 
         $workerRunningJob = null;
