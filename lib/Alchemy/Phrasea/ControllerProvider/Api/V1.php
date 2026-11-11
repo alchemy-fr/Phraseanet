@@ -181,7 +181,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
         );
 
         $controllers->delete('/records/{databox_id}/{record_id}/', 'controller.api.v1:deleteRecordAction')
-            ->before('controller.api.v1:ensureCanDeleteToRecord')
+            ->before('controller.api.v1:ensureCanDeleteRecord')
             ->assert('databox_id', '\d+')
             ->assert('record_id', '\d+');
 
