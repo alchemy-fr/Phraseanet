@@ -74,6 +74,11 @@ class WriteMetadatasWorker implements WorkerInterface
         $clearDoc    = $payload['clearDoc'] ?? false;
         $databox     = $this->findDataboxById($databoxId);
 
+        // Ensure the databox DB connection is alive before any record access
+        // (see EditRecordWorker / db.info): a dropped connection would otherwise
+        // hang the write-metas step. Bounded by the socket read timeout.
+        $databox->get_connection();
+
         // try to "lock" the file, will return null if already locked
         $workerRunningJobId = $this->repoWorker->canWriteMetadata($payload);
 
