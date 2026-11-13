@@ -48,7 +48,7 @@ class XSendFileFactory
      */
     public static function create(Application $app)
     {
-        $conf = $app['conf']->get('xsendfile');
+        $conf = (array) $app['conf']->get('xsendfile');
 
         $mapping = [];
 
@@ -56,7 +56,7 @@ class XSendFileFactory
             $mapping = $conf['mapping'];
         }
 
-        return new self($app['monolog'], $conf['enabled'], $conf['type'], $mapping);
+        return new self($app['monolog'], $conf['enabled'] ?? false, $conf['type'] ?? null, $mapping);
     }
 
     /**

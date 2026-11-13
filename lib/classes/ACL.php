@@ -689,7 +689,8 @@ class ACL implements cache_cacheableInterface
             if (null !== $limited) {
                 $this->set_limits($base_id, '1', $limited['dmin'], $limited['dmax']);
             } else {
-                $this->set_limits($base_id, '0', $limited['dmin'], $limited['dmax']);
+                // $limited is null here: pass no dates (limit disabled anyway).
+                $this->set_limits($base_id, '0', null, null);
             }
         }
     }
