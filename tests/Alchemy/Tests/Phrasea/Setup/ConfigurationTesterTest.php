@@ -79,7 +79,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
         // Must return version + 1
         $app['phraseanet.version']
             ->method('getNumber')
-            ->will($this->returnValue('4.2'));
+            ->will($this->returnValue('4.3'));
 
         $tester = $this->getTester($app);
 
@@ -112,7 +112,7 @@ class ConfigurationTesterTest extends AbstractSetupTester
          */
         $app['phraseanet.version']
             ->method('getNumber')
-            ->will($this->returnValue('4.2'));
+            ->will($this->returnValue('4.3'));
 
         $tester = $this->getTester($app);
 
