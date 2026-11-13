@@ -2,10 +2,14 @@ name: CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "**" ]
   pull_request:
     branches:
       - master
+
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 env:
   PHRASEANET_DOCKER_TAG: ${{ github.head_ref }}
@@ -98,9 +102,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get tag name
-        if: github.event_name != 'pull_request'
         shell: bash
-        run: echo "PHRASEANET_DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+        run: |
+          TAG="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          echo "PHRASEANET_DOCKER_TAG=${TAG//\//-}" >> $GITHUB_ENV
 
       - name: install
         run: |
