@@ -51,8 +51,7 @@ class patch_320alpha1a extends patchAbstract
         $sql = 'UPDATE record SET parent_record_id = "1"
                 WHERE parent_record_id != "0"';
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

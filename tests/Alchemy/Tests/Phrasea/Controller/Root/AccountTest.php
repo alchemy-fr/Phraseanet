@@ -7,18 +7,20 @@ use Alchemy\Phrasea\Model\Entities\Registration;
 use Alchemy\Phrasea\Model\Entities\User;
 use RandomLib\Factory;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'displayAccount')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'call')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'accountAccess')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'resetEmail')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'accountSessionsAccess')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'accountAuthorizedApps')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'resetPassword')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Account::class, 'updateAccount')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class AccountTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::displayAccount
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::call
-     */
     public function testGetAccount()
     {
         $client = $this->getClient();
@@ -35,9 +37,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('post', $methodForm);
     }
 
-    /**
-     * @dataProvider provideFlashMessages
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFlashMessages')]
     public function testGetAccountNotice($type, $message)
     {
         $app = $this->getApplication();
@@ -52,9 +52,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessage($crawler, $type, 1, $message);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::accountAccess
-     */
     public function testGetAccountAccess()
     {
         $data = [
@@ -151,7 +148,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $client = $this->getClient();
         $service = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\RegistrationManager')
             ->setConstructorArgs([$app['phraseanet.appbox'], $app['repo.registrations'], $app['locale']])
-            ->setMethods(['getRegistrationSummary'])
             ->getMock();
 
         $service->expects($this->once())->method('getRegistrationSummary')->will($this->returnValue($data));
@@ -163,9 +159,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     */
     public function testGetResetMailWithToken()
     {
         $app = $this->getApplication();
@@ -185,9 +178,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($app, 'success', 1);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     */
     public function testGetResetMailWithBadToken()
     {
         $app = $this->getApplication();
@@ -200,9 +190,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     */
     public function testPostResetMailBadRequest()
     {
         $client = $this->getClient();
@@ -211,9 +198,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse($client->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     */
     public function testPostResetMailBadPassword()
     {
         $app = $this->getApplication();
@@ -231,9 +215,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     */
     public function testPostResetMailBadEmail()
     {
         $app = $this->getApplication();
@@ -253,9 +234,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     */
     public function testPostResetMailEmailNotIdentical()
     {
         $app = $this->getApplication();
@@ -275,9 +253,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($app, 'error', 1);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetEmail
-     */
     public function testPostResetMailEmail()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate');
@@ -303,9 +278,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($app, 'info', 1);
     }
 
-    /**
-     * @dataProvider provideFlashMessages
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFlashMessages')]
     public function testGetResetMailNotice($type, $message)
     {
         $app = $this->getApplication();
@@ -319,9 +292,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessage($crawler, $type, 1, $message);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::accountSessionsAccess
-     */
     public function testGetAccountSecuritySessions()
     {
         $client = $this->getClient();
@@ -332,9 +302,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::accountAuthorizedApps
-     */
     public function testGetAccountSecurityApplications()
     {
         $client = $this->getClient();
@@ -345,9 +312,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::resetPassword
-     */
     public function testGetResetPassword()
     {
         $client = $this->getClient();
@@ -358,9 +322,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @dataProvider provideFlashMessages
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFlashMessages')]
     public function testGetResetPasswordPassError($type, $message)
     {
         $app = $this->getApplication();
@@ -376,9 +338,6 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessage($crawler, $type, 1, $message);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Account::updateAccount
-     */
     public function testUpdateAccount()
     {
         $app = $this->getApplication();
@@ -434,7 +393,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', $app->getAuthenticatedUser()->getLastName());
 
-        $rs = $app['orm.em']->getRepository('Phraseanet:Registration')->findBy([
+        $rs = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Registration')->findBy([
             'user' => $app->getAuthenticatedUser()->getId(),
             'pending' => true
         ]);
@@ -458,13 +417,11 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
         $this->assertInstanceOf('StdClass', $json);
-        $this->assertObjectHasAttribute('success', $json);
+        $this->assertObjectHasProperty('success', $json);
         $this->assertFalse($json->success);
     }
 
-    /**
-     * @dataProvider revokeProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('revokeProvider')]
     public function testAUthorizedAppGrantAccessSuccessfull($revoke, $expected)
     {
         $app = $this->getApplication();
@@ -480,7 +437,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
         $this->assertInstanceOf('StdClass', $json);
-        $this->assertObjectHasAttribute('success', $json);
+        $this->assertObjectHasProperty('success', $json);
         $this->assertTrue($json->success);
 
         $account = $app['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], self::$DI['oauth2-app-user']);
@@ -488,7 +445,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals($expected, $account->isRevoked());
     }
 
-    public function revokeProvider()
+    public static function revokeProvider()
     {
         return [
             ['1', true],
@@ -498,9 +455,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    /**
-     * @dataProvider passwordProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('passwordProvider')]
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm)
     {
         $app = $this->getApplication();
@@ -586,7 +541,7 @@ class AccountTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFlashMessagePopulated($app, 'success', 1);
     }
 
-    public function passwordProvider()
+    public static function passwordProvider()
     {
         $factory = new Factory();
         $generator = $factory->getLowStrengthGenerator();

@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Question\Question;
 
 class module_console_fieldsDelete extends Command
 {
@@ -49,12 +50,12 @@ class module_console_fieldsDelete extends Command
             return 1;
         }
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('question');
         $continue = mb_strtolower(
             $dialog->ask(
-                $output
-                , "<question>About to delete " . $field->get_name() . " (y/N)</question>"
-                , 'n'
+                $input
+                , $output
+                , new Question("<question>About to delete " . $field->get_name() . " (y/N)</question>", 'n')
             )
         );
 

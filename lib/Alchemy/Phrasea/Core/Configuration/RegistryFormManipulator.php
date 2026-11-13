@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Form\Configuration\MainConfigurationFormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistryFormManipulator
 {
@@ -21,16 +21,16 @@ class RegistryFormManipulator
     private $languages;
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
     /**
      * @param FormFactoryInterface $factory
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      * @param array $languages
      */
-    public function __construct(FormFactoryInterface $factory, TranslatorInterface $translator, array $languages)
+    public function __construct(FormFactoryInterface $factory, \Symfony\Contracts\Translation\TranslatorInterface $translator, array $languages)
     {
         $this->factory = $factory;
         $this->languages = $languages;
@@ -44,9 +44,9 @@ class RegistryFormManipulator
      *
      * @return FormInterface
      */
-    public function createForm(PropertyAccess $conf = null)
+    public function createForm(?PropertyAccess $conf = null)
     {
-        $form = $this->factory->create(new MainConfigurationFormType($this->translator, $this->languages));
+        $form = $this->factory->create(MainConfigurationFormType::class, null, ['translator' => $this->translator]);
         $currentConf = $conf ? ($conf->get('registry') ?: []) : [];
         $data = array_replace_recursive($this->getDefaultData($currentConf), $currentConf);
         $form->setData($data);
@@ -63,7 +63,7 @@ class RegistryFormManipulator
      * @param PropertyAccess $conf
      * @return array
      */
-    public function getRegistryData(FormInterface $form = null, PropertyAccess $conf = null)
+    public function getRegistryData(?FormInterface $form = null, ?PropertyAccess $conf = null)
     {
         $data = [];
 

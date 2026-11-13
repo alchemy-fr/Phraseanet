@@ -11,11 +11,23 @@
 
 namespace Alchemy\Phrasea\Core;
 
-use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
-
-class PhraseaCLIExceptionHandler extends SymfonyExceptionHandler
+class PhraseaCLIExceptionHandler
 {
-    public function handle(\Exception $exception)
+    /**
+     * Registers the exception handler as the PHP exception handler.
+     *
+     * @return static
+     */
+    public static function register()
+    {
+        $handler = new static();
+
+        set_exception_handler([$handler, 'handle']);
+
+        return $handler;
+    }
+
+    public function handle(\Throwable $exception)
     {
         throw $exception;
     }

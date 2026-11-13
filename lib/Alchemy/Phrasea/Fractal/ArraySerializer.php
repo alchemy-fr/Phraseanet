@@ -17,37 +17,37 @@ use League\Fractal\Serializer\SerializerAbstract;
 
 class ArraySerializer extends SerializerAbstract
 {
-    public function collection($resourceKey, array $data)
+    public function collection(?string $resourceKey, array $data): array
     {
         return array_values(array_filter($data));
     }
 
-    public function item($resourceKey, array $data)
+    public function item(?string $resourceKey, array $data): array
     {
         return $data;
     }
 
-    public function null($resourceKey)
+    public function null(?string $resourceKey = null): ?array
     {
         return null;
     }
 
-    public function includedData(ResourceInterface $resource, array $data)
+    public function includedData(ResourceInterface $resource, array $data): array
     {
         return $data;
     }
 
-    public function meta(array $meta)
+    public function meta(array $meta): array
     {
         return [];
     }
 
-    public function paginator(PaginatorInterface $paginator)
+    public function paginator(PaginatorInterface $paginator): array
     {
         return [];
     }
 
-    public function cursor(CursorInterface $cursor)
+    public function cursor(CursorInterface $cursor): array
     {
         return [];
     }

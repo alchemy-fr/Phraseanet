@@ -11,13 +11,17 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Alchemy\Phrasea\Media\Subdef\Specification\FlexPaperSpecification;
 
+/**
+ * Legacy document to SWF subdefinition: kept so that existing databox structures still load,
+ * but these subdefinitions cannot be generated anymore.
+ */
 class FlexPaper extends Provider
 {
     protected $options = [];
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
@@ -35,7 +39,7 @@ class FlexPaper extends Provider
     public function getMediaAlchemystSpec()
     {
         if (! $this->spec) {
-            $this->spec = new \MediaAlchemyst\Specification\Flash();
+            $this->spec = new FlexPaperSpecification();
         }
 
         return $this->spec;

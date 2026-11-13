@@ -15,8 +15,8 @@ use League\Fractal\TransformerAbstract;
 
 class V2SearchTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['results'];
-    protected $defaultIncludes = ['results'];
+    protected array $availableIncludes = ['results'];
+    protected array $defaultIncludes = ['results'];
 
     public function transform(SearchResultView $searchView)
     {

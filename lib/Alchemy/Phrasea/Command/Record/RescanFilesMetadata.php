@@ -181,15 +181,13 @@ class RescanFilesMetadata extends Command
                 $sql = "SELECT record_id FROM record WHERE " . $sql_where;
             }
 
-            $stmt = $databox->get_connection()->prepare($sql);
-
             if ($dry) {
                 $output->writeln("<info>" . $sql . "</info>");
             }
 
-            $stmt->execute();
+            $stmt = $databox->get_connection()->executeQuery($sql);
 
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            while ($row = $stmt->fetchAssociative()) {
                 $record = $databox->get_record($row['record_id']);
 
                 try {

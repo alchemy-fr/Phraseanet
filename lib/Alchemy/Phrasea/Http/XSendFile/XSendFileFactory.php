@@ -34,8 +34,8 @@ class XSendFileFactory
     public function __construct(LoggerInterface $logger, $enabled, $type, array $mapping)
     {
         $this->logger = $logger;
-        $this->enabled = (Boolean) $enabled;
-        $this->type = strtolower($type);
+        $this->enabled = (bool) $enabled;
+        $this->type = strtolower((string) $type);
         $this->mapping = $mapping;
     }
 
@@ -48,7 +48,7 @@ class XSendFileFactory
      */
     public static function create(Application $app)
     {
-        $conf = $app['conf']->get('xsendfile');
+        $conf = (array) $app['conf']->get('xsendfile');
 
         $mapping = [];
 
@@ -56,7 +56,7 @@ class XSendFileFactory
             $mapping = $conf['mapping'];
         }
 
-        return new self($app['monolog'], $conf['enabled'], $conf['type'], $mapping);
+        return new self($app['monolog'], $conf['enabled'] ?? false, $conf['type'] ?? null, $mapping);
     }
 
     /**

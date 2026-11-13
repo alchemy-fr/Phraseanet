@@ -19,6 +19,7 @@ abstract class set_abstract implements IteratorAggregate
     /**
      * @return ArrayIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->elements);

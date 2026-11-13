@@ -61,50 +61,40 @@ class patch_410alpha21a implements patchInterface
         // fix the Longitude value
 
         $sql = 'SELECT id, record_id, name, value FROM technical_datas WHERE trim(name) = "LongitudeRef" ';
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             if (trim($row['value']) === 'W' ) {
                 $sql = 'UPDATE technical_datas SET value = CONCAT("-", value) WHERE trim(name) = "Longitude" AND record_id =:record_id';
                 $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute([':record_id' => $row['record_id']]);
+                $stmt->executeStatement([':record_id' => $row['record_id']]);
             }
 
             $sqlDelete = 'DELETE FROM technical_datas WHERE id =:id';
 
             $stmt1 = $databox->get_connection()->prepare($sqlDelete);
-            $stmt1->execute([':id' => $row['id']]);
-            $stmt1->closeCursor();
+            $stmt1->executeStatement([':id' => $row['id']]);
         }
-
-        $stmt->closeCursor();
 
         // fix the Latitude value
 
         $sql = 'SELECT id, record_id, name, value FROM technical_datas WHERE trim(name) = "LatitudeRef" ';
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             if (trim($row['value']) === 'S' ) {
                 $sql = 'UPDATE technical_datas SET value = CONCAT("-", value) WHERE trim(name) = "Latitude" AND record_id =:record_id';
                 $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute([':record_id' => $row['record_id']]);
+                $stmt->executeStatement([':record_id' => $row['record_id']]);
             }
 
             $sqlDelete = 'DELETE FROM technical_datas WHERE id =:id';
 
             $stmt1 = $databox->get_connection()->prepare($sqlDelete);
-            $stmt1->execute([':id' => $row['id']]);
-            $stmt1->closeCursor();
+            $stmt1->executeStatement([':id' => $row['id']]);
         }
-
-        $stmt->closeCursor();
 
         return true;
     }

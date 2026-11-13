@@ -23,32 +23,30 @@ abstract class BaseApplicationLoader
         $this->doPrePluginServiceRegistration($app);
         $app->loadPlugins();
 
-        $app['exception_handler'] = $app->share(function (Application $app) {
+        $app['exception_handler'] = function (Application $app) {
             return $this->createExceptionHandler($app);
-        });
+        };
 
-        $app['monolog'] = $app->share($app->extend('monolog', function (Logger $monolog) {
+        $app->extend('monolog', function (Logger $monolog) {
             $monolog->pushProcessor(new WebProcessor());
 
             return $monolog;
-        }));
+        });
 
         $this->bindRoutes($app);
 
         $subscribers = $this->getDispatcherSubscribersFor($app);
 
         if ($subscribers) {
-            $app['dispatcher'] = $app->share(
-                $app->extend(
-                    'dispatcher',
-                    function (EventDispatcherInterface $dispatcher) use ($subscribers) {
-                        foreach ($subscribers as $subscriber) {
-                            $dispatcher->addSubscriber($subscriber);
-                        }
-
-                        return $dispatcher;
+            $app->extend(
+                'dispatcher',
+                function (EventDispatcherInterface $dispatcher) use ($subscribers) {
+                    foreach ($subscribers as $subscriber) {
+                        $dispatcher->addSubscriber($subscriber);
                     }
-                )
+
+                    return $dispatcher;
+                }
             );
         }
 

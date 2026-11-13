@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,7 +26,7 @@ class TrustedProxySubscriber implements EventSubscriberInterface
         $this->configuration = $configuration;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['setProxyConf', 1024],
@@ -40,6 +40,9 @@ class TrustedProxySubscriber implements EventSubscriberInterface
         }
 
         $proxies = isset($this->configuration['trusted-proxies']) ? $this->configuration['trusted-proxies'] : [];
-        Request::setTrustedProxies($proxies);
+        Request::setTrustedProxies(
+            $proxies,
+            Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO
+        );
     }
 }

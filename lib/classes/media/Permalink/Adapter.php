@@ -15,7 +15,8 @@ use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
 use RandomLib\Generator;
 
 class media_Permalink_Adapter implements cache_cacheableInterface
@@ -51,7 +52,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
      * @param media_subdef $media_subdef
      * @param array $data
      */
-    public function __construct(Application $app, databox $databox, media_subdef $media_subdef, array $data = null)
+    public function __construct(Application $app, databox $databox, media_subdef $media_subdef, ?array $data = null)
     {
         $this->app = $app;
         $this->databox = $databox;
@@ -113,13 +114,13 @@ class media_Permalink_Adapter implements cache_cacheableInterface
     }
 
     /**
-     * @return Url
+     * @return UriInterface
      */
     public function get_url()
     {
         $label = $this->get_label() . '.' . pathinfo($this->media_subdef->get_file(), PATHINFO_EXTENSION);
 
-        return Url::factory($this->app->url('permalinks_permalink', [
+        return new Uri($this->app->url('permalinks_permalink', [
             'sbas_id' => $this->media_subdef->get_sbas_id(),
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef' => $this->media_subdef->get_name(),
@@ -154,8 +155,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         $sql = 'UPDATE permalinks SET token = :token, last_modified = NOW()
             WHERE id = :id';
         $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute([':token' => $this->token, ':id' => $this->get_id()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':token' => $this->token, ':id' => $this->get_id()]);
 
         $this->delete_data_from_cache();
 
@@ -171,7 +171,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
     {
         $this->is_activated = (bool)$is_activated;
 
-        $this->databox->get_connection()->executeUpdate(
+        $this->databox->get_connection()->executeStatement(
             'UPDATE permalinks SET activated = :activated, last_modified = NOW() WHERE id = :id',
             ['activated' => $this->is_activated, 'id' => $this->get_id()]
         );
@@ -192,7 +192,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
         $this->label = self::cleanLabel($unicode, $label, $this->app['conf']->get(['registry', 'actions', 'filename-sanitize-character'], ''));
 
-        $this->databox->get_connection()->executeUpdate(
+        $this->databox->get_connection()->executeStatement(
             'UPDATE permalinks SET label = :label, last_modified = NOW() WHERE id = :id',
             ['label' => $this->label, 'id' => $this->get_id()]
         );
@@ -216,7 +216,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             return;
         }
 
-        $data = $this->databox->get_connection()->fetchAssoc(
+        $data = $this->databox->get_connection()->fetchAssociative(
             self::getSelectSql(),
             [':subdef_id' => $this->media_subdef->get_subdef_id()]
         );
@@ -352,7 +352,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             return $found;
         }
 
-        $dbalData = $databox->get_connection()->fetchAll(
+        $dbalData = $databox->get_connection()->fetchAllAssociative(
             self::getSelectSql(),
             ['subdef_id' => array_values($missing)],
             ['subdef_id' => Connection::PARAM_INT_ARRAY]
@@ -410,7 +410,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         $sql = "INSERT INTO permalinks (subdef_id, token, activated, created_on, last_modified, label)\n"
             . " VALUES " . $inserts;
         try {
-            $connection->exec($sql);
+            $connection->executeStatement($sql);
             $n_created += count($subdef_ids);
         }
         catch (Exception $e) {
@@ -499,7 +499,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
             foreach ($data as $params) {
                 try {
-                    $statement->execute($params);
+                    $statement->executeStatement($params);
                 }
                 catch(UniqueConstraintViolationException $e) {
                     // we ignore this because somebody else might have created this plink

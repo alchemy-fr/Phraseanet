@@ -61,8 +61,7 @@ class patch_410alpha26a implements patchInterface
         $sql = "ALTER TABLE `record` ADD INDEX `moddate` (`moddate`);";
         try {
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         }
         catch (\Exception $e) {
             // the index already exists ?

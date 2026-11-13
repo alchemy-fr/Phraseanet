@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class phrasea
 {
@@ -57,10 +57,8 @@ class phrasea
         self::$_sbas_params = [];
 
         $sql = 'SELECT sbas_id, host, port, user, pwd as password, dbname FROM sbas';
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             self::$_sbas_params[$row['sbas_id']] = $row;
@@ -71,7 +69,7 @@ class phrasea
         return self::$_sbas_params;
     }
 
-    public static function modulesName(TranslatorInterface $translator, $array_modules)
+    public static function modulesName(\Symfony\Contracts\Translation\TranslatorInterface $translator, $array_modules)
     {
         $array = [];
 
@@ -158,6 +156,7 @@ class phrasea
             try {
                 self::$_sbas_names = $app->getApplicationBox()->get_data_from_cache(self::CACHE_SBAS_NAMES);
             } catch (\Exception $e) {
+                self::$_sbas_names = [];
                 foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_names[$databox->get_sbas_id()] = $databox->get_viewname();
                 }
@@ -177,6 +176,7 @@ class phrasea
                     throw new \Exception('Invalid data retrieved from cache');
                 }
             } catch (\Exception $e) {
+                self::$_sbas_labels = [];
                 foreach ($app->getDataboxes() as $databox) {
                     self::$_sbas_labels[$databox->get_sbas_id()] = [
                         'fr' => $databox->get_label('fr'),

@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * The checker interface
@@ -41,9 +41,9 @@ interface CheckerInterface
     /**
      * Get a localized message about the Checker
      *
-     * @param TranslatorInterface $translator A translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator A translator
      *
      * @return string
      */
-    public function getMessage(TranslatorInterface $translator);
+    public function getMessage(\Symfony\Contracts\Translation\TranslatorInterface $translator);
 }

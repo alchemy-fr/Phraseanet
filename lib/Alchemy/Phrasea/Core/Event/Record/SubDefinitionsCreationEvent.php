@@ -19,7 +19,7 @@ class SubDefinitionsCreationEvent extends RecordEvent
     {
         parent::__construct($record);
 
-        $this->subDefinitiosnNames = $subDefinitionsNames;
+        $this->subDefinitionsNames = $subDefinitionsNames;
     }
 
     /**

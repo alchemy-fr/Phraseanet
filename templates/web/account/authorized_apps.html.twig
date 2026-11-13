@@ -13,7 +13,7 @@
                 <h3>{{ "Vous avez autorise ces applications a acceder a votre compte" | trans }}</h3>
                 {% if applications|length > 0 %}
                     <ul class="unstyled app-list">
-                        {% for data in applications if data["user-account"] is not none %}
+                        {% for data in applications|filter(data => data["user-account"] is not none) %}
                             {% set application = data["application"] %}
                             {% set account = data["user-account"] %}
                             <li id="app_{{ application.getId() }}">

@@ -2,12 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
@@ -34,21 +32,21 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
     private function checkList($list, $owners = true, $users = true)
     {
         $this->assertInstanceOf('stdClass', $list);
-        $this->assertObjectHasAttribute('name', $list);
-        $this->assertObjectHasAttribute('created', $list);
-        $this->assertObjectHasAttribute('updated', $list);
-        $this->assertObjectHasAttribute('owners', $list);
-        $this->assertObjectHasAttribute('users', $list);
+        $this->assertObjectHasProperty('name', $list);
+        $this->assertObjectHasProperty('created', $list);
+        $this->assertObjectHasProperty('updated', $list);
+        $this->assertObjectHasProperty('owners', $list);
+        $this->assertObjectHasProperty('users', $list);
 
         if ($owners)
-            $this->assertTrue(count($list->owners) > 0);
+            $this->assertTrue(count((array) $list->owners) > 0);
 
         foreach ($list->owners as $owner) {
             $this->checkOwner($owner);
         }
 
         if ($users)
-            $this->assertTrue(count($list->users) > 0);
+            $this->assertTrue(count((array) $list->users) > 0);
 
         foreach ($list->users as $user) {
             $this->checkUser($user);
@@ -90,7 +88,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testGetList()
     {
-        $entry = self::$DI['app']['orm.em']->find('Phraseanet:UsrListEntry', 2);
+        $entry = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/';
@@ -110,7 +108,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostUpdate()
     {
-        $entry = self::$DI['app']['orm.em']->find('Phraseanet:UsrListEntry', 2);
+        $entry = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/update/';
@@ -146,7 +144,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostDelete()
     {
-        $entry = self::$DI['app']['orm.em']->find('Phraseanet:UsrListEntry', 2);
+        $entry = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/delete/';
@@ -165,14 +163,14 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrList');
+        $repository = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $this->assertNull($repository->find($list_id));
     }
 
     public function testPostRemoveEntry()
     {
-        $entry = self::$DI['app']['orm.em']->find('Phraseanet:UsrListEntry', 2);
+        $entry = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrListEntry', 2);
         $list_id = $entry->getList()->getId();
         $usr_id = $entry->getUser()->getId();
         $entry_id = $entry->getId();
@@ -193,14 +191,14 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrListEntry');
+        $repository = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrListEntry');
 
         $this->assertNull($repository->find($entry_id));
     }
 
     public function testPostAddEntry()
     {
-        $list = self::$DI['app']['orm.em']->find('Phraseanet:UsrList', 1);
+        $list = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
 
         $this->assertEquals(2, $list->getEntries()->count());
 
@@ -224,7 +222,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostShareList()
     {
-        $list = self::$DI['app']['orm.em']->find('Phraseanet:UsrList', 1);
+        $list = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
@@ -262,7 +260,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrList');
+        $repository = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -271,7 +269,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostUnShareList()
     {
-        $list = self::$DI['app']['orm.em']->find('Phraseanet:UsrList', 1);
+        $list = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
@@ -291,7 +289,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrList');
+        $repository = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -310,7 +308,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrList');
+        $repository = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -321,7 +319,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostUnShareFail()
     {
-        $list = self::$DI['app']['orm.em']->find('Phraseanet:UsrList', 1);
+        $list = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\UsrList', 1);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
@@ -373,7 +371,7 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrList');
+        $repository = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -396,24 +394,24 @@ class UsrListsTest extends \PhraseanetAuthenticatedWebTestCase
     private function checkOwner($owner)
     {
         $this->assertInstanceOf('stdClass', $owner);
-        $this->assertObjectHasAttribute('usr_id', $owner);
-        $this->assertObjectHasAttribute('display_name', $owner);
-        $this->assertObjectHasAttribute('position', $owner);
-        $this->assertObjectHasAttribute('job', $owner);
-        $this->assertObjectHasAttribute('company', $owner);
-        $this->assertObjectHasAttribute('email', $owner);
-        $this->assertObjectHasAttribute('role', $owner);
+        $this->assertObjectHasProperty('usr_id', $owner);
+        $this->assertObjectHasProperty('display_name', $owner);
+        $this->assertObjectHasProperty('position', $owner);
+        $this->assertObjectHasProperty('job', $owner);
+        $this->assertObjectHasProperty('company', $owner);
+        $this->assertObjectHasProperty('email', $owner);
+        $this->assertObjectHasProperty('role', $owner);
         $this->assertTrue(ctype_digit($owner->role));
     }
 
     private function checkUser($user)
     {
         $this->assertInstanceOf('stdClass', $user);
-        $this->assertObjectHasAttribute('usr_id', $user);
-        $this->assertObjectHasAttribute('display_name', $user);
-        $this->assertObjectHasAttribute('position', $user);
-        $this->assertObjectHasAttribute('job', $user);
-        $this->assertObjectHasAttribute('company', $user);
-        $this->assertObjectHasAttribute('email', $user);
+        $this->assertObjectHasProperty('usr_id', $user);
+        $this->assertObjectHasProperty('display_name', $user);
+        $this->assertObjectHasProperty('position', $user);
+        $this->assertObjectHasProperty('job', $user);
+        $this->assertObjectHasProperty('company', $user);
+        $this->assertObjectHasProperty('email', $user);
     }
 }

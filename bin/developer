@@ -23,11 +23,10 @@ use Alchemy\Phrasea\Command\Developer\SetupTestsDbs;
 use Alchemy\Phrasea\Command\Developer\Uninstaller;
 use Alchemy\Phrasea\Command\Developer\TranslationDumper;
 
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
-use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+use Doctrine\DBAL\Tools\Console\ConnectionProvider\SingleConnectionProvider;
+use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 // DBAL Commands
 use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
-use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
 // ORM Commands
 use Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand;
 use Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand;
@@ -36,7 +35,6 @@ use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
 use Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand;
-use Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand;
 use Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand;
 use Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand;
 use Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand;
@@ -44,12 +42,12 @@ use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
 use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
 use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 // Migration Commands
-use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\Migrations\Tools\Console\Command\ExecuteCommand;
+use Doctrine\Migrations\Tools\Console\Command\GenerateCommand;
+use Doctrine\Migrations\Tools\Console\Command\MigrateCommand;
+use Doctrine\Migrations\Tools\Console\Command\StatusCommand;
+use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -81,45 +79,37 @@ $cli->command(new SetupTestsDbs());
 $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
 
-$cli['console']->addCommands([
-    // DBAL Commands
-    new RunSqlCommand(),
-    new ImportCommand(),
-    // ORM Commands
-    new MetadataCommand(),
-    new ResultCommand(),
-    new QueryCommand(),
-    new CreateCommand(),
-    new UpdateCommand(),
-    new DropCommand(),
-    new EnsureProductionSettingsCommand(),
-    new ConvertDoctrine1SchemaCommand(),
-    new GenerateRepositoriesCommand(),
-    new GenerateEntitiesCommand(),
-    new GenerateProxiesCommand(),
-    new ConvertMappingCommand(),
-    new RunDqlCommand(),
-    new ValidateSchemaCommand(),
-    // Migrations Commands
-    new DiffCommand(),
-    new ExecuteCommand(),
-    new GenerateCommand(),
-    new MigrateCommand(),
-    new StatusCommand(),
-    new VersionCommand(),
-]);
-
 if ($cli['configuration.store']->isSetup()) {
     $cli->loadPlugins();
-    $helpers = [
-        'db' => new ConnectionHelper($cli['orm.em']->getConnection()),
-        'em' => new EntityManagerHelper($cli['orm.em'])
-    ];
 
-    $helperSet = $cli['console']->getHelperSet();
-    foreach ($helpers as $name => $helper) {
-        $helperSet->set($helper, $name);
-    }
+    $entityManagerProvider = new SingleManagerProvider($cli['orm.em']);
+    $dependencyFactory = $cli['doctrine-migration.dependency-factory'];
+
+    $cli['console']->addCommands([
+        // DBAL Commands
+        new RunSqlCommand(new SingleConnectionProvider($cli['orm.em']->getConnection())),
+        // ORM Commands
+        new MetadataCommand($entityManagerProvider),
+        new ResultCommand($entityManagerProvider),
+        new QueryCommand($entityManagerProvider),
+        new CreateCommand($entityManagerProvider),
+        new UpdateCommand($entityManagerProvider),
+        new DropCommand($entityManagerProvider),
+        new EnsureProductionSettingsCommand($entityManagerProvider),
+        new GenerateRepositoriesCommand($entityManagerProvider),
+        new GenerateEntitiesCommand($entityManagerProvider),
+        new GenerateProxiesCommand($entityManagerProvider),
+        new ConvertMappingCommand($entityManagerProvider),
+        new RunDqlCommand($entityManagerProvider),
+        new ValidateSchemaCommand($entityManagerProvider),
+        // Migrations Commands
+        new DiffCommand($dependencyFactory),
+        new ExecuteCommand($dependencyFactory),
+        new GenerateCommand($dependencyFactory),
+        new MigrateCommand($dependencyFactory),
+        new StatusCommand($dependencyFactory),
+        new VersionCommand($dependencyFactory),
+    ]);
 }
 
 $cli->run();

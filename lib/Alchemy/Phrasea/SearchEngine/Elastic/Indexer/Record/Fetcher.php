@@ -18,8 +18,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate
 use Closure;
 use databox;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Result;
 use LogicException;
 use PDO;
 
@@ -46,7 +46,7 @@ class Fetcher
     private $postFetch;
     private $onDrain;
 
-    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
+    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, ?FetcherDelegateInterface $delegate = null)
     {
         $this->databox = $databox;
         $this->options = $options;
@@ -102,7 +102,7 @@ class Fetcher
 
     /**
      * @return mixed
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public function fetch()
@@ -119,7 +119,7 @@ class Fetcher
 
     /**
      * @return array
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     private function fetchBatch()
@@ -130,7 +130,7 @@ class Fetcher
 
         $records = [];
         $this->lastLimit = $this->boundLimit;   // initial low or high value
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $records[$record['record_id']] = $record;
             // compare/update limit
             // ($this->updateLastLimitDelegate)($record);       // php 7.2 only
@@ -185,8 +185,8 @@ class Fetcher
     }
 
     /**
-     * @return Statement
-     * @throws DBALException
+     * @return Result
+     * @throws \Doctrine\DBAL\Exception
      */
     private function getExecutedStatement()
     {
@@ -251,8 +251,6 @@ class Fetcher
             }
         }
 
-        $this->statement->execute();
-
-        return $this->statement;
+        return $this->statement->executeQuery();
     }
 }

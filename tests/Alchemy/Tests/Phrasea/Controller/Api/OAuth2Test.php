@@ -5,23 +5,21 @@ namespace Alchemy\Tests\Phrasea\Controller\Api;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Authentication\Context;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $queryParameters;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        self::$DI['app'] = self::$DI->share(function ($DI) {
+        self::$DI['app'] = function ($DI) {
             return $this->loadApp('/lib/Alchemy/Phrasea/Application/Api.php');
-        });
+        };
 
         $this->queryParameters = [
             "response_type" => "code",
@@ -32,9 +30,7 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideEventNames
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideEventNames')]
     public function testThatEventsAreTriggered($revoked, $method, $eventName, $className)
     {
         if ($revoked) {
@@ -55,7 +51,7 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, $preEvent);
     }
 
-    public function provideEventNames()
+    public static function provideEventNames()
     {
         return [
             [false, 'POST', PhraseaEvents::PRE_AUTHENTICATE, 'Alchemy\Phrasea\Core\Event\PreAuthenticate'],
@@ -93,11 +89,11 @@ class OAuth2Test extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['manipulator.api-account']->revokeAccess(self::$DI['oauth2-app-acc-user']);
         self::$DI['client']->request('GET', '/api/oauthv2/authorize', $this->queryParameters);
         $this->assertTrue(self::$DI['client']->getResponse()->isSuccessful());
-        $this->assertRegExp("/" . self::$DI['oauth2-app-user']->getCLientId() . "/", self::$DI['client']->getResponse()->getContent());
-        $this->assertRegExp("/" . str_replace("/", '\/', self::$DI['oauth2-app-user']->getRedirectUri()) . "/", self::$DI['client']->getResponse()->getContent());
-        $this->assertRegExp("/" . $this->queryParameters["response_type"] . "/", self::$DI['client']->getResponse()->getContent());
-        $this->assertRegExp("/" . $this->queryParameters["scope"] . "/", self::$DI['client']->getResponse()->getContent());
-        $this->assertRegExp("/" . $this->queryParameters["state"] . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertMatchesRegularExpression("/" . self::$DI['oauth2-app-user']->getCLientId() . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertMatchesRegularExpression("/" . str_replace("/", '\/', self::$DI['oauth2-app-user']->getRedirectUri()) . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertMatchesRegularExpression("/" . $this->queryParameters["response_type"] . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertMatchesRegularExpression("/" . $this->queryParameters["scope"] . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertMatchesRegularExpression("/" . $this->queryParameters["state"] . "/", self::$DI['client']->getResponse()->getContent());
     }
 
     public function testGetTokenNotHTTPS()

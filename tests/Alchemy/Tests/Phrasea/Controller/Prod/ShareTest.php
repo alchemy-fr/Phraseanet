@@ -7,20 +7,14 @@ use Alchemy\Phrasea\Controller\Prod\ShareController;
 use Alchemy\Phrasea\ControllerProvider\Prod\Share;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ShareTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Share::shareRecord
-     * @covers Alchemy\Phrasea\Controller\Prod\Share::connect
-     */
     public function testRouteSlashALL()
     {
         $this->_RouteSlash("all", [0 => true, 1 => true, 2 => true, 3 => true]);
@@ -40,11 +34,8 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $_conf = $app['conf'];
-        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']
-            ->expects($this->any())
             ->method('get')
             ->will($this->returnCallback(function ($param, $default) use ($_conf, $setting) {
                 switch ($param) {
@@ -58,11 +49,11 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($expected as $flags => $v) {
             $stubbedACL = $this->stubACL();
             // "has_right_on_sbas" IS checked by the route->before(), the url will return 403
-            $stubbedACL->expects($this->any())
+            $stubbedACL
                 ->method('has_right_on_sbas')
                 ->will($this->returnValue(($flags & 1) ? true : false));
             // but "has_access_to_subdef" IS NOT checked (the url will return a 200 with a message "no subdef to share")
-            $stubbedACL->expects($this->any())
+            $stubbedACL
                 ->method('has_access_to_subdef')
                 ->will($this->returnValue(($flags & 2) ? true : false));
             $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
@@ -72,9 +63,6 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Share::shareRecord
-     */
     public function testShareRecord()
     {
         $share = new ShareController(self::$DI['app']);

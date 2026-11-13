@@ -51,7 +51,7 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
             $timezones = [];
             foreach (\DateTimeZone::listAbbreviations() as $abbreviations) {
                 foreach ($abbreviations as $abbreviation) {
-                    $timezones[$abbreviation['timezone_id']] = true;
+                    $timezones[(string) $abbreviation['timezone_id']] = true;
                 }
             }
 
@@ -113,7 +113,9 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
         if (extension_loaded('suhosin')) {
             $this->addPhpIniRequirement(
                 'suhosin.executor.include.whitelist',
-                create_function('$cfgValue', 'return false !== stripos($cfgValue, "phar");'),
+                function ($cfgValue) {
+                    return false !== stripos($cfgValue, "phar");
+                },
                 false,
                 'suhosin.executor.include.whitelist must be configured correctly in php.ini',
                 'Add "<strong>phar</strong>" to <strong>suhosin.executor.include.whitelist</strong> in php.ini<a href="#phpini">*</a>.'
@@ -131,7 +133,9 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
 
             $this->addPhpIniRecommendation(
                 'xdebug.max_nesting_level',
-                create_function('$cfgValue', 'return $cfgValue > 100;'),
+                function ($cfgValue) {
+                    return $cfgValue > 100;
+                },
                 true,
                 'xdebug.max_nesting_level should be above 100 in php.ini',
                 'Set "<strong>xdebug.max_nesting_level</strong>" to e.g. "<strong>250</strong>" in php.ini<a href="#phpini">*</a> to stop Xdebug\'s infinite recursion protection erroneously throwing a fatal error in your project.'

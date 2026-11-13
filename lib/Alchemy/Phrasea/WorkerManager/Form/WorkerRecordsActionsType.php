@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class WorkerRecordsActionsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('act', HiddenType::class, [
@@ -32,7 +32,7 @@ class WorkerRecordsActionsType extends AbstractType
         ;
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'worker_recordsActions';
     }

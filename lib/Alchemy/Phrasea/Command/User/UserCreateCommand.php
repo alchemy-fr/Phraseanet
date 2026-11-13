@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -73,7 +74,7 @@ class UserCreateCommand extends Command
         $userRepository = $this->container['repo.users'];
 
         if ($userMail) {
-            if (!\Swift_Validate::email($userMail)) {
+            if (!EmailValidator::isValid($userMail)) {
                 $output->writeln('<error>Invalid mail address</error>');
                 return 0;
             }

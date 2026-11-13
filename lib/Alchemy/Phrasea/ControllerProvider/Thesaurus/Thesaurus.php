@@ -14,26 +14,21 @@ namespace Alchemy\Phrasea\ControllerProvider\Thesaurus;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Thesaurus\ThesaurusController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
-use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 
 class Thesaurus implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.thesaurus'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.thesaurus'] = function (PhraseaApplication $app) {
             return (new ThesaurusController($app))
                 ->setDispatcher($app['dispatcher'])
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     public function connect(\Silex\Application $app)

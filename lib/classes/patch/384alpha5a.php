@@ -58,7 +58,7 @@ class patch_384alpha5a implements patchInterface
     {
         $sql = "UPDATE log_docs SET `action`='mail' WHERE `action`='download' AND LOCATE('@', comment)";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt->executeStatement();
 
         return true;
     }

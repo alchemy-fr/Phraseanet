@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\TaskManager\Event;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -21,7 +21,7 @@ class FinishedJobRemoverSubscriber implements EventSubscriberInterface
 {
     private $om;
 
-    public function __construct(ObjectManager $om)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om)
     {
         $this->om = $om;
     }
@@ -29,7 +29,7 @@ class FinishedJobRemoverSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             JobEvents::FINISHED => 'onJobFinish',

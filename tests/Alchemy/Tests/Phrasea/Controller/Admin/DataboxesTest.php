@@ -4,21 +4,17 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'databaseMount')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Database::class, 'createDatabase')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Databases::getDatabases
-     * @covers Alchemy\Phrasea\Controller\Admin\Databases::connect
-     * @dataProvider msgProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('msgProvider')]
     public function testGetSlash($type, $errorMsgId)
     {
         self::$DI['client']->request('GET', '/admin/databoxes/', [
@@ -28,7 +24,7 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    public function msgProvider()
+    public static function msgProvider()
     {
         return [
             ['error', 'already-started'],
@@ -45,9 +41,6 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Databases::getDatabases
-     */
     public function testGetSlashUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -57,9 +50,6 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::databaseMount
-     */
     public function testMountBase()
     {
         $this->setAdmin(true);
@@ -91,9 +81,6 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         unset($databox);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
-     */
     public function testCreateDatabaseEmpty()
     {
         $this->setAdmin(true);
@@ -107,9 +94,6 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/admin/databoxes/?success=0&error=no-empty', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
-     */
     public function testCreateDatabaseSpecialChar()
     {
         $this->setAdmin(true);
@@ -123,9 +107,6 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('/admin/databoxes/?success=0&error=special-chars', $response->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
-     */
     public function testCreateDatabase()
     {
         $this->setAdmin(true);

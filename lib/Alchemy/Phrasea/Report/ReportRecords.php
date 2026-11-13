@@ -79,8 +79,7 @@ class ReportRecords extends Report
                 . "SELECT record_id FROM record AS `r`\n"
                 . "WHERE " . $this->sqlWhere . " AND record_id>" . $lastRid . " LIMIT 5000) AS _t";
             $stmt = $this->databox->get_connection()->executeQuery($sql, []);
-            $row = $stmt->fetch();
-            $stmt->closeCursor();
+            $row = $stmt->fetchAssociative();
 
             if($row && !is_null($row['from']) && !is_null($row['to'])) {
                 $sql = "SELECT r.record_id, IF(r.parent_record_id = 0 , 'record' , 'story') AS record_type, '-' AS story_element, c.asciiname, r.credate AS created_on, r.moddate AS updated_on, r.mime, r.type, r.originalname, r.status, r.sha256, r.uuid,\n"
@@ -91,8 +90,7 @@ class ReportRecords extends Report
                     . "GROUP BY `record_id`\n";
 
                 $stmt = $this->databox->get_connection()->executeQuery($sql, []);
-                $rows = $stmt->fetchAll();
-                $stmt->closeCursor();
+                $rows = $stmt->fetchAllAssociative();
                 foreach($rows as $row) {
                     if (!empty($this->permalink)) {
                         try {

@@ -65,6 +65,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
     /**
      * @return \ArrayIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->records);
@@ -74,6 +75,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
      * @param int|string $offset
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->records[$offset]);
@@ -83,6 +85,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
      * @param int|string $offset
      * @return \record_adapter
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->records[$offset];
@@ -92,6 +95,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
      * @param int|string $offset
      * @param \record_adapter $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         Assertion::isInstanceOf($value, \record_adapter::class);
@@ -103,6 +107,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
      * @param int|string $offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if (isset($this->records[$offset])) {
@@ -115,6 +120,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
     /**
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->records);

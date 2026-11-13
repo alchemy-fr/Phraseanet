@@ -5,14 +5,12 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
 use Alchemy\Phrasea\Model\Entities\Session;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testEndSession()
@@ -41,7 +39,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($client->getResponse()->isRedirect());
         $this->assertNotNUll($client->getResponse()->headers->get('x-phraseanet-end-session'));
         $this->assertNotNUll($client->getResponse()->headers->get('location'));
-        $this->assertRegExp('#/login\?redirect=..(?:%2F|/)prod#', $client->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('#/login\?redirect=..(?:%2F|/)prod#', $client->getResponse()->headers->get('location'));
 
         $app['phraseanet.configuration']['session'] = $bkp;
     }
@@ -83,14 +81,14 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
-        $app['authentication']->expects($this->any())->method('isAuthenticated')->will($this->returnValue(true));
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication']->method('isAuthenticated')->will($this->returnValue(true));
 
         $session = new Session();
         $session->setUpdated(new \DateTime());
 
-        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
+        $app['repo.sessions'] = $this->createMock('Doctrine\Persistence\ObjectRepository');
         $app['repo.sessions']->expects($this->exactly(2))->method('find')->will($this->returnValue($session));
         $app['orm.em']->expects($this->exactly(4))->method('persist')->will($this->returnValue(null));
         $app['orm.em']->expects($this->exactly(2))->method('flush')->will($this->returnValue(null));
@@ -121,18 +119,18 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
-        $app['authentication']->expects($this->any())->method('isAuthenticated')->will($this->returnValue(true));
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication']->method('isAuthenticated')->will($this->returnValue(true));
         $app['authentication']->expects($this->once())->method('closeAccount')->will($this->returnValue(null));
 
         $session = new Session();
         $session->setUpdated(new \DateTime('-1 hour'));
 
-        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
+        $app['repo.sessions'] = $this->createMock('Doctrine\Persistence\ObjectRepository');
         $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
-        $app['orm.em']->expects($this->any())->method('persist')->will($this->returnValue(null));
-        $app['orm.em']->expects($this->any())->method('flush')->will($this->returnValue(null));
+        $app['orm.em']->method('persist')->will($this->returnValue(null));
+        $app['orm.em']->method('flush')->will($this->returnValue(null));
 
         $bkp = $app['phraseanet.configuration']['session'];
 
@@ -154,7 +152,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($client->getResponse()->isRedirect());
         $this->assertNotNUll($client->getResponse()->headers->get('x-phraseanet-end-session'));
         $this->assertNotNUll($client->getResponse()->headers->get('location'));
-        $this->assertRegExp('#/login\?redirect=..(?:%2F|/)prod#', $client->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('#/login\?redirect=..(?:%2F|/)prod#', $client->getResponse()->headers->get('location'));
 
         $app['phraseanet.configuration']['session'] = $bkp;
     }
@@ -163,18 +161,18 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
-        $app['authentication']->expects($this->any())->method('isAuthenticated')->will($this->returnValue(true));
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
+        $app['authentication']->method('isAuthenticated')->will($this->returnValue(true));
         $app['authentication']->expects($this->once())->method('closeAccount')->will($this->returnValue(null));
 
         $session = new Session();
         $session->setUpdated(new \DateTime('-1 hour'));
 
-        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $app['repo.sessions'] = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')->getMock();
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
+        $app['repo.sessions'] = $this->createMock('Doctrine\Persistence\ObjectRepository');
         $app['repo.sessions']->expects($this->once())->method('find')->will($this->returnValue($session));
-        $app['orm.em']->expects($this->any())->method('persist')->will($this->returnValue(null));
-        $app['orm.em']->expects($this->any())->method('flush')->will($this->returnValue(null));
+        $app['orm.em']->method('persist')->will($this->returnValue(null));
+        $app['orm.em']->method('flush')->will($this->returnValue(null));
 
         $bkp = $app['phraseanet.configuration']['session'];
 
@@ -222,17 +220,15 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('undefined-module', $client->getResponse()->getContent());
     }
 
-    /**
-     * @dataProvider forbiddenRouteProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('forbiddenRouteProvider')]
     public function testForbiddenRoutes($route)
     {
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
         $app['authentication']->expects($this->never())->method('isAuthenticated');
 
-        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
         $app['orm.em']->expects($this->never())->method('flush');
 
         $app->get($route, function () {
@@ -247,7 +243,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
     }
 
-    public function forbiddenRouteProvider()
+    public static function forbiddenRouteProvider()
     {
         return [
             ['/'],
@@ -256,9 +252,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    /**
-     * @dataProvider notUserActivityRoutesProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('notUserActivityRoutesProvider')]
     public function testNotUserActivityRoutes($route)
     {
         $this->markTestSkipped();
@@ -268,10 +262,10 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
 
         $app = new Application(Application::ENV_TEST);
         $app['dispatcher']->addSubscriber(new SessionManagerSubscriber($app));
-        $app['authentication'] = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')->disableOriginalConstructor()->getMock();
+        $app['authentication'] = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
         $app['authentication']->expects($this->once())->method('isAuthenticated');
 
-        $app['orm.em'] = $this->getMockBuilder('Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
+        $app['orm.em'] = $this->createMock('Doctrine\ORM\EntityManager');
         $app['orm.em']->expects($this->never())->method('flush');
 
         $app->get($route, function () {
@@ -286,7 +280,7 @@ class SessionManagerSubscriberTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
     }
 
-    public function notUserActivityRoutesProvider()
+    public static function notUserActivityRoutesProvider()
     {
         return [
             ['/user/'],

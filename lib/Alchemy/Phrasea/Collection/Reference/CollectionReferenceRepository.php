@@ -48,7 +48,7 @@ interface CollectionReferenceRepository
      * @param array<int>|null $baseIdsSubset Restrict search to a subset of base ids.
      * @return CollectionReference[]
      */
-    public function findHavingOrderMaster(array $baseIdsSubset = null);
+    public function findHavingOrderMaster(?array $baseIdsSubset = null);
 
     /**
      * @param CollectionReference $reference

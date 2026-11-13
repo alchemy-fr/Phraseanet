@@ -100,9 +100,10 @@ class FeedController extends Controller
         $manager->persist($feed);
         $manager->flush();
 
-        $this->dispatch(PhraseaEvents::FEED_ENTRY_CREATE, new FeedEntryEvent(
+        $this->dispatch(new FeedEntryEvent(
             $entry, $request->request->get('notify')
-        ));
+        ),
+        PhraseaEvents::FEED_ENTRY_CREATE);
 
         return $this->app->json(['error' => false, 'message' => false]);
     }
@@ -208,9 +209,10 @@ class FeedController extends Controller
         $manager->persist($entry);
         $manager->flush();
 
-        $this->dispatch(PhraseaEvents::FEED_ENTRY_UPDATE, new FeedEntryEvent(
+        $this->dispatch(new FeedEntryEvent(
             $entry, $request->request->get('notify')
-        ));
+        ),
+        PhraseaEvents::FEED_ENTRY_UPDATE);
 
         return $this->app->json([
             'error'   => false,

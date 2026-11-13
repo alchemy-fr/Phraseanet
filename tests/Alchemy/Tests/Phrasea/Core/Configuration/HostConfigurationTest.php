@@ -7,13 +7,11 @@ use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class HostConfigurationTest extends ConfigurationTestCase
 {
-    protected function provideConfiguration($confFile, $compiledFile = null, Compiler $compiler = null, Yaml $yaml = null, $autoreload = false)
+    protected function provideConfiguration($confFile, $compiledFile = null, ?Compiler $compiler = null, ?Yaml $yaml = null, $autoreload = false)
     {
         if (null === $compiledFile) {
             $compiledFile = $this->compiled;

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Task;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Model\Entities\Task;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -47,11 +48,10 @@ class TaskList extends Command
             ];
         }
 
-        $this
-            ->getHelperSet()->get('table')
+        (new Table($output))
             ->setHeaders(['Id', 'Name', 'Status (set)', 'Actual (probed)', 'Process Id'])
             ->setRows($rows)
-            ->render($output);
+            ->render();
 
         return $errors;
     }

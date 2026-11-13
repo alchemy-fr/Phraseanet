@@ -5,15 +5,13 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TasksServiceProviderTest extends ServiceProviderTestCase
 {
     use TranslatorMockTrait;
 
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             [
@@ -51,7 +49,7 @@ class TasksServiceProviderTest extends ServiceProviderTestCase
         $app->register(new TasksServiceProvider());
         $app->boot();
 
-        $this->assertInternalType('array', $app['task-manager.available-jobs']);
+        $this->assertIsArray($app['task-manager.available-jobs']);
         foreach ($app['task-manager.available-jobs'] as $job) {
             $this->assertInstanceOf('Alchemy\Phrasea\TaskManager\Job\JobInterface', $job);
         }

@@ -11,33 +11,33 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Debug\ExceptionHandler;
+use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
 {
     private $handler;
     private $translator;
 
-    public function __construct(ExceptionHandler $handler, TranslatorInterface $translator)
+    public function __construct(PhraseaExceptionHandler $handler, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->handler = $handler;
         $this->translator = $translator;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::EXCEPTION => ['onSilexError', 20],
         ];
     }
 
-    public function onSilexError(GetResponseForExceptionEvent $event)
+    public function onSilexError(ExceptionEvent $event)
     {
         $request = $event->getRequest();
 
@@ -45,7 +45,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $e = $event->getException();
+        $e = $event->getThrowable();
 
         $code = 500;
         $msg = $this->translator->trans('Whoops, looks like something went wrong.');
@@ -61,7 +61,7 @@ class ApiOauth2ErrorsSubscriber implements EventSubscriberInterface
             $msg = json_encode(['msg'  => $msg, 'code' => $code]);
             $event->setResponse(new Response($msg, $code, $headers));
         } else {
-            $response = $this->handler->createResponse($event->getException());
+            $response = $this->handler->createResponse($event->getThrowable());
             $response->headers->set('Content-Type', 'text/html');
             $event->setResponse($response);
         }

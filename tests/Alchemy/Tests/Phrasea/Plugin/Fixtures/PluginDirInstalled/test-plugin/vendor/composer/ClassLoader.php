@@ -221,7 +221,7 @@ class ClassLoader
         $first = $class[0];
         if (isset($this->prefixes[$first])) {
             foreach ($this->prefixes[$first] as $prefix => $dirs) {
-                if (0 === strpos($class, $prefix)) {
+                if (0 === strpos($class, (string) $prefix)) {
                     foreach ($dirs as $dir) {
                         if (file_exists($dir . DIRECTORY_SEPARATOR . $classPath)) {
                             return $dir . DIRECTORY_SEPARATOR . $classPath;

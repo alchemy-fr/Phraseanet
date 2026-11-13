@@ -4,22 +4,18 @@ namespace Alchemy\Tests\Phrasea\Controller;
 
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class SetupTest extends \PhraseanetWebTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->app = $this->loadApp('lib/Alchemy/Phrasea/Application/Root.php');
 
-        $this->app['phraseanet.configuration-tester'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\ConfigurationTester')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->app['phraseanet.configuration-tester'] = $this->createMock('Alchemy\Phrasea\Setup\ConfigurationTester');
     }
 
     public function testRouteSlash()
@@ -37,10 +33,10 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteSlashWhenInstalled()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
             ->method('isInstalled')
             ->will($this->returnValue(true));
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
             ->method('isBlank')
             ->will($this->returnValue(false));
 
@@ -53,10 +49,10 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteInstructionsWhenUpgradeRequired()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
             ->method('isInstalled')
             ->will($this->returnValue(false));
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
             ->method('isBlank')
             ->will($this->returnValue(false));
 
@@ -71,7 +67,7 @@ class SetupTest extends \PhraseanetWebTestCase
     {
         $client = $this->createClient();
 
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
             ->method('isBlank')
             ->will($this->returnValue(true));
 
@@ -84,7 +80,7 @@ class SetupTest extends \PhraseanetWebTestCase
     {
         $client = $this->createClient();
 
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
             ->method('isBlank')
             ->will($this->returnValue(true));
 
@@ -103,9 +99,7 @@ class SetupTest extends \PhraseanetWebTestCase
             ->method('isBlank')
             ->will($this->returnValue(true));
 
-        $this->app['phraseanet.installer'] = $this->getMockBuilder('Alchemy\Phrasea\Setup\Installer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->app['phraseanet.installer'] = $this->createMock('Alchemy\Phrasea\Setup\Installer');
 
         $user = $this->createUserMock();
 
@@ -113,10 +107,8 @@ class SetupTest extends \PhraseanetWebTestCase
             ->method('install')
             ->will($this->returnValue($user));
         
-        $authenticator = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Authenticator')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $session = $this->getMock('Entities\Session');
+        $authenticator = $this->createMock('Alchemy\Phrasea\Authentication\Authenticator');
+        $session = $this->createStub('Alchemy\Phrasea\Model\Entities\Session');
 
         $authenticator->expects($this->once())
             ->method('openAccount')
@@ -197,10 +189,10 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteMysql()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
                                                      ->method('isInstalled')
                                                      ->will($this->returnValue(false));
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
                                                      ->method('isBlank')
                                                      ->will($this->returnValue(true));
 
@@ -222,10 +214,10 @@ class SetupTest extends \PhraseanetWebTestCase
 
     public function testRouteMysqlFailed()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
              ->method('isInstalled')
              ->will($this->returnValue(false));
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
              ->method('isBlank')
              ->will($this->returnValue(true));
 
@@ -246,20 +238,20 @@ class SetupTest extends \PhraseanetWebTestCase
         $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
         $this->assertTrue($response->isOk());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('connection', $content);
-        $this->assertObjectHasAttribute('database', $content);
-        $this->assertObjectHasAttribute('is_empty', $content);
-        $this->assertObjectHasAttribute('is_appbox', $content);
-        $this->assertObjectHasAttribute('is_databox', $content);
+        $this->assertObjectHasProperty('connection', $content);
+        $this->assertObjectHasProperty('database', $content);
+        $this->assertObjectHasProperty('is_empty', $content);
+        $this->assertObjectHasProperty('is_appbox', $content);
+        $this->assertObjectHasProperty('is_databox', $content);
         $this->assertFalse($content->connection);
     }
 
     public function testRouteMysqlDbFailed()
     {
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
              ->method('isInstalled')
              ->will($this->returnValue(false));
-        $this->app['phraseanet.configuration-tester']->expects($this->any())
+        $this->app['phraseanet.configuration-tester']
              ->method('isBlank')
              ->will($this->returnValue(true));
 
@@ -280,11 +272,11 @@ class SetupTest extends \PhraseanetWebTestCase
         $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
         $this->assertTrue($response->isOk());
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('connection', $content);
-        $this->assertObjectHasAttribute('database', $content);
-        $this->assertObjectHasAttribute('is_empty', $content);
-        $this->assertObjectHasAttribute('is_appbox', $content);
-        $this->assertObjectHasAttribute('is_databox', $content);
+        $this->assertObjectHasProperty('connection', $content);
+        $this->assertObjectHasProperty('database', $content);
+        $this->assertObjectHasProperty('is_empty', $content);
+        $this->assertObjectHasProperty('is_appbox', $content);
+        $this->assertObjectHasProperty('is_databox', $content);
         $this->assertFalse($content->database);
     }
 }

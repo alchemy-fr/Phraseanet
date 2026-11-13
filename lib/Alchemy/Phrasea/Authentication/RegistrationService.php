@@ -182,7 +182,7 @@ class RegistrationService
         return null;
     }
 
-    public function registerUser(array $data, array $selectedCollections = null, $providerId = null)
+    public function registerUser(array $data, ?array $selectedCollections = null, $providerId = null)
     {
         $provider = null;
 
@@ -346,7 +346,7 @@ class RegistrationService
         }
 
 
-        $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
-        $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $successfulRegistrations));
+        $this->eventDispatcher->dispatch(new RegistrationEvent($user, $autoReg), PhraseaEvents::REGISTRATION_AUTOREGISTER);
+        $this->eventDispatcher->dispatch(new RegistrationEvent($user, $successfulRegistrations), PhraseaEvents::REGISTRATION_CREATE);
     }
 }

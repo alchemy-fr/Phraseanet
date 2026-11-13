@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiOauthCode;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
 
@@ -25,7 +25,7 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
     private $repository;
     private $randomGenerator;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo, Generator $random)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, EntityRepository $repo, Generator $random)
     {
         $this->om = $om;
         $this->repository = $repo;
@@ -73,7 +73,7 @@ class ApiOauthCodeManipulator implements ManipulatorInterface
 
     private function doSetRedirectUri(ApiOauthCode $code, $uri)
     {
-        if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)
+        if (false === filter_var($uri, FILTER_VALIDATE_URL)
             && $uri !== ApiApplication::NATIVE_APP_REDIRECT_URI
         ) {
             throw new InvalidArgumentException(sprintf('Redirect Uri Url %s is not legal.', $uri));

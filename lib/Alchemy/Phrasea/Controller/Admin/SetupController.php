@@ -49,7 +49,7 @@ class SetupController extends Controller
         if ('POST' === $request->getMethod()) {
             $form->submit($request->request->all());
 
-            if ($form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $registryData = $this->registryFormManipulator->getRegistryData($form, $this->configuration);
 
                 $this->configuration->set('registry', $registryData);

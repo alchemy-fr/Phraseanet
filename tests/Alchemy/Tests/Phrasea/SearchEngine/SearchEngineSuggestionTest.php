@@ -4,15 +4,10 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SearchEngineSuggestionTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion
-     */
     public function testSetUp()
     {
         $words = 'plutôt cela';

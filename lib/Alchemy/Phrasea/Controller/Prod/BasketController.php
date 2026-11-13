@@ -261,7 +261,7 @@ class BasketController extends Controller
     public function removeBasketElement(Request $request, Basket $basket, $basket_element_id)
     {
         /** @var BasketElement $basketElement */
-        $basketElement = $this->getEntityManager()->getRepository('Phraseanet:BasketElement')->find($basket_element_id);
+        $basketElement = $this->getEntityManager()->getRepository('Alchemy\Phrasea\Model\Entities\BasketElement')->find($basket_element_id);
         $this->getBasketManipulator()->removeElements($basket, [$basketElement]);
 
         $data = ['success' => true, 'message' => $this->app->trans('Record removed from basket')];
@@ -333,7 +333,7 @@ class BasketController extends Controller
 
         $ret = ['success' => false, 'message' => $this->app->trans('An error occured')];
         try {
-            $order = $request->request->get('element');
+            $order = $request->request->all('element');
 
             foreach ($basket->getElements() as $basketElement) {
                 if (isset($order[$basketElement->getId()])) {
@@ -354,7 +354,7 @@ class BasketController extends Controller
 
     public function archiveBasket(Request $request, Basket $basket)
     {
-        $archive_status = (Boolean) $request->query->get('archive');
+        $archive_status = (bool) $request->query->get('archive');
 
         $basket->setArchived($archive_status);
 
@@ -405,7 +405,7 @@ class BasketController extends Controller
         $user = $this->getAuthenticatedUser();
         /** @var BasketElementRepository $repository */
         $repository = $this->app['repo.basket-elements'];
-        foreach ($request->request->get('elements') as $bask_element_id) {
+        foreach ($request->request->all('elements') as $bask_element_id) {
             try {
                 $basket_element = $repository->findUserElement($bask_element_id, $user);
             } catch (\Exception $e) {

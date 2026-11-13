@@ -11,7 +11,7 @@ use Symfony\Component\Console\Application;
 
 $application = new Application();
 
-$application->add(new InstallCommand());
-$application->add(new InitCommand());
+$application->addCommand(new InstallCommand());
+$application->addCommand(new InitCommand());
 
 $application->run();

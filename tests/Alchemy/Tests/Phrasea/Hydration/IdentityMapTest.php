@@ -14,14 +14,15 @@ use Alchemy\Phrasea\Hydration\Hydrator;
 use Alchemy\Phrasea\Hydration\IdentityMap;
 use Prophecy\Argument;
 
-class IdentityMapTest extends \PHPUnit_Framework_TestCase
+class IdentityMapTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var IdentityMap
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $hydrator = $this->prophesize(Hydrator::class);
 
@@ -63,13 +64,13 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
     {
         $instance  = $this->sut->hydrate(42, ['foo' => 'Foo', 'bar' => 'Bar']);
 
-        $this->assertAttributeSame('Foo', 'foo', $instance);
-        $this->assertAttributeSame('Bar', 'bar', $instance);
+        $this->assertSame('Foo', (new \ReflectionProperty($instance, 'foo'))->getValue($instance));
+        $this->assertSame('Bar', (new \ReflectionProperty($instance, 'bar'))->getValue($instance));
 
         $instance2 = $this->sut->hydrate(42, ['foo' => 'new foo value', 'bar' => null]);
 
-        $this->assertAttributeSame('new foo value', 'foo', $instance);
-        $this->assertAttributeSame(null, 'bar', $instance);
+        $this->assertSame('new foo value', (new \ReflectionProperty($instance, 'foo'))->getValue($instance));
+        $this->assertSame(null, (new \ReflectionProperty($instance, 'bar'))->getValue($instance));
 
         $this->assertSame($instance, $instance2, 'Same instance was not rehydrated');
 

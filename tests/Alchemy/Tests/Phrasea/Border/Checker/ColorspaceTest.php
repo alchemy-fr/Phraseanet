@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Colorspace;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ColorspaceTest extends \PhraseanetTestCase
 {
     /**
@@ -16,32 +14,22 @@ class ColorspaceTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
-     * @covers Alchemy\Phrasea\Border\Checker\Colorspace::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Colorspace(self::$DI['app'], ['colorspaces' => ['RGB', 'cmyk'], 'media_types' => ['Image', 'Document']]);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Colorspace::check
-     */
     public function testCheckImage()
     {
-        $media = $this
-            ->getMockBuilder('\\MediaVorus\\Media\\Image')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $media->expects($this->any())
+        $media = $this->createMock('\\MediaVorus\\Media\\Image');
+        $media
           ->method('getType')
           ->will($this->returnValue('Image'));
         $media->expects($this->once())
             ->method('getColorSpace')
             ->will($this->returnValue('RGB'));
-        $media->expects($this->any())
+        $media
             ->method('getFile')
             ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
@@ -53,19 +41,13 @@ class ColorspaceTest extends \PhraseanetTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Colorspace::check
-     */
     public function testCheckVideo()
     {
-        $media = $this
-          ->getMockBuilder('\\MediaVorus\\Media\\Video')
-          ->disableOriginalConstructor()
-          ->getMock();
-        $media->expects($this->any())
+        $media = $this->createMock('\\MediaVorus\\Media\\Video');
+        $media
           ->method('getType')
           ->will($this->returnValue('Video'));
-        $media->expects($this->any())
+        $media
           ->method('getFile')
           ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
@@ -77,22 +59,16 @@ class ColorspaceTest extends \PhraseanetTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Colorspace::check
-     */
     public function testCheckFailDocument()
     {
-        $media = $this
-          ->getMockBuilder('\\MediaVorus\\Media\\Document')
-          ->disableOriginalConstructor()
-          ->getMock();
+        $media = $this->createMock('\\MediaVorus\\Media\\Document');
         $media->expects($this->once())
           ->method('getColorSpace')
           ->will($this->returnValue(''));
-        $media->expects($this->any())
+        $media
           ->method('getType')
           ->will($this->returnValue('Document'));
-        $media->expects($this->any())
+        $media
           ->method('getFile')
           ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
@@ -105,19 +81,14 @@ class ColorspaceTest extends \PhraseanetTestCase
         $this->assertEquals($this->createTranslatorMock()->trans('The file does not match available color'), $response->getMessage($this->createTranslatorMock()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Colorspace::getMessage
-     */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
+        $this->assertIsString($this->object->getMessage($this->createTranslatorMock()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testContructorInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new Colorspace(self::$DI['app'], [['RGB', 'cmyk']]);
     }
 }

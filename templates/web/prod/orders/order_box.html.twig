@@ -1,5 +1,5 @@
-{% set success = app['request'].query.get('success') %}
-{% set action = app['request'].query.get('action') %}
+{% set success = app['request_stack'].currentRequest.query.get('success') %}
+{% set action = app['request_stack'].currentRequest.query.get('action') %}
 
 <div id="order_manager">
     {% if  success == '1' %}

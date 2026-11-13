@@ -21,7 +21,7 @@ abstract class AbstractTermNode extends Node implements TermInterface
      */
     private $pruned_concepts;
 
-    public function __construct($text, Context $context = null)
+    public function __construct($text, ?Context $context = null)
     {
         $this->text = $text;
         $this->context = $context;

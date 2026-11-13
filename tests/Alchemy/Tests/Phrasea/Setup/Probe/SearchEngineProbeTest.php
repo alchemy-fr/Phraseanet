@@ -2,13 +2,11 @@
 
 namespace Alchemy\Tests\Phrasea\Setup\Probe;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SearchEngineProbeTest extends ProbeTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();

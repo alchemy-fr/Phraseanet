@@ -42,7 +42,7 @@ class XSendFileMappingGenerator extends Command
             $this->container['filesystem']->mkdir($path);
         }
 
-        $type = strtolower($input->getArgument('type'));
+        $type = strtolower((string) $input->getArgument('type'));
         $enabled = $input->getOption('enabled');
 
         $factory = new XSendFileFactory($this->container['monolog'], true, $type, $this->computeMapping($paths));

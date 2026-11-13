@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Databox;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class DataboxEvent extends Event
 {
@@ -16,7 +16,7 @@ class DataboxEvent extends Event
      * @param \databox|null $databox
      * @param array|null $args
      */
-    public function __construct($databox, array $args = null)
+    public function __construct($databox, ?array $args = null)
     {
         $this->databox = $databox;
         $this->args = $args;

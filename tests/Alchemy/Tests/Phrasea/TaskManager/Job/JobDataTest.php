@@ -4,20 +4,14 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Job\JobData;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class JobDataTest extends \PhraseanetTestCase
 {
     public function testGetters()
     {
-        $app = $this->getMockBuilder('Alchemy\Phrasea\Application')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $task = $this->getMockBuilder('Alchemy\Phrasea\Model\Entities\Task')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app = $this->createStub('Alchemy\Phrasea\Application');
+        $task = $this->createStub('Alchemy\Phrasea\Model\Entities\Task');
         $data = new JobData($app, $task);
         $this->assertInstanceOf('Alchemy\TaskManager\Job\JobDataInterface', $data);
         $this->assertSame($app, $data->getApplication());

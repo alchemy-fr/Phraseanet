@@ -20,7 +20,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     public function testAdd()
     {
         $collection = $this->provideRequirements();
-        $requirement = $this->getMock('Alchemy\Phrasea\Setup\RequirementInterface');
+        $requirement = $this->createStub('Alchemy\Phrasea\Setup\RequirementInterface');
         $collection->add($requirement);
 
         $found = false;
@@ -39,7 +39,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $requirement = $this->getMock('Alchemy\Phrasea\Setup\RequirementInterface');
+        $requirement = $this->createStub('Alchemy\Phrasea\Setup\RequirementInterface');
         $coll = new RequirementCollection();
         $coll->add($requirement);
 
@@ -61,7 +61,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $this->assertInternalType('array', $collection->all());
+        $this->assertIsArray($collection->all());
 
         foreach ($collection->all() as $requirement) {
             $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $requirement);
@@ -72,7 +72,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $this->assertInternalType('array', $collection->getFailedRecommendations());
+        $this->assertIsArray($collection->getFailedRecommendations());
 
         foreach ($collection->getFailedRecommendations() as $requirement) {
             $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $requirement);
@@ -83,7 +83,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $this->assertInternalType('array', $collection->getFailedRequirements());
+        $this->assertIsArray($collection->getFailedRequirements());
 
         foreach ($collection->getFailedRequirements() as $requirement) {
             $this->assertInstanceOf('Alchemy\Phrasea\Setup\RequirementInterface', $requirement);
@@ -94,7 +94,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $this->assertInternalType('array', $collection->getInformations());
+        $this->assertIsArray($collection->getInformations());
 
         foreach ($collection->getInformations() as $requirement) {
             $this->assertInstanceOf('Alchemy\Phrasea\Setup\InformationInterface', $requirement);
@@ -105,7 +105,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $this->assertInternalType('string', $collection->getName());
+        $this->assertIsString($collection->getName());
         $this->assertGreaterThan(0, strlen($collection->getName()));
     }
 
@@ -113,7 +113,7 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $this->assertInternalType('string', $collection->getPhpIniConfigPath());
+        $this->assertIsString($collection->getPhpIniConfigPath());
         $this->assertGreaterThan(0, strlen($collection->getPhpIniConfigPath()));
     }
 
@@ -121,6 +121,6 @@ abstract class RequirementsTestCase extends \PhraseanetTestCase
     {
         $collection = $this->provideRequirements();
 
-        $this->assertInternalType('boolean', $collection->hasPhpIniConfigIssue());
+        $this->assertIsBool($collection->hasPhpIniConfigIssue());
     }
 }

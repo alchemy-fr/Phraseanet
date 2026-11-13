@@ -62,8 +62,7 @@ class patch_410alpha22a implements patchInterface
             $sql = "ALTER TABLE `Tokens` ADD INDEX `".$t."` (`".$t."`);";
             try {
                 $stmt = $appbox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
+                $stmt->executeStatement();
             }
             catch (\Exception $e) {
                 // the inex already exists ?

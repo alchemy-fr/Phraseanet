@@ -98,3 +98,7 @@ myvalues.yaml
 
 # Exclude gitlog files
 www/gitlog.txt
+
+# test fixtures of the forked packages
+/packages/*/tests/files/
+/packages/geonames-api-consumer/tests/Alchemy/Tests/Geonames/Fixtures/

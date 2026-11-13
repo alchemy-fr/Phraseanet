@@ -6,15 +6,12 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailRequestAccountDeleteTest extends MailWithLinkTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete::setUserOwner
-     */
     public function testSetUserOwner()
     {
         $this->assertEquals('Email:deletion:request:message Hello %civility% %firstName% %lastName%.
@@ -55,7 +52,7 @@ class MailRequestAccountDeleteTest extends MailWithLinkTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 

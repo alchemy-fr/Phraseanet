@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Media\Subdef\Provider;
 use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ProviderTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
@@ -19,15 +17,12 @@ class ProviderTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Image($this->createTranslatorMock());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Provider::getOptions
-     */
     public function testGetOptions()
     {
         $this->assertTrue(is_array($this->object->getOptions()));
@@ -37,9 +32,6 @@ class ProviderTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Provider::getOption
-     */
     public function testGetOption()
     {
         $option = $this->object->getOption(Image::OPTION_SIZE);
@@ -48,9 +40,6 @@ class ProviderTest extends \PhraseanetTestCase
         $this->assertEquals(Image::OPTION_SIZE, $option->getName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Provider::setOptionValue
-     */
     public function testSetOptionValue()
     {
         $this->object->setOptionValue(Image::OPTION_SIZE, 300);

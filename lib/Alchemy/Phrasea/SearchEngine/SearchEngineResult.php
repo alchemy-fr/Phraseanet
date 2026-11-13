@@ -72,7 +72,7 @@ class SearchEngineResult
         ArrayCollection $suggestions,
         $propositions,
         $indexes,
-        FacetsResponse $facets = null
+        ?FacetsResponse $facets = null
     ) {
         $this->options = $options;
         $this->results = $results;

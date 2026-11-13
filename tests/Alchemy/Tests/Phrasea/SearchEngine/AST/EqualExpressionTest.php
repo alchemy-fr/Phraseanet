@@ -7,13 +7,12 @@ use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
 
-/**
- * @group unit
- * @group searchengine
- * @group ast
- */
-class EqualExpressionTest extends \PHPUnit_Framework_TestCase
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+#[\PHPUnit\Framework\Attributes\Group('ast')]
+class EqualExpressionTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(EqualExpression::class, '__toString'), 'Class does not have method __toString');
@@ -23,9 +22,7 @@ class EqualExpressionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('(<foo> == <value:"bar">)', (string) $node);
     }
 
-    /**
-     * @dataProvider queryProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('queryProvider')]
     public function testQueryBuild($index_field, $value, $compatible_value, $private, $expected_json)
     {
         $query_context = $this->prophesize(QueryContext::class)->reveal();
@@ -42,7 +39,7 @@ class EqualExpressionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_json, true), $query);
     }
 
-    public function queryProvider()
+    public static function queryProvider()
     {
         return [
             // TODO Put this case in another test case
@@ -60,12 +57,10 @@ class EqualExpressionTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @expectedException Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException
-     * @expectedExceptionMessageRegExp #"foo"#u
-     */
     public function testQueryBuildWithIncompatibleValue()
     {
+        $this->expectException(\Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException::class);
+        $this->expectExceptionMessageMatches('#"foo"#u');
         $query_context = $this->prophesize(QueryContext::class)->reveal();
         $key = $this->prophesize(Key::class);
         $key->isValueCompatible('bar', $query_context)->willReturn(false);

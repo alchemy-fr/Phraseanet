@@ -6,7 +6,6 @@ use collection;
 use databox;
 use DOMNodeList;
 use DOMXpath;
-use PDO;
 use Symfony\Component\Console\Output\OutputInterface;
 use thesaurus_xpath;
 use Unicode;
@@ -193,8 +192,8 @@ class Job
             $metas = [];
 
             $this->selectRecordParams[':minrid'] = $minrid;
-            $stmt->execute($this->selectRecordParams);
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result = $stmt->executeQuery($this->selectRecordParams);
+            while ($row = $result->fetchAssociative()) {
                 $nrows++;
                 if ($currentRid == '?') {
                     $currentRid = $row['record_id'];
@@ -217,7 +216,7 @@ class Job
                 $this->doRecord($currentRid, $metas);  // flush last record
             }
 
-            $stmt->closeCursor();
+            $result->free();
             $minrid = $currentRid;
         }
         while($nrows > 0);

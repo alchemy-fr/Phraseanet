@@ -6,20 +6,16 @@ use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class CookiesDisablerSubscriberTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideVariousRoutes
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVariousRoutes')]
     public function testRoutes($disabled, $route)
     {
         $app = new Application();
@@ -51,7 +47,7 @@ class CookiesDisablerSubscriberTest extends \PhraseanetTestCase
         return new Client($app, [], null, $cookieJar);
     }
 
-    public function provideVariousRoutes()
+    public static function provideVariousRoutes()
     {
         return [
             [false, '/prod'],

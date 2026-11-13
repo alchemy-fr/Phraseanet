@@ -16,25 +16,22 @@ use Alchemy\Phrasea\Controller\Admin\CollectionController;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Pimple\Container;
 
 class Collection implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.admin.collection'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.admin.collection'] = function (PhraseaApplication $app) {
             return (new CollectionController($app, $app->getApplicationBox()->getCollectionService()))
                 ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

@@ -5,15 +5,13 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Log;
 use Alchemy\Phrasea\TaskManager\Log\LogFileFactory;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class LogFileFactoryTest extends \PhraseanetTestCase
 {
     public function testForTask()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $root = __DIR__ . '/root';
         $factory = new LogFilefactory($root);

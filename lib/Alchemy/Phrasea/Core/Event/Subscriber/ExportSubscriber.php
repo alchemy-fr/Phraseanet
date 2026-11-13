@@ -45,7 +45,7 @@ class ExportSubscriber extends AbstractNotificationSubscriber
         $this->app['events-manager']->notify($params['usr_id'], 'eventsmanager_notify_downloadmailfail', $datas, $mailed);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::EXPORT_MAIL_FAILURE => 'onMailExportFailure',

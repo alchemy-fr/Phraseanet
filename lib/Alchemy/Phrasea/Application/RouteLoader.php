@@ -10,7 +10,7 @@ use Alchemy\Phrasea\PhraseanetService\Provider\PSExposeServiceProvider;
 use Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider;
 use Alchemy\Phrasea\WorkerManager\Provider\ControllerServiceProvider as WorkerManagerProvider;
 use Assert\Assertion;
-use Silex\ControllerProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 
 
 class RouteLoader

@@ -9,15 +9,12 @@
  */
 namespace Alchemy\Phrasea\Helper;
 
-use JsonSchema\RefResolver;
-use JsonSchema\Uri\UriRetriever;
+use JsonSchema\Constraints\Factory;
+use JsonSchema\SchemaStorage;
+use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Webmozart\Json\DecodingFailedException;
-use Webmozart\Json\JsonDecoder;
-use Webmozart\Json\JsonValidator;
-use Webmozart\Json\ValidationFailedException;
 
 class JsonBodyHelper
 {
@@ -31,28 +28,17 @@ class JsonBodyHelper
      */
     const ASSOC_ARRAY = 1;
 
-    /** @var JsonValidator */
-    private $validator;
-    /** @var JsonDecoder */
-    private $decoder;
-    /** @var UriRetriever */
-    private $uriRetriever;
-    /** @var RefResolver */
-    private $refResolver;
+    /** @var SchemaStorage */
+    private $schemaStorage;
+    /** @var Factory */
+    private $constraintFactory;
     /** @var null|string */
     private $baseUri;
 
-    public function __construct(
-        JsonValidator $validator,
-        JsonDecoder $decoder,
-        UriRetriever $uriRetriever,
-        RefResolver $refResolver,
-        $baseUri = null
-    ) {
-        $this->validator = $validator;
-        $this->decoder = $decoder;
-        $this->uriRetriever = $uriRetriever;
-        $this->refResolver = $refResolver;
+    public function __construct(SchemaStorage $schemaStorage, Factory $constraintFactory, $baseUri = null)
+    {
+        $this->schemaStorage = $schemaStorage;
+        $this->constraintFactory = $constraintFactory;
         $this->baseUri = $baseUri;
     }
 
@@ -62,7 +48,7 @@ class JsonBodyHelper
      */
     public function retrieveSchema($schemaUri)
     {
-        return $this->refResolver->resolve($this->baseUri . $schemaUri);
+        return $this->schemaStorage->getSchema($this->baseUri . $schemaUri);
     }
 
     /**
@@ -79,16 +65,22 @@ class JsonBodyHelper
             $content = $request->get('body');
         }
 
-        $schema = $schemaUri ? $this->retrieveSchema($schemaUri) : null;
+        $schema = is_string($schemaUri) ? $this->retrieveSchema($schemaUri) : $schemaUri;
 
         try {
-            $this->decoder->setObjectDecoding($format===self::ASSOC_ARRAY ? JsonDecoder::ASSOC_ARRAY : JsonDecoder::OBJECT);
-            return $this->decoder->decode($content, $schema);
-        } catch (DecodingFailedException $exception) {
+            $data = json_decode((string) $content, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
             throw new UnprocessableEntityHttpException('Json request cannot be decoded', $exception);
-        } catch (ValidationFailedException $exception) {
-            throw new BadRequestHttpException($exception->getMessage(), $exception);
         }
+
+        if (null !== $schema) {
+            $errors = $this->validateJson($data, $schema);
+            if ($errors) {
+                throw new BadRequestHttpException("Validation of the JSON data failed:\n" . implode("\n", $errors));
+            }
+        }
+
+        return $format === self::ASSOC_ARRAY ? json_decode((string) $content, true) : $data;
     }
 
     /**
@@ -98,6 +90,18 @@ class JsonBodyHelper
      */
     public function validateJson($data, $schema)
     {
-        return $this->validator->validate($data, $schema);
+        if (is_string($schema)) {
+            $schema = $this->retrieveSchema($schema);
+        }
+
+        $validator = new Validator($this->constraintFactory);
+        $validator->validate($data, $schema);
+
+        $errors = [];
+        foreach ($validator->getErrors() as $error) {
+            $errors[] = ($error['property'] ? $error['property'] . ': ' : '') . $error['message'];
+        }
+
+        return $errors;
     }
 }

@@ -56,17 +56,15 @@ class CollectionService
     /**
      * @param Collection $collection
      * @return int|null
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getRecordCount(Collection $collection)
     {
         $connection = $this->connectionProvider->getConnection($collection->getDataboxId());
 
         $sql = "SELECT COALESCE(COUNT(record_id), 0) AS recordCount FROM record WHERE coll_id = :coll_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':coll_id' => $collection->getCollectionId()]);
-        $rowbas = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connection->executeQuery($sql, [':coll_id' => $collection->getCollectionId()]);
+        $rowbas = $stmt->fetchAssociative();
 
         $amount = $rowbas ? (int) $rowbas["recordCount"] : null;
 
@@ -87,10 +85,8 @@ class CollectionService
 
         $connection = $this->connectionProvider->getConnection($collection->getDataboxId());
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':coll_id' => $collection->getCollectionId()]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connection->executeQuery($sql, [':coll_id' => $collection->getCollectionId()]);
+        $rs = $stmt->fetchAllAssociative();
 
         $ret = [];
         foreach ($rs as $row) {
@@ -107,7 +103,7 @@ class CollectionService
     /**
      * @param Collection $collection
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function resetWatermark(Collection $collection)
     {
@@ -116,13 +112,11 @@ class CollectionService
 
         $connection = $this->connectionProvider->getConnection($collection->getDataboxId());
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':coll_id' => $collection->getCollectionId()]);
+        $stmt = $connection->executeQuery($sql, [':coll_id' => $collection->getCollectionId()]);
 
-        while ($row2 = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row2 = $stmt->fetchAssociative()) {
             @unlink(\p4string::addEndSlash($row2['path']) . 'watermark_' . $row2['file']);
         }
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -131,7 +125,7 @@ class CollectionService
      * @param Collection $collection
      * @param int|null $record_id
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function resetStamp(Collection $collection, $record_id = null)
     {
@@ -148,13 +142,11 @@ class CollectionService
 
         $connection = $this->connectionProvider->getConnection($collection->getDataboxId());
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute($params);
+        $stmt = $connection->executeQuery($sql, $params);
 
-        while ($row2 = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row2 = $stmt->fetchAssociative()) {
             @unlink(\p4string::addEndSlash($row2['path']) . 'stamp_' . $row2['file']);
         }
-        $stmt->closeCursor();
 
         return $this;
     }
@@ -163,7 +155,7 @@ class CollectionService
      * @param \databox $databox
      * @param Collection $collection
      * @param CollectionReference $reference
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete(\databox $databox, Collection $collection, CollectionReference $reference)
     {
@@ -175,18 +167,15 @@ class CollectionService
 
         $sql = "DELETE FROM coll WHERE coll_id = :coll_id";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':coll_id' => $collection->getCollectionId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':coll_id' => $collection->getCollectionId()]);
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute([':base_id' => $reference->getBaseId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':base_id' => $reference->getBaseId()]);
 
         $sql = "DELETE FROM basusr WHERE base_id = :base_id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute([':base_id' => $reference->getBaseId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':base_id' => $reference->getBaseId()]);
 
         return;
     }
@@ -196,7 +185,7 @@ class CollectionService
      * @param Collection $collection
      * @param int $pass_quantity
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function emptyCollection(\databox $databox, Collection $collection, $pass_quantity = 100)
     {
@@ -208,10 +197,8 @@ class CollectionService
 
         $connection = $this->connectionProvider->getConnection($collection->getDataboxId());
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':coll_id' => $collection->getCollectionId()]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connection->executeQuery($sql, [':coll_id' => $collection->getCollectionId()]);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $record = $databox->get_record($row['record_id']);
@@ -236,10 +223,8 @@ class CollectionService
 
         $connection = $this->connectionProvider->getConnection($collection->getDataboxId());
 
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':coll_id' => $collection->getCollectionId()]);
-        $recordIdsList = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-        $stmt->closeCursor();
+        $stmt = $connection->executeQuery($sql, [':coll_id' => $collection->getCollectionId()]);
+        $recordIdsList = $stmt->fetchFirstColumn();
 
         return $recordIdsList;
     }
@@ -247,7 +232,7 @@ class CollectionService
     /**
      * @param CollectionReference $reference
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function unmountCollection(CollectionReference $reference)
     {
@@ -274,13 +259,11 @@ class CollectionService
 
         $sql = "DELETE FROM basusr WHERE base_id = :base_id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
     }
 
     /**

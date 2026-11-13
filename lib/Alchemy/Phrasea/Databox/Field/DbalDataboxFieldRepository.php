@@ -73,13 +73,12 @@ final class DbalDataboxFieldRepository implements DataboxFieldRepository
     /**
      * @param int $id
      * @return false|array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function fetchRow($id)
     {
         $result = $this->connection->executeQuery($this->getSQLForSingleRow(), ['id' => $id]);
-        $row = $result->fetch(\PDO::FETCH_ASSOC);
-        $result->closeCursor();
+        $row = $result->fetchAssociative();
 
         return $row;
     }
@@ -87,8 +86,7 @@ final class DbalDataboxFieldRepository implements DataboxFieldRepository
     private function fetchRows()
     {
         $statement = $this->connection->executeQuery($this->getSQLForAllRows());
-        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $statement->closeCursor();
+        $rows = $statement->fetchAllAssociative();
 
         return $rows;
     }

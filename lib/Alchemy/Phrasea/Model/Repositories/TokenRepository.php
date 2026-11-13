@@ -26,7 +26,7 @@ class TokenRepository extends EntityRepository
      */
     public function findValidationToken(Basket $basket, User $user)
     {
-        $dql = 'SELECT t FROM Phraseanet:Token t
+        $dql = 'SELECT t FROM Alchemy\Phrasea\Model\Entities\Token t
             WHERE t.type = :type
                 AND t.user = :user
                 AND t.data = :basket_id
@@ -50,7 +50,7 @@ class TokenRepository extends EntityRepository
      */
     public function findValidToken($value)
     {
-        $dql = 'SELECT t FROM Phraseanet:Token t
+        $dql = 'SELECT t FROM Alchemy\Phrasea\Model\Entities\Token t
                 WHERE t.value = :value
                     AND (t.expiration IS NULL OR t.expiration >= CURRENT_TIMESTAMP()) ORDER BY t.created DESC';
 
@@ -66,7 +66,7 @@ class TokenRepository extends EntityRepository
      */
     public function findExpiredTokens($nbDaysAfterExpiration = 0)
     {
-        $dql = 'SELECT t FROM Phraseanet:Token t
+        $dql = 'SELECT t FROM Alchemy\Phrasea\Model\Entities\Token t
                 WHERE t.expiration < :date';
 
         $query = $this->_em->createQuery($dql);

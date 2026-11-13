@@ -4,22 +4,18 @@ namespace Alchemy\Tests\Phrasea\Twig;
 
 use Alchemy\Phrasea\Twig\BytesConverter;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class BytesConverterTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider convertDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('convertDataProvider')]
     public function testConvert($suffix, $bytes, $expected)
     {
         $converter = new BytesConverter();
         $this->assertEquals($converter->bytes2Filter($suffix, $bytes), $expected);
     }
 
-    public function convertDataProvider()
+    public static function convertDataProvider()
     {
         return [
             ['', 123456789012345, '112.28 TB'],

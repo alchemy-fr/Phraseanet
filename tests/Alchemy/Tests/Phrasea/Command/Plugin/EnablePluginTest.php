@@ -4,19 +4,15 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\EnablePlugin;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class EnablePluginTest extends PluginCommandTestCase
 {
-    /**
-     * @dataProvider provideVariousInitialConfs
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVariousInitialConfs')]
     public function testExecute($initial)
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
         $input->expects($this->once())
               ->method('getArgument')
               ->with($this->equalTo('name'))
@@ -40,7 +36,7 @@ class EnablePluginTest extends PluginCommandTestCase
         }
     }
 
-    public function provideVariousInitialConfs()
+    public static function provideVariousInitialConfs()
     {
         return [[true], [false]];
     }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 class patchthesaurus_200 implements patchthesaurus_interface
 {
@@ -32,8 +32,7 @@ class patchthesaurus_200 implements patchthesaurus_interface
             $th->setAttribute("modification_date", date("YmdHis"));
             $sql = "UPDATE thit SET value=CONCAT('T',value) WHERE LEFT(value,1)>='0' AND LEFT(value,1)<='9'";
             $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
             $version = "2.0.1";
         }
 

@@ -22,14 +22,7 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class GeneralFormType extends AbstractType
 {
-    private $availableLanguages;
-
-    public function __construct(array $availableLanguages)
-    {
-        $this->availableLanguages = $availableLanguages;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('title', TextType::class, [
             'label'         => 'Application title',
@@ -55,19 +48,19 @@ class GeneralFormType extends AbstractType
         $builder->add('home-presentation-mode', ChoiceType::class, [
             'label'         => 'Homepage slideshow',
             'choices'       => [
-                'DISPLAYx1' => 'Single image',
-                'SCROLL'    => 'Slide show',
-                'COOLIRIS'  => 'Cooliris',
-                'CAROUSEL'  => 'Carousel',
-                'GALLERIA'  => 'Gallery',
+                'Single image' => 'DISPLAYx1',
+                'Slide show'   => 'SCROLL',
+                'Cooliris'     => 'COOLIRIS',
+                'Carousel'     => 'CAROUSEL',
+                'Gallery'      => 'GALLERIA',
             ],
         ]);
         $builder->add('default-subdef-url-ttl', IntegerType::class, [
             'label'       => 'Default TTL in seconds of sub-definition url',
             'attr'        => ['min' => -1],
-            'constraints' => new GreaterThanOrEqual(['value' => -1]),
+            'constraints' => new GreaterThanOrEqual(value: -1),
         ]);
-        $builder->add('personalize-logo-choice', new PersonalisationLogoFormType(), [
+        $builder->add('personalize-logo-choice', PersonalisationLogoFormType::class, [
             'label' => 'Design of personalization logo section',
             'attr'  => [
                 'id' => 'personalize-logo-container'
@@ -75,8 +68,8 @@ class GeneralFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

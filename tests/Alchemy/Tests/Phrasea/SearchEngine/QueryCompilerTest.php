@@ -10,43 +10,35 @@ use Alchemy\Tests\Tools\CsvFileIterator;
 use Hoa\Compiler;
 use Hoa\File;
 
-/**
- * @group unit
- * @group searchengine
- */
-class QueryCompilerTest extends \PHPUnit_Framework_TestCase
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+class QueryCompilerTest extends \PHPUnit\Framework\TestCase
 {
     private $compiler;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $grammar_path = 'grammar/query.pp';
         $project_root = '../../../../..';
         $grammar_path = realpath(implode('/', [__DIR__, $project_root, $grammar_path]));
         $parser = Compiler\Llk\Llk::load(new File\Read($grammar_path));
 
-        $structure = $this->getMock(Structure::class);
+        $structure = $this->createMock(Structure::class);
 
         $queryVisitorFactory = function () use ($structure) {
             return new QueryVisitor($structure);
         };
 
-        $thesaurus = $this->getMockBuilder(Thesaurus::class)
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
-        $this->compiler = new QueryCompiler($parser, $queryVisitorFactory, $thesaurus);
+        $this->compiler = new QueryCompiler($parser, $queryVisitorFactory, $this->createStub(Thesaurus::class));
     }
 
-    /**
-     * @dataProvider queryProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('queryProvider')]
     public function testQueryParsing($query, $expected)
     {
         $this->assertEquals($expected, $this->compiler->parse($query)->dump());
     }
 
-    public function queryProvider()
+    public static function queryProvider()
     {
         return new CsvFileIterator(sprintf('%s/resources/queries.csv', __DIR__), '|', '\'');
     }

@@ -12,19 +12,15 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Zippy\Zippy;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class ZippyServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['zippy'] = $app->share(function () {
+        $app['zippy'] = function () {
             return Zippy::load();
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

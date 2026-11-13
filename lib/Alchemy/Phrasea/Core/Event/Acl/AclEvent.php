@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Acl;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use ACL;
 
 abstract class AclEvent extends Event
@@ -26,7 +26,7 @@ abstract class AclEvent extends Event
      * @param ACL $acl
      * @param array|null $args
      */
-    public function __construct(ACL $acl, array $args = null)
+    public function __construct(ACL $acl, ?array $args = null)
     {
         $this->acl = $acl;
         $this->args = $args;

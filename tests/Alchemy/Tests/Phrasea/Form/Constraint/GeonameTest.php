@@ -7,10 +7,8 @@ use Alchemy\Geonames\Geoname as GeonameResult;
 use Alchemy\Geonames\Exception\NotFoundException;
 use Alchemy\Geonames\Exception\TransportException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class GeonameTest extends \PhraseanetTestCase
 {
     public function testAValidGeonameIsValid()
@@ -51,8 +49,6 @@ class GeonameTest extends \PhraseanetTestCase
 
     private function getConnectorMock()
     {
-        return $this->getMockBuilder('Alchemy\Geonames\Connector')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Geonames\Connector');
     }
 }

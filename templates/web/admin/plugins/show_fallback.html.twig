@@ -1,5 +1,5 @@
 
-{% extends app['request'].isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
+{% extends app['request_stack'].currentRequest.isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
 
 {% block content %}
     <div class="page-header">

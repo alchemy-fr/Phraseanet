@@ -4,13 +4,11 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PasswordEncoderTest extends \PhraseanetTestCase
 {
-    public function providePasswords()
+    public static function providePasswords()
     {
         return [
             [
@@ -24,7 +22,7 @@ class PasswordEncoderTest extends \PhraseanetTestCase
         ];
     }
 
-    public function provideInvalidKeys()
+    public static function provideInvalidKeys()
     {
         return [
             [null],
@@ -33,62 +31,45 @@ class PasswordEncoderTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideInvalidKeys
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidKeys')]
     public function testFailureIfNoKey($key)
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         new PasswordEncoder($key);
     }
 
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder::encodePassword
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testEncodePassword($key, $pass, $salt, $expected)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertEquals($expected, $encoder->encodePassword($pass, $salt));
+        $this->assertEquals($expected, $encoder->hash($pass, $salt));
     }
 
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder::isPasswordValid
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testIsPasswordValid($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertTrue($encoder->isPasswordValid($encoded, $pass, $salt));
+        $this->assertTrue($encoder->verify($encoded, $pass, $salt));
     }
 
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder::isPasswordValid
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValid($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertFalse($encoder->isPasswordValid(mt_rand(), $pass, $salt));
+        $this->assertFalse($encoder->verify(mt_rand(), $pass, $salt));
     }
 
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder::isPasswordValid
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValidIfChangingTheKey($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key . mt_rand());
-        $this->assertFalse($encoder->isPasswordValid($encoded, $pass, $salt));
+        $this->assertFalse($encoder->verify($encoded, $pass, $salt));
     }
 
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder::isPasswordValid
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValidIfChangingTheSalt($key, $pass, $salt, $encoded)
     {
         $encoder = new PasswordEncoder($key);
-        $this->assertFalse($encoder->isPasswordValid($encoded, $pass, $salt. mt_rand()));
+        $this->assertFalse($encoder->verify($encoded, $pass, $salt. mt_rand()));
     }
 }

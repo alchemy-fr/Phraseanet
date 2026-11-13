@@ -57,7 +57,7 @@ class ReportConnections extends Report
 
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
-        while (($row = $stmt->fetch())) {
+        while (($row = $stmt->fetchAssociative())) {
             if ((empty($this->parms['group']) || $this->parms['group'] == 'user')) {
                 try {
                     /** @var User $user */
@@ -71,7 +71,6 @@ class ReportConnections extends Report
 
             $callback($row);
         }
-        $stmt->closeCursor();
     }
 
     private function computeVars()

@@ -30,18 +30,19 @@ use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Pimple\Container;
 use Psr\Log\LoggerAwareInterface;
 use Silex\Application;
 
 class AlchemyWorkerServiceProvider implements PluginProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['alchemy_worker.type_based_worker_resolver'] = $app->share(function () {
+        $app['alchemy_worker.type_based_worker_resolver'] = function () {
             return new TypeBasedWorkerResolver();
-        });
+        };
 
-        $app['alchemy_worker.logger'] = $app->share(function (Application $app) {
+        $app['alchemy_worker.logger'] = function (Application $app) {
             $logger = new $app['monolog.logger.class']('alchemy-service logger');
 //            $logger->pushHandler(new RotatingFileHandler(
 //                $app['log.path'] . DIRECTORY_SEPARATOR . 'worker_service.log',
@@ -55,7 +56,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
             ));
 
             return $logger;
-        });
+        };
 
         // use the console logger
         $loggerSetter = function (LoggerAwareInterface $loggerAware) use ($app) {
@@ -66,13 +67,13 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
             return $loggerAware;
         };
 
-        $app['alchemy_worker.process_pool'] = $app->share(function (Application $app) use ($loggerSetter) {
+        $app['alchemy_worker.process_pool'] = function (Application $app) use ($loggerSetter) {
             return $loggerSetter(new ProcessPool());
-        });
+        };
 
-        $app['alchemy_worker.worker_invoker'] = $app->share(function (Application $app) use ($loggerSetter) {
+        $app['alchemy_worker.worker_invoker'] = function (Application $app) use ($loggerSetter) {
             return $loggerSetter(new WorkerInvoker($app['alchemy_worker.process_pool']));
-        });
+        };
 
 
         // register workers
@@ -192,13 +193,6 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SHARE_BASKET_TYPE, new CallableWorkerFactory(function () use ($app) {
             return new ShareBasketWorker($app);
         }));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot(Application $app)
-    {
     }
 
     /**

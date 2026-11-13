@@ -113,7 +113,7 @@ class CacheStatisticsSubscriber implements EventSubscriberInterface
      *
      * @return array The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [ KernelEvents::REQUEST => [ 'onKernelRequest',  2048 ] ];
     }

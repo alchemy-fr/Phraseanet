@@ -85,7 +85,7 @@ class SubdefsJob extends AbstractJob
             $sql = 'SELECT coll_id, record_id FROM record'
                 . ' WHERE jeton & :token > 0 AND type IN(:types)'
                 . ' ORDER BY record_id DESC LIMIT 0, 30';
-            $resultSet = $conn->fetchAll(
+            $resultSet = $conn->fetchAllAssociative(
                 $sql,
                 [
                     'token' => PhraseaTokens::MAKE_SUBDEF,
@@ -116,7 +116,7 @@ class SubdefsJob extends AbstractJob
                     . ' SET jeton=(jeton & ~(:flag_and)) | :flag_or, moddate=NOW()'
                     . ' WHERE record_id=:record_id';
 
-                $conn->executeUpdate($sql, [
+                $conn->executeStatement($sql, [
                     ':record_id' => $row['record_id'],
                     ':flag_and' => PhraseaTokens::MAKE_SUBDEF,
                     ':flag_or' => (PhraseaTokens::WRITE_META_SUBDEF | PhraseaTokens::TO_INDEX)

@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexCreateCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('searchengine:index:create')

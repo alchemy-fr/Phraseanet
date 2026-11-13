@@ -14,25 +14,22 @@ namespace Alchemy\Phrasea\ControllerProvider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\DatafileController;
 use Alchemy\Phrasea\Core\LazyLocator;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Datafiles implements ControllerProviderInterface, ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.datafiles'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.datafiles'] = function (PhraseaApplication $app) {
             return (new DatafileController($app, $app->getApplicationBox(), $app['acl'], $app->getAuthenticator()))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

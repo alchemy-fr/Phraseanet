@@ -91,7 +91,7 @@ class CollectionController extends Controller
     public function setOrderAdmins(Request $request, $bas_id)
     {
         $admins = array_filter(
-            array_values($request->request->get('admins', [])),
+            array_values($request->request->all('admins')),
             function ($value) { return $value != false; }
         );
 
@@ -298,7 +298,7 @@ class CollectionController extends Controller
             $this->app->abort(400);
         }
 
-        if ($file->getClientSize() > 1024 * 1024) {
+        if ($file->getSize() > 1024 * 1024) {
             return $this->app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
@@ -353,7 +353,7 @@ class CollectionController extends Controller
             $this->app->abort(400);
         }
 
-        if ($file->getClientSize() > 65535) {
+        if ($file->getSize() > 65535) {
             return $this->app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
@@ -407,7 +407,7 @@ class CollectionController extends Controller
             $this->app->abort(400);
         }
 
-        if ($file->getClientSize() > 65535) {
+        if ($file->getSize() > 65535) {
             return $this->app->redirectPath('admin_display_collection', [
                 'bas_id'  => $bas_id,
                 'success' => 0,
@@ -547,7 +547,7 @@ class CollectionController extends Controller
      */
     public function rename(Request $request, $bas_id)
     {
-        if (trim($name = $request->request->get('name')) === '') {
+        if (trim((string) ($name = $request->request->get('name'))) === '') {
             $this->app->abort(400, $this->app->trans('Missing name parameter'));
         }
 
@@ -562,7 +562,7 @@ class CollectionController extends Controller
 
         }
 
-        if ('json' === $this->app['request']->getRequestFormat()) {
+        if ('json' === $this->app['request_stack']->getCurrentRequest()->getRequestFormat()) {
             return $this->app->json([
                 'success' => $success,
                 'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
@@ -578,7 +578,7 @@ class CollectionController extends Controller
 
     public function labels(Request $request, $bas_id)
     {
-        if (null === $labels = $request->request->get('labels')) {
+        if (null === $labels = ($request->request->all()['labels'] ?? null)) {
             $this->app->abort(400, $this->app->trans('Missing labels parameter'));
         }
         if (false === is_array($labels)) {
@@ -801,7 +801,7 @@ class CollectionController extends Controller
         $prefs = $request->request->get('str');
 
         try {
-            if ('' !== trim($prefs)) {
+            if ('' !== trim((string) $prefs)) {
                 $domdoc = new \DOMDocument();
                 if (true === @$domdoc->loadXML($prefs, LIBXML_NONET | LIBXML_NOBLANKS)) {
                     $domdoc->formatOutput = true;

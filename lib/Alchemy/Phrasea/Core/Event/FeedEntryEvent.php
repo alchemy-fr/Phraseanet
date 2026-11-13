@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Symfony\Contracts\EventDispatcher\Event as SfEvent;
 
 class FeedEntryEvent extends SfEvent
 {
@@ -22,7 +22,7 @@ class FeedEntryEvent extends SfEvent
     public function __construct(FeedEntry $entry, $emailNotification)
     {
         $this->entry = $entry;
-        $this->emailNotification = (Boolean) $emailNotification;
+        $this->emailNotification = (bool) $emailNotification;
     }
 
     public function getFeedEntry()

@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Filename;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FilenameTest extends \PhraseanetTestCase
 {
     /**
@@ -18,11 +16,7 @@ class FilenameTest extends \PhraseanetTestCase
     protected $filename;
     protected $media;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
-     * @covers Alchemy\Phrasea\Border\Checker\Filename::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         // initialize record so that it already exist
@@ -33,7 +27,7 @@ class FilenameTest extends \PhraseanetTestCase
         $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->media = null;
         if (file_exists($this->filename)) {
@@ -42,9 +36,6 @@ class FilenameTest extends \PhraseanetTestCase
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Filename::check
-     */
     public function testCheck()
     {
         $response = $this->object->check(self::$DI['app']['orm.em'], new File(self::$DI['app'], $this->media, self::$DI['collection']));
@@ -54,12 +45,9 @@ class FilenameTest extends \PhraseanetTestCase
         $this->assertFalse($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Filename::check
-     */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getOriginalName'], [self::$DI['app'], $this->media, self::$DI['collection']]);
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getOriginalName'])->getMock();
 
         $mock
             ->expects($this->once())
@@ -76,16 +64,11 @@ class FilenameTest extends \PhraseanetTestCase
         $mock = null;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Filename::__construct
-     * @covers Alchemy\Phrasea\Border\Checker\Filename::check
-     */
     public function testCheckSensitive()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getOriginalName'], [self::$DI['app'], $this->media, self::$DI['collection']]);
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getOriginalName'])->getMock();
 
         $mock
-            ->expects($this->any())
             ->method('getOriginalName')
             ->will($this->returnValue(strtoupper($this->media->getFile()->getFilename())))
         ;
@@ -104,11 +87,8 @@ class FilenameTest extends \PhraseanetTestCase
         $mock = null;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Filename::getMessage
-     */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
+        $this->assertIsString($this->object->getMessage($this->createTranslatorMock()));
     }
 }

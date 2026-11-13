@@ -58,8 +58,7 @@ class patch_320alpha1b extends patchAbstract
                         AND c.canHD = 1
                  )';
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

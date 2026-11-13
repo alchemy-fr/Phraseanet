@@ -20,7 +20,7 @@ class Blob extends Type
 
     public function getName()
     {
-        return static::BLOB;
+        return \Doctrine\DBAL\Types\Types::BLOB;
     }
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)

@@ -147,7 +147,7 @@ class BaseOrderController extends Controller
      * @param \DateTime|null $expireDate
      * @return BasketElement[]
      */
-    protected function doAcceptElements($order_id, $elementIds, User $acceptor, \DateTime $expireDate = null)
+    protected function doAcceptElements($order_id, $elementIds, User $acceptor, ?\DateTime $expireDate = null)
     {
         $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
         $order = $this->findOr404($order_id);
@@ -193,7 +193,7 @@ class BaseOrderController extends Controller
 
                 $delivery = new OrderDelivery($order, $acceptor, count($basketElements), $partialOrder, $expireDateTime);
 
-                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($delivery));
+                $this->dispatch(new OrderDeliveryEvent($delivery), PhraseaEvents::ORDER_DELIVER);
             }
 
             $manager->persist($basket);
@@ -225,7 +225,7 @@ class BaseOrderController extends Controller
             if (!empty($elements)) {
                 $delivery = new OrderDelivery($order, $acceptor, count($elements), $partialOrder);
 
-                $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($delivery));
+                $this->dispatch(new OrderDeliveryEvent($delivery), PhraseaEvents::ORDER_DENY);
             }
 
             $manager = $this->getEntityManager();

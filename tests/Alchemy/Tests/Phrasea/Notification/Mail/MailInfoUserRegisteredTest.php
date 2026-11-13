@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoUserRegistered
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoUserRegisteredTest extends MailTestCase
 {
     public function testSetRegisteredUser()
@@ -50,19 +50,19 @@ class MailInfoUserRegisteredTest extends MailTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getFirstName')
             ->will($this->returnValue('JeanFirstName'));
 
-        $user->expects($this->any())
+        $user
             ->method('getLastName')
             ->will($this->returnValue('JeanLastName'));
 
-        $user->expects($this->any())
+        $user
             ->method('getJob')
             ->will($this->returnValue('JeanJob'));
 
-        $user->expects($this->any())
+        $user
             ->method('getCompany')
             ->will($this->returnValue('JeanCompany'));
 

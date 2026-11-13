@@ -51,8 +51,7 @@ class patch_320alpha8a extends patchAbstract
         $sql = 'DELETE FROM basusr WHERE actif = "0"';
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

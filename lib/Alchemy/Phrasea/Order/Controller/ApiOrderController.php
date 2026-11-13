@@ -93,7 +93,7 @@ class ApiOrderController extends BaseOrderController
 
         $filler->fillOrder($order, $recordRequest);
 
-        $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
+        $this->dispatch(new OrderEvent($order), PhraseaEvents::ORDER_CREATE);
 
         $view = $this->getViewBuilder()->buildView($order, []);
         $resource = new Item($view, $this->getOrderTransformer());
@@ -213,8 +213,8 @@ class ApiOrderController extends BaseOrderController
         }
 
         $this->dispatch(
-            PhraseaEvents::EXPORT_CREATE,
-            new ExportEvent($user, $basket->getId(), implode(';', $lst), $subdefs, $exportName)
+            new ExportEvent($user, $basket->getId(), implode(';', $lst), $subdefs, $exportName),
+            PhraseaEvents::EXPORT_CREATE
         );
 
         set_time_limit(0);

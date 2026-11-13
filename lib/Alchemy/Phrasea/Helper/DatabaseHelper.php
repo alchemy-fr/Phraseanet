@@ -43,13 +43,11 @@ class DatabaseHelper extends Helper
 
         if ($dbOK && false !== $connection->isConnected()) {
             $sql = "SHOW TABLE STATUS";
-            $stmt = $connection->prepare($sql);
-            $stmt->execute();
+            $stmt = $connection->executeQuery($sql);
 
             $empty = $stmt->rowCount() === 0;
 
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $rs = $stmt->fetchAllAssociative();
 
             foreach ($rs as $row) {
                 if ($row["Name"] === 'sitepreff') {

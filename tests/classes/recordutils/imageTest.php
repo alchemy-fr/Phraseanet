@@ -3,10 +3,10 @@
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 /**
- * @group functional
- * @group legacy
  * @covers recordutils_image
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class recordutils_imageTest extends \PhraseanetTestCase
 {
     public function testWatermarkWithoutFile()

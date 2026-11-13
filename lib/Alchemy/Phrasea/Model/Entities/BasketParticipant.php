@@ -16,68 +16,51 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 
-/**
- * @ORM\Table(name="BasketParticipants", uniqueConstraints={@ORM\UniqueConstraint(name="unique_participant", columns={"basket_id","user_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository::class)]
+#[ORM\Table(name: 'BasketParticipants')]
+#[ORM\UniqueConstraint(name: 'unique_participant', columns: ['basket_id', 'user_id'])]
 class BasketParticipant
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $can_modify = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $is_aware = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $is_confirmed = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $can_agree = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $can_see_others = false;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $reminded;
 
-    /**
-     * @ORM\OneToMany(targetEntity="BasketElementVote", mappedBy="participant", cascade={"all"})
-     */
+    #[ORM\OneToMany(targetEntity: BasketElementVote::class, mappedBy: 'participant', cascade: ['all'])]
     private $votes;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Basket")
-     * @ORM\JoinColumn(name="basket_id", referencedColumnName="id", nullable=false)
      *
      * @return Basket
      **/
+    #[ORM\ManyToOne(targetEntity: Basket::class)]
+    #[ORM\JoinColumn(name: 'basket_id', referencedColumnName: 'id', nullable: false)]
     private $basket;
 
 

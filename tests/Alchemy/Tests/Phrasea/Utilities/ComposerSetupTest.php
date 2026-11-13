@@ -3,14 +3,12 @@
 namespace Alchemy\Tests\Phrasea\Utilities;
 
 use Alchemy\Phrasea\Utilities\ComposerSetup;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use Symfony\Component\Process\PhpExecutableFinder;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ComposerSetupTest extends \PhraseanetTestCase
 {
     public function testSetup()
@@ -27,7 +25,7 @@ class ComposerSetupTest extends \PhraseanetTestCase
         $finder = new PhpExecutableFinder();
         $php = $finder->find();
 
-        $process = ProcessBuilder::create([$php, $target, '--version'])->getProcess();
+        $process = new Process([$php, $target, '--version']);
         $process->run();
 
         $this->assertTrue($process->isSuccessful());

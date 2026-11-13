@@ -6,18 +6,19 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Prophecy\Argument;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticatedTestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     private static $createdDataboxes = [];
 
     /**
      * @param bool  $bool
      * @param array $stubs List of Closure to call indexed by method names, null to avoid calls
-     * @return PHPUnit_Framework_MockObject_MockObject The stubbedACL
+     * @return \PHPUnit\Framework\MockObject\MockObject The stubbedACL
      */
     public function setAdmin($bool, array $stubs = [])
     {
@@ -39,25 +40,25 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             return $stubs;
         }
 
-        $returnBool = function (PHPUnit_Framework_MockObject_MockObject $acl, $method, $is_admin) {
-            $acl->expects($this->any())
+        $returnBool = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method, $is_admin) {
+            $acl
                 ->method($method)
                 ->will($this->returnValue($is_admin));
         };
 
-        $returnSelf = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
-            $acl->expects($this->any())
+        $returnSelf = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method) {
+            $acl
                 ->method($method)
                 ->will($this->returnSelf());
         };
 
-        $stubGrantedBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
-            $acl->expects($this->any())
+        $stubGrantedBase = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method) {
+            $acl
                 ->method($method)
                 ->will($this->returnValue([$this->getCollection()]));
         };
-        $stubGrantedSBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
-            $acl->expects($this->any())
+        $stubGrantedSBase = function (\PHPUnit\Framework\MockObject\MockObject $acl, $method) {
+            $acl
                 ->method($method)
                 ->will($this->returnValue([$this->getCollection()->get_databox()]));
         };
@@ -96,7 +97,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
                 'dbname'   => 'unit_test_db',
             ]);
             $conn->connect();
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
             $this->markTestSkipped('Could not reach DB');
         }
 
@@ -128,11 +129,9 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $app = $this->getApplication();
         $connection = $app->getApplicationBox()->get_connection();
         $stmt = $connection->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         $stmt = $connection->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
     protected function createDatabase()
@@ -145,11 +144,10 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             ->get_connection()
             ->prepare('CREATE DATABASE `unit_test_db`
               CHARACTER SET utf8 COLLATE utf8_unicode_ci');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
-    public function provideFlashMessages()
+    public static function provideFlashMessages()
     {
         return [
             ['warning', 'Be careful !'],

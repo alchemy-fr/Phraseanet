@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Command\Collection;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -41,11 +42,11 @@ class ListCollectionCommand extends Command
                 }
                 echo json_encode($collectionList); 
             } else {
-                $table = $this->getHelperSet()->get('table');
+                $table = new Table($output);
                 $table
                     ->setHeaders(['id local for API', 'id distant', 'name','label','status','total records'])
                     ->setRows($collections)
-                    ->render($output);
+                    ->render();
             }
 
         } catch (\Exception $e) {

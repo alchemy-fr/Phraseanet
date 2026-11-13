@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_AccountSettingsTest extends \PhraseanetTestCase
 {
     /**
@@ -17,15 +15,14 @@ class Bridge_AccountSettingsTest extends \PhraseanetTestCase
     protected $dist_id;
     protected $named;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         try {
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
             $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
             $this->api = Bridge_Api::create(self::$DI['app'], 'Apitest');
             $this->dist_id = 'EZ1565loPP';
             $this->named = 'Fête à pinpins';
@@ -37,7 +34,7 @@ class Bridge_AccountSettingsTest extends \PhraseanetTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->api) {
             $this->api->delete();

@@ -2,14 +2,19 @@
 
 namespace Alchemy\Tests\Tools;
 
+use Symfony\Component\Translation\Translator;
+
 trait TranslatorMockTrait
 {
     public function createTranslatorMock()
     {
-        $translator = $this->getMock('Symfony\Component\Translation\TranslatorInterface', ['addResource', 'trans', 'transChoice', 'setLocale', 'getLocale', 'setFallbackLocales', 'addLoader']);
-        $translator->expects($this->any())
+        $translator = $this->getMockBuilder(Translator::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['addResource', 'trans', 'setLocale', 'getLocale', 'setFallbackLocales', 'addLoader'])
+            ->getMock();
+        $translator
             ->method('trans')
-            ->will($this->returnCallback(function ($id) { return $id;}));
+            ->willReturnCallback(function ($id) { return $id; });
 
         return $translator;
     }

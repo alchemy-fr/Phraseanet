@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Authentication\Provider\Twitter;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TwitterTest extends ProviderTestCase
 {
     public function testGetSetGuzzleClient()
@@ -21,9 +19,7 @@ class TwitterTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
         $this->assertInstanceOf('tmhOAuth', $provider->getTwitterClient());
-        $client = $this->getMockBuilder('tmhOAuth')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $client = $this->createStub('tmhOAuth');
 
         $provider->setTwitterClient($client);
         $this->assertEquals($client, $provider->getTwitterClient());
@@ -34,11 +30,9 @@ class TwitterTest extends ProviderTestCase
         return $this->getProvider();
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
-     */
     public function testAuthenticateWithFailure()
     {
+        $this->expectException(\Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException::class);
         $provider = $this->getProvider();
 
         $provider->getTwitterClient()->expects($this->once())
@@ -114,7 +108,7 @@ class TwitterTest extends ProviderTestCase
         $request = $this->getRequestMock();
         $this->addQueryParameter($request, ['state' => $state]);
 
-        $provider->getTwitterClient()->expects($this->any())
+        $provider->getTwitterClient()
             ->method('request')
             ->will($this->returnCallback(function ($method) use ($provider) {
                 switch ($method) {
@@ -213,9 +207,7 @@ class TwitterTest extends ProviderTestCase
 
     protected function getProvider()
     {
-        $twitter = $this->getMockBuilder('tmhOAuth')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $twitter = $this->createMock('tmhOAuth');
 
         $twitter->config = $this->getTestOptions();
 

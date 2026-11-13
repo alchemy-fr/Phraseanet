@@ -76,7 +76,7 @@ class LazaretSubscriber extends AbstractNotificationSubscriber
         $this->app['events-manager']->notify($user->getId(), 'eventsmanager_notify_uploadquarantine', $datas, $mailed);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::LAZARET_CREATE => 'onCreate',

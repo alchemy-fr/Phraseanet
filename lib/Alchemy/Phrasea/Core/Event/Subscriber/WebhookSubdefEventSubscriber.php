@@ -89,7 +89,7 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
         );
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RecordEvents::SUB_DEFINITION_CREATED            => 'onSubdefCreated',

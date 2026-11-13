@@ -14,49 +14,32 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="UserNotificationSettings",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_index",columns={"user_id", "name"})
- *      }
- * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserNotificaionSettingRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UserNotificaionSettingRepository::class)]
+#[ORM\Table(name: 'UserNotificationSettings')]
+#[ORM\UniqueConstraint(name: 'unique_index', columns: ['user_id', 'name'])]
 class UserNotificationSetting
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="notificationSettings")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     **/
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notificationSettings')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     */
+    #[ORM\Column(type: 'string', length: 64)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $value;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

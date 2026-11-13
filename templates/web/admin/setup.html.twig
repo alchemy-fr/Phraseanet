@@ -68,7 +68,7 @@
 {%  endfor %}
 <legend>{{ "setup::custom-link:title-custom-link" | trans }}</legend>
 <table class="links" id="custom-link-table"
-       data-prototype="{% filter escape %}{% include 'admin/custom_links.html.twig' with {'form': form['custom-links'].vars.prototype} %}{% endfilter %}">
+       data-prototype="{% apply escape %}{% include 'admin/custom_links.html.twig' with {'form': form['custom-links'].vars.prototype} %}{% endapply %}">
     <tbody>
     {% for links in form['custom-links'] %}
         {% include 'admin/custom_links.html.twig' with {'form': links} %}

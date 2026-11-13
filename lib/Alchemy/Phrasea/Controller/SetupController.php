@@ -108,7 +108,7 @@ class SetupController extends Controller
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
 
-        $elastic_settings = $request->request->get('elasticsearch_settings');
+        $elastic_settings = $request->request->all('elasticsearch_settings');
 
         $elastic_settings = [
             'host' => (string) $elastic_settings['host'],

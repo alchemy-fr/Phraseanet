@@ -60,7 +60,7 @@ class patch_390alpha15a extends patchAbstract
             return true;
         }
 
-        $app['orm.em']->getConnection()->executeUpdate('
+        $app['orm.em']->getConnection()->executeStatement('
             INSERT INTO Tokens
             (
                 `value`, user_id, `type`,   `data`,

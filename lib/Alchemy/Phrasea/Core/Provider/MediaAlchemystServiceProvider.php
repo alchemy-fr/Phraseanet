@@ -2,15 +2,16 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class MediaAlchemystServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['media-alchemyst.configuration'] = $app->share(function (Application $app) {
+        $app['media-alchemyst.configuration'] = function (Application $app) {
             $configuration = [];
             $parameters = [
                 'unoconv.binaries'             => 'unoconv_binary',
@@ -22,7 +23,6 @@ class MediaAlchemystServiceProvider implements ServiceProviderInterface
                 'ffmpeg.ffprobe.timeout'       => 'ffprobe_timeout',
                 'gs.timeout'                   => 'gs_timeout',
                 'mp4box.timeout'               => 'mp4box_timeout',
-                'swftools.timeout'             => 'swftools_timeout',
                 'unoconv.timeout'              => 'unoconv_timeout',
             ];
 
@@ -34,17 +34,14 @@ class MediaAlchemystServiceProvider implements ServiceProviderInterface
 
             $configuration['ffmpeg.threads'] = $app['conf']->get(['registry', 'executables', 'ffmpeg-threads']) ?: null;
             $configuration['imagine.driver'] = $app['conf']->get(['registry', 'executables', 'imagine-driver']) ?: null;
+            $configuration['exiftool.binary'] = $app['exiftool.binary'];
+            $configuration['exiftool.classes-directory'] = $app['exiftool.classes-directory'];
 
             return $configuration;
-        });
+        };
 
-        $app['media-alchemyst.logger'] = $app->share(function (Application $app) {
+        $app['media-alchemyst.logger'] = function (Application $app) {
             return $app['monolog'];
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 }

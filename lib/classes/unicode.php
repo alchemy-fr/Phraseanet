@@ -1602,7 +1602,7 @@ class unicode
 
         $out = '';
         $_map = $this->getMap($target);   // faster in loop
-        $length = mb_strlen($string, 'UTF-8');
+        $length = mb_strlen((string) $string, 'UTF-8');
 
         for ($i = 0; $i < $length; $i++) {
             if (true === array_key_exists(($c = mb_substr($string, $i, 1, 'UTF-8')), $_map)) {

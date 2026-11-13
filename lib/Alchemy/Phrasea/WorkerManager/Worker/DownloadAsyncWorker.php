@@ -200,7 +200,7 @@ class DownloadAsyncWorker implements WorkerInterface
                 foreach ($record->get_caption()->get_fields([], $include_businessfields) as $field) {
                     if(array_key_exists($field->get_name(), $ws_ref['field_columns'])) {
                         $col = $ws_ref['field_columns'][$field->get_name()];
-                        $value = join($field->get_values(), "\n");
+                        $value = join("\n", $field->get_values());
                         $ref = $this->cellRefFromColumnAndRow($col, $ws_ref['row']);
                         $ws->setCellValue($ref, $value);
                         // empiric: max number of "lines" in this row
@@ -433,7 +433,7 @@ class DownloadAsyncWorker implements WorkerInterface
         return $this->app['alchemy_worker.message.publisher'];
     }
 
-    private function cellRefFromColumnAndRow(int $col, int $row = null)
+    private function cellRefFromColumnAndRow(int $col, ?int $row = null)
     {
         $r =  Coordinate::stringFromColumnIndex($col);
         if($row !== null) {

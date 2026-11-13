@@ -114,7 +114,7 @@ class SearchEngineStructure
      * @param databox|null $db
      * @return string
      */
-    private function getCacheKey($what, databox $db = null)
+    private function getCacheKey($what, ?databox $db = null)
     {
         return 'es' . ($db ? ('_db-'.$db->get_sbas_id()) : '') . '_' . $what;
     }

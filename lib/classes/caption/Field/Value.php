@@ -131,7 +131,7 @@ class caption_Field_Value implements cache_cacheableInterface
             $cacheRefreshNeeded = false;
         } catch (\Exception $e) {
             $data = $this->databox_field->get_databox()->get_connection()
-                ->fetchAssoc(
+                ->fetchAssociative(
                     'SELECT value, VocabularyType as vocabularyType, VocabularyId as vocabularyId FROM metadatas WHERE id = :id',
                     [':id' => $this->id]
                 );
@@ -212,11 +212,11 @@ class caption_Field_Value implements cache_cacheableInterface
 
     /**
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function removeVocabulary()
     {
-        $this->getConnection()->executeUpdate(
+        $this->getConnection()->executeStatement(
             'UPDATE metadatas SET VocabularyType = NULL, VocabularyId = NULL WHERE id = :meta_id',
             ['meta_id' => $this->getId()]
         );
@@ -233,11 +233,11 @@ class caption_Field_Value implements cache_cacheableInterface
      * @param ControlProviderInterface $vocabulary
      * @param mixed $vocab_id
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function setVocab(ControlProviderInterface $vocabulary, $vocab_id)
     {
-        $this->getConnection()->executeUpdate(
+        $this->getConnection()->executeStatement(
             'UPDATE metadatas SET VocabularyType = :VocabType, VocabularyId = :VocabularyId WHERE id = :meta_id',
             [
                 'VocabType'    => $vocabulary->getType(),
@@ -255,9 +255,9 @@ class caption_Field_Value implements cache_cacheableInterface
      * @param ControlProviderInterface|null $vocabulary
      * @param mixed|null $vocabularyId
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function changeVocabulary(ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    public function changeVocabulary(?ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
         if (isset($vocabulary, $vocabularyId)) {
             return $this->setVocab($vocabulary, $vocabularyId);
@@ -269,13 +269,13 @@ class caption_Field_Value implements cache_cacheableInterface
     /**
      * @param string $value
      * @return $this
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function set_value($value)
     {
         $this->value = $value;
 
-        $this->getConnection()->executeUpdate(
+        $this->getConnection()->executeStatement(
             'UPDATE metadatas SET value = :value WHERE id = :meta_id',
             [
                 'meta_id' => $this->id,
@@ -288,7 +288,7 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
-    public static function create(Application $app, databox_field $databox_field, \record_adapter $record, $value, ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    public static function create(Application $app, databox_field $databox_field, \record_adapter $record, $value, ?ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
         $connection = $databox_field->get_connection();
 

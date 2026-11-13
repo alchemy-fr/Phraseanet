@@ -1,0 +1,61 @@
+{
+    "name": "alchemy/silex",
+    "description": "Alchemy fork of the Silex micro-framework, ported to PHP 8.5 and Symfony 7.4",
+    "keywords": [
+        "microframework"
+    ],
+    "homepage": "https://github.com/alchemy-fr/Silex",
+    "license": "MIT",
+    "version": "3.0.0",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "Igor Wiedler",
+            "email": "igor@wiedler.ch"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "pimple/pimple": "^3.6",
+        "symfony/error-handler": "^7.4",
+        "symfony/event-dispatcher": "^7.4",
+        "symfony/http-foundation": "^7.4",
+        "symfony/http-kernel": "^7.4",
+        "symfony/routing": "^7.4"
+    },
+    "require-dev": {
+        "symfony/browser-kit": "^7.4",
+        "symfony/config": "^7.4",
+        "symfony/css-selector": "^7.4",
+        "symfony/doctrine-bridge": "^7.4",
+        "symfony/dom-crawler": "^7.4",
+        "symfony/finder": "^7.4",
+        "symfony/form": "^7.4",
+        "symfony/intl": "^7.4",
+        "symfony/monolog-bridge": "^7.4",
+        "symfony/options-resolver": "^7.4",
+        "symfony/process": "^7.4",
+        "symfony/security-csrf": "^7.4",
+        "symfony/translation": "^7.4",
+        "symfony/twig-bridge": "^7.4",
+        "symfony/validator": "^7.4",
+        "symfony/web-link": "^7.4",
+        "twig/twig": "^3.21",
+        "doctrine/dbal": "^3.10",
+        "swiftmailer/swiftmailer": "^6.3",
+        "monolog/monolog": "^3.9"
+    },
+    "replace": {
+        "silex/silex": "2.99.0",
+        "silex/api": "2.99.0",
+        "silex/providers": "2.99.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Silex\\": "src/Silex"
+        }
+    }
+}

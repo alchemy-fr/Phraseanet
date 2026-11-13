@@ -63,20 +63,16 @@ class patch_390alpha1a extends patchAbstract
     {
         $sql = 'DELETE FROM Orders';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'DELETE FROM OrderElements';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $conn = $app->getApplicationBox()->get_connection();
         $sql = 'SELECT id, usr_id, created_on, `usage`, deadline, ssel_id FROM `order`';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $n = 0;
         $em = $app['orm.em'];
@@ -85,17 +81,15 @@ class patch_390alpha1a extends patchAbstract
         foreach ($rs as $row) {
             $sql = "SELECT count(id) as todo FROM order_elements WHERE deny = NULL AND order_id = :id";
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([':id' => $row['id']]);
-            $todo = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $conn->executeQuery($sql, [':id' => $row['id']]);
+            $todo = $stmt->fetchAssociative();
 
             if (null === $user = $this->loadUser($app['orm.em'], $row['usr_id'])) {
                 continue;
             }
 
             try {
-                $basket = $app['orm.em']->createQuery('SELECT PARTIAL b.{id} FROM Phraseanet:Basket b WHERE b.id = :id')
+                $basket = $app['orm.em']->createQuery('SELECT PARTIAL b.{id} FROM Alchemy\Phrasea\Model\Entities\Basket b WHERE b.id = :id')
                     ->setParameters(['id' => $row['ssel_id']])
                     ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                     ->getSingleResult();
@@ -115,16 +109,14 @@ class patch_390alpha1a extends patchAbstract
 
             $sql = "SELECT base_id, record_id, order_master_id, deny FROM order_elements WHERE order_id = :id";
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([':id' => $row['id']]);
-            $elements = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $conn->executeQuery($sql, [':id' => $row['id']]);
+            $elements = $stmt->fetchAllAssociative();
 
             foreach ($elements as $element) {
                 $orderElement = new OrderElement();
                 $user = $this->loadUser($app['orm.em'], $row['usr_id']);
                 $orderElement->setBaseId($element['base_id'])
-                    ->setDeny($element['deny'] === null ? null : (Boolean) $element['deny'])
+                    ->setDeny($element['deny'] === null ? null : (bool) $element['deny'])
                     ->setOrder($order)
                     ->setOrderMaster($user)
                     ->setRecordId($element['record_id']);

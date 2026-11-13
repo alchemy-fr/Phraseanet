@@ -66,8 +66,7 @@ class patch_320alpha4b extends patchAbstract
         try {
             $sql = 'ALTER TABLE `ssel` ADD `migrated` INT NOT NULL DEFAULT "0"';
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         } catch (\Exception $e) {
 
         }
@@ -77,10 +76,8 @@ class patch_320alpha4b extends patchAbstract
                 WHERE (public = "1" OR homelink="1")
                   AND migrated = 0';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $date_ref = new DateTime();
         $n = 0;
@@ -122,10 +119,8 @@ class patch_320alpha4b extends patchAbstract
                     FROM sselcont
                     WHERE ssel_id = :ssel_id
                     ORDER BY ord ASC';
-            $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute([':ssel_id' => $row['ssel_id']]);
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $appbox->get_connection()->executeQuery($sql, [':ssel_id' => $row['ssel_id']]);
+            $rs = $stmt->fetchAllAssociative();
 
             foreach ($rs as $row) {
                 try {
@@ -146,8 +141,7 @@ class patch_320alpha4b extends patchAbstract
             $sql = 'UPDATE ssel SET deleted = "1", migrated="1"
                     WHERE ssel_id = :ssel_id';
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute([':ssel_id' => $row['ssel_id']]);
-            $stmt->closeCursor();
+            $stmt->executeStatement([':ssel_id' => $row['ssel_id']]);
             $app['orm.em']->persist($feed);
             $n++;
             if ($n % 1000 == 0) {

@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 
 class AccountService
 {
@@ -26,7 +26,7 @@ class AccountService
     private $authenticationService;
 
     /**
-     * @var PasswordEncoderInterface
+     * @var LegacyPasswordHasherInterface
      */
     private $passwordEncoder;
 
@@ -86,7 +86,7 @@ class AccountService
 
     public function __construct(
         Authenticator $authenticator,
-        PasswordEncoderInterface $passwordEncoder,
+        LegacyPasswordHasherInterface $passwordEncoder,
         EventDispatcherInterface $eventDispatcher,
         EntityManager $entityManager,
         UserManager $userManager,
@@ -105,9 +105,9 @@ class AccountService
     public function updatePassword(UpdatePasswordCommand $command, $login = null)
     {
         $user = $this->getUserOrCurrentUser($login);
-        $passwordIsValid = $this->passwordEncoder->isPasswordValid(
-            $user->getPassword(),
-            $command->getOldPassword(),
+        $passwordIsValid = $this->passwordEncoder->verify(
+            (string) $user->getPassword(),
+            (string) $command->getOldPassword(),
             $user->getNonce()
         );
 

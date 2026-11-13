@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
 
 /**
  * Interface for DB schema upgrade that have to be done before Doctrine schema
@@ -26,19 +26,19 @@ interface PreSchemaUpgradeInterface
      *
      * @param EntityManager $em
      * @param \appbox       $appbox
-     * @param Configuration $conf
+     * @param MigrationRunner $migrations
      *
      * @return mixed
      */
-    public function apply(EntityManager $em, \appbox $appbox, Configuration $conf);
+    public function apply(EntityManager $em, \appbox $appbox, MigrationRunner $migrations);
 
     /**
      * Rollback migration to origin state.
      *
      * @param EntityManager $em
-     * @param Configuration $conf
+     * @param MigrationRunner $migrations
      */
-    public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf);
+    public function rollback(EntityManager $em, \appbox $appbox, MigrationRunner $migrations);
 
     /**
      * Returns true if the Upgrade is applyable.

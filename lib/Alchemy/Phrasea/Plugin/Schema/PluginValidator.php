@@ -74,7 +74,7 @@ class PluginValidator
     {
         $this->ensureDir($dir);
 
-        if (0 !== strpos(realpath($dir), realpath($in))) {
+        if (0 !== strpos(realpath($dir), (string) realpath($in))) {
             throw new PluginValidationException(sprintf($message, $dir, $in));
         }
     }

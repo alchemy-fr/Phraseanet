@@ -65,8 +65,7 @@ class patch_381alpha3a extends patchAbstract
                 WHERE 1 AND (".implode(' OR ', $propSql)." OR value IS NULL OR (value = 1 AND prop LIKE 'notification_%'))";
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute($propArgs);
-        $stmt->closeCursor();
+        $stmt->executeStatement($propArgs);
 
         return true;
     }

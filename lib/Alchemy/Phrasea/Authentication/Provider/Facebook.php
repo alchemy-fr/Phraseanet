@@ -15,6 +15,11 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use GuzzleHttp\Client as Guzzle;
+use JanuSoftware\Facebook\Exception\ResponseException;
+use JanuSoftware\Facebook\Exception\SDKException;
+use JanuSoftware\Facebook\Facebook as FacebookSdk;
+use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -22,11 +27,11 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class Facebook extends AbstractProvider
 {
-    /** @var \Facebook\Facebook */
+    /** @var FacebookSdk */
     private $facebook;
 
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, \Facebook\Facebook $facebook)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, FacebookSdk $facebook)
     {
         parent::__construct($generator, $session);
         $this->facebook = $facebook;
@@ -60,11 +65,11 @@ class Facebook extends AbstractProvider
     }
 
     /**
-     * @param \Facebook\Facebook $facebook
+     * @param FacebookSdk $facebook
      *
      * @return Facebook
      */
-    public function setFacebook(\Facebook\Facebook $facebook)
+    public function setFacebook(FacebookSdk $facebook)
     {
         $this->facebook = $facebook;
 
@@ -72,17 +77,17 @@ class Facebook extends AbstractProvider
     }
 
     /**
-     * @return \Facebook\Facebook
+     * @return FacebookSdk
      */
-    public function getFacebook(): \Facebook\Facebook
+    public function getFacebook(): FacebookSdk
     {
         return $this->facebook;
     }
 
     /**
-     * @param $dataToRetrieve
-     * @return \Facebook\GraphNodes\GraphUser
-     * @throws \Facebook\Exceptions\FacebookSDKException
+     * @param string[] $dataToRetrieve
+     * @return array the decoded Graph user node
+     * @throws NotAuthenticatedException
      */
     protected function getGraphUser($dataToRetrieve)
     {
@@ -91,17 +96,25 @@ class Facebook extends AbstractProvider
                 "/me?fields=" . implode(',', $dataToRetrieve),
                 $this->session->get('fb_access_token')
             );
-        } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+        } catch(ResponseException $e) {
             throw new NotAuthenticatedException('Graph returned an error: ' . $e->getMessage());
-        } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+        } catch(SDKException $e) {
             throw new NotAuthenticatedException('Facebook SDK returned an error: ' . $e->getMessage());
+        } catch(ClientExceptionInterface $e) {
+            throw new NotAuthenticatedException('Unable to reach Facebook: ' . $e->getMessage());
         }
 
         if (!$response) {
             throw new NotAuthenticatedException('Not authenticated');
         }
 
-        return $response->getGraphUser();
+        $user = $response->getDecodedBody();
+
+        if (!isset($user['id'])) {
+            throw new NotAuthenticatedException('Not authenticated');
+        }
+
+        return $user;
     }
 
     /**
@@ -113,12 +126,18 @@ class Facebook extends AbstractProvider
         
         $identity = new Identity();
 
+        $picture = $user['picture'] ?? null;
+        if (is_array($picture)) {
+            // Graph API returns the picture as a node: {"data": {"url": "...", ...}}
+            $picture = $picture['data']['url'] ?? null;
+        }
+
         $identity->set(Identity::PROPERTY_ID, $user['id']);
-        $identity->set(Identity::PROPERTY_IMAGEURL, $user['picture']);
-        $identity->set(Identity::PROPERTY_EMAIL, $user['email']);
-        $identity->set(Identity::PROPERTY_FIRSTNAME, $user['first_name']);
-        $identity->set(Identity::PROPERTY_LASTNAME, $user['last_name']);
-        $identity->set(Identity::PROPERTY_USERNAME, $user['first_name']);
+        $identity->set(Identity::PROPERTY_IMAGEURL, $picture);
+        $identity->set(Identity::PROPERTY_EMAIL, $user['email'] ?? null);
+        $identity->set(Identity::PROPERTY_FIRSTNAME, $user['first_name'] ?? null);
+        $identity->set(Identity::PROPERTY_LASTNAME, $user['last_name'] ?? null);
+        $identity->set(Identity::PROPERTY_USERNAME, $user['first_name'] ?? null);
 
         return $identity;
     }
@@ -132,10 +151,12 @@ class Facebook extends AbstractProvider
 
         try {
             $accessToken = $helper->getAccessToken();
-        } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+        } catch(ResponseException $e) {
             throw new NotAuthenticatedException('Graph returned an error: ' . $e->getMessage());
-        } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+        } catch(SDKException $e) {
             throw new NotAuthenticatedException('Facebook SDK returned an error: ' . $e->getMessage());
+        } catch(ClientExceptionInterface $e) {
+            throw new NotAuthenticatedException('Unable to reach Facebook: ' . $e->getMessage());
         }
 
         if (! isset($accessToken)) {
@@ -157,7 +178,7 @@ class Facebook extends AbstractProvider
         if (! $accessToken->isLongLived()) {
             try {
                 $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
-            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+            } catch (SDKException|ClientExceptionInterface $e) {
                 throw new NotAuthenticatedException('Error getting long-lived access token: ' . $e->getMessage() );
             }
         }
@@ -166,7 +187,6 @@ class Facebook extends AbstractProvider
 
     /**
      * {@inheritdoc}
-     * @throws \Facebook\Exceptions\FacebookSDKException
      */
     public function getToken(): Token
     {
@@ -229,7 +249,7 @@ class Facebook extends AbstractProvider
      * {@inheritdoc}
      *
      * @return self
-     * @throws \Facebook\Exceptions\FacebookSDKException
+     * @throws SDKException
      */
     public static function create(UrlGenerator $generator, SessionInterface $session, array $options): self
     {
@@ -242,10 +262,11 @@ class Facebook extends AbstractProvider
         return new static(
             $generator,
             $session,
-            new \Facebook\Facebook([
+            new FacebookSdk([
                 'app_id' => $options['app-id'],
                 'app_secret' => $options['secret'],
-                'default_graph_version' => $options['default-graph-version']
+                'default_graph_version' => $options['default-graph-version'],
+                'http_client' => new Guzzle(),
             ])
         );
     }

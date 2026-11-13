@@ -15,14 +15,14 @@ use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class WebhookEventDeliveryManipulator implements ManipulatorInterface
 {
     private $om;
     private $repository;
 
-    public function __construct(ObjectManager $om, WebhookEventDeliveryRepository $repo)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, WebhookEventDeliveryRepository $repo)
     {
         $this->om = $om;
         $this->repository = $repo;

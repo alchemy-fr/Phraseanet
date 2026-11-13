@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Notification;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class EmitterTest extends \PhraseanetTestCase
 {
     /**
@@ -18,7 +16,7 @@ class EmitterTest extends \PhraseanetTestCase
     private $name;
     private $email;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->name = 'name-' . mt_rand();
@@ -26,34 +24,25 @@ class EmitterTest extends \PhraseanetTestCase
         $this->object = new Emitter($this->name, $this->email);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Emitter::getName
-     */
     public function testGetName()
     {
         $this->assertEquals($this->name, $this->object->getName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Emitter::getEmail
-     */
     public function testGetEmail()
     {
         $this->assertEquals($this->email, $this->object->getEmail());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Emitter::fromUser
-     */
     public function testFromUser()
     {
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue($this->name));
 
-        $user->expects($this->any())
+        $user
             ->method('getEmail')
             ->will($this->returnValue($this->email));
 
@@ -62,18 +51,15 @@ class EmitterTest extends \PhraseanetTestCase
         $this->assertEquals($this->name, $object->getName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Emitter::fromUser
-     */
     public function testFromUserFails()
     {
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue($this->name));
 
-        $user->expects($this->any())
+        $user
             ->method('getEmail')
             ->will($this->returnValue('wrong email'));
 
@@ -85,12 +71,10 @@ class EmitterTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Invalid e-mail address (romain neutron email)
-     */
     public function testWrongEmail()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid e-mail address (romain neutron email)');
         new Emitter('romain neutron', 'romain neutron email');
     }
 }

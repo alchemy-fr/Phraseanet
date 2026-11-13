@@ -1,0 +1,31 @@
+{
+  "name": "alchemy/worker-component",
+  "type": "library",
+  "description": "Message queue worker component",
+  "keywords": [],
+  "license": "MIT",
+  "version": "5.0.0",
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^8.2",
+    "psr/log": "^1.0 || ^2.0 || ^3.0",
+    "symfony/process": "^7.4",
+    "alchemy/queue-component": "^5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.5"
+  },
+  "suggest": {
+    "ext-amqp": "To use the AMQP extension adapters"
+  },
+  "autoload": {
+    "psr-4": {
+      "Alchemy\\Worker\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Alchemy\\Worker\\Tests\\": "tests/"
+    }
+  }
+}

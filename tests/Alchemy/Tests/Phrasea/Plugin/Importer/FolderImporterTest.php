@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Plugin\Importer\FolderImporter;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FolderImporterTest extends PluginTestCase
 {
     public function testImport()
@@ -27,11 +25,9 @@ class FolderImporterTest extends PluginTestCase
         $importer->import($source, $target);
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Plugin\Exception\ImportFailureException
-     */
     public function testImportFailed()
     {
+        $this->expectException(\Alchemy\Phrasea\Plugin\Exception\ImportFailureException::class);
         $fs = $this->createFilesystemMock();
 
         $source = 'test-plugin';

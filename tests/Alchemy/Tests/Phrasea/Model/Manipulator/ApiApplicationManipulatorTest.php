@@ -8,10 +8,8 @@ use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApiApplicationManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreateDesktopApplication()
@@ -77,7 +75,7 @@ class ApiApplicationManipulatorTest extends \PhraseanetTestCase
         $manipulator->delete($application);
         $this->assertGreaterThan(count($app['repo.api-applications']->findAll()), $countBefore);
         $accounts = $app['repo.api-accounts']->findByUserAndApplication(self::$DI['user'], $applicationSave);
-        $this->assertEquals(0, count($accounts));
+        $this->assertNull($accounts);
         $tokens = $app['repo.api-oauth-tokens']->findOauthTokens($accountMem);
         $this->assertEquals(0, count($tokens));
     }

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record\Structure;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class RecordStructureEvent extends Event
 {

@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
@@ -66,11 +66,9 @@ class patch_370alpha7a extends patchAbstract
         try {
             //get all old lazaret file & transform them to LazaretFile object
             $sql = 'SELECT * FROM lazaret';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll();
-            $stmt->closeCursor();
-        } catch (DBALException $e) {
+            $stmt = $conn->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $e) {
             // table not found
             if ($e->getCode() == '42S02') {
 
@@ -151,8 +149,6 @@ class patch_370alpha7a extends patchAbstract
 
         $app['orm.em']->flush();
         $app['orm.em']->clear();
-
-        $stmt->closeCursor();
 
         return true;
     }

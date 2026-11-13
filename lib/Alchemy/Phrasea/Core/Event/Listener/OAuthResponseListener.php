@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Model\Manipulator\ApiLogManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class OAuthResponseListener
 {
@@ -28,7 +28,7 @@ class OAuthResponseListener
         $this->app = $app;
     }
 
-    public function __invoke(FilterResponseEvent $event, $eventName, EventDispatcherInterface $dispatcher)
+    public function __invoke(ResponseEvent $event, $eventName, EventDispatcherInterface $dispatcher)
     {
         $request = $event->getRequest();
         $response = $event->getResponse();

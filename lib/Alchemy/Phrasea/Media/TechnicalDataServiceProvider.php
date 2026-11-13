@@ -12,23 +12,19 @@ namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Media\Factory\DbalRepositoryFactory;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class TechnicalDataServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['service.technical_data'] = $app->share(function (Application $app) {
+        $app['service.technical_data'] = function (Application $app) {
             $connectionProvider = new DataboxConnectionProvider($app['phraseanet.appbox']);
             $repositoryFactory = new DbalRepositoryFactory($connectionProvider);
 
             return new TechnicalDataService(new RecordTechnicalDataSetRepositoryProvider($repositoryFactory));
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 }

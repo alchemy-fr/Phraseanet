@@ -1,4 +1,4 @@
-{% extends app.request.isXmlHttpRequest() ? "prod/TOU_ajax.html.twig" : "prod/TOU_base.html.twig" %}
+{% extends app['request_stack'].currentRequest.isXmlHttpRequest() ? "prod/TOU_ajax.html.twig" : "prod/TOU_base.html.twig" %}
 
 {% block tou %}
         {% for name, TOU in TOUs %}

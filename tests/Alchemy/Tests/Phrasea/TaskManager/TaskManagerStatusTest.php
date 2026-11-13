@@ -6,15 +6,11 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\TaskManager\TaskManagerStatus;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TaskManagerStatusTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideInitialData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInitialData')]
     public function testStart($initialData)
     {
         $conf = new MockArrayConf($initialData);
@@ -27,7 +23,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
         $this->assertEquals($expected, $conf->getConfig());
     }
 
-    public function provideInitialData()
+    public static function provideInitialData()
     {
         return [
             [['main' => []]],
@@ -41,9 +37,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideInitialData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInitialData')]
     public function testStop($initialData)
     {
         $conf = new MockArrayConf($initialData);
@@ -56,9 +50,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
         $this->assertEquals($expected, $conf->getConfig());
     }
 
-    /**
-     * @dataProvider provideConfAndStatusData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideConfAndStatusData')]
     public function testIsRunning($data, $expectedStatus, $isRunning)
     {
         $conf = new PropertyAccess(new MockArrayConf($data));
@@ -66,7 +58,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
         $this->assertEquals($isRunning, $status->isRunning());
     }
 
-    public function provideConfAndStatusData()
+    public static function provideConfAndStatusData()
     {
         return [
             [['main' => []], TaskManagerStatus::STATUS_STARTED, true],
@@ -77,9 +69,7 @@ class TaskManagerStatusTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideConfAndStatusData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideConfAndStatusData')]
     public function testGetStatus($data, $expectedStatus, $isRunning)
     {
         $conf = new PropertyAccess(new MockArrayConf($data));

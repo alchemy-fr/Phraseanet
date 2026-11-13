@@ -11,20 +11,20 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
 use Goodby\CSV\Export\Standard\Exporter;
 use Goodby\CSV\Export\Standard\ExporterConfig;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Goodby\CSV\Import\Standard\LexerConfig;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Pimple\Container;
 
 class CSVServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['csv.exporter.config'] = $app->share(function () {
+        $app['csv.exporter.config'] = function () {
             $config = new ExporterConfig();
 
             return $config
@@ -34,13 +34,13 @@ class CSVServiceProvider implements ServiceProviderInterface
                 ->setToCharset('UTF-8')
                 ->setFromCharset('UTF-8');
 
-        });
+        };
 
-        $app['csv.exporter'] = $app->share(function ($app) {
+        $app['csv.exporter'] = function ($app) {
             return new Exporter($app['csv.exporter.config']);
-        });
+        };
 
-        $app['csv.lexer.config'] = $app->share(function ($app) {
+        $app['csv.lexer.config'] = function ($app) {
             $lexer = new LexerConfig();
             $lexer->setDelimiter(';')
                 ->setEnclosure('"')
@@ -49,15 +49,15 @@ class CSVServiceProvider implements ServiceProviderInterface
                 ->setFromCharset('UTF-8');
 
             return $lexer;
-        });
+        };
 
-        $app['csv.lexer'] = $app->share(function ($app) {
+        $app['csv.lexer'] = function ($app) {
             return new Lexer($app['csv.lexer.config']);
-        });
+        };
 
-        $app['csv.interpreter'] = $app->share(function ($app) {
+        $app['csv.interpreter'] = function ($app) {
             return new Interpreter();
-        });
+        };
 
         $app['csv.response'] = $app->protect(function ($callback) use ($app) {
             // set headers to fix ie issues
@@ -77,9 +77,5 @@ class CSVServiceProvider implements ServiceProviderInterface
                 'export.csv'
             ));
         });
-    }
-
-    public function boot(Application $app)
-    {
     }
 }

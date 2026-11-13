@@ -1,0 +1,37 @@
+{
+    "name": "alchemy/symfony-cors",
+    "description": "A library that adds CORS services to Silex/Symfony Applications",
+    "version": "5.0.0",
+    "require": {
+        "php": "^8.2",
+        "symfony/config": "^7.4",
+        "symfony/event-dispatcher": "^7.4",
+        "symfony/http-foundation": "^7.4",
+        "symfony/http-kernel": "^7.4",
+        "pimple/pimple": "^3.6",
+        "silex/silex": "^2.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alchemy\\Cors\\": "src/Component/",
+            "Alchemy\\CorsProvider\\": "src/Provider/",
+            "Alchemy\\CorsBundle\\": "src/Bundle/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Alchemy\\Cors\\Tests\\": "tests/unit/Component/",
+            "Alchemy\\CorsProvider\\Tests\\": "tests/unit/Provider/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Benoît Burnichon",
+            "email": "bburnichon@alchemy.fr"
+        }
+    ]
+}

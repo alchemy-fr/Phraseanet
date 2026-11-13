@@ -5,33 +5,25 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 use Alchemy\Tests\Phrasea\MockArrayConf;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PropertyAccessTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideGetData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideGetData')]
     public function testGet($conf, $props, $expected, $default)
     {
         $propAccess = new PropertyAccess(new MockArrayConf($conf));
         $this->assertSame($expected, $propAccess->get($props, $default));
     }
 
-    /**
-     * @dataProvider provideHasData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideHasData')]
     public function testHas($conf, $props, $expected)
     {
         $propAccess = new PropertyAccess(new MockArrayConf($conf));
         $this->assertSame($expected, $propAccess->has($props));
     }
 
-    /**
-     * @dataProvider provideSetData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideSetData')]
     public function testSet($conf, $props, $value, $expectedConf)
     {
         $conf = new MockArrayConf($conf);
@@ -40,9 +32,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
         $this->assertSame($expectedConf, $conf->getConfig());
     }
 
-    /**
-     * @dataProvider provideRemoveData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRemoveData')]
     public function testRemove($conf, $props, $expectedReturnValue, $expectedConf)
     {
         $conf = new MockArrayConf($conf);
@@ -51,9 +41,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
         $this->assertSame($expectedConf, $conf->getConfig());
     }
 
-    /**
-     * @dataProvider provideMergeData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideMergeData')]
     public function testMerge($conf, $props, $value, $expectedReturnValue, $expectedConf)
     {
         $conf = new MockArrayConf($conf);
@@ -62,7 +50,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
         $this->assertSame($expectedConf, $conf->getConfig());
     }
 
-    public function provideMergeData()
+    public static function provideMergeData()
     {
         $conf = [
             'key1' => ['subkey1' => 'value1'],
@@ -76,7 +64,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
         ];
     }
 
-    public function provideGetData()
+    public static function provideGetData()
     {
         $conf = [
             'key1' => ['subkey1' => 'value1'],
@@ -101,7 +89,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
         ];
     }
 
-    public function provideHasData()
+    public static function provideHasData()
     {
         $conf = [
             'key1' => ['subkey1' => 'value1'],
@@ -119,7 +107,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
         ];
     }
 
-    public function provideSetData()
+    public static function provideSetData()
     {
         $conf = [
             'key1' => ['subkey1' => 'value1'],
@@ -133,7 +121,7 @@ class PropertyAccessTest extends \PhraseanetTestCase
         ];
     }
 
-    public function provideRemoveData()
+    public static function provideRemoveData()
     {
         $conf = [
             'key1' => ['subkey1' => 'value1'],

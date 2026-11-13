@@ -18,13 +18,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class PersonalisationLogoFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('logoChoice', ChoiceType::class, [
             'label'    => false,
             'choices'  => [
-                'original' => 'original logo',
-                'personalize' => 'personalize logo'
+                'original logo' => 'original',
+                'personalize logo' => 'personalize'
             ],
             'expanded' => true,
             'multiple' => false,
@@ -45,8 +45,8 @@ class PersonalisationLogoFormType extends AbstractType
 
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

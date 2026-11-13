@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 
 class patch_380alpha11a extends patchAbstract
 {
@@ -63,11 +63,9 @@ class patch_380alpha11a extends patchAbstract
             $sql = 'SELECT usr_id, user_agent, ip, platform, browser, app,
                         browser_version, screen, token, nonce, lastaccess, created_on
                     FROM cache';
-            $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-        } catch (DBALException $e) {
+            $stmt = $appbox->get_connection()->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $e) {
             // this may fail on oldest versions
             return false;
         }

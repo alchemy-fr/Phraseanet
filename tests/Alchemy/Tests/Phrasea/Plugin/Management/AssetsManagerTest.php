@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Plugin\Management;
 use Alchemy\Phrasea\Plugin\Management\AssetsManager;
 use Symfony\Component\Filesystem\Exception\IOException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AssetsManagerTest extends \PhraseanetTestCase
 {
     public function testUpdate()
@@ -21,10 +19,8 @@ class AssetsManagerTest extends \PhraseanetTestCase
             ->method('mirror')
             ->with($pluginDir.'/plugin-name/public', $rootDir.'/www/plugins/plugin-name');
 
-        $manifest = $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\Manifest')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $manifest->expects($this->any())
+        $manifest = $this->createMock('Alchemy\Phrasea\Plugin\Schema\Manifest');
+        $manifest
             ->method('getName')
             ->will($this->returnValue('plugin-name'));
 
@@ -32,11 +28,9 @@ class AssetsManagerTest extends \PhraseanetTestCase
         $manager->update($manifest);
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     */
     public function testUpdateWithErrors()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\RuntimeException::class);
         $fs = $this->getFilesystemMock();
         $pluginDir = __DIR__ . '/plugin/dir';
         $rootDir = __DIR__ . '/root/dir';
@@ -45,10 +39,8 @@ class AssetsManagerTest extends \PhraseanetTestCase
             ->method('mirror')
             ->will($this->throwException(new IOException('error')));
 
-        $manifest = $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\Manifest')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $manifest->expects($this->any())
+        $manifest = $this->createMock('Alchemy\Phrasea\Plugin\Schema\Manifest');
+        $manifest
             ->method('getName')
             ->will($this->returnValue('plugin-name'));
 
@@ -70,11 +62,9 @@ class AssetsManagerTest extends \PhraseanetTestCase
         $manager->remove('plugin-name');
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     */
     public function testRemoveWithError()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\RuntimeException::class);
         $fs = $this->getFilesystemMock();
         $pluginDir = __DIR__ . '/plugin/dir';
         $rootDir = __DIR__ . '/root/dir';
@@ -95,8 +85,6 @@ class AssetsManagerTest extends \PhraseanetTestCase
 
     private function getFilesystemMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem');
     }
 }

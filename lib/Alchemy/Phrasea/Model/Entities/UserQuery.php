@@ -14,34 +14,24 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="UserQueries")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserQueryRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UserQueryRepository::class)]
+#[ORM\Table(name: 'UserQueries')]
 class UserQuery
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="queries")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     **/
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'queries')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=256)
-     */
+    #[ORM\Column(type: 'string', length: 256)]
     private $query;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
     /**

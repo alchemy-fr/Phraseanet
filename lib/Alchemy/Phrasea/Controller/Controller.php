@@ -55,7 +55,7 @@ class Controller
      */
     public function render($name, array $context = [])
     {
-        /** @var \Twig_Environment $twig */
+        /** @var \Twig\Environment $twig */
         $twig = $this->app['twig'];
         return $twig->render(
             $name,
@@ -95,7 +95,7 @@ class Controller
      * @param User|null $user
      * @return \ACL
      */
-    public function getAclForUser(User $user = null)
+    public function getAclForUser(?User $user = null)
     {
         $aclProvider = $this->getAclProvider();
 

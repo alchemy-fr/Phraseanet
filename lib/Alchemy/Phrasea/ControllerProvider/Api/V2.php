@@ -20,8 +20,9 @@ use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Order\Controller\ApiOrderController;
 use Silex\Application;
 use Silex\Controller;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class V2 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -29,52 +30,39 @@ class V2 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
     const VERSION = '2.0.0';
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.api.v2.baskets'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new BasketController($app))
-                    ->setDataboxLoggerLocator($app['phraseanet.logger'])
-                    ->setDispatcher($app['dispatcher'])
-                    ->setJsonBodyHelper($app['json.body_helper']);
-            }
-        );
-        $app['controller.api.v2.lazaret'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new LazaretController($app));
-            }
-        );
+        $app['controller.api.v2.baskets'] = function (PhraseaApplication $app) {
+            return (new BasketController($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ->setDispatcher($app['dispatcher'])
+                ->setJsonBodyHelper($app['json.body_helper']);
+        };
+        $app['controller.api.v2.lazaret'] = function (PhraseaApplication $app) {
+            return (new LazaretController($app));
+        };
 
-        $app['controller.api.v2.search'] = $app->share(
-            function (PhraseaApplication $app) {
-                return new SearchController($app);
-            }
-        );
+        $app['controller.api.v2.search'] = function (PhraseaApplication $app) {
+            return new SearchController($app);
+        };
 
-        $app['controller.api.v2.orders'] = $app->share(
-            function (PhraseaApplication $app) {
-                $controller = new ApiOrderController(
-                    $app,
-                    $app['repo.orders'],
-                    $app['repo.order-elements'],
-                    $app['provider.order_basket']
-                );
+        $app['controller.api.v2.orders'] = function (PhraseaApplication $app) {
+            $controller = new ApiOrderController(
+                $app,
+                $app['repo.orders'],
+                $app['repo.order-elements'],
+                $app['provider.order_basket']
+            );
 
-                $controller
-                    ->setDispatcher($app['dispatcher'])
-                    ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
-                    ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
-                    ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
-                    ->setJsonBodyHelper($app['json.body_helper']);
+            $controller
+                ->setDispatcher($app['dispatcher'])
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setJsonBodyHelper($app['json.body_helper']);
 
-                return $controller;
-            }
-        );
-    }
-
-    public function boot(Application $app)
-    {
-        // Intentionally left empty
+            return $controller;
+        };
     }
 
     public function connect(Application $app)

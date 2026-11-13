@@ -5,16 +5,14 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApiAccountManipulatorTest extends \PhraseanetTestCase
 {
     /** @var  ApiAccountManipulator */
     private $sut;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

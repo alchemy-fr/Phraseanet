@@ -14,56 +14,37 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Tokens",
- *      indexes={
- *          @ORM\index(name="type", columns={"type"}),
- *          @ORM\index(name="created", columns={"created"}),
- *          @ORM\index(name="updated", columns={"updated"}),
- *          @ORM\index(name="expiration", columns={"expiration"})
- *      }
- * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\TokenRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\TokenRepository::class)]
+#[ORM\Table(name: 'Tokens')]
+#[ORM\Index(name: 'type', columns: ['type'])]
+#[ORM\Index(name: 'created', columns: ['created'])]
+#[ORM\Index(name: 'updated', columns: ['updated'])]
+#[ORM\Index(name: 'expiration', columns: ['expiration'])]
 class Token
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', length: 128)]
     private $value;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
-     **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=32)
-     */
+    #[ORM\Column(type: 'string', length: 32)]
     private $type;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $data;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $expiration;
 
     /**
@@ -187,7 +168,7 @@ class Token
      * @param  \DateTime $expiration
      * @return Token
      */
-    public function setExpiration(\DateTime $expiration = null)
+    public function setExpiration(?\DateTime $expiration = null)
     {
         $this->expiration = $expiration;
 
@@ -210,7 +191,7 @@ class Token
      * @param  User  $user
      * @return Token
      */
-    public function setUser(User $user = null)
+    public function setUser(?User $user = null)
     {
         $this->user = $user;
 

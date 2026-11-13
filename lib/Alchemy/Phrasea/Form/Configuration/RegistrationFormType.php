@@ -15,31 +15,30 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationFormType extends AbstractType
 {
-    /** @var TranslatorInterface  */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('auto-select-collections', CheckboxType::class, [
             'label'        => 'Auto select databases',
-            'help_message' => /** @Ignore */ $this->translator->trans('This option disables the selecting of the databases on which a user can register himself, and registration is made on all granted databases.'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('This option disables the selecting of the databases on which a user can register himself, and registration is made on all granted databases.'),
         ]);
         $builder->add('auto-register-enabled', CheckboxType::class, [
             'label'        => 'Enable auto registration',
         ]);
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return null;
+        $resolver->setRequired('translator');
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return '';
     }
 }

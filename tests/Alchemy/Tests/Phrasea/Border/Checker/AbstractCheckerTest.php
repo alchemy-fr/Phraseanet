@@ -6,8 +6,9 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Checker\AbstractChecker;
 use Alchemy\Phrasea\Border\File;
 
-class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
+class AbstractCheckerTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var Application
      */
@@ -18,7 +19,7 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
      */
     private $sut;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -31,11 +32,10 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    /**
-     * @dataProvider getDataboxesCombination
-     */
-    public function testRestrictToDataboxes($databoxes, $collection, $assertion)
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxesCombination')]
+    public function testRestrictToDataboxes($row)
     {
+        [$databoxes, $collection, $assertion] = $this->buildDataboxesCombination()[$row];
         $file = $this->prophesize(File::class);
         $file->getCollection()->willReturn($collection);
 
@@ -44,7 +44,12 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($assertion, $this->sut->isApplicable($file->reveal()));
     }
 
-    public function getDataboxesCombination()
+    public static function getDataboxesCombination()
+    {
+        return array_map(function ($row) { return [$row]; }, range(0, 4));
+    }
+
+    private function buildDataboxesCombination()
     {
         $databox = $this->prophesize(\databox::class);
         $databox->get_sbas_id()->willReturn(1);
@@ -65,11 +70,10 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider getCollectionsCombination
-     */
-    public function testRestrictToCollections($collection, $othercollection, $assertion)
+    #[\PHPUnit\Framework\Attributes\DataProvider('getCollectionsCombination')]
+    public function testRestrictToCollections($row)
     {
+        [$collection, $othercollection, $assertion] = $this->buildCollectionsCombination()[$row];
         $file = $this->prophesize(File::class);
         $file->getCollection()->willReturn($othercollection);
 
@@ -78,7 +82,12 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($assertion, $this->sut->isApplicable($file->reveal()));
     }
 
-    public function getCollectionsCombination()
+    public static function getCollectionsCombination()
+    {
+        return array_map(function ($row) { return [$row]; }, range(0, 5));
+    }
+
+    private function buildCollectionsCombination()
     {
         $databox = $this->prophesize(\databox::class);
         $databox->get_sbas_id()->willReturn(1);
@@ -103,45 +112,46 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \LogicException
-     */
-    public function testMixCollectionFirst($databox, $collection)
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
+    public function testMixCollectionFirst($row)
     {
+        [$databox, $collection] = $this->buildDataboxAndCollection()[$row];
+        $this->expectException(\LogicException::class);
         $this->sut->restrictToCollections($collection);
         $this->sut->restrictToDataboxes($databox);
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \LogicException
-     */
-    public function testMixDataboxFirst($databox, $collection)
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
+    public function testMixDataboxFirst($row)
     {
+        [$databox, $collection] = $this->buildDataboxAndCollection()[$row];
+        $this->expectException(\LogicException::class);
         $this->sut->restrictToDataboxes($databox);
         $this->sut->restrictToCollections($collection);
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \InvalidArgumentException
-     */
-    public function testInvalidDatabox($databox, $collection)
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
+    public function testInvalidDatabox($row)
     {
+        [$databox, $collection] = $this->buildDataboxAndCollection()[$row];
+        $this->expectException(\InvalidArgumentException::class);
         $this->sut->restrictToDataboxes($collection);
     }
 
-    /**
-     * @dataProvider getDataboxAndCollection
-     * @expectedException  \InvalidArgumentException
-     */
-    public function testInvalidCollection($databox, $collection)
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDataboxAndCollection')]
+    public function testInvalidCollection($row)
     {
+        [$databox, $collection] = $this->buildDataboxAndCollection()[$row];
+        $this->expectException(\InvalidArgumentException::class);
         $this->sut->restrictToCollections($databox);
     }
 
-    public function getDataboxAndCollection()
+    public static function getDataboxAndCollection()
+    {
+        return array_map(function ($row) { return [$row]; }, range(0, 0));
+    }
+
+    private function buildDataboxAndCollection()
     {
         $databox = $this->prophesize(\databox::class);
         $databox->get_sbas_id()->willReturn(1);

@@ -16,7 +16,7 @@ use Alchemy\TaskManager\Job\JobDataInterface;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractJob extends AbstractTMJob implements JobInterface
 {
@@ -25,9 +25,9 @@ abstract class AbstractJob extends AbstractTMJob implements JobInterface
     protected $translator;
 
     public function __construct(
-        TranslatorInterface $translator,
-        EventDispatcherInterface $dispatcher = null,
-        LoggerInterface $logger = null
+        \Symfony\Contracts\Translation\TranslatorInterface $translator,
+        ?EventDispatcherInterface $dispatcher = null,
+        ?LoggerInterface $logger = null
     )
     {
         parent::__construct($dispatcher, $logger);

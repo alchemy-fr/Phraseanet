@@ -2,14 +2,14 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 
 class Pdf extends Provider
 {
     protected $options = [];
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }

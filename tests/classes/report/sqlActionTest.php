@@ -1,20 +1,18 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_sqlActionTest extends \report_abstractReportTestCase
 {
     protected $action;
     protected $mock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->mock = $this->getMock('module_report', [], [], '', false);
-        $this->mock->expects($this->any())
+        $this->mock = $this->createMock('module_report');
+        $this->mock
             ->method('getSbasId')
             ->will($this->returnValue(self::$DI['collection']->get_databox()->get_sbas_id()));
 

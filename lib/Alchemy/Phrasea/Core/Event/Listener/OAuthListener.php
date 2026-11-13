@@ -53,14 +53,14 @@ class OAuthListener
         $dispatcher = $app['dispatcher'];
 
         $context = new Context(Context::CONTEXT_OAUTH2_TOKEN);
-        $dispatcher->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
-        $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_START, new ApiOAuth2StartEvent());
+        $dispatcher->dispatch(new PreAuthenticate($request, $context), PhraseaEvents::PRE_AUTHENTICATE);
+        $dispatcher->dispatch(new ApiOAuth2StartEvent(), PhraseaEvents::API_OAUTH2_START);
 
         /** @var \API_OAuth2_Adapter $oauth2 */
         $oauth2 = $app['oauth2-server'];
 
         if (false === $this->verifyAccessToken($oauth2)) {
-            $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
+            $dispatcher->dispatch(new ApiOAuth2EndEvent(), PhraseaEvents::API_OAUTH2_END);
 
             return null;
         }
@@ -90,7 +90,7 @@ class OAuthListener
         $authentication = $this->getAuthenticator($app);
 
         if ($authentication->isAuthenticated()) {
-            $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
+            $dispatcher->dispatch(new ApiOAuth2EndEvent(), PhraseaEvents::API_OAUTH2_END);
             $this->registerClosingAccountCallback($dispatcher, $app);
 
             return null;
@@ -98,7 +98,7 @@ class OAuthListener
 
         $authentication->openAccount($oAuth2Account->getUser());
         $oauth2->rememberSession($app['session']);
-        $dispatcher->dispatch(PhraseaEvents::API_OAUTH2_END, new ApiOAuth2EndEvent());
+        $dispatcher->dispatch(new ApiOAuth2EndEvent(), PhraseaEvents::API_OAUTH2_END);
         $this->registerClosingAccountCallback($dispatcher, $app);
 
         return null;

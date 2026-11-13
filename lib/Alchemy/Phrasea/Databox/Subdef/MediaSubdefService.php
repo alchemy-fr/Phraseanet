@@ -33,7 +33,7 @@ class MediaSubdefService
      * @param null|array $names
      * @return \media_subdef[][]
      */
-    public function findSubdefsByRecordReferenceFromCollection($records, array $names = null)
+    public function findSubdefsByRecordReferenceFromCollection($records, ?array $names = null)
     {
         $subdefs = $this->reduceRecordReferenceCollection(
             $records,
@@ -78,7 +78,7 @@ class MediaSubdefService
      * @param null|string[] $names
      * @return \media_subdef[]
      */
-    public function findSubdefsFromRecordReferenceCollection($records, array $names = null)
+    public function findSubdefsFromRecordReferenceCollection($records, ?array $names = null)
     {
         $groups = $this->reduceRecordReferenceCollection(
             $records,
@@ -92,7 +92,7 @@ class MediaSubdefService
         );
 
         if ($groups) {
-            return call_user_func_array('array_merge', $groups);
+            return array_merge(...array_values($groups));
         }
 
         return [];
@@ -105,7 +105,7 @@ class MediaSubdefService
      * @param null|string[] $names
      * @return mixed
      */
-    private function reduceRecordReferenceCollection($records, callable $process, $initialValue, array $names = null)
+    private function reduceRecordReferenceCollection($records, callable $process, $initialValue, ?array $names = null)
     {
         $records = $this->normalizeRecordCollection($records);
 

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Guzzle\Http\Url;
+use Psr\Http\Message\UriInterface;
 
 abstract class media_abstract
 {
@@ -17,7 +17,7 @@ abstract class media_abstract
     const LANDSCAPE = 'LANDSCAPE';
 
     /**
-     * @var Url
+     * @var UriInterface|null
      */
     protected $url;
 
@@ -34,9 +34,9 @@ abstract class media_abstract
     /**
      * @param int $width
      * @param int $height
-     * @param Url|null $url
+     * @param UriInterface|null $url
      */
-    public function __construct($width, $height, Url $url = null)
+    public function __construct($width, $height, ?UriInterface $url = null)
     {
         $this->url = $url;
         $this->height = (int) $height;
@@ -44,7 +44,7 @@ abstract class media_abstract
     }
 
     /**
-     * @return Url
+     * @return UriInterface|null
      */
     public function get_url()
     {

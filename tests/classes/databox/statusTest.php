@@ -1,6 +1,6 @@
 <?php
 
-class databox_statusTest extends PHPUnit_Framework_TestCase
+class databox_statusTest extends \PHPUnit\Framework\TestCase
 {
     public function testOperation_and()
     {

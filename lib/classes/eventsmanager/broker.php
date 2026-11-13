@@ -89,8 +89,7 @@ class eventsmanager_broker
             ];
 
             $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-            $stmt->execute($params);
-            $stmt->closeCursor();
+            $stmt->executeStatement($params);
         } catch (\Exception $e) {
             return false;
         }
@@ -119,10 +118,8 @@ class eventsmanager_broker
         $sql = 'SELECT count(id) as total, sum(unread) as unread
             FROM notifications WHERE usr_id = :usr_id';
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]);
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             $total = $row['total'];
@@ -137,10 +134,8 @@ class eventsmanager_broker
 
         $data = ['notifications' => [], 'next' => ''];
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $type = 'eventsmanager_' . $row['type'];
@@ -157,8 +152,7 @@ class eventsmanager_broker
             if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
                 $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-                $stmt->execute([':id' => $row['id']]);
-                $stmt->closeCursor();
+                $stmt->executeStatement([':id' => $row['id']]);
                 continue;
             }
 
@@ -196,10 +190,8 @@ class eventsmanager_broker
         $sql = 'SELECT count(id) as total
             FROM notifications
             WHERE usr_id = :usr_id AND unread="1"';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             $total = $row['total'];
@@ -211,7 +203,7 @@ class eventsmanager_broker
     const READ = 1;
     const UNREAD = 2;
 
-    public function get_notifications(int $offset=0, int $limit=10, $readFilter = self::READ | self::UNREAD, \Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
+    public function get_notifications(int $offset=0, int $limit=10, $readFilter = self::READ | self::UNREAD, ?\Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
     {
         if(!$this->app->getAuthenticatedUser()) {
             return;
@@ -251,13 +243,11 @@ class eventsmanager_broker
         $total = 0;
         $unread = 0;
         $sql = 'SELECT COUNT(`id`) AS `total`, SUM(`unread`) AS `unread` FROM `notifications` WHERE `usr_id` = :usr_id';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]);
-        if( ($row = $stmt->fetch(PDO::FETCH_ASSOC)) ) {
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]);
+        if( ($row = $stmt->fetchAssociative()) ) {
             $total  = (int)$row['total'];
             $unread = (int)$row['unread'];
         }
-        $stmt->closeCursor();
 
         if($stopwatch) $stopwatch->lap("sql count unread");
 
@@ -281,10 +271,8 @@ class eventsmanager_broker
         }
         $sql .= " ORDER BY created_on DESC LIMIT " . $offset . ", " . $limit;
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]); // , ':offset' => $offset, ':limit' => $limit]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $usr_id]); // , ':offset' => $offset, ':limit' => $limit]);
+        $rs = $stmt->fetchAllAssociative();
 
         if($stopwatch) $stopwatch->lap("sql 2");
 
@@ -328,14 +316,13 @@ class eventsmanager_broker
                 ]
             );
         }
-        $stmt->closeCursor();
 
         if($stopwatch) $stopwatch->lap("fetch");
 
         if(!empty($bad_ids)) {
             // delete broken notifs
             $sql = 'DELETE FROM `notifications` WHERE `id` IN (' . join(',', $bad_ids) . ')';
-            $stmt = $this->app->getApplicationBox()->get_connection()->exec($sql);
+            $stmt = $this->app->getApplicationBox()->get_connection()->executeStatement($sql);
         }
 
         $next_offset = $offset+$limit;
@@ -385,7 +372,7 @@ class eventsmanager_broker
                     'notifications' => Connection::PARAM_INT_ARRAY,
                 ]
             )
-            ->execute()
+            ->executeStatement()
         ;
 
         return $this;
@@ -415,7 +402,7 @@ class eventsmanager_broker
                     'usr_id' => PDO::PARAM_INT,
                 ]
             )
-            ->execute()
+            ->executeStatement()
         ;
 
         return $this;

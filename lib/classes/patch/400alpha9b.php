@@ -58,7 +58,7 @@ class patch_400alpha9b implements patchInterface
     {
         $sql = "DROP TABLE IF EXISTS emptyw, idx, kword, prop, thit, uids, xpath";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt->executeStatement();
 
         return true;
     }

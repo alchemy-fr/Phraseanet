@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
 
@@ -23,7 +23,7 @@ class ApiOauthTokenManipulator implements ManipulatorInterface
     private $repository;
     private $randomGenerator;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo, Generator $random)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, EntityRepository $repo, Generator $random)
     {
         $this->om = $om;
         $this->repository = $repo;

@@ -27,7 +27,7 @@ class RecordQueuer
         $sql = 'UPDATE record SET jeton = (jeton | :flag)';
         $stmt = $connection->prepare($sql);
         $stmt->bindValue(':flag', Flag::TO_INDEX, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->executeStatement();
     }
 
     public static function queueRecordsFromCollection(collection $collection)
@@ -40,7 +40,7 @@ class RecordQueuer
         $stmt = $connection->prepare($sql);
         $stmt->bindValue(':token', Flag::TO_INDEX, PDO::PARAM_INT);
         $stmt->bindValue(':coll_id', $collection->get_coll_id(), PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->executeStatement();
     }
 
     /**

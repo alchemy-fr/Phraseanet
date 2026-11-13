@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class PSUploaderPullType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -49,7 +49,7 @@ class PSUploaderPullType extends AbstractType
 
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
         return 'ps_pullAssets';
     }

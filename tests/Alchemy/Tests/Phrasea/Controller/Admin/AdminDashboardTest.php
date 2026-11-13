@@ -4,21 +4,21 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Dashboard::class, 'slash')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Dashboard::class, 'connect')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Dashboard::class, 'call')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Dashboard::class, 'flush')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Dashboard::class, 'sendMail')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Dashboard::class, 'resetAdminRights')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Admin\Dashboard::class, 'addAdmins')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::slash
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::connect
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::call
-     */
     public function testRouteDashboardUnauthorized()
     {
         $this->setAdmin(false);
@@ -27,9 +27,6 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::slash
-     */
     public function testRouteDashboard()
     {
         $this->setAdmin(true);
@@ -43,9 +40,6 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::flush
-     */
     public function testFlushCache()
     {
         $this->setAdmin(true);
@@ -53,12 +47,9 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('POST', '/admin/dashboard/flush-cache/');
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/flush_cache=ok/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/flush_cache=ok/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::sendMail
-     */
     public function testSendMailTest()
     {
         $this->setAdmin(true);
@@ -70,12 +61,9 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         ]);
 
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-        $this->assertRegexp('/email=/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/email=/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::sendMail
-     */
     public function testSendMailTestWithWrongMail()
     {
         $this->setAdmin(true);
@@ -87,9 +75,6 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::sendMail
-     */
     public function testSendMailTestBadRequest()
     {
         $this->setAdmin(true);
@@ -98,9 +83,6 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::resetAdminRights
-     */
     public function testResetAdminRights()
     {
         $this->setAdmin(true);
@@ -110,9 +92,6 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::addAdmins
-     */
     public function testAddAdmins()
     {
         $this->setAdmin(true);

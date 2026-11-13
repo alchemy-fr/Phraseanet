@@ -17,7 +17,7 @@ use Silex\Application;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class ContentNegotiationSubscriber implements EventSubscriberInterface
 {
@@ -35,14 +35,14 @@ class ContentNegotiationSubscriber implements EventSubscriberInterface
         $this->customFormats = $customFormats;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return array(
             KernelEvents::REQUEST => array('onKernelRequest', Application::EARLY_EVENT),
         );
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         $request = $event->getRequest();
 

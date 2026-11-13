@@ -25,31 +25,33 @@ use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Core\Event\Subscriber\PersistentCookieSubscriber;
 use Silex\Application;
 use ReCaptcha\ReCaptcha;
-use Silex\ServiceProviderInterface;
-class AuthenticationManagerServiceProvider implements ServiceProviderInterface
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
+use Silex\Api\BootableProviderInterface;
+class AuthenticationManagerServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['authentication'] = $app->share(function (Application $app) {
+        $app['authentication'] = function (Application $app) {
             return new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
-        });
+        };
 
         if ($app['configuration.store']->isSetup() && $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']) !== "") {
-            $app['recaptcha'] = $app->share(function (Application $app) {
+            $app['recaptcha'] = function (Application $app) {
                 return new ReCaptcha($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']));
-            });
+            };
         }
 
-        $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
+        $app['authentication.persistent-manager'] = function (Application $app) {
             return new CookieManager($app['auth.password-encoder'], $app['repo.sessions'], $app['browser']);
-        });
+        };
 
-        $app['authentication.suggestion-finder'] = $app->share(function (Application $app) {
+        $app['authentication.suggestion-finder'] = function (Application $app) {
             return new SuggestionFinder($app['repo.users']);
-        });
+        };
 
-        $app['authentication.providers.factory'] = $app->share(function (Application $app) {
+        $app['authentication.providers.factory'] = function (Application $app) {
            return new ProviderFactory(
                $app['url_generator'],
                $app['session'],
@@ -61,9 +63,9 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                $app['repo.usr-auth-providers'],
                $app['orm.em']
            );
-        });
+        };
 
-        $app['authentication.providers.account-creator'] = $app->share(function (Application $app) {
+        $app['authentication.providers.account-creator'] = function (Application $app) {
             $authConf = $app['conf']->get('authentication');
             $templates = array_filter(array_map(function ($templateId) use ($app) {
                 try {
@@ -82,9 +84,9 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             $enabled = $app['conf']->get(['registry', 'registration', 'auto-register-enabled']) && $app['registration.manager']->isRegistrationEnabled();
 
             return new AccountCreator($app['random.medium'], $app->getApplicationBox(), $enabled, $templates);
-        });
+        };
 
-        $app['authentication.providers'] = $app->share(function (Application $app) {
+        $app['authentication.providers'] = function (Application $app) {
 
             $providers = new ProvidersCollection();
 
@@ -120,13 +122,13 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             }
 
             return $providers;
-        });
+        };
 
-        $app['authentication.manager'] = $app->share(function (Application $app) {
+        $app['authentication.manager'] = function (Application $app) {
             return new Manager($app['authentication'], $app['authentication.providers']);
-        });
+        };
 
-        $app['authentication.recovery_service'] = $app->share(function (Application $app) {
+        $app['authentication.recovery_service'] = function (Application $app) {
             return new RecoveryService(
                 $app,
                 $app['notification.deliverer'],
@@ -136,9 +138,9 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                 $app['repo.users'],
                 $app['url_generator']
             );
-        });
+        };
 
-        $app['authentication.registration_service'] = $app->share(function (Application $app) {
+        $app['authentication.registration_service'] = function (Application $app) {
             return new RegistrationService(
                 $app,
                 $app['phraseanet.appbox'],
@@ -155,26 +157,26 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                 $app['manipulator.registration'],
                 $app['registration.manager']
             );
-        });
+        };
 
-        $app['auth.password-encoder'] = $app->share(function (Application $app) {
+        $app['auth.password-encoder'] = function (Application $app) {
             return new PasswordEncoder($app['conf']->get(['main','key']));
-        });
+        };
 
-        $app['auth.old-password-encoder'] = $app->share(function (Application $app) {
+        $app['auth.old-password-encoder'] = function (Application $app) {
             return new OldPasswordEncoder();
-        });
+        };
 
-        $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
+        $app['auth.native.failure-manager'] = function (Application $app) {
             $authConf = $app['conf']->get(['registry', 'webservices']);
             return new FailureManager($app['repo.auth-failures'], $app['orm.em'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9, isset($authConf['captcha-provider']) ? $authConf['captcha-provider'] : 'none', $authConf['recaptcha-private-key']);
-        });
+        };
 
-        $app['auth.password-checker'] = $app->share(function (Application $app) {
+        $app['auth.password-checker'] = function (Application $app) {
             return new NativeAuthentication($app['auth.password-encoder'], $app['auth.old-password-encoder'], $app['manipulator.user'], $app['repo.users']);
-        });
+        };
 
-        $app['auth.native'] = $app->share(function (Application $app) {
+        $app['auth.native'] = function (Application $app) {
             $authConf = $app['conf']->get(['registry', 'webservices']);
 
             if ($authConf['captcha-provider'] != 'none') {
@@ -185,17 +187,15 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             } else {
                 return $app['auth.password-checker'];
             }
-        });
+        };
     }
 
     public function boot(Application $app)
     {
-        $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function ($dispatcher, Application $app) {
-                $dispatcher->addSubscriber(new PersistentCookieSubscriber($app));
+        $app->extend('dispatcher', function ($dispatcher, Application $app) {
+            $dispatcher->addSubscriber(new PersistentCookieSubscriber($app));
 
-                return $dispatcher;
-            })
-        );
+            return $dispatcher;
+        });
     }
 }

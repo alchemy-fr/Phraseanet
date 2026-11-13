@@ -12,14 +12,15 @@
 namespace Alchemy\Phrasea\Core\Middleware;
 
 use Alchemy\Phrasea\ACL\BasketACL;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class BasketMiddlewareProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['middleware.basket.converter'] = $app->protect(function (Request $request, Application $app) {
             if ($request->attributes->has('basket')) {
@@ -48,9 +49,5 @@ class BasketMiddlewareProvider implements ServiceProviderInterface
                 throw new AccessDeniedHttpException('Only basket owner can modify the basket');
             }
         });
-    }
-
-    public function boot(Application $app)
-    {
     }
 }

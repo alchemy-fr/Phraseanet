@@ -9,5 +9,5 @@ interface ThumbnailedElement
 
     public function getRootIdentifier();
 
-    public function updateThumbnail($thumbnailType, File $file = null);
+    public function updateThumbnail($thumbnailType, ?File $file = null);
 }

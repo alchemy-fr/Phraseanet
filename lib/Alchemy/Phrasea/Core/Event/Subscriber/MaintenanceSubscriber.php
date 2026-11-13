@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Silex\Application;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class MaintenanceSubscriber implements EventSubscriberInterface
 {
@@ -25,14 +25,14 @@ class MaintenanceSubscriber implements EventSubscriberInterface
         $this->app = $app;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['checkForMaintenance', 0],
         ];
     }
 
-    public function checkForMaintenance(GetResponseEvent $event)
+    public function checkForMaintenance(RequestEvent $event)
     {
         if ($this->app['configuration.store']->isSetup() && $this->app['conf']->get(['main', 'maintenance'])) {
             $this->app->abort(503, 'Service Temporarily Unavailable', ['Retry-After' => 3600]);

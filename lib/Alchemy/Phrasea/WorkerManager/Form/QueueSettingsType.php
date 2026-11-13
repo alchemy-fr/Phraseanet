@@ -7,21 +7,17 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class QueueSettingsType extends AbstractType
 {
-    private $AMQPConnection;
-    private $baseQueueName;
-
-    public function __construct(AMQPConnection $AMQPConnection, string $baseQueueName)
-    {
-        $this->AMQPConnection = $AMQPConnection;
-        $this->baseQueueName  = $baseQueueName;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
+
+        /** @var AMQPConnection $AMQPConnection */
+        $AMQPConnection = $options['amqp_connection'];
+        $baseQueueName = $options['base_queue_name'];
 
         $builder->add('n_workers', HiddenType::class, [
             'label'    => 'admin::workermanager:tab:workerconfig:n_workers',
@@ -30,13 +26,13 @@ class QueueSettingsType extends AbstractType
                 'placeholder' => 1
             ]
         ]);
-        if($this->AMQPConnection->hasRetryQueue($this->baseQueueName) || $this->AMQPConnection->hasLoopQueue($this->baseQueueName)) {
+        if($AMQPConnection->hasRetryQueue($baseQueueName) || $AMQPConnection->hasLoopQueue($baseQueueName)) {
             $builder
                 ->add('max_retry', IntegerType::class, [
                     'label'    => 'admin::workermanager:tab:workerconfig:max retry',
                     'required' => false,
                     'attr' => [
-                        'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::MAX_RETRY),
+                        'placeholder' => $AMQPConnection->getDefaultSetting($baseQueueName, AMQPConnection::MAX_RETRY),
                         //'class'=>'col'
                     ]
                 ])
@@ -44,24 +40,31 @@ class QueueSettingsType extends AbstractType
                     'label'    => 'admin::workermanager:tab:workerconfig:retry delay in seconds',
                     'required' => false,
                     'attr' => [
-                        'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_RETRY) / 1000.0,
+                        'placeholder' => $AMQPConnection->getDefaultSetting($baseQueueName, AMQPConnection::TTL_RETRY) / 1000.0,
                         //'class'=>'col'
                     ]
                 ]);
         }
-        if($this->AMQPConnection->hasDelayedQueue($this->baseQueueName)) {
+        if($AMQPConnection->hasDelayedQueue($baseQueueName)) {
             $builder->add('ttl_delayed', IntegerType::class, [
                 'label'    => 'admin::workermanager:tab:workerconfig:delayed delay in seconds',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_DELAYED) / 1000.0,
+                    'placeholder' => $AMQPConnection->getDefaultSetting($baseQueueName, AMQPConnection::TTL_DELAYED) / 1000.0,
                     //'class'=>'col'
                 ]
             ]);
         }
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired(['amqp_connection', 'base_queue_name']);
+        $resolver->setAllowedTypes('amqp_connection', AMQPConnection::class);
+        $resolver->setAllowedTypes('base_queue_name', 'string');
+    }
+
+    public function getBlockPrefix(): string
     {
         return 'queue_settings';
     }

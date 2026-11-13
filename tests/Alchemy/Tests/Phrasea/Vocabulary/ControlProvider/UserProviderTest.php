@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UserProviderTest extends \PhraseanetTestCase
 {
     /**
@@ -15,7 +13,7 @@ class UserProviderTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new UserProvider(self::$DI['app']);
@@ -62,21 +60,21 @@ class UserProviderTest extends \PhraseanetTestCase
 
         $results = $this->object->find('BABE', $user,  self::$DI['collection']->get_databox());
 
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
 
         $results = $this->object->find($user->getEmail(), $user, self::$DI['collection']->get_databox());
 
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
         $this->assertGreaterThan(0, count($results), 'There should be more users matching');
 
         $results = $this->object->find($user->getFirstName(), $user,  self::$DI['collection']->get_databox());
 
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
         $this->assertGreaterThan(0, count($results), 'There should be more users matching');
 
         $results = $this->object->find($user->getLastName(), $user,  self::$DI['collection']->get_databox());
 
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
         $this->assertGreaterThan(0, count($results), 'There should be more users matching');
         self::$DI['app']['manipulator.user']->delete($user);
     }

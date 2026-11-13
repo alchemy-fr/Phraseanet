@@ -11,30 +11,32 @@
 namespace Alchemy\Tests\Phrasea\Metadata;
 
 use Alchemy\Phrasea\Metadata\Tag;
+use Alchemy\Phrasea\Metadata\TagInterface;
+use PHPExiftool\Driver\TagGroupInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class PhraseanetTagsTest extends \PHPUnit_Framework_TestCase
+class PhraseanetTagsTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider provideSUTs
-     */
+    #[DataProvider('provideSUTs')]
     public function testItImplementsTagInterface($sut)
     {
-        $this->assertInstanceOf('PHPExiftool\\Driver\\TagInterface', $sut);
+        $this->assertInstanceOf(TagInterface::class, $sut);
+        $this->assertInstanceOf(TagGroupInterface::class, $sut);
     }
 
-    /**
-     * @dataProvider provideSUTs
-     */
+    #[DataProvider('provideSUTs')]
     public function testItsGetMethodsReturnStrings($sut)
     {
-        $this->assertInternalType('string', $sut->getDescription());
+        $this->assertIsString($sut->getDescription());
         $this->assertSame('Phraseanet', $sut->getGroupName());
-        $this->assertInternalType('string', $sut->getId());
-        $this->assertInternalType('string', $sut->getName());
-        $this->assertStringStartsWith('Phraseanet:', $sut->getTagname());
+        $this->assertStringStartsWith('Phraseanet:', $sut->getId());
+        $this->assertIsString($sut->getName());
+        $this->assertSame($sut->getId(), $sut->getTagname());
+        $this->assertSame('Phraseanet:' . $sut->getName(), $sut->getTagname());
+        $this->assertFalse($sut->isWritable());
     }
 
-    public function provideSUTs()
+    public static function provideSUTs()
     {
         return [
             [new Tag\NoSource()],
@@ -61,15 +63,13 @@ class PhraseanetTagsTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider providesNoSourceTags
-     */
+    #[DataProvider('providesNoSourceTags')]
     public function testItRegistersFieldNameOnCreation($expected, Tag\NoSource $sut)
     {
         $this->assertSame($expected, $sut->getFieldName());
     }
 
-    public function providesNoSourceTags()
+    public static function providesNoSourceTags()
     {
         return [
             ['', new Tag\NoSource()],

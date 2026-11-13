@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         backupGlobals="false"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="true"
-         verbose="false"
          bootstrap="tests/bootstrap.php"
+         cacheDirectory="cache/phpunit"
 >
     <php>
       <ini name="display_errors" value="on"/>
@@ -23,18 +20,9 @@
         </testsuite>
     </testsuites>
 
-    <filter>
-        <blacklist>
-            <directory>tests</directory>
-            <directory>vendor</directory>
-        </blacklist>
-        <whitelist>
+    <source>
+        <include>
             <directory suffix=".php">lib</directory>
-        </whitelist>
-    </filter>
-
-    <!--<listeners>-->
-      <!--<listener class="PhraseanetPHPUnitListener" file="tests/classes/PhraseanetPHPUnitListener.php"></listener>-->
-    <!--</listeners>-->
+        </include>
+    </source>
 </phpunit>
-

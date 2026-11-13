@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -177,7 +178,7 @@ class Manage extends Helper
     {
         $email = trim($this->request->get('value'));
 
-        if ( ! \Swift_Validate::email($email)) {
+        if ( ! EmailValidator::isValid($email)) {
             throw new \Exception_InvalidArgument('Invalid mail address');
         }
 

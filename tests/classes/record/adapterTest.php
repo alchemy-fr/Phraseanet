@@ -3,19 +3,18 @@
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(\record_adapter::class)]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
 class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 {
     private static $thumbtitled = false;
     private $originalName;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -28,7 +27,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->originalName && $this->originalName !== $this->getRecord1()->get_original_name()) {
             $this->getRecord1()->set_original_name($this->originalName);
@@ -38,7 +37,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     }
 
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$thumbtitled = null;
         parent::tearDownAfterClass();
@@ -47,41 +46,38 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     /**
      *  Check whether a record is delete from order_elements when
      *  record::delete is call
-     * @covers \record_adapter
      */
     public function testSetExport()
     {
         $acl = $this->stubACL();
-        $acl->expects($this->any())
+        $acl
             ->method('has_right')
             ->with($this->equalTo(\ACL::CANCMD))
             ->will($this->returnValue(true));
-        $acl->expects($this->any())
+        $acl
             ->method('has_access_to_record')
             ->with($this->isInstanceOf('\record_adapter'))
             ->will($this->returnValue(true));
-        $acl->expects($this->any())
+        $acl
             ->method('has_right_on_base')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACL::CANCMD))
+            ->with($this->isInt(), $this->equalTo(\ACL::CANCMD))
             ->will($this->returnValue(true));
-        $acl->expects($this->any())
+        $acl
             ->method('has_right_on_sbas')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACl::CANCMD))
+            ->with($this->isInt(), $this->equalTo(\ACl::CANCMD))
             ->will($this->returnValue(true));
 
         $app = $this->getApplication();
-        $app['phraseanet.user-query'] = $this->getMockBuilder('\User_Query')->disableOriginalConstructor()->getMock();
-        $app['phraseanet.user-query']->expects($this->any())->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
-        $app['phraseanet.user-query']->expects($this->any())->method('on_base_ids')->will($this->returnSelf());
-        $app['phraseanet.user-query']->expects($this->any())->method('who_have_right')->will($this->returnSelf());
-        $app['phraseanet.user-query']->expects($this->any())->method('execute')->will($this->returnSelf());
+        $app['phraseanet.user-query'] = $this->createStub('\User_Query');
+        $app['phraseanet.user-query']->method('get_results')->will($this->returnValue(new ArrayCollection([self::$DI['user_alt2']])));
+        $app['phraseanet.user-query']->method('on_base_ids')->will($this->returnSelf());
+        $app['phraseanet.user-query']->method('who_have_right')->will($this->returnSelf());
+        $app['phraseanet.user-query']->method('execute')->will($this->returnSelf());
 
         $randomValue = bin2hex(random_bytes(35));
         $app['session']->set('prodExportOrder_token', $randomValue);
 
-        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
         $triggered = false;
         $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
             $triggered = true;
@@ -213,13 +209,13 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     {
         $record_1 = $this->getRecord1();
         $this->assertNotNull($record_1->getSha256());
-        $this->assertRegExp('/[a-zA-Z0-9]{32}/', $record_1->getSha256());
+        $this->assertMatchesRegularExpression('/[a-zA-Z0-9]{32}/', $record_1->getSha256());
         $this->assertNull($this->getRecordStory1()->getSha256());
     }
 
     public function testGet_mime()
     {
-        $this->assertRegExp('/image\/\w+/', $this->getRecord1()->getMimeType());
+        $this->assertMatchesRegularExpression('/image\/\w+/', $this->getRecord1()->getMimeType());
     }
 
     public function testSetMimeType()
@@ -236,7 +232,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_status()
     {
-        $this->assertRegExp('/[01]{32}/', $this->getRecord1()->getStatus());
+        $this->assertMatchesRegularExpression('/[01]{32}/', $this->getRecord1()->getStatus());
     }
 
     public function testGet_subdef()
@@ -258,7 +254,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
 
     public function testGet_technical_infos()
     {
-        $this->assertInternalType('array', $this->getRecord1()->get_technical_infos()->getValues());
+        $this->assertIsArray($this->getRecord1()->get_technical_infos()->getValues());
     }
 
     public function testGet_caption()
@@ -435,11 +431,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
               AND record_id = :record_id';
-        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
-
-        $stmt->execute([':record_id' => $record_1->getRecordId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $record_1->getDatabox()->get_connection()->executeQuery($sql, [':record_id' => $record_1->getRecordId()]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             $this->fail();
@@ -454,11 +447,8 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $sql = 'SELECT record_id, coll_id, jeton
             FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)
             AND record_id = :record_id';
-        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
-
-        $stmt->execute([':record_id' => $record_1->getRecordId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $record_1->getDatabox()->get_connection()->executeQuery($sql, [':record_id' => $record_1->getRecordId()]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             $this->fail();
@@ -519,7 +509,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     {
         $app = $this->getApplication();
         /** @var \Alchemy\Phrasea\Model\Entities\Basket $basket */
-        $basket = $app['orm.em']->find('Phraseanet:Basket', 1);
+        $basket = $app['orm.em']->find('Alchemy\Phrasea\Model\Entities\Basket', 1);
         $found = $sselcont_id = false;
 
         $record_1 = $this->getRecord1();

@@ -175,9 +175,8 @@ class module_console_systemExport extends Command
                 $builder->setMaxResults($limit);
             }
 
-            $stmt = $builder->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $builder->executeQuery();
+            $rs = $stmt->fetchAllAssociative();
 
             $done = 0;
             $current_total = count($rs);

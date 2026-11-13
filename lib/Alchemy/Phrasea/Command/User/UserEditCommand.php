@@ -8,6 +8,7 @@ use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class UserEditCommand extends Command
 {
@@ -33,7 +34,7 @@ class UserEditCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('question');
 
         /** @var UserRepository $userRepository */
         $userRepository     = $this->container['repo.users'];
@@ -130,7 +131,7 @@ class UserEditCommand extends Command
         if ($password) {
             if (!$yes) {
                 do {
-                    $continue = mb_strtolower($dialog->ask($output, '<question>Do you want really set password to this user? (y/N)</question>', 'N'));
+                    $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question>Do you want really set password to this user? (y/N)</question>', 'N')));
                 } while (!in_array($continue, ['y', 'n']));
 
                 if ($continue !== 'y') {

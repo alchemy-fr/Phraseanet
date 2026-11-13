@@ -13,13 +13,14 @@ use Alchemy\Phrasea\Helper\JsonBodyHelper;
 use Alchemy\Phrasea\Media\SubdefGenerator;
 use databox_subdef;
 use Exception;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Utils;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class V3SubdefsServiceController extends Controller
@@ -140,9 +141,8 @@ class V3SubdefsServiceController extends Controller
             $sourceFile = $this->getTmpFilesystem()->createTemporaryFile('download_', null, $ext);
 
             try {
-                $guzzle = new Client();
-                $guzzle->setSslVerification(false);
-                $res = $guzzle->get($body->source->url, [], ['save_to' => $sourceFile])->send();
+                $guzzle = new Client(['verify' => false]);
+                $res = $guzzle->request('GET', $body->source->url, ['sink' => $sourceFile]);
                 unset($guzzle);
             }
             catch (Exception $e) {
@@ -208,8 +208,7 @@ class V3SubdefsServiceController extends Controller
             }
 
 
-            $guzzle = new Client();
-            $guzzle->setSslVerification(false);
+            $guzzle = new Client(['verify' => false]);
             $postFilenameRoot = $body->destination->filename ?: "subdef_";
 
             $destPayload = $body->destination->payload ?: [];
@@ -250,10 +249,13 @@ class V3SubdefsServiceController extends Controller
                         ]);
 
                         try {
-                            $guzzle->post($destination_url)
-                                ->addPostFields($postFields)
-                                ->addPostFile('file', $destFile, null, $postFilename)
-                                ->send();
+                            $multipart = $this->toMultipart($postFields);
+                            $multipart[] = [
+                                'name'     => 'file',
+                                'contents' => Utils::tryFopen($destFile, 'r'),
+                                'filename' => $postFilename,
+                            ];
+                            $guzzle->request('POST', $destination_url, ['multipart' => $multipart]);
                         }
                         catch (Exception $e) {
                             throw new Exception(sprintf(
@@ -279,6 +281,24 @@ class V3SubdefsServiceController extends Controller
         }
 
         return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
+     * Flattens (nested) form fields into Guzzle multipart parts, using the PHP "a[b][c]" naming convention.
+     */
+    private function toMultipart(array $fields, string $prefix = ''): array
+    {
+        $parts = [];
+        foreach ($fields as $name => $value) {
+            $key = $prefix === '' ? (string) $name : $prefix . '[' . $name . ']';
+            if (is_array($value) || is_object($value)) {
+                $parts = array_merge($parts, $this->toMultipart((array) $value, $key));
+            } else {
+                $parts[] = ['name' => $key, 'contents' => (string) $value];
+            }
+        }
+
+        return $parts;
     }
 
     /**
@@ -322,7 +342,7 @@ class V3SubdefsServiceController extends Controller
     }
 
     /**
-     * @return TranslatorInterface
+     * @return \Symfony\Contracts\Translation\TranslatorInterface
      */
     private function getTranslator()
     {

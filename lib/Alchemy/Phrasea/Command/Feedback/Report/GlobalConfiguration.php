@@ -8,7 +8,7 @@ use appbox;
 use collection;
 use databox;
 use databox_field;
-use Twig_Environment;
+use Twig\Environment;
 
 Class GlobalConfiguration
 {
@@ -26,7 +26,7 @@ Class GlobalConfiguration
      */
     private $dryRun;
     /**
-     * @var Twig_Environment
+     * @var Environment
      */
     private $twig;
     /**
@@ -37,13 +37,13 @@ Class GlobalConfiguration
 
     /**
      * @param PropertyAccess $conf
-     * @param Twig_Environment $twig
+     * @param Environment $twig
      * @param appbox $appBox
      * @param bool $dryRun
      * @param string $reportFormat
      * @throws ConfigurationException
      */
-    public function __construct(PropertyAccess $conf, Twig_Environment $twig, appbox $appBox, bool $dryRun, string $reportFormat)
+    public function __construct(PropertyAccess $conf, Environment $twig, appbox $appBox, bool $dryRun, string $reportFormat)
     {
         $this->twig = $twig;
         $this->configuration = $conf->get(['feedback-report'], ['enabled' => false, 'actions' => []]);

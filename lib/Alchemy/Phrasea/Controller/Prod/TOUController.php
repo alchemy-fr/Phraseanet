@@ -50,7 +50,7 @@ class TOUController extends Controller
      */
     public function displayTermsOfUse(Request $request)
     {
-        $toDisplay = $request->query->get('to_display', []);
+        $toDisplay = $request->query->all('to_display');
         $data = [];
 
         foreach ($this->getApplicationBox()->get_databoxes() as $databox) {

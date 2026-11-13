@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\FieldEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\FieldUpdatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Metadata\TagFactory;
+use Alchemy\Phrasea\Metadata\TagInterface;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use Doctrine\DBAL\Connection;
@@ -31,7 +32,7 @@ class databox_field implements cache_cacheableInterface
     /** @var databox */
     protected $databox;
 
-    /** DO NOT IMPORT, makes PHPSTORM HANG. PHPExiftool\Driver\TagInterface */
+    /** @var TagInterface|false */
     private $tag;
 
     protected $name;
@@ -272,8 +273,7 @@ class databox_field implements cache_cacheableInterface
         $connbas = $this->get_connection();
         $sql = 'DELETE FROM metadatas_structure WHERE id = :id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':id' => $this->get_id()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':id' => $this->get_id()]);
 
         $dom_struct = $this->databox->get_dom_structure();
         $xp_struct = $this->databox->get_xpath_structure();
@@ -361,8 +361,7 @@ class databox_field implements cache_cacheableInterface
         ];
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         if ($this->renamed) {
             caption_field::rename_all_metadatas($this->app, $this);
@@ -406,9 +405,9 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('printable', $this->printable ? '1' : '0');
         $meta->setAttribute('input_disable', $this->input_disable ? '1' : '0');
         if ($this->multi) {
-            $meta->setAttribute('separator', $this->separator);
+            $meta->setAttribute('separator', (string) $this->separator);
         }
-        $meta->setAttribute('thumbtitle', $this->thumbtitle);
+        $meta->setAttribute('thumbtitle', (string) $this->thumbtitle);
         $meta->setAttribute('meta_id', $this->id);
         $meta->setAttribute('sorter', $this->position);
 
@@ -420,9 +419,9 @@ class databox_field implements cache_cacheableInterface
         return $this;
     }
 
-    private function dispatchEvent($eventName, FieldEvent $event = null)
+    private function dispatchEvent($eventName, ?FieldEvent $event = null)
     {
-        $this->app['dispatcher']->dispatch($eventName, $event);
+        $this->app['dispatcher']->dispatch($event, $eventName);
     }
 
     /**
@@ -500,11 +499,11 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * Get a PHPExiftool Tag from tagName
+     * Get a Phraseanet or exiftool tag from tagName
      *
      * @param string $tagName
      * @param bool    $throwException
-     * @return object Makes phpstorm hangs \PHPExiftool\Driver\TagInterface
+     * @return TagInterface
      */
     public static function loadClassFromTagName($tagName, $throwException = true)
     {
@@ -515,7 +514,7 @@ class databox_field implements cache_cacheableInterface
         }
 
         try {
-            return TagFactory::getFromTagname($tagName);
+            return TagFactory::getFromRDFTagname($tagName);
         } catch (TagUnknown $exception) {
             if ($throwException) {
                 throw new NotFoundHttpException(sprintf("Tag %s not found", $tagName), $exception);
@@ -526,10 +525,10 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * @param object $tag Actually \PHPExiftool\Driver\TagInterface but make PHPStorm hangs
+     * @param TagInterface|null $tag
      * @return $this
      */
-    public function set_tag($tag = null)
+    public function set_tag(?TagInterface $tag = null)
     {
         if ($tag === null) {
             $tag = new NoSource();
@@ -541,7 +540,7 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * @return object Avoid PHPStorm stucks on 16k classes... \PHPExiftool\Driver\TagInterface
+     * @return TagInterface
      */
     public function get_tag()
     {
@@ -562,7 +561,7 @@ class databox_field implements cache_cacheableInterface
     {
         // lazy loading
         if ($this->dces_element === false) {
-            if (array_key_exists($this->original_dces, self::$knownDCES)) {
+            if (array_key_exists((string) $this->original_dces, self::$knownDCES)) {
                 $class = self::$knownDCES[$this->original_dces];
                 $this->dces_element = new $class();
             } else {
@@ -573,12 +572,12 @@ class databox_field implements cache_cacheableInterface
         return $this->dces_element;
     }
 
-    public function set_dces_element(databox_Field_DCESAbstract $DCES_element = null)
+    public function set_dces_element(?databox_Field_DCESAbstract $DCES_element = null)
     {
         $connection = $this->get_connection();
 
         if (null !== $DCES_element) {
-            $connection->executeUpdate(
+            $connection->executeStatement(
                 'UPDATE metadatas_structure SET dces_element = null WHERE dces_element = :dces_element',
                 [
                     'dces_element' => $DCES_element->get_label(),
@@ -586,7 +585,7 @@ class databox_field implements cache_cacheableInterface
             );
         }
 
-        $connection->executeUpdate(
+        $connection->executeStatement(
             'UPDATE metadatas_structure SET dces_element = :dces_element WHERE id = :id',
             [
                 'dces_element' => $DCES_element ? $DCES_element->get_label() : null,
@@ -631,7 +630,7 @@ class databox_field implements cache_cacheableInterface
      * @param  ControlProviderInterface $vocabulary_control
      * @return \databox_field
      */
-    public function setVocabularyControl(ControlProviderInterface $vocabulary_control = null)
+    public function setVocabularyControl(?ControlProviderInterface $vocabulary_control = null)
     {
         $this->vocabulary_control = $vocabulary_control;
 
@@ -1063,10 +1062,8 @@ class databox_field implements cache_cacheableInterface
         $sorter = 0;
 
         $sql = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure';
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             $sorter = max(1, (int) $row['sorter']);
@@ -1088,9 +1085,8 @@ class databox_field implements cache_cacheableInterface
 
         $connection = $databox->get_connection();
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':name'   => $name, ':sorter' => $sorter]);
+        $stmt->executeStatement([':name'   => $name, ':sorter' => $sorter]);
         $id = $connection->lastInsertId();
-        $stmt->closeCursor();
 
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 

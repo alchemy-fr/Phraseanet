@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 abstract class ServiceProviderTestCase extends \PhraseanetTestCase
 {
-    /**
-     * @test
-     * @dataProvider provideServiceDescription
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideServiceDescription')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function theSameInstanceShouldBereturnedEveryTime($service, $key, $classname)
     {
         self::$DI['app']->register(new $service());
@@ -19,5 +17,5 @@ abstract class ServiceProviderTestCase extends \PhraseanetTestCase
         $this->assertSame($instance1, $instance2);
     }
 
-    abstract public function provideServiceDescription();
+    abstract public static function provideServiceDescription();
 }

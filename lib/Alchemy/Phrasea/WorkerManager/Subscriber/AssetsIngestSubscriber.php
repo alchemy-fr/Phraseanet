@@ -92,7 +92,7 @@ class AssetsIngestSubscriber implements EventSubscriberInterface
         );
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             WorkerEvents::ASSETS_CREATE                  => 'onAssetsCreate',

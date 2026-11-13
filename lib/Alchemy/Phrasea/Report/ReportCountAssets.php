@@ -45,10 +45,9 @@ class ReportCountAssets extends Report
     {
         $this->computeVars();
         $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
-        while (($row = $stmt->fetch())) {
+        while (($row = $stmt->fetchAssociative())) {
             $callback($row);
         }
-        $stmt->closeCursor();
     }
 
     private function computeVars()

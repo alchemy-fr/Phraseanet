@@ -4,11 +4,9 @@ use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/../Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
 {
     public static $account = null;
@@ -20,11 +18,11 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
      */
     protected $auth;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        $this->auth = $this->getMock("Bridge_Api_Auth_Interface");
-        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', ["is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"], [self::$DI['app']['url_generator'], self::$DI['app']['conf'], $this->auth, self::$DI['app']['translator']]);
+        $this->auth = $this->createMock("Bridge_Api_Auth_Interface");
+        $this->bridgeApi = $this->getMockBuilder('Bridge_Api_Abstract')->setConstructorArgs([self::$DI['app']['url_generator'], self::$DI['app']['conf'], $this->auth, self::$DI['app']['translator']])->addMethods(["is_configured"])->getMockForAbstractClass();
 
         if (!self::$api) {
             $application = $this->getApplication();
@@ -42,7 +40,7 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$api instanceof \Bridge_Api) {
             self::$api->delete();
@@ -90,7 +88,7 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
             ->method('is_configured')
             ->will($this->returnValue(FALSE));
 
-        $this->setExpectedException("Bridge_Exception_ApiConnectorNotConfigured");
+        $this->expectException("Bridge_Exception_ApiConnectorNotConfigured");
 
         $this->bridgeApi->connect();
     }
@@ -115,7 +113,7 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
             ->method('is_configured')
             ->will($this->returnValue(FALSE));
 
-        $this->setExpectedException("Bridge_Exception_ApiConnectorNotConfigured");
+        $this->expectException("Bridge_Exception_ApiConnectorNotConfigured");
 
         $this->bridgeApi->reconnect();
     }
@@ -140,7 +138,7 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
             ->method('is_configured')
             ->will($this->returnValue(FALSE));
 
-        $this->setExpectedException("Bridge_Exception_ApiConnectorNotConfigured");
+        $this->expectException("Bridge_Exception_ApiConnectorNotConfigured");
 
         $this->bridgeApi->disconnect();
     }
@@ -160,7 +158,7 @@ class Bridge_Api_AbstractTest extends \PhraseanetWebTestCase
     {
         $this->auth->expects($this->once())
             ->method('get_auth_url')
-            ->with($this->isType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY))
+            ->with($this->isArray())
             ->will($this->returnValue("une url"));
 
         $return = $this->bridgeApi->get_auth_url();

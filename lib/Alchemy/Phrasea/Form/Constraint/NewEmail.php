@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Validator\Constraint;
 
 class NewEmail extends Constraint
@@ -28,11 +28,11 @@ class NewEmail extends Constraint
 
     public function isAlreadyRegistered($email)
     {
-        return (Boolean) $this->repository->findByEmail($email);
+        return (bool) $this->repository->findByEmail($email);
     }
 
     public static function create(Application $app)
     {
-        return new static($app['repo.users']);
+        return new self($app['repo.users']);
     }
 }

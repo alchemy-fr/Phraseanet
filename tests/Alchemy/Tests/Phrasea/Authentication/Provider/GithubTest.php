@@ -5,11 +5,10 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 use Alchemy\Phrasea\Authentication\Provider\Github;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
+use GuzzleHttp\Psr7\Response;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class GithubTest extends ProviderTestCase
 {
     public function provideDataForFailingCallback()
@@ -37,42 +36,10 @@ class GithubTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->getMock('Guzzle\Http\Message\EntityEnclosingRequestInterface');
-
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $requestGet->expects($this->any())
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $response->expects($this->any())
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        $requestGet->expects($this->any())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $requestPost->expects($this->any())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($requestGet));
-
-        $guzzle->expects($this->any())
-            ->method('post')
-            ->will($this->returnValue($requestPost));
+        $guzzle = $this->getGuzzleMockWithResponses([
+            new Response(200, [], json_encode(['access_token' => 'github-access-token'])),
+            new Response(200, [], json_encode(['id' => self::ID])),
+        ]);
 
         $provider->setGuzzleClient($guzzle);
 
@@ -104,43 +71,12 @@ class GithubTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $requestGet->expects($this->any())
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $response->expects($this->any())
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        $response->expects($this->any())
-            ->method('getBody')
-            ->with($this->equalTo(true))
-            ->will($this->returnValue(json_encode([
-                'id'         => self::ID,
-                'name'       => self::FIRSTNAME . ' ' . self::LASTNAME,
-                'email'      => self::EMAIL,
-                'avatar_url' => self::IMAGEURL,
-            ])));
-
-        $requestGet->expects($this->any())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($requestGet));
+        $guzzle = $this->getGuzzleMock(200, json_encode([
+            'id'         => self::ID,
+            'name'       => self::FIRSTNAME . ' ' . self::LASTNAME,
+            'email'      => self::EMAIL,
+            'avatar_url' => self::IMAGEURL,
+        ]));
 
         $provider->setGuzzleClient($guzzle);
         $provider->getSession()->set('github.provider.id', 'github-id');
@@ -157,33 +93,7 @@ class GithubTest extends ProviderTestCase
     {
         $provider = $this->getProvider();
 
-        $guzzle = $this->getMock('Guzzle\Http\ClientInterface');
-
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
-
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $requestGet->expects($this->any())
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $response->expects($this->any())
-            ->method('getStatusCode')
-            ->will($this->returnValue(401));
-
-        $requestGet->expects($this->any())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $guzzle->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($requestGet));
+        $guzzle = $this->getGuzzleMock(401);
 
         $provider->setGuzzleClient($guzzle);
 

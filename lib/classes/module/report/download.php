@@ -70,10 +70,8 @@ class module_report_download extends module_report
         $sql = $var['sql'];
         $params = $var['params'];
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $value = $row['val'];
@@ -213,10 +211,8 @@ class module_report_download extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $row = $stmt->fetchAssociative();
 
         return $row ? $row['nb'] : 0;
     }
@@ -272,10 +268,8 @@ class module_report_download extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $record = $databox->get_record($row['id']);

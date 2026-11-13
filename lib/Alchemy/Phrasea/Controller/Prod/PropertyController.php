@@ -125,10 +125,10 @@ class PropertyController extends Controller
             return $this->app->json(['message' => 'invalid change status form'], 403);
         }
 
-        $applyStatusToChildren = $request->request->get('apply_to_children', []);
+        $applyStatusToChildren = $request->request->all('apply_to_children');
         $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CHGSTATUS]);
         $updated = [];
-        $postStatus = (array) $request->request->get('status');
+        $postStatus = $request->request->all('status');
 
         foreach ($records as $record) {
             $sbasId = $record->getDataboxId();
@@ -163,9 +163,9 @@ class PropertyController extends Controller
             return $this->app->json(['message' => 'invalid change type form'], 403);
         }
 
-        $typeLst = $request->request->get('types', []);
+        $typeLst = $request->request->all('types');
         $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
-        $mimeLst = $request->request->get('mimes', []);
+        $mimeLst = $request->request->all('mimes');
         $forceType = $request->request->get('force_types', '');
         $updated = [];
 

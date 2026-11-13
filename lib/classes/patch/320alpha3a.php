@@ -50,8 +50,7 @@ class patch_320alpha3a extends patchAbstract
     {
         $sql = 'UPDATE basusr SET nowatermark=1 WHERE needwatermark=0';
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
         unset($stmt);
 
         return true;

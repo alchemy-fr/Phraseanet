@@ -10,20 +10,13 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-use PHPExiftool\Driver\AbstractTag;
-
 class NoSource extends AbstractTag
 {
-    protected $Id = 'no-source';
-    protected $Name = 'no-source';
-    protected $FullName = 'Phraseanet::no-source';
-    protected $GroupName = 'Phraseanet';
-    protected $g0 = 'Phraseanet';
-    protected $g1 = '';
-    protected $g2 = '';
-    protected $Type = '';
-    protected $Writable = false;
-    protected $Description = 'An empty source';
+    protected string $id = 'Phraseanet:no-source';
+    protected string $name = 'no-source';
+    protected array $description = [
+        'en' => 'An empty source',
+    ];
     private $fieldName;
 
     /**

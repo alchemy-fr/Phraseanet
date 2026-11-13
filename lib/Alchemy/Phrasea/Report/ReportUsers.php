@@ -46,10 +46,9 @@ class ReportUsers extends Report
         $this->computeVars();
         // use appbox connection
         $stmt = $this->databox->get_appbox()->get_connection()->executeQuery($this->sql, []);
-        while (($row = $stmt->fetch())) {
+        while (($row = $stmt->fetchAssociative())) {
             $callback($row);
         }
-        $stmt->closeCursor();
     }
 
     private function computeVars()

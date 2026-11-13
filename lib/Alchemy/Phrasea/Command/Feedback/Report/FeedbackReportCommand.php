@@ -7,7 +7,6 @@ use Alchemy\Phrasea\Command\Command as phrCommand;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use appbox;
-use Doctrine\DBAL\DBALException;
 use Exception;
 use PDO;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -30,7 +29,7 @@ class FeedbackReportCommand extends phrCommand
     /** @var GlobalConfiguration */
     private $config;
 
-    public function configure()
+    public function configure(): void
     {
         $this->setName('feedback:report')
             ->setDescription('Report ended feedback results (votes) on records (set status-bits)')
@@ -45,7 +44,7 @@ class FeedbackReportCommand extends phrCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws \Throwable
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
@@ -122,8 +121,8 @@ GROUP BY be.id";
         $last_basket_id = null;
         $condensed = null;
         $vote_initiator = null;
-        $stmt_select = $appbox->get_connection()->query($sql_select);
-        while ($row = $stmt_select->fetch(PDO::FETCH_ASSOC)) {
+        $stmt_select = $appbox->get_connection()->executeQuery($sql_select);
+        while ($row = $stmt_select->fetchAssociative()) {
             if($row['basket_id'] !== $last_basket_id) {
                 $this->outputCondensed($condensed);
                 $condensed = [
@@ -192,14 +191,13 @@ GROUP BY be.id";
                 }
             }
             if(!$this->config->isDryRun()) {
-                $stmt_update->execute([
+                $stmt_update->executeStatement([
                     ':expired' => $row['expired'],
                     ':id'      => $row['be_id']
                 ]);
             }
         }
         $this->outputCondensed($condensed);
-        $stmt_select->closeCursor();
 
         return 0;
     }

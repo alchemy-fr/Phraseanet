@@ -10,7 +10,7 @@ class Query
 {
     private $root;
 
-    public function __construct(Node $root = null)
+    public function __construct(?Node $root = null)
     {
         if (!$root) {
             $root = new NullQueryNode();

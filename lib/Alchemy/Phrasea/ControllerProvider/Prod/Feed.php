@@ -14,26 +14,22 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Prod\FeedController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Feed implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.feed'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.feed'] = function (PhraseaApplication $app) {
             return (new FeedController($app))
                 ->setDispatcher($app['dispatcher'])
                 ->setFirewall($app['firewall']);
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     public function connect(Application $app)

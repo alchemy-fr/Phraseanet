@@ -577,10 +577,10 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                     case "too_many_entries":
                         $reason = $this->translator->trans("You are attempting to exceed the storage limit on your account and must delete existing entries before inserting new entries");
                         break;
-                    case "InvalidToken";
+                    case "InvalidToken":
                         $reason = $this->translator->trans("The authentication token specified in the Authorization header is invalid");
                         break;
-                    case "TokenExpired";
+                    case "TokenExpired":
                         $reason = $this->translator->trans("The authentication token specified in the Authorization header has expired.");
                         break;
                     case "disabled_in_maintenance_mode":

@@ -3,17 +3,15 @@
 namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\BrowserKit\CookieJar;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class RootTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRouteSetLocale()
@@ -71,7 +69,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('text/plain; charset=UTF-8', $response->headers->get('Content-Type'));
         $this->assertEquals('UTF-8', $response->getCharset());
 
-        $this->assertRegExp('/^Disallow: \/$/m', $response->getContent());
+        $this->assertMatchesRegularExpression('/^Disallow: \/$/m', $response->getContent());
 
         self::$DI['app']['conf']->set(['registry', 'general', 'allow-indexation'], true);
 
@@ -81,7 +79,7 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('text/plain; charset=UTF-8', $response->headers->get('Content-Type'));
         $this->assertEquals('UTF-8', $response->getCharset());
 
-        $this->assertRegExp('/^Allow: \/$/m', $response->getContent());
+        $this->assertMatchesRegularExpression('/^Allow: \/$/m', $response->getContent());
 
         self::$DI['app']['conf']->set(['registry', 'general', 'allow-indexation'], $original_value);
     }
@@ -110,22 +108,20 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $this->logout(self::$DI['app']);
 
-        $browser = $this->getMockBuilder('\Browser')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $browser = $this->createMock('\Browser');
 
-        $browser->expects($this->any())
+        $browser
             ->method('getBrowser')
             ->will($this->returnValue('Un joli browser'));
 
-        $browser->expects($this->any())
+        $browser
             ->method('getPlatform')
             ->will($this->returnValue('Une belle version'));
 
         $nonce = self::$DI['app']['random.low']->generateString(16);
         $string = $browser->getBrowser() . '_' . $browser->getPlatform();
 
-        $token = self::$DI['app']['auth.password-encoder']->encodePassword($string, $nonce);
+        $token = self::$DI['app']['auth.password-encoder']->hash($string, $nonce);
 
         $app['browser'] = $browser;
 

@@ -14,42 +14,32 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="FeedPublishers")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository::class)]
+#[ORM\Table(name: 'FeedPublishers')]
 class FeedPublisher
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $owner = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_on")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime', name: 'created_on')]
     private $createdOn;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Feed", inversedBy="publishers", cascade={"persist"})
-     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Feed::class, inversedBy: 'publishers', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'feed_id', referencedColumnName: 'id')]
     private $feed;
 
     /**
@@ -111,7 +101,7 @@ class FeedPublisher
      * @param  Feed          $feed
      * @return FeedPublisher
      */
-    public function setFeed(Feed $feed = null)
+    public function setFeed(?Feed $feed = null)
     {
         $this->feed = $feed;
 

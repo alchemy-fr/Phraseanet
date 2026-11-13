@@ -4,15 +4,13 @@ namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRouteTaskManagerRoot()
@@ -33,10 +31,10 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $tasks = json_decode(self::$DI['client']->getResponse()->getContent());
         foreach ($tasks as $task) {
-            $this->assertObjectHasAttribute('id', $task);
-            $this->assertObjectHasAttribute('name', $task);
-            $this->assertObjectHasAttribute('status', $task);
-            $this->assertObjectHasAttribute('urls', $task);
+            $this->assertObjectHasProperty('id', $task);
+            $this->assertObjectHasProperty('name', $task);
+            $this->assertObjectHasProperty('status', $task);
+            $this->assertObjectHasProperty('urls', $task);
         }
     }
 
@@ -49,7 +47,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('POST', '/admin/task-manager/tasks/create', $parameters);
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
-        $this->assertRegExp('/\/admin\/task-manager\/task\/\d+/', self::$DI['client']->getResponse()->headers->get('location'));
+        $this->assertMatchesRegularExpression('/\/admin\/task-manager\/task\/\d+/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     public function testPostCreateTaskWithWrongName()
@@ -66,13 +64,11 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostStartScheduler()
     {
-        self::$DI['app']['task-manager.status'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\TaskManagerStatus')
-                ->disableOriginalConstructor()
-                ->getMock();
+        self::$DI['app']['task-manager.status'] = $this->createMock('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
         self::$DI['app']['task-manager.status']->expects($this->once())
                ->method('start');
         // Prevent actual start of process scheduler
-        self::$DI['app']['dispatcher']->addListener(KernelEvents::TERMINATE, function (PostResponseEvent $event) {
+        self::$DI['app']['dispatcher']->addListener(KernelEvents::TERMINATE, function (TerminateEvent $event) {
             $event->stopPropagation();
         }, -999);
 
@@ -83,9 +79,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostStopScheduler()
     {
-        self::$DI['app']['task-manager.status'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\TaskManagerStatus')
-                ->disableOriginalConstructor()
-                ->getMock();
+        self::$DI['app']['task-manager.status'] = $this->createMock('Alchemy\Phrasea\TaskManager\TaskManagerStatus');
         self::$DI['app']['task-manager.status']->expects($this->once())
                ->method('stop');
         self::$DI['client']->request('POST', '/admin/task-manager/scheduler/stop');
@@ -111,12 +105,12 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('/admin/task-manager/tasks', self::$DI['client']->getResponse()->headers->get('location'));
 
-        $this->assertNull(self::$DI['app']['orm.em']->find('Phraseanet:Task', 1));
+        $this->assertNull(self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1));
     }
 
     public function testPostTaskStart()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/start');
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -127,7 +121,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostTaskStop()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/stop');
         $this->assertEquals(302, self::$DI['client']->getResponse()->getStatusCode());
@@ -138,7 +132,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostResetCrashes()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         self::$DI['client']->request('POST', '/admin/task-manager/task/'.$task->getId().'/resetcrashcounter');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
@@ -149,7 +143,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostSaveTask()
     {
-        $task = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $task = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
 
         $name = 'renamed';
         $period = 366;
@@ -186,11 +180,11 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('GET', '/admin/task-manager/task/1', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $json = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertObjectHasAttribute('id', $json);
-        $this->assertObjectHasAttribute('name', $json);
-        $this->assertObjectHasAttribute('configuration', $json);
-        $this->assertObjectHasAttribute('actual', $json);
-        $this->assertObjectHasAttribute('urls', $json);
+        $this->assertObjectHasProperty('id', $json);
+        $this->assertObjectHasProperty('name', $json);
+        $this->assertObjectHasProperty('configuration', $json);
+        $this->assertObjectHasProperty('actual', $json);
+        $this->assertObjectHasProperty('urls', $json);
     }
 
     public function testGetLiveInformation()
@@ -198,9 +192,9 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('GET', '/admin/task-manager/scheduler', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $json = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertObjectHasAttribute('name', $json);
-        $this->assertObjectHasAttribute('configuration', $json);
-        $this->assertObjectHasAttribute('urls', $json);
+        $this->assertObjectHasProperty('name', $json);
+        $this->assertObjectHasProperty('configuration', $json);
+        $this->assertObjectHasProperty('urls', $json);
     }
 
     public function testtestGetLiveInformationJsonBadRequest()
@@ -214,8 +208,8 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['client']->request('GET', '/admin/task-manager/live', [], [], ["HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"]);
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $json = json_decode(self::$DI['client']->getResponse()->getContent());
-        $this->assertObjectHasAttribute('tasks', $json);
-        $this->assertObjectHasAttribute('manager', $json);
+        $this->assertObjectHasProperty('tasks', $json);
+        $this->assertObjectHasProperty('manager', $json);
     }
 
     public function testGetSchedulerJsonBadRequest()
@@ -249,8 +243,8 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostTaskFacility()
     {
-        $job = $this->getMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
-        $editor = $this->getMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
+        $job = $this->createMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
+        $editor = $this->createMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
 
         $job->expects($this->once())
                 ->method('getEditor')
@@ -259,8 +253,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 ->method('facility')
                 ->will($this->returnValue(new Response('Hello')));
 
-        self::$DI['app']['task-manager.job-factory'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\Job\Factory')
-                ->disableOriginalConstructor()->getMock();
+        self::$DI['app']['task-manager.job-factory'] = $this->createMock('Alchemy\Phrasea\TaskManager\Job\Factory');
         self::$DI['app']['task-manager.job-factory']->expects($this->once())
                 ->method('create')
                 ->will($this->returnValue($job));
@@ -271,8 +264,8 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testPostTaskXmlFromForm()
     {
-        $job = $this->getMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
-        $editor = $this->getMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
+        $job = $this->createMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
+        $editor = $this->createMock('Alchemy\Phrasea\TaskManager\Editor\EditorInterface');
 
         $job->expects($this->once())
                 ->method('getEditor')
@@ -281,8 +274,7 @@ class TaskManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 ->method('updateXMLWithRequest')
                 ->will($this->returnValue(new Response('Hello')));
 
-        self::$DI['app']['task-manager.job-factory'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\Job\Factory')
-                ->disableOriginalConstructor()->getMock();
+        self::$DI['app']['task-manager.job-factory'] = $this->createMock('Alchemy\Phrasea\TaskManager\Job\Factory');
         self::$DI['app']['task-manager.job-factory']->expects($this->once())
                 ->method('create')
                 ->will($this->returnValue($job));

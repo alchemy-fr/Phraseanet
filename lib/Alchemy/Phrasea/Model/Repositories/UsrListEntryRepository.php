@@ -36,7 +36,7 @@ class UsrListEntryRepository extends EntityRepository
      */
     public function findUserList(User $user)
     {
-        $dql = 'SELECT e FROM Phraseanet:UsrListEntry e
+        $dql = 'SELECT e FROM Alchemy\Phrasea\Model\Entities\UsrListEntry e
             WHERE e.user = :usr_id';
 
         $params = [
@@ -67,7 +67,7 @@ class UsrListEntryRepository extends EntityRepository
 
     public function findEntryByListAndUsrId(UsrList $list, $usr_id)
     {
-        $dql = 'SELECT e FROM Phraseanet:UsrListEntry e
+        $dql = 'SELECT e FROM Alchemy\Phrasea\Model\Entities\UsrListEntry e
               JOIN e.list l
             WHERE e.user = :usr_id AND l.id = :list_id';
 

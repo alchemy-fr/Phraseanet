@@ -109,7 +109,7 @@ class PopulateIndexWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             // send to retry queue
-            $this->dispatch(WorkerEvents::POPULATE_INDEX_FAILURE, new PopulateIndexFailureEvent(
+            $this->dispatch(new PopulateIndexFailureEvent(
                 $payload['host'],
                 $payload['port'],
                 $payload['indexName'],
@@ -117,7 +117,8 @@ class PopulateIndexWorker implements WorkerInterface
                 $workerMessage,
                 $count,
                 $workerRunningJob->getId()
-            ));
+            ),
+            WorkerEvents::POPULATE_INDEX_FAILURE);
         } else {
             $databox = $this->findDataboxById($databoxId);
 
@@ -126,7 +127,7 @@ class PopulateIndexWorker implements WorkerInterface
                 foreach ($recordIds as $recordId) {
                     $record = $databox->get_record($recordId);
                     // re-index record and invalidate caption repository cache
-                    $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+                    $this->dispatch(new MetadataChangedEvent($record), RecordEvents::METADATA_CHANGED);
                 }
             } else {
                 try {
@@ -145,7 +146,7 @@ class PopulateIndexWorker implements WorkerInterface
                     $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
                     // notify to send a retry
-                    $this->dispatch(WorkerEvents::POPULATE_INDEX_FAILURE, new PopulateIndexFailureEvent(
+                    $this->dispatch(new PopulateIndexFailureEvent(
                         $payload['host'],
                         $payload['port'],
                         $payload['indexName'],
@@ -153,7 +154,8 @@ class PopulateIndexWorker implements WorkerInterface
                         $workerMessage,
                         $count,
                         $workerRunningJob->getId()
-                    ));
+                    ),
+                    WorkerEvents::POPULATE_INDEX_FAILURE);
                 }
             }           
         }

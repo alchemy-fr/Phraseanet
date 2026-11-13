@@ -52,10 +52,8 @@ class patch_390alpha20a extends patchAbstract
         $offset = 0;
         do {
             $sql = sprintf('SELECT id, datas, type FROM notifications ORDER BY id ASC LIMIT %d, %d', $offset, $perRequest);
-            $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $appbox->get_connection()->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
 
             $sql = 'UPDATE notifications SET datas = :json WHERE id = :id';
             $stmt = $appbox->get_connection()->prepare($sql);
@@ -87,9 +85,8 @@ class patch_390alpha20a extends patchAbstract
                     $json = json_encode($data);
                 }
 
-                $stmt->execute([':id' => $row['id'], ':json' => $json]);
+                $stmt->executeStatement([':id' => $row['id'], ':json' => $json]);
             }
-            $stmt->closeCursor();
 
             $offset += $perRequest;
         } while (count($rs) > 0);

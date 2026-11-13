@@ -17,5 +17,5 @@ interface ThumbnailManager
 
     const TYPE_PRESENTATION = 'presentation';
 
-    public function setThumbnail(ThumbnailedElement $element, $thumbnailType, File $file = null);
+    public function setThumbnail(ThumbnailedElement $element, $thumbnailType, ?File $file = null);
 }

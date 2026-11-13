@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command\Maintenance;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -99,27 +100,21 @@ class CleanLogDocsCommand extends Command
 
                         $sqlCount = "SELECT COUNT(`id`) AS n FROM log_docs WHERE record_id IN (" . $sqlRecordIds. ")";
 
-                        $stmt = $databox->get_connection()->prepare($sqlActionDelete);
-                        $stmt->execute();
+                        $stmt = $databox->get_connection()->executeQuery($sqlActionDelete);
                         // result is limited to 1000 rows to avoid memory leak
-                        $displayedRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                        $stmt->closeCursor();
+                        $displayedRows = $stmt->fetchAllAssociative();
                     } else {
                         $sql = 'SELECT id, log_id, `date`, record_id, final, `action` FROM log_docs WHERE ' . $clauseWhere . ' LIMIT 1000';
 
                         $sqlCount = 'SELECT COUNT(`id`) AS n FROM log_docs WHERE ' . $clauseWhere;
 
-                        $stmt = $databox->get_connection()->prepare($sql);
-                        $stmt->execute();
+                        $stmt = $databox->get_connection()->executeQuery($sql);
                         // result is limited to 1000 rows to avoid memory leak
-                        $displayedRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                        $stmt->closeCursor();
+                        $displayedRows = $stmt->fetchAllAssociative();
                     }
 
-                    $stmt = $databox->get_connection()->prepare($sqlCount);
-                    $stmt->execute();
-                    $count = $stmt->fetchColumn(0);
-                    $stmt->closeCursor();
+                    $stmt = $databox->get_connection()->executeQuery($sqlCount);
+                    $count = $stmt->fetchOne();
 
 
                     $output->writeln(sprintf("\n \n dry-run , %d log docs entry to delete for databox %s", $count, $databox->get_dbname()));
@@ -130,12 +125,12 @@ class CleanLogDocsCommand extends Command
                         array_push($displayedRows, array_fill_keys(['id', 'log_id', 'date', 'record_id', 'final', 'action'], ' ... '));
                     }
 
-                    $logEntryTable = $this->getHelperSet()->get('table');
+                    $logEntryTable = new Table($output);
                     $headers = ['id', 'log_id', 'date', 'record_id', 'final', 'action'];
                     $logEntryTable
                         ->setHeaders($headers)
                         ->setRows($displayedRows)
-                        ->render($output);
+                        ->render();
 
                 } else {
                     if (in_array('delete', $action)) {
@@ -145,10 +140,8 @@ class CleanLogDocsCommand extends Command
                         $count = 0;
 
                         do {
-                            $stmt = $cnx->prepare($sqlRecordIds);
-                            $stmt->execute();
-                            $recordsId = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-                            $stmt->closeCursor();
+                            $stmt = $cnx->executeQuery($sqlRecordIds);
+                            $recordsId = $stmt->fetchFirstColumn();
 
                             if (empty($recordsId)) {
                                 // nothing to delete
@@ -157,7 +150,7 @@ class CleanLogDocsCommand extends Command
 
                             $sqlDeleteAction = 'DELETE FROM log_docs WHERE record_id IN(' . implode(',', $recordsId) . ') LIMIT 1000';
                             do {
-                                $nbDeletedRow = $cnx->exec($sqlDeleteAction);
+                                $nbDeletedRow = $cnx->executeStatement($sqlDeleteAction);
                                 $count += $nbDeletedRow;
                             } while ($nbDeletedRow > 0);
 
@@ -169,7 +162,7 @@ class CleanLogDocsCommand extends Command
                         $cnx = $databox->get_connection();
                         $count = 0;
                         do {
-                            $nbDeletedRow = $cnx->exec($sqlDeleteAction);
+                            $nbDeletedRow = $cnx->executeStatement($sqlDeleteAction);
                             $count += $nbDeletedRow;
                         } while ($nbDeletedRow > 0);
                     }

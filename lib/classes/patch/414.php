@@ -48,7 +48,7 @@ class patch_414 implements patchInterface
     {
         $cnx = $base->get_connection();
         $sql = "CREATE TEMPORARY TABLE `_logs` ( `usr_id` INT(11) NOT NULL , `connection` DATETIME NOT NULL , INDEX `usr_id` (`usr_id`)) ENGINE = InnoDB";
-        $cnx->exec($sql);
+        $cnx->executeStatement($sql);
 
         $sql = "INSERT INTO `_logs` (`usr_id`, `connection`) VALUES (:usr_id, :connection)";
         $stmti = $cnx->prepare($sql);
@@ -56,12 +56,10 @@ class patch_414 implements patchInterface
         foreach($app->getApplicationBox()->get_databoxes() as $databox) {
             $sql = "SELECT `usrid` AS `usr_id`, MAX(`date`) AS `connection` FROM `log` WHERE NOT ISNULL(`usrid`) AND NOT ISNULL(`date`) GROUP BY `usrid`";
             try {
-                $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute();
-                while($row = ($stmt->fetch())) {
-                    $stmti->execute($row);
+                $stmt = $databox->get_connection()->executeQuery($sql);
+                while($row = ($stmt->fetchAssociative())) {
+                    $stmti->executeStatement($row);
                 }
-                $stmt->closeCursor();
             }
             catch (\Exception $e) {
                 var_dump($e->getMessage());
@@ -71,17 +69,14 @@ class patch_414 implements patchInterface
         $sql = "UPDATE `Users` SET `last_connection` = (SELECT MAX(`connection`) FROM `_logs` WHERE _logs.usr_id = Users.id)";
         try {
             $stmt = $cnx->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         }
         catch (\Exception $e) {
             var_dump($e->getMessage());
         }
 
-        $stmti->closeCursor();
-
         $sql = "DROP TABLE `_logs`";
-        $cnx->exec($sql);
+        $cnx->executeStatement($sql);
 
         return true;
     }

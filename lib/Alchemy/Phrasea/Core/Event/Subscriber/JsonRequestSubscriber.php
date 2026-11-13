@@ -12,15 +12,15 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class JsonRequestSubscriber implements EventSubscriberInterface
 {
-    public function onSilexError(GetResponseForExceptionEvent $event)
+    public function onSilexError(ExceptionEvent $event)
     {
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
         $request = $event->getRequest();
 
         if ((0 !== strpos($request->getPathInfo(), '/admin/')
@@ -33,6 +33,7 @@ class JsonRequestSubscriber implements EventSubscriberInterface
                 'message' => $exception->getMessage(),
             ];
 
+            $event->allowCustomResponseCode();
             $event->setResponse(new JsonResponse($datas, 200, ['X-Status-Code' => 200]));
         }
     }
@@ -40,7 +41,7 @@ class JsonRequestSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::EXCEPTION => ['onSilexError', -1]];
     }

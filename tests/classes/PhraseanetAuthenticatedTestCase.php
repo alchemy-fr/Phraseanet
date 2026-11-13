@@ -4,35 +4,31 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 
 abstract class PhraseanetAuthenticatedTestCase extends \PhraseanetTestCase
 {
-    /** @var PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $stubbedACL;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->authenticate(self::$DI['app']);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->logout(self::$DI['app']);
         parent::tearDown();
     }
 
     /**
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function stubACL()
     {
-        $stubbedACL = $this->getMockBuilder('\ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $stubbedACL = $this->createMock('\ACL');
 
-        $aclProvider = $this->getMockBuilder(ACLProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $aclProvider = $this->createMock(ACLProvider::class);
 
-        $aclProvider->expects($this->any())
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($stubbedACL));
 

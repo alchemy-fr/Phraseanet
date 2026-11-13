@@ -96,8 +96,10 @@ class MailRequestAccountDelete extends AbstractMailWithLink
             User::GENDER_MR   => 'Mr',
         ];
 
-        if (array_key_exists($this->user->getGender(), $civilities)) {
-            return $civilities[$this->user->getGender()];
+        $gender = $this->user->getGender();
+
+        if (null !== $gender && array_key_exists($gender, $civilities)) {
+            return $civilities[$gender];
         } else {
             return '';
         }

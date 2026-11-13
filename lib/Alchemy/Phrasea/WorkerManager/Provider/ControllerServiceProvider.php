@@ -7,9 +7,10 @@ use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Security\Firewall;
 use Alchemy\Phrasea\WorkerManager\Controller\AdminConfigurationController;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ControllerServiceProvider implements ControllerProviderInterface, ServiceProviderInterface
@@ -19,23 +20,16 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
     /**
      * {@inheritdoc}
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.worker.admin.configuration'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.worker.admin.configuration'] = function (PhraseaApplication $app) {
             return (new AdminConfigurationController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ;
-        });
+        };
 
         // example of route to check webhook
         $app->post('/webhook', array($this, 'getWebhookData'));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot(Application $app)
-    {
     }
 
     public function connect(Application $app)

@@ -5,15 +5,11 @@ namespace Alchemy\Tests\Phrasea\Cache;
 use Alchemy\Phrasea\Cache\ConnectionFactory;
 use Alchemy\Phrasea\Cache\Factory;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FactoryTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideCacheTypes
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideCacheTypes')]
     public function testFactoryCreate($name, $extension, $expected)
     {
         if (null !== $extension && !extension_loaded($extension)) {
@@ -24,7 +20,7 @@ class FactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf($expected, $factory->create($name, []));
     }
 
-    public function provideCacheTypes()
+    public static function provideCacheTypes()
     {
         return [
             ['apc', 'apc', 'Alchemy\Phrasea\Cache\ApcCache'],

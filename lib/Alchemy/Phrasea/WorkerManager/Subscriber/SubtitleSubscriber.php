@@ -48,7 +48,7 @@ class SubtitleSubscriber implements EventSubscriberInterface
 
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::RECORD_AUTO_SUBTITLE  => 'onRecordAutoSubtitle',

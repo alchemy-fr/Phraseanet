@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Command\Record;
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class RescanTechnicalDatas extends Command
 {
@@ -45,9 +46,9 @@ class RescanTechnicalDatas extends Command
         $quantity = $this->computeQuantity();
         $duration = $this->getFormattedDuration($quantity);
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('question');
         do {
-            $continue = mb_strtolower($dialog->ask($output, sprintf('Estimated duration is %s, <question>continue ? (y/N)</question>', $duration), 'N'));
+            $continue = mb_strtolower($dialog->ask($input, $output, new Question(sprintf('Estimated duration is %s, <question>continue ? (y/N)</question>', $duration), 'N')));
         } while ( ! in_array($continue, ['y', 'n']));
 
         if (strtolower($continue) !== 'y') {
@@ -62,10 +63,8 @@ class RescanTechnicalDatas extends Command
         foreach ($this->container->getDataboxes() as $databox) {
 
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $databox->get_connection()->executeQuery($sql);
+            $rs = $stmt->fetchAllAssociative();
 
             foreach ($rs as $row) {
                 $record = $databox->get_record($row['record_id']);

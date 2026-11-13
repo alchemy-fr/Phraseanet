@@ -6,7 +6,7 @@
 {% for record in records %}
     {% set subdefs = record.get_subdefs() %}
     {% if subdefs|length > 0 %}
-        {% for key, subdef in subdefs if subdef.is_substituted() %}
+        {% for key, subdef in subdefs|filter(subdef => subdef.is_substituted()) %}
             {% if key == 'document' %}
                 {% set nbHdSubstitute = nbHdSubstitute + 1 %}
             {% else %}

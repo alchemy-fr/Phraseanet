@@ -21,8 +21,9 @@ use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class ManagerGetVisaTest extends \PHPUnit_Framework_TestCase
+class ManagerGetVisaTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var ObjectProphecy
      */
@@ -33,7 +34,7 @@ class ManagerGetVisaTest extends \PHPUnit_Framework_TestCase
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->app = $this->prophesize(Application::class);
         $this->app->offsetGet('orm.em')->willReturn($this->prophesize(EntityManager::class));

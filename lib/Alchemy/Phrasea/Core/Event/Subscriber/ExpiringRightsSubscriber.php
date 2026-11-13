@@ -9,7 +9,7 @@ use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use appbox;
 use databox;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ExpiringRightsSubscriber implements EventSubscriberInterface
@@ -129,7 +129,7 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
                         $stmt = $abox->get_connection()->prepare($sql);
                     }
                     try {
-                        $stmt->execute([
+                        $stmt->executeStatement([
                             ':job'        => $jobname,
                             ':user_id'    => $user_id,
                             ':email'      => $email,
@@ -151,9 +151,6 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
 
             }
         }
-        if($stmt) {
-            $stmt->closeCursor();
-        }
     }
 
     /**
@@ -161,7 +158,7 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
      *
      * @param RecordEdit $event
      * @param string $eventName
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function onRecordEdit(RecordEdit $event, $eventName)
     {
@@ -186,18 +183,17 @@ class ExpiringRightsSubscriber implements EventSubscriberInterface
             $sql = "UPDATE `ExpiringRights` SET new_expire = :new_expire\n"
                 . " WHERE sbas_id = :sbas_id AND record_id = :record_id AND (IFNULL(expire, 0) != IFNULL(:expire, 0) OR !ISNULL(new_expire))";
             $stmt = $abox->get_connection()->prepare($sql);
-            $stmt->execute($p = [
+            $stmt->executeStatement($p = [
                 ':new_expire' => $expire_value,
                 ':sbas_id'    => $sbas_id,
                 ':record_id'  => $record_id,
                 ':expire'     => $expire_value
             ]);
-            $stmt->closeCursor();
         }
     }
 
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             /** @uses onRecordEdit */

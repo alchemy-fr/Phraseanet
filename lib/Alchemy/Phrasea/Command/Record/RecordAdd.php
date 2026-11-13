@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class RecordAdd extends Command
 {
@@ -57,11 +58,11 @@ class RecordAdd extends Command
 
         $media = $this->container['mediavorus']->guess($file);
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('question');
 
         if (!$input->getOption('yes')) {
             do {
-                $continue = strtolower($dialog->ask($output, sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale'])), 'N'));
+                $continue = strtolower($dialog->ask($input, $output, new Question(sprintf("Will add record <info>%s</info> (%s) on collection <info>%s</info>\n<question>Continue ? (y/N)</question>", $file, $media->getType(), $collection->get_label($this->container['locale'])), 'N')));
             } while (!in_array($continue, ['y', 'n']));
 
             if (strtolower($continue) !== 'y') {

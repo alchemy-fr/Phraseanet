@@ -9,7 +9,7 @@
 {% block content_account %}
     <form name="updatingDemand" id="updatingDemand" action="{{ path("submit_update_account") }}" method="post">
         <div class="base-block">
-            {% for sbasId, baseInfo in inscriptions if baseInfo["display"] %}
+            {% for sbasId, baseInfo in inscriptions|filter(baseInfo => baseInfo["display"]) %}
                 {% set sbasName = sbasId | sbas_labels(app) %}
                 <h3 onclick="$( this ).toggleClass('toggled');$( this ).next('div').slideToggle();">{{ sbasName }}</h3>
                 <div class="block">

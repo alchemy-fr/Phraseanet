@@ -14,7 +14,7 @@ class CollectionThumbnailManager extends AbstractThumbnailManager implements Thu
      * @param $thumbnailType
      * @param File $file
      */
-    public function setThumbnail(ThumbnailedElement $element, $thumbnailType, File $file = null)
+    public function setThumbnail(ThumbnailedElement $element, $thumbnailType, ?File $file = null)
     {
         $filename = null;
 

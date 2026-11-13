@@ -188,7 +188,7 @@ class BridgeController extends Controller
         $account = \Bridge_Account::load_account($this->app, $account_id);
 
         $this->requireConnection($account);
-        $elements = $request->query->get('elements_list', []);
+        $elements = $request->query->all()['elements_list'] ?? [];
         $elements = is_array($elements) ? $elements : explode(';', $elements);
 
         $destination = $request->query->get('destination');
@@ -254,7 +254,7 @@ class BridgeController extends Controller
 
         $this->requireConnection($account);
 
-        $elements = $request->request->get('elements_list', []);
+        $elements = $request->request->all()['elements_list'] ?? [];
         $elements = is_array($elements) ? $elements : explode(';', $elements);
 
         $destination = $request->request->get('destination');

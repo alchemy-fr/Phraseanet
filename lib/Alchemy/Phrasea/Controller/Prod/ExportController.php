@@ -177,7 +177,7 @@ class ExportController extends Controller
         $mandatoryParameters = ['address', 'login', 'obj'];
 
         foreach ($mandatoryParameters as $parameter) {
-            if (!$request->request->get($parameter)) {
+            if (empty($request->request->all()[$parameter])) {
                 $this->app->abort(400, sprintf('required parameter `%s` is missing', $parameter));
             }
         }
@@ -193,7 +193,7 @@ class ExportController extends Controller
             $download->prepare_export(
                 $this->getAuthenticatedUser(),
                 $this->getFilesystem(),
-                $request->request->get('obj'),
+                $request->request->all('obj'),
                 false,
                 $request->request->get('businessfields'),
                 \set_export::STAMP_ASYNC,
@@ -215,7 +215,7 @@ class ExportController extends Controller
                 true
             );
 
-            $this->dispatch(WorkerEvents::EXPORT_FTP, new ExportFtpEvent($exportFtpId));
+            $this->dispatch(new ExportFtpEvent($exportFtpId), WorkerEvents::EXPORT_FTP);
 
             return $this->app->json([
                 'success' => true,
@@ -255,7 +255,7 @@ class ExportController extends Controller
         $list = $download->prepare_export(
             $this->getAuthenticatedUser(),
             $this->getFilesystem(),
-            (array) $request->request->get('obj'),
+            $request->request->all('obj'),
             $request->request->get("type") == "title" ? : false,
             $request->request->get('businessfields'),
             \set_export::STAMP_ASYNC,
@@ -275,13 +275,14 @@ class ExportController extends Controller
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
-                $this->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent(
+                $this->dispatch(new ExportFailureEvent(
                     $this->getAuthenticatedUser(),
                     $ssttid,
                     $lst,
                     \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID,
                     $mail
-                ));
+                ),
+                PhraseaEvents::EXPORT_MAIL_FAILURE);
             }
         }
 
@@ -302,12 +303,13 @@ class ExportController extends Controller
                 'lst'               =>  $lst = $request->request->get('lst', ''),
             ];
 
-            $this->dispatch(PhraseaEvents::EXPORT_MAIL_CREATE, new ExportMailEvent(
+            $this->dispatch(new ExportMailEvent(
                 $emitterId,
                 $tokenValue,
                 $destMails,
                 $params
-            ));
+            ),
+            PhraseaEvents::EXPORT_MAIL_CREATE);
         }
 
         return $this->app->json([

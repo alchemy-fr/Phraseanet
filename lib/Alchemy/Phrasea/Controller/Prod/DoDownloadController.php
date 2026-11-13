@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Model\Entities\Token;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class DoDownloadController extends Controller
@@ -121,7 +121,7 @@ class DoDownloadController extends Controller
             $this->app->abort(404, 'Download file not found');
         }
 
-        $this->getDispatcher()->addListener(KernelEvents::RESPONSE, function (FilterResponseEvent $event) use ($list) {
+        $this->getDispatcher()->addListener(KernelEvents::RESPONSE, function (ResponseEvent $event) use ($list) {
             \set_export::log_download(
                 $this->app,
                 $list,
@@ -152,9 +152,14 @@ class DoDownloadController extends Controller
 
         set_time_limit(0);
         // Force the session to be saved and closed.
+        // Guard on isStarted(): on PHP 8, NativeSessionStorage::save() reads the $_SESSION
+        // superglobal, which is undefined when no session was started, raising a warning that
+        // the error handler turns into a 500. Nothing to persist when it isn't started anyway.
         /** @var Session $session */
         $session = $this->app['session'];
-        $session->save();
+        if ($session->isStarted()) {
+            $session->save();
+        }
         ignore_user_abort(true);
 
 //        if ($list['count'] > 1 || $list['cgu']) {

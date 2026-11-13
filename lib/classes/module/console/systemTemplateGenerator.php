@@ -46,7 +46,7 @@ class module_console_systemTemplateGenerator extends Command
             $finder = new Finder();
             foreach ($finder->files()->in([$tplDir]) as $file) {
                 try {
-                    $this->container['twig']->loadTemplate(str_replace($tplDir, '', $file->getPathname()));
+                    $this->container['twig']->load(str_replace($tplDir, '', $file->getPathname()));
                     $output->writeln('' . $file . '');
                     $n_ok ++;
                 } catch (\Exception $e) {

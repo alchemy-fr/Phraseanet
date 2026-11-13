@@ -66,7 +66,7 @@ class EmptyCollectionJob extends AbstractJob
 
         if (0 === $collection->get_record_amount()) {
             $this->stop();
-            $this->dispatcher->dispatch(JobEvents::FINISHED, new JobFinishedEvent($task));
+            $this->dispatcher->dispatch(new JobFinishedEvent($task), JobEvents::FINISHED);
         }
     }
 }

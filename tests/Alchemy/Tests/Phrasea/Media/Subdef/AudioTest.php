@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AudioTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
@@ -19,31 +17,22 @@ class AudioTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Audio($this->createTranslatorMock());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Audio::getType
-     */
     public function testGetType()
     {
         $this->assertEquals(Subdef::TYPE_AUDIO, $this->object->getType());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Audio::getDescription
-     */
     public function testGetDescription()
     {
         $this->assertTrue(is_string($this->object->getDescription()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Audio::getMediaAlchemystSpec
-     */
     public function testGetMediaAlchemystSpec()
     {
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Audio', $this->object->getMediaAlchemystSpec());

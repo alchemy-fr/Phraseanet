@@ -121,8 +121,7 @@ class V3ResultHelpers
      */
     public function listPermalink(media_Permalink_Adapter $permalink)
     {
-        $downloadUrl = $permalink->get_url();
-        $downloadUrl->getQuery()->set('download', '1');
+        $downloadUrl = \GuzzleHttp\Psr7\Uri::withQueryValue($permalink->get_url(), 'download', '1');
 
         return [
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),

@@ -6,27 +6,17 @@ use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Border\Checker\Filename;
 use Alchemy\Phrasea\Border\Checker\Response;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class VisaTest extends \PhraseanetTestCase
 {
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Visa::__construct
-     * @covers Alchemy\Phrasea\Border\Visa::__destruct
-     */
     public function testVisa()
     {
         $visa = new Visa();
         $visa = null;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Visa::addResponse
-     * @covers Alchemy\Phrasea\Border\Visa::getResponses
-     */
     public function testResponses()
     {
         $visa = new Visa();
@@ -41,9 +31,6 @@ class VisaTest extends \PhraseanetTestCase
         $this->assertSame([$response, $response2], $visa->getResponses());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Visa::isValid
-     */
     public function testIsValid()
     {
         $visa = new Visa();

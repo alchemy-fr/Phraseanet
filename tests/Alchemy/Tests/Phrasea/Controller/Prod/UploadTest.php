@@ -8,26 +8,24 @@ use Alchemy\Phrasea\Border\Manager;
 use DataURI;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $tmpFile;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->tmpFile = sys_get_temp_dir() . '/' . time() . mt_rand(1000, 9999) . '.jpg';
         copy(__DIR__ . '/../../../../../files/cestlafete.jpg', $this->tmpFile);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists($this->tmpFile)) {
             unlink($this->tmpFile);
@@ -35,10 +33,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getFlashUploadForm
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::call
-     */
     public function testFlashUploadForm()
     {
         /** @var Client $client */
@@ -50,9 +44,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getUploadForm
-     */
     public function testUploadForm()
     {
         /** @var Client $client */
@@ -63,15 +54,9 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsonResponse
-     */
     public function testUpload()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $randomValue = $this->setSessionFormToken('prodUpload');
 
@@ -92,7 +77,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var Client $client */
         $client = self::$DI['client'];
 
-        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = $client->getResponse();
 
@@ -115,15 +100,9 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsonResponse
-     */
     public function testUploadWithoutB64Image()
     {
-        self::$DI['app']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['app']['notification.deliverer'] = $this->createStub('Alchemy\Phrasea\Notification\Deliverer');
 
         $randomValue = $this->setSessionFormToken('prodUpload');
 
@@ -141,7 +120,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         ];
         /** @var Client $client */
         $client = self::$DI['client'];
-        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        $client->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = $client->getResponse();
 
@@ -159,10 +138,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsonResponse
-     */
     public function testUploadingTwiceTheSameRecordShouldSendToQuarantine()
     {
         $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoRecordQuarantined');
@@ -184,7 +159,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         ];
 
         self::$DI['app']['border-manager']->registerChecker(new Sha256(self::$DI['app']));
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -195,9 +170,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadWrongBaseId()
     {
         $params = ['base_id' => 0];
@@ -208,7 +180,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -219,9 +191,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadNoAccessBaseId()
     {
         $params = ['base_id' => self::$DI['collection_no_access']->get_base_id()];
@@ -232,7 +201,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -243,18 +212,15 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadInvalidFile()
     {
         $file = new UploadedFile(
-                $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
+                $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', UPLOAD_ERR_NO_FILE
         );
 
         $params = ['base_id' => self::$DI['collection']->get_base_id()];
         $files = ['files' => [$file]];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -265,9 +231,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadNoBaseId()
     {
         $params = [];
@@ -278,7 +241,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -289,9 +252,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUpload2Files()
     {
         $params = ['base_id' => self::$DI['collection']->get_base_id()];
@@ -305,7 +265,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -316,9 +276,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadForceRecord()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
@@ -337,7 +294,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -355,9 +312,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals([], $datas['reasons']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadRecordStatus()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
@@ -377,7 +331,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
                 )
             ]
         ];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -396,14 +350,11 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals([], $datas['reasons']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadNoFiles()
     {
         $params = ['base_id' => self::$DI['collection']->get_base_id()];
         $files = [];
-        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 
@@ -414,12 +365,9 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertFalse($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
-     */
     public function testUploadWithoutAnything()
     {
-        self::$DI['client']->request('POST', '/prod/upload/', [], [], ['HTTP_Accept' => 'application/json']);
+        self::$DI['client']->request('POST', '/prod/upload/', [], [], ['HTTP_ACCEPT' => 'application/json']);
 
         $response = self::$DI['client']->getResponse();
 

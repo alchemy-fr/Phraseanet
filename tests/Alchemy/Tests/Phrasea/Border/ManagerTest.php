@@ -15,12 +15,10 @@ use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\Story;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 {
     /**
@@ -31,7 +29,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
     private static $file1;
     private static $file2;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         $tmpDir = sys_get_temp_dir();
@@ -43,7 +41,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         copy(__DIR__ . '/../../../../files/ISOLatin1.txt', self::$file2);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (file_exists(self::$file1)) {
             unlink(self::$file1);
@@ -54,29 +52,19 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         parent::tearDownAfterClass();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Manager(self::$DI['app']);
-        $this->session = self::$DI['app']['orm.em']->find('Phraseanet:LazaretSession', 1);
+        $this->session = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\LazaretSession', 1);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::__destruct
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->object = null;
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::process
-     * @covers Alchemy\Phrasea\Border\Manager::createLazaret
-     */
     public function testProcess()
     {
 
@@ -116,9 +104,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::process
-     */
     public function testProcessForceLazaret()
     {
         $records = [];
@@ -137,9 +122,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::createRecord
-     */
     public function testCreateRecord()
     {
         $records = [];
@@ -256,9 +238,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $story->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::createLazaret
-     */
     public function testCreateLazaret()
     {
         $lazaret = null;
@@ -341,7 +320,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 }
             } elseif ($attribute->getName() == AttributeInterface::NAME_METADATA) {
 
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
 
                 if (!isset($foundMeta[$tagname])) {
                     $foundMeta[$tagname] = [];
@@ -384,18 +363,15 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::process
-     */
     public function testLazaretAttributes()
     {
         $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']);
 
-        $objectNameTag = new \PHPExiftool\Driver\Tag\IPTC\ObjectName();
+        $objectNameTag = \Alchemy\Phrasea\Metadata\TagFactory::getFromRDFTagname('IPTC:ObjectName');
         $monoValue = new \PHPExiftool\Driver\Value\Mono('title');
         $monoData = new \PHPExiftool\Driver\Metadata\Metadata($objectNameTag, $monoValue);
 
-        $personInImageTag = new \PHPExiftool\Driver\Tag\XMPIptcExt\PersonInImage();
+        $personInImageTag = \Alchemy\Phrasea\Metadata\TagFactory::getFromRDFTagname('XMP-iptcExt:PersonInImage');
         $multiValue = new \PHPExiftool\Driver\Value\Multi(['Babar', 'Celeste']);
         $multiData = new \PHPExiftool\Driver\Metadata\Metadata($personInImageTag, $multiValue);
 
@@ -418,14 +394,9 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, $file, $postProcess, Manager::FORCE_LAZARET));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::addMediaAttributes
-     */
     public function testAddMediaAttributesPDF()
     {
-        $pdfToText = $this->getMockBuilder('XPDF\PdfToText')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pdfToText = $this->createMock('XPDF\PdfToText');
 
         $manager = new ManagerTester(self::$DI['app']);
         self::$DI['app']['phraseanet.metadata-reader']->setPdfToText($pdfToText);
@@ -454,7 +425,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
                     $tmp = [];
@@ -472,9 +443,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(['Phraseanet:tf-duration'], $toFound);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::addMediaAttributes
-     */
     public function testAddMediaAttributesAudio()
     {
         $manager = new ManagerTester(self::$DI['app']);
@@ -501,7 +469,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
                     $tmp = [];
@@ -519,9 +487,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(['Phraseanet:tf-width', 'Phraseanet:tf-height', 'Phraseanet:tf-bits', 'Phraseanet:tf-channels'], $toFound);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::addMediaAttributes
-     */
     public function testAddMediaAttributes()
     {
         $manager = new ManagerTester(self::$DI['app']);
@@ -548,7 +513,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         foreach ($file->getAttributes() as $attribute) {
             if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
-                $tagname = $attribute->getValue()->getTag()->getTagname();
+                $tagname = $attribute->getValue()->getTagGroup()->getId();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
                     $tmp = [];
@@ -566,10 +531,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(['Phraseanet:tf-duration'], $toFound);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::registerChecker
-     * @covers Alchemy\Phrasea\Border\Manager::getCheckers
-     */
     public function testRegisterChecker()
     {
         $this->assertEquals([], $this->object->getCheckers());
@@ -582,10 +543,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals([$shaChecker, $uuidChecker], $this->object->getCheckers());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::registerCheckers
-     * @covers Alchemy\Phrasea\Border\Manager::getCheckers
-     */
     public function testRegisterCheckers()
     {
         $this->assertEquals([], $this->object->getCheckers());
@@ -597,9 +554,6 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals([$shaChecker, $uuidChecker], $this->object->getCheckers());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Manager::unregisterChecker
-     */
     public function testUnregisterChecker()
     {
         $this->assertEquals([], $this->object->getCheckers());

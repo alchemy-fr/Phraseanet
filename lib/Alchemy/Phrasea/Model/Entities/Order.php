@@ -14,10 +14,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Orders")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\OrderRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\OrderRepository::class)]
+#[ORM\Table(name: 'Orders')]
 class Order
 {
 
@@ -34,71 +32,51 @@ class Order
     const STATUS_BEFORE = 'before';
     const STATUS_AFTER = 'after';
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @var User
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=2048, name="order_usage")
-     */
+    #[ORM\Column(type: 'string', length: 2048, name: 'order_usage')]
     private $orderUsage;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $todo;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $deadline;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_on")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime', name: 'created_on')]
     private $createdOn;
 
-    /**
-     * @ORM\OneToMany(targetEntity="OrderElement", mappedBy="order", cascade={"ALL"})
-     */
+    #[ORM\OneToMany(targetEntity: OrderElement::class, mappedBy: 'order', cascade: ['ALL'])]
     private $elements;
 
     /**
-     * @ORM\OneToOne(targetEntity="Basket", inversedBy="order", cascade={"ALL"})
      * @var Basket|null
      */
+    #[ORM\OneToOne(targetEntity: Basket::class, inversedBy: 'order', cascade: ['ALL'])]
     private $basket;
 
-    /**
-     * @ORM\Column(type="string", length=32, name="notification_method")
-     */
+    #[ORM\Column(type: 'string', length: 32, name: 'notification_method')]
     private $notificationMethod;
 
-    /**
-     * @ORM\Column(name="canceled_on", type="datetime", nullable=true)
-     */
+    #[ORM\Column(name: 'canceled_on', type: 'datetime', nullable: true)]
     private $canceledOn;
 
-    /**
-     * @ORM\Column(name="canceled_by", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'canceled_by', type: 'integer', nullable: true)]
     private $canceledBy;
 
-    /**
-     * @ORM\Column(name="canceled_todo", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'canceled_todo', type: 'integer', nullable: true)]
     private $canceledTodo;
 
     /**
@@ -312,7 +290,7 @@ class Order
      * @param  Basket $basket
      * @return Order
      */
-    public function setBasket(Basket $basket = null)
+    public function setBasket(?Basket $basket = null)
     {
         if ($this->basket) {
             $this->basket->setOrder(null);

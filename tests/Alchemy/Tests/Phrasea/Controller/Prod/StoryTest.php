@@ -2,14 +2,12 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRootPost()
@@ -37,7 +35,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(302, $response->getStatusCode());
 
         $query = self::$DI['app']['orm.em']->createQuery(
-            'SELECT COUNT(w.id) FROM Phraseanet:StoryWZ w'
+            'SELECT COUNT(w.id) FROM Alchemy\Phrasea\Model\Entities\StoryWZ w'
         );
 
         $count = $query->getSingleScalarResult();

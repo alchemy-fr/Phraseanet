@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Plugin;
 
 use Alchemy\Phrasea\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
 
 interface PluginProviderInterface extends ServiceProviderInterface
 {

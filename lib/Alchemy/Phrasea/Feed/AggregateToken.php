@@ -66,7 +66,7 @@ class AggregateToken
      * @param  Feed           $feed
      * @return AggregateToken
      */
-    public function setFeed(Feed $feed = null)
+    public function setFeed(?Feed $feed = null)
     {
         $this->aggregatedFeed = $feed;
 

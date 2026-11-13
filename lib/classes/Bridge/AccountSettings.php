@@ -50,10 +50,8 @@ class Bridge_AccountSettings
 
         $params = [':account_id' => $this->account->get_id(), ':key'        => $key];
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->appbox->get_connection()->executeQuery($sql, $params);
+        $row = $stmt->fetchAssociative();
 
         return isset($row['value']) ? $row['value'] : $default_value;
     }
@@ -76,8 +74,7 @@ class Bridge_AccountSettings
         ];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $value;
     }
@@ -97,8 +94,7 @@ class Bridge_AccountSettings
         $params = [':account_id' => $this->account->get_id(), ':key'        => $key];
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $return_value;
     }

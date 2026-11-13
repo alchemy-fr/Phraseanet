@@ -55,10 +55,8 @@ class cache_databox
         $connsbas = $databox->get_connection();
 
         $sql = 'SELECT type, value FROM memcached WHERE site_id = :site_id';
-        $stmt = $connsbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connsbas->executeQuery($sql, [':site_id' => $app['conf']->get('servername')]);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             switch ($row['type']) {
@@ -86,8 +84,7 @@ class cache_databox
                     ];
 
                     $stmt = $connsbas->prepare($sql);
-                    $stmt->execute($params);
-                    $stmt->closeCursor();
+                    $stmt->executeStatement($params);
 
                     $record = new \record_adapter($app, $sbas_id, $row['value']);
                     $record->get_caption()->delete_data_from_cache();
@@ -108,8 +105,7 @@ class cache_databox
                     ];
 
                     $stmt = $connsbas->prepare($sql);
-                    $stmt->execute($params);
-                    $stmt->closeCursor();
+                    $stmt->executeStatement($params);
                     break;
             }
         }
@@ -123,8 +119,7 @@ class cache_databox
 
         $sql = 'UPDATE sitepreff SET memcached_update = current_timestamp()';
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         self::$refreshing = false;
 
@@ -146,10 +141,8 @@ class cache_databox
             FROM clients
             WHERE site_id != :site_id';
 
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connbas->executeQuery($sql, [':site_id' => $app['conf']->get('servername')]);
+        $rs = $stmt->fetchAllAssociative();
 
         $sql = 'REPLACE INTO memcached (site_id, type, value)
             VALUES (:site_id, :type, :value)';
@@ -157,10 +150,8 @@ class cache_databox
         $stmt = $connbas->prepare($sql);
 
         foreach ($rs as $row) {
-            $stmt->execute([':site_id' => $row['site_id'], ':type'    => $type, ':value'   => $value]);
+            $stmt->executeStatement([':site_id' => $row['site_id'], ':type'    => $type, ':value'   => $value]);
         }
-
-        $stmt->closeCursor();
 
         return;
     }
@@ -170,10 +161,8 @@ class cache_databox
         $connbas = $databox->get_connection();
 
         $sql = 'SELECT site_id FROM clients WHERE site_id = :site_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
+        $stmt = $connbas->executeQuery($sql, [':site_id' => $app['conf']->get('servername')]);
         $rowCount = $stmt->rowCount();
-        $stmt->closeCursor();
 
         if ($rowCount > 0) {
             return;
@@ -181,8 +170,7 @@ class cache_databox
 
         $sql = 'INSERT INTO clients (site_id) VALUES (:site_id)';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute([':site_id' => $app['conf']->get('servername')]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':site_id' => $app['conf']->get('servername')]);
 
         return;
     }

@@ -1,10 +1,8 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
 class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
 {
     /**
@@ -48,11 +46,9 @@ class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
             , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
         ];
 
-        $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
+        $stmt = $this->databox->get_connection()->executeQuery($sql, $params);
         $this->assertEquals(1, $stmt->rowCount());
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $row = $stmt->fetchAssociative();
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
         $ses_id = self::$DI['app']['session']->get('session_id');
@@ -68,11 +64,9 @@ class Session_LoggerTest extends \PhraseanetAuthenticatedTestCase
             , ':site'   => self::$DI['app']['conf']->get(['main', 'key'])
         ];
 
-        $stmt = $this->databox->get_connection()->prepare($sql);
-        $stmt->execute($params);
+        $stmt = $this->databox->get_connection()->executeQuery($sql, $params);
         $this->assertEquals(1, $stmt->rowCount());
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetchAssociative();
         $this->assertEquals($log_id, $row['id']);
-        $stmt->closeCursor();
     }
 }

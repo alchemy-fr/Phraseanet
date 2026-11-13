@@ -7,12 +7,11 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure as Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 
-/**
- * @group unit
- * @group structure
- */
-class StructureTest extends \PHPUnit_Framework_TestCase
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('structure')]
+class StructureTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testEmptiness()
     {
         $structure = new Structure();
@@ -47,7 +46,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         // Should still have only one (both have the same name)
         $structure->add($conflicting_field);
         $this->assertCount(1, $fields = $structure->getAllFields());
-        $this->assertInternalType('array', $fields);
+        $this->assertIsArray($fields);
         $this->assertSame($merged, reset($fields));
     }
 
@@ -152,12 +151,10 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($structure->isPrivate('bar'));
     }
 
-    /**
-     * @expectedException \DomainException
-     * @expectedExceptionMessageRegExp #field#u
-     */
     public function testPrivateCheckWithInvalidField()
     {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessageMatches('#field#u');
         $structure = new Structure();
         $structure->isPrivate('foo');
     }

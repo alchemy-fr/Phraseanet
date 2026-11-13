@@ -118,7 +118,7 @@ SQL;
 
         $current_rid = null;
         $record = null;
-        while ($subdef = $statement->fetch()) {
+        while ($subdef = $statement->fetchAssociative()) {
             $rid = $subdef['record_id'];
             $record = &$records[$rid];
             $name = $subdef['name'];

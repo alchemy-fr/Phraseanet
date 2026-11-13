@@ -29,7 +29,7 @@ class BasketElementRepository extends EntityRepository
     {
         $dql = <<<'DQL'
 SELECT e
-FROM Phraseanet:BasketElement e
+FROM Alchemy\Phrasea\Model\Entities\BasketElement e
 JOIN e.basket b
 LEFT JOIN b.participants p WITH p.user = :usr_id
 LEFT JOIN e.votes vd WITH vd.participant = :usr_id
@@ -60,7 +60,7 @@ DQL;
     {
         $dql = <<<'DQL'
 SELECT e
-FROM Phraseanet:BasketElement e
+FROM Alchemy\Phrasea\Model\Entities\BasketElement e
 JOIN e.basket b
 LEFT JOIN b.participants p
 WHERE e.record_id = :record_id
@@ -84,7 +84,7 @@ DQL;
     {
         $dql = <<<'DQL'
 SELECT e
-FROM Phraseanet:BasketElement e
+FROM Alchemy\Phrasea\Model\Entities\BasketElement e
 JOIN e.basket b
 LEFT JOIN b.participants p
 WHERE e.sbas_id = :sbas_id
@@ -102,7 +102,7 @@ DQL;
     {
         $dql = <<<'DQL'
 SELECT be
-FROM Phraseanet:BasketElement AS be
+FROM Alchemy\Phrasea\Model\Entities\BasketElement AS be
 INNER JOIN be.basket b
 INNER JOIN b.participants AS vp
 INNER JOIN vp.votes AS vd 
@@ -129,7 +129,7 @@ DQL;
     {
         $dql = <<<'DQL'
 SELECT e
-FROM Phraseanet:BasketElement e
+FROM Alchemy\Phrasea\Model\Entities\BasketElement e
 JOIN e.basket b
 LEFT JOIN b.participants p
 WHERE b.user = :usr_id
@@ -157,7 +157,7 @@ DQL;
     {
         $dql = <<<'DQL'
 SELECT e
-FROM Phraseanet:BasketElement e
+FROM Alchemy\Phrasea\Model\Entities\BasketElement e
 JOIN e.basket b
 JOIN b.participants p
 WHERE p.user = :usr_id

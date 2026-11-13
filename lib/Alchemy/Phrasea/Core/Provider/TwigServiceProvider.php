@@ -15,9 +15,11 @@ use Alchemy\Phrasea\Twig\Camelize;
 use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\JSUniqueID;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
-use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Twig\Environment;
+use Twig\TwigFilter;
 
 class TwigServiceProvider implements ServiceProviderInterface
 {
@@ -30,9 +32,9 @@ class TwigServiceProvider implements ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['twig'] = $app->share($app->extend('twig', function (\Twig_Environment $twig, $app) {
+        $app->extend('twig', function (Environment $twig, $app) {
             $twig->setCache($app['cache.path'] . '/twig');
 
             $paths = [];
@@ -87,24 +89,11 @@ class TwigServiceProvider implements ServiceProviderInterface
             $this->registerFilters($twig, $app);
 
             return $twig;
-        }));
+        });
     }
 
-    private function registerExtensions(\Twig_Environment $twig, Application $app)
+    private function registerExtensions(Environment $twig, Application $app)
     {
-        $twig->addExtension(new \Twig_Extension_Core());
-        $twig->addExtension(new \Twig_Extension_Optimizer());
-        $twig->addExtension(new \Twig_Extension_Escaper());
-        if ($app['debug']) {
-            $twig->addExtension(new \Twig_Extension_Debug());
-        }
-
-        // add filter trans
-        $twig->addExtension(new TranslationExtension($app['translator']));
-        // add filter localizeddate
-        $twig->addExtension(new \Twig_Extensions_Extension_Intl());
-        // add filters truncate, wordwrap, nl2br
-        $twig->addExtension(new \Twig_Extensions_Extension_Text());
         $twig->addExtension(new JSUniqueID());
         $twig->addExtension(new Fit());
         $twig->addExtension(new Camelize());
@@ -112,35 +101,35 @@ class TwigServiceProvider implements ServiceProviderInterface
         $twig->addExtension(new PhraseanetExtension($app));
     }
 
-    private function registerFilters(\Twig_Environment $twig, Application $app)
+    private function registerFilters(Environment $twig, Application $app)
     {
-        $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
-        $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
-        $twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
-        $twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
-        $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
-        $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
-        $twig->addFilter('ceil', new \Twig_Filter_Function('ceil'));
-        $twig->addFilter('max', new \Twig_Filter_Function('max'));
-        $twig->addFilter('min', new \Twig_Filter_Function('min'));
-        $twig->addFilter('bas_labels', new \Twig_Filter_Function('phrasea::bas_labels'));
-        $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
-        $twig->addFilter('sbas_labels', new \Twig_Filter_Function('phrasea::sbas_labels'));
-        $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
-        $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
-        $twig->addFilter('round', new \Twig_Filter_Function('round'));
-        $twig->addFilter('count', new \Twig_Filter_Function('count'));
-        $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
-        $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
-        $twig->addFilter(new \Twig_SimpleFilter('escapeSimpleQuote', function ($value) {
+        $twig->addFilter(new TwigFilter('serialize', 'serialize'));
+        $twig->addFilter(new TwigFilter('stristr', 'stristr'));
+        $twig->addFilter(new TwigFilter('get_class', 'get_class'));
+        $twig->addFilter(new TwigFilter('stripdoublequotes', 'stripdoublequotes'));
+        $twig->addFilter(new TwigFilter('get_collection_logo', 'collection::getLogo'));
+        $twig->addFilter(new TwigFilter('floor', 'floor'));
+        $twig->addFilter(new TwigFilter('ceil', 'ceil'));
+        $twig->addFilter(new TwigFilter('max', 'max'));
+        $twig->addFilter(new TwigFilter('min', 'min'));
+        $twig->addFilter(new TwigFilter('bas_labels', 'phrasea::bas_labels'));
+        $twig->addFilter(new TwigFilter('sbas_names', 'phrasea::sbas_names'));
+        $twig->addFilter(new TwigFilter('sbas_labels', 'phrasea::sbas_labels'));
+        $twig->addFilter(new TwigFilter('sbas_from_bas', 'phrasea::sbasFromBas'));
+        $twig->addFilter(new TwigFilter('key_exists', 'array_key_exists'));
+        $twig->addFilter(new TwigFilter('round', 'round'));
+        $twig->addFilter(new TwigFilter('count', 'count'));
+        $twig->addFilter(new TwigFilter('formatOctets', 'p4string::format_octets'));
+        $twig->addFilter(new TwigFilter('base_from_coll', 'phrasea::baseFromColl'));
+        $twig->addFilter(new TwigFilter('escapeSimpleQuote', function ($value) {
             return str_replace("'", "\\'", $value);
         }));
 
-        $twig->addFilter(new \Twig_SimpleFilter('highlight', function (\Twig_Environment $twig, $string) {
+        $twig->addFilter(new TwigFilter('highlight', function (Environment $twig, $string) {
             return str_replace(['[[em]]', '[[/em]]'], ['<em>', '</em>'], $string);
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
-        $twig->addFilter(new \Twig_SimpleFilter('linkify', function (\Twig_Environment $twig, $string) use ($app) {
+        $twig->addFilter(new TwigFilter('linkify', function (Environment $twig, $string) use ($app) {
             return preg_replace(
                 "/(\\W|^)(https?:\/{2,4}[\\w:#!%\/;$()~_?\/\-=\\\.&]+)/m"
                 ,
@@ -149,7 +138,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             );
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
-        $twig->addFilter(new \Twig_SimpleFilter('parseColor', function (\Twig_Environment $twig, $string) use ($app) {
+        $twig->addFilter(new TwigFilter('parseColor', function (Environment $twig, $string) use ($app) {
             $re = '/^(.*)\[#([0-9a-fA-F]{6})]$/m';
             $stringArr = explode(';', $string);
 
@@ -166,7 +155,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             return implode('; ', $stringArr);
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
-        $twig->addFilter(new \Twig_SimpleFilter('mediaMetricsInfo', function (\Twig_Environment $twig, $string) use ($app) {
+        $twig->addFilter(new TwigFilter('mediaMetricsInfo', function (Environment $twig, $string) use ($app) {
             $metricInfo = $string;
 
             if (!empty($string)) {
@@ -185,8 +174,8 @@ class TwigServiceProvider implements ServiceProviderInterface
             return $metricInfo;
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
-        $twig->addFilter(new \Twig_SimpleFilter('bounce',
-            function (\Twig_Environment $twig, $fieldValue, $fieldName, $searchRequest, $sbasId) {
+        $twig->addFilter(new TwigFilter('bounce',
+            function (Environment $twig, $fieldValue, $fieldName, $searchRequest, $sbasId) {
                 // bounce value if it is present in thesaurus as well
                 return "<a class=\"bounce\" onclick=\"bounce('" . $sbasId . "','"
                 . str_replace("'", "\\'", $searchRequest)
@@ -198,11 +187,11 @@ class TwigServiceProvider implements ServiceProviderInterface
 
             }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
-        $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
+        $twig->addFilter(new TwigFilter('escapeDoubleQuote', function ($value) {
             return str_replace('"', '\"', $value);
         }));
 
-        $twig->addFilter(new \Twig_SimpleFilter('formatDuration',
+        $twig->addFilter(new TwigFilter('formatDuration',
             function ($secondsInDecimals) {
                 $time = [];
                 $hours = floor($secondsInDecimals / 3600);
@@ -220,17 +209,5 @@ class TwigServiceProvider implements ServiceProviderInterface
                 return $formattedTime;
             }
         ));
-    }
-
-    /**
-     * Bootstraps the application.
-     *
-     * This method is called after all services are registered
-     * and should be used for "dynamic" configuration (whenever
-     * a service must be requested).
-     */
-    public function boot(Application $app)
-    {
-        // no-op
     }
 }

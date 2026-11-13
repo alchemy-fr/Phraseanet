@@ -112,7 +112,7 @@ class FailureManager
             $platform = $connection->getDatabasePlatform();
             $this->em->beginTransaction();
             try {
-                $connection->executeUpdate($platform->getTruncateTableSQL('AuthFailures'));
+                $connection->executeStatement($platform->getTruncateTableSQL('AuthFailures'));
             }
             catch (\Exception $e) {
                 $this->em->rollback();

@@ -14,74 +14,48 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="FtpCredential")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FtpCredentialRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FtpCredentialRepository::class)]
+#[ORM\Table(name: 'FtpCredential')]
 class FtpCredential
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity="User", inversedBy="ftpCredential")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     **/
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'ftpCredential')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $active = false;
 
-    /**
-     * @ORM\Column(type="string", length=128, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     private $address = '';
 
-    /**
-     * @ORM\Column(type="string", length=128, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     private $login = '';
 
-    /**
-     * @ORM\Column(type="string", length=128, options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     private $password = '';
 
-    /**
-     * @ORM\Column(type="string", length=128, name="reception_folder", options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 128, name: 'reception_folder', options: ['default' => ''])]
     private $receptionFolder = '';
 
-    /**
-     * @ORM\Column(type="string", length=128, name="repository_prefix_name", options={"default" = ""})
-     */
+    #[ORM\Column(type: 'string', length: 128, name: 'repository_prefix_name', options: ['default' => ''])]
     private $repositoryPrefixName = '';
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $passive = false;
 
-    /**
-     * @ORM\Column(type="boolean", name="tls", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', name: 'tls', options: ['default' => 0])]
     private $ssl = false;
 
-    /**
-     * @ORM\Column(type="integer", name="max_retry", options={"default" = 5})
-     */
+    #[ORM\Column(type: 'integer', name: 'max_retry', options: ['default' => 5])]
     private $maxRetry = 5;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**
@@ -127,7 +101,7 @@ class FtpCredential
      */
     public function setActive($active)
     {
-        $this->active = (Boolean) $active;
+        $this->active = (bool) $active;
 
         return $this;
     }
@@ -247,7 +221,7 @@ class FtpCredential
      */
     public function setPassive($passive)
     {
-        $this->passive = (Boolean) $passive;
+        $this->passive = (bool) $passive;
 
         return $this;
     }
@@ -267,7 +241,7 @@ class FtpCredential
      */
     public function setSsl($ssl)
     {
-        $this->ssl = (Boolean) $ssl;
+        $this->ssl = (bool) $ssl;
 
         return $this;
     }

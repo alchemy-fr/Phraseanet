@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Setup\Requirements;
 
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FilesystemRequirementsTest extends RequirementsTestCase
 {
     protected function provideRequirements()

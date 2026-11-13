@@ -1,0 +1,33 @@
+diff --git a/src/Dflydev/Provider/DoctrineOrm/DoctrineOrmServiceProvider.php b/src/Dflydev/Provider/DoctrineOrm/DoctrineOrmServiceProvider.php
+index afd783c..a1d7526
+--- a/src/Dflydev/Provider/DoctrineOrm/DoctrineOrmServiceProvider.php
++++ b/src/Dflydev/Provider/DoctrineOrm/DoctrineOrmServiceProvider.php
+@@ -20,14 +20,15 @@ use Doctrine\Common\Cache\MemcachedCache;
+ use Doctrine\Common\Cache\CouchbaseCache;
+ use Doctrine\Common\Cache\XcacheCache;
+ use Doctrine\Common\Cache\RedisCache;
+-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
+-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
++use Doctrine\Persistence\Mapping\Driver\MappingDriver;
++use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+ use Doctrine\DBAL\Types\Type;
+ use Doctrine\ORM\Configuration;
+ use Doctrine\ORM\EntityManager;
+ use Doctrine\ORM\Mapping\DefaultEntityListenerResolver;
+ use Doctrine\ORM\Mapping\DefaultNamingStrategy;
+ use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
++use Doctrine\ORM\Mapping\Driver\AttributeDriver;
+ use Doctrine\ORM\Mapping\Driver\Driver;
+ use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+ use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
+@@ -158,6 +159,10 @@ class DoctrineOrmServiceProvider implements ServiceProviderInterface
+                     }
+ 
+                     switch ($entity['type']) {
++                        case 'attribute':
++                            $driver = new AttributeDriver((array) $entity['path']);
++                            $chain->addDriver($driver, $entity['namespace']);
++                            break;
+                         case 'annotation':
+                             $useSimpleAnnotationReader =
+                                 isset($entity['use_simple_annotation_reader'])

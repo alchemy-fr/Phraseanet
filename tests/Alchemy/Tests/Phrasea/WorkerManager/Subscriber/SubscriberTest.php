@@ -12,6 +12,7 @@ use Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber;
  */
 class SubscriberTest extends \PhraseanetTestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testCallsImplements()
     {
         $app = new Application(Application::ENV_TEST);
@@ -24,13 +25,9 @@ class SubscriberTest extends \PhraseanetTestCase
     public function testIfPublisheMessageOnSubscribeEvent()
     {
         $app = new Application(Application::ENV_TEST);
-        $app['alchemy_worker.message.publisher'] = $this->getMockBuilder('Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['alchemy_worker.message.publisher'] = $this->createMock('Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher');
 
-        $app['alchemy_worker.type_based_worker_resolver'] = $this->getMockBuilder('Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['alchemy_worker.type_based_worker_resolver'] = $this->createStub('Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver');
 
         $app['alchemy_worker.message.publisher']->expects($this->atLeastOnce())->method('publishMessage');
 

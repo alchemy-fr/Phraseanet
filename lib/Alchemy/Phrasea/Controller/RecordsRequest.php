@@ -41,7 +41,7 @@ class RecordsRequest extends ArrayCollection
      * @param Basket|null     $basket
      * @param Boolean         $flatten
      */
-    public function __construct(array $elements, ArrayCollection $rejected, ArrayCollection $received, Basket $basket = null, $flatten = self::FLATTEN_NO)
+    public function __construct(array $elements, ArrayCollection $rejected, ArrayCollection $received, ?Basket $basket = null, $flatten = self::FLATTEN_NO)
     {
         parent::__construct($elements);
         $this->received = $received;
@@ -283,7 +283,7 @@ class RecordsRequest extends ArrayCollection
 
             $received[$storyWZ->getRecord($app)->get_serialize_key()] = $storyWZ->getRecord($app);
         } else {
-            foreach (explode(";", $request->get('lst')) as $bas_rec) {
+            foreach (explode(";", (string) $request->get('lst')) as $bas_rec) {
                 $basrec = explode('_', $bas_rec);
                 if (count($basrec) != 2) {
                     continue;

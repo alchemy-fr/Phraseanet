@@ -47,6 +47,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     /**
      * @return Iterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->elements);
@@ -58,7 +59,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
      */
     public function add_element(databox_field $field)
     {
-        $this->elements[$field->get_id()] = $field;
+        $this->elements[$field->get_id() ?? ''] = $field;
 
         if (null !== $this->cache_name_id) {
             $this->cache_name_id[$field->get_name()] = $field->get_id();
@@ -175,6 +176,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->elements);

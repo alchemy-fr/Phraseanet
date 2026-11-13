@@ -14,72 +14,48 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="FeedEntries")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FeedEntryRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FeedEntryRepository::class)]
+#[ORM\Table(name: 'FeedEntries')]
 class FeedEntry
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Column(type: 'string', length: 128)]
     private $title;
 
-    /**
-     * @ORM\Column(type="string", length=1024)
-     */
+    #[ORM\Column(type: 'string', length: 1024)]
     private $subtitle;
 
-    /**
-     * @ORM\Column(type="string", length=128, name="author_name")
-     */
+    #[ORM\Column(type: 'string', length: 128, name: 'author_name')]
     private $authorName;
 
-    /**
-     * @ORM\Column(type="string", length=128, name="author_email")
-     */
+    #[ORM\Column(type: 'string', length: 128, name: 'author_email')]
     private $authorEmail;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_on")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime', name: 'created_on')]
     private $createdOn;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", name="updated_on")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime', name: 'updated_on')]
     private $updatedOn;
 
-    /**
-     * @ORM\OneToMany(targetEntity="FeedItem", mappedBy="entry", cascade={"ALL"})
-     * @ORM\OrderBy({"ord" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: FeedItem::class, mappedBy: 'entry', cascade: ['ALL'])]
+    #[ORM\OrderBy(['ord' => 'ASC'])]
     private $items;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="FeedPublisher", cascade={"persist"})
-     * @ORM\JoinColumn(name="publisher_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: FeedPublisher::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'publisher_id', referencedColumnName: 'id')]
     private $publisher;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Feed", inversedBy="entries", cascade={"persist"})
-     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Feed::class, inversedBy: 'entries', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'feed_id', referencedColumnName: 'id')]
     private $feed;
 
-    /**
-     * @ORM\Column(name="notifyemail_on", type="datetime", nullable=true)
-     */
+    #[ORM\Column(name: 'notifyemail_on', type: 'datetime', nullable: true)]
     private $notifyEmailOn;
 
     /**
@@ -277,7 +253,7 @@ class FeedEntry
      * @param  FeedPublisher $publisher
      * @return FeedEntry
      */
-    public function setPublisher(FeedPublisher $publisher = null)
+    public function setPublisher(?FeedPublisher $publisher = null)
     {
         $this->publisher = $publisher;
 
@@ -300,7 +276,7 @@ class FeedEntry
      * @param  Feed      $feed
      * @return FeedEntry
      */
-    public function setFeed(Feed $feed = null)
+    public function setFeed(?Feed $feed = null)
     {
         $this->feed = $feed;
 

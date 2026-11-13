@@ -14,50 +14,37 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="UsrAuthProviders", uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_provider_per_user", columns={"user_id", "provider"}),
- *          @ORM\UniqueConstraint(name="provider_ids", columns={"provider", "distant_id"})
- * })
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository::class)]
+#[ORM\Table(name: 'UsrAuthProviders')]
+#[ORM\UniqueConstraint(name: 'unique_provider_per_user', columns: ['user_id', 'provider'])]
+#[ORM\UniqueConstraint(name: 'provider_ids', columns: ['provider', 'distant_id'])]
 class UsrAuthProvider
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=32)
-     */
+    #[ORM\Column(type: 'string', length: 32)]
     private $provider;
 
-    /**
-     * @ORM\Column(type="string", length=192)
-     */
+    #[ORM\Column(type: 'string', length: 192)]
     private $distant_id;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

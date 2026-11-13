@@ -136,6 +136,7 @@ class Browser
 {
     private $_agent = '';
     private $_browser_name = '';
+    private $_is_old = false;
     private $_version = '';
     private $_platform = '';
     private $_os = '';

@@ -22,7 +22,7 @@ abstract class AbstractMailWithLink extends AbstractMail implements MailWithLink
     /**
      * {@inheritdoc}
      */
-    public function setExpiration(\DateTime $expiration = null)
+    public function setExpiration(?\DateTime $expiration = null)
     {
         $this->expiration = $expiration;
     }
@@ -39,7 +39,7 @@ abstract class AbstractMailWithLink extends AbstractMail implements MailWithLink
      *
      * @return static
      */
-    public static function create(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null, $url = null, \DateTime $expiration = null)
+    public static function create(Application $app, ReceiverInterface $receiver, ?EmitterInterface $emitter = null, $message = null, $url = null, ?\DateTime $expiration = null)
     {
         $mail = new static($app, $receiver, $emitter, $message);
         $mail->setButtonUrl($url);

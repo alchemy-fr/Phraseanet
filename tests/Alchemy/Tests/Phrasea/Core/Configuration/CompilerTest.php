@@ -4,21 +4,17 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class CompilerTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideDataToCompile
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideDataToCompile')]
     public function testCompile($data)
     {
         $compiler = new Compiler();
 
         $compiled = $compiler->compile($data);
-        $this->assertInternalType("string", $compiled);
+        $this->assertIsString($compiled);
         $this->assertSame(0, strpos($compiled, "<?php\nreturn ["));
         $result = eval('?>'.$compiled);
 
@@ -38,14 +34,14 @@ class CompilerTest extends \PhraseanetTestCase
         ];
 
         $compiled = $compiler->compile($data);
-        $this->assertInternalType("string", $compiled);
+        $this->assertIsString($compiled);
         $this->assertSame(0, strpos($compiled, "<?php\nreturn ["));
         $result = eval('?>'.$compiled);
 
         $this->assertSame(['key' => ['key' => 'value'], 'key2' => 'boum'], $result);
     }
 
-    public function provideDataToCompile()
+    public static function provideDataToCompile()
     {
         return [
             [[]],

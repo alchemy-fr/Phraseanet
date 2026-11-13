@@ -12,19 +12,16 @@
 namespace Alchemy\Phrasea\Core\CLIProvider;
 
 use Neutron\SignalHandler\SignalHandler;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 
 class SignalHandlerServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['signal-handler'] = $app->share(function (Application $app) {
+        $app['signal-handler'] = function (Application $app) {
            return SignalHandler::getInstance();
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

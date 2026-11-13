@@ -15,18 +15,18 @@ use Alchemy\Phrasea\Model\Entities\ApiAccount;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\ApiLog;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 class UserManager
 {
-    /** @var ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     protected $objectManager;
     /** @var \PDO */
     protected $appboxConnection;
 
-    public function __construct(ObjectManager $om, Connection $appboxConnection)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, Connection $appboxConnection)
     {
         $this->objectManager = $om;
         $this->appboxConnection = $appboxConnection;
@@ -80,7 +80,7 @@ class UserManager
     /**
      * Gets the object manager.
      *
-     * @return ObjectManager
+     * @return \Doctrine\Persistence\ObjectManager
      */
     public function getObjectManager()
     {
@@ -91,8 +91,7 @@ class UserManager
     {
         $sql = 'DELETE FROM notifications WHERE usr_id = :usr_id';
         $stmt = $this->appboxConnection->prepare($sql);
-        $stmt->execute([':usr_id' => $user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':usr_id' => $user->getId()]);
     }
 
     /**
@@ -117,7 +116,7 @@ class UserManager
 
     private function cleanTokens(User $user)
     {
-        $elements = $this->objectManager->getRepository('Phraseanet:Token')
+        $elements = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Token')
             ->findBy(['user' => $user]);
 
         foreach ($elements as $element) {
@@ -159,7 +158,7 @@ class UserManager
      */
     private function cleanFtpExports(User $user)
     {
-       $elements = $this->objectManager->getRepository('Phraseanet:FtpExport')
+       $elements = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\FtpExport')
                ->findBy(['user' => $user]);
 
        foreach ($elements as $element) {
@@ -174,13 +173,13 @@ class UserManager
      */
     private function cleanUsrList(User $user)
     {
-        $listOwners = $this->objectManager->getRepository('Phraseanet:UsrListOwner')
+        $listOwners = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\UsrListOwner')
             ->findBy(['user' => $user]);
 
         /** @var UsrListOwner $listOwner */
         foreach ($listOwners as $listOwner) {
             $usrList = $listOwner->getList();
-            $listOwnersAdmin = $this->objectManager->getRepository('Phraseanet:UsrListOwner')
+            $listOwnersAdmin = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\UsrListOwner')
                 ->findBy(['list' => $usrList, 'role' => '3']);
 
             // there are only one administrator owner and it is the user
@@ -191,7 +190,7 @@ class UserManager
             $this->objectManager->remove($listOwner);
         }
 
-        $listEntries = $this->objectManager->getRepository('Phraseanet:UsrListEntry')
+        $listEntries = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\UsrListEntry')
             ->findBy(['user' => $user]);
 
         foreach ($listEntries as $listEntry) {
@@ -206,7 +205,7 @@ class UserManager
      */
     private function cleanOrders(User $user)
     {
-       $orders = $this->objectManager->getRepository('Phraseanet:Order')
+       $orders = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')
                ->findBy(['user' => $user]);
 
        foreach ($orders as $order) {
@@ -221,7 +220,7 @@ class UserManager
      */
     private function cleanUserSessions(User $user)
     {
-        $sessions = $this->objectManager->getRepository('Phraseanet:Session')
+        $sessions = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Session')
             ->findByUser(['user' => $user]);
 
         foreach ($sessions as $session) {
@@ -236,7 +235,7 @@ class UserManager
      */
     private function cleanAuthProvider(User $user)
     {
-        $providers = $this->objectManager->getRepository('Phraseanet:UsrAuthProvider')
+        $providers = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider')
             ->findBy(['user' => $user]);
 
         foreach ($providers as $provider) {
@@ -253,8 +252,7 @@ class UserManager
     {
         $sql = 'DELETE FROM `edit_presets` WHERE usr_id = :usr_id';
         $stmt = $this->appboxConnection->prepare($sql);
-        $stmt->execute([':usr_id' => $user->getId()]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':usr_id' => $user->getId()]);
 
         $this->cleanSettings($user);
         $this->cleanTokens($user);
@@ -272,7 +270,7 @@ class UserManager
 
     private function cleanLazarets(User $user)
     {
-        $lazaretSessions = $this->objectManager->getRepository('Phraseanet:LazaretSession')->findBy(['user' => $user]);
+        $lazaretSessions = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\LazaretSession')->findBy(['user' => $user]);
 
         foreach ($lazaretSessions as $lazaretSession) {
             $this->objectManager->remove($lazaretSession);
@@ -292,14 +290,13 @@ class UserManager
             'DELETE FROM `records_rights` WHERE usr_id = :usr_id',
         ] as $sql) {
             $stmt = $this->appboxConnection->prepare($sql);
-            $stmt->execute([':usr_id' => $user->getId()]);
-            $stmt->closeCursor();
+            $stmt->executeStatement([':usr_id' => $user->getId()]);
         }
     }
 
     private function cleanRegistration(User $user)
     {
-        $registrations = $this->objectManager->getRepository('Phraseanet:Registration')->findBy(['user' => $user]);
+        $registrations = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\Registration')->findBy(['user' => $user]);
         foreach ($registrations as $registration) {
             $this->objectManager->remove($registration);
         }
@@ -307,23 +304,23 @@ class UserManager
 
     private function cleanOauthApplication(User $user)
     {
-        $accounts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findByUser($user);
+        $accounts = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\ApiAccount')->findByUser($user);
 
         $this->cleanByAccounts($accounts);
 
-        $apps = $this->objectManager->getRepository('Phraseanet:ApiApplication')->findByCreator($user);
+        $apps = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\ApiApplication')->findByCreator($user);
 
         /** @var ApiApplication $app */
         foreach ($apps as $app) {
             // make sure all apiaccounts linked by apiApplication are also deleted
-            $accts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findBy(['application' => $app]);
+            $accts = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\ApiAccount')->findBy(['application' => $app]);
 
             $this->cleanByAccounts($accts);
 
-            $deliveries = $this->objectManager->getRepository('Phraseanet:WebhookEventDelivery')->findBy(['application' => $app]);
+            $deliveries = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEventDelivery')->findBy(['application' => $app]);
 
             foreach ($deliveries as $delivery) {
-                $payloads = $this->objectManager->getRepository('Phraseanet:WebhookEventPayload')->findBy(['delivery' => $delivery]);
+                $payloads = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEventPayload')->findBy(['delivery' => $delivery]);
 
                 foreach ($payloads as $payload) {
                     $this->objectManager->remove($payload);
@@ -341,13 +338,13 @@ class UserManager
         /** @var ApiAccount $account */
         foreach ($accounts as $account) {
             // remove ApiOauthCodes before ApiAccount
-            $oauthCodes = $this->objectManager->getRepository('Phraseanet:ApiOauthCode')->findByAccount($account);
+            $oauthCodes = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\ApiOauthCode')->findByAccount($account);
             foreach ($oauthCodes as $oauthCode) {
                 $this->objectManager->remove($oauthCode);
             }
 
             // remove ApiOauthToken before ApiAccount
-            $oauthTokens = $this->objectManager->getRepository('Phraseanet:ApiOauthToken')->findOauthTokens($account);
+            $oauthTokens = $this->objectManager->getRepository('Alchemy\Phrasea\Model\Entities\ApiOauthToken')->findOauthTokens($account);
             foreach ($oauthTokens as $oauthToken) {
                 $this->objectManager->remove($oauthToken);
             }

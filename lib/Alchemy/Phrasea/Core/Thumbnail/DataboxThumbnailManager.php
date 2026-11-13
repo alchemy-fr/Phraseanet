@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class DataboxThumbnailManager extends AbstractThumbnailManager implements ThumbnailManager
 {
-    public function setThumbnail(ThumbnailedElement $element, $thumbnailType, File $file = null)
+    public function setThumbnail(ThumbnailedElement $element, $thumbnailType, ?File $file = null)
     {
         $filename = null;
 

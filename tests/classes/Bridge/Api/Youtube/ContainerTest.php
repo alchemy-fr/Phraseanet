@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_Api_Youtube_ContainerTest extends \PhraseanetTestCase
 {
     /**
@@ -13,7 +11,7 @@ class Bridge_Api_Youtube_ContainerTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $published = new Zend_Gdata_App_Extension_Published("2011-10-21 12:00:00");
@@ -36,25 +34,25 @@ class Bridge_Api_Youtube_ContainerTest extends \PhraseanetTestCase
     public function testGet_thumbnail()
     {
         $this->assertEquals("my_thumbnail", $this->object->get_thumbnail());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_thumbnail());
+        $this->assertIsString($this->object->get_thumbnail());
     }
 
     public function testGet_url()
     {
         $this->assertEquals("one url", $this->object->get_url());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_url());
+        $this->assertIsString($this->object->get_url());
     }
 
     public function testGet_title()
     {
         $this->assertEquals("one title", $this->object->get_title());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_title());
+        $this->assertIsString($this->object->get_title());
     }
 
     public function testGet_description()
     {
         $this->assertEquals("one description", $this->object->get_description());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_description());
+        $this->assertIsString($this->object->get_description());
     }
 
     public function testGet_updated_on()
@@ -72,6 +70,6 @@ class Bridge_Api_Youtube_ContainerTest extends \PhraseanetTestCase
     public function testGet_type()
     {
         $this->assertEquals("playlist", $this->object->get_type());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_type());
+        $this->assertIsString($this->object->get_type());
     }
 }

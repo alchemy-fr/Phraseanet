@@ -32,10 +32,8 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
-            $stmt = $this->connbas->prepare($this->sql);
-            $stmt->execute($this->params);
+            $stmt = $this->connbas->executeQuery($this->sql, $this->params);
             $this->total_row = $stmt->rowCount();
-            $stmt->closeCursor();
 
             $this->sql .= $this->filter->getOrderFilter() ? : '';
 
@@ -56,10 +54,8 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
 
-            $stmt = $this->connbas->prepare($this->sql);
-            $stmt->execute($this->params);
+            $stmt = $this->connbas->executeQuery($this->sql, $this->params);
             $this->total_row = $stmt->rowCount();
-            $stmt->closeCursor();
         }
 
         return $this;

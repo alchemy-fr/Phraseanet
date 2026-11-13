@@ -16,51 +16,36 @@ use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="FeedItems", uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={"entry_id","sbas_id","record_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FeedItemRepository")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FeedItemRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'FeedItems')]
+#[ORM\UniqueConstraint(name: 'lookup_unique_idx', columns: ['entry_id', 'sbas_id', 'record_id'])]
 class FeedItem
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", name="record_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'record_id')]
     private $recordId;
 
-    /**
-     * @ORM\Column(type="integer", name="sbas_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'sbas_id')]
     private $sbasId;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $ord;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_on")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime', name: 'created_on')]
     private $createdOn;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", name="updated_on")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime', name: 'updated_on')]
     private $updatedOn;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="FeedEntry", inversedBy="items", cascade={"persist"})
-     * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: FeedEntry::class, inversedBy: 'items', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'entry_id', referencedColumnName: 'id')]
     private $entry;
 
     /**
@@ -125,7 +110,7 @@ class FeedItem
      * @param  FeedEntry $entry
      * @return FeedItem
      */
-    public function setEntry(FeedEntry $entry = null)
+    public function setEntry(?FeedEntry $entry = null)
     {
         $this->entry = $entry;
 
@@ -211,9 +196,7 @@ class FeedItem
         return $this->updatedOn;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function setLastInFeedItem()
     {
         $this->setOrd($this->getEntry()->getItems()->count());

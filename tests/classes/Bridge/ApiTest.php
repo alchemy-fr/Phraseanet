@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_ApiTest extends \PhraseanetTestCase
 {
     /**
@@ -15,15 +13,14 @@ class Bridge_ApiTest extends \PhraseanetTestCase
     protected $id;
     protected $type;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $app = $this->getApplication();
 
         $stmt = $app->getApplicationBox()->get_connection()->prepare('DELETE FROM bridge_apis WHERE name = "Apitest"');
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $this->type = 'Apitest';
 
@@ -33,7 +30,7 @@ class Bridge_ApiTest extends \PhraseanetTestCase
         $this->object = new Bridge_Api($app, $api->get_id());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->object) {
             $this->object->delete();
@@ -62,7 +59,7 @@ class Bridge_ApiTest extends \PhraseanetTestCase
 
     public function testenable()
     {
-        $this->assertInternalType('bool', $this->object->is_disabled());
+        $this->assertIsBool($this->object->is_disabled());
         $this->assertFalse($this->object->is_disabled());
         $this->backDateObjectUpdatedOnField();
         $update1 = $this->object->get_updated_on();
@@ -97,8 +94,6 @@ class Bridge_ApiTest extends \PhraseanetTestCase
 
         if (null === $reflection) {
             $reflection = new ReflectionProperty(Bridge_Api::class, 'updated_on');
-
-            $reflection->setAccessible(true);
         }
 
         $reflection->setValue($this->object, new DateTime('yesterday'));

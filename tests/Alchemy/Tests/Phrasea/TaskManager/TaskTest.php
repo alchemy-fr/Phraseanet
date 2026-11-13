@@ -27,12 +27,8 @@ class TaskTest extends TaskTestCase
 
     protected function getTask()
     {
-        $this->process = $this->getMockBuilder('Symfony\Component\Process\Process')
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->getMock();
-        $taskEntity = $this->getMock('Alchemy\Phrasea\Model\Entities\Task');
+        $this->process = $this->createMock('Symfony\Component\Process\Process');
 
-        return new Task($taskEntity, 'task number', 42, $this->process);
+        return new Task($this->createStub('Alchemy\Phrasea\Model\Entities\Task'), 'task number', 42, $this->process);
     }
 }

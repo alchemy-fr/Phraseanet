@@ -11,20 +11,16 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class BrowserServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['browser'] = $app->share(function ($app) {
+        $app['browser'] = function ($app) {
             return new \Browser();
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

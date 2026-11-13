@@ -5,19 +5,15 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 use Alchemy\Phrasea\Notification\Deliverer;
 use Alchemy\Phrasea\TaskManager\Job\FtpJob;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FtpJobTest extends JobTestCase
 {
     protected function getJob()
     {
         return (new FtpJob($this->createTranslatorMock()))
             ->setDelivererLocator(function () {
-                $this->getMockBuilder(Deliverer::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+                $this->createMock(Deliverer::class);
             });
     }
 }

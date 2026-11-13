@@ -3,21 +3,16 @@
 namespace Alchemy\Phrasea\Core\MetaProvider;
 
 use Alchemy\Phrasea\Core\Provider\TwigServiceProvider as PhraseanetTwigServiceProvider;
-use Silex\Application;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Provider\TwigServiceProvider;
-use Silex\ServiceProviderInterface;
 
 class TemplateEngineMetaProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app->register(new TwigServiceProvider());
         $app->register(new PhraseanetTwigServiceProvider());
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
     }
 }

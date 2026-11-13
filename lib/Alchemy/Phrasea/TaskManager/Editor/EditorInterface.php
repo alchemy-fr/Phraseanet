@@ -57,7 +57,7 @@ interface EditorInterface
      *
      * @return string An XML string
      */
-    public function getDefaultSettings(PropertyAccess $config = null);
+    public function getDefaultSettings(?PropertyAccess $config = null);
 
     /**
      * Returns the default period of the job.

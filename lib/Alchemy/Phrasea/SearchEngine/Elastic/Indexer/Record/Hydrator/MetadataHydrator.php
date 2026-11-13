@@ -19,7 +19,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\Utilities\StringHelper;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Connection as DriverConnection;
+use Doctrine\DBAL\Connection as DriverConnection;
 use DomainException;
 use InvalidArgumentException;
 
@@ -76,7 +76,7 @@ class MetadataHydrator implements HydratorInterface
         );
 
         $record_id = -1;
-        while ($metadata = $statement->fetch()) {
+        while ($metadata = $statement->fetchAssociative()) {
 
             if($metadata['record_id'] !== $record_id) {
                 // record has changed, don't mix with previous one

@@ -99,10 +99,8 @@ class Bridge_Element
         $sql = 'SELECT sbas_id, record_id, dist_id, status, connector_status, type
                   , title, serialized_datas, created_on, updated_on, uploaded_on
             FROM bridge_elements WHERE id = :id';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':id' => $this->id]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             throw new Bridge_Exception_ElementNotFound('Element Not Found');
@@ -178,8 +176,7 @@ class Bridge_Element
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -213,8 +210,7 @@ class Bridge_Element
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -249,8 +245,7 @@ class Bridge_Element
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -310,8 +305,7 @@ class Bridge_Element
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -345,8 +339,7 @@ class Bridge_Element
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -375,7 +368,7 @@ class Bridge_Element
      *
      * @return DateTime
      */
-    public function set_uploaded_on(DateTime $date = null)
+    public function set_uploaded_on(?DateTime $date = null)
     {
         $this->uploaded_on = $date;
         $this->updated_on = new DateTime();
@@ -390,8 +383,7 @@ class Bridge_Element
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -413,8 +405,7 @@ class Bridge_Element
         $sql = 'DELETE FROM bridge_elements WHERE id = :id';
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':id' => $this->id]);
 
         return;
     }
@@ -425,10 +416,8 @@ class Bridge_Element
             ORDER BY id DESC
             LIMIT ' . (int) $offset_start . ',' . (int) $quantity;
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':account_id' => $account->get_id()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':account_id' => $account->get_id()]);
+        $rs = $stmt->fetchAllAssociative();
 
         $results = [];
 
@@ -460,8 +449,7 @@ class Bridge_Element
 
         $connection = $app->getApplicationBox()->get_connection();
         $stmt = $connection->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $element_id = $connection->lastInsertId();
 

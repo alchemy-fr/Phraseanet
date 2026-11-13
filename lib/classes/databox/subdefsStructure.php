@@ -11,7 +11,7 @@
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Assert\Assertion;
 use Alchemy\Phrasea\Media\MediaTypeFactory;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class databox_subdefsStructure implements IteratorAggregate, Countable
 {
@@ -21,7 +21,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
     protected $subdefGroups = [];
 
     /**
-     * @var TranslatorInterface
+     * @var \Symfony\Contracts\Translation\TranslatorInterface
      */
     private $translator;
 
@@ -34,11 +34,13 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      *
      * @return ArrayIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->subdefGroups);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         $n = 0;
@@ -50,7 +52,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         return $n;
     }
 
-    public function __construct(databox $databox, TranslatorInterface $translator)
+    public function __construct(databox $databox, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->databox = $databox;
         $this->translator = $translator;
@@ -202,7 +204,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('name', mb_strtolower($name));
 
         $preset = ($preset == 'Choose') ? 'Custom' : $preset ;
-        $subdef->setAttribute('presets', $preset);
+        $subdef->setAttribute('presets', (string) $preset);
 
         $mediaTypeElement = $dom_struct->createElement('mediatype');
         $mediaTypeElement->appendChild($dom_struct->createTextNode($mediatype));
@@ -257,7 +259,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('orderable', ($orderable ? 'true' : 'false'));
         $subdef->setAttribute('tobuild', ($toBuild ? 'true' : 'false'));
         $subdef->setAttribute('substituable', ($substituable ? 'true' : 'false'));
-        $subdef->setAttribute('presets', $preset);
+        $subdef->setAttribute('presets', (string) $preset);
 
         foreach ($labels as $code => $label) {
             $child = $dom_struct->createElement('label');

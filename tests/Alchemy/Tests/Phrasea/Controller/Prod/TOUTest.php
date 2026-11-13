@@ -2,25 +2,20 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class TOUTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         self::resetUsersRights(self::$DI['app'], self::$DI['user_alt2']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\TOU::displayTermsOfUse
-     */
     public function testGetTOUNotAJAX()
     {
         self::$DI['client']->request('GET', '/prod/TOU/');
@@ -29,18 +24,12 @@ class TOUTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\TOU::denyTermsOfUse
-     */
     public function testGetTOUAJAX()
     {
         $response = $this->XMLHTTPRequest('GET', '/prod/TOU/');
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\TOU::displayTermsOfUse
-     */
     public function testDenyTOU()
     {
         $databoxes = self::$DI['app']->getDataboxes();
@@ -55,11 +44,6 @@ class TOUTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\TOU::denyTermsOfUse
-     * @covers Alchemy\Phrasea\Controller\Prod\TOU::connect
-     * @covers Alchemy\Phrasea\Controller\Prod\TOU::call
-     */
     public function testDenyTOURequireAuthentication()
     {
         $databoxes = self::$DI['app']->getDataboxes();

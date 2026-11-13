@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class MountDataboxCommand extends Command
 {
@@ -63,7 +64,7 @@ class MountDataboxCommand extends Command
             }
 
             $databoxName = $input->getArgument('databox');
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('question');
 
             $connectionSettings = new DataboxConnectionSettings(
                 $input->getOption('db-host')?:$this->container['conf']->get(['main', 'database', 'host']),
@@ -73,7 +74,7 @@ class MountDataboxCommand extends Command
             );
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question> Do you want really mount this databox? (y/N)</question>', 'N'));
+                $continue = mb_strtolower($dialog->ask($input, $output, new Question('<question> Do you want really mount this databox? (y/N)</question>', 'N')));
             }
             while ( ! in_array($continue, ['y', 'n']));
 

@@ -29,7 +29,7 @@ class TranslationDumper extends Command
         parent::__construct('translation:dump');
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Dump translation files');
         $this

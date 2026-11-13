@@ -16,26 +16,22 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Root\AccountController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class Account implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['account.controller'] = $app->share(function (PhraseaApplication $app) {
+        $app['account.controller'] = function (PhraseaApplication $app) {
             return (new AccountController($app))
                 ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     public function connect(Application $app)

@@ -18,12 +18,12 @@ class StoryTransformer extends TransformerAbstract
     /**
      * @var array
      */
-    protected $availableIncludes = ['thumbnail', 'metadatas', 'records', 'caption'];
+    protected array $availableIncludes = ['thumbnail', 'metadatas', 'records', 'caption'];
 
     /**
      * @var array
      */
-    protected $defaultIncludes = ['thumbnail', 'metadatas'];
+    protected array $defaultIncludes = ['thumbnail', 'metadatas'];
 
     /**
      * @var SubdefTransformer

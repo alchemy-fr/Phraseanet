@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Http\StaticFile;
 
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
 
 class StaticMode
 {
@@ -26,7 +26,7 @@ class StaticMode
     /**
      * @param $pathFile
      * @param null|string $etag
-     * @return Url
+     * @return Uri
      */
     public function getUrl($pathFile, $etag = null)
     {
@@ -37,7 +37,7 @@ class StaticMode
             $url .= "?etag=" . urlencode($etag);
         }
 
-        return Url::factory($url);
+        return new Uri($url);
     }
 
     /**

@@ -1,0 +1,54 @@
+parameters:
+  alchemy_worker.queue_name: alchemy_queue
+  alchemy_worker.process_pool_size: 8
+
+services:
+  alchemy_worker.process_pool:
+    class: Alchemy\Worker\ProcessPool
+    arguments:
+      - "%alchemy_worker.process_pool_size%"
+    calls:
+      - [ setLogger, [ "@logger" ]]
+
+  alchemy_worker.worker_invoker:
+    class: Alchemy\Worker\WorkerInvoker
+    arguments:
+      - "@alchemy_worker.process_pool"
+      - "%kernel.environment%"
+    calls:
+      - [ setLogger, [ "@logger" ]]
+
+  alchemy_worker.queue_registry:
+    class: Alchemy\Queue\MessageQueueRegistry
+    calls:
+      - [ setLogger, [ "@logger" ]]
+
+  alchemy_worker.message_dispatcher:
+    class: Alchemy\Worker\MessageDispatcher
+    arguments:
+      - "@alchemy_worker.worker_invoker"
+      - "@alchemy_worker.queue_registry"
+      - "%alchemy_worker.queue_name%"
+    calls:
+      - [ setLogger, [ "@logger" ]]
+
+  alchemy_worker.type_based_worker_resolver:
+    class: Alchemy\Worker\TypeBasedWorkerResolver
+
+  alchemy_worker.worker_resolver:
+    alias: alchemy_worker.type_based_worker_resolver
+
+  alchemy_worker.commands.run_dispatcher_command:
+    class: Alchemy\WorkerBundle\Commands\DispatchingConsumerCommand
+    arguments:
+      - "@alchemy_worker.message_dispatcher"
+      - "@alchemy_worker.worker_invoker"
+    tags:
+      - { name: console.command }
+
+  alchemy_worker.commands.run_worker_command:
+    class: Alchemy\WorkerBundle\Commands\InvokeWorkerCommand
+    arguments:
+      - "@alchemy_worker.worker_resolver"
+    tags:
+      - { name: console.command }

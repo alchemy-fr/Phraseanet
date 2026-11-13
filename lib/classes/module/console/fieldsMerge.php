@@ -167,9 +167,8 @@ class module_console_fieldsMerge extends Command
             ->setMaxResults($quantity)
         ;
         do {
-            $stmt = $builder->execute();
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $builder->executeQuery();
+            $results = $stmt->fetchAllAssociative();
 
             foreach ($results as $row) {
                 $record = $databox->get_record($row['record_id']);
@@ -208,8 +207,8 @@ class module_console_fieldsMerge extends Command
             }
 
             // order to write metas for those records
-            $this->container['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id'))
+            $this->container['dispatcher']->dispatch(new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id')),
+                WorkerEvents::RECORDS_WRITE_META
             );
 
             $start += $quantity;

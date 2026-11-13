@@ -55,10 +55,8 @@ class patch_383alpha1a extends patchAbstract
 
         // Remove deleted users sessions
         $sql = 'SELECT s.id FROM `Sessions` s INNER JOIN Users u ON (u.id = s.user_id) WHERE u.deleted = 1';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         foreach ($rows as $row) {
             if (null !== $session = $app['repo.sessions']->find($row['id'])) {
@@ -67,7 +65,7 @@ class patch_383alpha1a extends patchAbstract
         }
 
         // Remove API sessions
-        $query = $app['orm.em']->createQuery('SELECT s FROM Phraseanet:Session s WHERE s.user_agent LIKE :guzzle');
+        $query = $app['orm.em']->createQuery('SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s WHERE s.user_agent LIKE :guzzle');
         $query->setParameter(':guzzle', 'Guzzle%');
 
         foreach ($query->getResult() as $session) {

@@ -5,45 +5,33 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Factory;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
-use PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Metadata\Metadata;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FactoryTest extends \PhraseanetTestCase
 {
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     */
     public function testGetFileAttributeMetadata()
     {
-        $tag = new UniqueDocumentID();
+        $tag = TagFactory::getFromRDFTagname('IPTC:UniqueDocumentID');
         $value = new Mono('Unique');
 
         $metadata = new Metadata($tag, $value);
 
-        $attribute = Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_METADATA, serialize($metadata));
+        $attribute = Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_METADATA, (new \Alchemy\Phrasea\Border\Attribute\Metadata($metadata))->asString());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Metadata', $attribute);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetFileAttributeMetadataFail()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_METADATA, null);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     */
     public function testGetFileAttributeStory()
     {
         $attribute = Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_STORY, self::$DI['record_story_1']->get_serialize_key());
@@ -51,9 +39,6 @@ class FactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Story', $attribute);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     */
     public function testGetFileAttributeMetaField()
     {
         $databox_field = null;
@@ -73,9 +58,6 @@ class FactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\MetaField', $attribute);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     */
     public function testGetFileAttributeStatus()
     {
         $attribute = Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_STATUS, '000100');
@@ -83,32 +65,22 @@ class FactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Status', $attribute);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetFileAttributeStoryFailsRecord()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_STORY, self::$DI['record_1']->get_serialize_key());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetFileAttributeStoryFails()
     {
-        \PHPUnit_Framework_Error_Warning::$enabled = false;
+        $this->expectException(\InvalidArgumentException::class);
 
         Factory::getFileAttribute(self::$DI['app'], AttributeInterface::NAME_STORY, self::$DI['collection']->get_databox()->get_sbas_id() . '_0');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetFileAttributeFail()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Factory::getFileAttribute(self::$DI['app'], 'nothing', 'nothong');
     }
 }

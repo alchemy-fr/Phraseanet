@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Sha256;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Sha256Test extends \PhraseanetTestCase
 {
     /**
@@ -19,7 +17,7 @@ class Sha256Test extends \PhraseanetTestCase
     protected $filename;
     protected $media;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Sha256(self::$DI['app']);
@@ -28,7 +26,7 @@ class Sha256Test extends \PhraseanetTestCase
         $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->media = null;
         if (file_exists($this->filename)) {
@@ -37,17 +35,14 @@ class Sha256Test extends \PhraseanetTestCase
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Sha256::check
-     */
     public function testCheck()
     {
-        $session = self::$DI['app']['orm.em']->find('Phraseanet:LazaretSession', 1);
+        $session = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\LazaretSession', 1);
 
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, Manager::FORCE_RECORD);
 
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getSha256'], [self::$DI['app'], $this->media, self::$DI['collection']]);
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getSha256'])->getMock();
 
         $mock
             ->expects($this->once())
@@ -60,12 +55,9 @@ class Sha256Test extends \PhraseanetTestCase
         $this->assertFalse($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Sha256::check
-     */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getSha256'], [self::$DI['app'], $this->media, self::$DI['collection']]);
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getSha256'])->getMock();
 
         $mock
             ->expects($this->once())
@@ -80,11 +72,8 @@ class Sha256Test extends \PhraseanetTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Sha256::getMessage
-     */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
+        $this->assertIsString($this->object->getMessage($this->createTranslatorMock()));
     }
 }

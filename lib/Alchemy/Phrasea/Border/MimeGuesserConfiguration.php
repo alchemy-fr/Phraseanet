@@ -17,7 +17,7 @@ use MediaVorus\Utils\ImageMimeTypeGuesser;
 use MediaVorus\Utils\PostScriptMimeTypeGuesser;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;
 use MediaVorus\Utils\VideoMimeTypeGuesser;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Symfony\Component\Mime\MimeTypes;
 
 class MimeGuesserConfiguration
 {
@@ -34,14 +34,14 @@ class MimeGuesserConfiguration
      */
     public function register()
     {
-        $guesser = MimeTypeGuesser::getInstance();
+        $guesser = MimeTypes::getDefault();
 
-        $guesser->register(new RawImageMimeTypeGuesser());
-        $guesser->register(new PostScriptMimeTypeGuesser());
-        $guesser->register(new AudioMimeTypeGuesser());
-        $guesser->register(new VideoMimeTypeGuesser());
-        $guesser->register(new ImageMimeTypeGuesser());
+        $guesser->registerGuesser(new RawImageMimeTypeGuesser());
+        $guesser->registerGuesser(new PostScriptMimeTypeGuesser());
+        $guesser->registerGuesser(new AudioMimeTypeGuesser());
+        $guesser->registerGuesser(new VideoMimeTypeGuesser());
+        $guesser->registerGuesser(new ImageMimeTypeGuesser());
 
-        $guesser->register(new CustomExtensionGuesser($this->conf->get(['border-manager', 'extension-mapping'], [])));
+        $guesser->registerGuesser(new CustomExtensionGuesser($this->conf->get(['border-manager', 'extension-mapping'], [])));
     }
 }

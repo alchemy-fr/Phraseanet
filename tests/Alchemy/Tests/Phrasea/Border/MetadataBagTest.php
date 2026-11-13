@@ -7,10 +7,8 @@ use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MetadataBagTest extends \PhraseanetTestCase
 {
     /**
@@ -18,15 +16,12 @@ class MetadataBagTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new MetadataBag;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\MetadataBag::toMetadataArray
-     */
     public function testToMetadataArray()
     {
         /** @var \collection $collection */

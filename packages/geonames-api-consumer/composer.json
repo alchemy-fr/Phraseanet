@@ -1,0 +1,21 @@
+{
+    "name": "alchemy/geonames-api-consumer",
+    "description": "A connector to a geonames server",
+    "keywords": ["geonames"],
+    "license": "MIT",
+    "version": "5.0.0",
+    "require": {
+        "php"               : "^8.2",
+        "guzzlehttp/guzzle" : "^7.9",
+        "pimple/pimple"     : "^3.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit"   : "^11.5"
+    },
+    "autoload": {
+        "psr-0": { "Alchemy\\Geonames": "src/" }
+    },
+    "autoload-dev": {
+        "psr-0": { "Alchemy\\Tests": "tests/" }
+    }
+}

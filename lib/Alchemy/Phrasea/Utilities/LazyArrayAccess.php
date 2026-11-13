@@ -22,21 +22,25 @@ class LazyArrayAccess implements \ArrayAccess
         $this->locator = $locator;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return $this->fetchArrayAccessible()->offsetExists($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->fetchArrayAccessible()->offsetGet($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->fetchArrayAccessible()->offsetSet($offset, $value);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->fetchArrayAccessible()->offsetUnset($offset);

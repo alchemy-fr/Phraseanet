@@ -21,7 +21,7 @@ class V3StoryTransformer extends RecordTransformer
     /**
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'thumbnail',
         'subdefs',
         'metadata',
@@ -33,7 +33,7 @@ class V3StoryTransformer extends RecordTransformer
     /**
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'thumbnail',
     ];
 
