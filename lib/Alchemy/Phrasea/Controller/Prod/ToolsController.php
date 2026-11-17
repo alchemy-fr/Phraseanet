@@ -151,7 +151,7 @@ class ToolsController extends Controller
             return $this->app->json(['success' => false , 'message' => 'invalid rotate form'], 403);
         }
 
-        $records = RecordsRequest::fromRequest($this->app, $request, false);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
         $rotation = (int)$request->request->get('rotation', 90);
         $rotation %= 360;
 
