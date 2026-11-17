@@ -8549,7 +8549,7 @@ module.exports = {
 /* 86 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"author":"Mapbox","name":"mapbox.js","description":"mapbox javascript api","version":"2.4.0","homepage":"http://mapbox.com/","repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"main":"src/index.js","dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"license":"BSD-3-Clause","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"optionalDependencies":{},"engines":{"node":"*"},"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_from":"mapbox.js@2.4.0"}
 
 /***/ }),
 /* 87 */
@@ -53077,7 +53077,7 @@ module.exports = VTTRegion;
 /* 152 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"name":"videojs-swf","description":"The Flash-fallback video player for video.js (http://videojs.com)","version":"5.4.1","copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","keywords":["flash","video","player"],"homepage":"http://videojs.com","author":"Brightcove","repository":{"type":"git","url":"https://github.com/videojs/video-js-swf.git"},"devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_from":"videojs-swf@5.4.1"}
 
 /***/ }),
 /* 153 */
@@ -68224,21 +68224,7 @@ var uploader = function uploader(services) {
     };
     var onOpenModal = function onOpenModal(filesList) {
 
-        // @TODO replace with feature detection:
-        var iev = 0;
-        var ieold = /MSIE (\d+\.\d+);/.test(navigator.userAgent);
-        var trident = !!navigator.userAgent.match(/Trident\/7.0/);
-        var rv = navigator.userAgent.indexOf('rv:11.0');
-
-        if (ieold) iev = new Number(RegExp.$1);
-        if (navigator.appVersion.indexOf('MSIE 10') !== -1) iev = 10;
-        if (trident && rv !== -1) iev = 11;
-
-        if (iev >= 10) {
-            (0, _jquery2.default)('#UPLOAD_FLASH_LINK').hide();
-            (0, _jquery2.default)('#upload_type option[value="flash"]').remove();
-        }
-        // Upload management
+        // Upload management (HTML5 only; the Flash uploader has been removed)
         var uploaderInstance = new UploaderManager({
             container: (0, _jquery2.default)('#uploadBox'),
             uploadBox: (0, _jquery2.default)('#uploadBox .upload-box-addedfiles'),
@@ -68252,14 +68238,6 @@ var uploader = function uploader(services) {
         uploaderInstance.Preview.setOptions({
             maxWidth: 130,
             maxHeight: 120
-        });
-
-        (0, _jquery2.default)('#upload_type').on('change', function () {
-            if ((0, _jquery2.default)(this).val() === 'html') {
-                (0, _jquery2.default)("#UPLOAD_HTML5_LINK").trigger("click");
-            } else if ((0, _jquery2.default)(this).val() === 'flash') {
-                (0, _jquery2.default)("#UPLOAD_FLASH_LINK").trigger("click");
-            }
         });
 
         // Init jquery tabs
