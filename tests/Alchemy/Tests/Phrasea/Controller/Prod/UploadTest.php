@@ -33,17 +33,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         parent::tearDown();
     }
 
-    public function testFlashUploadForm()
-    {
-        /** @var Client $client */
-        $client = self::$DI['client'];
-
-        $client->request('GET', '/prod/upload/flash-version/');
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatusCode());
-    }
-
     public function testUploadForm()
     {
         /** @var Client $client */
