@@ -16842,6 +16842,18 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Votre configuration</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="apiaccessright001" resname="admin::users: API access">
+        <source>admin::users: API access</source>
+        <target state="translated">Accès API</target>
+      </trans-unit>
+      <trans-unit id="apiaccessright002" resname="admin::users: API access granted">
+        <source>admin::users: API access granted</source>
+        <target state="translated">Accès API accordé</target>
+      </trans-unit>
+      <trans-unit id="apiaccessright003" resname="admin::users: API access revoked">
+        <source>admin::users: API access revoked</source>
+        <target state="translated">Accès API révoqué</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

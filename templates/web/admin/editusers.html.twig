@@ -626,6 +626,15 @@
     </div>
 
       <div id="api_tab" class="" style="top:40px;">
+        <div style="margin-bottom: 20px; padding: 10px; background:#f5f5f5; border:1px solid #ddd;">
+          <label for="api-access-granted" style="margin-right: 20px;display:inline-block;min-width: 150px;font-weight:bold;">{{ 'admin::users: API access' | trans }}</label>
+          <input type="radio" id="api-access-granted" name="granted-api" value="grant" style="margin-right: 10px;"
+                  {% if main_user.hasGrantedApi() %} checked {% endif %}>
+          <label for="api-access-granted" style="margin-right: 20px;display:inline-block;">{{ 'admin::users: API access granted' | trans }}</label>
+          <input type="radio" id="api-access-revoked" name="granted-api" value="revoke" style="margin-left: 10px;"
+                  {% if not main_user.hasGrantedApi() %} checked {% endif %}>
+          <label for="api-access-revoked" style="margin-left: 10px;display:inline-block;">{{ 'admin::users: API access revoked' | trans }}</label>
+        </div>
         <h1>{{ 'admin::users: list user api application' | trans }}</h1>
         {% set apiApplications = app['repo.api-applications'].findByUser(main_user, true) %}
         {% if apiApplications|length > 0 %}
@@ -1522,6 +1531,21 @@
         $.ajax({
           type: 'POST',
           url: '/admin/users/can-renew-password/change/',
+          dataType: 'json',
+          data: {
+            user_id: {{ main_user.getId() }},
+            action: $this.val()
+          },
+          success: function (data) {
+          }
+        });
+      });
+
+      $('input[type=radio][name="granted-api"]').change( function() {
+        let $this = $(this);
+        $.ajax({
+          type: 'POST',
+          url: '/admin/users/granted-api/change/',
           dataType: 'json',
           data: {
             user_id: {{ main_user.getId() }},

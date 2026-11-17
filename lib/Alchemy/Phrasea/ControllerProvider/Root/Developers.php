@@ -40,6 +40,7 @@ class Developers implements ControllerProviderInterface, ServiceProviderInterfac
 
         $controllers->before(function () use ($firewall) {
             $firewall->requireNotGuest();
+            $firewall->requireGrantedApi();
         });
 
         $controllers->get('/applications/', 'controller.account.developers:listApps')

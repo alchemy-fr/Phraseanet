@@ -199,6 +199,14 @@ class UserController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+    public function changeGrantedApiAction(Request $request)
+    {
+        $helper = $this->getUserManageHelper($request);
+        $helper->setGrantedApi();
+
+        return $this->app->json(['success' => true]);
+    }
+
     public function applyRightsAction(Request $request)
     {
         $data = ['error' => true];

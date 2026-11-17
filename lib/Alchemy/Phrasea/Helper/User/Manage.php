@@ -274,6 +274,17 @@ class Manage extends Helper
         $this->getObjectManager()->flush();
     }
 
+    public function setGrantedApi()
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        $user = $userRepository->find($this->request->request->get('user_id'));
+        $status = $this->request->request->get('action') == 'grant' ? true : false;
+        $user->setGrantedApi($status);
+        $this->getObjectManager()->persist($user);
+        $this->getObjectManager()->flush();
+    }
+
     /**
      * @return ObjectManager
      */

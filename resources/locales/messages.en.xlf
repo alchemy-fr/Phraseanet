@@ -16838,6 +16838,18 @@ It is possible to place several search areas</target>
         <target state="translated">Your configuration</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="apiaccessright001" resname="admin::users: API access">
+        <source>admin::users: API access</source>
+        <target state="translated">API access</target>
+      </trans-unit>
+      <trans-unit id="apiaccessright002" resname="admin::users: API access granted">
+        <source>admin::users: API access granted</source>
+        <target state="translated">API access granted</target>
+      </trans-unit>
+      <trans-unit id="apiaccessright003" resname="admin::users: API access revoked">
+        <source>admin::users: API access revoked</source>
+        <target state="translated">API access revoked</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
