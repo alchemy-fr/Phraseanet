@@ -43,18 +43,6 @@ class UploadController extends Controller
     use FilesystemAware;
     use SubDefinitionSubstituerAware;
 
-    public function getFlashUploadForm()
-    {
-        $maxFileSize = $this->getUploadMaxFileSize();
-
-        return $this->render('prod/upload/upload-flash.html.twig', [
-            'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($this->getAclForUser()),
-            'maxFileSize'         => $maxFileSize,
-            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ]);
-    }
-
     public function getHtml5UploadForm()
     {
         $this->setSessionFormToken('prodUpload');

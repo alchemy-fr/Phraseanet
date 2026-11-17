@@ -86,10 +86,6 @@
                                     <li class="menu-bar-item">
                                         {% set link = path('upload_html5_form') %}
 
-                                        {% if not app['browser'].supportFileAPI() %}
-                                            {% set link = path('upload_flash_form') %}
-                                        {% endif %}
-
                                         <a href="{{ link }}" class="uploader-open-action"
                                            title="{{ 'Upload' | trans }}">
                                             <img src="/assets/common/images/icons/menu-upload.png" class="mobilemenu"/>
