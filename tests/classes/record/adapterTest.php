@@ -537,4 +537,30 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $record->setStatus('1001001001010101');
         $this->assertSame('00000000000000001001001001010101', $record->getStatus());
     }
+
+    public function testSetMetadatasByActionsWithNullValueClearsMonoValuedField()
+    {
+        $app = $this->getApplication();
+        $file = new \Alchemy\Phrasea\Border\File($app, $app['mediavorus']->guess(__DIR__ . '/../../files/cestlafete.jpg'), $this->getCollection());
+        $record = record_adapter::createFromFile($file, $app);
+
+        try {
+            $monoField = null;
+            foreach ($record->getDatabox()->get_meta_structure() as $databox_field) {
+                if (!$databox_field->is_multi() && !$databox_field->is_readonly() && 'string' === $databox_field->get_type()) {
+                    $monoField = $databox_field;
+                    break;
+                }
+            }
+            $this->assertNotNull($monoField, 'No mono-valued string field in the test databox');
+
+            $record->setMetadatasByActions(json_decode(json_encode(['metadatas' => [['field_name' => $monoField->get_name(), 'value' => 'some value']]])));
+            $this->assertCount(1, $record->get_caption()->get_fields([$monoField->get_name()], true));
+
+            $record->setMetadatasByActions(json_decode(json_encode(['metadatas' => [['field_name' => $monoField->get_name(), 'value' => null]]])));
+            $this->assertCount(0, $record->get_caption()->get_fields([$monoField->get_name()], true));
+        } finally {
+            $record->delete();
+        }
+    }
 }
