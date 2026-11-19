@@ -1558,7 +1558,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 if(count($values) > 1) {
                     throw new Exception(sprintf("set:: setting mono-valued (%s) requires only one value.", $sf->get_name()));
                 }
-                if( ($value = $values[0]) ) {
+                // no value means "clear the field": the removal ops are already set above
+                if( ($value = $values[0] ?? null) ) {
                     $ops[] = [
                         'explain' => sprintf('adding value "%s" to "%s" (mono)', $value, $sf->get_name()),
                         'meta_struct_id' => $sf->get_id(),
