@@ -135,6 +135,52 @@ class ApiJsonTest extends ApiTestCase
         $record->delete();
     }
 
+    public static function provideStoryModificationRoutes()
+    {
+        return [
+            'add records' => ['POST', 'addrecords', 'story_records'],
+            'del records' => ['DELETE', 'delrecords', 'story_records'],
+            'set cover'   => ['POST', 'setcover', 'record_id'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideStoryModificationRoutes')]
+    public function testStoryModificationRequiresModifyRight($method, $action, $payloadKey)
+    {
+        $this->setToken($this->userAccessToken);
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+        $record = self::$DI['record_1'];
+
+        $user = self::$DI['oauth2-app-acc-user-not-admin']->getUser();
+        $acl = self::$DI['app']->getAclForUser($user);
+        $baseId = $story->getBaseId();
+        $acl->update_rights_to_base($baseId, [\ACL::CANMODIFRECORD => false]);
+
+        try {
+            $payload = 'record_id' === $payloadKey
+                ? ['record_id' => $record->getRecordId()]
+                : ['story_records' => [['databox_id' => $record->getDataboxId(), 'record_id' => $record->getRecordId()]]];
+
+            self::$DI['client']->request(
+                $method,
+                sprintf('/api/v1/stories/%s/%s/%s', $story->getDataboxId(), $story->getRecordId(), $action),
+                $this->getParameters(),
+                [],
+                [
+                    'HTTP_ACCEPT' => $this->getAcceptMimeType(),
+                    'CONTENT_TYPE' => 'application/json',
+                ],
+                json_encode($payload)
+            );
+
+            $this->evaluateResponseForbidden(self::$DI['client']->getResponse());
+            $this->assertFalse($story->hasChild($record));
+        } finally {
+            $acl->update_rights_to_base($baseId, [\ACL::CANMODIFRECORD => true]);
+            $story->delete();
+        }
+    }
+
     public function testDelRecordFromStory()
     {
         $this->setToken($this->userAccessToken);

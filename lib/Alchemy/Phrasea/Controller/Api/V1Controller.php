@@ -2635,7 +2635,7 @@ class V1Controller extends Controller
     private function addOrDelStoryRecordsFromRequest(Request $request, $databox_id, $story_id, $action)
     {
         $data = $this->decodeJsonBody($request, 'story_records.json');
-        $story = new record_adapter($this->app, $databox_id, $story_id);
+        $story = $this->getStoryForModification($databox_id, $story_id);
         $previousDescriptions = $story->getRecordDescriptionAsArray();
 
         $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
@@ -2644,6 +2644,24 @@ class V1Controller extends Controller
         $this->dispatch(new RecordEdit($story, $previousDescriptions), PhraseaEvents::RECORD_EDIT);
 
         return $result->createResponse();
+    }
+
+    /**
+     * Load a story and ensure the current user may modify it.
+     *
+     * @param int $databox_id
+     * @param int $story_id
+     * @return record_adapter
+     */
+    private function getStoryForModification($databox_id, $story_id)
+    {
+        $story = new record_adapter($this->app, $databox_id, $story_id);
+
+        if (!$this->getAclForUser()->has_right_on_base($story->getBaseId(), \ACL::CANMODIFRECORD)) {
+            $this->app->abort(403, sprintf('You can not modify the story %s', $story->getId()));
+        }
+
+        return $story;
     }
 
     private function addOrDelStoryRecordsFromData(record_adapter $story, array $recordsData, $action)
@@ -2693,6 +2711,10 @@ class V1Controller extends Controller
             $this->app->abort(404, sprintf('Record identified by databox_is %s and record_id %s could not be found', $databox_id, $record_id));
         }
 
+        if ($action === 'ADD' && !$this->getAclForUser()->has_access_to_record($record)) {
+            $this->app->abort(403, sprintf('You can not add the record %s to a story', $record->getId()));
+        }
+
         if ($action === 'ADD' && !$story->hasChild($record)) {
             $story->appendChild($record);
         }
@@ -2717,7 +2739,7 @@ class V1Controller extends Controller
     {
         $data = $this->decodeJsonBody($request, 'story_cover.json');
 
-        $story = new record_adapter($this->app, $databox_id, $story_id);
+        $story = $this->getStoryForModification($databox_id, $story_id);
 
         $coverSource = [];
 
