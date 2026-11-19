@@ -26,7 +26,7 @@
                                 </td>
                                 <td style="text-align:left;width:auto;">
                                     <div class="title title15" title="{% if first_item %}{{first_item.getRecord(app).get_title|e}}{% endif %}">
-                                        {% if first_item %}{{first_item.getRecord(app).get_title|raw}}{% endif %}
+                                        {% if first_item %}{{first_item.getRecord(app).get_title|e}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">

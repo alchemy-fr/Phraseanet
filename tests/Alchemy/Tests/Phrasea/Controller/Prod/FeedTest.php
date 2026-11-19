@@ -139,6 +139,28 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertMatchesRegularExpression("/entry_" . $entry->getId() . "/", $pageContent->datas);
     }
 
+    public function testEntryUpdateEscapesSubtitle()
+    {
+        $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
+        $entry = $feed->getEntries()->first();
+
+        $params = [
+            "title"        => "dog",
+            "subtitle"     => "<img src=x onerror=alert(1)>\nsecond line",
+            "author_name"  => "bird",
+            "author_mail"  => "mouse",
+            'lst'          => self::$DI['record_1']->get_serialize_key(),
+        ];
+
+        self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $pageContent = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertFalse($pageContent->error);
+
+        $this->assertStringNotContainsString('<img src=x', $pageContent->datas);
+        $this->assertStringContainsString('&lt;img src=x onerror=alert(1)&gt;<br />', $pageContent->datas);
+    }
+
     public function testEntryUpdateChangeFeed()
     {
         $feed = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Feed', 1);
