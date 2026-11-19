@@ -73,4 +73,46 @@ class ToolsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(sprintf(self::$DI['app']['translator']->trans('Subdef "%s" has been successfully substitued'), 'thumbnail'), $message);
     }
+
+    public static function provideRecordModificationRoutes()
+    {
+        return [
+            'hd substitution'        => ['/prod/tools/hddoc/', 'sbas_id', 'prodToolsHDSubstitution', 'newHD'],
+            'thumbnail substitution' => ['/prod/tools/chgthumb/', 'sbas_id', 'prodToolsThumbSubstitution', 'newThumb'],
+            'thumbnail extraction'   => ['/prod/tools/thumb-extractor/apply/', 'sbas_id', null, null],
+            'metadata save'          => ['/prod/tools/metadata/save/', 'databox_id', null, null],
+            'auto subtitle'          => ['/prod/tools/auto-subtitle/', 'databox_id', null, null],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRecordModificationRoutes')]
+    public function testRecordModificationRequiresModifyRight($route, $databoxParam, $formName, $fileParam)
+    {
+        $record = self::$DI['record_1'];
+
+        $acl = $this->stubACL();
+        $acl->method('has_right')->willReturn(true);
+        $acl->method('has_access_to_module')->willReturn(true);
+        $acl->method('has_access_to_record')->willReturn(true);
+        $acl->method('has_right_on_base')->willReturnCallback(function ($baseId, $right) {
+            return $right !== \ACL::CANMODIFRECORD;
+        });
+
+        $parameters = [
+            $databoxParam => $record->getDataboxId(),
+            'record_id'   => $record->getRecordId(),
+        ];
+        if (null !== $formName) {
+            $parameters[$formName . '_token'] = $this->setSessionFormToken($formName);
+        }
+
+        $files = [];
+        if (null !== $fileParam) {
+            $files[$fileParam] = new UploadedFile($this->tmpFile, 'KIKOO.JPG', 'image/jpg');
+        }
+
+        self::$DI['client']->request('POST', $route, $parameters, $files);
+
+        $this->assertEquals(403, self::$DI['client']->getResponse()->getStatusCode());
+    }
 }

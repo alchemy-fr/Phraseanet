@@ -244,6 +244,8 @@ class ToolsController extends Controller
             return $this->app->json(['success' => false , 'message' => 'invalid document substitution form'], 403);
         }
 
+        $record = $this->getRecordForModification($request->get('sbas_id'), $request->get('record_id'));
+
         $success = false;
         $message = $this->app->trans('An error occured');
 
@@ -265,8 +267,6 @@ class ToolsController extends Controller
                     if (false === rename($file->getPathname(), $tempoFile)) {
                         throw new RuntimeException('Error while renaming file');
                     }
-
-                    $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
                     $media = $this->app->getMediaFromUri($tempoFile);
 
@@ -309,6 +309,8 @@ class ToolsController extends Controller
             return $this->app->json(['success' => false , 'message' => 'invalid thumbnail substitution form'], 403);
         }
 
+        $record = $this->getRecordForModification($request->get('sbas_id'), $request->get('record_id'));
+
         $file = $request->files->get('newThumb');
 
         if (empty($file)) {
@@ -332,8 +334,6 @@ class ToolsController extends Controller
             if (false === rename($file->getPathname(), $tempoFile)) {
                 throw new RuntimeException('Error while renaming file');
             }
-
-            $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
@@ -389,9 +389,9 @@ class ToolsController extends Controller
 
     public function applyThumbnailExtractionAction(Request $request)
     {
-        try {
-            $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+        $record = $this->getRecordForModification($request->request->get('sbas_id'), $request->request->get('record_id'));
 
+        try {
             $subDef = $request->request->all()['sub_def'] ?? null;
 
             // legacy handling
@@ -451,6 +451,28 @@ class ToolsController extends Controller
         }
 
         return $this->app->json($return);
+    }
+
+    /**
+     * Load a record and ensure the current user may modify it with the tools.
+     *
+     * @param int|string $databoxId
+     * @param int|string $recordId
+     * @return record_adapter
+     */
+    private function getRecordForModification($databoxId, $recordId)
+    {
+        $record = new record_adapter($this->app, (int)$databoxId, (int)$recordId);
+
+        $acl = $this->getAclForUser();
+        if (!$acl->has_access_to_record($record)
+            || !$acl->has_right_on_base($record->getBaseId(), \ACL::CANMODIFRECORD)
+            || !$acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
+        ) {
+            $this->app->abort(403);
+        }
+
+        return $record;
     }
 
     /**
@@ -521,9 +543,7 @@ class ToolsController extends Controller
      */
     public function saveMetasAction(Request $request)
     {
-        $record = new record_adapter($this->app,
-            (int)$request->request->get("databox_id"),
-            (int)$request->request->get("record_id"));
+        $record = $this->getRecordForModification($request->request->get("databox_id"), $request->request->get("record_id"));
 
         $metadatas[0] = [
             'meta_struct_id' => (int)$request->request->get("meta_struct_id"),
@@ -547,11 +567,7 @@ class ToolsController extends Controller
 
     public function autoSubtitleAction(Request $request)
     {
-        $record = new record_adapter($this->app,
-            (int)$request->request->get("databox_id"),
-            (int)$request->request->get("record_id")
-        );
-
+        $record = $this->getRecordForModification($request->request->get("databox_id"), $request->request->get("record_id"));
 
         $this->dispatch(
             new RecordAutoSubtitleEvent(
