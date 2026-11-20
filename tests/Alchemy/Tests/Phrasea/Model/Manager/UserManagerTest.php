@@ -2,10 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manager;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UserManagerTest extends \PhraseanetTestCase
 {
     public function testNewUser()

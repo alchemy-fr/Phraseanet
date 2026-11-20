@@ -10,8 +10,8 @@ abstract class JobTestCase extends \PhraseanetTestCase
 {
     public function testGetJobIdReturnsAvalidId()
     {
-        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $dispatcher = $this->createStub('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $logger = $this->createStub('Psr\Log\LoggerInterface');
 
         $factory = new Factory($dispatcher, $logger, $this->createTranslatorMock());
         $job = $this->getJob();
@@ -35,21 +35,19 @@ abstract class JobTestCase extends \PhraseanetTestCase
     public function testGetName()
     {
         $job = $this->getJob();
-        $this->assertInternalType('string', $job->getName());
+        $this->assertIsString($job->getName());
     }
 
     public function testGetDescription()
     {
         $job = $this->getJob();
-        $this->assertInternalType('string', $job->getDescription());
+        $this->assertIsString($job->getDescription());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Phraseanet jobs require Phraseanet JobData, got Alchemy\Tests\Phrasea\TaskManager\Job\WrongJobDataTest.
-     */
     public function testRunningTheJobWithWrongValueThrowsAnException()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Phraseanet jobs require Phraseanet JobData, got Alchemy\Tests\Phrasea\TaskManager\Job\WrongJobDataTest.');
         $job = $this->getJob();
         $job->run(new WrongJobDataTest());
     }

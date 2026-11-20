@@ -103,8 +103,8 @@ class patch_418RC8PHRAS3944 implements patchInterface
         do {
             $to_fix = [];
             $row_found = false;
-            $stmt_sel->execute();
-            while (($row = $stmt_sel->fetch(PDO::FETCH_ASSOC))) {
+            $res_sel = $stmt_sel->executeQuery();
+            while (($row = $res_sel->fetchAssociative())) {
                 $row_found = true;
                 $vtt = $row['value'];
                 $vtt_fixed = preg_replace(
@@ -122,10 +122,10 @@ class patch_418RC8PHRAS3944 implements patchInterface
                 $to_fix[$row['id']] = $vtt_fixed;
                 $minid = (int)$row['id'];
             }
-            $stmt_sel->closeCursor();
+            $res_sel->free();
 
             foreach ($to_fix as $upd_id => $upd_value) {
-                $stmt_upd->execute();
+                $stmt_upd->executeStatement();
             }
         }
         while($row_found);

@@ -14,53 +14,53 @@ namespace Alchemy\Phrasea\Form\Configuration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MainConfigurationFormType extends AbstractType
 {
-    private $languages;
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator, array $languages)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->languages = $languages;
-        $this->translator = $translator;
-    }
+        $translator = $options['translator'];
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add('general', new GeneralFormType($this->languages), [
+        $builder->add('general', GeneralFormType::class, [
             'label'    => 'General configuration',
         ]);
-        $builder->add('modules', new ModulesFormType($this->translator), [
+        $builder->add('modules', ModulesFormType::class, [
             'label' => 'Additionnal modules',
+            'translator' => $translator,
         ]);
-        $builder->add('actions', new ActionsFormType($this->translator), [
+        $builder->add('actions', ActionsFormType::class, [
             'label' => 'Push configuration',
+            'translator' => $translator,
         ]);
-        $builder->add('ftp', new FtpExportFormType($this->translator), [
+        $builder->add('ftp', FtpExportFormType::class, [
             'label' => 'FTP Export',
+            'translator' => $translator,
         ]);
-        $builder->add('registration', new RegistrationFormType($this->translator), [
+        $builder->add('registration', RegistrationFormType::class, [
             'label' => 'Registration',
+            'translator' => $translator,
         ]);
-        $builder->add('maintenance', new MaintenanceFormType(), [
+        $builder->add('maintenance', MaintenanceFormType::class, [
             'label' => 'Maintenance state',
         ]);
-        $builder->add('api-clients', new APIClientsFormType($this->translator), [
+        $builder->add('api-clients', APIClientsFormType::class, [
             'label' => 'Phraseanet client API',
+            'translator' => $translator,
         ]);
-        $builder->add('webservices', new WebservicesFormType($this->translator), [
+        $builder->add('webservices', WebservicesFormType::class, [
             'label' => 'Webservices connectivity',
         ]);
-        $builder->add('executables', new ExecutablesFormType($this->translator), [
+        $builder->add('executables', ExecutablesFormType::class, [
             'label' => 'Executables settings',
+            'translator' => $translator,
         ]);
-        $builder->add('searchengine', new SearchEngineFormType($this->translator), [
+        $builder->add('searchengine', SearchEngineFormType::class, [
             'label' => 'Search engine',
+            'translator' => $translator,
         ]);
-        $builder->add('email', new EmailFormType(), [
+        $builder->add('email', EmailFormType::class, [
             'label' => 'Emails',
         ]);
         $builder->add('custom-links', CollectionType::class, [
@@ -71,16 +71,18 @@ class MainConfigurationFormType extends AbstractType
         ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'required'           => false,
             'allow_extra_fields' => true
         ]);
+        $resolver->setRequired('translator');
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

@@ -4,23 +4,17 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FailureHandledNativeAuthenticationTest extends \PhraseanetTestCase
 {
     public function testGetUsrIdWhenSuccessful()
     {
-        $manager = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Phrasea\FailureManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $manager = $this->createMock('Alchemy\Phrasea\Authentication\Phrasea\FailureManager');
 
-        $auth = $this->getMock('Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface');
+        $auth = $this->createMock('Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface');
 
-        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $request = $this->createStub('Symfony\Component\HttpFoundation\Request');
 
         $username = 'droopy';
         $password = 'gloups';
@@ -43,15 +37,11 @@ class FailureHandledNativeAuthenticationTest extends \PhraseanetTestCase
 
     public function testGetUsrIdWhenNotSuccessful()
     {
-        $manager = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Phrasea\FailureManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $manager = $this->createMock('Alchemy\Phrasea\Authentication\Phrasea\FailureManager');
 
-        $auth = $this->getMock('Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface');
+        $auth = $this->createMock('Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface');
 
-        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $request = $this->createStub('Symfony\Component\HttpFoundation\Request');
 
         $username = 'droopy';
         $password = 'gloups';
@@ -61,16 +51,12 @@ class FailureHandledNativeAuthenticationTest extends \PhraseanetTestCase
             ->with($username, $password, $request)
             ->will($this->returnValue(null));
 
-        $manager->expects($this->at(0))
+        $manager->expects($this->exactly(2))
             ->method('checkFailures')
             ->with($username, $request);
 
-        $manager->expects($this->at(1))
+        $manager->expects($this->once())
             ->method('saveFailure')
-            ->with($username, $request);
-
-        $manager->expects($this->at(2))
-            ->method('checkFailures')
             ->with($username, $request);
 
         $failure = new FailureHandledNativeAuthentication($auth, $manager);

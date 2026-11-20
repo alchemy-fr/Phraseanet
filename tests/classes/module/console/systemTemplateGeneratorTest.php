@@ -3,10 +3,8 @@
 use Alchemy\Phrasea\CLI;
 use Symfony\Component\Console\Tester\CommandTester;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class module_console_systemTemplateGeneratorTest extends \PhraseanetTestCase
 {
 

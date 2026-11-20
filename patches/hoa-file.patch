@@ -1,0 +1,156 @@
+diff --git a/Directory.php b/Directory.php
+index f75e2d6..793784e 100644
+--- a/Directory.php
++++ b/Directory.php
+@@ -103,7 +103,7 @@ class Directory extends Generic
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         if (false === is_dir($streamName)) {
+             if ($this->getMode() == self::MODE_READ) {
+diff --git a/File.php b/File.php
+index b7cfa52..87e38f2 100644
+--- a/File.php
++++ b/File.php
+@@ -192,7 +192,7 @@ abstract class File
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         if (substr($streamName, 0, 4) == 'file' &&
+             false === is_dir(dirname($streamName))) {
+diff --git a/Link/Read.php b/Link/Read.php
+index 1b0a269..e63aea3 100644
+--- a/Link/Read.php
++++ b/Link/Read.php
+@@ -78,7 +78,7 @@ class Read extends Link implements Stream\IStream\In
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_READ
+diff --git a/Link/ReadWrite.php b/Link/ReadWrite.php
+index cfd4ec7..478d45a 100644
+--- a/Link/ReadWrite.php
++++ b/Link/ReadWrite.php
+@@ -81,7 +81,7 @@ class          ReadWrite
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_READ_WRITE,
+diff --git a/Link/Write.php b/Link/Write.php
+index d2e9078..afa267b 100644
+--- a/Link/Write.php
++++ b/Link/Write.php
+@@ -77,7 +77,7 @@ class Write extends Link implements Stream\IStream\Out
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_TRUNCATE_WRITE,
+diff --git a/Read.php b/Read.php
+index e8f564e..6d0a7cb 100644
+--- a/Read.php
++++ b/Read.php
+@@ -77,7 +77,7 @@ class Read extends File implements Stream\IStream\In
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_READ
+diff --git a/ReadWrite.php b/ReadWrite.php
+index a43ca01..ce0e38f 100644
+--- a/ReadWrite.php
++++ b/ReadWrite.php
+@@ -80,7 +80,7 @@ class          ReadWrite
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_READ_WRITE,
+diff --git a/Temporary/Read.php b/Temporary/Read.php
+index 91e6cba..3b183e2 100644
+--- a/Temporary/Read.php
++++ b/Temporary/Read.php
+@@ -78,7 +78,7 @@ class Read extends Temporary implements Stream\IStream\In
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_READ
+diff --git a/Temporary/ReadWrite.php b/Temporary/ReadWrite.php
+index e4e2d65..f83471e 100644
+--- a/Temporary/ReadWrite.php
++++ b/Temporary/ReadWrite.php
+@@ -81,7 +81,7 @@ class          ReadWrite
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_READ_WRITE,
+diff --git a/Temporary/Temporary.php b/Temporary/Temporary.php
+index 4347edf..c747788 100644
+--- a/Temporary/Temporary.php
++++ b/Temporary/Temporary.php
+@@ -93,7 +93,7 @@ class Temporary extends File
+      * @return  resource
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         if (false === $out = @tmpfile()) {
+             throw new File\Exception(
+diff --git a/Temporary/Write.php b/Temporary/Write.php
+index a2b501b..73f83b6 100644
+--- a/Temporary/Write.php
++++ b/Temporary/Write.php
+@@ -78,7 +78,7 @@ class Write extends Temporary implements Stream\IStream\Out
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_TRUNCATE_WRITE,
+diff --git a/Write.php b/Write.php
+index a831b8e..2ce0722 100644
+--- a/Write.php
++++ b/Write.php
+@@ -77,7 +77,7 @@ class Write extends File implements Stream\IStream\Out
+      * @throws  \Hoa\File\Exception\FileDoesNotExist
+      * @throws  \Hoa\File\Exception
+      */
+-    protected function &_open($streamName, Stream\Context $context = null)
++    protected function &_open($streamName, ?Stream\Context $context = null)
+     {
+         static $createModes = [
+             parent::MODE_TRUNCATE_WRITE,

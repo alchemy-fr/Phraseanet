@@ -12,14 +12,14 @@
 namespace Alchemy\Phrasea\Http\H264PseudoStreaming;
 
 use Alchemy\Phrasea\Http\ServerModeInterface;
-use Guzzle\Http\Url;
+use Psr\Http\Message\UriInterface;
 
 interface H264Interface extends ServerModeInterface
 {
     /**
      * @param $pathfile
      *
-     * @return Url|null
+     * @return UriInterface|null
      */
     public function getUrl($pathfile);
 }

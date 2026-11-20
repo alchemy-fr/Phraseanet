@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MetaFieldsBagTest extends \PhraseanetTestCase
 {
     /**
@@ -16,15 +14,12 @@ class MetaFieldsBagTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new MetaFieldsBag;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\MetadataBag::toMetadataArray
-     */
     public function testToMetadataArray()
     {
         $structure = self::$DI['collection']->get_databox()->get_meta_structure();

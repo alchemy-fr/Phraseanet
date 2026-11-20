@@ -1,0 +1,22 @@
+diff --git a/Stream.php b/Stream.php
+index 57388ab..7fd8920 100644
+--- a/Stream.php
++++ b/Stream.php
+@@ -192,7 +192,7 @@ abstract class Stream implements IStream\Stream, Event\Listenable
+      * @return  array
+      * @throws  \Hoa\Stream\Exception
+      */
+-    final private static function &_getStream(
++    private static function &_getStream(
+         $streamName,
+         Stream $handler,
+         $context = null
+@@ -250,7 +250,7 @@ abstract class Stream implements IStream\Stream, Event\Listenable
+      * @return  resource
+      * @throws  \Hoa\Exception\Exception
+      */
+-    abstract protected function &_open($streamName, Context $context = null);
++    abstract protected function &_open($streamName, ?Context $context = null);
+ 
+     /**
+      * Close the current stream.

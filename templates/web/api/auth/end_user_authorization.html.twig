@@ -61,7 +61,7 @@
                                     <ul class="unstyled inline provider-list">
                                         {% for provider in app['authentication.providers'] %}
                                             <li>
-                                                <a href="{{ path('oauth2_provider_authorize', { 'providerId' : provider.getId() }|merge(app.request.query.all)) }}">
+                                                <a href="{{ path('oauth2_provider_authorize', { 'providerId' : provider.getId() }|merge(app['request_stack'].currentRequest.query.all)) }}">
                                                     <img src="{{ provider.getIconURI() }}" />
                                                 </a>
                                             </li>

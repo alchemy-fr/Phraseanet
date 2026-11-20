@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class SessionManagerSubscriber implements EventSubscriberInterface
@@ -39,7 +39,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $this->app = $app;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [
@@ -58,7 +58,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
      *
      * @param GetResponseEvent $event
      */
-    public function checkSessionActivity(GetResponseEvent $event)
+    public function checkSessionActivity(RequestEvent $event)
     {
         $request = $event->getRequest();
 
@@ -139,7 +139,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     /**
      * @param GetResponseEvent $event
      */
-    private function setDisconnectResponse(GetResponseEvent $event)
+    private function setDisconnectResponse(RequestEvent $event)
     {
         $request = $event->getRequest();
 
@@ -191,7 +191,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     {
         $moduleName = $this->getModuleName($pathInfo);
 
-        if (!isset(self::$modulesIds[$moduleName])) {
+        if (null === $moduleName || !isset(self::$modulesIds[$moduleName])) {
             return null;
         }
 
@@ -217,12 +217,12 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $pathInfo = $request->getPathInfo();
 
         // nutifications poll in menubar (header "update-session=0") sent
-        if ($pathInfo === '/user/notifications/' && $request->getContentType() === 'json') {
+        if ($pathInfo === '/user/notifications/' && $request->getContentTypeFormat() === 'json') {
             return true;
         }
 
         // admin/task managers poll tasks
-        if ($pathInfo === '/admin/task-manager/tasks/' && $request->getContentType() === 'json') {
+        if ($pathInfo === '/admin/task-manager/tasks/' && $request->getContentTypeFormat() === 'json') {
             return true;
         }
 

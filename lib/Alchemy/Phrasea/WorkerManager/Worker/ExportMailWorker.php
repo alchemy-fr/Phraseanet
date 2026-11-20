@@ -194,23 +194,25 @@ class ExportMailWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             //  notify to send to the retry queue
-            $this->app['dispatcher']->dispatch(WorkerEvents::EXPORT_MAIL_FAILURE, new ExportMailFailureEvent(
+            $this->app['dispatcher']->dispatch(new ExportMailFailureEvent(
                 $payload['emitterUserId'],
                 $payload['tokenValue'],
                 $remaingEmails,
                 $payload['params'],
                 'some mails failed',
                 $count
-            ));
+            ),
+            WorkerEvents::EXPORT_MAIL_FAILURE);
 
             foreach ($remaingEmails as $mail) {
-                $this->app['dispatcher']->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent(
+                $this->app['dispatcher']->dispatch(new ExportFailureEvent(
                         $user,
                         $params['ssttid'],
                         $params['lst'],
                         \eventsmanager_notify_downloadmailfail::MAIL_FAIL,
                         $mail
-                    )
+                    ),
+                PhraseaEvents::EXPORT_MAIL_FAILURE
                 );
             }
         }

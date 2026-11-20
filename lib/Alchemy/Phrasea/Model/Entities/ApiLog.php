@@ -5,10 +5,9 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="ApiLogs", indexes={@ORM\Index(name="api_log_account_id", columns={"account_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiLogRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ApiLogRepository::class)]
+#[ORM\Table(name: 'ApiLogs')]
+#[ORM\Index(name: 'api_log_account_id', columns: ['account_id'])]
 class ApiLog
 {
     const DATABOXES_RESOURCE = 'databoxes';
@@ -19,100 +18,81 @@ class ApiLog
     const STORIES_RESOURCE = 'stories';
     const MONITOR_RESOURCE = 'monitor';
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiAccount")
-     * @ORM\JoinColumn(
-     *     name="account_id",
-     *     referencedColumnName="id",
-     *     nullable=false,
-     *     onDelete="CASCADE"
-     * )
      *
      * @return ApiAccount
      **/
+    #[ORM\ManyToOne(targetEntity: ApiAccount::class)]
+    #[ORM\JoinColumn(name: 'account_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private $account;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $route;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=16, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 16, nullable: true)]
     private $method;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="status_code", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'status_code', type: 'integer', nullable: true)]
     private $statusCode;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private $format;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private $resource;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private $general;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private $aspect;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=64, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private $action;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="error_code", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'error_code', type: 'integer', nullable: true)]
     private $errorCode;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="error_message", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'error_message', type: 'text', nullable: true)]
     private $errorMessage;
 
     /**

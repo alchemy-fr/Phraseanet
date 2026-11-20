@@ -24,18 +24,21 @@ use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use ReCaptcha\ReCaptcha;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public function setUp(): void
     {
-        $app = $this->loadApp();
+        parent::setUp();
 
-        $app['conf']->set(['registry', 'webservices', 'recaptcha-private-key'], '123');
+        $this->loadApp()['conf']->set(['registry', 'webservices', 'recaptcha-private-key'], '123');
+    }
 
+    public static function provideServiceDescription()
+    {
         return [
             [
                 AuthenticationManagerServiceProvider::class,
@@ -139,9 +142,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $app['orm.em'] = $this->createEntityManagerMock();
         $app['repo.users'] = $this->createUserRepositoryMock();
-        $app['repo.auth-failures'] = $this->getMockBuilder(AuthFailureRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['repo.auth-failures'] = $this->createStub(AuthFailureRepository::class);
         $app['recaptcha'] = $this->createReCaptchaMock();
 
         $this->assertInstanceOf(FailureHandledNativeAuthentication::class, $app['auth.native']);
@@ -191,18 +192,14 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
     private function createUserRepositoryMock()
     {
-        return $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock(UserRepository::class);
     }
 
     /**
-     * @return ReCaptcha|\PHPUnit_Framework_MockObject_MockObject
+     * @return ReCaptcha|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function createReCaptchaMock()
     {
-        return $this->getMockBuilder(\ReCaptcha\ReCaptcha::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock(\ReCaptcha\ReCaptcha::class);
     }
 }

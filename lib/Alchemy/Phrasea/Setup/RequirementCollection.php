@@ -57,6 +57,7 @@ class RequirementCollection implements RequirementCollectionInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->requirements);

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\User;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Model\Entities\User;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -96,11 +97,11 @@ class UserListCommand extends Command
         if ($jsonformat) {         
             echo json_encode($userListRaw);            
         } else {
-                $table = $this->getHelperSet()->get('table');
+                $table = new Table($output);
             $table
                 ->setHeaders($this->headerTable($withAdress, $withRight))
                 ->setRows($userList)
-                ->render($output);
+                ->render();
             ;
 
         }

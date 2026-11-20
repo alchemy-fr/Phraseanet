@@ -11,44 +11,24 @@ use appbox;
 use Doctrine\ORM\EntityManager;
 use RandomLib\Generator as RandomGenerator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FactoryTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideNameAndOptions
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideNameAndOptions')]
     public function testBuild($id, $type, $options, $expected)
     {
-        $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $generator = $this->createStub('Symfony\Component\Routing\Generator\UrlGenerator');
 
-        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
+        $session = $this->createStub('Symfony\Component\HttpFoundation\Session\SessionInterface');
 
-        $userManipulator = $this->getMockBuilder(UserManipulator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $ACLProvider = $this->getMockBuilder(ACLProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $appbox = $this->getMockBuilder(appbox::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $randomGenerator = $this->getMockBuilder(RandomGenerator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $usrAuthProviderRepository = $this->getMockBuilder(UsrAuthProviderRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $entityManager = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userManipulator = $this->createStub(UserManipulator::class);
+        $userRepository = $this->createStub(UserRepository::class);
+        $ACLProvider = $this->createStub(ACLProvider::class);
+        $appbox = $this->createStub(appbox::class);
+        $randomGenerator = $this->createStub(RandomGenerator::class);
+        $usrAuthProviderRepository = $this->createStub(UsrAuthProviderRepository::class);
+        $entityManager = $this->createStub(EntityManager::class);
 
         $factory = new Factory($generator, $session, $userManipulator, $userRepository, $ACLProvider, $appbox, $randomGenerator,
             $usrAuthProviderRepository,
@@ -58,7 +38,7 @@ class FactoryTest extends \PhraseanetTestCase
         $this->assertInstanceOf($expected, $factory->build($id, $type, true, $id, $options));
     }
 
-    public function provideNameAndOptions()
+    public static function provideNameAndOptions()
     {
         return [
             [

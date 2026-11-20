@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 
 class PresetManipulator implements ManipulatorInterface
@@ -25,7 +25,7 @@ class PresetManipulator implements ManipulatorInterface
     /** @var EntityRepository */
     private $repository;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, EntityRepository $repo)
     {
         $this->om = $om;
         $this->repository = $repo;

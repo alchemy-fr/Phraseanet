@@ -84,7 +84,7 @@ class module_console_systemBackupDB extends Command
 
         $command .= ' > ' . escapeshellarg($filename);
 
-        $process = new Process($command);
+        $process = Process::fromShellCommandline($command);
         $process->setTimeout((int) $input->getOption('timeout'));
         $process->run();
 

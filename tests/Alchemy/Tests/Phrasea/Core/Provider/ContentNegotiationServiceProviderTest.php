@@ -5,13 +5,11 @@ namespace Alchemy\Tests\Phrasea\Core\Provider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class classContentNegotiationServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return array(
             array(

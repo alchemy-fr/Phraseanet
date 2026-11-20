@@ -61,8 +61,7 @@ class patch_360alpha1a extends patchAbstract
         foreach ($tables as $table) {
             $sql = 'DELETE FROM ' . $table;
             $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
+            $stmt->executeStatement();
         }
 
         $stories = [];
@@ -76,10 +75,8 @@ class patch_360alpha1a extends patchAbstract
         WHERE temporaryType = "1"
 SQL;
 
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs_s = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs_s = $stmt->fetchAllAssociative();
 
         $current = [];
 
@@ -109,10 +106,8 @@ SQL;
                 ':sbas_id'   => $row['sbas_id'],
                 ':record_id' => $row['record_id']
             ];
-            $stmt->execute($params);
+            $stmt->executeStatement($params);
         }
-
-        $stmt->closeCursor();
 
         $sql = <<<SQL
         INSERT INTO StoryWZ (
@@ -129,8 +124,7 @@ SQL;
 SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = <<<SQL
         INSERT INTO Baskets  (
@@ -152,18 +146,15 @@ SQL;
 SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = <<<SQL
         SELECT ssel_id
         FROM ssel
         WHERE temporaryType = "0"
 SQL;
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $sselcont_ids = [];
 
@@ -181,10 +172,8 @@ SQL;
             AND c.ssel_id = :ssel_id
 SQL;
 
-            $stmt = $appbox->get_connection()->prepare($sql);
-            $stmt->execute([':ssel_id' => $row['ssel_id']]);
-            $rs_be = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $appbox->get_connection()->executeQuery($sql, [':ssel_id' => $row['ssel_id']]);
+            $rs_be = $stmt->fetchAllAssociative();
 
             $current = [];
 
@@ -206,10 +195,8 @@ SQL;
         $stmt = $appbox->get_connection()->prepare($sql);
 
         foreach ($sselcont_ids as $sselcont_id) {
-            $stmt->execute([':sselcont_id' => $sselcont_id]);
+            $stmt->executeStatement([':sselcont_id' => $sselcont_id]);
         }
-
-        $stmt->closeCursor();
 
         $sql = <<<SQL
         INSERT INTO BasketElements (
@@ -230,8 +217,7 @@ SQL;
 SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = <<<SQL
         UPDATE Baskets
@@ -240,8 +226,7 @@ SQL;
 SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = <<<SQL
         INSERT INTO ValidationSessions (
@@ -259,8 +244,7 @@ SQL;
 
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = <<<SQL
         INSERT INTO ValidationParticipants (
@@ -281,8 +265,7 @@ SQL;
 SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = <<<SQL
         SELECT
@@ -295,10 +278,8 @@ SQL;
         INNER JOIN Baskets b ON (b.id = s.basket_id)
 SQL;
 
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $sql = <<<SQL
         INSERT INTO ValidationDatas (
@@ -323,10 +304,8 @@ SQL;
                 ':basket_id'      => $row['basket_id'],
                 ':usr_id'         => $row['user_id'],
             ];
-            $stmt->execute($params);
+            $stmt->executeStatement($params);
         }
-
-        $stmt->closeCursor();
 
         $sql = <<<SQL
         UPDATE ValidationDatas
@@ -335,8 +314,7 @@ SQL;
 SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = <<<SQL
         UPDATE ValidationDatas
@@ -345,8 +323,7 @@ SQL;
 SQL;
 
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

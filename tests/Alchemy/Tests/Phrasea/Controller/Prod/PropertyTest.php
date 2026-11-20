@@ -4,19 +4,14 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayStatusProperty
-     */
     public function testDisplayStatusProperty()
     {
         $response = $this->XMLHTTPRequest('GET', '/prod/records/property/', [
@@ -30,9 +25,6 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayStatusProperty
-     */
     public function testDisplayStatusPropertyNotXMLHTTPRequets()
     {
         self::$DI['client']->request('GET', '/prod/records/property/');
@@ -40,9 +32,6 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayTypeProperty
-     */
     public function testDisplayTypeProperty()
     {
         $response = $this->XMLHTTPRequest('GET', '/prod/records/property/type/', [
@@ -55,9 +44,6 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayProperty
-     */
     public function testDisplayTypePropertyNotXMLHTTPRequets()
     {
         self::$DI['client']->request('GET', '/prod/records/property/type/');
@@ -65,9 +51,6 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Property::changeStatus
-     */
     public function testChangeStatus()
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
@@ -76,26 +59,22 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         $story->appendChild($record2);
 
-        $acl = $this->getMockBuilder('ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $acl->expects($this->any())
+        $acl = $this->createMock('ACL');
+        $acl
             ->method('has_access_to_record')
             ->with($this->isInstanceOf('\record_adapter'))
             ->will($this->returnValue(true));
-        $acl->expects($this->any())
+        $acl
             ->method('has_right_on_base')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACL::CHGSTATUS))
+            ->with($this->isInt(), $this->equalTo(\ACL::CHGSTATUS))
             ->will($this->returnValue(true));
-        $acl->expects($this->any())
+        $acl
             ->method('has_right_on_sbas')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACL::CHGSTATUS))
+            ->with($this->isInt(), $this->equalTo(\ACL::CHGSTATUS))
             ->will($this->returnValue(true));
 
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
+        $aclProvider = $this->createMock('Alchemy\Phrasea\Authentication\ACLProvider');
+        $aclProvider
             ->method('get')
             ->will($this->returnValue($acl));
 
@@ -147,9 +126,6 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response, $datas, $story, $record, $record2, $story, $file);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Property::changeType
-     */
     public function testChangeType()
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);

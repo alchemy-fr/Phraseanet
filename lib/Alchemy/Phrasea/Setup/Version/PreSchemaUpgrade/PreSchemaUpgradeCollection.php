@@ -43,20 +43,20 @@ class PreSchemaUpgradeCollection
                     $upgrade->apply(
                         $app['orm.em'],
                         $app['phraseanet.appbox'],
-                        $app['doctrine-migration.configuration']
+                        $app['doctrine-migration.runner']
                     );
                     $applied[] = $upgrade;
                 } catch (\Exception $e) {
                     $upgrade->rollback(
                         $app['orm.em'],
                         $app['phraseanet.appbox'],
-                        $app['doctrine-migration.configuration']
+                        $app['doctrine-migration.runner']
                     );
                     foreach (array_reverse($applied) as $done) {
                         $done->rollback(
                             $app['orm.em'],
                             $app['phraseanet.appbox'],
-                            $app['doctrine-migration.configuration']
+                            $app['doctrine-migration.runner']
                         );
                     }
                     throw $e;

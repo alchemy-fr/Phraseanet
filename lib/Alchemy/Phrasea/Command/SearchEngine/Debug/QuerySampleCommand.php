@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class QuerySampleCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('searchengine:query:sample')

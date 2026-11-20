@@ -5,39 +5,33 @@ namespace Alchemy\Tests\Phrasea\Plugin\Schema;
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PluginValidatorTest extends PluginTestCase
 {
-    /**
-     * @dataProvider provideInvalidPluginDirs
-     * @expectedException \Alchemy\Phrasea\Plugin\Exception\PluginValidationException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidPluginDirs')]
     public function testValidateInvalidPlugin($directory)
     {
+        $this->expectException(\Alchemy\Phrasea\Plugin\Exception\PluginValidationException::class);
         $validator = new PluginValidator($this->createManifestValidator());
         $validator->validatePlugin($directory);
     }
 
-    /**
-     * @dataProvider providePluginDirs
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePluginDirs')]
     public function testValidatePlugin($directory)
     {
         $validator = new PluginValidator($this->createManifestValidator());
         $validator->validatePlugin($directory);
     }
 
-    public function providePluginDirs()
+    public static function providePluginDirs()
     {
         return [
             [__DIR__ . '/../Fixtures/PluginDir/TestPlugin'],
         ];
     }
 
-    public function provideInvalidPluginDirs()
+    public static function provideInvalidPluginDirs()
     {
         return [
             [__DIR__ . '/../Fixtures/WrongPlugins/TestPluginInvalidManifest'],

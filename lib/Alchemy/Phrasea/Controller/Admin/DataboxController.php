@@ -134,7 +134,7 @@ class DataboxController extends Controller
 
     public function setLabels(Request $request, $databox_id)
     {
-        if (null === $labels = $request->request->get('labels')) {
+        if (null === $labels = ($request->request->all()['labels'] ?? null)) {
             $this->app->abort(400, $this->app->trans('Missing labels parameter'));
         }
         if (false === is_array($labels)) {
@@ -191,7 +191,7 @@ class DataboxController extends Controller
         ];
 
         try {
-            $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
+            $this->getDispatcher()->dispatch(new PopulateIndexEvent($populateInfo), WorkerEvents::POPULATE_INDEX);
             $success = true;
         }
         catch (Exception $e) {
@@ -257,7 +257,7 @@ class DataboxController extends Controller
         $databox = $this->findDataboxById($databox_id);
 
         try {
-            foreach ($request->request->get('TOU', []) as $loc => $terms) {
+            foreach ($request->request->all('TOU') as $loc => $terms) {
                 $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
         }
@@ -344,7 +344,7 @@ class DataboxController extends Controller
         try {
             if (null !== ($file = $request->files->get('newLogoPdf')) && $file->isValid()) {
 
-                if ($file->getClientSize() < 65536) {
+                if ($file->getSize() < 65536) {
                     $databox = $this->findDataboxById($databox_id);
                     $this->getApplicationBox()->write_databox_pic(
                         $this->app['media-alchemyst'],
@@ -658,7 +658,7 @@ class DataboxController extends Controller
     public function setReorder(Request $request, $databox_id)
     {
         try {
-            foreach ($request->request->get('order', []) as $data) {
+            foreach ($request->request->all('order') as $data) {
                 $collection = collection::getByBaseId($this->app, $data['id']);
                 $collection->set_ord($data['offset']);
             }

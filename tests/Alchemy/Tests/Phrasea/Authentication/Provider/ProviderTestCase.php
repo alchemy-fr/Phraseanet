@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Authentication\Provider;
 
 use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Factory as ProviderFactory;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
@@ -11,7 +12,15 @@ use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
 use appbox;
 use DataURI\Parser;
 use Doctrine\ORM\EntityManager;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Promise\Create;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
 use RandomLib\Generator as RandomGenerator;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
@@ -31,7 +40,7 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
 
     public function testGetId()
     {
-        $this->assertInternalType('string', $this->getProvider()->getId());
+        $this->assertIsString($this->getProvider()->getId());
     }
 
     public function testGetSetUrlGenerator()
@@ -57,7 +66,7 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
     public function testGetSetGuzzleClient()
     {
         $provider = $this->getProvider();
-        $this->assertInstanceOf('Guzzle\Http\CLientInterface', $provider->getGuzzleClient());
+        $this->assertInstanceOf(ClientInterface::class, $provider->getGuzzleClient());
         $guzzle = $this->getGuzzleMock();
 
         $provider->setGuzzleClient($guzzle);
@@ -68,16 +77,14 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
     {
         $provider = $this->getProvider();
 
-        $identity = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Identity')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $identity = $this->createStub('Alchemy\Phrasea\Authentication\Provider\Token\Identity');
 
         $this->assertEquals([], $provider->getTemplates($identity));
     }
 
     public function testGetName()
     {
-        $this->assertInternalType('string', $this->getProvider()->getName());
+        $this->assertIsString($this->getProvider()->getName());
     }
 
     public function testIsBuiltWithFactory()
@@ -103,22 +110,33 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
     }
 
-    /**
-     * @dataProvider provideDataForSuccessCallback
-     */
-    public function testOnCallbackWithSuccess(ProviderInterface $provider, $request)
+    public function testOnCallbackWithSuccess()
     {
-        $this->markTestSkipped('Current implementation does not allow mocking guzzle responses properly');
-        $provider->onCallback($request);
+        $cases = $this->provideDataForSuccessCallback();
+        $this->assertNotEmpty($cases);
+
+        foreach ($cases as list($provider, $request)) {
+            $provider->onCallback($request);
+            $this->addToAssertionCount(1);
+        }
     }
 
     /**
-     * @dataProvider provideDataForFailingCallback
-     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
+     * Cases are built by a non-static method because they need mocks, which PHPUnit data providers cannot create.
      */
-    public function testOnCallbackWithFailure($provider, $request)
+    public function testOnCallbackWithFailure()
     {
-        $provider->onCallback($request);
+        $cases = $this->provideDataForFailingCallback();
+        $this->assertNotEmpty($cases);
+
+        foreach ($cases as $i => list($provider, $request)) {
+            try {
+                $provider->onCallback($request);
+                $this->fail(sprintf('Case #%s should throw a NotAuthenticatedException', $i));
+            } catch (NotAuthenticatedException $e) {
+                $this->addToAssertionCount(1);
+            }
+        }
     }
 
     public function testGetToken()
@@ -132,11 +150,9 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
         $this->assertEquals($provider, $token->getProvider());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
-     */
     public function testGetTokenWhenNotAuthenticated()
     {
+        $this->expectException(\Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException::class);
         $this->getProvider()->getToken();
     }
 
@@ -152,11 +168,9 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException
-     */
     public function testGetIdentityWhenNotAuthenticated()
     {
+        $this->expectException(\Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException::class);
         $provider = $this->getProviderForFailingIdentity();
         $provider->getIdentity();
     }
@@ -174,25 +188,19 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
         $this->assertInstanceOf($name, $provider);
     }
 
+    /**
+     * @return array list of [ProviderInterface $provider, Request $request]
+     */
     abstract public function provideDataForFailingCallback();
 
+    /**
+     * @return array list of [ProviderInterface $provider, Request $request]
+     */
     abstract public function provideDataForSuccessCallback();
 
     protected function addQueryParameter(Request $request, array $parameters)
     {
-        $query = $this->getMockBuilder('Symfony\Component\HttpFoundation\ParameterBag')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $query->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($param) use ($parameters) {
-                if (isset($parameters[$param])) {
-                    return $parameters[$param];
-                }
-            }));
-
-        $request->query = $query;
+        $request->query = new InputBag($parameters);
     }
 
     protected function getMockSession()
@@ -244,58 +252,41 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
 
     protected function getUrlGeneratorMock()
     {
-        return $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Symfony\Component\Routing\Generator\UrlGenerator');
     }
 
     protected function getRequestMock()
     {
-        return $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return new Request();
     }
 
-    protected function getGuzzleMock($statusCode = 200)
+    /**
+     * Returns a client answering every request with the same response.
+     *
+     * @param int $statusCode
+     * @param string $body
+     *
+     * @return Client
+     */
+    protected function getGuzzleMock($statusCode = 200, $body = '')
     {
-        $mock = $this->getMock('Guzzle\Http\ClientInterface');
+        $handler = function (RequestInterface $request, array $options) use ($statusCode, $body) {
+            return Create::promiseFor(new Response($statusCode, [], $body));
+        };
 
-        $requestGet = $this->getMock('Guzzle\Http\Message\RequestInterface');
-        $requestPost = $this->getMock('Guzzle\Http\Message\RequestInterface');
+        return new Client(['handler' => HandlerStack::create($handler)]);
+    }
 
-        $queryString = $this->getMockBuilder('Guzzle\Http\QueryString')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $requestGet->expects($this->any())
-            ->method('getQuery')
-            ->will($this->returnValue($queryString));
-
-        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $response->expects($this->any())
-            ->method('getStatusCode')
-            ->will($this->returnValue($statusCode));
-
-        $requestGet->expects($this->any())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $requestPost->expects($this->any())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        $mock->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($requestGet));
-
-        $mock->expects($this->any())
-            ->method('post')
-            ->will($this->returnValue($requestPost));
-
-        return $mock;
+    /**
+     * Returns a client answering the successive requests with the given responses.
+     *
+     * @param Response[] $responses
+     *
+     * @return Client
+     */
+    protected function getGuzzleMockWithResponses(array $responses)
+    {
+        return new Client(['handler' => HandlerStack::create(new MockHandler($responses))]);
     }
 
     /**
@@ -303,38 +294,16 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
      */
     private function getProviderFactory()
     {
-        $userManipulator = $this->getMockBuilder(UserManipulator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $userRepository = $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $ACLProvider = $this->getMockBuilder(ACLProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $appbox = $this->getMockBuilder(appbox::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $randomGenerator = $this->getMockBuilder(RandomGenerator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $usrAuthProviderRepository = $this->getMockBuilder(UsrAuthProviderRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $entityManager = $this->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         return new ProviderFactory(
             $this->getUrlGeneratorMock(),
             $this->getMockSession(),
-            $userManipulator,
-            $userRepository,
-            $ACLProvider,
-            $appbox,
-            $randomGenerator,
-            $usrAuthProviderRepository,
-            $entityManager
+            $this->createStub(UserManipulator::class),
+            $this->createStub(UserRepository::class),
+            $this->createStub(ACLProvider::class),
+            $this->createStub(appbox::class),
+            $this->createStub(RandomGenerator::class),
+            $this->createStub(UsrAuthProviderRepository::class),
+            $this->createStub(EntityManager::class)
         );
     }
 }

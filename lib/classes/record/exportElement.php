@@ -54,7 +54,7 @@ class record_exportElement extends record_adapter
      * @param bool $remain_hd
      * @param User|null $userOwner
      */
-    public function __construct(Application $app, $sbas_id, $record_id, $directory = '', $remain_hd = false, User $userOwner = null)
+    public function __construct(Application $app, $sbas_id, $record_id, $directory = '', $remain_hd = false, ?User $userOwner = null)
     {
         $this->directory = $directory;
 

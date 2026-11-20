@@ -15,9 +15,9 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Guzzle\Common\Exception\GuzzleException;
-use Guzzle\Http\Client as Guzzle;
-use Guzzle\Http\ClientInterface;
+use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -106,7 +106,7 @@ class Linkedin extends AbstractProvider
         }
 
         try {
-            $guzzleRequest = $this->client->post('https://www.linkedin.com/uas/oauth2/accessToken?' . http_build_query([
+            $response = $this->client->request('POST', 'https://www.linkedin.com/uas/oauth2/accessToken?' . http_build_query([
                 'grant_type'    => 'authorization_code',
                 'code'          => $request->query->get('code'),
                 'redirect_uri'  => $this->generator->generate(
@@ -117,7 +117,6 @@ class Linkedin extends AbstractProvider
                 'client_id'     => $this->key,
                 'client_secret' => $this->secret,
             ], '', '&'));
-            $response = $guzzleRequest->send();
         } catch (GuzzleException $e) {
             throw new NotAuthenticatedException('Unable to query LinkedIn access token', $e->getCode(), $e);
         }
@@ -126,7 +125,7 @@ class Linkedin extends AbstractProvider
             throw new NotAuthenticatedException('Error while getting access_token');
         }
 
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new NotAuthenticatedException('Unable to parse LinkedIn JSON');
@@ -136,12 +135,12 @@ class Linkedin extends AbstractProvider
         $this->session->set('linkedin.provider.access_token', $data['access_token']);
 
         try {
-            $request = $this->client->get('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url,email-address)');
-            $request->getQuery()
-                    ->add('oauth2_access_token', $data['access_token'])
-                    ->add('format', 'json');
-
-            $response = $request->send();
+            $response = $this->client->request('GET', 'https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url,email-address)', [
+                'query' => [
+                    'oauth2_access_token' => $data['access_token'],
+                    'format' => 'json',
+                ],
+            ]);
         } catch (GuzzleException $e) {
             throw new NotAuthenticatedException('Error while retrieving linkedin user informations.');
         }
@@ -150,7 +149,7 @@ class Linkedin extends AbstractProvider
             throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new NotAuthenticatedException('Unable to parse LinkedIn JSON');
@@ -164,7 +163,7 @@ class Linkedin extends AbstractProvider
      */
     public function getToken(): Token
     {
-        if ('' === trim($this->session->get('linkedin.provider.id'))) {
+        if ('' === trim((string) $this->session->get('linkedin.provider.id'))) {
             throw new NotAuthenticatedException('Linkedin has not authenticated');
         }
 
@@ -179,12 +178,12 @@ class Linkedin extends AbstractProvider
         $identity = new Identity();
 
         try {
-            $request = $this->client->get('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url;secure=true,email-address)');
-            $request->getQuery()
-                    ->add('oauth2_access_token', $this->session->get('linkedin.provider.access_token'))
-                    ->add('format', 'json');
-
-            $response = $request->send();
+            $response = $this->client->request('GET', 'https://api.linkedin.com/v1/people/~:(id,first-name,last-name,positions,industry,picture-url;secure=true,email-address)', [
+                'query' => [
+                    'oauth2_access_token' => $this->session->get('linkedin.provider.access_token'),
+                    'format' => 'json',
+                ],
+            ]);
         } catch (GuzzleException $e) {
             throw new NotAuthenticatedException('Unable to fetch LinkedIn identity', $e->getCode(), $e);
         }
@@ -193,7 +192,7 @@ class Linkedin extends AbstractProvider
             throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
-        $data = @json_decode($response->getBody(true), true);
+        $data = @json_decode((string) $response->getBody(), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new NotAuthenticatedException('Unable to parse Linkedin JSON identity');

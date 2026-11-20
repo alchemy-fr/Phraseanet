@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 
 class module_report
 {
@@ -832,7 +832,7 @@ class module_report
     {
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
-        if (sizeof($this->report) > 0) {
+        if (count((array) $this->report) > 0) {
             return $this->report;
         }
 
@@ -847,11 +847,9 @@ class module_report
 
         try {
             try {
-                $stmt = $conn->prepare($this->req);
-                $stmt->execute($this->params);
-                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-            } catch (DBALException $e) {
+                $stmt = $conn->executeQuery($this->req, $this->params);
+                $rs = $stmt->fetchAllAssociative();
+            } catch (\Doctrine\DBAL\Exception $e) {
 
                 return;
             }

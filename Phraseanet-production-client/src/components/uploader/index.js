@@ -82,21 +82,7 @@ const uploader = (services) => {
     };
     const onOpenModal = (filesList) => {
 
-        // @TODO replace with feature detection:
-        var iev = 0;
-        var ieold = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
-        var trident = !!navigator.userAgent.match(/Trident\/7.0/);
-        var rv = navigator.userAgent.indexOf('rv:11.0');
-
-        if (ieold) iev = new Number(RegExp.$1);
-        if (navigator.appVersion.indexOf('MSIE 10') !== -1) iev = 10;
-        if (trident && rv !== -1) iev = 11;
-
-        if (iev >= 10) {
-            $('#UPLOAD_FLASH_LINK').hide();
-            $('#upload_type option[value="flash"]').remove();
-        }
-        // Upload management
+        // Upload management (HTML5 only; the Flash uploader has been removed)
         var uploaderInstance = new UploaderManager({
             container: $('#uploadBox'),
             uploadBox: $('#uploadBox .upload-box-addedfiles'),
@@ -110,14 +96,6 @@ const uploader = (services) => {
         uploaderInstance.Preview.setOptions({
             maxWidth: 130,
             maxHeight: 120
-        });
-
-        $('#upload_type').on('change', function () {
-            if ($(this).val() === 'html') {
-                $("#UPLOAD_HTML5_LINK").trigger("click");
-            }else if  ($(this).val() === 'flash') {
-                $("#UPLOAD_FLASH_LINK").trigger("click");
-            }
         });
 
         // Init jquery tabs

@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Notification\Mail\MailInfoBridgeUploadFailed;
 use Alchemy\Phrasea\Exception\LogicException;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoBridgeUploadFailed
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoBridgeUploadFailedTest extends MailWithLinkTestCase
 {
     public function testSetAdapter()

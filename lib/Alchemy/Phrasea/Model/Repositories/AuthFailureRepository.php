@@ -24,7 +24,7 @@ class AuthFailureRepository extends EntityRepository
         $date = new \DateTime($limit);
 
         $dql = 'SELECT f
-                FROM Phraseanet:AuthFailure f
+                FROM Alchemy\Phrasea\Model\Entities\AuthFailure f
                 WHERE f.created < :date';
 
         $params = ['date' => $date->format('Y-m-d h:i:s')];
@@ -43,7 +43,7 @@ class AuthFailureRepository extends EntityRepository
     public function findLockedFailuresMatching($username, $ip)
     {
         $dql = 'SELECT f
-                FROM Phraseanet:AuthFailure f
+                FROM Alchemy\Phrasea\Model\Entities\AuthFailure f
                 WHERE (f.username = :username OR f.ip = :ip)
                     AND f.locked = true';
 

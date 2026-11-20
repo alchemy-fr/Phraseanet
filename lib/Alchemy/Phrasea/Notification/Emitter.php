@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Notification;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 
 class Emitter implements EmitterInterface
 {
@@ -32,7 +33,7 @@ class Emitter implements EmitterInterface
      */
     public function __construct($name, $email)
     {
-        if (!\Swift_Validate::email($email)) {
+        if (!EmailValidator::isValid($email)) {
             throw new InvalidArgumentException(sprintf('Invalid e-mail address (%s)', $email));
         }
 

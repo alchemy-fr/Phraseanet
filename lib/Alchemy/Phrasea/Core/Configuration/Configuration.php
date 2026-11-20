@@ -41,12 +41,13 @@ class Configuration implements ConfigurationInterface
         $this->compiler = $compiler;
         $this->config = $config;
         $this->compiled = $compiled;
-        $this->autoReload = (Boolean) $autoReload;
+        $this->autoReload = (bool) $autoReload;
     }
 
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         $conf = $this->getConfig();
@@ -57,6 +58,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $conf = $this->getConfig();
@@ -68,6 +70,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $conf = $this->getConfig();
@@ -78,6 +81,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $conf = $this->getConfig();

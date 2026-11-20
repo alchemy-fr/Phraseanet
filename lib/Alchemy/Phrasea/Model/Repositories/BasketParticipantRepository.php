@@ -28,14 +28,15 @@ class BasketParticipantRepository extends EntityRepository
      * @return BasketParticipant[]
      * @throws \Exception
      */
-    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent(float $timeLeftPercent, DateTime $today=null)
+    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent(float $timeLeftPercent, ?DateTime $today=null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\BasketParticipant', 'p');
         $selectClause = $rsm->generateSelectClause();
 
-        switch($this->_em->getConnection()->getDriver()->getName()) {
-            case 'pdo_mysql':
+        $platform = $this->_em->getConnection()->getDatabasePlatform();
+        switch(true) {
+            case $platform instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform:
                 $sql = '
                     SELECT ' . $selectClause . '
                     FROM BasketParticipants p
@@ -47,7 +48,7 @@ class BasketParticipantRepository extends EntityRepository
                 ;
 
                 break;
-            case 'pdo_sqlite':
+            case $platform instanceof \Doctrine\DBAL\Platforms\SqlitePlatform:
                 $sql = '
                     SELECT ' . $selectClause . '
                     FROM BasketParticipants p
@@ -68,7 +69,7 @@ class BasketParticipantRepository extends EntityRepository
         $q->setParameter('percent', (float)($timeLeftPercent/100));
 
         if($today !== null) {
-            $q->setParameter('today', $today, Type::DATETIME);
+            $q->setParameter('today', $today, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE);
         }
 
         return $q->getResult();

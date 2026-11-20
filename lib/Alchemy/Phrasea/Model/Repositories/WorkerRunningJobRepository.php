@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Core\Database\ConnectionChecker;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DateTime;
@@ -111,10 +112,9 @@ class WorkerRunningJobRepository extends EntityRepository
                     . " LIMIT 1";
 
                 $stmt = $cnx->prepare($sql);
-                if ($stmt->execute() === true) {
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                }
-                $stmt->closeCursor();
+                $result = $stmt->execute();
+                $row = $result->fetchAssociative();
+                $result->free();
 
                 if(!$row) {
                     // no job running : create or update (may return false) if error
@@ -500,14 +500,14 @@ class WorkerRunningJobRepository extends EntityRepository
             AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
         ;
 
-        $this->_em->getConnection()->executeUpdate($sql, [
+        $this->_em->getConnection()->executeStatement($sql, [
             'second'    => $hour * 3600,
             'running'   => 'running',
             'canceled'  => 'canceled'
         ]);
     }
 
-    public function getRunningSinceCreated($hour = 0, array $action = null)
+    public function getRunningSinceCreated($hour = 0, ?array $action = null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\WorkerRunningJob', 'w');
@@ -540,7 +540,7 @@ class WorkerRunningJobRepository extends EntityRepository
         $platform = $connection->getDatabasePlatform();
         $this->_em->beginTransaction();
         try {
-            $connection->executeUpdate($platform->getTruncateTableSQL('WorkerRunningJob'));
+            $connection->executeStatement($platform->getTruncateTableSQL('WorkerRunningJob'));
         }
         catch (Exception $e) {
             $this->_em->rollback();
@@ -566,7 +566,7 @@ class WorkerRunningJobRepository extends EntityRepository
 
     public function reconnect()
     {
-        if($this->_em->getConnection()->ping() === false) {
+        if(!ConnectionChecker::isAlive($this->_em->getConnection())) {
             $this->_em->getConnection()->close();
             $this->_em->getConnection()->connect();
         }

@@ -4,14 +4,12 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 
 use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use PHPExiftool\Driver\Tag\IPTC\ObjectName;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MetadataTest extends \PhraseanetTestCase
 {
     /**
@@ -20,14 +18,10 @@ class MetadataTest extends \PhraseanetTestCase
     protected $object;
     protected $metadata;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        $tag = new ObjectName();
+        $tag = TagFactory::getFromRDFTagname('IPTC:ObjectName');
         $value = new Mono('Stockhausen !');
 
         $this->metadata = new ExiftoolMeta($tag, $value);
@@ -35,42 +29,27 @@ class MetadataTest extends \PhraseanetTestCase
         $this->object = new Metadata($this->metadata);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::__destruct
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->object = null;
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::getName
-     */
     public function testGetName()
     {
         $this->assertEquals(AttributeInterface::NAME_METADATA, $this->object->getName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::getValue
-     */
     public function testGetValue()
     {
         $this->assertEquals($this->metadata, $this->object->getValue());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::asString
-     */
     public function testAsString()
     {
-        $this->assertInternalType('string', $this->object->asString());
+        $this->assertIsString($this->object->asString());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::loadFromString
-     */
     public function testLoadFromString()
     {
         $loaded = Metadata::loadFromString(self::$DI['app'], $this->object->asString());
@@ -78,23 +57,16 @@ class MetadataTest extends \PhraseanetTestCase
         $this->assertEquals($this->object, $loaded);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::loadFromString
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadFromStringFail()
     {
-        \PHPUnit_Framework_Error_Notice::$enabled = false;
+        $this->expectException(\InvalidArgumentException::class);
 
         Metadata::loadFromString(self::$DI['app'], 'Hello String');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Metadata::loadFromString
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadFromStringWrongObject()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Metadata::loadFromString(self::$DI['app'], serialize(new \stdClass()));
     }
 }

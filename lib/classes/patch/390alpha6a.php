@@ -61,13 +61,11 @@ class patch_390alpha6a extends patchAbstract
     {
         $sql = 'DELETE FROM FtpExportElements';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'DELETE FROM FtpExports';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $conn = $app->getApplicationBox()->get_connection();
 
@@ -80,10 +78,8 @@ class patch_390alpha6a extends patchAbstract
                     `text_mail_receiver`, `usr_id`, `date`, `foldertocreate`,
                     `logfile`
                 FROM ftp_export';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $sql = 'SELECT base_id, record_id, subdef, filename, folder, error, done, businessfields
                 FROM ftp_export_elements
@@ -119,8 +115,7 @@ class patch_390alpha6a extends patchAbstract
 
             $em->persist($export);
 
-            $stmt->execute(['export_id' => $row['id']]);
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $rs = $stmt->executeQuery(['export_id' => $row['id']])->fetchAllAssociative();
 
             foreach ($rs as $element_row) {
                 $element = new FtpExportElement();
@@ -148,7 +143,6 @@ class patch_390alpha6a extends patchAbstract
                 $em->clear();
             }
         }
-        $stmt->closeCursor();
 
         $em->flush();
         $em->clear();

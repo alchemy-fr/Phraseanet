@@ -43,6 +43,7 @@ class API_OAuth2_Form_DevAppInternet
     public $scheme_callback;
     public $urlwebsite;
     public $urlcallback;
+    public $type;
 
     /**
      * @param Request $request

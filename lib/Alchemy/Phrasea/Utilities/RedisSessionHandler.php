@@ -54,7 +54,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function open($savePath, $sessionName)
+    public function open($savePath, $sessionName): bool
     {
         return true;
     }
@@ -62,7 +62,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function read($sessionId)
+    public function read($sessionId): string|false
     {
         return $this->redis->get($this->prefix.$sessionId) ?: '';
     }
@@ -70,7 +70,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function write($sessionId, $data)
+    public function write($sessionId, $data): bool
     {
         return $this->redis->setex($this->prefix.$sessionId, $this->lifetime, $data);
     }
@@ -78,7 +78,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function destroy($sessionId)
+    public function destroy($sessionId): bool
     {
         static $unlink = true;
 
@@ -100,15 +100,15 @@ class RedisSessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function gc($lifetime)
+    public function gc($lifetime): int|false
     {
-        return true;
+        return 0;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function close()
+    public function close(): bool
     {
         return true;
     }

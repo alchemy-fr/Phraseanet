@@ -49,10 +49,8 @@ class patch_320alpha5a extends patchAbstract
     public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT base_id, usr_id FROM order_masters';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $sql = 'UPDATE basusr SET order_master="1"
                 WHERE base_id = :base_id
@@ -64,10 +62,8 @@ class patch_320alpha5a extends patchAbstract
                 ':base_id' => $row['base_id'],
                 ':usr_id'  => $row['usr_id']
             ];
-            $stmt->execute($params);
+            $stmt->executeStatement($params);
         }
-
-        $stmt->closeCursor();
 
         return true;
     }

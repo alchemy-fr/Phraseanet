@@ -5,15 +5,10 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Authentication\ProvidersCollection;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ProvidersCollectionTest extends \PhraseanetTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Authentication\ProvidersCollection::getIterator
-     */
     public function testGetIterator()
     {
         $provider = $this->getProviderMock('neutron-provider');
@@ -26,9 +21,6 @@ class ProvidersCollectionTest extends \PhraseanetTestCase
         $this->assertEquals($expectedIterator, $providers->getIterator());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\ProvidersCollection::register
-     */
     public function testRegister()
     {
         $provider = $this->getProviderMock('neutron-provider');
@@ -37,9 +29,6 @@ class ProvidersCollectionTest extends \PhraseanetTestCase
         $providers->register($provider);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\ProvidersCollection::has
-     */
     public function testHas()
     {
         $provider = $this->getProviderMock('neutron-provider');
@@ -52,9 +41,6 @@ class ProvidersCollectionTest extends \PhraseanetTestCase
         $this->assertTrue($providers->has('neutron-provider'));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\ProvidersCollection::get
-     */
     public function testGet()
     {
         $provider = $this->getProviderMock('neutron-provider');
@@ -65,9 +51,6 @@ class ProvidersCollectionTest extends \PhraseanetTestCase
         $this->assertSame($provider, $providers->get('neutron-provider'));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\ProvidersCollection::get
-     */
     public function testGetOnNonExistentFails()
     {
         $provider = $this->getProviderMock('neutron-provider');
@@ -81,9 +64,6 @@ class ProvidersCollectionTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Authentication\ProvidersCollection::count
-     */
     public function testCount()
     {
         $provider = $this->getProviderMock('neutron-provider');
@@ -96,8 +76,8 @@ class ProvidersCollectionTest extends \PhraseanetTestCase
 
     private function getProviderMock($id)
     {
-        $provider = $this->getMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
-        $provider->expects($this->any())
+        $provider = $this->createMock('Alchemy\Phrasea\Authentication\Provider\ProviderInterface');
+        $provider
             ->method('getId')
             ->will($this->returnValue($id));
 

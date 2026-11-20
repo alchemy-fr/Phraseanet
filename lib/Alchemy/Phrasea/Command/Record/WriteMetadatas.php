@@ -102,7 +102,7 @@ class WriteMetadatas extends Command
 
         $sqlCount = sprintf('SELECT COUNT(*) FROM (%s) AS c', $sql);
 
-        $totalRecords = (int)$this->connection->executeQuery($sqlCount)->fetchColumn();
+        $totalRecords = (int)$this->connection->executeQuery($sqlCount)->fetchOne();
 
         $nbWriteMetaPublish = 0;
 
@@ -112,7 +112,7 @@ class WriteMetadatas extends Command
 
         $output->writeln(sprintf('<info> %s records found to write metadatas in subdefinition files!</info>', $totalRecords));
 
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetchAssociative()) {
             $record = $this->databox->get_record($row['record_id']);
             $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$row['record_id']]);
 

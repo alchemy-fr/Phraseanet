@@ -5,21 +5,19 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\Model\Entities\Task;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TaskManipulatorTest extends \PhraseanetTestCase
 {
-    /** @var NotifierInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var NotifierInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $notifier;
 
     /** @var TaskManipulator */
     private $sut;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->notifier = $this->createNotifierMock();
@@ -59,7 +57,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $task->setName('new name');
         $this->assertSame($task, $this->sut->update($task));
         self::$DI['app']['orm.em']->clear();
-        $updated = self::$DI['app']['orm.em']->find('Phraseanet:Task', 1);
+        $updated = self::$DI['app']['orm.em']->find('Alchemy\Phrasea\Model\Entities\Task', 1);
         $this->assertEquals($task, $updated);
     }
 
@@ -125,9 +123,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateEmptyCollection()
     {
-        $collection = $this->getMockBuilder('collection')
-                ->disableOriginalConstructor()
-                ->getMock();
+        $collection = $this->createMock('collection');
         $collection->expects($this->once())
                 ->method('get_base_id')
                 ->will($this->returnValue(42));
@@ -146,7 +142,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
         $notifier = $this->createNotifierMock();
 
         $this->assertSame($this->sut, $this->sut->setNotifier($notifier));
-        $this->assertAttributeSame($notifier, 'notifier', $this->sut);
+        $this->assertSame($notifier, (new \ReflectionProperty($this->sut, 'notifier'))->getValue($this->sut));
     }
 
     /**
@@ -154,7 +150,7 @@ class TaskManipulatorTest extends \PhraseanetTestCase
      */
     private function findAllTasks()
     {
-        /** @var ObjectManager $objectManager */
+        /** @var \Doctrine\Persistence\ObjectManager $objectManager */
         $objectManager = self::$DI['app']['orm.em'];
         return $objectManager->getRepository(Task::class)->findAll();
     }
@@ -164,16 +160,16 @@ class TaskManipulatorTest extends \PhraseanetTestCase
      */
     private function loadTask()
     {
-        /** @var ObjectManager $objectManager */
+        /** @var \Doctrine\Persistence\ObjectManager $objectManager */
         $objectManager = self::$DI['app']['orm.em'];
         return $objectManager->find(Task::class, 1);
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function createNotifierMock()
     {
-        return $this->getMockBuilder(NotifierInterface::class)->getMock();
+        return $this->createMock(NotifierInterface::class);
     }
 }

@@ -12,7 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 
 class caption_field implements cache_cacheableInterface
 {
@@ -89,10 +89,8 @@ class caption_field implements cache_cacheableInterface
             , ':meta_struct_id' => $this->databox_field->get_id()
         ];
 
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $ids = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $connbas->executeQuery($sql, $params);
+        $ids = $stmt->fetchAllAssociative();
 
         $this->set_data_to_cache($ids);
 
@@ -257,7 +255,7 @@ class caption_field implements cache_cacheableInterface
     public static function get_multi_values($serialized_value, $separator)
     {
         if (strlen($separator) == 1) {
-            $values = explode($separator, $serialized_value);
+            $values = explode($separator, (string) $serialized_value);
         } else {
             // s'il y'a plusieurs delimiters, on transforme
             // en regexp pour utiliser split
@@ -284,10 +282,9 @@ class caption_field implements cache_cacheableInterface
             ->setParameter('meta_struct_id', $databox_field->get_id())
         ;
 
-        /** @var Statement $stmt */
-        $stmt = $builder->execute();
-        $rowcount = $stmt->fetchColumn();
-        $stmt->closeCursor();
+        /** @var Result $stmt */
+        $stmt = $builder->executeQuery();
+        $rowcount = $stmt->fetchOne();
         unset($stmt);
 
         $n = 0;
@@ -298,12 +295,12 @@ class caption_field implements cache_cacheableInterface
             ->setMaxResults($increment)
         ;
         while ($n < $rowcount) {
-            /** @var Statement $stmt */
+            /** @var Result $stmt */
             $stmt = $builder
                 ->setFirstResult($n)
-                ->execute();
+                ->executeQuery();
 
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $rs = $stmt->fetchAllAssociative();
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
@@ -316,8 +313,8 @@ class caption_field implements cache_cacheableInterface
             }
 
             // order to write metas for those records
-            $app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id())
+            $app['dispatcher']->dispatch(new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id()),
+                WorkerEvents::RECORDS_WRITE_META
             );
 
             $n += $increment;
@@ -335,10 +332,9 @@ class caption_field implements cache_cacheableInterface
             ->setParameter('meta_struct_id', $databox_field->get_id())
         ;
 
-        /** @var Statement $stmt */
-        $stmt = $builder->execute();
-        $rowcount = $stmt->fetchColumn();
-        $stmt->closeCursor();
+        /** @var Result $stmt */
+        $stmt = $builder->executeQuery();
+        $rowcount = $stmt->fetchOne();
         unset($stmt);
 
         $n = 0;
@@ -349,12 +345,12 @@ class caption_field implements cache_cacheableInterface
             ->setMaxResults($increment)
         ;
         while ($n < $rowcount) {
-            /** @var Statement $stmt */
+            /** @var Result $stmt */
             $stmt = $builder
                 ->setFirstResult($n)
-                ->execute();
+                ->executeQuery();
 
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $rs = $stmt->fetchAllAssociative();
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
@@ -369,8 +365,8 @@ class caption_field implements cache_cacheableInterface
             }
 
             // order to write metas for those records
-            $app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id())
+            $app['dispatcher']->dispatch(new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id()),
+                WorkerEvents::RECORDS_WRITE_META
             );
 
             $n += $increment;

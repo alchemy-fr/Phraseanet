@@ -5,14 +5,17 @@ namespace Alchemy\Tests\Phrasea\Form\Configuration;
 use Alchemy\Phrasea\Form\Configuration\ActionsFormType;
 use Alchemy\Tests\Phrasea\Form\FormTestCase;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ActionsFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new ActionsFormType(self::$DI['app']['translator']);
+        return new ActionsFormType();
+    }
+
+    protected function getFormOptions()
+    {
+        return ['translator' => self::$DI['app']['translator']];
     }
 }

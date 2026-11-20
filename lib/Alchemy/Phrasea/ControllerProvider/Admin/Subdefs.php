@@ -14,24 +14,21 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\SubdefsController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Subdefs implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.admin.subdefs'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.admin.subdefs'] = function (PhraseaApplication $app) {
             return new SubdefsController($app);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)

@@ -2,22 +2,20 @@
 
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UsrAuthProviderRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindWithProviderAndIdIsNullWhenNotFound()
     {
-        $repo = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrAuthProvider');
+        $repo = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
 
         $this->assertNull($repo->findWithProviderAndId('provider-test', 12345));
     }
 
     public function testFindWithProviderAndIdReturnsOneResultWhenFound()
     {
-        $repo = self::$DI['app']['orm.em']->getRepository('Phraseanet:UsrAuthProvider');
+        $repo = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrAuthProvider');
 
         $auth = new UsrAuthProvider();
         $auth->setUser(self::$DI['user']);

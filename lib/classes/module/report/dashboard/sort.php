@@ -76,7 +76,7 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
                         $this->arrayToSort[$key], 'nb', SORT_DESC
                     );
                     break;
-                default;
+                default:
                     break;
             }
         }

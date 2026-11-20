@@ -7,10 +7,10 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\LocaleServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class LocaleServiceProviderTest extends \PhraseanetTestCase
 {
     public function testLocalesAvailable()
@@ -52,7 +52,7 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
 
         $app['conf']->set(['languages', 'available'], ['en_US']);
 
-        $app['monolog'] = $this->getMock('Psr\Log\LoggerInterface');
+        $app['monolog'] = $this->createMock('Psr\Log\LoggerInterface');
         $app['monolog']->expects($this->once())
             ->method('error');
 
@@ -67,9 +67,7 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
-        $app['conf'] = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['conf'] = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $app['conf']->expects($this->once())
             ->method('get')
             ->with(['languages', 'default'], 'en')

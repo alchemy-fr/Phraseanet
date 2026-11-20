@@ -1,0 +1,68 @@
+--- a/src/vierbergenlars/SemVer/internal.php
++++ b/src/vierbergenlars/SemVer/internal.php
+@@ -804,7 +804,7 @@
+     return $comp;
+ }
+ 
+-function isX(JString $id = null)
++function isX(?JString $id = null)
+ {
+     return !$id || $id->toLowerCase()->valueOf() === 'x' || $id->valueOf() === '*';
+ }
+@@ -823,7 +823,7 @@
+ 
+ function replaceTilde(JString $comp, $loose = false) {
+   $r = $loose ? Exports::$re[TILDELOOSE] : Exports::$re[TILDE];
+-  return $comp->replace($r, function(JString $_, JString $M = null, JString $m = null, JString $p = null, JString $pr = null) {
++  return $comp->replace($r, function(JString $_, ?JString $M = null, ?JString $m = null, ?JString $p = null, ?JString $pr = null) {
+     if (isX($M))
+       $ret = '';
+     else if (isX($m))
+@@ -859,7 +859,7 @@
+ 
+ function replaceCaret(JString $comp, $loose = false) {
+   $r = $loose ? Exports::$re[CARETLOOSE] : Exports::$re[CARET];
+-  return $comp->replace($r, function(JString $_, JString $M = null, JString $m = null, JString $p = null, JString $pr = null) {
++  return $comp->replace($r, function(JString $_, ?JString $M = null, ?JString $m = null, ?JString $p = null, ?JString $pr = null) {
+     if (isX($M))
+       $ret = '';
+     else if (isX($m))
+@@ -906,7 +906,7 @@
+ function replaceXRange(JString $comp, $loose = false) {
+   $comp = $comp->trim();
+   $r = $loose ? Exports::$re[XRANGELOOSE] : Exports::$re[XRANGE];
+-  return $comp->replace($r, function(JString $ret, JString $gtlt, JString $M = null, JString $m = null, JString $p = null, JString $pr=null) {
++  return $comp->replace($r, function(JString $ret, JString $gtlt, ?JString $M = null, ?JString $m = null, ?JString $p = null, ?JString $pr = null) {
+     $xM = isX($M);
+     $xm = $xM || isX($m);
+     $xp = $xm || isX($p);
+@@ -973,8 +973,8 @@
+ // 1.2.3 - 3.4 => >=1.2.0-0 <3.5.0-0 Any 3.4.x will do
+ // 1.2 - 3.4 => >=1.2.0-0 <3.5.0-0
+ function hyphenReplace(JString $_,
+-                       JString $from = null, JString $fM = null, JString $fm = null, JString $fp = null, JString $fpr = null, JString $fb = null,
+-                       JString $to = null, JString $tM = null, JString $tm = null, JString $tp = null, JString $tpr = null, JString $tb = null) {
++                       ?JString $from = null, ?JString $fM = null, ?JString $fm = null, ?JString $fp = null, ?JString $fpr = null, ?JString $fb = null,
++                       ?JString $to = null, ?JString $tM = null, ?JString $tm = null, ?JString $tp = null, ?JString $tpr = null, ?JString $tb = null) {
+ 
+   if (isX($fM))
+     $from = '';
+--- a/src/vierbergenlars/LibJs/JSArray.php
++++ b/src/vierbergenlars/LibJs/JSArray.php
+@@ -26,6 +26,7 @@
+ 
+ namespace vierbergenlars\LibJs;
+ 
++#[\AllowDynamicProperties]
+ class JSArray extends JObject implements \ArrayAccess, \Iterator
+ {
+     /**
+@@ -100,7 +101,7 @@
+      * @param \Closure $compareFunction
+      * @return JSArray
+      */
+-    public function sort(\Closure $compareFunction = null)
++    public function sort(?\Closure $compareFunction = null)
+     {
+         $a = $this->array;
+         if($compareFunction) {

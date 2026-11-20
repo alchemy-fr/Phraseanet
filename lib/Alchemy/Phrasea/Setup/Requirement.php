@@ -39,11 +39,11 @@ class Requirement implements RequirementInterface
      */
     public function __construct($fulfilled, $testMessage, $helpHtml, $helpText = null, $optional = false)
     {
-        $this->fulfilled = (Boolean) $fulfilled;
+        $this->fulfilled = (bool) $fulfilled;
         $this->testMessage = (string) $testMessage;
         $this->helpHtml = (string) $helpHtml;
         $this->helpText = null === $helpText ? strip_tags($this->helpHtml) : (string) $helpText;
-        $this->optional = (Boolean) $optional;
+        $this->optional = (bool) $optional;
     }
 
     /**

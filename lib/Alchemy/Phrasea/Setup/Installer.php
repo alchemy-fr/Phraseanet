@@ -17,8 +17,8 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\TaskManager\Job\JobInterface;
-use Doctrine\DBAL\Driver\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\Tools\SchemaTool;
 
 class Installer
@@ -30,7 +30,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, Connection $abConn, $serverName, array $storagePaths, Connection $dbConn = null, $templateName = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, array $storagePaths, ?Connection $dbConn = null, $templateName = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -47,12 +47,12 @@ class Installer
             throw $e;
         }
 
-        $this->app['dispatcher']->dispatch(PhraseaEvents::INSTALL_FINISH, new InstallFinishEvent($user));
+        $this->app['dispatcher']->dispatch(new InstallFinishEvent($user), PhraseaEvents::INSTALL_FINISH);
 
         return $user;
     }
 
-    private function createDB(Connection $dbConn = null, $templateName, User $admin)
+    private function createDB(?Connection $dbConn = null, $templateName = null, ?User $admin = null)
     {
         /** @var StructureTemplate $st */
         $st = $this->app['phraseanet.structure-template'];
@@ -117,7 +117,7 @@ class Installer
         $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
-    private function rollbackInstall(Connection $abConn, Connection $dbConn = null)
+    private function rollbackInstall(Connection $abConn, ?Connection $dbConn = null)
     {
         $structure = simplexml_load_file(__DIR__ . "/../../../conf.d/bases_structure.xml");
 
@@ -132,9 +132,8 @@ class Installer
             try {
                 $sql = 'DROP TABLE IF EXISTS `' . $table['name'] . '`';
                 $stmt = $abConn->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
-            } catch (DBALException $e) {
+                $stmt->executeStatement();
+            } catch (\Doctrine\DBAL\Exception $e) {
 
             }
         }
@@ -143,9 +142,8 @@ class Installer
                 try {
                     $sql = 'DROP TABLE IF EXISTS `' . $table['name'] . '`';
                     $stmt = $dbConn->prepare($sql);
-                    $stmt->execute();
-                    $stmt->closeCursor();
-                } catch (DBALException $e) {
+                    $stmt->executeStatement();
+                } catch (\Doctrine\DBAL\Exception $e) {
 
                 }
             }
@@ -178,10 +176,10 @@ class Installer
     {
         $config = $this->app['configuration.store']->initialize()->getConfig();
 
-        $config['main']['database']['host'] = $abConn->getHost();
-        $config['main']['database']['port'] = $abConn->getPort();
-        $config['main']['database']['user'] = $abConn->getUsername();
-        $config['main']['database']['password'] = $abConn->getPassword();
+        $config['main']['database']['host'] = $abConn->getParams()['host'];
+        $config['main']['database']['port'] = ($abConn->getParams()['port'] ?? null);
+        $config['main']['database']['user'] = $abConn->getParams()['user'];
+        $config['main']['database']['password'] = $abConn->getParams()['password'];
         $config['main']['database']['dbname'] = $abConn->getDatabase();
 
         $config['main']['database']['driver'] = 'pdo_mysql';

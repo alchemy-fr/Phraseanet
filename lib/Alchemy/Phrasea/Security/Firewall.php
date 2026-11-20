@@ -48,6 +48,19 @@ class Firewall
         return $this;
     }
 
+    public function requireGrantedApi()
+    {
+        $this->requireNotGuest();
+
+        $user = $this->app->getAuthenticatedUser();
+
+        if (!$user->hasGrantedApi() && !$this->app->getAclForUser($user)->is_admin()) {
+            $this->app->abort(403, 'API access is required');
+        }
+
+        return $this;
+    }
+
     public function requireAccessToModule($module)
     {
         if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_access_to_module($module)) {
@@ -111,7 +124,7 @@ class Firewall
         return $this;
     }
 
-    public function requireAuthentication(Request $request = null)
+    public function requireAuthentication(?Request $request = null)
     {
         $params = [];
         if (null !== $request) {

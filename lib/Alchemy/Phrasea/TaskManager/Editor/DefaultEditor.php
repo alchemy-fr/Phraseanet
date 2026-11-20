@@ -34,7 +34,7 @@ class DefaultEditor extends AbstractEditor
     /**
      * {@inheritdoc}
      */
-    public function getDefaultSettings(PropertyAccess $config = null)
+    public function getDefaultSettings(?PropertyAccess $config = null)
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>

@@ -4,16 +4,14 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 
 use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class RegistryManipulatorTest extends \PhraseanetTestCase
 {
     /** @var RegistryManipulator */
     private $manipulator;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->manipulator = new RegistryManipulator(self::$DI['app']['form.factory'], self::$DI['app']['translator'], self::$DI['app']['locales.available']);
@@ -30,9 +28,7 @@ class RegistryManipulatorTest extends \PhraseanetTestCase
 
     public function testCreateFormWithConf()
     {
-        $conf = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $conf = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
         $conf->expects($this->once())
             ->method('get')
             ->with('registry')
@@ -48,7 +44,7 @@ class RegistryManipulatorTest extends \PhraseanetTestCase
     public function testGetRegistryData()
     {
         $data = $this->manipulator->getRegistryData();
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
         $this->assertEquals('Phraseanet', $data['general']['title']);
     }
 
@@ -58,7 +54,7 @@ class RegistryManipulatorTest extends \PhraseanetTestCase
         $form->submit(['general' => ['title' => 'Grumpf']]);
 
         $data = $this->manipulator->getRegistryData($form);
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
         $this->assertEquals('Grumpf', $data['general']['title']);
     }
 }

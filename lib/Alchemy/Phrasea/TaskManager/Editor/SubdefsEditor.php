@@ -37,7 +37,7 @@ class SubdefsEditor extends AbstractEditor
     /**
      * {@inheritdoc}
      */
-    public function getDefaultSettings(PropertyAccess $config = null)
+    public function getDefaultSettings(?PropertyAccess $config = null)
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -111,7 +111,7 @@ EOF;
                 $name = substr($name, 0, strlen($name)-2);
             }
 
-            $values = $request->request->get($name);
+            $values = $request->request->all()[$name] ?? null;
             if($values === null && !$multi) {
                 switch($type) {
                     case static::FORM_TYPE_INTEGER:

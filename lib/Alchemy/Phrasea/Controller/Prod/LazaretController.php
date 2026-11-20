@@ -127,7 +127,7 @@ class LazaretController extends Controller
 
         //Optional parameter
         $keepAttributes = !!$request->request->get('keep_attributes', false);
-        $attributesToKeep = $request->request->get('attributes', []);
+        $attributesToKeep = $request->request->all('attributes');
 
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
@@ -169,7 +169,7 @@ class LazaretController extends Controller
         try{
             // get the new record
             $record = \Collection::getByBaseId($this->app, $request->request->get('bas_id'))->get_databox()->get_record($ret['result']['record_id']);
-            $postStatus = (array) $request->request->get('status');
+            $postStatus = $request->request->all('status');
             // update status
             $this->updateRecordStatus($record, $postStatus);
 
@@ -282,7 +282,7 @@ class LazaretController extends Controller
 
             return $this->app->json($ret);
         }
-        $postStatus = (array) $request->request->get('status');
+        $postStatus = $request->request->all('status');
 
         $path = $this->app['tmp.lazaret.path'] . '/';
         $lazaretFileName = $path .$lazaretFile->getFilename();

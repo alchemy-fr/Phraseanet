@@ -37,11 +37,9 @@ class CleanRightsCommand extends Command
 
             $sql = 'SELECT DISTINCT base_id FROM basusr';
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
+            $stmt = $conn->executeQuery($sql);
 
-            $baseIds = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-            $stmt->closeCursor();
+            $baseIds = $stmt->fetchFirstColumn();
 
             /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
             $dbalCollectionReferenceRepository = $this->container['repo.collection-references'];
@@ -60,8 +58,7 @@ class CleanRightsCommand extends Command
                     } else {
                         $sqlDelete = "DELETE FROM basusr WHERE base_id = :base_id";
                         $stmt = $conn->prepare($sqlDelete);
-                        $stmt->execute([':base_id' => $baseId]);
-                        $stmt->closeCursor();
+                        $stmt->executeStatement([':base_id' => $baseId]);
 
                         $output->writeln(sprintf("base_id = %s not found, basusr with base_id = %s => deleted", $baseId, $baseId));
 
@@ -76,11 +73,9 @@ class CleanRightsCommand extends Command
             // check for sbas_id
 
             $sql = 'SELECT DISTINCT sbas_id FROM sbasusr';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
+            $stmt = $conn->executeQuery($sql);
 
-            $sBaseIds = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-            $stmt->closeCursor();
+            $sBaseIds = $stmt->fetchFirstColumn();
 
             /** @var DataboxRepository $databoxRepository */
             $databoxRepository = $this->container['repo.databoxes'];
@@ -100,8 +95,7 @@ class CleanRightsCommand extends Command
                     } else {
                         $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
                         $stmt = $conn->prepare($sql);
-                        $stmt->execute([':sbas_id' => $sBaseId]);
-                        $stmt->closeCursor();
+                        $stmt->executeStatement([':sbas_id' => $sBaseId]);
 
                         $output->writeln(sprintf("sbas_id = %s not found, sbasusr with sbas_id = %s => deleted", $sBaseId, $sBaseId));
                     }

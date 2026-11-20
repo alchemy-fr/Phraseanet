@@ -87,10 +87,8 @@ class set_selection extends set_abstract
                         & ' . $this->app->getAclForUser($this->app->getAuthenticatedUser())->get_mask_and($base_id) . ')=0
                 AND record_id = :record_id';
 
-                $stmt = $connsbas->prepare($sql);
-                $stmt->execute([':record_id' => $record_id]);
+                $stmt = $connsbas->executeQuery($sql, [':record_id' => $record_id]);
                 $num_rows = $stmt->rowCount();
-                $stmt->closeCursor();
 
                 if ($num_rows == 0) {
                     $to_remove[] = $id;

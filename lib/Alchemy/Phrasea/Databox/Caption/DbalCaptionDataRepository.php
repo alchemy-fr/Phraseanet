@@ -37,7 +37,7 @@ WHERE m.record_id IN (:recordIds)
 ORDER BY m.record_id ASC, s.sorter ASC
 SQL;
 
-        $data = $this->connection->fetchAll(
+        $data = $this->connection->fetchAllAssociative(
             $sql, ['recordIds' => $recordIds], ['recordIds' => Connection::PARAM_INT_ARRAY]
         );
 

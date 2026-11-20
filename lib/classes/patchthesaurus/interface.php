@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 interface patchthesaurus_interface
 {

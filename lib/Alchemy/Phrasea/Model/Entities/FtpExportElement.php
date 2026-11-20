@@ -14,90 +14,58 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(
- *      name="FtpExportElements",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_ftp_export", columns={"export_id","base_id","record_id", "subdef"})
- *      },
- *      indexes={
- *          @ORM\index(name="ftp_export_element_done", columns={"done"}),
- *          @ORM\index(name="ftp_export_element_error", columns={"error"})
- *      }
- * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\FtpExportElementRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\FtpExportElementRepository::class)]
+#[ORM\Table(name: 'FtpExportElements')]
+#[ORM\Index(name: 'ftp_export_element_done', columns: ['done'])]
+#[ORM\Index(name: 'ftp_export_element_error', columns: ['error'])]
+#[ORM\UniqueConstraint(name: 'unique_ftp_export', columns: ['export_id', 'base_id', 'record_id', 'subdef'])]
 class FtpExportElement
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", name="record_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'record_id')]
     private $recordId;
 
-    /**
-     * @ORM\Column(type="integer", name="base_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'base_id')]
     private $baseId;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private $subdef;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private $filename;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private $folder;
 
     /**
      * @var Boolean
-     * @ORM\Column(type="boolean", options={"default" = 0})
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $error = false;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $done = false;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="FtpExport", inversedBy="elements", cascade={"persist"})
-     * @ORM\JoinColumn(name="export_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: FtpExport::class, inversedBy: 'elements', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'export_id', referencedColumnName: 'id')]
     private $export;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $businessfields = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $toStamp = false;
 
     /**
@@ -239,7 +207,7 @@ class FtpExportElement
      */
     public function setError($error)
     {
-        $this->error = (Boolean) $error;
+        $this->error = (bool) $error;
 
         return $this;
     }
@@ -263,7 +231,7 @@ class FtpExportElement
      */
     public function setDone($done)
     {
-        $this->done = (Boolean) $done;
+        $this->done = (bool) $done;
 
         return $this;
     }
@@ -287,7 +255,7 @@ class FtpExportElement
      */
     public function setBusinessfields($businessfields)
     {
-        $this->businessfields = (Boolean) $businessfields;
+        $this->businessfields = (bool) $businessfields;
 
         return $this;
     }
@@ -357,7 +325,7 @@ class FtpExportElement
      *
      * @return FtpExportElement
      */
-    public function setExport(FtpExport $export = null)
+    public function setExport(?FtpExport $export = null)
     {
         $this->export = $export;
 

@@ -9,10 +9,8 @@ use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApiOauthTokenManipulatorTest extends \PhraseanetTestCase
 {
     public function testCreate()

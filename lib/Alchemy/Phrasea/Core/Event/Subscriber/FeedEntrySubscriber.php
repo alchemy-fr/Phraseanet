@@ -44,7 +44,7 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
         $this->sendEmailNotification($event);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::FEED_ENTRY_CREATE => 'onCreate',

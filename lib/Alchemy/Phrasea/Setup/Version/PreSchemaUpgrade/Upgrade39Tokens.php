@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -22,7 +22,7 @@ class Upgrade39Tokens implements PreSchemaUpgradeInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(EntityManager $em, \appbox $appbox, Configuration $conf)
+    public function apply(EntityManager $em, \appbox $appbox, MigrationRunner $migrations)
     {
         $this->doBackupFeedsTable($em);
     }
@@ -38,10 +38,10 @@ class Upgrade39Tokens implements PreSchemaUpgradeInterface
     /**
      * {@inheritdoc}
      */
-    public function rollback(EntityManager $em, \appbox $appbox, Configuration $conf)
+    public function rollback(EntityManager $em, \appbox $appbox, MigrationRunner $migrations)
     {
         if ($this->tableExists($em, 'tokens_backup')) {
-            $em->getConnection()->executeUpdate('RENAME TABLE `tokens_backup` TO `tokens`');
+            $em->getConnection()->executeStatement('RENAME TABLE `tokens_backup` TO `tokens`');
         }
     }
 
@@ -55,7 +55,7 @@ class Upgrade39Tokens implements PreSchemaUpgradeInterface
 
     private function tableExists(EntityManager $em, $table)
     {
-        return (Boolean) $em->createNativeQuery(
+        return (bool) $em->createNativeQuery(
             'SHOW TABLE STATUS WHERE Name="'.$table.'" COLLATE utf8_bin ', (new ResultSetMapping())->addScalarResult('Name', 'Name')
         )->getOneOrNullResult();
     }
@@ -67,6 +67,6 @@ class Upgrade39Tokens implements PreSchemaUpgradeInterface
      */
     private function doBackupFeedsTable(EntityManager $em)
     {
-        $em->getConnection()->executeUpdate('RENAME TABLE `tokens` TO `tokens_backup`');
+        $em->getConnection()->executeStatement('RENAME TABLE `tokens` TO `tokens_backup`');
     }
 }

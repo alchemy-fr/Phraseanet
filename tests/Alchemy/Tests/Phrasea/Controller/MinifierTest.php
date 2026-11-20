@@ -2,20 +2,18 @@
 
 namespace Alchemy\Tests\Phrasea\Controller;
 
-/**
- * @group functional
- * @group legacy
- * @group minify
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('minify')]
 class MinifierTest extends \PhraseanetTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->clearGlobals();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->clearGlobals();
         parent::tearDown();
@@ -26,9 +24,7 @@ class MinifierTest extends \PhraseanetTestCase
         $_GET = [];
     }
 
-    /**
-     * @dataProvider provideFilesToMinify
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFilesToMinify')]
     public function testFileMinification($file)
     {
         $_GET['f'] = $file;
@@ -36,7 +32,7 @@ class MinifierTest extends \PhraseanetTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isOk(), "File $file is ok");
     }
 
-    public function provideFilesToMinify()
+    public static function provideFilesToMinify()
     {
         return [['scripts/apps/admin/require.config.js']];
     }

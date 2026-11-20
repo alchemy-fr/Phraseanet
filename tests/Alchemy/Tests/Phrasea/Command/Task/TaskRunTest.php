@@ -5,18 +5,16 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 use Alchemy\Phrasea\Command\Task\TaskRun;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TaskRunTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        $input->expects($this->any())
+        $input
                 ->method('getArgument')
                 ->with('task_id')
                 ->will($this->returnValue(1));
@@ -24,11 +22,9 @@ class TaskRunTest extends \PhraseanetTestCase
         $command = new TaskRun();
         $command->setContainer(self::$DI['cli']);
 
-        $job = $this->getMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
+        $job = $this->createMock('Alchemy\Phrasea\TaskManager\Job\JobInterface');
 
-        self::$DI['cli']['task-manager.job-factory'] = $this->getMockBuilder('Alchemy\Phrasea\TaskManager\Job\Factory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['cli']['task-manager.job-factory'] = $this->createMock('Alchemy\Phrasea\TaskManager\Job\Factory');
         self::$DI['cli']['task-manager.job-factory']->expects($this->once())
                 ->method('create')
                 ->will($this->returnValue($job));

@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Setup\DoctrineMigrations;
 
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
@@ -14,7 +15,7 @@ class Version20180614113404 extends AbstractMigration
      */
     public function doUpSql(Schema $schema)
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('UPDATE Users SET guest = 1 WHERE login LIKE "guest%" OR login LIKE "(#deleted_guest%"');
     }

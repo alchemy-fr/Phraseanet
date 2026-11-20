@@ -1,0 +1,106 @@
+diff --git a/src/Component/Embed/EmbedController.php b/src/Component/Embed/EmbedController.php
+index 87c139d..80d1fbf 100644
+--- a/src/Component/Embed/EmbedController.php
++++ b/src/Component/Embed/EmbedController.php
+@@ -204,7 +204,7 @@ class EmbedController
+     {
+         $baseUri = $request->getUriForPath('');
+ 
+-        if ($url{0} === '/') {
++        if ($url[0] === '/') {
+             $url = $request->getSchemeAndHttpHost() . $url;
+         }
+         if (strncmp($url, $baseUri, strlen($baseUri)) !== 0) {
+@@ -225,7 +225,7 @@ class EmbedController
+      */
+     public function matchResourceRequest(Request $resourceRequest)
+     {
+-        $urlParams = $this->app['url_matcher']->matchRequest($resourceRequest);
++        $urlParams = $this->app['request_matcher']->matchRequest($resourceRequest);
+ 
+         return $this->app['alchemy_embed.resource_resolver']->resolve(
+             $resourceRequest,
+diff --git a/src/Provider/EmbedServiceProvider.php b/src/Provider/EmbedServiceProvider.php
+index 76ed0c1..f50b48e 100755
+--- a/src/Provider/EmbedServiceProvider.php
++++ b/src/Provider/EmbedServiceProvider.php
+@@ -15,54 +15,43 @@ use Alchemy\Embed\Embed\EmbedController;
+ use Alchemy\Embed\Media\ChainedResourceResolver;
+ use Alchemy\Embed\Media\Media;
+ use Alchemy\Phrasea\Application;
++use Pimple\Container;
++use Pimple\ServiceProviderInterface;
++use Silex\Api\ControllerProviderInterface;
+ use Silex\Application as SilexApplication;
+ use Silex\ControllerCollection;
+-use Silex\ControllerProviderInterface;
+-use Silex\ServiceProviderInterface;
++use Twig\Loader\FilesystemLoader;
+ 
+ class EmbedServiceProvider implements ServiceProviderInterface, ControllerProviderInterface
+ {
+-    public function register(SilexApplication $app)
++    public function register(Container $app)
+     {
+-        $app['alchemy_embed.resource_resolvers'] = new \Pimple();
+-        $app['alchemy_embed.resource_resolver'] = $app->share(function (Application $app) {
++        $app['alchemy_embed.resource_resolvers'] = new Container();
++        $app['alchemy_embed.resource_resolver'] = function (Application $app) {
+             return new ChainedResourceResolver($app['alchemy_embed.resource_resolvers']);
+-        });
+-
+-        $app['alchemy_embed.controller.embed'] = $app->share(
+-            function (Application $app) {
+-                return new EmbedController(
+-                    $app,
+-                    $app['alchemy_embed.service.media'],
+-                    $app['alchemy_embed.service.embed']
+-                );
+-            }
+-        );
++        };
+ 
+-        $app['alchemy_embed.service.embed'] = $app->share(
+-            function (Application $app) {
+-                return new Embed($app['phraseanet.configuration']['embed_bundle']);
+-            }
+-        );
++        $app['alchemy_embed.controller.embed'] = function (Application $app) {
++            return new EmbedController(
++                $app,
++                $app['alchemy_embed.service.media'],
++                $app['alchemy_embed.service.embed']
++            );
++        };
+ 
+-        $app['alchemy_embed.service.media'] = $app->share(
+-            function (Application $app) {
+-                return new Media($app);
+-            }
+-        );
++        $app['alchemy_embed.service.embed'] = function (Application $app) {
++            return new Embed($app['phraseanet.configuration']['embed_bundle']);
++        };
+ 
+-        $app['twig.loader.filesystem'] = $app->share(
+-            $app->extend('twig.loader.filesystem', function (\Twig_Loader_Filesystem $loader) {
+-                $loader->addPath(__DIR__.'/../../views', 'alchemy_embed');
++        $app['alchemy_embed.service.media'] = function (Application $app) {
++            return new Media($app);
++        };
+ 
+-                return $loader;
+-            })
+-        );
+-    }
++        $app->extend('twig.loader.filesystem', function (FilesystemLoader $loader) {
++            $loader->addPath(__DIR__.'/../../views', 'alchemy_embed');
+ 
+-    public function boot(SilexApplication $app)
+-    {
+-        // Nothing to do.
++            return $loader;
++        });
+     }
+ 
+     public function connect(SilexApplication $app)

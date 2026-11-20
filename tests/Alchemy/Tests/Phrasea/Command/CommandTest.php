@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class CommandTest extends \PhraseanetTestCase
 {
     /**
@@ -17,19 +15,16 @@ class CommandTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new AbstractCommandTester('name');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Command\Command::getFormattedDuration
-     */
     public function testGetFormattedDuration()
     {
-        $this->assertRegExp('/50 \w+/', $this->object->getFormattedDuration(50));
-        $this->assertRegExp('/1(\.|,)2 \w+/', $this->object->getFormattedDuration(70));
+        $this->assertMatchesRegularExpression('/50 \w+/', $this->object->getFormattedDuration(50));
+        $this->assertMatchesRegularExpression('/1(\.|,)2 \w+/', $this->object->getFormattedDuration(70));
     }
 }
 

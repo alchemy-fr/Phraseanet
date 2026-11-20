@@ -84,11 +84,13 @@ class EventProcessorFactory
      */
     public function getProcessor(WebhookEvent $event)
     {
-        if (!isset($this->processorFactories[$event->getType()])) {
-            throw new \RuntimeException(sprintf('No processor found for %s', $event->getType()));
+        $type = $event->getType();
+
+        if (null === $type || !isset($this->processorFactories[$type])) {
+            throw new \RuntimeException(sprintf('No processor found for %s', $type));
         }
 
-        $factory = $this->processorFactories[$event->getType()];
+        $factory = $this->processorFactories[$type];
 
         return $factory->createProcessor();
     }

@@ -17,6 +17,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class IndexManipulateCommand extends Command
 {
@@ -36,7 +37,7 @@ class IndexManipulateCommand extends Command
         }
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('searchengine:index')
@@ -120,7 +121,7 @@ class IndexManipulateCommand extends Command
             }
             else {
                 $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
-                $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
+                $confirmation = $this->getHelper('question')->ask($input, $output, new ConfirmationQuestion($question, false));
             }
 
             if ($confirmation) {

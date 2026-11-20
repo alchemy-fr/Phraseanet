@@ -8,20 +8,20 @@ use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\TaskManager\TaskManager;
 use Psr\Log\LoggerInterface;
 
-class NotifierTest extends \PHPUnit_Framework_TestCase
+class NotifierTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var \ZMQSocket|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \ZMQSocket|\PHPUnit\Framework\MockObject\MockObject */
     private $socket;
-    /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
-    private $logger;
+    /** @var \PHPUnit\Framework\MockObject\Stub&\Psr\Log\LoggerInterface */
+    private \PHPUnit\Framework\MockObject\Stub $logger;
 
     /** @var Notifier */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->socket = $this->createSocketMock();
-        $this->logger = $this->getMock(LoggerInterface::class);
+        $this->logger = $this->createStub(LoggerInterface::class);
 
         $this->sut = new Notifier($this->socket, $this->logger);
     }
@@ -31,9 +31,7 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(NotifierInterface::class, $this->sut);
     }
 
-    /**
-     * @dataProvider provideMessagesData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideMessagesData')]
     public function testNotify($message, $expectedCommand, $result, $expectedReturnValue)
     {
         $this->socket
@@ -49,7 +47,7 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedReturnValue, $this->sut->notify($message));
     }
 
-    public function provideMessagesData()
+    public static function provideMessagesData()
     {
         $managerData = ['manager' => ['process-id' => 1234], 'jobs' => ['24' => ['process-id' => 4567, 'status' => 'started']]];
 
@@ -64,11 +62,11 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
     public function testNoresultsThrowsException()
     {
         $this->socket
-            ->expects($this->any())
             ->method('recv')
             ->will($this->returnValue(false));
 
-        $this->setExpectedException(RuntimeException::class, 'Unable to retrieve information.');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unable to retrieve information.');
         $this->sut->notify(Notifier::MESSAGE_CREATE);
     }
 
@@ -79,7 +77,8 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
             ->method('recv')
             ->will($this->returnValue('wrong json'));
 
-        $this->setExpectedException(RuntimeException::class, 'Invalid task manager response : invalid JSON.');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid task manager response : invalid JSON.');
         $this->sut->notify(Notifier::MESSAGE_CREATE);
     }
 
@@ -95,7 +94,8 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
             ->method('recv')
             ->will($this->returnValue(json_encode(['request' => 'popo', 'reply' => []])));
 
-        $this->setExpectedException(RuntimeException::class, 'Invalid task manager response : missing fields.');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid task manager response : missing fields.');
         $this->sut->notify(Notifier::MESSAGE_CREATE);
     }
 
@@ -111,14 +111,13 @@ class NotifierTest extends \PHPUnit_Framework_TestCase
             ->method('recv')
             ->will($this->returnValue(json_encode(['request' => TaskManager::MESSAGE_PROCESS_UPDATE])));
 
-        $this->setExpectedException(RuntimeException::class, 'Invalid task manager response : missing fields.');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid task manager response : missing fields.');
         $this->sut->notify(Notifier::MESSAGE_CREATE);
     }
 
     private function createSocketMock()
     {
-        return $this->getMockBuilder('ZMQSocket')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('ZMQSocket');
     }
 }

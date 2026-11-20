@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Symfony\Contracts\EventDispatcher\Event as SfEvent;
 
 class ApiOAuth2StartEvent extends SfEvent
 {

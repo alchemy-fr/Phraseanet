@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SuggestionFinderTest extends \PhraseanetTestCase
 {
     public function testSuggestionIsFound()
@@ -36,11 +34,9 @@ class SuggestionFinderTest extends \PhraseanetTestCase
     {
         $identity = new Identity([Identity::PROPERTY_EMAIL => $email]);
 
-        $token = $this->getMockBuilder('Alchemy\Phrasea\Authentication\Provider\Token\Token')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $token = $this->createMock('Alchemy\Phrasea\Authentication\Provider\Token\Token');
 
-        $token->expects($this->any())
+        $token
             ->method('getIdentity')
             ->will($this->returnValue($identity));
 

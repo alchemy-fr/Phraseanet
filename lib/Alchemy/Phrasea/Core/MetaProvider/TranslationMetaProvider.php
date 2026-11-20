@@ -3,13 +3,13 @@
 namespace Alchemy\Phrasea\Core\MetaProvider;
 
 use Alchemy\Phrasea\Core\Provider\TranslationServiceProvider;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class TranslationMetaProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app->register(new TranslationServiceProvider(), [
             'locale_fallbacks' => ['fr'],
@@ -25,15 +25,10 @@ class TranslationMetaProvider implements ServiceProviderInterface
             ],
             'translator.cache-options' => [
                 'debug' => $app['debug'],
-                'cache_dir' => $app->share(function($app) {
+                'cache_dir' => function($app) {
                     return $app['cache.path'] . '/translations';
-                }),
+                },
             ],
         ]);
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
     }
 }

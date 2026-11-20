@@ -20,7 +20,7 @@ class ConfigurationEditor extends Command
         parent::__construct($name);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument(
             'operation',
@@ -65,10 +65,10 @@ class ConfigurationEditor extends Command
                 $this->readConfigurationValue($output, $parameter, $parameterNodes);
             }
             elseif ($command == 'set') {
-                $this->writeConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+                $this->writeConfigurationValue($output, $parameter, $parameterNodes, (string) $input->getArgument('value'));
             }
             elseif ($command == 'add') {
-                $this->appendConfigurationValue($output, $parameter, $parameterNodes, $input->getArgument('value'));
+                $this->appendConfigurationValue($output, $parameter, $parameterNodes, (string) $input->getArgument('value'));
             } else {
                 $output->writeln("<error>Command not found</error>");
             }
@@ -208,7 +208,7 @@ class ConfigurationEditor extends Command
         }
         else {
             if (!$this->quiet) {
-                $output->write(var_export($value));
+                $output->write(var_export($value, true));
             }
         }
 

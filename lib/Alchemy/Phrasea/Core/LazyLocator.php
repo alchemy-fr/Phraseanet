@@ -12,7 +12,7 @@ namespace Alchemy\Phrasea\Core;
 class LazyLocator
 {
     /**
-     * @var \Pimple
+     * @var \Pimple\Container
      */
     private $pimple;
 
@@ -22,10 +22,10 @@ class LazyLocator
     private $serviceId;
 
     /**
-     * @param \Pimple $pimple
+     * @param \Pimple\Container $pimple
      * @param string  $serviceId
      */
-    public function __construct(\Pimple $pimple, $serviceId)
+    public function __construct(\Pimple\Container $pimple, $serviceId)
     {
         $this->pimple = $pimple;
         $this->serviceId = $serviceId;

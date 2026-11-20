@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Exception\LogicException;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailRequestPasswordSetupTest extends MailWithLinkTestCase
 {
     public function testSetLogin()

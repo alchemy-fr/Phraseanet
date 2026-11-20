@@ -37,6 +37,12 @@ class EditRecordWorker implements WorkerInterface
             return;
         }
 
+        // Ensure the databox DB connection is alive BEFORE touching any record.
+        // A worker can stay idle long enough for MySQL to drop the connection;
+        // get_connection() pings and reconnects when needed. Bounded by the socket
+        // read timeout set in db.info, so this can no longer hang on a dead socket.
+        $databox->get_connection();
+
         $recordIds = [];
 
         $workerRunningJob = null;
@@ -110,7 +116,7 @@ class EditRecordWorker implements WorkerInterface
 
                 if (isset($payload['metadatas']) && is_array($payload['metadatas'])) {
                     $record->set_metadatas($payload['metadatas']);
-                    $this->dispatcher->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
+                    $this->dispatcher->dispatch(new RecordEdit($record, $previousDescription), PhraseaEvents::RECORD_EDIT);
                 }
 
                 if (isset($payload['technicalsdatas']) && is_array($payload['technicalsdatas'])) {
@@ -195,8 +201,8 @@ class EditRecordWorker implements WorkerInterface
         }
 
         // order to write metas for those records
-        $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent($recordIds, $payload['databoxId'])
+        $this->dispatcher->dispatch(new RecordsWriteMetaEvent($recordIds, $payload['databoxId']),
+            WorkerEvents::RECORDS_WRITE_META
         );
 
         // tell that we have finished to work on edit

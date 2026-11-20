@@ -226,7 +226,7 @@ class UserNotificationController extends Controller
     private function getBasketRepository()
     {
         /** @var BasketRepository $ret */
-        $ret = $this->getEntityManager()->getRepository('Phraseanet:Basket');
+        $ret = $this->getEntityManager()->getRepository('Alchemy\Phrasea\Model\Entities\Basket');
 
         return $ret;
     }

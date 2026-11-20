@@ -25,6 +25,7 @@ use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
+use PHPExiftool\Exception\TagUnknown;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -133,7 +134,11 @@ class File
             $metadatas = new ExiftoolMetadataBag();
 
             foreach ($availableUUIDs as $tagname) {
-                $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
+                try {
+                    $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
+                } catch (TagUnknown $e) {
+                    // tag not known by this exiftool version
+                }
             }
 
             try {

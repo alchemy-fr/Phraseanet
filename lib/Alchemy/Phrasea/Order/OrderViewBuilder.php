@@ -105,7 +105,7 @@ class OrderViewBuilder
 
         $elements = $this->gatherElements($views);
 
-        $allElements = $elements ? call_user_func_array('array_merge', $elements) : [];
+        $allElements = $elements ? array_merge(...array_values($elements)) : [];
         $allElements = array_combine(
             array_map(function (OrderElement $element) {
                 return $element->getId();

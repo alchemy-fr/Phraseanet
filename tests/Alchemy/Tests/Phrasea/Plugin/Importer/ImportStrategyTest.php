@@ -5,32 +5,26 @@ namespace Alchemy\Tests\Phrasea\Plugin\Importer;
 use Alchemy\Phrasea\Plugin\Importer\ImportStrategy;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ImportStrategyTest extends PluginTestCase
 {
-    /**
-     * @dataProvider provideFolderSources
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFolderSources')]
     public function testDetect($source)
     {
         $importer = new ImportStrategy();
         $this->assertEquals('plugins.importer.folder-importer', $importer->detect($source));
     }
 
-    /**
-     * @dataProvider provideInvalidFolderSources
-     * @expectedException \Alchemy\Phrasea\Plugin\Exception\ImportFailureException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidFolderSources')]
     public function testDetectFailure($source)
     {
+        $this->expectException(\Alchemy\Phrasea\Plugin\Exception\ImportFailureException::class);
         $importer = new ImportStrategy();
         $importer->detect($source);
     }
 
-    public function provideFolderSources()
+    public static function provideFolderSources()
     {
         return [
             [__DIR__],
@@ -38,7 +32,7 @@ class ImportStrategyTest extends PluginTestCase
         ];
     }
 
-    public function provideInvalidFolderSources()
+    public static function provideInvalidFolderSources()
     {
         return [
             ['/path/to/invalid/dir'],

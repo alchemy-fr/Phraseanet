@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use Alchemy\Phrasea\Cache\MemcachedCache;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MemcachedCacheTest extends \PhraseanetTestCase
 {
     /**
@@ -15,7 +13,7 @@ class MemcachedCacheTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new MemcachedCache();

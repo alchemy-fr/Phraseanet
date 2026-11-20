@@ -16,26 +16,22 @@ use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\QueryController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class Query implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.query'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.query'] = function (PhraseaApplication $app) {
             return (new QueryController($app))
                 ->setSearchEngineLocator(new LazyLocator($app, 'phraseanet.SE'))
                 ->setSearchEngineLoggerLocator(new LazyLocator($app, 'phraseanet.SE.logger'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     public function connect(Application $app)

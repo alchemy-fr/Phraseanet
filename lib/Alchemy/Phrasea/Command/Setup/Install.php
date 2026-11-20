@@ -14,12 +14,15 @@ namespace Alchemy\Phrasea\Command\Setup;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
-use Doctrine\DBAL\Driver\Connection;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Alchemy\Phrasea\Utilities\EmailValidator;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Process\ExecutableFinder;
 
 class Install extends Command
@@ -91,13 +94,13 @@ class Install extends Command
             return -1;
         }
 
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelperSet()->get('dialog');
+        /** @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
 
         $output->writeln("<comment> --- You are on your way to install Phraseanet, You will need access to 2 MySQL databases. --- </comment>");
 
         if (!$input->getOption('yes') && !$input->getOption('force') && !$input->getOption('appbox')) {
-            $continue = $dialog->askConfirmation($output, 'Do you have these two DB handy ? (N/y)', false);
+            $continue = $dialog->ask($input, $output, new ConfirmationQuestion('Do you have these two DB handy ? (N/y)', false));
 
             if (!$continue) {
                 $output->writeln("See you later !");
@@ -114,7 +117,7 @@ class Install extends Command
             return 1;       // no ab is fatal
         }
 
-        if (!$input->getOption('force') && $abConn->getSchemaManager()->tablesExist(['users'])) {
+        if (!$input->getOption('force') && $abConn->createSchemaManager()->tablesExist(['users'])) {
             $output->writeln("<error>(*) Database table already exist in appbox! installation abort</error>");
 
             return 1;
@@ -122,7 +125,7 @@ class Install extends Command
 
         list($dbConn, $templateName) = $this->getDBConn($input, $output, $abConn, $dialog);
 
-        if (!$input->getOption('force') && $dbConn->getSchemaManager()->tablesExist(['record'])) {
+        if (!$input->getOption('force') && $dbConn && $dbConn->createSchemaManager()->tablesExist(['record'])) {
             $output->writeln("<error>(*) Database table already exist in databox! installation abort</error>");
 
             return 1;
@@ -147,7 +150,7 @@ class Install extends Command
         $output->writeln('');
 
         if (!$input->getOption('yes') && !$input->getOption('force')) {
-            $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
+            $continue = $dialog->ask($input, $output, new ConfirmationQuestion("<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false));
 
             if (!$continue) {
                 $output->writeln("See you later !");
@@ -173,18 +176,18 @@ class Install extends Command
         return 0;
     }
 
-    private function getABConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getABConn(InputInterface $input, OutputInterface $output, QuestionHelper $dialog)
     {
         $abConn = $info = null;
         if (!$input->getOption('appbox')) {
             $output->writeln("<info>--- Database credentials ---</info>");
 
             do {
-                $hostname = $dialog->ask($output, 'DB hostname <comment>[default: "localhost"]</comment> : ', 'localhost');
-                $port = $dialog->ask($output, 'DB port <comment>[default: "3306"]</comment> : ', '3306');
-                $dbUser = $dialog->ask($output, 'DB user : ');
-                $dbPassword = $dialog->askHiddenResponse($output, 'DB password (hidden) : ');
-                $abName = $dialog->ask($output, 'ApplicationBox name <comment>[default: "phraseanet"]</comment> : ', 'phraseanet');
+                $hostname = $dialog->ask($input, $output, new Question('DB hostname <comment>[default: "localhost"]</comment> : ', 'localhost'));
+                $port = $dialog->ask($input, $output, new Question('DB port <comment>[default: "3306"]</comment> : ', '3306'));
+                $dbUser = $dialog->ask($input, $output, new Question('DB user : '));
+                $dbPassword = $dialog->ask($input, $output, (new Question('DB password (hidden) : '))->setHidden(true));
+                $abName = $dialog->ask($input, $output, new Question('ApplicationBox name <comment>[default: "phraseanet"]</comment> : ', 'phraseanet'));
 
                 $info = [
                     'host'     => $hostname,
@@ -225,7 +228,7 @@ class Install extends Command
         return $abConn;
     }
 
-    private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, DialogHelper $dialog)
+    private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, QuestionHelper $dialog)
     {
         $dbConn = $info = null;
         $templateName = null;
@@ -233,15 +236,15 @@ class Install extends Command
         if (!$input->getOption('databox')) {
             do {
                 $retry = false;
-                $dbName = $dialog->ask($output, 'Data-Box name, will not be created if empty : ', null);
+                $dbName = $dialog->ask($input, $output, new Question('Data-Box name, will not be created if empty : ', null));
 
                 if ($dbName) {
                     try {
                         $info = [
-                            'host'     => $abConn->getHost(),
-                            'port'     => $abConn->getPort(),
-                            'user'     => $abConn->getUsername(),
-                            'password' => $abConn->getPassword(),
+                            'host'     => $abConn->getParams()['host'] ?? null,
+                            'port'     => $abConn->getParams()['port'] ?? null,
+                            'user'     => $abConn->getParams()['user'] ?? null,
+                            'password' => $abConn->getParams()['password'] ?? null,
                             'dbname'   => $dbName,
                         ];
 
@@ -285,7 +288,7 @@ class Install extends Command
                 $defaultDBoxTemplate = $this->structureTemplate->getDefault();
 
                 do {
-                    $templateName = $dialog->ask($output, 'Choose a template from ('.$templates->toString().') for metadata structure <comment>[default: "'.$defaultDBoxTemplate.'"]</comment> : ', $defaultDBoxTemplate);
+                    $templateName = $dialog->ask($input, $output, new Question('Choose a template from ('.$templates->toString().') for metadata structure <comment>[default: "'.$defaultDBoxTemplate.'"]</comment> : ', $defaultDBoxTemplate));
                     if(!$templates->getByName($templateName)) {
                         $output->writeln("<error>Data-Box template : Template not found, try again.</error>");
                     }
@@ -300,7 +303,7 @@ class Install extends Command
         return [$dbConn, $templateName];
     }
 
-    private function getCredentials(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getCredentials(InputInterface $input, OutputInterface $output, QuestionHelper $dialog)
     {
         $email = $password = null;
 
@@ -308,16 +311,16 @@ class Install extends Command
             $output->writeln("<info>--- Account Informations ---</info>");
 
             do {
-                $email = $dialog->ask($output, 'Please provide a valid e-mail address : ');
-            } while (!\Swift_Validate::email($email));
+                $email = $dialog->ask($input, $output, new Question('Please provide a valid e-mail address : '));
+            } while (!EmailValidator::isValid($email));
 
             do {
-                $password = $dialog->askHiddenResponse($output, 'Please provide a password (hidden, 6 character min) : ');
-            } while (strlen($password) < 6);
+                $password = $dialog->ask($input, $output, (new Question('Please provide a password (hidden, 6 character min) : '))->setHidden(true));
+            } while (strlen((string) $password) < 6);
 
             $output->writeln("<info>Email / Password successfully set</info>");
         } elseif ($input->getOption('email') && $input->getOption('password')) {
-            if (!\Swift_Validate::email($input->getOption('email'))) {
+            if (!EmailValidator::isValid($input->getOption('email'))) {
                 throw new \RuntimeException('Invalid email addess');
             }
             $email = $input->getOption('email');
@@ -329,16 +332,16 @@ class Install extends Command
         return [$email, $password];
     }
 
-    private function getDataPath(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getDataPath(InputInterface $input, OutputInterface $output, QuestionHelper $dialog)
     {
         $dataPath = $input->getOption('data-path');
 
         if (!$input->getOption('yes') && !$input->getOption('force')) {
-            $continue = $dialog->askConfirmation($output, 'Would you like to change default data-path ? (N/y)', false);
+            $continue = $dialog->ask($input, $output, new ConfirmationQuestion('Would you like to change default data-path ? (N/y)', false));
 
             if ($continue) {
                 do {
-                    $dataPath = $dialog->ask($output, 'Please provide the data path : ', null);
+                    $dataPath = $dialog->ask($input, $output, new Question('Please provide the data path : ', null));
                 } while (!$dataPath || !is_writable($dataPath));
             }
         }
@@ -350,13 +353,13 @@ class Install extends Command
         return $dataPath;
     }
 
-    private function getServerName(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getServerName(InputInterface $input, OutputInterface $output, QuestionHelper $dialog)
     {
         $serverName = $input->getOption('server-name');
 
         if (!$serverName && !$input->getOption('yes') && !$input->getOption('force')) {
             do {
-                $serverName = $dialog->ask($output, 'Please provide the server name : ', null);
+                $serverName = $dialog->ask($input, $output, new Question('Please provide the server name : ', null));
             } while (!$serverName);
         }
 
@@ -367,30 +370,30 @@ class Install extends Command
         return $serverName;
     }
 
-    private function getESHost(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getESHost(InputInterface $input, OutputInterface $output, QuestionHelper $dialog)
     {
         $host = $input->getOption('es-host');
         $port = (int) $input->getOption('es-port');
 
         if (! $input->getOption('yes') && !$input->getOption('force')) {
             while (! $host) {
-                $host = $dialog->ask($output, 'ElasticSearch server host : ', null);
+                $host = $dialog->ask($input, $output, new Question('ElasticSearch server host : ', null));
             };
 
             while ($port <= 0 || $port >= 65535) {
-                $port = (int) $dialog->ask($output, 'ElasticSearch server port : ', null);
+                $port = (int) $dialog->ask($input, $output, new Question('ElasticSearch server port : ', null));
             };
         }
 
         return [ $host, $port ];
     }
 
-    private function getESIndexName(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getESIndexName(InputInterface $input, OutputInterface $output, QuestionHelper $dialog)
     {
         $index = $input->getOption('es-index');
 
         if (!$input->getOption('yes') && !$input->getOption('force')) {
-            $index = $dialog->ask($output, 'ElasticSearch server index name (blank to autogenerate) : ', null);
+            $index = $dialog->ask($input, $output, new Question('ElasticSearch server index name (blank to autogenerate) : ', null));
         }
 
         return $index;

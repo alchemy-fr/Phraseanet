@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use RandomLib\Generator;
 
@@ -25,14 +25,14 @@ class ApiApplicationManipulator implements ManipulatorInterface
     private $repository;
     private $randomGenerator;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo, Generator $random)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, EntityRepository $repo, Generator $random)
     {
         $this->om = $om;
         $this->repository = $repo;
         $this->randomGenerator = $random;
     }
 
-    public function create($name, $type, $description, $applicationWebsite, User $creator = null, $redirectUri = null)
+    public function create($name, $type, $description, $applicationWebsite, ?User $creator = null, $redirectUri = null)
     {
         $application = new ApiApplication();
         $application->setCreator($creator);
@@ -54,11 +54,11 @@ class ApiApplicationManipulator implements ManipulatorInterface
     public function delete(ApiApplication $application)
     {
         // make sure all apiaccounts linked by apiApplication are also deleted
-        $accts = $this->om->getRepository('Phraseanet:ApiAccount')->findBy(['application' => $application]);
+        $accts = $this->om->getRepository('Alchemy\Phrasea\Model\Entities\ApiAccount')->findBy(['application' => $application]);
 
         foreach ($accts as $account) {
             // remove ApiOauthCodes before ApiAccount
-            $oauthCodes = $this->om->getRepository('Phraseanet:ApiOauthCode')->findByAccount($account);
+            $oauthCodes = $this->om->getRepository('Alchemy\Phrasea\Model\Entities\ApiOauthCode')->findByAccount($account);
             foreach ($oauthCodes as $oauthCode) {
                 $this->om->remove($oauthCode);
             }
@@ -66,10 +66,10 @@ class ApiApplicationManipulator implements ManipulatorInterface
             $this->om->remove($account);
         }
 
-        $deliveries = $this->om->getRepository('Phraseanet:WebhookEventDelivery')->findBy(['application' => $application]);
+        $deliveries = $this->om->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEventDelivery')->findBy(['application' => $application]);
 
         foreach ($deliveries as $delivery) {
-            $payloads = $this->om->getRepository('Phraseanet:WebhookEventPayload')->findBy(['delivery' => $delivery]);
+            $payloads = $this->om->getRepository('Alchemy\Phrasea\Model\Entities\WebhookEventPayload')->findBy(['delivery' => $delivery]);
 
             foreach ($payloads as $payload) {
                 $this->om->remove($payload);
@@ -139,7 +139,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
             return;
         }
 
-        if (false === filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (false === filter_var($uri, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(sprintf('Redirect Uri Url %s is not legal.', $uri));
         }
 
@@ -148,7 +148,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
 
     private function doSetWebsiteUrl(ApiApplication $application, $url)
     {
-        if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(sprintf('Website Url %s is not legal.', $url));
         }
 
@@ -157,7 +157,7 @@ class ApiApplicationManipulator implements ManipulatorInterface
 
     private function doSetWebhookUrl(ApiApplication $application, $url)
     {
-        if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(sprintf('Webhook Url %s is not legal.', $url));
         }
 

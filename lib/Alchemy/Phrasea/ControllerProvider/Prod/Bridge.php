@@ -14,24 +14,20 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Prod\BridgeController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Bridge implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['bridge.controller'] = $app->share(function (PhraseaApplication $app) {
+        $app['bridge.controller'] = function (PhraseaApplication $app) {
             return new BridgeController($app);
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     public function connect(Application $app)

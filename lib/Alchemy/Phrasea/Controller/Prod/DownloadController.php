@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class DownloadController extends Controller
@@ -48,7 +48,7 @@ class DownloadController extends Controller
 
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
-        $subdefs = $request->request->get('obj', []);
+        $subdefs = $request->request->all('obj');
 
         $download = new set_export($this->app, $lst, $ssttid);
 
@@ -79,13 +79,14 @@ class DownloadController extends Controller
 
         $token = $this->getTokenManipulator()->createDownloadToken($this->getAuthenticatedUser(), serialize($list));
 
-        $this->getDispatcher()->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent(
+        $this->getDispatcher()->dispatch(new ExportEvent(
                 $this->getAuthenticatedUser(),
                 $ssttid,
                 $lst,
                 $subdefs,
                 $download->getExportName()
-            )
+            ),
+        PhraseaEvents::EXPORT_CREATE
         );
 
         /** @uses DoDownloadController::prepareDownload */
@@ -111,7 +112,7 @@ class DownloadController extends Controller
 
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
-        $subdefs = $request->request->get('obj', []);
+        $subdefs = $request->request->all('obj');
 
         $download = new set_export($this->app, $lst, $ssttid);
 
@@ -160,16 +161,17 @@ class DownloadController extends Controller
 
         $pusher_auth_key =$this->getConf()->get(['download_async', 'enabled'], false) ? $this->getConf()->get(['externalservice', 'pusher', 'auth_key'], '') : null;
 
-        $this->getDispatcher()->dispatch(PhraseaEvents::EXPORT_CREATE, new ExportEvent(
+        $this->getDispatcher()->dispatch(new ExportEvent(
                 $this->getAuthenticatedUser(),
                 $ssttid,
                 $lst,
                 $subdefs,
                 $download->getExportName()
-            )
+            ),
+        PhraseaEvents::EXPORT_CREATE
         );
 
-        $this->getDispatcher()->addListener(KernelEvents::RESPONSE, function (FilterResponseEvent $event) use ($list) {
+        $this->getDispatcher()->addListener(KernelEvents::RESPONSE, function (ResponseEvent $event) use ($list) {
             \set_export::log_download(
                 $this->app,
                 $list,
@@ -211,12 +213,13 @@ class DownloadController extends Controller
 
             if ($token) {
                 // ask the worker to build the zip
-                $this->dispatch(PhraseaEvents::DOWNLOAD_ASYNC_CREATE, new DownloadAsyncEvent(
+                $this->dispatch(new DownloadAsyncEvent(
                     $token->getUser()->getId(),
                     $token->getValue(),
                     [
                     ]
-                ));
+                ),
+                PhraseaEvents::DOWNLOAD_ASYNC_CREATE);
 
                 return new JsonResponse([
                     'success' => true,

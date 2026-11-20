@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/../Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_Api_ElementCollectionTest extends \PhraseanetTestCase
 {
 
@@ -15,7 +13,7 @@ class Bridge_Api_ElementCollectionTest extends \PhraseanetTestCase
         $collection = new Bridge_Api_ElementCollection();
         $i = 0;
         while ($i < 5) {
-            $elements[] = $element = $this->getMock("Bridge_Api_ElementInterface");
+            $elements[] = $element = $this->createMock("Bridge_Api_ElementInterface");
             $collection->add_element(new $element);
             $i ++;
         }

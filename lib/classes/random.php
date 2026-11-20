@@ -33,10 +33,8 @@ class random
 
             $sql = 'SELECT * FROM tokens WHERE expire_on < :date
               AND datas IS NOT NULL AND (type="download" OR type="email")';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([':date' => $date]);
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $conn->executeQuery($sql, [':date' => $date]);
+            $rs = $stmt->fetchAllAssociative();
             foreach ($rs as $row) {
                 switch ($row['type']) {
                     case 'download':
@@ -50,8 +48,7 @@ class random
 
             $sql = 'DELETE FROM tokens WHERE expire_on < :date and (type="download" OR type="email")';
             $stmt = $conn->prepare($sql);
-            $stmt->execute([':date' => $date]);
-            $stmt->closeCursor();
+            $stmt->executeStatement([':date' => $date]);
 
             return true;
         } catch (\Exception $e) {

@@ -1,0 +1,62 @@
+{
+    "name": "alchemy/mediavorus",
+    "version": "5.0.0",
+    "type": "library",
+    "description": "MediaVorus",
+    "keywords": [
+        "metadata"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Romain Neutron",
+            "email": "imprec@gmail.com",
+            "homepage": "http://www.lickmychip.com/"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "alchemy/phpexiftool": "^4.2",
+        "doctrine/collections": "^1.8 || ^2.0",
+        "php-ffmpeg/php-ffmpeg": "^1.4",
+        "psr/log": "^1.0 || ^2.0 || ^3.0",
+        "symfony/http-foundation": "^7.4",
+        "symfony/mime": "^7.4"
+    },
+    "suggest": {
+        "jms/serializer": "To serialize Medias",
+        "pimple/pimple": "To use the MediaVorusServiceProvider"
+    },
+    "require-dev": {
+        "jms/serializer": "^3.30",
+        "phpunit/phpunit": "^11.5",
+        "pimple/pimple": "^3.6"
+    },
+    "replace": {
+        "mediavorus/mediavorus": "<=0.4.4"
+    },
+    "autoload": {
+        "psr-0": {
+            "MediaVorus": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "MediaVorus": "tests/src"
+        }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "exiftool/exiftool",
+                "version": "12.42",
+                "source": {
+                    "url": "https://github.com/exiftool/exiftool",
+                    "type": "git",
+                    "reference": "12.42"
+                }
+            }
+        }
+    ]
+}

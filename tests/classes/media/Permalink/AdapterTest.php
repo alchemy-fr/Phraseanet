@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class media_Permalink_AdapterTest extends \PhraseanetTestCase
 {
     /**
@@ -11,7 +9,7 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
      */
     private $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = media_Permalink_Adapter::getPermalink(self::$DI['app'], self::$DI['record_1']->get_databox(), self::$DI['record_1']->get_subdef('document'));
@@ -86,17 +84,17 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
 
     public function testGet_id()
     {
-        $this->assertInternalType('integer', $this->object->get_id());
+        $this->assertIsInt($this->object->get_id());
     }
 
     public function testGet_token()
     {
-        $this->assertInternalType('string', $this->object->get_token());
+        $this->assertIsString($this->object->get_token());
     }
 
     public function testGet_is_activated()
     {
-        $this->assertInternalType('boolean', $this->object->get_is_activated());
+        $this->assertIsBool($this->object->get_is_activated());
     }
 
     public function testGet_created_on()

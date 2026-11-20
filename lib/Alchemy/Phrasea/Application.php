@@ -77,7 +77,6 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WorkerConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
-use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Databox\Caption\CaptionServiceProvider;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -104,19 +103,17 @@ use Psr\Log\LoggerInterface;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
+use Silex\Provider\CsrfServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\WebProfilerServiceProvider;
 use Sorien\Provider\PimpleDumpProvider;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\ExceptionInterface;
-use Symfony\Component\Form\Exception\FormException;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Process\ExecutableFinder;
 use Unoconv\UnoconvServiceProvider;
@@ -231,6 +228,7 @@ class Application extends SilexApplication
         $this->register(new MediaUtilitiesMetaServiceProvider());
         $this->register(new TranslationMetaProvider());
 
+        $this->register(new CsrfServiceProvider());
         $this->register(new FormServiceProvider());
         $this->setupForm();
         $this->register(new UnoconvServiceProvider());
@@ -273,28 +271,26 @@ class Application extends SilexApplication
             $this->register(new AlchemyWorkerServiceProvider());
         }
 
-        $this['monolog'] = $this->share(
-            $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
+        $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
 
-                if ($this->getEnvironment() === self::ENV_TEST) {
-                    $logger->pushHandler(new NullHandler());
-                } else {
-                    $logger->pushHandler(new ErrorLogHandler(
-                        ErrorLogHandler::SAPI,
-                        Logger::ERROR
-                    ));
+            if ($this->getEnvironment() === self::ENV_TEST) {
+                $logger->pushHandler(new NullHandler());
+            } else {
+                $logger->pushHandler(new ErrorLogHandler(
+                    ErrorLogHandler::SAPI,
+                    Logger::ERROR
+                ));
 
-                    $logger->pushHandler(new StreamHandler(
-                        fopen('php://stderr', 'w'),
-                        Logger::ERROR
-                    ));
-                }
+                $logger->pushHandler(new StreamHandler(
+                    fopen('php://stderr', 'w'),
+                    Logger::ERROR
+                ));
+            }
 
-                return $logger;
-            })
-        );
+            return $logger;
+        });
 
-        $this['phraseanet.exception_handler'] = $this->share(function ($app) {
+        $this['phraseanet.exception_handler'] = function ($app) {
             /** @var PhraseaExceptionHandler $handler */
             $handler =  PhraseaExceptionHandler::register($app['debug']);
 
@@ -302,35 +298,28 @@ class Application extends SilexApplication
             $handler->setLogger($app['monolog']);
 
             return $handler;
-        });
+        };
 
         $resolvers = $this['alchemy_embed.resource_resolvers'];
-        $resolvers['datafile'] = $resolvers->share(function () {
+        $resolvers['datafile'] = function () {
             return new DatafilesResolver($this->getApplicationBox());
-        });
+        };
 
-        $resolvers['permalinks_permalink'] = $resolvers->share(function () {
+        $resolvers['permalinks_permalink'] = function () {
             return new PermalinkMediaResolver($this->getApplicationBox());
-        });
+        };
 
-        $resolvers['media_accessor'] = $resolvers->share(function () {
+        $resolvers['media_accessor'] = function () {
             return new MediaAccessorResolver(
                 $this->getApplicationBox(), $this['controller.media_accessor']
             );
-        });
+        };
 
         if (self::ENV_DEV === $this->getEnvironment()) {
-            $this->register($p = new WebProfilerServiceProvider(), [
-                'profiler.cache_dir' => $this['cache.path'].'/profiler',
-            ]);
-
-            $this->register(new PhraseaWebProfilerServiceProvider());
-            $this->mount('/_profiler', $p);
-
             if ($this['phraseanet.configuration-tester']->isInstalled()) {
-                $this['db'] = $this->share(function (self $app) {
+                $this['db'] = function (self $app) {
                     return $app['orm.em']->getConnection();
-                });
+                };
             }
         }
     }
@@ -357,18 +346,17 @@ class Application extends SilexApplication
      *
      * @see FormFactory::create()
      *
-     * @param string|FormTypeInterface $type    The type of the form
-     * @param mixed                    $data    The initial data
-     * @param array                    $options The options
-     * @param FormBuilderInterface     $parent  The parent builder
+     * @param string $type    The type of the form
+     * @param mixed  $data    The initial data
+     * @param array  $options The options
      *
      * @return FormInterface The form named after the type
      *
      * @throws ExceptionInterface if any given option is not applicable to the given type
      */
-    public function form($type = 'form', $data = null, array $options = [], FormBuilderInterface $parent = null)
+    public function form($type = FormType::class, $data = null, array $options = [])
     {
-        return $this['form.factory']->create($type, $data, $options, $parent);
+        return $this['form.factory']->create($type, $data, $options);
     }
 
     /**
@@ -599,11 +587,11 @@ class Application extends SilexApplication
                 return $app['root.path'].'/cache';
             }
         );
-        $this['cache.paths'] = function (Application $app) {
+        $this['cache.paths'] = $this->factory(function (Application $app) {
             return new \ArrayObject([
                 $app['cache.path'],
             ]);
-        };
+        });
 
         $this['log.path'] = $factory->createDefinition(
             ['main', 'storage', 'log'],
@@ -637,50 +625,48 @@ class Application extends SilexApplication
 
     private function setupXpdf()
     {
-        $this['xpdf.pdftotext'] = $this->share(
-            $this->extend('xpdf.pdftotext', function (PdfToText $pdftotext, Application $app) {
-                if ($app['conf']->get(['registry', 'executables', 'pdf-max-pages'])) {
-                    $pdftotext->setPageQuantity($app['conf']->get(['registry', 'executables', 'pdf-max-pages']));
-                }
+        $this->extend('xpdf.pdftotext', function (PdfToText $pdftotext, Application $app) {
+            if ($app['conf']->get(['registry', 'executables', 'pdf-max-pages'])) {
+                $pdftotext->setPageQuantity($app['conf']->get(['registry', 'executables', 'pdf-max-pages']));
+            }
 
-                return $pdftotext;
-            })
-        );
+            return $pdftotext;
+        });
     }
 
     private function setupForm()
     {
-        $this['form.type.extensions'] = $this->share($this->extend('form.type.extensions', function ($extensions, Application $app) {
+        $this->extend('form.type.extensions', function ($extensions, Application $app) {
             $extensions[] = new HelpTypeExtension();
 
             return $extensions;
-        }));
+        });
     }
 
     private function setupRecaptacha()
     {
-        $this['recaptcha.public-key'] = $this->share(function (Application $app) {
+        $this['recaptcha.public-key'] = function (Application $app) {
             if ($app['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-public-key']);
             }
-        });
-        $this['recaptcha.private-key'] = $this->share(function (Application $app) {
+        };
+        $this['recaptcha.private-key'] = function (Application $app) {
             if ($app['conf']->get(['registry', 'webservices', 'captcha-provider']) != 'none') {
                 return $app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']);
             }
-        });
+        };
     }
 
     private function setupGeonames()
     {
-        $this['geonames.server-uri'] = $this->share(function (Application $app) {
+        $this['geonames.server-uri'] = function (Application $app) {
             return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'https://geonames.alchemyasp.com/');
-        });
+        };
     }
 
     private function setupSwiftMailer()
     {
-        $this['swiftmailer.transport'] = $this->share(function (Application $app) {
+        $this['swiftmailer.transport'] = function (Application $app) {
             if ($app['conf']->get(['registry', 'email', 'smtp-enabled'])) {
                 $transport = new \Swift_Transport_EsmtpTransport(
                     $app['swiftmailer.transport.buffer'],
@@ -729,20 +715,20 @@ class Application extends SilexApplication
                     $transport->setAuthMode($options['auth_mode']);
                 }
             } else {
-                $transport = new \Swift_Transport_MailTransport(
-                    new \Swift_Transport_SimpleMailInvoker(),
+                $transport = new \Swift_Transport_SendmailTransport(
+                    $app['swiftmailer.transport.buffer'],
                     $app['swiftmailer.transport.eventdispatcher']
                 );
             }
 
             return $transport;
-        });
+        };
     }
 
     private function setupMonolog()
     {
         $this['monolog.name'] = 'phraseanet';
-        $this['monolog.handler'] = $this->share(function (Application $app) {
+        $this['monolog.handler'] = function (Application $app) {
             return new RotatingFileHandler(
                 $app['log.path'] . '/app_error.log',
                 10,
@@ -750,30 +736,28 @@ class Application extends SilexApplication
                 $app['monolog.bubble'],
                 $app['monolog.permission']
             );
-        });
+        };
     }
 
     private function setupEventDispatcher()
     {
-        $this['dispatcher'] = $this->share(
-            $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
-                $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
-                $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
-                $dispatcher->addSubscriber(new RegistrationSubscriber($app));
-                $dispatcher->addSubscriber(new BridgeSubscriber($app));
-                $dispatcher->addSubscriber(new ExportSubscriber($app));
-                $dispatcher->addSubscriber(new BasketSubscriber($app));
-                $dispatcher->addSubscriber(new LazaretSubscriber($app));
-                $dispatcher->addSubscriber(new ValidationSubscriber($app));
-                if ($this['configuration.store']->isSetup()) {
-                    $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
-                }
+        $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
+            $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
+            $dispatcher->addSubscriber(new FeedEntrySubscriber($app));
+            $dispatcher->addSubscriber(new RegistrationSubscriber($app));
+            $dispatcher->addSubscriber(new BridgeSubscriber($app));
+            $dispatcher->addSubscriber(new ExportSubscriber($app));
+            $dispatcher->addSubscriber(new BasketSubscriber($app));
+            $dispatcher->addSubscriber(new LazaretSubscriber($app));
+            $dispatcher->addSubscriber(new ValidationSubscriber($app));
+            if ($this['configuration.store']->isSetup()) {
+                $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
+            }
 
-                $dispatcher->addSubscriber(new ExpiringRightsSubscriber($app, new LazyLocator($app, 'phraseanet.appbox')));
+            $dispatcher->addSubscriber(new ExpiringRightsSubscriber($app, new LazyLocator($app, 'phraseanet.appbox')));
 
-                return $dispatcher;
-            })
-        );
+            return $dispatcher;
+        });
     }
 
     private function setupConstants()

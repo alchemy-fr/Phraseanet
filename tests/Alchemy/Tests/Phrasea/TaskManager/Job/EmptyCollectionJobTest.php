@@ -6,10 +6,11 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\TaskManager\Job\AbstractJob;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class EmptyCollectionJobTest extends \PHPUnit_Framework_TestCase
+class EmptyCollectionJobTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var ObjectProphecy
      */
@@ -20,9 +21,9 @@ class EmptyCollectionJobTest extends \PHPUnit_Framework_TestCase
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->translator = $this->prophesize(TranslatorInterface::class);
+        $this->translator = $this->prophesize(\Symfony\Contracts\Translation\TranslatorInterface::class);
 
         $this->sut = new EmptyCollectionJob($this->translator->reveal());
     }

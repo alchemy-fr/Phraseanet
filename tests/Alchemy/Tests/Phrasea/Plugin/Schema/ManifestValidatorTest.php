@@ -6,22 +6,18 @@ use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 use JsonSchema\Validator as JsonSchemaValidator;
 use Alchemy\Tests\Phrasea\Plugin\PluginTestCase;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ManifestValidatorTest extends PluginTestCase
 {
-    /**
-     * @dataProvider provideGoodManifestFiles
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideGoodManifestFiles')]
     public function testValidateGoodOnes($file)
     {
         $validator = $this->createValidator();
         $validator->validate(json_decode(file_get_contents($file)));
     }
 
-    public function provideGoodManifestFiles()
+    public static function provideGoodManifestFiles()
     {
         return [
             [__DIR__ . '/../Fixtures/manifest-good-big.json'],
@@ -29,17 +25,15 @@ class ManifestValidatorTest extends PluginTestCase
         ];
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Plugin\Exception\JsonValidationException
-     * @dataProvider provideWrongManifestFiles
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideWrongManifestFiles')]
     public function testValidateWrongOnes($file)
     {
+        $this->expectException(\Alchemy\Phrasea\Plugin\Exception\JsonValidationException::class);
         $validator = $this->createValidator();
         $validator->validate(json_decode(file_get_contents($file)));
     }
 
-    public function provideWrongManifestFiles()
+    public static function provideWrongManifestFiles()
     {
         return [
             [__DIR__ . '/../Fixtures/manifest-wrong1.json'],
@@ -52,20 +46,16 @@ class ManifestValidatorTest extends PluginTestCase
         ];
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testValidateInvalidData()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $validator = $this->createValidator();
         $validator->validate([]);
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testConstructWithInvalidSchema()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         new ManifestValidator(new JsonSchemaValidator(), [], self::$DI['cli']['phraseanet.version']);
     }
 

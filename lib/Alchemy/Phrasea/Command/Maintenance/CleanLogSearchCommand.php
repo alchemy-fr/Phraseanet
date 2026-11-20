@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command\Maintenance;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -71,15 +72,11 @@ class CleanLogSearchCommand extends Command
                     $sqlCount = 'SELECT COUNT(`id`) FROM log_search WHERE ' . $clauseWhere;
                     $sql = 'SELECT id, `date`, search, results, coll_id FROM log_search WHERE ' . $clauseWhere . ' LIMIT 1000';
 
-                    $stmt = $databox->get_connection()->prepare($sqlCount);
-                    $stmt->execute();
-                    $count = $stmt->fetchColumn(0);
-                    $stmt->closeCursor();
+                    $stmt = $databox->get_connection()->executeQuery($sqlCount);
+                    $count = $stmt->fetchOne();
 
-                    $stmt = $databox->get_connection()->prepare($sql);
-                    $stmt->execute();
-                    $displayedRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
+                    $stmt = $databox->get_connection()->executeQuery($sql);
+                    $displayedRows = $stmt->fetchAllAssociative();
 
                     $output->writeln(sprintf("\n \n dry-run , %d log search entry to delete for databox %s", $count, $databox->get_dbname()));
                     // displayed only the 1000 first row to avoid memory leak
@@ -89,19 +86,19 @@ class CleanLogSearchCommand extends Command
                         array_push($displayedRows, array_fill_keys(['id', 'date', 'search', 'results', 'coll_id'], ' ... '));
                     }
 
-                    $logEntryTable = $this->getHelperSet()->get('table');
+                    $logEntryTable = new Table($output);
                     $headers = ['id', 'date', 'search', 'results', 'coll_id'];
                     $logEntryTable
                         ->setHeaders($headers)
                         ->setRows($displayedRows)
-                        ->render($output);
+                        ->render();
                 } else {
                     $cnx = $databox->get_connection();
                     $count = 0;
                     // group delete by 1000 to avoid memory leak
                     $sqlDelete = 'DELETE FROM log_search WHERE ' . $clauseWhere . '  LIMIT 1000';
                     do {
-                        $nbDeletedRow = $cnx->exec($sqlDelete);
+                        $nbDeletedRow = $cnx->executeStatement($sqlDelete);
                         $count += $nbDeletedRow;
                     } while ($nbDeletedRow > 0);
 

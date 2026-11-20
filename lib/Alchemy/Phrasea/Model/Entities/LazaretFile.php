@@ -18,87 +18,57 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \record_adapter;
 
-/**
- * @ORM\Table(name="LazaretFiles")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\LazaretFileRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\LazaretFileRepository::class)]
+#[ORM\Table(name: 'LazaretFiles')]
 class LazaretFile
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=512)
-     */
+    #[ORM\Column(type: 'string', length: 512)]
     private $filename;
 
-    /**
-     * @ORM\Column(type="string", length=512)
-     */
+    #[ORM\Column(type: 'string', length: 512)]
     private $thumbFilename;
 
-    /**
-     * @ORM\Column(type="string", length=256)
-     */
+    #[ORM\Column(type: 'string', length: 256)]
     private $originalName;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $base_id;
 
-    /**
-     * @ORM\Column(type="string", length=36)
-     */
+    #[ORM\Column(type: 'string', length: 36)]
     private $uuid;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     */
+    #[ORM\Column(type: 'string', length: 64)]
     private $sha256;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private $forced = false;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\OneToMany(targetEntity="LazaretAttribute", mappedBy="lazaretFile", cascade={"all"})
-     * @ORM\OrderBy({"id" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: LazaretAttribute::class, mappedBy: 'lazaretFile', cascade: ['all'])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
     private $attributes;
 
-    /**
-     * @ORM\OneToMany(targetEntity="LazaretCheck", mappedBy="lazaretFile", cascade={"all"})
-     * @ORM\OrderBy({"id" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: LazaretCheck::class, mappedBy: 'lazaretFile', cascade: ['all'])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
     private $checks;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="LazaretSession", inversedBy="files", cascade={"persist"})
-     * @ORM\JoinColumn(name="lazaret_session_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: LazaretSession::class, inversedBy: 'files', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'lazaret_session_id', referencedColumnName: 'id')]
     private $session;
 
-    /**
-     * @ORM\Column(type="bigint", nullable=true)
-     */
+    #[ORM\Column(type: 'bigint', nullable: true)]
     private $size;
 
     /**
@@ -478,7 +448,7 @@ class LazaretFile
      * @param  LazaretSession $session
      * @return LazaretFile
      */
-    public function setSession(LazaretSession $session = null)
+    public function setSession(?LazaretSession $session = null)
     {
         $this->session = $session;
 

@@ -112,10 +112,9 @@ class WebhookWorkerTest extends \PhraseanetTestCase
     }
 
     /**
-     * @depends testDeliverDataWithoutRestriction
-     *
      * @param WebhookEvent $event
      */
+    #[\PHPUnit\Framework\Attributes\Depends('testDeliverDataWithoutRestriction')]
     public function testNoDeliverWithSpecifiedListenedEvent(WebhookEvent $event)
     {
         self::$DI['oauth2-app-user1']->setListenedEvents(['record.edited']);
@@ -136,9 +135,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         $this->assertCount(0, $requestResult);
     }
 
-    /**
-     * @depends testDeliverDataWithoutRestriction
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testDeliverDataWithoutRestriction')]
     public function testNoDeliverWithCreatorNoCollectionRight()
     {
         $em = self::$DI['app']['orm.em'];
@@ -224,7 +221,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                 $request =  current($requestResult);
                 $requestBody = json_decode($request->getBody()->__tostring(), true);
 
-                $this->assertInternalType('array', $requestBody);
+                $this->assertIsArray($requestBody);
                 $this->assertArrayHasKey('event', $requestBody);
                 $this->assertArrayHasKey('event_time', $requestBody);
                 $this->assertArrayHasKey('webhookId', $requestBody);
@@ -342,7 +339,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                 /** @var  Request $request */
                 $request =  current($requestResult);
                 $requestBody = json_decode($request->getBody()->__tostring(), true);
-                $this->assertInternalType('array', $requestBody);
+                $this->assertIsArray($requestBody);
                 $this->assertArrayHasKey('event', $requestBody);
             }
         }

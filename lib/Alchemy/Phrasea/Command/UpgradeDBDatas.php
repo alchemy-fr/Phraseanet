@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Command\Upgrade\Step35;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use vierbergenlars\SemVer\version;
 
 class UpgradeDBDatas extends Command
@@ -121,10 +122,10 @@ EOF
 
         $question = sprintf("This process is estimated to %s", $this->getFormattedDuration($time));
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('question');
 
         do {
-            $continue = strtolower($dialog->ask($output, $question . '<question>Continue ? (Y/n)</question>', 'Y'));
+            $continue = strtolower($dialog->ask($input, $output, new Question($question . '<question>Continue ? (Y/n)</question>', 'Y')));
         } while ( ! in_array($continue, ['y', 'n']));
 
         if (strtolower($continue) !== 'y') {

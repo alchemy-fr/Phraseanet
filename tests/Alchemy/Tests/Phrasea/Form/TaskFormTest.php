@@ -8,6 +8,6 @@ class TaskFormTest extends FormTestCase
 {
     protected function getForm()
     {
-        return new TaskForm(self::$DI['app']);
+        return new TaskForm();
     }
 }

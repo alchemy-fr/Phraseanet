@@ -5,16 +5,14 @@ namespace Alchemy\Tests\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class DisplaySettingServiceTest extends \PhraseanetTestCase
 {
     private  $userSettings = false;
     private  $appSettings = false;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -22,7 +20,7 @@ class DisplaySettingServiceTest extends \PhraseanetTestCase
         $this->appSettings = self::$DI['app']['conf']->get(['registry']);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (is_null($this->userSettings)) {
             self::$DI['app']['conf']->remove('user-settings');
@@ -50,7 +48,7 @@ class DisplaySettingServiceTest extends \PhraseanetTestCase
         ]);
 
         $user = $this->createUserMock();
-        $user->expects($this->any())->method('getSettings')->will($this->returnValue(new ArrayCollection()));
+        $user->method('getSettings')->will($this->returnValue(new ArrayCollection()));
 
         $this->assertNull(self::$DI['app']['settings']->getUserSetting($user, 'lalala'));
         $this->assertSame($default = 'toto', self::$DI['app']['settings']->getUserSetting($user, 'lilili', $default));

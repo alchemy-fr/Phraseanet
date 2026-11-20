@@ -34,7 +34,7 @@ class CrossDomainGenerator extends Command
         if ($this->container['phraseanet.configuration-tester']->isInstalled()) {
             $configuration = $this->container['phraseanet.configuration']['crossdomain'];
         } else {
-            $default = Yaml::parse($this->container['root.path'].'/lib/conf.d/configuration.yml');
+            $default = Yaml::parse(file_get_contents($this->container['root.path'].'/lib/conf.d/configuration.yml'));
             $configuration = $default['crossdomain'];
         }
 

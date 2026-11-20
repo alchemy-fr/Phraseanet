@@ -262,7 +262,7 @@ class RecordController extends Controller
                 }
 
                 foreach ($record->get_grouping_parents() as $story) {
-                    $this->getEventDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+                    $this->getEventDispatcher()->dispatch(new RecordEdit($story), PhraseaEvents::RECORD_EDIT);
                 }
 
                 $sbasId = $record->getDatabox()->get_sbas_id();
@@ -273,7 +273,7 @@ class RecordController extends Controller
                 if ($trashCollectionsBySbasId[$sbasId] !== null) {
                     if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
                         // record is already in trash so delete it
-                        $this->getEventDispatcher()->dispatch(RecordEvents::DELETE, new DeleteEvent($record));
+                        $this->getEventDispatcher()->dispatch(new DeleteEvent($record), RecordEvents::DELETE);
                     } else {
                         // move to trash collection
                         $record->move_to_collection($trashCollectionsBySbasId[$sbasId]);
@@ -286,7 +286,7 @@ class RecordController extends Controller
                     }
                 } else {
                     // no trash collection, delete
-                    $this->getEventDispatcher()->dispatch(RecordEvents::DELETE, new DeleteEvent($record));
+                    $this->getEventDispatcher()->dispatch(new DeleteEvent($record), RecordEvents::DELETE);
                 }
             } catch (\Exception $e) {
             }

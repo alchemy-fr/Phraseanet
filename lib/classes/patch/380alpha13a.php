@@ -52,10 +52,8 @@ class patch_380alpha13a extends patchAbstract
                 WHERE `key` = "GV_X_Accel_Redirect"
                     OR `key` = "GV_X_Accel_Redirect_mount_point"
                     OR `key` = "GV_modxsendfile"';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         $registry = [
             'GV_X_Accel_Redirect' => null,
@@ -72,7 +70,7 @@ class patch_380alpha13a extends patchAbstract
 
         $config = $app['configuration.store']->setDefault('xsendfile')->getConfig();
 
-        $config['xsendfile']['enabled'] = (Boolean) $registry['GV_modxsendfile'];
+        $config['xsendfile']['enabled'] = (bool) $registry['GV_modxsendfile'];
         $config['xsendfile']['type'] = $config['xsendfile']['enabled'] ? 'nginx' : '';
 
         if (null !== $xsendfilePath && null !== $xsendfileMountPoint) {
@@ -89,11 +87,10 @@ class patch_380alpha13a extends patchAbstract
         $sql = 'DELETE FROM registry WHERE `key` = :k';
         $stmt = $appbox->get_connection()->prepare($sql);
         foreach ($toRemove as $registryKey) {
-            $stmt->execute([
+            $stmt->executeStatement([
                 ':k' => $registryKey
             ]);
         }
-        $stmt->closeCursor();
 
         return true;
     }

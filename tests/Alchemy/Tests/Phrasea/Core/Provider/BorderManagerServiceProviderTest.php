@@ -9,13 +9,13 @@ use Symfony\Component\Process\ExecutableFinder;
 use XPDF\XPDFServiceProvider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class BorderManagerServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             [

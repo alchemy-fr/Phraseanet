@@ -69,35 +69,31 @@ final class DbalDataboxRepository implements DataboxRepository
     /**
      * @param int $id
      * @return false|array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function fetchRow($id)
     {
         $query = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id';
-        $statement = $this->connection->prepare($query);
-        $statement->execute(['id' => $id]);
-        $row = $statement->fetch(\PDO::FETCH_ASSOC);
-        $statement->closeCursor();
+        $statement = $this->connection->executeQuery($query, ['id' => $id]);
+        $row = $statement->fetchAssociative();
 
         return $row;
     }
 
     /**
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function fetchRows()
     {
         $query = 'SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas';
-        $statement = $this->connection->prepare($query);
-        $statement->execute();
+        $statement = $this->connection->executeQuery($query);
         $rows = [];
-        while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $statement->fetchAssociative()) {
             $id = $row['sbas_id'];
             unset($row['sbas_id']);
             $rows[$id] = $row;
         }
-        $statement->closeCursor();
 
         return $rows;
     }
@@ -118,15 +114,13 @@ final class DbalDataboxRepository implements DataboxRepository
                      "MYSQL" AS sqlengine, :user AS user, :password AS pwd FROM sbas';
 
         $statement = $this->connection->prepare($query);
-        $statement->execute([
+        $statement->executeStatement([
             ':host'     => $host,
             ':port'     => $port,
             ':dbname'   => $dbname,
             ':user'     => $user,
             ':password' => $password
         ]);
-
-        $statement->closeCursor();
 
         return $this->find((int) $this->connection->lastInsertId());
     }
@@ -154,7 +148,7 @@ final class DbalDataboxRepository implements DataboxRepository
                   WHERE host = :host AND port = :port AND `user` = :user AND pwd = :password AND dbname = :dbname';
         $statement = $this->connection->executeQuery($query, $params);
 
-        if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        if ($row = $statement->fetchAssociative()) {
             return $this->find((int) $row['sbas_id']);
         }
 
@@ -163,9 +157,7 @@ final class DbalDataboxRepository implements DataboxRepository
                      "MYSQL" AS sqlengine, :user AS user, :password AS pwd FROM sbas';
 
         $stmt = $this->connection->prepare($query);
-        $stmt->execute($params);
-
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this->find((int) $this->connection->lastInsertId());
 

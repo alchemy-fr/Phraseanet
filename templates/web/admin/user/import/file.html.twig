@@ -2,8 +2,8 @@
     <h1>{{ 'Upload a csv file for users creation' | trans }}</h1>
 </div>
 
-{% if app['request'].query.get('error') is not none %}
-    {% set error = app['request'].query.get('error') %}
+{% if app['request_stack'].currentRequest.query.get('error') is not none %}
+    {% set error = app['request_stack'].currentRequest.query.get('error') %}
     <div class="alert alert-error">
         <button class="close" data-dismiss="alert" type="button">×</button>
         {% if error == 'file-invalid' %}

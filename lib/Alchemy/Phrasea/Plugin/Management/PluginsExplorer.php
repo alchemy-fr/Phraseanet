@@ -22,11 +22,13 @@ class PluginsExplorer implements \IteratorAggregate, \Countable
         $this->pluginsDirectory = $pluginsDirectory;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->getFinder()->getIterator();
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->getFinder()->count();
@@ -39,7 +41,6 @@ class PluginsExplorer implements \IteratorAggregate, \Countable
         return $finder
             ->ignoreDotFiles(true)
             ->ignoreVCS(true)
-            ->useBestAdapter()
             ->directories()
             ->in($this->pluginsDirectory)
             ->depth(0);

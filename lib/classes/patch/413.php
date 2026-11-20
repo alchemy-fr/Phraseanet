@@ -85,29 +85,24 @@ class patch_413 implements patchInterface
         // add a new temp action
         $sql = "ALTER TABLE log_docs CHANGE action action ENUM('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','to_do','') CHARACTER SET ascii COLLATE ascii_bin NOT NULL";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = "UPDATE log_docs SET action = 'to_do' where action = 'push'";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = "UPDATE log_docs SET action = 'push' where action = 'validate'";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = "UPDATE log_docs SET action = 'validate' where action = 'to_do'";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         // remove temp action
         $sql = "ALTER TABLE log_docs CHANGE action action ENUM('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','') CHARACTER SET ascii COLLATE ascii_bin NOT NULL";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
     }
 
     private function patch_appbox(base $databox, Application $app)

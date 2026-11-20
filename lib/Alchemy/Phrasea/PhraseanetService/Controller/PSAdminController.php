@@ -28,11 +28,11 @@ class PSAdminController extends Controller
     {
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service'], null);
 
-        $form = $app->form(new PSExposeConfigurationType($this->app), $exposeConfiguration);
+        $form = $app->form(PSExposeConfigurationType::class, $exposeConfiguration, ['app' => $this->app]);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $app['conf']->set(['phraseanet-service', 'expose-service'], $form->getData());
 
             return $app->redirectPath('ps_admin', ['_fragment'=>'expose']);
@@ -63,7 +63,7 @@ class PSAdminController extends Controller
         }
         $uploaderConfiguration['pullInterval'] = $ttl_retry;
 
-        $form = $app->form(new PSUploaderConfigurationType(), $uploaderConfiguration);
+        $form = $app->form(PSUploaderConfigurationType::class, $uploaderConfiguration);
 
         $form->handleRequest($request);
 

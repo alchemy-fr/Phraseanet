@@ -69,7 +69,7 @@ class RegenerateSqliteDb extends Command
             $fs->remove($json);
         }
 
-        $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
+        $this->container->extend('orm.em', function($em, $app) {
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
 
@@ -84,7 +84,7 @@ class RegenerateSqliteDb extends Command
 
         $fixtures = [];
 
-        $DI = new \Pimple();
+        $DI = new \Pimple\Container();
 
         $this->generateUsers($em, $DI);
         $this->insertOauthApps($DI);
@@ -182,7 +182,7 @@ class RegenerateSqliteDb extends Command
         return 0;
     }
 
-    private function insertOauthApps(\Pimple $DI)
+    private function insertOauthApps(\Pimple\Container $DI)
     {
         if (null === $DI['api-app-user'] = $this->container['repo.api-applications']->findOneByName('api-app-user')) {
             $DI['api-app-user'] = $this->container['manipulator.api-application']->create(
@@ -219,7 +219,7 @@ class RegenerateSqliteDb extends Command
 
     }
 
-    public function insertOauthAccounts(\Pimple $DI)
+    public function insertOauthAccounts(\Pimple\Container $DI)
     {
         /** @var ApiAccountManipulator $apiAccountManipulator */
         $apiAccountManipulator = $this->container['manipulator.api-account'];
@@ -233,7 +233,7 @@ class RegenerateSqliteDb extends Command
         $apiOAuthTokenManipulator->create($DI['api-app-acc-user1']);
     }
 
-    private function insertAuthFailures(EntityManager $em, \Pimple $DI)
+    private function insertAuthFailures(EntityManager $em, \Pimple\Container $DI)
     {
         $ip = '192.168.16.178';
         $username = 'romainneutron';
@@ -256,7 +256,7 @@ class RegenerateSqliteDb extends Command
         }
     }
 
-    private function insertLazaretFiles(EntityManager $em, \Pimple $DI)
+    private function insertLazaretFiles(EntityManager $em, \Pimple\Container $DI)
     {
         $session = new LazaretSession();
         $session->setUser($DI['user']);
@@ -273,7 +273,7 @@ class RegenerateSqliteDb extends Command
         $borderManager->process($session, $file, $callback, Manager::FORCE_LAZARET);
     }
 
-    private function generateUsers(EntityManager $em, \Pimple $DI)
+    private function generateUsers(EntityManager $em, \Pimple\Container $DI)
     {
         $DI['user'] = $this->getUser();
         $DI['user_alt1'] = $this->getUserAlt1();
@@ -317,7 +317,7 @@ class RegenerateSqliteDb extends Command
         return $this->container['manipulator.user']->createUser($login, uniqid('pass'), $email, $admin);
     }
 
-    protected function insertWebhookEvent(EntityManager $em, \Pimple $DI)
+    protected function insertWebhookEvent(EntityManager $em, \Pimple\Container $DI)
     {
         $event = new WebhookEvent();
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
@@ -341,7 +341,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($event2);
     }
 
-    protected function insertWebhookEventDelivery(EntityManager $em, \Pimple $DI)
+    protected function insertWebhookEventDelivery(EntityManager $em, \Pimple\Container $DI)
     {
         $delivery = new WebhookEventDelivery();
         $delivery->setThirdPartyApplication($DI['api-app-user']);
@@ -356,7 +356,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($delivery2);
     }
 
-    private function generateCollection(\Pimple $DI)
+    private function generateCollection(\Pimple\Container $DI)
     {
         $coll = $collection_no_acces = $collection_no_acces_by_status = null;
         /** @var \databox[] $databoxes */
@@ -396,7 +396,7 @@ class RegenerateSqliteDb extends Command
         $DI['coll_no_status'] = $collection_no_acces_by_status;
     }
 
-    private function generateRecord(\Pimple $DI)
+    private function generateRecord(\Pimple\Container $DI)
     {
         foreach (range(1, 7) as $i) {
             $file = new File($this->container, $this->container['mediavorus']->guess(__DIR__ . '/../../../../../tests/files/test001.jpg'), $DI['coll']);
@@ -480,7 +480,7 @@ class RegenerateSqliteDb extends Command
         return $user;
     }
 
-    private function insertTwoBasket(EntityManager $em, \Pimple $DI)
+    private function insertTwoBasket(EntityManager $em, \Pimple\Container $DI)
     {
         $basket1 = new Basket();
         $basket1->setUser($this->getUser());
@@ -548,7 +548,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($basket4);
     }
 
-    private function insertOneStoryInWz(EntityManager $em, \Pimple $DI)
+    private function insertOneStoryInWz(EntityManager $em, \Pimple\Container $DI)
     {
         $story = new StoryWZ();
 
@@ -558,7 +558,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($story);
     }
 
-    private function insertUsrLists(EntityManager $em, \Pimple $DI)
+    private function insertUsrLists(EntityManager $em, \Pimple\Container $DI)
     {
         $owner1 = new UsrListOwner();
         $owner1->setRole(UsrListOwner::ROLE_ADMIN);
@@ -608,7 +608,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($entry4);
     }
 
-    private function insertOnePublicFeed(EntityManager $em, \Pimple $DI)
+    private function insertOnePublicFeed(EntityManager $em, \Pimple\Container $DI)
     {
         $feed = new Feed();
         $publisher = new FeedPublisher();
@@ -643,7 +643,7 @@ class RegenerateSqliteDb extends Command
         $DI['feed_public_token'] = $token;
     }
 
-    private function insertOnePrivateFeed(EntityManager $em, \Pimple $DI)
+    private function insertOnePrivateFeed(EntityManager $em, \Pimple\Container $DI)
     {
         $feed = new Feed();
         $publisher = new FeedPublisher();
@@ -670,7 +670,7 @@ class RegenerateSqliteDb extends Command
         $DI['feed_private_token'] = $token;
     }
 
-    private function insertOneExtraFeed(EntityManager $em, \Pimple $DI)
+    private function insertOneExtraFeed(EntityManager $em, \Pimple\Container $DI)
     {
         $feed = new Feed();
         $publisher = new FeedPublisher();
@@ -693,7 +693,7 @@ class RegenerateSqliteDb extends Command
         $this->insertOneFeedToken($em, $DI, $feed);
     }
 
-    private function insertOneFeedEntry(EntityManager $em, \Pimple $DI, Feed $feed, $public)
+    private function insertOneFeedEntry(EntityManager $em, \Pimple\Container $DI, Feed $feed, $public)
     {
         $entry = new FeedEntry();
         $entry->setFeed($feed);
@@ -718,7 +718,7 @@ class RegenerateSqliteDb extends Command
         return $entry;
     }
 
-    private function insertOneFeedToken(EntityManager $em, \Pimple $DI, Feed $feed)
+    private function insertOneFeedToken(EntityManager $em, \Pimple\Container $DI, Feed $feed)
     {
         $token = new FeedToken();
         $token->setValue($this->container['random.low']->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS));
@@ -733,7 +733,7 @@ class RegenerateSqliteDb extends Command
         return $token;
     }
 
-    private function insertOneAggregateToken(EntityManager $em, \Pimple $DI)
+    private function insertOneAggregateToken(EntityManager $em, \Pimple\Container $DI)
     {
         $user = $DI['user'];
 
@@ -744,7 +744,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($token);
     }
 
-    private function insertTwoTokens(EntityManager $em, \Pimple $DI)
+    private function insertTwoTokens(EntityManager $em, \Pimple\Container $DI)
     {
         $user = $DI['user'];
 
@@ -766,7 +766,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($token);
     }
 
-    private function insertOneInvalidToken(EntityManager $em, \Pimple $DI)
+    private function insertOneInvalidToken(EntityManager $em, \Pimple\Container $DI)
     {
         $user = $DI['user'];
 
@@ -780,7 +780,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($token);
     }
 
-    private function insertOneValidationToken(EntityManager $em, \Pimple $DI)
+    private function insertOneValidationToken(EntityManager $em, \Pimple\Container $DI)
     {
         $user = $DI['user'];
 
@@ -793,7 +793,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($token);
     }
 
-    private function insertOneFeedItem(EntityManager $em, \Pimple $DI, FeedEntry $entry, $public)
+    private function insertOneFeedItem(EntityManager $em, \Pimple\Container $DI, FeedEntry $entry, $public)
     {
         if ($public) {
             $start = 5;
@@ -819,7 +819,7 @@ class RegenerateSqliteDb extends Command
         $em->persist($entry);
     }
 
-    private function insertOneRegistration(\Pimple $DI, EntityManager $em, User $user, \collection $collection, $when, $name)
+    private function insertOneRegistration(\Pimple\Container $DI, EntityManager $em, User $user, \collection $collection, $when, $name)
     {
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
         $registration = new Registration();

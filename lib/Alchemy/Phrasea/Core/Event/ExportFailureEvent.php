@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Model\Entities\User;
-use Symfony\Component\EventDispatcher\Event as SfEvent;
+use Symfony\Contracts\EventDispatcher\Event as SfEvent;
 
 class ExportFailureEvent extends SfEvent
 {

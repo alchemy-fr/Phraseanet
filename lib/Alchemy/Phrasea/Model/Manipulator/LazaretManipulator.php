@@ -203,7 +203,7 @@ class LazaretManipulator
                             /** @var Metadata $value */
                             $value = $attribute->getValue();
                             // $metadataBag->set($value->getTag()->getTagname(), new Metadata($value->getTag(), $value->getValue()));
-                            $metadataBag->set($value->getTag()->getTagname(), $value);
+                            $metadataBag->set($value->getTagGroup()->getId(), $value);
                             break;
                         case AttributeInterface::NAME_STORY:
                             /** @var \record_adapter $value */
@@ -232,8 +232,8 @@ class LazaretManipulator
 
                 // order to write meta in file
 
-                $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                    new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+                $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()),
+                    WorkerEvents::RECORDS_WRITE_META);
             }
 
             //Delete lazaret file

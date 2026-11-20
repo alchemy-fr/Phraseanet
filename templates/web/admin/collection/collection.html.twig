@@ -12,12 +12,12 @@
     </h1>
 </div>
 
-{% if app['request'].query.get('success') == '1' %}
+{% if app['request_stack'].currentRequest.query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {{ 'Successful update' | trans }}
     </div>
-{% elseif app['request'].query.get('success') == '0' %}
+{% elseif app['request_stack'].currentRequest.query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
         <strong>{{ 'An error occured' | trans }}</strong>

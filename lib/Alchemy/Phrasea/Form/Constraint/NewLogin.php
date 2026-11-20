@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Form\Constraint;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Validator\Constraint;
 
 class NewLogin extends Constraint
@@ -28,11 +28,11 @@ class NewLogin extends Constraint
 
     public function isAlreadyRegistered($login)
     {
-        return (Boolean) $this->repository->findByLogin($login);
+        return (bool) $this->repository->findByLogin($login);
     }
 
     public static function create(Application $app)
     {
-        return new static($app['repo.users']);
+        return new self($app['repo.users']);
     }
 }

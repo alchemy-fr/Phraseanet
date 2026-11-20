@@ -32,7 +32,7 @@ interface MailInterface
      *
      * @return MailInterface
      */
-    public function setEmitter(EmitterInterface $emitter = null);
+    public function setEmitter(?EmitterInterface $emitter = null);
 
     /**
      * Returns the Receiver

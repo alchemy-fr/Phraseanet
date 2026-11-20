@@ -59,14 +59,11 @@ class patch_390alpha8a extends patchAbstract
     {
         $sql = 'DELETE FROM Tasks';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $sql = 'SELECT task_id, active, crashed, name, class, settings FROM task2';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             try {

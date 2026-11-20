@@ -1,0 +1,30 @@
+body, html {
+    background-color:#E6B66E;
+}
+
+.hero-unit {
+    background-color: transparent;
+}
+
+tt.literal{
+    font-weight:bold;
+}
+
+h1, h2, h3, h4, h5, h6, a, a:hover, a:visited, .hero-unit{
+    color:#59343E;
+}
+
+a{
+    text-decoration:underline;
+}
+.sphinxsidebarwrapper a{
+    text-decoration: none;
+}
+
+h2{
+    margin: 15px 0 5px;
+}
+
+h3{
+    margin: 15px 0 10px;
+}

@@ -1,0 +1,31 @@
+{
+  "name": "elasticsearch/elasticsearch",
+  "description": "PHP Client for Elasticsearch 2.x (Alchemy fork for PHP 8.5)",
+  "keywords": [
+    "search",
+    "client",
+    "elasticsearch"
+  ],
+  "type": "library",
+  "license": "Apache-2.0",
+  "version": "2.5.0",
+  "authors": [
+    {
+      "name": "Zachary Tong"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "psr/log": "^1.0 || ^2.0 || ^3.0",
+    "guzzlehttp/ringphp": "~1.0"
+  },
+  "suggest": {
+    "ext-curl": "*",
+    "monolog/monolog": "Allows for client-level logging and tracing"
+  },
+  "autoload": {
+    "psr-4": {
+      "Elasticsearch\\": "src/Elasticsearch/"
+    }
+  }
+}

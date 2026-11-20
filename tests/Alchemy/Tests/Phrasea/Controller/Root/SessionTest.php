@@ -4,17 +4,13 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Session::class, 'updateSession')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession
-     */
     public function testUpdSessionLogout()
     {
         $this->logout(self::$DI['app']);
@@ -25,9 +21,6 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('disconnected', $datas->status);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession
-     */
     public function testUpdSessionChangeUser()
     {
         $response = $this->XMLHTTPRequest('POST', '/session/update/', [
@@ -39,9 +32,6 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('disconnected', $datas->status);
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession
-     */
     public function testUpdSession()
     {
         $this->authenticate($this->getApplication());
@@ -58,10 +48,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('ok', $data->status);
     }
 
-     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession
-     */
-    public function testUpdSessionBadRequestMissingModuleArgument()
+     public function testUpdSessionBadRequestMissingModuleArgument()
     {
         $this->authenticate(self::$DI['app']);
 
@@ -75,10 +62,7 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('unknown', $datas->status);
     }
 
-     /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession
-     */
-    public function testUpdSessionBadRequest()
+     public function testUpdSessionBadRequest()
     {
         self::$DI['client']->request('POST', '/session/update/');
 
@@ -87,15 +71,15 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
     private function checkSessionReturn(\stdClass $data)
     {
-        $this->assertObjectHasAttribute('status', $data);
-        $this->assertObjectHasAttribute('message', $data);
+        $this->assertObjectHasProperty('status', $data);
+        $this->assertObjectHasProperty('message', $data);
     }
 
     public function testDeleteSession()
     {
-        $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
+        $session = $this->createMock('Alchemy\Phrasea\Model\Entities\Session');
 
-        $session->expects($this->any())
+        $session
             ->method('getUser')
             ->will($this->returnValue(self::$DI['app']->getAuthenticatedUser()));
 
@@ -120,9 +104,9 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDeleteSessionUnauthorized()
     {
-        $session = $this->getMock('Alchemy\Phrasea\Model\Entities\Session');
+        $session = $this->createMock('Alchemy\Phrasea\Model\Entities\Session');
 
-        $session->expects($this->any())
+        $session
             ->method('getUser')
             ->will($this->returnValue(self::$DI['user_alt1']));
 

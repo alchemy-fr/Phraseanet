@@ -4,15 +4,15 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Databox\DataboxService;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class DataboxServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['databox.service'] = $app->share(function (PhraseaApplication $app) {
+        $app['databox.service'] = function (PhraseaApplication $app) {
             return new DataboxService(
                 $app,
                 $app->getApplicationBox(),
@@ -21,11 +21,6 @@ class DataboxServiceProvider implements ServiceProviderInterface
                 $app['conf'],
                 $app['root.path']
             );
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // TODO: Implement boot() method.
+        };
     }
 }

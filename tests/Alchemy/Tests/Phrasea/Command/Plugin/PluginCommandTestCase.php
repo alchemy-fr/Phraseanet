@@ -2,65 +2,47 @@
 
 namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PluginCommandTestCase extends \PhraseanetTestCase
 {
     protected function createTemporaryFilesystemMock()
     {
-        return $this->getMockBuilder('Neutron\TemporaryFilesystem\TemporaryFilesystem')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Neutron\TemporaryFilesystem\TemporaryFilesystem');
     }
 
     protected function createPluginsImporterMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Importer\Importer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Importer\Importer');
     }
 
     protected function createPluginsValidatorMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\PluginValidator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Schema\PluginValidator');
     }
 
     protected function createManifestMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\Manifest')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Schema\Manifest');
     }
 
     protected function createComposerInstallerMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Management\ComposerInstaller')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Management\ComposerInstaller');
     }
 
     protected function createFilesystemMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem');
     }
 
     protected function createPluginsExplorerMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Management\PluginsExplorer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Management\PluginsExplorer');
     }
 
     protected function createPluginsAutoloaderGeneratorMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Management\AutoloaderGenerator');
     }
 }

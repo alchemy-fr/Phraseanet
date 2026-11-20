@@ -179,7 +179,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     }
 
     /** {@inheritdoc} */
-    public function setCreated(\DateTime $created = null)
+    public function setCreated(?\DateTime $created = null)
     {
         $this->created = $created;
     }
@@ -378,7 +378,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         return $this->updated;
     }
 
-    public function setUpdated(\DateTime $updated = null)
+    public function setUpdated(?\DateTime $updated = null)
     {
         $this->updated = $updated;
     }
@@ -393,7 +393,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         $this->uuid = $uuid;
     }
 
-    public function getCaption(array $fields = null)
+    public function getCaption(?array $fields = null)
     {
         if (null === $fields) {
             return $this->caption;

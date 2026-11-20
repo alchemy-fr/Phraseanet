@@ -3,13 +3,13 @@
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\Provider\CacheServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class CacheServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             [

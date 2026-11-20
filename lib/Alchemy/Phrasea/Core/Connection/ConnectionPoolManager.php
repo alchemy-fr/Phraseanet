@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Core\Connection;
 
+use Alchemy\Phrasea\Core\Connection\Connection as PhraseanetConnection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 
@@ -72,8 +73,9 @@ class ConnectionPoolManager
     public function get(array $params)
     {
         $params = array_replace([
-            'driver'  => 'pdo_mysql',
-            'charset' => 'UTF8',
+            'driver'       => 'pdo_mysql',
+            'charset'      => 'UTF8',
+            'wrapperClass' => PhraseanetConnection::class,
         ], $params);
 
         $key = md5(serialize($params));

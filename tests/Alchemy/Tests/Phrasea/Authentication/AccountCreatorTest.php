@@ -4,15 +4,11 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\AccountCreator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class AccountCreatorTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideEnabledOptions
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideEnabledOptions')]
     public function testIsEnabled($enabled)
     {
         $generator = $this->createGeneratorMock();
@@ -23,7 +19,7 @@ class AccountCreatorTest extends \PhraseanetTestCase
         $this->assertSame($enabled, $creator->isEnabled());
     }
 
-    public function provideEnabledOptions()
+    public static function provideEnabledOptions()
     {
         return [
             [true],
@@ -31,11 +27,9 @@ class AccountCreatorTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testCreateWithAnExistingMail()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $generator = $this->createGeneratorMock();
         $appbox = $this->createAppboxMock();
 
@@ -43,11 +37,9 @@ class AccountCreatorTest extends \PhraseanetTestCase
         $creator->create(self::$DI['app'], self::$DI['app']['random.low']->generateString(8), self::$DI['user']->getEmail());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     */
     public function testCreateWithDisabledCreator()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\RuntimeException::class);
         $generator = $this->createGeneratorMock();
         $appbox = $this->createAppboxMock();
 

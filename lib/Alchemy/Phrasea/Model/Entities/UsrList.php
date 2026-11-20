@@ -14,44 +14,30 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="UsrLists")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrListRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UsrListRepository::class)]
+#[ORM\Table(name: 'UsrLists')]
 class UsrList
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private $name;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\OneToMany(targetEntity="UsrListOwner", mappedBy="list", cascade={"all"})
-     */
+    #[ORM\OneToMany(targetEntity: UsrListOwner::class, mappedBy: 'list', cascade: ['all'])]
     private $owners;
 
-    /**
-     * @ORM\OneToMany(targetEntity="UsrListEntry", mappedBy="list", cascade={"all"})
-     */
+    #[ORM\OneToMany(targetEntity: UsrListEntry::class, mappedBy: 'list', cascade: ['all'])]
     private $entries;
 
     /**

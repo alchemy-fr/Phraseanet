@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoNewPublicationTest extends MailWithLinkTestCase
 {
 

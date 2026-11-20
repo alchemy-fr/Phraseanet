@@ -2,29 +2,27 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Api;
 
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @group functional
- * @group legacy
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ApiRootTest extends \PhraseanetWebTestCase
 {
     /**
      *
-     * @var \Symfony\Component\HttpKernel\Client
+     * @var \Symfony\Component\HttpKernel\HttpKernelBrowser
      */
     protected $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        self::$DI['app'] = self::$DI->share(function ($DI) {
+        self::$DI['app'] = function ($DI) {
             return $this->loadApp('/lib/Alchemy/Phrasea/Application/Api.php');
-        });
+        };
     }
 
     public function testRoot()

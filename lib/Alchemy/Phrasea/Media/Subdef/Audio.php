@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Audio extends Provider
 {
@@ -21,7 +21,7 @@ class Audio extends Provider
     const OPTION_AUDIOSAMPLERATE = 'audiosamplerate';
     const OPTION_AUDIOCHANNEL = 'audiochannel';
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->translator = $translator;
 

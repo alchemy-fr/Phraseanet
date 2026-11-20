@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Attribute;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class StatusTest extends \PhraseanetTestCase
 {
     /**
@@ -16,40 +14,33 @@ class StatusTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
-     * @covers Alchemy\Phrasea\Border\Attribute\Status::__construct
-     * @dataProvider getValidStatuses
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getValidStatuses')]
     public function testConstructor($status, $binaryString)
     {
         $attr = new Status(self::$DI['app'], $status);
         $this->assertEquals($binaryString, $attr->getValue());
     }
 
-    public function getValidStatuses()
+    public static function getValidStatuses()
     {
         return [
           [123, '1111011'],
           ['123', '1111011'],
           ['0b1111011', '1111011'],
           ['1111011', '1111011'],
-          ['0x7b', '1111011'],
-          ['7b', '1111011'],
+          ['0x7b', '01111011'],
+          ['7b', '01111011'],
         ];
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Status::__construct
-     * @dataProvider getInvalidStatuses
-     * @expectedException \InvalidArgumentException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getInvalidStatuses')]
     public function testInvalidConstruction($status)
     {
+        $this->expectException(\InvalidArgumentException::class);
         new Status(self::$DI['app'], $status);
     }
 
-    public function getInvalidStatuses()
+    public static function getInvalidStatuses()
     {
         return [
           ['0b00z2'],
@@ -58,36 +49,24 @@ class StatusTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Status::getName
-     */
     public function testGetName()
     {
         $status = new Status(self::$DI['app'], 123);
         $this->assertEquals(AttributeInterface::NAME_STATUS, $status->getName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Status::getValue
-     */
     public function testGetValue()
     {
         $status = new Status(self::$DI['app'], 123);
         $this->assertEquals('1111011', $status->getValue());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Status::asString
-     */
     public function testAsString()
     {
         $status = new Status(self::$DI['app'], 123);
         $this->assertEquals('1111011', $status->asString());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Attribute\Status::loadFromString
-     */
     public function testLoadFromString()
     {
         $status = new Status(self::$DI['app'], 12345);

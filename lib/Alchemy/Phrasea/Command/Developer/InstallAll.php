@@ -33,7 +33,7 @@ class InstallAll extends Command
     {
         $ret = 0;
 
-        $ret += $this->container['console']->get('dependencies:composer')->execute($input, $output);
+        $ret += $this->container['console']->get('dependencies:composer')->run($input, $output);
 
         return min($ret, 255);
     }

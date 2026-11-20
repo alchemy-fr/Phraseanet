@@ -141,7 +141,7 @@ abstract class base implements cache_cacheableInterface
      */
     public function get_connection()
     {
-        if($this->connection->ping() === false){
+        if(!\Alchemy\Phrasea\Core\Database\ConnectionChecker::isAlive($this->connection)){
             if(isset($this->app['task-manager.logger'])){
                 $this->app['task-manager.logger']->info("MySQL server is not available : close and connect .....");
             }

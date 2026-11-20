@@ -58,7 +58,7 @@ class patch_400alpha9a implements patchInterface
     {
         $sql = "DROP TABLE IF EXISTS task2, `order`, order_elements, ftp_export, ftp_export_elements, cache, registry";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
+        $stmt->executeStatement();
 
         return true;
     }

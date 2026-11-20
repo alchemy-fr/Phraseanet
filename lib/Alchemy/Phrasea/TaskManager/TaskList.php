@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\TaskManager;
 use Alchemy\Phrasea\Model\Entities\Task as TaskEntity;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
 use Alchemy\TaskManager\TaskListInterface;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 
 class TaskList implements TaskListInterface
 {
@@ -72,9 +72,9 @@ class TaskList implements TaskListInterface
         $arguments[] = '--max-memory';
         $arguments[] = $maxmegs << 20;
 
-        $builder = ProcessBuilder::create($arguments);
-        $builder->setTimeout(0);
+        $process = new Process($arguments);
+        $process->setTimeout(0);
 
-        return new Task($task, $name, $task->isSingleRun() ? 1 : INF, $builder->getProcess());
+        return new Task($task, $name, $task->isSingleRun() ? 1 : INF, $process);
     }
 }

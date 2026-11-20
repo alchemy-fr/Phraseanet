@@ -72,7 +72,7 @@ class WorkerInvoker implements LoggerAwareInterface
      * @param LoggerInterface $logger
      * @return null
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }

@@ -51,10 +51,8 @@ class patch_383alpha3a extends patchAbstract
         $sql = 'SELECT base_id, ord, sbas_id
                 FROM  `bas`
                 ORDER BY sbas_id, ord';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $sbasData = [];
         $sbas_id = null;
@@ -78,10 +76,9 @@ class patch_383alpha3a extends patchAbstract
             foreach ($reorder as $sbas_id) {
                 $i = 1;
                 foreach ($sbasData[$sbas_id] as $data) {
-                    $stmt->execute(['base_id' => $data['base_id'], 'ord' => $i++]);
+                    $stmt->executeStatement(['base_id' => $data['base_id'], 'ord' => $i++]);
                 }
             }
-            $stmt->closeCursor();
         }
 
         return true;

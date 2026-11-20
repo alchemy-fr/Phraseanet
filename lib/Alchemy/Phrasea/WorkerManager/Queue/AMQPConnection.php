@@ -307,7 +307,7 @@ class AMQPConnection
         return $q['Exchange'];
     }
 
-    private function getQueue(string $queueName, string $subQueueKey = null)
+    private function getQueue(string $queueName, ?string $subQueueKey = null)
     {
         if(!array_key_exists($queueName, $this->queues)) {
             throw new Exception(sprintf('undefined queue "%s"', $queueName));
@@ -472,7 +472,7 @@ class AMQPConnection
         return $this->channel;
     }
 
-    private function queue_declare_and_bind(string $name, string $exchange, array $arguments = null)
+    private function queue_declare_and_bind(string $name, string $exchange, ?array $arguments = null)
     {
         try {
             $this->channel->queue_declare(

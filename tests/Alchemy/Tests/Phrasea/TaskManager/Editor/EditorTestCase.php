@@ -7,19 +7,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class EditorTestCase extends \PhraseanetTestCase
 {
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-     * @expectedExceptionMessage Invalid XML data.
-     */
     public function testThatUpdateXmlWithRequestThrowsABadRequestOnWrongXML()
     {
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\BadRequestHttpException::class);
+        $this->expectExceptionMessage('Invalid XML data.');
         $editor = $this->getEditor();
         $editor->updateXMLWithRequest(new Request([], ['xml' => 'invalid xml']));
     }
 
-    /**
-     * @dataProvider provideDataForXMLUpdatesFromForm
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideDataForXMLUpdatesFromForm')]
     public function testThatUpdateXmlWithRequestUpdates($expected, $xml, array $params)
     {
         $editor = $this->getEditor();
@@ -28,12 +24,10 @@ abstract class EditorTestCase extends \PhraseanetTestCase
         $this->assertEquals($expected, $response->getContent());
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @expectedExceptionMessage Route not found.
-     */
     public function testThatFacilityThrowsANotFoundInCaseOfFailure()
     {
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+        $this->expectExceptionMessage('Route not found.');
         $editor = $this->getEditor();
         $editor->facility(self::$DI['app'], new Request());
     }
@@ -63,12 +57,12 @@ abstract class EditorTestCase extends \PhraseanetTestCase
     public function testGetTemplatePath()
     {
         $editor = $this->getEditor();
-        $this->assertInternalType('string', $editor->getTemplatePath());
+        $this->assertIsString($editor->getTemplatePath());
         $root = self::$DI['app']['root.path'];
         $this->assertFileExists($root . '/templates/web/' . $editor->getTemplatePath());
     }
 
-    abstract public function provideDataForXMLUpdatesFromForm();
+    abstract public static function provideDataForXMLUpdatesFromForm();
 
     /**
      * @return EditorInterface

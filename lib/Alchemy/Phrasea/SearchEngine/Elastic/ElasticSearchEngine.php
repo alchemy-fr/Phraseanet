@@ -33,7 +33,7 @@ use Closure;
 use databox_field;
 use Doctrine\Common\Collections\ArrayCollection;
 use Elasticsearch\Client;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -69,9 +69,9 @@ class ElasticSearchEngine implements SearchEngineInterface
      * @param QueryContextFactory $context_factory
      * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
-     * @param TranslatorInterface $translator
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translator
      */
-    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options, TranslatorInterface $translator)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options, \Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -415,7 +415,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
     }
 
-    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, ?\record_adapter $record = null)
     {
         $params = [
             'index' => $this->indexName,
@@ -769,7 +769,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
                 default:
-                    continue;
+                    break;
             }
         }
 
@@ -925,7 +925,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function clearAllCache(\DateTime $date = null)
+    public function clearAllCache(?\DateTime $date = null)
     {
     }
 }

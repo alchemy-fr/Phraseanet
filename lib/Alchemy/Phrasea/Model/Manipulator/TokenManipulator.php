@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use DateTime;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\NonUniqueResultException;
 use RandomLib\Generator;
 use RuntimeException;
@@ -48,7 +48,7 @@ class TokenManipulator implements ManipulatorInterface
     private $temporaryDownloadPath;
 
     public function __construct(
-        ObjectManager $om,
+        \Doctrine\Persistence\ObjectManager $om,
         Generator $random,
         TokenRepository $repository,
         $temporaryDownloadPath,
@@ -80,7 +80,7 @@ class TokenManipulator implements ManipulatorInterface
                 throw new RuntimeException('Unable to create a token.');
             }
             $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
-            $found = null !== $this->om->getRepository('Phraseanet:Token')->find($value);
+            $found = null !== $this->om->getRepository('Alchemy\Phrasea\Model\Entities\Token')->find($value);
         } while ($found);
 
         $token = new Token();

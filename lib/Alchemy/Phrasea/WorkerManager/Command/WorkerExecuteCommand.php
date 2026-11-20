@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Command;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Database\ConnectionChecker;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessageHandler;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
@@ -84,7 +85,7 @@ class WorkerExecuteCommand extends Command
         while (count($channel->callbacks)) {
             // check connection for DB before given message to consumer
             // otherwise return 1
-            if($dbConnection->ping() === false){
+            if(!ConnectionChecker::isAlive($dbConnection)){
                 $output->writeln("MySQL server is not available : retry to close and connect ....");
 
                 try {

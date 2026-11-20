@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class report_sqlFilterTest extends \report_abstractReportTestCase
 {
     /**
@@ -13,7 +11,7 @@ class report_sqlFilterTest extends \report_abstractReportTestCase
     protected $filter;
     protected $report;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $date = new Datetime();
@@ -53,13 +51,13 @@ class report_sqlFilterTest extends \report_abstractReportTestCase
 
     public function checkFilter($filter)
     {
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $filter);
+        $this->assertIsArray($filter);
         $this->assertArrayHasKey('params', $filter);
         $this->assertArrayHasKey('sql', $filter);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $filter['params']);
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $filter['sql']);
+        $this->assertIsArray($filter['params']);
+        $this->assertIsString($filter['sql']);
         foreach ($filter['params'] as $key => $value) {
-            $this->assertRegExp('/' . $key . '/', $filter['sql']);
+            $this->assertMatchesRegularExpression('/' . $key . '/', $filter['sql']);
         }
     }
 
@@ -111,7 +109,7 @@ class report_sqlFilterTest extends \report_abstractReportTestCase
 
         if ($p && $r) {
             $filter = $this->filter->getLimitFilter();
-            $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $filter);
+            $this->assertIsString($filter);
         } else {
             $this->assertFalse($this->filter->getLimitFilter());
         }
@@ -121,7 +119,7 @@ class report_sqlFilterTest extends \report_abstractReportTestCase
     {
         if (sizeof($this->report->getOrder()) > 0) {
             $filter = $this->filter->getOrderFilter();
-            $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $filter);
+            $this->assertIsString($filter);
         } else {
             $this->assertFalse($this->filter->getOrderFilter());
         }

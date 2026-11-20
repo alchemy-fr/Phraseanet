@@ -2,22 +2,17 @@
 
 namespace Alchemy\Docker\Plugins\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'install', description: 'Install plugins')]
 class InstallCommand extends Command
 {
-    protected function configure()
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this
-            ->setName('install')
-            ->setDescription('Install plugins');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $plugins = trim(getenv('PHRASEANET_PLUGINS'));
+        $plugins = trim((string) getenv('PHRASEANET_PLUGINS'));
         if (empty($plugins)) {
             $output->writeln('<comment>No plugin to install... SKIP</comment>');
 

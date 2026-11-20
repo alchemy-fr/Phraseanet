@@ -65,11 +65,12 @@ class AssetsIngestWorker implements WorkerInterface
         } catch(\Exception $e) {
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
-            $this->app['dispatcher']->dispatch(WorkerEvents::ASSETS_CREATION_FAILURE, new AssetsCreationFailureEvent(
+            $this->app['dispatcher']->dispatch(new AssetsCreationFailureEvent(
                 $payload,
                 'Error when getting assets information !' . $e->getMessage(),
                 $count
-            ));
+            ),
+            WorkerEvents::ASSETS_CREATION_FAILURE);
 
             return;
         }

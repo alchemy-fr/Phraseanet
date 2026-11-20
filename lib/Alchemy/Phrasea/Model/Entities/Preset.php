@@ -14,44 +14,30 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Presets")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\PresetRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\PresetRepository::class)]
+#[ORM\Table(name: 'Presets')]
 class Preset
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="integer", name="sbas_id")
-     */
+    #[ORM\Column(type: 'integer', name: 'sbas_id')]
     private $sbasId;
 
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Column(type: 'string', length: 128)]
     private $title;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private $data;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
     /**

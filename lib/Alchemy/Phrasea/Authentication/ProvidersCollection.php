@@ -18,6 +18,7 @@ class ProvidersCollection implements \Countable, \IteratorAggregate
 {
     private $providers = [];
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->providers);
@@ -53,6 +54,7 @@ class ProvidersCollection implements \Countable, \IteratorAggregate
         return $this->providers[$id];
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->providers);

@@ -57,7 +57,7 @@ class patch_410alpha13b implements patchInterface
     public function apply(base $databox, Application $app)
     {
         $sql = "UPDATE `log_docs` SET `coll_id`=`final` WHERE `action`='collection'";
-        $databox->get_connection()->prepare($sql)->execute();
+        $databox->get_connection()->prepare($sql)->executeQuery();
 
         return true;
     }

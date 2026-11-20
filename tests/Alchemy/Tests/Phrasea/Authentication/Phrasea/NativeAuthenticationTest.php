@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class NativeAuthenticationTest extends \PhraseanetTestCase
 {
     public function testAuthenticationSpecialUser()
@@ -19,7 +17,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $request = $this->getRequestMock();
 
         $specialUser = $this->createUserMock();
-        $specialUser->expects($this->any())->method('isSpecial')->will($this->returnValue(true));
+        $specialUser->method('isSpecial')->will($this->returnValue(true));
 
         $manipulator = $this->getUserManipulatorMock();
         $entityRepo = $this->getEntityRepositoryMock($specialUser);
@@ -47,7 +45,7 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $request = $this->getRequestMock();
 
         $mailLockedUser = $this->createUserMock();
-        $mailLockedUser->expects($this->any())->method('isMailLocked')->will($this->returnValue(true));
+        $mailLockedUser->method('isMailLocked')->will($this->returnValue(true));
 
         $manipulator = $this->getUserManipulatorMock();
         $entityRepo = $this->getEntityRepositoryMock($mailLockedUser);
@@ -75,21 +73,21 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
-        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(true));
-        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
-        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+        $user->method('getId')->will($this->returnValue($userId));
+        $user->method('isSpecial')->will($this->returnValue(false));
+        $user->method('isMailLocked')->will($this->returnValue(false));
+        $user->method('isSaltedPassword')->will($this->returnValue(true));
+        $user->method('getPassword')->will($this->returnValue($encoded));
+        $user->method('getNonce')->will($this->returnValue($nonce));
 
         $manipulator = $this->getUserManipulatorMock();
         $entityRepo = $this->getEntityRepositoryMock($user);
 
         $oldEncoder->expects($this->never())
-            ->method('isPasswordValid');
+            ->method('verify');
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(true));
 
@@ -111,21 +109,21 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
-        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(true));
-        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
-        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+        $user->method('getId')->will($this->returnValue($userId));
+        $user->method('isSpecial')->will($this->returnValue(false));
+        $user->method('isMailLocked')->will($this->returnValue(false));
+        $user->method('isSaltedPassword')->will($this->returnValue(true));
+        $user->method('getPassword')->will($this->returnValue($encoded));
+        $user->method('getNonce')->will($this->returnValue($nonce));
 
         $manipulator = $this->getUserManipulatorMock();
         $entityRepo = $this->getEntityRepositoryMock($user);
 
         $oldEncoder->expects($this->never())
-            ->method('isPasswordValid');
+            ->method('verify');
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
@@ -147,23 +145,23 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
-        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(false));
-        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
-        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+        $user->method('getId')->will($this->returnValue($userId));
+        $user->method('isSpecial')->will($this->returnValue(false));
+        $user->method('isMailLocked')->will($this->returnValue(false));
+        $user->method('isSaltedPassword')->will($this->returnValue(false));
+        $user->method('getPassword')->will($this->returnValue($encoded));
+        $user->method('getNonce')->will($this->returnValue($nonce));
 
         $manipulator = $this->getUserManipulatorMock($user);
         $entityRepo = $this->getEntityRepositoryMock($user);
 
         $oldEncoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(false));
 
@@ -185,12 +183,12 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())->method('getId')->will($this->returnValue($userId));
-        $user->expects($this->any())->method('isSpecial')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isMailLocked')->will($this->returnValue(false));
-        $user->expects($this->any())->method('isSaltedPassword')->will($this->returnValue(false));
-        $user->expects($this->any())->method('getPassword')->will($this->returnValue($encoded));
-        $user->expects($this->any())->method('getNonce')->will($this->returnValue($nonce));
+        $user->method('getId')->will($this->returnValue($userId));
+        $user->method('isSpecial')->will($this->returnValue(false));
+        $user->method('isMailLocked')->will($this->returnValue(false));
+        $user->method('isSaltedPassword')->will($this->returnValue(false));
+        $user->method('getPassword')->will($this->returnValue($encoded));
+        $user->method('getNonce')->will($this->returnValue($nonce));
 
         $manipulator = $this->getUserManipulatorMock();
         $entityRepo = $this->getEntityRepositoryMock($user);
@@ -198,12 +196,12 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
         $manipulator->expects($this->once())->method('setPassword')->with($this->equalTo($user), $this->equalTo($password));
 
         $oldEncoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->with($this->equalTo($encoded), $this->equalTo($password), $this->equalTo($nonce))
             ->will($this->returnValue(true));
 
         $encoder->expects($this->once())
-            ->method('isPasswordValid')
+            ->method('verify')
             ->will($this->returnCallback(function ($encoded, $pass, $nonce) use (&$catchTestPassword) {
                 $catchTestPassword = [
                     'encoded' => $encoded,
@@ -220,36 +218,30 @@ class NativeAuthenticationTest extends \PhraseanetTestCase
 
     private function getEncoderMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder');
     }
 
     private function getOldEncoderMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder');
     }
 
     private function getRequestMock()
     {
-        return $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Symfony\Component\HttpFoundation\Request');
     }
 
     private function getUserManipulatorMock()
     {
-        $manipulator = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')->disableOriginalConstructor()->getMock();
+        $manipulator = $this->createMock('Alchemy\Phrasea\Model\Manipulator\UserManipulator');
 
         return $manipulator;
     }
 
-    private function getEntityRepositoryMock(User $user = null)
+    private function getEntityRepositoryMock(?User $user = null)
     {
-        $repoMock = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\UserRepository')->disableOriginalConstructor()->getMock();
-        $repoMock->expects($this->any())->method('findRealUserByLogin')->will($this->returnValue($user));
+        $repoMock = $this->createMock('Alchemy\Phrasea\Model\Repositories\UserRepository');
+        $repoMock->method('findRealUserByLogin')->will($this->returnValue($user));
 
         return $repoMock;
     }

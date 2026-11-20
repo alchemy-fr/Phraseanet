@@ -14,7 +14,7 @@ use League\Fractal\TransformerAbstract;
 
 class OrderTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'elements',
     ];
 

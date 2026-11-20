@@ -57,7 +57,9 @@
                                     <li {% if selected == "access" %}class="active"{% endif %}><a href="{{ path("account_access") }}">{{ "Acces" | trans }}</a></li>
                                     <li {% if selected == "sessions" %}class="active"{% endif %}><a href="{{ path("account_sessions") }}">{{ "Sessions" | trans }}</a></li>
                                     <li {% if selected == "applications" %}class="active"{% endif %}><a href="{{ path("account_auth_apps") }}">{{ "Applications" | trans }}</a></li>
+                                    {% if app.getAuthenticatedUser().hasGrantedApi() or app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
                                     <li {% if selected == "developer" %}class="active"{% endif %}><a href="{{ path("developers_applications") }}">{{ "Developpeur" | trans }}</a></li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>

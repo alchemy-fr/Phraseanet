@@ -4,27 +4,23 @@ namespace Alchemy\Tests\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\MailTest;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailTestTest extends \PhraseanetTestCase
 {
     public function testMailIsSent()
     {
         $capturedEmail = null;
 
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
         $input->expects($this->once())
             ->method('getArgument')
             ->with($this->equalTo('email'))
             ->will($this->returnValue('test-mail@phraseanet.com'));
 
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        self::$DI['cli']['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        self::$DI['cli']['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
 
         self::$DI['cli']['notification.deliverer']->expects($this->once())
             ->method('deliver')

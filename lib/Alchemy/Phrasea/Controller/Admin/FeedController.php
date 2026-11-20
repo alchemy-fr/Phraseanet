@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image;
 use MediaVorus\Media\MediaInterface;
@@ -293,7 +293,7 @@ class FeedController extends Controller
     }
 
     /**
-     * @return ObjectManager
+     * @return \Doctrine\Persistence\ObjectManager
      */
     public function getObjectManager()
     {

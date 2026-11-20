@@ -53,10 +53,8 @@ class patch_381alpha4a extends patchAbstract
                   OR prop = 'editing_right_box'
                   OR prop = 'editing_left_box'";
 
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         $sql = 'UPDATE usr_settings SET value = :value
                 WHERE usr_id = :usr_id
@@ -72,10 +70,8 @@ class patch_381alpha4a extends patchAbstract
                 $value = substr($value, 0, -1);
             }
 
-            $stmt->execute([':value' => $value, ':usr_id' => $row['usr_id'], ':prop' => $row['prop']]);
+            $stmt->executeStatement([':value' => $value, ':usr_id' => $row['usr_id'], ':prop' => $row['prop']]);
         }
-
-        $stmt->closeCursor();
 
         return true;
     }

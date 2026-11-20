@@ -26,7 +26,7 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
         $this->app = $app;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::INSTALL_FINISH => 'onInstallFinished'
@@ -40,7 +40,7 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
 
     private function generateProxies()
     {
-        $process = new Process('php ' . $this->app['root.path']. '/bin/developer orm:generate:proxies');
+        $process = new Process(['php', $this->app['root.path'] . '/bin/developer', 'orm:generate:proxies']);
         $process->setTimeout(300);
         $process->run();
     }

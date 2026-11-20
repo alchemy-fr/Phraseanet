@@ -56,10 +56,8 @@ class MailChecker
         foreach($tests as $sql) {
             try {
                 $rs = null;
-                $stmt = $this->appbox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
+                $stmt = $this->appbox->get_connection()->executeQuery($sql);
+                $rs = $stmt->fetchAllAssociative();
                 break;
             }
             catch (Exception $e) {

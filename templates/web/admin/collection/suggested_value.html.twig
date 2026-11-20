@@ -13,16 +13,16 @@
 
     <div class="page-header">
         <h1>{{ 'admin::sugval: Valeurs suggerees/Preferences de la collection' | trans }}
-            "{{ app['request'].attributes.get('bas_id')|bas_labels(app) }}"</h1>
+            "{{ app['request_stack'].currentRequest.attributes.get('bas_id')|bas_labels(app) }}"</h1>
     </div>
 
 
-    {% if app['request'].query.get('success') == '1' %}
+    {% if app['request_stack'].currentRequest.query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {{ 'Successful update' | trans }}
     </div>
-    {% elseif app['request'].query.get('success') == '0' %}
+    {% elseif app['request_stack'].currentRequest.query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
         <strong>{{ 'An error occured' | trans }}</strong>
@@ -116,7 +116,7 @@
     </div>
 
     <form method="post" name="chgStructure"
-          action="{{ path('admin_collection_display_suggested_values', { 'bas_id' : app['request'].attributes.get('bas_id') }) }}"
+          action="{{ path('admin_collection_display_suggested_values', { 'bas_id' : app['request_stack'].currentRequest.attributes.get('bas_id') }) }}"
           onsubmit="return false;"
           target="right"
           style="position:absolute; visibility:hidden; height: 0px; padding: 0px; margin: 0px;">

@@ -6,10 +6,8 @@ use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class VideoTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
@@ -19,31 +17,22 @@ class VideoTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Video($this->createTranslatorMock());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Video::getType
-     */
     public function testGetType()
     {
         $this->assertEquals(Subdef::TYPE_VIDEO, $this->object->getType());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Video::getDescription
-     */
     public function testGetDescription()
     {
         $this->assertTrue(is_string($this->object->getDescription()));
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Media\Subdef\Video::getMediaAlchemystSpec
-     */
     public function testGetMediaAlchemystSpec()
     {
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Video', $this->object->getMediaAlchemystSpec());

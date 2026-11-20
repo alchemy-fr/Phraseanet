@@ -454,7 +454,7 @@ class LightboxController extends Controller
             }
             $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
 
-            $this->dispatch(PhraseaEvents::VALIDATION_DONE, new BasketParticipantVoteEvent($participant, $url));
+            $this->dispatch(new BasketParticipantVoteEvent($participant, $url), PhraseaEvents::VALIDATION_DONE);
 
             $participant->setIsConfirmed(true);
 

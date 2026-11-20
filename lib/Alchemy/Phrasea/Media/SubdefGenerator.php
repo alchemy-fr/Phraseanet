@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Text;
+use Alchemy\Phrasea\Media\Subdef\Specification\FlexPaperSpecification;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use databox_subdef;
 use Exception;
@@ -68,7 +69,7 @@ class SubdefGenerator
         $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);;
     }
 
-    public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
+    public function generateSubdefs(\record_adapter $record, ?array $wanted_subdefs = null)
     {
         if ($record->get_hd_file() !== null && $record->get_hd_file()->getMimeType() == "application/x-indesign") {
             $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());
@@ -108,11 +109,11 @@ class SubdefGenerator
         }
 
         $this->dispatch(
-            RecordEvents::SUB_DEFINITIONS_CREATION,
             new SubDefinitionsCreationEvent(
                 $record,
                 $wanted_subdefs
-            )
+            ),
+            RecordEvents::SUB_DEFINITIONS_CREATION
         );
 
         if(!is_null($hd = $record->get_hd_file())) {
@@ -126,6 +127,21 @@ class SubdefGenerator
             $subdefname = $subdef->get_name();
 
             if ($wanted_subdefs && !in_array($subdefname, $wanted_subdefs)) {
+                continue;
+            }
+
+            if ($subdef->getSpecs() instanceof FlexPaperSpecification) {
+                // an existing flexpaper file is kept as is
+                $this->logger->warning(sprintf('Subdef %s of record %d not generated: flexpaper subdefinitions are not supported anymore', $subdefname, $record->getRecordId()));
+
+                $this->dispatch(
+                    new SubDefinitionCreationFailedEvent(
+                        $record,
+                        $subdefname
+                    ),
+                    RecordEvents::SUB_DEFINITION_CREATION_FAILED
+                );
+
                 continue;
             }
 
@@ -143,11 +159,11 @@ class SubdefGenerator
             $pathdest = $this->filesystem->generateSubdefPathname($record, $subdef, $pathdest);
 
             $this->dispatch(
-                RecordEvents::SUB_DEFINITION_CREATION,
                 new SubDefinitionCreationEvent(
                     $record,
                     $subdefname
-                )
+                ),
+                RecordEvents::SUB_DEFINITION_CREATION
             );
 
             $this->logger->info(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
@@ -159,21 +175,21 @@ class SubdefGenerator
                 \media_subdef::create($this->app, $record, $subdef->get_name(), $media);
 
                 $this->dispatch(
-                    RecordEvents::SUB_DEFINITION_CREATED,
                     new SubDefinitionCreatedEvent(
                         $record,
                         $subdefname,
                         $mediaCreated[$subdefname] = $media
-                    )
+                    ),
+                    RecordEvents::SUB_DEFINITION_CREATED
                 );
             }
             else {
                 $this->dispatch(
-                    RecordEvents::SUB_DEFINITION_CREATION_FAILED,
                     new SubDefinitionCreationFailedEvent(
                         $record,
                         $subdefname
-                    )
+                    ),
+                    RecordEvents::SUB_DEFINITION_CREATION_FAILED
                 );
             }
 
@@ -188,7 +204,7 @@ class SubdefGenerator
         }
 
         // if we created subdef one by one
-        if (count($wanted_subdefs) == 1) {
+        if (is_array($wanted_subdefs) && count($wanted_subdefs) == 1) {
             $mediaSubdefRepository = $this->getMediaSubdefRepository($record->getDataboxId());
             $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$record->getRecordId()]);
             $medias = [];
@@ -201,19 +217,19 @@ class SubdefGenerator
             }
 
             $this->dispatch(
-                RecordEvents::SUB_DEFINITIONS_CREATED,
                 new SubDefinitionsCreatedEvent(
                     $record,
                     $medias
-                )
+                ),
+                RecordEvents::SUB_DEFINITIONS_CREATED
             );
         } else {
             $this->dispatch(
-                RecordEvents::SUB_DEFINITIONS_CREATED,
                 new SubDefinitionsCreatedEvent(
                     $record,
                     $mediaCreated
-                )
+                ),
+                RecordEvents::SUB_DEFINITIONS_CREATED
             );
         }
     }
@@ -333,7 +349,7 @@ class SubdefGenerator
 
             $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
                     $subdef_class->get_name(),
-                    date('H:i:s', mktime(0,0, $duration)),
+                    date('H:i:s', mktime(0, 0, (int) $duration)),
                     $originFileSize,
                     $subdef_class->get_name(),
                     $generatedFileSize,
@@ -437,6 +453,12 @@ class SubdefGenerator
      */
     public function generateSubdefFromFile($pathSrc, databox_subdef $subdef_class, $pathdest)
     {
+        if ($subdef_class->getSpecs() instanceof FlexPaperSpecification) {
+            $this->logger->warning(sprintf('Subdef %s not generated: flexpaper subdefinitions are not supported anymore', $subdef_class->get_name()));
+
+            return;
+        }
+
         $start = microtime(true);
         $destFile = null;
 
@@ -530,7 +552,7 @@ class SubdefGenerator
 
         $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s',
                 $subdef_class->get_name(),
-                date('H:i:s', mktime(0,0, $duration)),
+                date('H:i:s', mktime(0, 0, (int) $duration)),
                 $originFileSize,
                 $subdef_class->get_name(),
                 $generatedFileSize
@@ -556,7 +578,7 @@ class SubdefGenerator
                 copy($mediafile->getFile()->getPathname(), $pathdest);
             }
         } catch (UnoconvException $e) {
-            throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', null, $e);
+            throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', 0, $e);
         } catch (Exception $e) {
             throw $e;
         }

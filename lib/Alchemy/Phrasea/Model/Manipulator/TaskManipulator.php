@@ -16,26 +16,26 @@ use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
 use Alchemy\Phrasea\TaskManager\NotifierInterface;
 use Alchemy\Phrasea\TaskManager\NullNotifier;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Translation\TranslatorInterface;
+use Doctrine\Persistence\ObjectManager;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskManipulator implements ManipulatorInterface
 {
     /** @var NotifierInterface */
     private $notifier;
-    /** @var ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $om;
-    /** @var TranslatorInterface */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface */
     private $translator;
 
-    public function __construct(ObjectManager $om, TranslatorInterface $translator, NotifierInterface $notifier = null)
+    public function __construct(\Doctrine\Persistence\ObjectManager $om, \Symfony\Contracts\Translation\TranslatorInterface $translator, ?NotifierInterface $notifier = null)
     {
         $this->om = $om;
         $this->translator = $translator;
         $this->setNotifier($notifier);
     }
 
-    public function setNotifier(NotifierInterface $notifier = null)
+    public function setNotifier(?NotifierInterface $notifier = null)
     {
         $this->notifier = $notifier ?: new NullNotifier();
         return $this;

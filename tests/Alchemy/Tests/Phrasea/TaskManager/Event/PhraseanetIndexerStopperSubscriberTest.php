@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Event;
 
 use Alchemy\Phrasea\TaskManager\Event\PhraseanetIndexerStopperSubscriber;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PhraseanetIndexerStopperSubscriberTest extends \PhraseanetTestCase
 {
     public function testSocketmessageIsSentOnStop()
@@ -17,9 +15,7 @@ class PhraseanetIndexerStopperSubscriberTest extends \PhraseanetTestCase
             $this->markTestSkipped('Unable to create socket');
         }
 
-        $event = $this->getMockBuilder('Alchemy\TaskManager\Event\JobEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $event = $this->createStub('Alchemy\TaskManager\Event\JobEvent');
         $subscriber = new PhraseanetIndexerStopperSubscriber($port);
         $subscriber->onStopRequest($event);
 

@@ -72,7 +72,7 @@ class IndexerSubscriber implements EventSubscriberInterface
         return $this->indexer;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RecordStructureEvents::FIELD_UPDATED => 'onStructureChange',

@@ -10,8 +10,8 @@
     <script>
         var lightboxApp = lightboxApplication.bootstrap({
             lang: '{{ app.locale }}',
-            baseUrl: '{{ app['request'].getUriForPath('/') }}',
-            basePath: '{{ app.request.basePath|e('js') }}'
+            baseUrl: '{{ app['request_stack'].currentRequest.getUriForPath('/') }}',
+            basePath: '{{ app['request_stack'].currentRequest.basePath|e('js') }}'
         });
     </script>
 {% endblock %}

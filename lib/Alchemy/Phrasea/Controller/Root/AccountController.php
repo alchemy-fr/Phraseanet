@@ -38,6 +38,7 @@ use Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessAccountDelete;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Utilities\EmailValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,16 +53,16 @@ class AccountController extends Controller
 
     public function resetPassword(Request $request)
     {
-        $form = $this->app->form(new PhraseaRenewPasswordForm());
+        $form = $this->app->form(PhraseaRenewPasswordForm::class);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
                 $user = $this->getAuthenticatedUser();
 
-                if ($this->getPasswordEncoder()->isPasswordValid($user->getPassword(), $data['oldPassword'], $user->getNonce())) {
+                if ($this->getPasswordEncoder()->verify((string) $user->getPassword(), (string) $data['oldPassword'], $user->getNonce())) {
                     $this->getUserManipulator()->setPassword($user, $data['password']);
                     $this->app->addFlash('success', $this->app->trans('login::notification: Mise a jour du mot de passe avec succes'));
 
@@ -95,13 +96,13 @@ class AccountController extends Controller
 
         $user = $this->getAuthenticatedUser();
 
-        if (!$this->getPasswordEncoder()->isPasswordValid($user->getPassword(), $password, $user->getNonce())) {
+        if (!$this->getPasswordEncoder()->verify((string) $user->getPassword(), (string) $password, $user->getNonce())) {
             $this->app->addFlash('error', $this->app->trans('admin::compte-utilisateur:ftp: Le mot de passe est errone'));
 
             return $this->app->redirectPath('account_reset_email');
         }
 
-        if (!\Swift_Validate::email($email)) {
+        if (!EmailValidator::isValid($email)) {
             $this->app->addFlash('error', $this->app->trans('forms::l\'email semble invalide'));
 
             return $this->app->redirectPath('account_reset_email');
@@ -195,7 +196,7 @@ class AccountController extends Controller
         }
 
         $manipulator = $this->getApiAccountManipulator();
-        if (false === (Boolean) $request->query->get('revoke')) {
+        if (false === (bool) $request->query->get('revoke')) {
             $manipulator->authorizeAccess($account);
         } else {
             $manipulator->revokeAccess($account);
@@ -248,7 +249,7 @@ class AccountController extends Controller
      */
     public function accountSessionsAccess()
     {
-        $dql = 'SELECT s FROM Phraseanet:Session s WHERE s.user = :usr_id ORDER BY s.created DESC';
+        $dql = 'SELECT s FROM Alchemy\Phrasea\Model\Entities\Session s WHERE s.user = :usr_id ORDER BY s.created DESC';
 
         $query = $this->getEntityManager()->createQuery($dql);
         $query->setMaxResults(100);
@@ -414,7 +415,7 @@ class AccountController extends Controller
             return new Response('invalid crsf token form', 403);
         }
 
-        $registrations = $request->request->get('registrations', []);
+        $registrations = $request->request->all('registrations');
 
         if (false === is_array($registrations)) {
             $this->app->abort(400, '"registrations" parameter must be an array of base ids.');
@@ -464,7 +465,7 @@ class AccountController extends Controller
                 ->setJob($request->request->get("form_function"))
                 ->setCompany($request->request->get("form_company"))
                 ->setPosition($request->request->get("form_activity"))
-                ->setNotifications((Boolean) $request->request->get("mail_notifications"));
+                ->setNotifications((bool) $request->request->get("mail_notifications"));
 
             $service->updateAccount($command);
 
@@ -492,7 +493,7 @@ class AccountController extends Controller
             $this->app->addFlash('success', $this->app->trans('login::notification: Changements enregistres'));
         }
 
-        $requestedNotifications = (array) $request->request->get('notifications', []);
+        $requestedNotifications = $request->request->all('notifications');
 
         $manipulator = $this->getUserManipulator();
         foreach ($this->getEventManager()->list_notifications_available($user) as $notifications) {

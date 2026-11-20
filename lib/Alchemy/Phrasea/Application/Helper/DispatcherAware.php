@@ -9,7 +9,7 @@
  */
 namespace Alchemy\Phrasea\Application\Helper;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 trait DispatcherAware
@@ -42,8 +42,8 @@ trait DispatcherAware
     /**
      * @see \Symfony\Component\EventDispatcher\EventDispatcherInterface::dispatch
      */
-    public function dispatch($eventName, Event $event = null)
+    public function dispatch(Event $event, $eventName = null)
     {
-        return $this->getDispatcher()->dispatch($eventName, $event);
+        return $this->getDispatcher()->dispatch($event, $eventName);
     }
 }

@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Dimension;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class DimensionTest extends \PhraseanetTestCase
 {
     /**
@@ -16,25 +14,17 @@ class DimensionTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
-     * @covers Alchemy\Phrasea\Border\Checker\Dimension::__construct
-     * @covers Alchemy\Phrasea\Border\Checker\Dimension::check
-     */
     public function testCheckSameDims()
     {
-        $media = $this
-            ->getMockBuilder('\\MediaVorus\\Media\\Image')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $media = $this->createMock('\\MediaVorus\\Media\\Image');
 
-        $media->expects($this->any())
+        $media
             ->method('getWidth')
             ->will($this->returnValue('600'));
-        $media->expects($this->any())
+        $media
             ->method('getHeight')
             ->will($this->returnValue('400'));
-        $media->expects($this->any())
+        $media
             ->method('getFile')
             ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
@@ -71,10 +61,6 @@ class DimensionTest extends \PhraseanetTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @dataProvider getWrongDimensions
-     * @covers Alchemy\Phrasea\Border\Checker\Dimension::__construct
-     */
     public function testInvalidVars()
     {
         foreach ($this->getWrongDimensions() as $dimensions) {
@@ -95,7 +81,7 @@ class DimensionTest extends \PhraseanetTestCase
         }
     }
 
-    public function getWrongDimensions()
+    public static function getWrongDimensions()
     {
         return [
             ['width' => 0],
@@ -110,20 +96,15 @@ class DimensionTest extends \PhraseanetTestCase
         ];
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Dimension::getMessage
-     */
     public function testGetMessage()
     {
         $checker = new Dimension(self::$DI['app'], ['width' => 800]);
-        $this->assertInternalType('string', $checker->getMessage($this->createTranslatorMock()));
+        $this->assertIsString($checker->getMessage($this->createTranslatorMock()));
     }
 
-     /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testContructorInvalidArgumentException()
+     public function testContructorInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new Dimension(self::$DI['app'], ['witdh' => 38]);
     }
 }

@@ -2,10 +2,9 @@
 
 use Alchemy\Phrasea\Border\File;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(\Alchemy\Phrasea\Exception\RuntimeException::class)]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class media_subdefTest extends \PhraseanetTestCase
 {
     /**
@@ -23,7 +22,7 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     private static $recordonbleu;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -53,32 +52,23 @@ class media_subdefTest extends \PhraseanetTestCase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$objectPresent = self::$objectNotPresent = self::$recordonbleu = null;
         parent::tearDownAfterClass();
     }
 
-    /**
-     * @covers media_subdef::is_physically_present
-     */
     public function testIs_physically_present()
     {
         $this->assertTrue(self::$objectPresent->is_physically_present());
         $this->assertFalse(self::$objectNotPresent->is_physically_present());
     }
 
-    /**
-     * @covers media_subdef::is_physically_present
-     */
     public function testStoryIsNotPhysicallyPresent()
     {
         $this->assertFalse(self::$DI['record_story_3']->get_subdef('thumbnail')->is_physically_present());
     }
 
-    /**
-     * @covers media_subdef::get_record
-     */
     public function testGet_record()
     {
         $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectNotPresent->get_record()->getRecordId());
@@ -87,48 +77,33 @@ class media_subdefTest extends \PhraseanetTestCase
         $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectPresent->get_record()->getDataboxId());
     }
 
-    /**
-     * @covers media_subdef::get_url
-     */
     public function testGet_url()
     {
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectNotPresent->get_url());
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectPresent->get_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectNotPresent->get_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectPresent->get_url());
         $this->assertEquals('/assets/common/images/icons/substitution/image_jpeg.png', (string) self::$objectNotPresent->get_url());
-        $this->assertRegExp('#\/datafiles\/' . self::$objectPresent->get_sbas_id() . '\/' . self::$objectPresent->get_record_id() . '\/preview\/\?etag=[0-9a-f]{32}#', (string) self::$objectPresent->get_url());
+        $this->assertMatchesRegularExpression('#\/datafiles\/' . self::$objectPresent->get_sbas_id() . '\/' . self::$objectPresent->get_record_id() . '\/preview\/\?etag=[0-9a-f]{32}#', (string) self::$objectPresent->get_url());
     }
 
-    /**
-     * @covers media_subdef::get_permalink
-     */
     public function testGet_permalink()
     {
         $this->assertInstanceOf('\\media_Permalink_adapter', self::$objectNotPresent->get_permalink());
         $this->assertInstanceOf('\\media_Permalink_adapter', self::$objectPresent->get_permalink());
     }
 
-    /**
-     * @covers media_subdef::get_record_id
-     */
     public function testGet_record_id()
     {
         $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectNotPresent->get_record()->getRecordId());
         $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectPresent->get_record()->getRecordId());
     }
 
-    /**
-     * @covers media_subdef::getEtag
-     */
     public function testGetEtag()
     {
         $this->assertNull(self::$objectNotPresent->getEtag());
-        $this->assertInternalType('string', self::$objectPresent->getEtag());
-        $this->assertRegExp('/[a-zA-Z0-9]{32}/', self::$objectPresent->getEtag());
+        $this->assertIsString(self::$objectPresent->getEtag());
+        $this->assertMatchesRegularExpression('/[a-zA-Z0-9]{32}/', self::$objectPresent->getEtag());
     }
 
-    /**
-     * @covers media_subdef::setEtag
-     */
     public function testSetEtag()
     {
         $etag = md5('random');
@@ -136,91 +111,61 @@ class media_subdefTest extends \PhraseanetTestCase
         $this->assertEquals($etag, self::$objectNotPresent->getEtag());
     }
 
-    /**
-     * @covers media_subdef::get_sbas_id
-     */
     public function testGet_sbas_id()
     {
         $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectNotPresent->get_record()->getDataboxId());
         $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectPresent->get_record()->getDataboxId());
     }
 
-    /**
-     * @covers media_subdef::get_type
-     */
     public function testGet_type()
     {
         $this->assertEquals(\media_subdef::TYPE_IMAGE, self::$objectPresent->get_type());
     }
 
-    /**
-     * @covers media_subdef::get_mime
-     */
     public function testGet_mime()
     {
         $this->assertEquals('image/jpeg', self::$objectPresent->get_mime());
         $this->assertEquals('image/png', self::$objectNotPresent->get_mime());
     }
 
-    /**
-     * @covers media_subdef::get_path
-     */
     public function testGet_path()
     {
         $this->assertEquals(dirname(self::$objectPresent->getRealPath()) . DIRECTORY_SEPARATOR, self::$objectPresent->get_path());
         $this->assertEquals(dirname(self::$objectNotPresent->getRealPath()) . DIRECTORY_SEPARATOR, self::$objectNotPresent->get_path());
     }
 
-    /**
-     * @covers media_subdef::get_file
-     */
     public function testGet_file()
     {
         $this->assertEquals(basename(self::$objectPresent->getRealPath()), self::$objectPresent->get_file());
         $this->assertEquals(basename(self::$objectNotPresent->getRealPath()), self::$objectNotPresent->get_file());
     }
 
-    /**
-     * @covers media_subdef::get_size
-     */
     public function testGet_size()
     {
         $this->assertTrue(self::$objectPresent->get_size() > 0);
         $this->assertTrue(self::$objectNotPresent->get_size() > 0);
     }
 
-    /**
-     * @covers media_subdef::get_name
-     */
     public function testGet_name()
     {
         $this->assertTrue(in_array(self::$objectPresent->get_name(), ['thumbnail', 'preview']));
         $this->assertTrue(in_array(self::$objectNotPresent->get_name(), ['thumbnail', 'preview']));
     }
 
-    /**
-     * @covers media_subdef::get_subdef_id
-     */
     public function testGet_subdef_id()
     {
-        $this->assertInternalType('int', self::$objectPresent->get_subdef_id());
-        $this->assertInternalType('int', self::$objectNotPresent->get_subdef_id());
+        $this->assertIsInt(self::$objectPresent->get_subdef_id());
+        $this->assertIsInt(self::$objectNotPresent->get_subdef_id());
         $this->assertTrue(self::$objectPresent->get_size() > 0);
         $this->assertTrue(self::$objectNotPresent->get_size() > 0);
     }
 
-    /**
-     * @covers media_subdef::is_substituted
-     */
     public function testIs_substituted()
     {
         $this->assertFalse(self::$objectPresent->is_substituted());
         $this->assertFalse(self::$objectNotPresent->is_substituted());
     }
 
-    /**
-     * @covers media_subdef::getRealPath
-     */
     public function testGetRealPath()
     {
         $this->assertEquals(self::$objectPresent->get_path() . self::$objectPresent->get_file(), self::$objectPresent->getRealPath());
@@ -233,45 +178,30 @@ class media_subdefTest extends \PhraseanetTestCase
         $this->assertTrue(is_writable(self::$objectNotPresent->getRealPath()));
     }
 
-    /**
-     * @covers media_subdef::get_modification_date
-     */
     public function testGet_modification_date()
     {
         $this->assertInstanceOf('\\DateTime', self::$objectPresent->get_modification_date());
         $this->assertInstanceOf('\\DateTime', self::$objectNotPresent->get_modification_date());
     }
 
-    /**
-     * @covers media_subdef::get_creation_date
-     */
     public function testGet_creation_date()
     {
         $this->assertInstanceOf('\\DateTime', self::$objectPresent->get_creation_date());
         $this->assertInstanceOf('\\DateTime', self::$objectNotPresent->get_creation_date());
     }
 
-    /**
-     * @covers media_subdef::renew_url
-     */
     public function testRenew_url()
     {
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectPresent->renew_url());
-        $this->assertInstanceOf('Guzzle\Http\Url', self::$objectNotPresent->renew_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectPresent->renew_url());
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', self::$objectNotPresent->renew_url());
     }
 
-    /**
-     * @covers media_subdef::getDataboxSubdef
-     */
     public function testGetDataboxSubdef()
     {
         $this->assertInstanceOf('\\databox_subdef', self::$objectPresent->getDataboxSubdef());
         $this->assertInstanceOf('\\databox_subdef', self::$objectNotPresent->getDataboxSubdef());
     }
 
-    /**
-     * @covers media_subdef::rotate
-     */
     public function testRotate()
     {
         $width_before = self::$objectPresent->get_width();
@@ -288,19 +218,12 @@ class media_subdefTest extends \PhraseanetTestCase
         $this->assertLessThanOrEqual($height_before+1, self::$objectPresent->get_width());
     }
 
-    /**
-     * @covers media_subdef::rotate
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     * @covers \Alchemy\Phrasea\Exception\RuntimeException
-     */
     public function testRotateOnSubstitution()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\RuntimeException::class);
         self::$objectNotPresent->rotate(90, self::$DI['app']['media-alchemyst'], self::$DI['app']['mediavorus']);
     }
 
-    /**
-     * @covers media_subdef::readTechnicalDatas
-     */
     public function testReadTechnicalDatas()
     {
         $technical_datas = self::$objectPresent->readTechnicalDatas(self::$DI['app']['mediavorus']);

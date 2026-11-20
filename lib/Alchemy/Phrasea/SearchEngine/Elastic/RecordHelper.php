@@ -58,7 +58,7 @@ class RecordHelper
 
     /**
      * @return int[][]
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     private function collectionMap()
     {
@@ -70,9 +70,9 @@ class RecordHelper
                         base_id
                     FROM bas';
 
-            $statement = $this->appbox->get_connection()->query($sql);
+            $statement = $this->appbox->get_connection()->executeQuery($sql);
 
-            while ($mapping = $statement->fetch()) {
+            while ($mapping = $statement->fetchAssociative()) {
                 if (! isset($map[$mapping['databox_id']])) {
                     $map[$mapping['databox_id']] = [];
                 }
@@ -151,7 +151,7 @@ class RecordHelper
                 $value = str_replace("\0", '', $value); // no null char for lucene !
                 if( strlen($value) > 32766) {      // for lucene limit, before a better solution
                     for($l=32766; $l > 0; $l--) {
-                        if(ord(substr($value, $l-1, 1)) < 128) {
+                        if(ord(substr($value, $l-1, 1)[0]) < 128) {
                             break;
                         }
                     }
