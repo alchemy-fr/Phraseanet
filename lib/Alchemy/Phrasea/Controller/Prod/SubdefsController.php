@@ -30,7 +30,12 @@ class SubdefsController extends Controller
                 ->first();
             $metadatas = $fileEntity->getMetadatas();
             foreach($metadatas as $metadata){
-                $valuedata = $fileEntity->executeQuery($metadata->getTagGroup()->getId()."[not(@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#base64Binary')]");
+                try {
+                    $valuedata = $fileEntity->executeQuery($metadata->getTagGroup()->getId()."[not(@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#base64Binary')]");
+                } catch (\TypeError $e) {
+                    // phpexiftool declares a non-nullable return but its parser yields null when nothing matches
+                    $valuedata = null;
+                }
                 if(empty($valuedata)){
                     $valuedata = new Mono($this->app->trans('Binary data'));
                     $tag = TagFactory::getFromRDFTagname($metadata->getTagGroup()->getId());
