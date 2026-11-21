@@ -100,9 +100,10 @@ services:
     profiles: ["phraseanet-saml-sp"]
     restart: on-failure
     volumes:
-    - ${SAML_IDP_METADATA_LOCAL_CONFIG_DIR}:/var/www/simplesamlphp-1.10.0/metadata:rw
-    - ${SAML_SP_CONFIG_DIR}:/var/www/simplesamlphp-1.10.0/config:rw
-    - ${SAML_SP_CERT_DIR}:/var/www/simplesamlphp-1.10.0/cert:rw
+    - ${SAML_IDP_METADATA_LOCAL_CONFIG_DIR}:/var/www/simplesamlphp/metadata:rw
+    # also read by phraseanet (saml-authentication plugin) : see SAML_SP_CONFIG_DIR in .env
+    - ${SAML_SP_CONFIG_DIR}:/var/www/simplesamlphp/config:rw
+    - ${SAML_SP_CERT_DIR}:/var/www/simplesamlphp/cert:rw
     depends_on:
     - phraseanet
     environment:
@@ -117,6 +118,10 @@ services:
     - SAML_IDP_METADATA_CONFIG
     - SAML_IDP_METADATA_LOCAL_CONFIG_DIR
     - SAML_ALLOW_DEBUG
+    - SAML_SECRET_SALT
+    - SAML_ADMIN_PASSWORD
+    - SAML_REDIS_HOST
+    - SAML_REDIS_PORT
 
     ports:
       - 8080:8080

@@ -289,27 +289,36 @@ HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 
 # phraseanet adapted simplesaml service provider 
 #########################################################################
 
-# the SAML service provider is a standalone test tool built on simplesamlphp 1.10 which requires PHP 7
-FROM alchemyfr/phraseanet-base:1.3.0 AS phraseanet-saml-sp
+# the SAML service provider (simplesamlphp 2.x), shares its sessions with phraseanet (saml-authentication plugin) through redis
+FROM php:8.5-fpm-trixie AS phraseanet-saml-sp
+
+ARG SIMPLESAMLPHP_VERSION=2.5.4
+ARG SIMPLESAMLPHP_SHA256=d2159c8ea2cd802a1c31fd32551e40e9eba9451b69fdd0164f99cb2fbf7cdb42
+
+COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
 RUN apt-get update \
-    && apt-get install -y \
-        apt-transport-https \
+    && apt-get install -y --no-install-recommends \
         ca-certificates \
-        gnupg2 \
+        curl \
         wget \
+        unzip \
         nginx \
-        zlib1g-dev \
-        automake \
-        git \
-        libmcrypt-dev \
-        libzmq3-dev \
-        libtool \
-        locales \
-        gettext \
-        mcrypt \
-        libldap2-dev \
-    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/
+        gettext-base \
+    && rm -rf /var/lib/apt/lists/* \
+    && install-php-extensions redis intl bcmath ldap \
+    && curl -fsSL -o /tmp/simplesamlphp.tar.gz https://github.com/simplesamlphp/simplesamlphp/releases/download/v${SIMPLESAMLPHP_VERSION}/simplesamlphp-${SIMPLESAMLPHP_VERSION}-full.tar.gz \
+    && echo "${SIMPLESAMLPHP_SHA256}  /tmp/simplesamlphp.tar.gz" | sha256sum -c - \
+    && tar xzf /tmp/simplesamlphp.tar.gz -C /var/www/ \
+    && mv /var/www/simplesamlphp-${SIMPLESAMLPHP_VERSION} /var/www/simplesamlphp \
+    && rm /tmp/simplesamlphp.tar.gz \
+    && cd /var/www/simplesamlphp \
+    && COMPOSER_ALLOW_SUPERUSER=1 composer require --no-interaction --no-progress --update-no-dev --optimize-autoloader "predis/predis:~3.3" \
+    && rm -rf /root/.composer/cache \
+    && mkdir -p /var/www/simplesamlphp/log /var/www/simplesamlphp/data /tmp/simplesaml \
+    && chown -R www-data:www-data /var/www/simplesamlphp/log /var/www/simplesamlphp/data /tmp/simplesaml
 ADD ./docker/phraseanet/saml-sp/root /
 ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 CMD ["/bootstrap/bin/start-servers.sh"]
-HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit
+HEALTHCHECK CMD wget -q --spider http://127.0.0.1:8080/simplesaml/ || exit 1
