@@ -3,8 +3,9 @@
 /*
  * SimpleSAMLphp 2.x configuration of the phraseanet service provider.
  *
- * This file is a template : the entrypoint replaces the ${SAML_...} variables and writes the result
- * into the simplesamlphp config dir, which must also be readable by phraseanet (saml-authentication plugin).
+ * This file is a template : if the simplesamlphp config dir (config/plugins/saml-authentication, shared with
+ * phraseanet) has no config.php yet, the entrypoint replaces the ${SAML_...} variables and writes the result there.
+ * An existing config.php is never modified.
  *
  * The sessions are stored in redis ("redis" store) so they are shared by this container and phraseanet
  * without using the php sessions.

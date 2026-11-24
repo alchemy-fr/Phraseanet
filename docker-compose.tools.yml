@@ -101,7 +101,7 @@ services:
     restart: on-failure
     volumes:
     - ${SAML_IDP_METADATA_LOCAL_CONFIG_DIR}:/var/www/simplesamlphp/metadata:rw
-    # also read by phraseanet (saml-authentication plugin) : see SAML_SP_CONFIG_DIR in .env
+    # config dir of the saml-authentication plugin, config.php is also read by phraseanet : see SAML_SP_CONFIG_DIR in .env
     - ${SAML_SP_CONFIG_DIR}:/var/www/simplesamlphp/config:rw
     - ${SAML_SP_CERT_DIR}:/var/www/simplesamlphp/cert:rw
     depends_on:
